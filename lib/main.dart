@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: const ColorScheme.dark(background: Colors.black),
+        colorScheme: const ColorScheme.dark(background: Colors.black, primary: Colors.white),
         useMaterial3: true,
       ),
       home: const ActivityOverviewScreen(),
