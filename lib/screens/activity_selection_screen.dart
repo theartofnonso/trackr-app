@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
+import 'package:tracker_app/screens/add_activity_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
+import '../utils/navigator_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class ActivitySelectionScreen extends StatefulWidget {
@@ -17,6 +19,11 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
 
   void _navigateToActivityOverviewScreen({Activity? activity}) {
     Navigator.of(context).pop(activity);
+  }
+
+  void _navigateToAddNewActivityScreen() {
+    final route = createNewRouteFadeTransition(const AddActivityScreen());
+    Navigator.of(context).push(route);
   }
 
   List<CTextButtonWidget> _activitiesToButtons({required List<Activity> activities}) {
@@ -48,7 +55,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
               ),
             ),
             CTextButtonWidget(
-              onPressed: _navigateToActivityOverviewScreen,
+              onPressed: _navigateToAddNewActivityScreen,
               label: "Add new activity",
             )
           ],
