@@ -24,7 +24,7 @@ class ActivityHistoryScreen extends StatelessWidget {
           start: timePeriod.start,
           end: timePeriod.end,
         ),
-        trailing: Text("${timePeriod.duration().inHours} hours", style: GoogleFonts.inconsolata(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),),
+        trailing: Text("${timePeriod.duration().inHours} hours", style: GoogleFonts.inconsolata(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),),
       );
     }).toList();
   }
@@ -70,7 +70,7 @@ class DateFromAndToWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final timeTextStyle = GoogleFonts.inconsolata(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey);
+    final timeTextStyle = GoogleFonts.inconsolata(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey);
 
     return Row(
       children: [
