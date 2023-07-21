@@ -32,7 +32,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   void _navigateToActivitySelectionScreen() async {
     final route = createNewRouteFadeTransition(const ActivitySelectionScreen());
     final selectedActivity = await Navigator.of(context).push(route);
-    if(selectedActivity != null) {
+    if (selectedActivity != null) {
       setState(() {
         _activity = selectedActivity;
       });
@@ -48,13 +48,17 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
   /// Display Date picker
   Future<void> _showDatePicker() async {
+    final activityHistory = _activity.history;
+    activityHistory.sort((a, b) => a.start.compareTo(b.start));
+    final initialDate = activityHistory.isNotEmpty ? (activityHistory[0]).start : DateTime.now();
+
     final selectedDateRange = _dateRange = await showDateRangePicker(
       context: context,
+      firstDate: initialDate,
       initialDateRange: DateTimeRange(
           start: _dateRange?.start ?? DateTime.now(),
           end: _dateRange?.end ?? DateTime.now()),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -142,7 +146,9 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
             const Spacer(),
             CButtonWrapperWidget(
                 onPressed: _navigateToActivityHistoryScreen,
-                child: DurationOverviewWidget(activity: _activity,)),
+                child: DurationOverviewWidget(
+                  activity: _activity,
+                )),
             const SizedBox(
               height: 50,
             ),
@@ -167,52 +173,72 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 }
 
 class DurationOverviewWidget extends StatelessWidget {
-
   final Activity activity;
 
   const DurationOverviewWidget({super.key, required this.activity});
 
   @override
   Widget build(BuildContext context) {
-
     final durations = activity.durations();
 
-    Duration minDuration = durations.reduce((value, element) => value < element ? value : element);
+    Duration minDuration =
+        durations.reduce((value, element) => value < element ? value : element);
 
     // Find the maximum duration
-    Duration maxDuration = durations.reduce((value, element) => value > element ? value : element);
+    Duration maxDuration =
+        durations.reduce((value, element) => value > element ? value : element);
 
     // Find the average duration
-    Duration totalDuration = durations.reduce((value, element) => value + element);
-    Duration averageDuration = Duration(milliseconds: totalDuration.inMilliseconds ~/ durations.length);
-
+    Duration totalDuration =
+        durations.reduce((value, element) => value + element);
+    Duration averageDuration = Duration(
+        milliseconds: totalDuration.inMilliseconds ~/ durations.length);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        DurationOverviewItem(hours: minDuration.inHours, label: "Low hours",),
-        DurationOverviewItem(hours: averageDuration.inHours, label: "Avg hours",),
-        DurationOverviewItem(hours: maxDuration.inHours, label: "High hours",)
+        DurationOverviewItem(
+          hours: minDuration.inHours,
+          label: "Low hours",
+        ),
+        DurationOverviewItem(
+          hours: averageDuration.inHours,
+          label: "Avg hours",
+        ),
+        DurationOverviewItem(
+          hours: maxDuration.inHours,
+          label: "High hours",
+        )
       ],
     );
   }
 }
 
 class DurationOverviewItem extends StatelessWidget {
-
   final int hours;
   final String label;
 
-  const DurationOverviewItem({super.key, required this.hours, required this.label});
+  const DurationOverviewItem(
+      {super.key, required this.hours, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(hours.toString(), style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
-        const SizedBox(height: 5,),
-        Text(label.toString(), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey),),
+        Text(
+          hours.toString(),
+          style: const TextStyle(
+              fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Text(
+          label.toString(),
+          style: const TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey),
+        ),
       ],
     );
   }
