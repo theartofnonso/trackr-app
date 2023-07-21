@@ -19,3 +19,11 @@ String formattedDate({required DateTime dateTime}) {
 String formattedTime({required DateTime dateTime}) {
   return DateFormat("Hm", "en").format(dateTime);
 }
+
+extension DurationExtension on Duration{
+
+  String friendlyTime() {
+    return "$inHours hrs  $inMinutes mins  ${inSeconds > 69 ? (inSeconds % 60) : inSeconds} secs";
+  }
+
+}

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../widgets/buttons/text_button_widget.dart';
 
@@ -34,11 +37,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
               const SizedBox(
                 height: 3,
               ),
-              const Text("2 hours 15 mins",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white)),
+              const TrackingTimerWidget(),
               const Spacer(),
               CTextButtonWidget(
                 onPressed: _navigateToActivityOverviewScreen,
@@ -49,5 +48,44 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
         ),
       ),
     );
+  }
+}
+
+class TrackingTimerWidget extends StatefulWidget {
+  const TrackingTimerWidget({super.key});
+
+  @override
+  State<TrackingTimerWidget> createState() => _TrackingTimerWidgetState();
+}
+
+class _TrackingTimerWidgetState extends State<TrackingTimerWidget> {
+  final Stopwatch _stopwatch = Stopwatch();
+  late Timer _timer;
+
+  String _elapsedDuration = "Starting";
+
+  @override
+  void initState() {
+    super.initState();
+    _stopwatch.start();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _elapsedDuration = _stopwatch.elapsed.friendlyTime();
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(_elapsedDuration,
+        style: const TextStyle(
+            fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _stopwatch.stop();
+    _timer.cancel();
   }
 }

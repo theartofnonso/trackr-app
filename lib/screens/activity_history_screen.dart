@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 
-import '../utils/date_utils.dart';
+import '../utils/datetime_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 
 class ActivityHistoryScreen extends StatelessWidget {
