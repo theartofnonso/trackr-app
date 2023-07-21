@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 
-extension ActivityExtension on Activity{
-
+extension ActivityExtension on Activity {
   List<Duration> durations() {
-    return history.map((timePeriod) => timePeriod.end.difference(timePeriod.start)).toList();
+    return history
+        .map((timePeriod) => timePeriod.end.difference(timePeriod.start))
+        .toList();
   }
-
 }
 
-extension ActivityDurationExtension on ActivityDuration{
-
+extension ActivityDurationExtension on ActivityDuration {
   Duration duration() {
     return end.difference(start);
   }
-
 }
 
 class Activity {
@@ -50,19 +48,23 @@ class ActivityProvider extends ChangeNotifier {
           label: "Sleeping",
           history: [
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 5, hours: 5)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 5, hours: 5)),
                 end: DateTime.now().subtract(const Duration(days: 5, hours: 1)),
                 activityId: 'Sleeping'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 4, hours: 8)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 4, hours: 8)),
                 end: DateTime.now().subtract(const Duration(days: 4, hours: 1)),
                 activityId: 'Sleeping'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 3, hours: 6)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 3, hours: 6)),
                 end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
                 activityId: 'Sleeping'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 2, hours: 5)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 2, hours: 5)),
                 end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
                 activityId: 'Sleeping')
           ],
@@ -71,19 +73,23 @@ class ActivityProvider extends ChangeNotifier {
           label: "Gyming",
           history: [
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 5, hours: 5)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 5, hours: 5)),
                 end: DateTime.now().subtract(const Duration(days: 5, hours: 1)),
                 activityId: 'Gyming'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 4, hours: 4)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 4, hours: 4)),
                 end: DateTime.now().subtract(const Duration(days: 4, hours: 1)),
                 activityId: 'Gyming'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 3, hours: 3)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 3, hours: 3)),
                 end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
                 activityId: 'Gyming'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 2, hours: 2)),
                 end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
                 activityId: 'Gyming')
           ],
@@ -92,19 +98,23 @@ class ActivityProvider extends ChangeNotifier {
           label: "Walking",
           history: [
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 5, hours: 6)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 5, hours: 6)),
                 end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
                 activityId: 'Walking'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 4, hours: 7)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 4, hours: 7)),
                 end: DateTime.now().subtract(const Duration(days: 4, hours: 6)),
                 activityId: 'Walking'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 3, hours: 3)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 3, hours: 3)),
                 end: DateTime.now().subtract(const Duration(days: 3, hours: 2)),
                 activityId: 'Walking'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 2, hours: 2)),
                 end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
                 activityId: 'Walking')
           ],
@@ -113,23 +123,53 @@ class ActivityProvider extends ChangeNotifier {
           label: "Reading",
           history: [
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 5, hours: 5)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 5, hours: 5)),
                 end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
                 activityId: 'Reading'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 4, hours: 4)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 4, hours: 4)),
                 end: DateTime.now().subtract(const Duration(days: 4, hours: 3)),
                 activityId: 'Reading'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 3, hours: 3)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 3, hours: 3)),
                 end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
                 activityId: 'Reading'),
             ActivityDuration(
-                start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
+                start:
+                    DateTime.now().subtract(const Duration(days: 2, hours: 2)),
                 end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
                 activityId: 'Reading')
           ],
           notes: "A note")
     ];
+  }
+
+  void addNewActivity({required String name}) {
+    final activityToAdd = Activity(
+        label: name,
+        history: [
+          ActivityDuration(
+              start: DateTime.now().subtract(const Duration(days: 5, hours: 5)),
+              end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
+              activityId: name),
+          ActivityDuration(
+              start: DateTime.now().subtract(const Duration(days: 4, hours: 4)),
+              end: DateTime.now().subtract(const Duration(days: 4, hours: 3)),
+              activityId: name),
+          ActivityDuration(
+              start: DateTime.now().subtract(const Duration(days: 3, hours: 3)),
+              end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
+              activityId: name),
+          ActivityDuration(
+              start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
+              end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
+              activityId: name)
+        ],
+        notes: "A note");
+    _activities.insert(0, activityToAdd);
+    notifyListeners();
   }
 }

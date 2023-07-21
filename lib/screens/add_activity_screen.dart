@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../providers/activity_provider.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
@@ -14,16 +15,27 @@ class AddActivityScreen extends StatefulWidget {
 }
 
 class _AddActivityScreenState extends State<AddActivityScreen> {
+
   late TextEditingController _activityController;
+  late ActivityProvider _activityProvider;
 
   @override
   void initState() {
     super.initState();
     _activityController = TextEditingController();
+    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
   }
 
   void _navigateToActivitySelectionScreen() {
     Navigator.of(context).pop();
+  }
+
+  void _addNewActivity() {
+    final activityToAdd = _activityController.text;
+    if (activityToAdd.isNotEmpty) {
+      _activityProvider.addNewActivity(name: _activityController.text);
+      _navigateToActivitySelectionScreen();
+    }
   }
 
   @override
@@ -63,7 +75,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
               ),
               const Spacer(),
               CTextButtonWidget(
-                onPressed: _navigateToActivitySelectionScreen,
+                onPressed: _addNewActivity,
                 label: "Save",
               )
             ],
