@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
@@ -94,7 +95,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                     children: [
                       Text(
                         _activity.label,
-                        style: const TextStyle(
+                        style: GoogleFonts.inconsolata(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
@@ -228,7 +229,7 @@ class DurationOverviewItem extends StatelessWidget {
       children: [
         Text(
           hours.toString(),
-          style: const TextStyle(
+          style: GoogleFonts.inconsolata(
               fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(
@@ -236,8 +237,8 @@ class DurationOverviewItem extends StatelessWidget {
         ),
         Text(
           label.toString(),
-          style: const TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey),
+          style: GoogleFonts.inconsolata(
+              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
         ),
       ],
     );

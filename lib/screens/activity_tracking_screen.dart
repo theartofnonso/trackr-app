@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../widgets/buttons/text_button_widget.dart';
@@ -30,7 +31,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
             children: [
               const Spacer(),
               Text(widget.activity,
-                  style: const TextStyle(
+                  style: GoogleFonts.inconsolata(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       color: Colors.white)),
@@ -78,8 +79,8 @@ class _TrackingTimerWidgetState extends State<TrackingTimerWidget> {
   @override
   Widget build(BuildContext context) {
     return Text(_elapsedDuration,
-        style: const TextStyle(
-            fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white));
+        style: GoogleFonts.inconsolata(
+            fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white));
   }
 
   @override

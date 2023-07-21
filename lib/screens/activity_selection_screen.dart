@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/add_activity_screen.dart';
@@ -27,7 +28,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
   }
 
   List<CTextButtonWidget> _activitiesToButtons({required List<Activity> activities}) {
-    return activities.map((activity) => CTextButtonWidget(onPressed: () => _navigateToActivityOverviewScreen(activity: activity), label: activity.label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),)).toList();
+    return activities.map((activity) => CTextButtonWidget(onPressed: () => _navigateToActivityOverviewScreen(activity: activity), label: activity.label, style: GoogleFonts.inconsolata(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),)).toList();
   }
 
   @override
