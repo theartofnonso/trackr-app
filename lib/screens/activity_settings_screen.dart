@@ -8,36 +8,20 @@ import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
-class ActivitySelectionScreen extends StatefulWidget {
-  const ActivitySelectionScreen({super.key});
+class ActivitySettingsScreen extends StatelessWidget {
+  final Activity activity;
 
-  @override
-  State<ActivitySelectionScreen> createState() => _ActivitySelectionScreen();
-}
+  const ActivitySettingsScreen({super.key, required this.activity});
 
-class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
-  void _navigateToActivityOverviewScreen({Activity? activity}) {
+  void _navigateToActivitySelectionScreen({required BuildContext context}) {
     Navigator.of(context).pop(activity);
   }
 
-  void _navigateToAddNewActivityScreen() {
-    final route = createNewRouteFadeTransition(const AddActivityScreen());
+  void _navigateToAddNewActivityScreen({required BuildContext context}) {
+    final route = createNewRouteFadeTransition(AddActivityScreen(
+      activity: activity,
+    ));
     Navigator.of(context).push(route);
-  }
-
-  List<CTextButtonWidget> _activitiesToButtons(
-      {required List<Activity> activities}) {
-    return activities
-        .map((activity) => CTextButtonWidget(
-              onPressed: () =>
-                  _navigateToActivityOverviewScreen(activity: activity),
-              label: activity.label,
-              style: GoogleFonts.inconsolata(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white),
-            ))
-        .toList();
   }
 
   @override
@@ -51,7 +35,8 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
             Row(
               children: [
                 CButtonWrapperWidget(
-                    onPressed: _navigateToActivityOverviewScreen,
+                    onPressed: () =>
+                        _navigateToActivitySelectionScreen(context: context),
                     child: const Icon(
                       Icons.close,
                       color: Colors.white,
@@ -63,16 +48,27 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
                   builder: (_, activityProvider, __) {
                 return ListView(
                   children: [
-                    ..._activitiesToButtons(
-                        activities: activityProvider.activities)
+                    CTextButtonWidget(
+                      onPressed: () =>
+                          _navigateToAddNewActivityScreen(context: context),
+                      label: "edit",
+                      style: GoogleFonts.inconsolata(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
+                    ),
+                    CTextButtonWidget(
+                      onPressed: () {},
+                      label: "delete",
+                      style: GoogleFonts.inconsolata(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey),
+                    )
                   ],
                 );
               }),
             ),
-            CTextButtonWidget(
-              onPressed: _navigateToAddNewActivityScreen,
-              label: "Add new activity",
-            )
           ],
         ),
       ),

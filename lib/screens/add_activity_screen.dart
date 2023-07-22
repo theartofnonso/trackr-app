@@ -22,7 +22,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
   @override
   void initState() {
     super.initState();
-    _activityController = TextEditingController();
+    _activityController = TextEditingController(text: widget.activity?.label);
     _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
   }
 
@@ -34,6 +34,14 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     final activityToAdd = _activityController.text;
     if (activityToAdd.isNotEmpty) {
       _activityProvider.addNewActivity(name: _activityController.text);
+      _navigateToActivitySelectionScreen();
+    }
+  }
+
+  void _editNewActivity() {
+    final activityToAdd = _activityController.text;
+    if (activityToAdd.isNotEmpty) {
+      _activityProvider.editNewActivity(oldActivity: widget.activity!, activityLabel: _activityController.text, );
       _navigateToActivitySelectionScreen();
     }
   }
@@ -75,7 +83,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
               ),
               const Spacer(),
               CTextButtonWidget(
-                onPressed: _addNewActivity,
+                onPressed: widget.activity == null ? _addNewActivity : _editNewActivity,
                 label: "Save",
               )
             ],

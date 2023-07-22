@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/activity_history_screen.dart';
 import 'package:tracker_app/screens/activity_selection_screen.dart';
+import 'package:tracker_app/screens/activity_settings_screen.dart';
 import 'package:tracker_app/screens/activity_tracking_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
@@ -32,6 +33,16 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
   void _navigateToActivitySelectionScreen() async {
     final route = createNewRouteFadeTransition(const ActivitySelectionScreen());
+    final selectedActivity = await Navigator.of(context).push(route);
+    if (selectedActivity != null) {
+      setState(() {
+        _activity = selectedActivity;
+      });
+    }
+  }
+
+  void _navigateToActivitySettingsScreen() async {
+    final route = createNewRouteFadeTransition( ActivitySettingsScreen(activity: _activity));
     final selectedActivity = await Navigator.of(context).push(route);
     if (selectedActivity != null) {
       setState(() {
@@ -85,80 +96,94 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                CButtonWrapperWidget(
-                  onPressed: _navigateToActivitySelectionScreen,
-                  child: Row(
-                    children: [
-                      Text(
-                        _activity.label,
-                        style: GoogleFonts.inconsolata(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      const SizedBox(
-                        width: 3,
-                      ),
-                      const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.white,
-                      )
-                    ],
+        child: Consumer<ActivityProvider>(builder: (_, activityProvider, __) {
+          final activity = activityProvider.activities.firstWhere((activity) => activity.id == _activity.id);
+          return Column(
+            children: [
+              Row(
+                children: [
+                  CButtonWrapperWidget(
+                    onPressed: _navigateToActivitySelectionScreen,
+                    child: Row(
+                      children: [
+                        Text(
+                          activity.label,
+                          style: GoogleFonts.inconsolata(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        const SizedBox(
+                          width: 3,
+                        ),
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const Spacer(),
-                CTextButtonWidget(
-                  onPressed: _showDatePicker,
-                  label: "Jul",
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 60,
-            ),
-            SizedBox(
-              child: SfSparkLineChart(
-                color: Colors.white,
-                data: const <double>[
-                  1,
-                  5,
-                  -3,
-                  0,
-                  0,
-                  0,
-                  0,
-                  5,
-                  5,
-                  5,
-                  3,
-                  3,
-                  -3,
-                  0,
-                  0,
-                  5,
-                  3
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  InkWell(
+                    onTap: _navigateToActivitySettingsScreen,
+                    child: const Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const Spacer(),
+                  CTextButtonWidget(
+                    onPressed: _showDatePicker,
+                    label: "Jul",
+                  )
                 ],
               ),
-            ),
-            const Spacer(),
-            CButtonWrapperWidget(
-                onPressed: _navigateToActivityHistoryScreen,
-                child: DurationOverviewWidget(
-                  activity: _activity,
-                )),
-            const SizedBox(
-              height: 50,
-            ),
-            CTextButtonWidget(
-              onPressed: _navigateToActivityTrackingScreen,
-              label: "Start tracking",
-            )
-          ],
-        ),
+              const SizedBox(
+                height: 60,
+              ),
+              SizedBox(
+                child: SfSparkLineChart(
+                  color: Colors.white,
+                  data: const <double>[
+                    1,
+                    5,
+                    -3,
+                    0,
+                    0,
+                    0,
+                    0,
+                    5,
+                    5,
+                    5,
+                    3,
+                    3,
+                    -3,
+                    0,
+                    0,
+                    5,
+                    3
+                  ],
+                ),
+              ),
+              const Spacer(),
+              CButtonWrapperWidget(
+                  onPressed: _navigateToActivityHistoryScreen,
+                  child: DurationOverviewWidget(
+                    activity: activity,
+                  )),
+              const SizedBox(
+                height: 50,
+              ),
+              CTextButtonWidget(
+                onPressed: _navigateToActivityTrackingScreen,
+                label: "Start tracking",
+              )
+            ],
+          );
+        }),
       ),
     );
   }
