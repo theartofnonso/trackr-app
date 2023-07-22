@@ -148,7 +148,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
                       children: [
                         Text(
                           _activity!.label,
-                          style: GoogleFonts.inconsolata(
+                          style: GoogleFonts.poppins(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
@@ -298,7 +298,7 @@ class DurationOverviewItem extends StatelessWidget {
       children: [
         Text(
           hours.toString(),
-          style: GoogleFonts.inconsolata(
+          style: GoogleFonts.poppins(
               fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(
@@ -306,7 +306,7 @@ class DurationOverviewItem extends StatelessWidget {
         ),
         Text(
           label.toString(),
-          style: GoogleFonts.inconsolata(
+          style: GoogleFonts.poppins(
               fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
         ),
       ],

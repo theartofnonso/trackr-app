@@ -60,7 +60,7 @@ class ActivitySettingsScreen extends StatelessWidget {
                       onPressed: () =>
                           _navigateToAddNewActivityScreen(context: context),
                       label: "edit",
-                      style: GoogleFonts.inconsolata(
+                      style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           color: Colors.white),
@@ -68,7 +68,7 @@ class ActivitySettingsScreen extends StatelessWidget {
                     CTextButtonWidget(
                       onPressed: () => _removeActivity(context: context),
                       label: "delete",
-                      style: GoogleFonts.inconsolata(
+                      style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey),
@@ -76,7 +76,7 @@ class ActivitySettingsScreen extends StatelessWidget {
                     CTextButtonWidget(
                       onPressed: () {},
                       label: "Profile",
-                      style: GoogleFonts.inconsolata(
+                      style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),

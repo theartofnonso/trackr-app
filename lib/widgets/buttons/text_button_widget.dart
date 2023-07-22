@@ -11,6 +11,6 @@ class CTextButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(onPressed: onPressed, child: Text(label, style: style ?? GoogleFonts.inconsolata(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),);
+    return TextButton(onPressed: onPressed, child: Text(label, style: style ?? GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),);
   }
 }

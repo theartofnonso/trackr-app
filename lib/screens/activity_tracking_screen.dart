@@ -67,7 +67,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
             children: [
               const Spacer(),
               Text(activity.label,
-                  style: GoogleFonts.inconsolata(
+                  style: GoogleFonts.poppins(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       color: Colors.white)),
@@ -75,7 +75,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
                 height: 3,
               ),
               Text(_elapsedDuration,
-                  style: GoogleFonts.inconsolata(
+                  style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white)),
