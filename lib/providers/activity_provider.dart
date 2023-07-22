@@ -208,4 +208,9 @@ class ActivityProvider extends ChangeNotifier {
     _activities = _activities.map((activity) => activity.id == activityToUpdate.id ? newActivity : activity).toList();
     notifyListeners();
   }
+
+  void removeActivity({required Activity activityToRemove}) {
+    _activities.removeWhere((activity) => activity.id == activityToRemove.id);
+    notifyListeners();
+  }
 }

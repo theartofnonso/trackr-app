@@ -84,7 +84,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
               const Spacer(),
               CTextButtonWidget(
                 onPressed: widget.activity == null ? _addNewActivity : _editNewActivity,
-                label: "Save",
+                label: widget.activity == null ? "Start tracking" : "Update activity",
               )
             ],
           ),

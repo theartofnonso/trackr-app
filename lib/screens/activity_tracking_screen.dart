@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
+import '../providers/activity_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class ActivityTrackingScreen extends StatefulWidget {
-  final String activity;
+  final Activity activity;
 
   const ActivityTrackingScreen({super.key, required this.activity});
 
@@ -30,7 +31,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Spacer(),
-              Text(widget.activity,
+              Text(widget.activity.label,
                   style: GoogleFonts.inconsolata(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,

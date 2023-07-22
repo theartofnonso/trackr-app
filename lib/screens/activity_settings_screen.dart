@@ -17,11 +17,19 @@ class ActivitySettingsScreen extends StatelessWidget {
     Navigator.of(context).pop(activity);
   }
 
-  void _navigateToAddNewActivityScreen({required BuildContext context}) {
+  void _navigateToAddNewActivityScreen({required BuildContext context}) async {
     final route = createNewRouteFadeTransition(AddActivityScreen(
       activity: activity,
     ));
-    Navigator.of(context).push(route);
+    await Navigator.of(context).push(route);
+    if(context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _removeActivity({required BuildContext context}) {
+    Provider.of<ActivityProvider>(context, listen: false).removeActivity(activityToRemove: activity);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -58,7 +66,7 @@ class ActivitySettingsScreen extends StatelessWidget {
                           color: Colors.white),
                     ),
                     CTextButtonWidget(
-                      onPressed: () {},
+                      onPressed: () => _removeActivity(context: context),
                       label: "delete",
                       style: GoogleFonts.inconsolata(
                           fontSize: 18,

@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
+import 'add_activity_screen.dart';
 
 class ActivityOverviewScreen extends StatefulWidget {
   const ActivityOverviewScreen({super.key});
@@ -20,14 +21,13 @@ class ActivityOverviewScreen extends StatefulWidget {
 }
 
 class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
-  late Activity _activity;
+  Activity? _activity;
 
   DateTimeRange? _dateRange;
 
   void _navigateToActivityTrackingScreen() {
-    final route = createNewRouteFadeTransition(const ActivityTrackingScreen(
-      activity: "Sleeping",
-    ));
+    final route = createNewRouteFadeTransition(
+        ActivityTrackingScreen(activity: _activity!));
     Navigator.of(context).push(route);
   }
 
@@ -42,7 +42,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 
   void _navigateToActivitySettingsScreen() async {
-    final route = createNewRouteFadeTransition( ActivitySettingsScreen(activity: _activity));
+    final route = createNewRouteFadeTransition(
+        ActivitySettingsScreen(activity: _activity!));
     final selectedActivity = await Navigator.of(context).push(route);
     if (selectedActivity != null) {
       setState(() {
@@ -53,16 +54,23 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
   void _navigateToActivityHistoryScreen() {
     final route = createNewRouteFadeTransition(ActivityHistoryScreen(
-      activity: _activity,
+      activity: _activity!,
     ));
+    Navigator.of(context).push(route);
+  }
+
+  void _navigateToAddNewActivityScreen() {
+    final route = createNewRouteFadeTransition(const AddActivityScreen());
     Navigator.of(context).push(route);
   }
 
   /// Display Date picker
   Future<void> _showDatePicker() async {
-    final activityHistory = _activity.history;
+    final activityHistory = _activity!.history;
     activityHistory.sort((a, b) => a.start.compareTo(b.start));
-    final initialDate = activityHistory.isNotEmpty ? (activityHistory[0]).start : DateTime.now();
+    final initialDate = activityHistory.isNotEmpty
+        ? (activityHistory[0]).start
+        : DateTime.now();
 
     final selectedDateRange = _dateRange = await showDateRangePicker(
       context: context,
@@ -97,7 +105,25 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
         child: Consumer<ActivityProvider>(builder: (_, activityProvider, __) {
-          final activity = activityProvider.activities.firstWhere((activity) => activity.id == _activity.id);
+          //Activity? activity;
+          try {
+            _activity = activityProvider.activities
+                .firstWhere((activity) => activity.id == _activity!.id);
+          } catch (e) {
+            _activity = activityProvider.activities.isNotEmpty
+                ? activityProvider.activities.first
+                : null;
+          }
+
+          if (_activity == null) {
+            return Center(
+              child: CTextButtonWidget(
+                onPressed: _navigateToAddNewActivityScreen,
+                label: 'Track your first Activity',
+              ),
+            );
+          }
+
           return Column(
             children: [
               Row(
@@ -107,7 +133,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                     child: Row(
                       children: [
                         Text(
-                          activity.label,
+                          _activity!.label,
                           style: GoogleFonts.inconsolata(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
@@ -172,7 +198,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               CButtonWrapperWidget(
                   onPressed: _navigateToActivityHistoryScreen,
                   child: DurationOverviewWidget(
-                    activity: activity,
+                    activity: _activity!,
                   )),
               const SizedBox(
                 height: 50,
@@ -194,7 +220,6 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
     final activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
     activityProvider.listActivities();
-    _activity = activityProvider.activities[0];
   }
 }
 
