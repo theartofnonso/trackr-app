@@ -6,6 +6,7 @@ import 'package:tracker_app/screens/add_activity_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../utils/navigator_utils.dart';
+import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class ActivitySettingsScreen extends StatelessWidget {
@@ -22,13 +23,14 @@ class ActivitySettingsScreen extends StatelessWidget {
       activity: activity,
     ));
     await Navigator.of(context).push(route);
-    if(context.mounted) {
+    if (context.mounted) {
       Navigator.of(context).pop();
     }
   }
 
   void _removeActivity({required BuildContext context}) {
-    Provider.of<ActivityProvider>(context, listen: false).removeActivity(activityToRemove: activity);
+    Provider.of<ActivityProvider>(context, listen: false)
+        .removeActivity(activityToRemove: activity);
     Navigator.of(context).pop();
   }
 
@@ -73,13 +75,9 @@ class ActivitySettingsScreen extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                           color: Colors.grey),
                     ),
-                    CTextButtonWidget(
+                    GradientButton(
                       onPressed: () {},
                       label: "Profile",
-                      textStyle: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
                     )
                   ],
                 );
