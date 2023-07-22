@@ -12,6 +12,7 @@ import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../shared_prefs.dart';
 import '../utils/navigator_utils.dart';
+import '../widgets/buttons/elevated_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import 'add_activity_screen.dart';
 
@@ -155,9 +156,40 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
           if (activity == null) {
             return Center(
-              child: CTextButtonWidget(
-                onPressed: _navigateToAddNewActivityScreen,
-                label: 'Track your first Activity',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Text("JUST TRACK AN ACTIVITY",
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 24,
+                          color: Colors.white)),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text.rich(TextSpan(
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white70,
+                          fontSize: 16),
+                      children: const <TextSpan>[
+                        TextSpan(
+                            text: 'Improve or cut down',
+                            style: TextStyle(color: Colors.white)),
+                        TextSpan(text: ' '),
+                        TextSpan(text: 'time wasted on certain activities'),
+                      ])),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  CElevatedButtonWidget(
+                    onPressed: _navigateToAddNewActivityScreen,
+                    label: 'Track your first Activity',
+                  ),
+                ],
               ),
             );
           }
@@ -222,7 +254,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               const SizedBox(
                 height: 50,
               ),
-              CTextButtonWidget(
+              CElevatedButtonWidget(
                 onPressed: () => _navigateToActivityTrackingScreen(
                     activityId: _activity!.id),
                 label: "Start tracking",

@@ -32,7 +32,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
               onPressed: () =>
                   _navigateToActivityOverviewScreen(activity: activity),
               label: activity.label,
-              style: GoogleFonts.poppins(
+              textStyle: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                   color: Colors.white),
