@@ -9,6 +9,7 @@ import 'package:tracker_app/screens/activity_settings_screen.dart';
 import 'package:tracker_app/screens/activity_tracking_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
+import '../shared_prefs.dart';
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import 'add_activity_screen.dart';
@@ -20,14 +21,22 @@ class ActivityOverviewScreen extends StatefulWidget {
   State<ActivityOverviewScreen> createState() => _ActivityOverviewScreenState();
 }
 
-class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
+class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> with WidgetsBindingObserver{
   Activity? _activity;
 
   DateTimeRange? _dateRange;
 
-  void _navigateToActivityTrackingScreen() {
-    final route = createNewRouteFadeTransition(
-        ActivityTrackingScreen(activity: _activity!));
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _restartPreviousTracking();
+    }
+  }
+
+  void _navigateToActivityTrackingScreen(
+      {required String activityId, DateTime? startDatetime}) {
+    final route = createNewRouteFadeTransition(ActivityTrackingScreen(
+        activityId: activityId, lastActivityStartDatetime: startDatetime));
     Navigator.of(context).push(route);
   }
 
@@ -62,6 +71,18 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   void _navigateToAddNewActivityScreen() {
     final route = createNewRouteFadeTransition(const AddActivityScreen());
     Navigator.of(context).push(route);
+  }
+
+  void _restartPreviousTracking() {
+    final lastActivityId = SharedPrefs().lastActivityId;
+    final lastActivityStartDatetimeInMilli =
+        SharedPrefs().lastActivityStartDatetime;
+    if (lastActivityId.isNotEmpty && lastActivityStartDatetimeInMilli > 0) {
+      final lastActivityStartDatetime =
+      DateTime.fromMillisecondsSinceEpoch(lastActivityStartDatetimeInMilli);
+      _navigateToActivityTrackingScreen(
+          activityId: lastActivityId, startDatetime: lastActivityStartDatetime);
+    }
   }
 
   /// Display Date picker
@@ -204,7 +225,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                 height: 50,
               ),
               CTextButtonWidget(
-                onPressed: _navigateToActivityTrackingScreen,
+                onPressed: () => _navigateToActivityTrackingScreen(
+                    activityId: _activity!.id),
                 label: "Start tracking",
               )
             ],
@@ -217,9 +239,16 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
     activityProvider.listActivities();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 }
 

@@ -72,6 +72,14 @@ class ActivitySettingsScreen extends StatelessWidget {
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey),
+                    ),
+                    CTextButtonWidget(
+                      onPressed: () {},
+                      label: "Profile",
+                      style: GoogleFonts.inconsolata(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     )
                   ],
                 );

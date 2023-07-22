@@ -2,15 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../providers/activity_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class ActivityTrackingScreen extends StatefulWidget {
-  final Activity activity;
+  final String activityId;
+  final DateTime? lastActivityStartDatetime;
 
-  const ActivityTrackingScreen({super.key, required this.activity});
+  const ActivityTrackingScreen(
+      {super.key, required this.activityId, this.lastActivityStartDatetime});
 
   @override
   State<ActivityTrackingScreen> createState() => _ActivityTrackingScreenState();
@@ -18,11 +22,16 @@ class ActivityTrackingScreen extends StatefulWidget {
 
 class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
   void _navigateToActivityOverviewScreen() {
+    //SharedPrefs().clear();
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final activity = Provider.of<ActivityProvider>(context)
+        .activities
+        .firstWhere((activity) => activity.id == widget.activityId);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
@@ -31,7 +40,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Spacer(),
-              Text(widget.activity.label,
+              Text(activity.label,
                   style: GoogleFonts.inconsolata(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -39,7 +48,9 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
               const SizedBox(
                 height: 3,
               ),
-              const TrackingTimerWidget(),
+              TrackingTimerWidget(
+                lastActivityStartDatetime: widget.lastActivityStartDatetime,
+              ),
               const Spacer(),
               CTextButtonWidget(
                 onPressed: _navigateToActivityOverviewScreen,
@@ -51,28 +62,40 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    SharedPrefs().lastActivityId = widget.activityId;
+  }
 }
 
 class TrackingTimerWidget extends StatefulWidget {
-  const TrackingTimerWidget({super.key});
+  final DateTime? lastActivityStartDatetime;
+
+  const TrackingTimerWidget({super.key, this.lastActivityStartDatetime});
 
   @override
   State<TrackingTimerWidget> createState() => _TrackingTimerWidgetState();
 }
 
 class _TrackingTimerWidgetState extends State<TrackingTimerWidget> {
-  final Stopwatch _stopwatch = Stopwatch();
+  late DateTime _startDatetime;
+
   late Timer _timer;
 
-  String _elapsedDuration = "Starting";
+  String _elapsedDuration = "";
 
   @override
   void initState() {
     super.initState();
-    _stopwatch.start();
+
+    _startDatetime = widget.lastActivityStartDatetime ?? DateTime.now();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        _elapsedDuration = _stopwatch.elapsed.friendlyTime();
+        _elapsedDuration =
+            DateTime.now().difference(_startDatetime).friendlyTime();
       });
     });
   }
@@ -87,7 +110,8 @@ class _TrackingTimerWidgetState extends State<TrackingTimerWidget> {
   @override
   void dispose() {
     super.dispose();
-    _stopwatch.stop();
+    SharedPrefs().lastActivityStartDatetime =
+        _startDatetime.millisecondsSinceEpoch;
     _timer.cancel();
   }
 }

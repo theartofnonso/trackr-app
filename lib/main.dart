@@ -3,8 +3,13 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SharedPrefs().init();
 
   await initializeDateFormatting();
 
