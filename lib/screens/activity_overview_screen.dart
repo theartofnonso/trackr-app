@@ -13,7 +13,7 @@ import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 import '../shared_prefs.dart';
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/elevated_button_widget.dart';
-import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/buttons/gradient_button_widget.dart';
 import 'add_activity_screen.dart';
 
 class ActivityOverviewScreen extends StatefulWidget {
@@ -185,10 +185,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  CElevatedButtonWidget(
-                    onPressed: _navigateToAddNewActivityScreen,
-                    label: 'Track your first Activity',
-                  ),
+                  GradientButton(label: 'Track your first Activity', onPressed: _navigateToAddNewActivityScreen,)
                 ],
               ),
             );
@@ -254,7 +251,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               const SizedBox(
                 height: 50,
               ),
-              CElevatedButtonWidget(
+              GradientButton(
                 onPressed: () => _navigateToActivityTrackingScreen(
                     activityId: _activity!.id),
                 label: "Start tracking",

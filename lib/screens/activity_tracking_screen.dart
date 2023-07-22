@@ -8,6 +8,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../providers/activity_provider.dart';
 import '../widgets/buttons/elevated_button_widget.dart';
+import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class ActivityTrackingScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
                       fontWeight: FontWeight.w600,
                       color: Colors.white)),
               const Spacer(),
-              CElevatedButtonWidget(
+              GradientButton(
                 onPressed: _navigateToActivityOverviewScreen,
                 label: "Stop tracking",
               )

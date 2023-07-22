@@ -5,6 +5,7 @@ import '../providers/activity_provider.dart';
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 import '../widgets/buttons/elevated_button_widget.dart';
+import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import 'activity_tracking_screen.dart';
 
@@ -95,7 +96,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
                     ),
               ),
               const Spacer(),
-              CElevatedButtonWidget(
+              GradientButton(
                 onPressed: widget.activity == null
                     ? _addNewActivity
                     : _editNewActivity,

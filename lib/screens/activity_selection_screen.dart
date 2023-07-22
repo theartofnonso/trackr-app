@@ -6,6 +6,7 @@ import 'package:tracker_app/screens/add_activity_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../utils/navigator_utils.dart';
+import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class ActivitySelectionScreen extends StatefulWidget {
@@ -69,7 +70,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
                 );
               }),
             ),
-            CTextButtonWidget(
+            GradientButton(
               onPressed: _navigateToAddNewActivityScreen,
               label: "Add new activity",
             )
