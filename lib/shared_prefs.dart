@@ -24,10 +24,19 @@ class SharedPrefs {
     _sharedPrefs?.setString(lastActivityIdKey, value);
   }
 
+  void removeLastActivityId() {
+    _sharedPrefs?.remove(lastActivityIdKey);
+  }
+
   int get lastActivityStartDatetime => _sharedPrefs?.getInt(lastActivityStartDatetimeKey) ?? 0;
 
   set lastActivityStartDatetime(int value) {
     _sharedPrefs?.setInt(lastActivityStartDatetimeKey, value);
   }
+
+  void removeLastActivityStartDatetime() {
+    _sharedPrefs?.remove(lastActivityStartDatetimeKey);
+  }
+
 
 }

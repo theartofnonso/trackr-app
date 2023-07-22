@@ -21,17 +21,10 @@ class ActivityOverviewScreen extends StatefulWidget {
   State<ActivityOverviewScreen> createState() => _ActivityOverviewScreenState();
 }
 
-class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> with WidgetsBindingObserver{
+class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
   Activity? _activity;
 
   DateTimeRange? _dateRange;
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _restartPreviousTracking();
-    }
-  }
 
   void _navigateToActivityTrackingScreen(
       {required String activityId, DateTime? startDatetime}) {
@@ -239,17 +232,14 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> with Wi
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     final activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
     activityProvider.listActivities();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _restartPreviousTracking();
+    });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
-  }
 }
 
 class DurationOverviewWidget extends StatelessWidget {
