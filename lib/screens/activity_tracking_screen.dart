@@ -25,17 +25,18 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
 
   String _elapsedDuration = "";
 
-  bool _hasStoppedTrackingByUser = false;
-
   late DateTime _startDatetime;
 
   void _navigateToActivityOverviewScreen() {
     SharedPrefs().removeLastActivityId();
     SharedPrefs().removeLastActivityStartDatetime();
-    setState(() {
-      _hasStoppedTrackingByUser = true;
-    });
     Navigator.of(context).pop();
+  }
+
+  void _cacheActivityTracking() {
+    SharedPrefs().lastActivityId = widget.activityId;
+    SharedPrefs().lastActivityStartDatetime =
+        _startDatetime.millisecondsSinceEpoch;
   }
 
   @override
@@ -48,6 +49,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
             DateTime.now().difference(_startDatetime).friendlyTime();
       });
     });
+    _cacheActivityTracking();
   }
 
   @override
@@ -92,57 +94,6 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
   @override
   void dispose() {
     super.dispose();
-    if (!_hasStoppedTrackingByUser) {
-      SharedPrefs().lastActivityId = widget.activityId;
-      SharedPrefs().lastActivityStartDatetime =
-          _startDatetime.millisecondsSinceEpoch;
-    }
     _timer.cancel();
   }
 }
-//
-// class TrackingTimerWidget extends StatefulWidget {
-//   final DateTime? lastActivityStartDatetime;
-//
-//   const TrackingTimerWidget({super.key, this.lastActivityStartDatetime});
-//
-//   @override
-//   State<TrackingTimerWidget> createState() => _TrackingTimerWidgetState();
-// }
-//
-// class _TrackingTimerWidgetState extends State<TrackingTimerWidget> {
-//   late DateTime _startDatetime;
-//
-//   late Timer _timer;
-//
-//   String _elapsedDuration = "";
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     _startDatetime = widget.lastActivityStartDatetime ?? DateTime.now();
-//
-//     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-//       setState(() {
-//         _elapsedDuration =
-//             DateTime.now().difference(_startDatetime).friendlyTime();
-//       });
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Text(_elapsedDuration,
-//         style: GoogleFonts.inconsolata(
-//             fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white));
-//   }
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     SharedPrefs().lastActivityStartDatetime =
-//         _startDatetime.millisecondsSinceEpoch;
-//     _timer.cancel();
-//   }
-// }

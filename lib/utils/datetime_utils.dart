@@ -22,8 +22,12 @@ String formattedTime({required DateTime dateTime}) {
 
 extension DurationExtension on Duration{
 
+  int _absoluteDuration(duration) {
+    return duration > 59 ? (duration % 60) : duration;
+  }
+
   String friendlyTime() {
-    return "$inHours hrs  $inMinutes mins  ${inSeconds > 59 ? (inSeconds % 60) : inSeconds} secs";
+    return "$inHours hrs  ${_absoluteDuration(inMinutes)} mins  ${_absoluteDuration(inSeconds)} secs";
   }
 
 }
