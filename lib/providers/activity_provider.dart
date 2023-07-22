@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 
 extension ActivityExtension on Activity {
-  List<Duration> durations() {
-    return history
+  List<Duration> toDurations({DateTimeRange? range}) {
+
+    List<ActivityDuration> listOfDurations = history;
+
+    if(range != null) {
+      listOfDurations = history.where((timePeriod) => timePeriod.start.isBetweenRange(range: range.endInclusive())).toList();
+    }
+    return listOfDurations
         .map((timePeriod) => timePeriod.end.difference(timePeriod.start))
         .toList();
+  }
+
+  List<ActivityDuration> historyWhere({required DateTimeRange range}) {
+    return history.where((timePeriod) => timePeriod.start.isBetweenRange(range: range)).toList();
   }
 }
 
@@ -55,7 +66,12 @@ class ActivityProvider extends ChangeNotifier {
             ActivityDuration(
                 start:
                     DateTime.now().subtract(const Duration(days: 4, hours: 8)),
-                end: DateTime.now().subtract(const Duration(days: 4, hours: 1)),
+                end: DateTime.now().subtract(const Duration(days: 4, hours: 7)),
+                activityId: 'Sleeping'),
+            ActivityDuration(
+                start:
+                DateTime.now().subtract(const Duration(days: 4, hours: 6, )),
+                end: DateTime.now().subtract(const Duration(days: 4, hours: 5)),
                 activityId: 'Sleeping'),
             ActivityDuration(
                 start:

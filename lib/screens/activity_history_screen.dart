@@ -7,20 +7,21 @@ import '../widgets/buttons/button_wrapper_widget.dart';
 
 class ActivityHistoryScreen extends StatelessWidget {
   final Activity activity;
-
-  const ActivityHistoryScreen({super.key, required this.activity});
+  final DateTimeRange dateTimeRange;
+  
+  const ActivityHistoryScreen({super.key, required this.activity, required this.dateTimeRange});
 
   void _navigateToActivityOverviewScreen({required BuildContext context}) {
     Navigator.of(context).pop();
   }
 
   List<ListTile> _activityDurationsToButtons({required BuildContext context}) {
-    final history = activity.history;
+    final history = activity.historyWhere(range: dateTimeRange.endInclusive());
     history.sort((a, b) => b.start.compareTo(a.start));
     return history.map((timePeriod) {
       return ListTile(
-        title: Text(formattedDate(dateTime: timePeriod.start)),
-        subtitle: DateFromAndToWidget(
+        title: Text(timePeriod.start.formattedDate()),
+        subtitle: TimeFromAndToWidget(
           start: timePeriod.start,
           end: timePeriod.end,
         ),
@@ -60,11 +61,11 @@ class ActivityHistoryScreen extends StatelessWidget {
   }
 }
 
-class DateFromAndToWidget extends StatelessWidget {
+class TimeFromAndToWidget extends StatelessWidget {
   final DateTime start;
   final DateTime end;
 
-  const DateFromAndToWidget(
+  const TimeFromAndToWidget(
       {super.key, required this.start, required this.end});
 
   @override
@@ -74,7 +75,7 @@ class DateFromAndToWidget extends StatelessWidget {
 
     return Row(
       children: [
-        Text(formattedTime(dateTime: start), style: timeTextStyle),
+        Text(start.formattedTime(), style: timeTextStyle),
         const SizedBox(
           width: 5,
         ),
@@ -85,7 +86,7 @@ class DateFromAndToWidget extends StatelessWidget {
         const SizedBox(
           width: 5,
         ),
-        Text(formattedTime(dateTime: end), style: timeTextStyle)
+        Text(end.formattedTime(), style: timeTextStyle)
       ],
     );
   }

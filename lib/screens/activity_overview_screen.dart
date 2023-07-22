@@ -7,6 +7,7 @@ import 'package:tracker_app/screens/activity_history_screen.dart';
 import 'package:tracker_app/screens/activity_selection_screen.dart';
 import 'package:tracker_app/screens/activity_settings_screen.dart';
 import 'package:tracker_app/screens/activity_tracking_screen.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../shared_prefs.dart';
@@ -21,10 +22,10 @@ class ActivityOverviewScreen extends StatefulWidget {
   State<ActivityOverviewScreen> createState() => _ActivityOverviewScreenState();
 }
 
-class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
+class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   Activity? _activity;
 
-  DateTimeRange? _dateRange;
+  late DateTimeRange _dateTimeRange;
 
   void _navigateToActivityTrackingScreen(
       {required String activityId, DateTime? startDatetime}) {
@@ -57,6 +58,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
   void _navigateToActivityHistoryScreen() {
     final route = createNewRouteFadeTransition(ActivityHistoryScreen(
       activity: _activity!,
+      dateTimeRange: _dateTimeRange,
     ));
     Navigator.of(context).push(route);
   }
@@ -72,7 +74,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
         SharedPrefs().lastActivityStartDatetime;
     if (lastActivityId.isNotEmpty && lastActivityStartDatetimeInMilli > 0) {
       final lastActivityStartDatetime =
-      DateTime.fromMillisecondsSinceEpoch(lastActivityStartDatetimeInMilli);
+          DateTime.fromMillisecondsSinceEpoch(lastActivityStartDatetimeInMilli);
       _navigateToActivityTrackingScreen(
           activityId: lastActivityId, startDatetime: lastActivityStartDatetime);
     }
@@ -86,12 +88,11 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
         ? (activityHistory[0]).start
         : DateTime.now();
 
-    final selectedDateRange = _dateRange = await showDateRangePicker(
+    final selectedDateRange = await showDateRangePicker(
       context: context,
       firstDate: initialDate,
-      initialDateRange: DateTimeRange(
-          start: _dateRange?.start ?? DateTime.now(),
-          end: _dateRange?.end ?? DateTime.now()),
+      initialDateRange:
+          DateTimeRange(start: _dateTimeRange.start, end: _dateTimeRange.end),
       lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
@@ -108,9 +109,30 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
     );
     if (selectedDateRange != null) {
       setState(() {
-        _dateRange = selectedDateRange;
+        _dateTimeRange = selectedDateRange;
       });
     }
+  }
+
+  Widget _displayTimePeriod() {
+    String timePeriod = DateTime.now().formattedMonth();
+
+    final dateTimeRange = _dateTimeRange;
+
+    if (dateTimeRange.start.month != dateTimeRange.end.month) {
+      return DateFromAndToWidget(
+        start: dateTimeRange.start,
+        end: dateTimeRange.end,
+      );
+    } else {
+      timePeriod = dateTimeRange.start.formattedMonth();
+    }
+
+    return Text(
+      timePeriod,
+      style: GoogleFonts.poppins(
+          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+    );
   }
 
   @override
@@ -174,10 +196,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
                     ),
                   ),
                   const Spacer(),
-                  CTextButtonWidget(
-                    onPressed: _showDatePicker,
-                    label: "Jul",
-                  )
+                  CButtonWrapperWidget(
+                      onPressed: _showDatePicker, child: _displayTimePeriod())
                 ],
               ),
               const SizedBox(
@@ -212,6 +232,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
                   onPressed: _navigateToActivityHistoryScreen,
                   child: DurationOverviewWidget(
                     activity: _activity!,
+                    dateTimeRange: _dateTimeRange,
                   )),
               const SizedBox(
                 height: 50,
@@ -231,6 +252,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
   @override
   void initState() {
     super.initState();
+    _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
     final activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
     activityProvider.listActivities();
@@ -238,30 +260,37 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
       _restartPreviousTracking();
     });
   }
-
 }
 
 class DurationOverviewWidget extends StatelessWidget {
   final Activity activity;
+  final DateTimeRange? dateTimeRange;
 
-  const DurationOverviewWidget({super.key, required this.activity});
+  const DurationOverviewWidget(
+      {super.key, required this.activity, this.dateTimeRange});
 
   @override
   Widget build(BuildContext context) {
-    final durations = activity.durations();
+    final durations = activity.toDurations(range: dateTimeRange);
 
-    Duration minDuration =
-        durations.reduce((value, element) => value < element ? value : element);
+    Duration minDuration = const Duration();
+    Duration averageDuration = const Duration();
+    Duration maxDuration = const Duration();
 
-    // Find the maximum duration
-    Duration maxDuration =
-        durations.reduce((value, element) => value > element ? value : element);
+    if (durations.isNotEmpty) {
+      minDuration = durations
+          .reduce((value, element) => value < element ? value : element);
 
-    // Find the average duration
-    Duration totalDuration =
-        durations.reduce((value, element) => value + element);
-    Duration averageDuration = Duration(
-        milliseconds: totalDuration.inMilliseconds ~/ durations.length);
+      // Find the maximum duration
+      maxDuration = durations
+          .reduce((value, element) => value > element ? value : element);
+
+      // Find the average duration
+      Duration totalDuration =
+          durations.reduce((value, element) => value + element);
+      averageDuration = Duration(
+          milliseconds: totalDuration.inMilliseconds ~/ durations.length);
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -308,6 +337,37 @@ class DurationOverviewItem extends StatelessWidget {
           style: GoogleFonts.poppins(
               fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
         ),
+      ],
+    );
+  }
+}
+
+class DateFromAndToWidget extends StatelessWidget {
+  final DateTime start;
+  final DateTime end;
+
+  const DateFromAndToWidget(
+      {super.key, required this.start, required this.end});
+
+  @override
+  Widget build(BuildContext context) {
+    final timeTextStyle = GoogleFonts.poppins(
+        fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white);
+
+    return Row(
+      children: [
+        Text(start.formattedMonth(), style: timeTextStyle),
+        const SizedBox(
+          width: 5,
+        ),
+        const Icon(
+          Icons.arrow_circle_right_outlined,
+          size: 14,
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Text(end.formattedMonth(), style: timeTextStyle)
       ],
     );
   }
