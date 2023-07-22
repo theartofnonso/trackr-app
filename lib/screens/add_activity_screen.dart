@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activity_provider.dart';
+import '../utils/navigator_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
+import 'activity_tracking_screen.dart';
 
 class AddActivityScreen extends StatefulWidget {
   final Activity? activity;
@@ -15,7 +17,6 @@ class AddActivityScreen extends StatefulWidget {
 }
 
 class _AddActivityScreenState extends State<AddActivityScreen> {
-
   late TextEditingController _activityController;
   late ActivityProvider _activityProvider;
 
@@ -30,18 +31,29 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     Navigator.of(context).pop();
   }
 
+  void _navigateToActivityTrackingScreen({required String activityId}) {
+    final route = createNewRouteFadeTransition(
+        ActivityTrackingScreen(activityId: activityId));
+    Navigator.of(context).push(route);
+  }
+
   void _addNewActivity() {
     final activityToAdd = _activityController.text;
     if (activityToAdd.isNotEmpty) {
-      _activityProvider.addNewActivity(name: _activityController.text);
-      _navigateToActivitySelectionScreen();
+      final newActivity =
+          _activityProvider.addNewActivity(name: _activityController.text);
+      Navigator.of(context).pop();
+      _navigateToActivityTrackingScreen(activityId: newActivity.id);
     }
   }
 
   void _editNewActivity() {
     final activityToAdd = _activityController.text;
     if (activityToAdd.isNotEmpty) {
-      _activityProvider.editNewActivity(oldActivity: widget.activity!, activityLabel: _activityController.text, );
+      _activityProvider.editNewActivity(
+        oldActivity: widget.activity!,
+        activityLabel: _activityController.text,
+      );
       _navigateToActivitySelectionScreen();
     }
   }
@@ -72,19 +84,23 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
                 cursorColor: Colors.white,
                 controller: _activityController,
                 decoration: const InputDecoration(
-                  hintText: "What do you want track ?",
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.black,
-                  focusColor: Colors.green// Set
-                ),
+                    hintText: "What do you want track ?",
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.black,
+                    focusColor: Colors.green // Set
+                    ),
               ),
               const Spacer(),
               CTextButtonWidget(
-                onPressed: widget.activity == null ? _addNewActivity : _editNewActivity,
-                label: widget.activity == null ? "Start tracking" : "Update activity",
+                onPressed: widget.activity == null
+                    ? _addNewActivity
+                    : _editNewActivity,
+                label: widget.activity == null
+                    ? "Start tracking"
+                    : "Update activity",
               )
             ],
           ),

@@ -119,7 +119,6 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen>{
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
         child: Consumer<ActivityProvider>(builder: (_, activityProvider, __) {
-          //Activity? activity;
           try {
             _activity = activityProvider.activities
                 .firstWhere((activity) => activity.id == _activity!.id);

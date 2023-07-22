@@ -150,7 +150,7 @@ class ActivityProvider extends ChangeNotifier {
     ];
   }
 
-  void addNewActivity({required String name}) {
+  Activity addNewActivity({required String name}) {
     final activityToAdd = Activity(
         id: "id_${DateTime.now().millisecond}",
         label: name,
@@ -173,8 +173,9 @@ class ActivityProvider extends ChangeNotifier {
               activityId: name)
         ],
         notes: "A note");
-    _activities.insert(0, activityToAdd);
+    _activities.add(activityToAdd);
     notifyListeners();
+    return activityToAdd;
   }
 
   void editNewActivity({required Activity oldActivity, required String activityLabel}) {
