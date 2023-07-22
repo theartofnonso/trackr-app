@@ -347,15 +347,15 @@ class DurationOverviewWidget extends StatelessWidget {
       children: [
         DurationOverviewItem(
           hours: minDuration.inHours,
-          label: "Low hours",
+          label: "Low",
         ),
         DurationOverviewItem(
           hours: averageDuration.inHours,
-          label: "Avg hours",
+          label: "Avg",
         ),
         DurationOverviewItem(
           hours: maxDuration.inHours,
-          label: "High hours",
+          label: "High",
         )
       ],
     );
@@ -374,11 +374,12 @@ class DurationOverviewItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          hours.toString(),
-          style: GoogleFonts.poppins(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        RichText(text: TextSpan(style: GoogleFonts.poppins(
+            fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white), children: [
+          TextSpan(text: "$hours"),
+          TextSpan(text: "hrs", style: GoogleFonts.poppins(
+              fontSize: 16, fontWeight: FontWeight.w600))
+        ])),
         const SizedBox(
           height: 5,
         ),
