@@ -264,14 +264,17 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
 class DurationOverviewWidget extends StatelessWidget {
   final Activity activity;
-  final DateTimeRange? dateTimeRange;
+  final DateTimeRange dateTimeRange;
 
   const DurationOverviewWidget(
-      {super.key, required this.activity, this.dateTimeRange});
+      {super.key, required this.activity, required this.dateTimeRange});
 
   @override
   Widget build(BuildContext context) {
-    final durations = activity.toDurations(range: dateTimeRange);
+    final durations = activity
+        .historyWhere(range: dateTimeRange)
+        .map((timePeriod) => timePeriod.end.difference(timePeriod.start))
+        .toList();
 
     Duration minDuration = const Duration();
     Duration averageDuration = const Duration();

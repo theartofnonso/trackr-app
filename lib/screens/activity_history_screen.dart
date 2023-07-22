@@ -8,8 +8,9 @@ import '../widgets/buttons/button_wrapper_widget.dart';
 class ActivityHistoryScreen extends StatelessWidget {
   final Activity activity;
   final DateTimeRange dateTimeRange;
-  
-  const ActivityHistoryScreen({super.key, required this.activity, required this.dateTimeRange});
+
+  const ActivityHistoryScreen(
+      {super.key, required this.activity, required this.dateTimeRange});
 
   void _navigateToActivityOverviewScreen({required BuildContext context}) {
     Navigator.of(context).pop();
@@ -25,7 +26,11 @@ class ActivityHistoryScreen extends StatelessWidget {
           start: timePeriod.start,
           end: timePeriod.end,
         ),
-        trailing: Text("${timePeriod.duration().inHours} hours", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),),
+        trailing: Text(
+          "${timePeriod.duration().inHours} hours",
+          style: GoogleFonts.poppins(
+              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+        ),
       );
     }).toList();
   }
@@ -70,8 +75,8 @@ class TimeFromAndToWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final timeTextStyle = GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey);
+    final timeTextStyle = GoogleFonts.poppins(
+        fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey);
 
     return Row(
       children: [
