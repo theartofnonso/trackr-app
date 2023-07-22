@@ -68,18 +68,18 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Spacer(),
-              Text(activity.label,
+              Text(_elapsedDuration,
                   style: GoogleFonts.poppins(
                       fontSize: 32,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white)),
               const SizedBox(
                 height: 3,
               ),
-              Text(_elapsedDuration,
+              Text(activity.label,
                   style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white)),
               const Spacer(),
               GradientButton(

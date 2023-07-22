@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 extension DurationExtension on Duration {
-  int _absoluteDuration(duration) {
-    return duration > 59 ? (duration % 60) : duration;
+  String _absoluteDuration(duration) {
+    final durationInNum = duration > 59 ? (duration % 60) : duration;
+    return durationInNum.toString().padLeft(2, "0");
   }
 
   String friendlyTime() {
-    return "$inHours hrs  ${_absoluteDuration(inMinutes)} mins  ${_absoluteDuration(inSeconds)} secs";
+    return "${inHours.toString().padLeft(2, "0")} : ${_absoluteDuration(inMinutes)} : ${_absoluteDuration(inSeconds)}";
   }
 }
 
