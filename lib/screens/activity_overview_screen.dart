@@ -25,7 +25,8 @@ class ActivityOverviewScreen extends StatefulWidget {
 class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   Activity? _activity;
 
-  late DateTimeRange _dateTimeRange;
+  DateTimeRange _dateTimeRange =
+      DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
   void _navigateToActivityTrackingScreen(
       {required String activityId, DateTime? startDatetime}) {
@@ -150,7 +151,9 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                 : null;
           }
 
-          if (_activity == null) {
+          final activity = _activity;
+
+          if (activity == null) {
             return Center(
               child: CTextButtonWidget(
                 onPressed: _navigateToAddNewActivityScreen,
@@ -158,6 +161,10 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               ),
             );
           }
+
+          final initialDate = activity.history[0].start;
+          _dateTimeRange =
+              DateTimeRange(start: initialDate, end: DateTime.now());
 
           return Column(
             children: [
@@ -192,7 +199,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                     child: const Icon(
                       Icons.settings,
                       color: Colors.white,
-                      size: 18,
+                      size: 20,
                     ),
                   ),
                   const Spacer(),
@@ -230,10 +237,10 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   void initState() {
     super.initState();
-    _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
     final activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
     activityProvider.listActivities();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _restartPreviousTracking();
     });
@@ -249,17 +256,26 @@ class DurationGraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final durationsInHours = activity
+    final durationsInMilliseconds = activity
         .historyWhere(range: dateTimeRange.endInclusive())
-        .map(
-            (timePeriod) => timePeriod.end.difference(timePeriod.start).inHours)
+        .map((timePeriod) =>
+            timePeriod.end.difference(timePeriod.start).inMilliseconds)
         .toList();
 
-    print(durationsInHours.length);
-
     return SfSparkLineChart(
+      marker: const SparkChartMarker(
+          displayMode: SparkChartMarkerDisplayMode.all,
+          color: Colors.black,
+          borderWidth: 2,
+          shape: SparkChartMarkerShape.circle),
       color: Colors.white,
-      data: durationsInHours.length > 1 ? durationsInHours : <int>[1, 1,],
+      width: 5,
+      data: durationsInMilliseconds.length > 1
+          ? durationsInMilliseconds
+          : <int>[
+              1,
+              1,
+            ],
     );
   }
 }
