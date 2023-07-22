@@ -203,30 +203,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               const SizedBox(
                 height: 60,
               ),
-              SizedBox(
-                child: SfSparkLineChart(
-                  color: Colors.white,
-                  data: const <double>[
-                    1,
-                    5,
-                    -3,
-                    0,
-                    0,
-                    0,
-                    0,
-                    5,
-                    5,
-                    5,
-                    3,
-                    3,
-                    -3,
-                    0,
-                    0,
-                    5,
-                    3
-                  ],
-                ),
-              ),
+              DurationGraphWidget(
+                  activity: _activity!, dateTimeRange: _dateTimeRange),
               const Spacer(),
               CButtonWrapperWidget(
                   onPressed: _navigateToActivityHistoryScreen,
@@ -262,6 +240,30 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 }
 
+class DurationGraphWidget extends StatelessWidget {
+  final Activity activity;
+  final DateTimeRange dateTimeRange;
+
+  const DurationGraphWidget(
+      {super.key, required this.activity, required this.dateTimeRange});
+
+  @override
+  Widget build(BuildContext context) {
+    final durationsInHours = activity
+        .historyWhere(range: dateTimeRange.endInclusive())
+        .map(
+            (timePeriod) => timePeriod.end.difference(timePeriod.start).inHours)
+        .toList();
+
+    print(durationsInHours.length);
+
+    return SfSparkLineChart(
+      color: Colors.white,
+      data: durationsInHours.length > 1 ? durationsInHours : <int>[1, 1,],
+    );
+  }
+}
+
 class DurationOverviewWidget extends StatelessWidget {
   final Activity activity;
   final DateTimeRange dateTimeRange;
@@ -272,7 +274,7 @@ class DurationOverviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final durations = activity
-        .historyWhere(range: dateTimeRange)
+        .historyWhere(range: dateTimeRange.endInclusive())
         .map((timePeriod) => timePeriod.end.difference(timePeriod.start))
         .toList();
 

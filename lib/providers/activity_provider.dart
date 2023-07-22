@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 extension ActivityExtension on Activity {
-
+  
   List<ActivityDuration> historyWhere({required DateTimeRange range}) {
     return history.where((timePeriod) => timePeriod.start.isBetweenRange(range: range)).toList();
   }
