@@ -72,7 +72,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
             ),
             GradientButton(
               onPressed: _navigateToAddNewActivityScreen,
-              label: "Add new activity",
+              label: "Track new activity",
             )
           ],
         ),

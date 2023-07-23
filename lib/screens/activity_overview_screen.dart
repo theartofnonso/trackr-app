@@ -12,7 +12,6 @@ import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../shared_prefs.dart';
 import '../utils/navigator_utils.dart';
-import '../widgets/buttons/elevated_button_widget.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import 'add_activity_screen.dart';
 
@@ -30,10 +29,18 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
       DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
   void _navigateToActivityTrackingScreen(
-      {required String activityId, DateTime? startDatetime}) {
-    final route = createNewRouteFadeTransition(ActivityTrackingScreen(
-        activityId: activityId, lastActivityStartDatetime: startDatetime));
-    Navigator.of(context).push(route);
+      {required String activityId,
+      required String activityLabel,
+      DateTime? startDatetime}) {
+    showDialog(
+        context: context,
+        builder: ((context) {
+          return ActivityTrackingScreen(
+            activityId: activityId,
+            lastActivityStartDatetime: startDatetime,
+            activityLabel: activityLabel,
+          );
+        }));
   }
 
   void _navigateToActivitySelectionScreen() async {
@@ -71,14 +78,19 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 
   void _restartPreviousTracking() {
+    final lastActivity = SharedPrefs().lastActivity;
     final lastActivityId = SharedPrefs().lastActivityId;
     final lastActivityStartDatetimeInMilli =
         SharedPrefs().lastActivityStartDatetime;
-    if (lastActivityId.isNotEmpty && lastActivityStartDatetimeInMilli > 0) {
+    if (lastActivity.isNotEmpty &&
+        lastActivityId.isNotEmpty &&
+        lastActivityStartDatetimeInMilli > 0) {
       final lastActivityStartDatetime =
           DateTime.fromMillisecondsSinceEpoch(lastActivityStartDatetimeInMilli);
       _navigateToActivityTrackingScreen(
-          activityId: lastActivityId, startDatetime: lastActivityStartDatetime);
+          activityId: lastActivityId,
+          startDatetime: lastActivityStartDatetime,
+          activityLabel: lastActivity);
     }
   }
 
@@ -185,7 +197,10 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  GradientButton(label: 'Track your first Activity', onPressed: _navigateToAddNewActivityScreen,)
+                  GradientButton(
+                    label: 'Track your first Activity',
+                    onPressed: _navigateToAddNewActivityScreen,
+                  )
                 ],
               ),
             );
@@ -253,7 +268,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               ),
               GradientButton(
                 onPressed: () => _navigateToActivityTrackingScreen(
-                    activityId: _activity!.id),
+                    activityId: _activity!.id, activityLabel: _activity!.label),
                 label: "Start tracking",
               )
             ],
@@ -285,13 +300,21 @@ class DurationGraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final durationsInMilliseconds = activity
+    final durationsInMilliInSeconds = activity
         .historyWhere(range: dateTimeRange.endInclusive())
         .map((timePeriod) =>
-            timePeriod.end.difference(timePeriod.start).inMilliseconds)
+            timePeriod.end.difference(timePeriod.start).inHours)
         .toList();
 
+    final totalDurationInMilliInSeconds = durationsInMilliInSeconds.reduce((value, element) => value + element);
+    final averageDurationInMilliInSeconds = totalDurationInMilliInSeconds / durationsInMilliInSeconds.length;
+
     return SfSparkLineChart(
+      axisLineDashArray: const [8, 8],
+      axisLineWidth: 3,
+      axisLineColor: Colors.grey.withOpacity(0.5),
+      axisCrossesAt: averageDurationInMilliInSeconds,
+      labelDisplayMode: SparkChartLabelDisplayMode.all,
       marker: const SparkChartMarker(
           displayMode: SparkChartMarkerDisplayMode.all,
           color: Colors.black,
@@ -299,8 +322,8 @@ class DurationGraphWidget extends StatelessWidget {
           shape: SparkChartMarkerShape.circle),
       color: Colors.white,
       width: 5,
-      data: durationsInMilliseconds.length > 1
-          ? durationsInMilliseconds
+      data: durationsInMilliInSeconds.length > 1
+          ? durationsInMilliInSeconds
           : <int>[
               1,
               1,
@@ -374,12 +397,20 @@ class DurationOverviewItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RichText(text: TextSpan(style: GoogleFonts.poppins(
-            fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white), children: [
-          TextSpan(text: "$hours"),
-          TextSpan(text: "hrs", style: GoogleFonts.poppins(
-              fontSize: 16, fontWeight: FontWeight.w600))
-        ])),
+        RichText(
+            text: TextSpan(
+                style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+                children: [
+              TextSpan(text: "$hours"),
+              const TextSpan(text: " "),
+              TextSpan(
+                  text: "hrs",
+                  style: GoogleFonts.poppins(
+                      fontSize: 16, fontWeight: FontWeight.w600))
+            ])),
         const SizedBox(
           height: 5,
         ),

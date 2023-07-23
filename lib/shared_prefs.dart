@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String lastActivityStartDatetimeKey = "last_activity_start_datetime_key";
 const String lastActivityIdKey = "last_activity_id_key";
+const String lastActivityKey = "last_activity_key";
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;
@@ -16,6 +17,16 @@ class SharedPrefs {
 
   void clear() {
     _sharedPrefs?.clear();
+  }
+
+  String get lastActivity => _sharedPrefs?.getString(lastActivityKey) ?? "";
+
+  set lastActivity(String value) {
+    _sharedPrefs?.setString(lastActivityKey, value);
+  }
+
+  void removeLastActivity() {
+    _sharedPrefs?.remove(lastActivityKey);
   }
 
   String get lastActivityId => _sharedPrefs?.getString(lastActivityIdKey) ?? "";

@@ -4,9 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/activity_provider.dart';
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
-import '../widgets/buttons/elevated_button_widget.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
-import '../widgets/buttons/text_button_widget.dart';
 import 'activity_tracking_screen.dart';
 
 class AddActivityScreen extends StatefulWidget {
@@ -33,10 +31,10 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     Navigator.of(context).pop();
   }
 
-  void _navigateToActivityTrackingScreen({required String activityId}) {
-    final route = createNewRouteFadeTransition(
-        ActivityTrackingScreen(activityId: activityId));
-    Navigator.of(context).push(route);
+  void _showActivityTrackingScreen({required String activityId}) {
+    showDialog(context: context, builder: ((context) {
+      return ActivityTrackingScreen(activityId: activityId, activityLabel: _activityController.text,);
+    }));
   }
 
   void _addNewActivity() {
@@ -45,7 +43,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
       final newActivity =
           _activityProvider.addNewActivity(name: _activityController.text);
       Navigator.of(context).pop();
-      _navigateToActivityTrackingScreen(activityId: newActivity.id);
+      _showActivityTrackingScreen(activityId: newActivity.id);
     }
   }
 
@@ -85,6 +83,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
               TextField(
                 cursorColor: Colors.white,
                 controller: _activityController,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                     hintText: "What do you want track ?",
                     contentPadding:

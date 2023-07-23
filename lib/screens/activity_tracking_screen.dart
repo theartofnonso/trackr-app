@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,16 +8,15 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../providers/activity_provider.dart';
-import '../widgets/buttons/elevated_button_widget.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
-import '../widgets/buttons/text_button_widget.dart';
 
 class ActivityTrackingScreen extends StatefulWidget {
+  final String activityLabel;
   final String activityId;
   final DateTime? lastActivityStartDatetime;
 
   const ActivityTrackingScreen(
-      {super.key, required this.activityId, this.lastActivityStartDatetime});
+      {super.key, required this.activityId, this.lastActivityStartDatetime, required this.activityLabel});
 
   @override
   State<ActivityTrackingScreen> createState() => _ActivityTrackingScreenState();
@@ -25,17 +25,19 @@ class ActivityTrackingScreen extends StatefulWidget {
 class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
   late Timer _timer;
 
-  String _elapsedDuration = "";
+  String _elapsedDuration = ". . .";
 
   late DateTime _startDatetime;
 
   void _navigateToActivityOverviewScreen() {
+    SharedPrefs().removeLastActivity();
     SharedPrefs().removeLastActivityId();
     SharedPrefs().removeLastActivityStartDatetime();
     Navigator.of(context).pop();
   }
 
   void _cacheActivityTracking() {
+    SharedPrefs().lastActivity = widget.activityLabel;
     SharedPrefs().lastActivityId = widget.activityId;
     SharedPrefs().lastActivityStartDatetime =
         _startDatetime.millisecondsSinceEpoch;
@@ -56,9 +58,10 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final activity = Provider.of<ActivityProvider>(context)
-        .activities
-        .firstWhere((activity) => activity.id == widget.activityId);
+
+    Activity? activity = Provider.of<ActivityProvider>(context)
+          .activities
+          .firstWhereOrNull((activity) => activity.id == widget.activityId);
 
     return Scaffold(
       body: Padding(
@@ -76,7 +79,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
               const SizedBox(
                 height: 3,
               ),
-              Text(activity.label,
+              Text(activity?.label ?? widget.activityLabel,
                   style: GoogleFonts.poppins(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

@@ -64,6 +64,14 @@ class ActivityProvider extends ChangeNotifier {
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
               end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
+              activityId: name),
+          ActivityDuration(
+              start: DateTime.now().subtract(const Duration(days: 1, hours: 10)),
+              end: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
+              activityId: name),
+          ActivityDuration(
+              start: DateTime.now().subtract(const Duration(days: 1, hours: 8)),
+              end: DateTime.now().subtract(const Duration(days: 1, hours: 6)),
               activityId: name)
         ],
         notes: "A note");
