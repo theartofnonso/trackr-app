@@ -44,8 +44,11 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 
   void _navigateToActivitySelectionScreen() async {
-    final route = createNewRouteFadeTransition(const ActivitySelectionScreen());
-    final selectedActivity = await Navigator.of(context).push(route);
+    final selectedActivity = await showDialog(
+        context: context,
+        builder: ((context) {
+          return const ActivitySelectionScreen();
+        }));
     if (selectedActivity != null) {
       setState(() {
         _activity = selectedActivity;
@@ -54,9 +57,11 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 
   void _navigateToActivitySettingsScreen() async {
-    final route = createNewRouteFadeTransition(
-        ActivitySettingsScreen(activity: _activity!));
-    final selectedActivity = await Navigator.of(context).push(route);
+    final selectedActivity = await showDialog(
+        context: context,
+        builder: ((context) {
+          return ActivitySettingsScreen(activity: _activity!);
+        }));
     if (selectedActivity != null) {
       setState(() {
         _activity = selectedActivity;
@@ -72,9 +77,17 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
     Navigator.of(context).push(route);
   }
 
-  void _navigateToAddNewActivityScreen() {
-    final route = createNewRouteFadeTransition(const AddActivityScreen());
-    Navigator.of(context).push(route);
+  void _navigateToAddNewActivityScreen() async {
+    final newActivity = await showDialog(
+        context: context,
+        builder: ((context) {
+          return const AddActivityScreen();
+        }));
+    if (newActivity != null) {
+      setState(() {
+        _activity = newActivity;
+      });
+    }
   }
 
   void _restartPreviousTracking() {
@@ -302,12 +315,14 @@ class DurationGraphWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final durationsInMilliInSeconds = activity
         .historyWhere(range: dateTimeRange.endInclusive())
-        .map((timePeriod) =>
-            timePeriod.end.difference(timePeriod.start).inHours)
+        .map(
+            (timePeriod) => timePeriod.end.difference(timePeriod.start).inHours)
         .toList();
 
-    final totalDurationInMilliInSeconds = durationsInMilliInSeconds.reduce((value, element) => value + element);
-    final averageDurationInMilliInSeconds = totalDurationInMilliInSeconds / durationsInMilliInSeconds.length;
+    final totalDurationInMilliInSeconds =
+        durationsInMilliInSeconds.reduce((value, element) => value + element);
+    final averageDurationInMilliInSeconds =
+        totalDurationInMilliInSeconds / durationsInMilliInSeconds.length;
 
     return SfSparkLineChart(
       axisLineDashArray: const [8, 8],
@@ -331,6 +346,8 @@ class DurationGraphWidget extends StatelessWidget {
     );
   }
 }
+
+enum DurationOverviewType { low, average, high }
 
 class DurationOverviewWidget extends StatelessWidget {
   final Activity activity;
@@ -371,14 +388,13 @@ class DurationOverviewWidget extends StatelessWidget {
         DurationOverviewItem(
           hours: minDuration.inHours,
           label: "Low",
+          child: const Icon(Icons.arrow_drop_down),
         ),
-        DurationOverviewItem(
-          hours: averageDuration.inHours,
-          label: "Avg",
-        ),
+        DurationOverviewItem(hours: averageDuration.inHours, label: "Avg"),
         DurationOverviewItem(
           hours: maxDuration.inHours,
           label: "High",
+          child: const Icon(Icons.arrow_drop_up),
         )
       ],
     );
@@ -388,9 +404,10 @@ class DurationOverviewWidget extends StatelessWidget {
 class DurationOverviewItem extends StatelessWidget {
   final int hours;
   final String label;
+  final Widget? child;
 
   const DurationOverviewItem(
-      {super.key, required this.hours, required this.label});
+      {super.key, required this.hours, required this.label, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -414,10 +431,17 @@ class DurationOverviewItem extends StatelessWidget {
         const SizedBox(
           height: 5,
         ),
-        Text(
-          label.toString(),
-          style: GoogleFonts.poppins(
-              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
+        Row(
+          children: [
+            child ?? const SizedBox.shrink(),
+            Text(
+              label.toString(),
+              style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey),
+            )
+          ],
         ),
       ],
     );

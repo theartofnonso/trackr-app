@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activity_provider.dart';
-import '../utils/navigator_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import 'activity_tracking_screen.dart';
@@ -20,6 +19,8 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
   late TextEditingController _activityController;
   late ActivityProvider _activityProvider;
 
+  Activity? _newActivity;
+
   @override
   void initState() {
     super.initState();
@@ -27,14 +28,22 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
   }
 
-  void _navigateToActivitySelectionScreen() {
-    Navigator.of(context).pop();
+  void _goBack() {
+    Navigator.of(context).pop(_newActivity);
   }
 
-  void _showActivityTrackingScreen({required String activityId}) {
-    showDialog(context: context, builder: ((context) {
-      return ActivityTrackingScreen(activityId: activityId, activityLabel: _activityController.text,);
-    }));
+  void _showActivityTrackingScreen({required String activityId}) async {
+    await showDialog(
+        context: context,
+        builder: ((context) {
+          return ActivityTrackingScreen(
+            activityId: activityId,
+            activityLabel: _activityController.text,
+          );
+        }));
+    if (mounted) {
+      _goBack();
+    }
   }
 
   void _addNewActivity() {
@@ -42,8 +51,10 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     if (activityToAdd.isNotEmpty) {
       final newActivity =
           _activityProvider.addNewActivity(name: _activityController.text);
-      Navigator.of(context).pop();
       _showActivityTrackingScreen(activityId: newActivity.id);
+      setState(() {
+        _newActivity = newActivity;
+      });
     }
   }
 
@@ -54,7 +65,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
         oldActivity: widget.activity!,
         activityLabel: _activityController.text,
       );
-      _navigateToActivitySelectionScreen();
+      _goBack();
     }
   }
 
@@ -70,7 +81,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
               Row(
                 children: [
                   CButtonWrapperWidget(
-                      onPressed: _navigateToActivitySelectionScreen,
+                      onPressed: _goBack,
                       child: const Icon(
                         Icons.close,
                         color: Colors.white,

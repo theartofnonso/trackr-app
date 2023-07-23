@@ -35,6 +35,7 @@ class ActivityDuration {
 }
 
 class ActivityProvider extends ChangeNotifier {
+
   List<Activity> _activities = [];
 
   List<Activity> get activities {

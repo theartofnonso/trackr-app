@@ -29,7 +29,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
 
   late DateTime _startDatetime;
 
-  void _navigateToActivityOverviewScreen() {
+  void _goBack() {
     SharedPrefs().removeLastActivity();
     SharedPrefs().removeLastActivityId();
     SharedPrefs().removeLastActivityStartDatetime();
@@ -86,7 +86,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
                       color: Colors.white)),
               const Spacer(),
               GradientButton(
-                onPressed: _navigateToActivityOverviewScreen,
+                onPressed: _goBack,
                 label: "Stop tracking",
               )
             ],

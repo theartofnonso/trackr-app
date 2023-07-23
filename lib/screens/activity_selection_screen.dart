@@ -5,7 +5,6 @@ import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/add_activity_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
-import '../utils/navigator_utils.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
@@ -17,13 +16,20 @@ class ActivitySelectionScreen extends StatefulWidget {
 }
 
 class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
-  void _navigateToActivityOverviewScreen({Activity? activity}) {
+
+  void _goBack({Activity? activity}) {
     Navigator.of(context).pop(activity);
   }
 
-  void _navigateToAddNewActivityScreen() {
-    final route = createNewRouteFadeTransition(const AddActivityScreen());
-    Navigator.of(context).push(route);
+  void _navigateToAddNewActivityScreen() async {
+    final selectedActivity = await showDialog(
+        context: context,
+        builder: ((context) {
+          return const AddActivityScreen();
+        }));
+    if (mounted) {
+      _goBack(activity: selectedActivity);
+    }
   }
 
   List<CTextButtonWidget> _activitiesToButtons(
@@ -31,7 +37,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
     return activities
         .map((activity) => CTextButtonWidget(
               onPressed: () =>
-                  _navigateToActivityOverviewScreen(activity: activity),
+                  _goBack(activity: activity),
               label: activity.label,
               textStyle: GoogleFonts.poppins(
                   fontSize: 18,
@@ -52,7 +58,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
             Row(
               children: [
                 CButtonWrapperWidget(
-                    onPressed: _navigateToActivityOverviewScreen,
+                    onPressed: _goBack,
                     child: const Icon(
                       Icons.close,
                       color: Colors.white,
