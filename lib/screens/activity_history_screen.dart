@@ -12,7 +12,7 @@ class ActivityHistoryScreen extends StatelessWidget {
   const ActivityHistoryScreen(
       {super.key, required this.activity, required this.dateTimeRange});
 
-  void _navigateToActivityOverviewScreen({required BuildContext context}) {
+  void _goBack({required BuildContext context}) {
     Navigator.of(context).pop();
   }
 
@@ -47,7 +47,7 @@ class ActivityHistoryScreen extends StatelessWidget {
               children: [
                 CButtonWrapperWidget(
                     onPressed: () =>
-                        _navigateToActivityOverviewScreen(context: context),
+                        _goBack(context: context),
                     child: const Icon(
                       Icons.close,
                       color: Colors.white,

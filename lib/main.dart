@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         colorScheme: const ColorScheme.dark(background: Colors.black, primary: Colors.white),
         useMaterial3: true,
       ),
-      home: const ActivityOverviewScreen(),
+      home: const SafeArea(child: ActivityOverviewScreen()),
     );
   }
 }

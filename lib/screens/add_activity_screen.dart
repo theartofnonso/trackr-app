@@ -94,7 +94,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
               TextField(
                 cursorColor: Colors.white,
                 controller: _activityController,
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: const InputDecoration(
                     hintText: "What do you want track ?",
                     contentPadding:

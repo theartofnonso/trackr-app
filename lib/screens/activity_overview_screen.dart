@@ -11,7 +11,6 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../shared_prefs.dart';
-import '../utils/navigator_utils.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import 'add_activity_screen.dart';
 
@@ -70,11 +69,14 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 
   void _navigateToActivityHistoryScreen() {
-    final route = createNewRouteFadeTransition(ActivityHistoryScreen(
-      activity: _activity!,
-      dateTimeRange: _dateTimeRange,
-    ));
-    Navigator.of(context).push(route);
+    showDialog(
+        context: context,
+        builder: ((context) {
+          return ActivityHistoryScreen(
+            activity: _activity!,
+            dateTimeRange: _dateTimeRange,
+          );
+        }));
   }
 
   void _navigateToAddNewActivityScreen() async {
