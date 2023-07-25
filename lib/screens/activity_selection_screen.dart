@@ -5,6 +5,7 @@ import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/add_activity_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
+import '../models/Activity.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
 

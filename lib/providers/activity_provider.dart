@@ -1,121 +1,80 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 extension ActivityExtension on Activity {
-  
   List<ActivityDuration> historyWhere({required DateTimeRange range}) {
-    return history.where((timePeriod) => timePeriod.start.isBetweenRange(range: range)).toList();
+    final history = this.history;
+    if (history != null) {
+      return history
+          .where((timePeriod) => timePeriod.startTime
+              .getDateTimeInUtc()
+              .isBetweenRange(range: range))
+          .toList();
+    }
+    return [];
   }
 }
 
 extension ActivityDurationExtension on ActivityDuration {
   Duration duration() {
-    return end.difference(start);
+    return endTime.getDateTimeInUtc().difference(startTime.getDateTimeInUtc());
   }
 }
 
-class Activity {
-  final String id;
-  final String name;
-  final List<ActivityDuration> history;
-  final String description;
-
-  Activity({required this.id, required this.name, required this.history, required this.description});
-
-}
-class ActivityDuration {
-  final String id;
-  final String activityId;
-  final DateTime start;
-  final DateTime end;
-  final String description;
-
-  ActivityDuration(
-      {required this.activityId, required this.start, required this.end, required this.description,})
-      : id = "id_duration_$activityId";
-}
-
 class ActivityProvider extends ChangeNotifier {
-
   List<Activity> _activities = [];
 
   List<Activity> get activities {
     return [..._activities];
   }
 
-  void listActivities() {
+  void listActivities() {}
+
+  Future<Activity?> addNewActivity({required String name}) async {
+    final activity = Activity(name: name);
+    final activityToCreate = ModelMutations.create(activity);
+    final response =
+        await Amplify.API.mutate(request: activityToCreate).response;
+    final createdActivity = response.data;
+    final isCreated = createdActivity != null;
+    if (isCreated) {
+      _activities.add(createdActivity);
+      notifyListeners();
+    }
+    return createdActivity;
   }
 
-  Activity addNewActivity({required String name}) {
-    final activityToAdd = Activity(
-        id: "id_${DateTime.now().millisecond}",
-        name: name,
-        history: [
-          ActivityDuration(
-              start: DateTime.now().subtract(const Duration(days: 5, hours: 5)),
-              end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
-              activityId: name, description: ''),
-          ActivityDuration(
-              start: DateTime.now().subtract(const Duration(days: 4, hours: 4)),
-              end: DateTime.now().subtract(const Duration(days: 4, hours: 3)),
-              activityId: name, description: ''),
-          ActivityDuration(
-              start: DateTime.now().subtract(const Duration(days: 3, hours: 3)),
-              end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
-              activityId: name, description: ''),
-          ActivityDuration(
-              start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
-              end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
-              activityId: name, description: ''),
-          ActivityDuration(
-              start: DateTime.now().subtract(const Duration(days: 1, hours: 10)),
-              end: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
-              activityId: name, description: ''),
-          ActivityDuration(
-              start: DateTime.now().subtract(const Duration(days: 1, hours: 8)),
-              end: DateTime.now().subtract(const Duration(days: 1, hours: 6)),
-              activityId: name, description: "")
-        ],
-        description: "A note");
-    _activities.add(activityToAdd);
-    notifyListeners();
-    return activityToAdd;
+  Future<Activity?> editNewActivity(
+      {required Activity oldActivity, required String newActivityName}) async {
+    final activityToUpdate = oldActivity.copyWith(name: newActivityName);
+    final request = ModelMutations.update(activityToUpdate);
+    final response = await Amplify.API.mutate(request: request).response;
+    var updatedActivity = response.data;
+    final isUpdated = updatedActivity != null;
+    if (isUpdated) {
+      _activities = _activities
+          .map((activity) =>
+              activity.id == updatedActivity.id ? updatedActivity : activity)
+          .toList();
+      notifyListeners();
+    }
+    return updatedActivity;
   }
 
-  void editNewActivity({required Activity oldActivity, required String activityLabel}) {
-    final newActivity = Activity(
-        id: oldActivity.id,
-        name: activityLabel,
-        history: [
-          ActivityDuration(
-              start:
-              DateTime.now().subtract(const Duration(days: 5, hours: 5)),
-              end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
-              activityId: activityLabel, description: ''),
-          ActivityDuration(
-              start:
-              DateTime.now().subtract(const Duration(days: 4, hours: 4)),
-              end: DateTime.now().subtract(const Duration(days: 4, hours: 3)),
-              activityId: activityLabel, description: ''),
-          ActivityDuration(
-              start:
-              DateTime.now().subtract(const Duration(days: 3, hours: 3)),
-              end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
-              activityId: activityLabel, description: ''),
-          ActivityDuration(
-              start:
-              DateTime.now().subtract(const Duration(days: 2, hours: 2)),
-              end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
-              activityId: activityLabel, description: '')
-        ],
-        description: "A note");
-    final activityToUpdate = _activities.firstWhere((activity) => activity.id == oldActivity.id);
-    _activities = _activities.map((activity) => activity.id == activityToUpdate.id ? newActivity : activity).toList();
-    notifyListeners();
-  }
-
-  void removeActivity({required Activity activityToRemove}) {
-    _activities.removeWhere((activity) => activity.id == activityToRemove.id);
-    notifyListeners();
+  Future<Activity?> removeActivity({required Activity activity}) async {
+    final activityToRemove = ModelMutations.deleteById(
+        Activity.classType, ActivityModelIdentifier(id: activity.id));
+    final response =
+        await Amplify.API.mutate(request: activityToRemove).response;
+    final deletedActivity = response.data;
+    final isDeleted = deletedActivity != null;
+    if (isDeleted) {
+      _activities.removeWhere((activity) => activity.id == activityToRemove.id);
+      notifyListeners();
+    }
+    return deletedActivity;
   }
 }

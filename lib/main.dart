@@ -1,9 +1,14 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+
+import 'amplifyconfiguration.dart';
+import 'models/ModelProvider.dart';
 
 void main() async {
 
@@ -20,8 +25,29 @@ void main() async {
   ], child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _configureAmplify();
+  }
+
+  Future<void> _configureAmplify() async {
+    try {
+      await Amplify.addPlugin(
+          AmplifyAPI(modelProvider: ModelProvider.instance));
+      await Amplify.configure(amplifyconfig);
+    } on Exception catch (e) {
+      print('Could not configure Amplify: $e');
+    }
+  }
 
   // This widget is the root of your application.
   @override

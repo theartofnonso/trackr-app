@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
+import '../models/Activity.dart';
 import '../providers/activity_provider.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 

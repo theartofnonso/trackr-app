@@ -5,6 +5,7 @@ import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/screens/add_activity_screen.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
+import '../models/Activity.dart';
 import '../utils/navigator_utils.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import '../widgets/buttons/text_button_widget.dart';
@@ -30,7 +31,7 @@ class ActivitySettingsScreen extends StatelessWidget {
 
   void _removeActivity({required BuildContext context}) {
     Provider.of<ActivityProvider>(context, listen: false)
-        .removeActivity(activityToRemove: activity);
+        .removeActivity(activity: activity);
     Navigator.of(context).pop();
   }
 

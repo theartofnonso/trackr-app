@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/Activity.dart';
 import '../providers/activity_provider.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
@@ -46,15 +47,16 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     }
   }
 
-  void _addNewActivity() {
+  void _addNewActivity() async {
     final activityToAdd = _activityController.text;
     if (activityToAdd.isNotEmpty) {
-      final newActivity =
-          _activityProvider.addNewActivity(name: _activityController.text);
-      _showActivityTrackingScreen(activityId: newActivity.id);
-      setState(() {
-        _newActivity = newActivity;
-      });
+      final newActivity = await _activityProvider.addNewActivity(name: _activityController.text);
+      if(newActivity != null) {
+        _showActivityTrackingScreen(activityId: newActivity.id);
+        setState(() {
+          _newActivity = newActivity;
+        });
+      }
     }
   }
 
@@ -63,7 +65,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
     if (activityToAdd.isNotEmpty) {
       _activityProvider.editNewActivity(
         oldActivity: widget.activity!,
-        activityLabel: _activityController.text,
+        newActivityName: _activityController.text,
       );
       _goBack();
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 
+import '../models/Activity.dart';
 import '../utils/datetime_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 
@@ -18,13 +19,13 @@ class ActivityHistoryScreen extends StatelessWidget {
 
   List<ListTile> _activityDurationsToButtons({required BuildContext context}) {
     final history = activity.historyWhere(range: dateTimeRange.endInclusive());
-    history.sort((a, b) => b.start.compareTo(a.start));
+    history.sort((a, b) => b.startTime.getDateTimeInUtc().compareTo(a.startTime.getDateTimeInUtc()));
     return history.map((timePeriod) {
       return ListTile(
-        title: Text(timePeriod.start.formattedDate()),
+        title: Text(timePeriod.startTime.getDateTimeInUtc().formattedDate()),
         subtitle: TimeFromAndToWidget(
-          start: timePeriod.start,
-          end: timePeriod.end,
+          start: timePeriod.startTime.getDateTimeInUtc(),
+          end: timePeriod.endTime.getDateTimeInUtc(),
         ),
         trailing: Text(
           "${timePeriod.duration().inHours} hours",

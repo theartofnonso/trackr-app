@@ -10,6 +10,7 @@ import 'package:tracker_app/screens/activity_tracking_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
+import '../models/Activity.dart';
 import '../shared_prefs.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import 'add_activity_screen.dart';
@@ -111,35 +112,42 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
   /// Display Date picker
   Future<void> _showDatePicker() async {
-    final activityHistory = _activity!.history;
-    activityHistory.sort((a, b) => a.start.compareTo(b.start));
-    final initialDate = activityHistory.isNotEmpty
-        ? (activityHistory[0]).start
-        : DateTime.now();
+    final activity = _activity;
+    if(activity != null) {
+      final activityHistory = activity.history;
+      activityHistory?.sort((a, b) => a.startTime.getDateTimeInUtc().compareTo(b.startTime.getDateTimeInUtc()));
 
-    final selectedDateRange = await showDateRangePicker(
-      context: context,
-      firstDate: initialDate,
-      initialDateRange:
-          DateTimeRange(start: _dateTimeRange.start, end: _dateTimeRange.end),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: Colors.grey,
-              secondary: Colors.orangeAccent.shade100.withAlpha(30),
-              onSurface: Colors.white, // <-- SEE HERE
+      DateTime initialDate = DateTime.now();
+      if(activityHistory != null) {
+        if(activityHistory.isNotEmpty) {
+          initialDate = activityHistory[0].startTime.getDateTimeInUtc();
+        }
+      }
+
+      final selectedDateRange = await showDateRangePicker(
+        context: context,
+        firstDate: initialDate,
+        initialDateRange:
+        DateTimeRange(start: _dateTimeRange.start, end: _dateTimeRange.end),
+        lastDate: DateTime.now(),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.dark(
+                primary: Colors.grey,
+                secondary: Colors.orangeAccent.shade100.withAlpha(30),
+                onSurface: Colors.white, // <-- SEE HERE
+              ),
             ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (selectedDateRange != null) {
-      setState(() {
-        _dateTimeRange = selectedDateRange;
-      });
+            child: child!,
+          );
+        },
+      );
+      if (selectedDateRange != null) {
+        setState(() {
+          _dateTimeRange = selectedDateRange;
+        });
+      }
     }
   }
 
@@ -221,9 +229,9 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
             );
           }
 
-          final initialDate = activity.history[0].start;
+          final initialDate = activity.history?[0].startTime.getDateTimeInUtc();
           _dateTimeRange =
-              DateTimeRange(start: initialDate, end: DateTime.now());
+              DateTimeRange(start: initialDate ?? DateTime.now(), end: DateTime.now());
 
           return Column(
             children: [
@@ -322,7 +330,7 @@ class DurationGraphWidget extends StatelessWidget {
     final durationsInMilliInSeconds = activity
         .historyWhere(range: dateTimeRange.endInclusive())
         .map(
-            (timePeriod) => timePeriod.end.difference(timePeriod.start).inHours)
+            (timePeriod) => timePeriod.endTime.getDateTimeInUtc().difference(timePeriod.startTime.getDateTimeInUtc()).inHours)
         .toList();
 
     final totalDurationInMilliInSeconds =
@@ -366,7 +374,7 @@ class DurationOverviewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final durations = activity
         .historyWhere(range: dateTimeRange.endInclusive())
-        .map((timePeriod) => timePeriod.end.difference(timePeriod.start))
+        .map((timePeriod) => timePeriod.endTime.getDateTimeInUtc().difference(timePeriod.startTime.getDateTimeInUtc()))
         .toList();
 
     Duration minDuration = const Duration();
