@@ -9,18 +9,18 @@ import '../utils/activity_utils.dart';
 import '../utils/datetime_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 
-class ActivityHistoryScreen extends StatefulWidget {
+class ActivityDurationsScreen extends StatefulWidget {
   final Activity activity;
   final DateTimeRange dateTimeRange;
 
-  const ActivityHistoryScreen(
+  const ActivityDurationsScreen(
       {super.key, required this.activity, required this.dateTimeRange});
 
   @override
-  State<ActivityHistoryScreen> createState() => _ActivityHistoryScreenState();
+  State<ActivityDurationsScreen> createState() => _ActivityDurationsScreenState();
 }
 
-class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
+class _ActivityDurationsScreenState extends State<ActivityDurationsScreen> {
 
   late ActivityProvider _activityProvider;
   List<ActivityDuration> _activityDurations = [];
@@ -32,15 +32,16 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
   List<ListTile> _activityDurationsToButtons() {
     final activityDurations = activityDurationsWhere(range: widget.dateTimeRange.endInclusive(), activityDurations: _activityDurations);
     activityDurations.sort((a, b) => b.startTime.getDateTimeInUtc().compareTo(a.startTime.getDateTimeInUtc()));
-    return activityDurations.map((timePeriod) {
+    return activityDurations.map((activityDuration) {
+      final (durationValue: value, type: type) = activityDuration.duration().nearestDuration();
       return ListTile(
-        title: Text(timePeriod.startTime.getDateTimeInUtc().formattedDate()),
+        title: Text(activityDuration.startTime.getDateTimeInUtc().formattedDate()),
         subtitle: TimeFromAndToWidget(
-          start: timePeriod.startTime.getDateTimeInUtc(),
-          end: timePeriod.endTime.getDateTimeInUtc(),
+          start: activityDuration.startTime.getDateTimeInUtc(),
+          end: activityDuration.endTime.getDateTimeInUtc(),
         ),
         trailing: Text(
-          "${timePeriod.duration().inHours} hours",
+          "$value ${type.shortName}",
           style: GoogleFonts.poppins(
               fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
         ),

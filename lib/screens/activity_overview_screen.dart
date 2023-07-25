@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
-import 'package:tracker_app/screens/activity_history_screen.dart';
+import 'package:tracker_app/screens/activity_durations_screen.dart';
 import 'package:tracker_app/screens/activity_selection_screen.dart';
 import 'package:tracker_app/screens/activity_settings_screen.dart';
 import 'package:tracker_app/screens/activity_tracking_screen.dart';
@@ -76,7 +76,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
     showDialog(
         context: context,
         builder: ((context) {
-          return ActivityHistoryScreen(
+          return ActivityDurationsScreen(
             activity: _activity!,
             dateTimeRange: _dateTimeRange,
           );
@@ -505,7 +505,7 @@ class DurationOverviewItem extends StatelessWidget {
               TextSpan(text: "$value"),
               const TextSpan(text: " "),
               TextSpan(
-                  text: "",
+                  text: type.shortName,
                   style: GoogleFonts.poppins(
                       fontSize: 16, fontWeight: FontWeight.w600))
             ])),

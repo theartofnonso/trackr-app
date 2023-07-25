@@ -4,10 +4,10 @@ import 'package:intl/intl.dart';
 enum DurationType {
   seconds("Seconds", "Secs"), minutes("Minutes", "Mins"), hours("Hours", "Hrs");
 
-  const DurationType(this.longLabel, this.shortLabel);
+  const DurationType(this.longName, this.shortName);
 
-  final String longLabel;
-  final String shortLabel;
+  final String longName;
+  final String shortName;
 }
 
 extension DurationExtension on Duration {
@@ -34,6 +34,7 @@ extension DurationExtension on Duration {
 
     return (durationValue: duration.inSeconds.round(), type: DurationType.seconds);
   }
+
 }
 
 extension DateTimeExtension on DateTime {
