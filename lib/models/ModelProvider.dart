@@ -28,7 +28,7 @@ export 'ActivityDuration.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "0240e418cc3e643c4cf35320d71ac1cf";
+  String version = "aa7d91b580c9736db1f38c3c5cf03654";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Activity.schema, ActivityDuration.schema];
   @override

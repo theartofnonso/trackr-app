@@ -1,4 +1,4 @@
-import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -33,6 +33,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +44,12 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     try {
-      await Amplify.addPlugin(
-          AmplifyAPI(modelProvider: ModelProvider.instance));
+      //await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
+      setState(() {
+        _isLoading = false; // important to set the state!
+      });
     } on Exception catch (e) {
       print('Could not configure Amplify: $e');
     }
@@ -73,7 +79,9 @@ class _MyAppState extends State<MyApp> {
         colorScheme: const ColorScheme.dark(background: Colors.black, primary: Colors.white),
         useMaterial3: true,
       ),
-      home: const SafeArea(child: ActivityOverviewScreen()),
+      home: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : const SafeArea(child: ActivityOverviewScreen()),
     );
   }
 }

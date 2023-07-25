@@ -46,6 +46,7 @@ dependencies:
   google_fonts: ^5.1.0
   shared_preferences: ^2.2.0
   collection: ^1.17.1
+  amplify_datastore: ^1.2.0-supports-only-mobile+1
 
 dev_dependencies:
   flutter_test:

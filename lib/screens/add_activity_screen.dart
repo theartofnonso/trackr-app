@@ -39,7 +39,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
         builder: ((context) {
           return ActivityTrackingScreen(
             activityId: activityId,
-            activityLabel: _activityController.text,
+            activityName: _activityController.text,
           );
         }));
     if (mounted) {
@@ -50,13 +50,13 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
   void _addNewActivity() async {
     final activityToAdd = _activityController.text;
     if (activityToAdd.isNotEmpty) {
-      final newActivity = await _activityProvider.addNewActivity(name: _activityController.text);
-      if(newActivity != null) {
-        _showActivityTrackingScreen(activityId: newActivity.id);
-        setState(() {
-          _newActivity = newActivity;
-        });
-      }
+      final newActivity = await _activityProvider.addActivity(
+          name: _activityController.text);
+
+      _showActivityTrackingScreen(activityId: newActivity.id);
+      setState(() {
+        _newActivity = newActivity;
+      });
     }
   }
 

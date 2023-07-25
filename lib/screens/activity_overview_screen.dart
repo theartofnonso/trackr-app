@@ -11,7 +11,9 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
 import '../models/Activity.dart';
+import '../models/ActivityDuration.dart';
 import '../shared_prefs.dart';
+import '../utils/activity_utils.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 import 'add_activity_screen.dart';
 
@@ -31,16 +33,17 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   void _navigateToActivityTrackingScreen(
       {required String activityId,
       required String activityLabel,
-      DateTime? startDatetime}) {
-    showDialog(
+      DateTime? startDatetime}) async {
+    await showDialog(
         context: context,
         builder: ((context) {
           return ActivityTrackingScreen(
             activityId: activityId,
             lastActivityStartDatetime: startDatetime,
-            activityLabel: activityLabel,
+            activityName: activityLabel,
           );
         }));
+    setState(() {});
   }
 
   void _navigateToActivitySelectionScreen() async {
@@ -90,6 +93,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
       setState(() {
         _activity = newActivity;
       });
+    } else {
+      setState(() {});
     }
   }
 
@@ -113,13 +118,15 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   /// Display Date picker
   Future<void> _showDatePicker() async {
     final activity = _activity;
-    if(activity != null) {
+    if (activity != null) {
       final activityHistory = activity.history;
-      activityHistory?.sort((a, b) => a.startTime.getDateTimeInUtc().compareTo(b.startTime.getDateTimeInUtc()));
+      activityHistory?.sort((a, b) => a.startTime
+          .getDateTimeInUtc()
+          .compareTo(b.startTime.getDateTimeInUtc()));
 
       DateTime initialDate = DateTime.now();
-      if(activityHistory != null) {
-        if(activityHistory.isNotEmpty) {
+      if (activityHistory != null) {
+        if (activityHistory.isNotEmpty) {
           initialDate = activityHistory[0].startTime.getDateTimeInUtc();
         }
       }
@@ -128,7 +135,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
         context: context,
         firstDate: initialDate,
         initialDateRange:
-        DateTimeRange(start: _dateTimeRange.start, end: _dateTimeRange.end),
+            DateTimeRange(start: _dateTimeRange.start, end: _dateTimeRange.end),
         lastDate: DateTime.now(),
         builder: (BuildContext context, Widget? child) {
           return Theme(
@@ -230,8 +237,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
           }
 
           final initialDate = activity.history?[0].startTime.getDateTimeInUtc();
-          _dateTimeRange =
-              DateTimeRange(start: initialDate ?? DateTime.now(), end: DateTime.now());
+          _dateTimeRange = DateTimeRange(
+              start: initialDate ?? DateTime.now(), end: DateTime.now());
 
           return Column(
             children: [
@@ -318,7 +325,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   }
 }
 
-class DurationGraphWidget extends StatelessWidget {
+class DurationGraphWidget extends StatefulWidget {
   final Activity activity;
   final DateTimeRange dateTimeRange;
 
@@ -326,44 +333,69 @@ class DurationGraphWidget extends StatelessWidget {
       {super.key, required this.activity, required this.dateTimeRange});
 
   @override
+  State<DurationGraphWidget> createState() => _DurationGraphWidgetState();
+}
+
+class _DurationGraphWidgetState extends State<DurationGraphWidget> {
+  late ActivityProvider _activityProvider;
+  List<ActivityDuration> _activityDurations = [];
+
+  @override
   Widget build(BuildContext context) {
-    final durationsInMilliInSeconds = activity
-        .historyWhere(range: dateTimeRange.endInclusive())
-        .map(
-            (timePeriod) => timePeriod.endTime.getDateTimeInUtc().difference(timePeriod.startTime.getDateTimeInUtc()).inHours)
+    final activityDurations = activityDurationsWhere(
+        range: widget.dateTimeRange.endInclusive(),
+        activityDurations: _activityDurations);
+
+    final durationsInMilli = activityDurations
+        .map((timePeriod) => timePeriod.endTime
+            .getDateTimeInUtc()
+            .difference(timePeriod.startTime.getDateTimeInUtc())
+            .inMilliseconds)
         .toList();
 
-    final totalDurationInMilliInSeconds =
-        durationsInMilliInSeconds.reduce((value, element) => value + element);
-    final averageDurationInMilliInSeconds =
-        totalDurationInMilliInSeconds / durationsInMilliInSeconds.length;
+    double averageDurationInMilliInSeconds = 0.0;
+    if (durationsInMilli.isNotEmpty) {
+      final totalDurationInMilliInSeconds =
+          durationsInMilli.reduce((value, element) => value + element);
+      averageDurationInMilliInSeconds =
+          totalDurationInMilliInSeconds / durationsInMilli.length;
+    }
 
     return SfSparkLineChart(
       axisLineDashArray: const [8, 8],
       axisLineWidth: 3,
       axisLineColor: Colors.grey.withOpacity(0.5),
       axisCrossesAt: averageDurationInMilliInSeconds,
-      labelDisplayMode: SparkChartLabelDisplayMode.all,
-      marker: const SparkChartMarker(
-          displayMode: SparkChartMarkerDisplayMode.all,
-          color: Colors.black,
-          borderWidth: 2,
-          shape: SparkChartMarkerShape.circle),
       color: Colors.white,
       width: 5,
-      data: durationsInMilliInSeconds.length > 1
-          ? durationsInMilliInSeconds
+      data: durationsInMilli.length > 1
+          ? durationsInMilli
           : <int>[
               1,
               1,
             ],
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _activityProvider
+          .listActivityDurationsWhere(activityId: widget.activity.id)
+          .then((activityDurations) {
+        setState(() {
+          _activityDurations = activityDurations;
+        });
+      });
+    });
+  }
 }
 
 enum DurationOverviewType { low, average, high }
 
-class DurationOverviewWidget extends StatelessWidget {
+class DurationOverviewWidget extends StatefulWidget {
   final Activity activity;
   final DateTimeRange dateTimeRange;
 
@@ -371,10 +403,26 @@ class DurationOverviewWidget extends StatelessWidget {
       {super.key, required this.activity, required this.dateTimeRange});
 
   @override
+  State<DurationOverviewWidget> createState() => _DurationOverviewWidgetState();
+}
+
+class _DurationOverviewWidgetState extends State<DurationOverviewWidget> {
+
+  late ActivityProvider _activityProvider;
+  List<ActivityDuration> _activityDurations = [];
+
+  @override
   Widget build(BuildContext context) {
-    final durations = activity
-        .historyWhere(range: dateTimeRange.endInclusive())
-        .map((timePeriod) => timePeriod.endTime.getDateTimeInUtc().difference(timePeriod.startTime.getDateTimeInUtc()))
+
+    final activityDurations = activityDurationsWhere(
+        range: widget.dateTimeRange.endInclusive(),
+        activityDurations: _activityDurations);
+
+
+    final durations = activityDurations
+        .map((timePeriod) => timePeriod.endTime
+            .getDateTimeInUtc()
+            .difference(timePeriod.startTime.getDateTimeInUtc()))
         .toList();
 
     Duration minDuration = const Duration();
@@ -382,6 +430,7 @@ class DurationOverviewWidget extends StatelessWidget {
     Duration maxDuration = const Duration();
 
     if (durations.isNotEmpty) {
+
       minDuration = durations
           .reduce((value, element) => value < element ? value : element);
 
@@ -400,31 +449,49 @@ class DurationOverviewWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         DurationOverviewItem(
-          hours: minDuration.inHours,
+          duration: minDuration,
           label: "Low",
           child: const Icon(Icons.arrow_drop_down),
         ),
-        DurationOverviewItem(hours: averageDuration.inHours, label: "Avg"),
+        DurationOverviewItem(duration: averageDuration, label: "Avg"),
         DurationOverviewItem(
-          hours: maxDuration.inHours,
+          duration: maxDuration,
           label: "High",
           child: const Icon(Icons.arrow_drop_up),
         )
       ],
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _activityProvider
+          .listActivityDurationsWhere(activityId: widget.activity.id)
+          .then((activityDurations) {
+        setState(() {
+          _activityDurations = activityDurations;
+        });
+      });
+    });
+  }
 }
 
 class DurationOverviewItem extends StatelessWidget {
-  final int hours;
+  final Duration duration;
   final String label;
   final Widget? child;
 
   const DurationOverviewItem(
-      {super.key, required this.hours, required this.label, this.child});
+      {super.key, required this.duration, required this.label, this.child});
 
   @override
   Widget build(BuildContext context) {
+
+    final (durationValue: value, type: type) = duration.nearestDuration();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -435,10 +502,10 @@ class DurationOverviewItem extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
                 children: [
-              TextSpan(text: "$hours"),
+              TextSpan(text: "$value"),
               const TextSpan(text: " "),
               TextSpan(
-                  text: "hrs",
+                  text: "",
                   style: GoogleFonts.poppins(
                       fontSize: 16, fontWeight: FontWeight.w600))
             ])),

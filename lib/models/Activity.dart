@@ -78,14 +78,12 @@ class Activity extends amplify_core.Model {
   
   const Activity._internal({required this.id, required name, description, history, createdAt, updatedAt}): _name = name, _description = description, _history = history, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Activity({String? id, required String name, String? description, List<ActivityDuration>? history, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory Activity({String? id, required String name, String? description, List<ActivityDuration>? history}) {
     return Activity._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       description: description,
-      history: history != null ? List<ActivityDuration>.unmodifiable(history) : history,
-      createdAt: createdAt,
-      updatedAt: updatedAt);
+      history: history != null ? List<ActivityDuration>.unmodifiable(history) : history);
   }
   
   bool equals(Object other) {
@@ -99,9 +97,7 @@ class Activity extends amplify_core.Model {
       id == other.id &&
       _name == other._name &&
       _description == other._description &&
-      DeepCollectionEquality().equals(_history, other._history) &&
-      _createdAt == other._createdAt &&
-      _updatedAt == other._updatedAt;
+      DeepCollectionEquality().equals(_history, other._history);
   }
   
   @override
@@ -122,30 +118,24 @@ class Activity extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Activity copyWith({String? name, String? description, List<ActivityDuration>? history, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  Activity copyWith({String? name, String? description, List<ActivityDuration>? history}) {
     return Activity._internal(
       id: id,
       name: name ?? this.name,
       description: description ?? this.description,
-      history: history ?? this.history,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt);
+      history: history ?? this.history);
   }
   
   Activity copyWithModelFieldValues({
     ModelFieldValue<String>? name,
     ModelFieldValue<String?>? description,
-    ModelFieldValue<List<ActivityDuration>?>? history,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
+    ModelFieldValue<List<ActivityDuration>?>? history
   }) {
     return Activity._internal(
       id: id,
       name: name == null ? this.name : name.value,
       description: description == null ? this.description : description.value,
-      history: history == null ? this.history : history.value,
-      createdAt: createdAt == null ? this.createdAt : createdAt.value,
-      updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
+      history: history == null ? this.history : history.value
     );
   }
   
@@ -182,8 +172,6 @@ class Activity extends amplify_core.Model {
   static final HISTORY = amplify_core.QueryField(
     fieldName: "history",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'ActivityDuration'));
-  static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
-  static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Activity";
     modelSchemaDefinition.pluralName = "Activities";
@@ -206,18 +194,20 @@ class Activity extends amplify_core.Model {
       key: Activity.HISTORY,
       isRequired: false,
       ofModelName: 'ActivityDuration',
-      associatedKey: ActivityDuration.ACTIVITYID
+      associatedKey: ActivityDuration.ACTIVITY
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Activity.CREATEDAT,
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
+      fieldName: 'createdAt',
       isRequired: false,
+      isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Activity.UPDATEDAT,
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
+      fieldName: 'updatedAt',
       isRequired: false,
+      isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
   });

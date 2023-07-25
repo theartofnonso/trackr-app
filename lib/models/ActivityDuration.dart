@@ -27,11 +27,10 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 class ActivityDuration extends amplify_core.Model {
   static const classType = const _ActivityDurationModelType();
   final String id;
-  final String? _activityId;
-  final String? _name;
   final String? _description;
   final amplify_core.TemporalDateTime? _startTime;
   final amplify_core.TemporalDateTime? _endTime;
+  final Activity? _activity;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -46,32 +45,6 @@ class ActivityDuration extends amplify_core.Model {
       return ActivityDurationModelIdentifier(
         id: id
       );
-  }
-  
-  String get activityId {
-    try {
-      return _activityId!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
-  }
-  
-  String get name {
-    try {
-      return _name!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
   }
   
   String? get description {
@@ -104,6 +77,19 @@ class ActivityDuration extends amplify_core.Model {
     }
   }
   
+  Activity get activity {
+    try {
+      return _activity!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -112,18 +98,15 @@ class ActivityDuration extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const ActivityDuration._internal({required this.id, required activityId, required name, description, required startTime, required endTime, createdAt, updatedAt}): _activityId = activityId, _name = name, _description = description, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
+  const ActivityDuration._internal({required this.id, description, required startTime, required endTime, required activity, createdAt, updatedAt}): _description = description, _startTime = startTime, _endTime = endTime, _activity = activity, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory ActivityDuration({String? id, required String activityId, required String name, String? description, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory ActivityDuration({String? id, String? description, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required Activity activity}) {
     return ActivityDuration._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      activityId: activityId,
-      name: name,
       description: description,
       startTime: startTime,
       endTime: endTime,
-      createdAt: createdAt,
-      updatedAt: updatedAt);
+      activity: activity);
   }
   
   bool equals(Object other) {
@@ -135,13 +118,10 @@ class ActivityDuration extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is ActivityDuration &&
       id == other.id &&
-      _activityId == other._activityId &&
-      _name == other._name &&
       _description == other._description &&
       _startTime == other._startTime &&
       _endTime == other._endTime &&
-      _createdAt == other._createdAt &&
-      _updatedAt == other._updatedAt;
+      _activity == other._activity;
   }
   
   @override
@@ -153,11 +133,10 @@ class ActivityDuration extends amplify_core.Model {
     
     buffer.write("ActivityDuration {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("activityId=" + "$_activityId" + ", ");
-    buffer.write("name=" + "$_name" + ", ");
     buffer.write("description=" + "$_description" + ", ");
     buffer.write("startTime=" + (_startTime != null ? _startTime!.format() : "null") + ", ");
     buffer.write("endTime=" + (_endTime != null ? _endTime!.format() : "null") + ", ");
+    buffer.write("activity=" + (_activity != null ? _activity!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -165,73 +144,63 @@ class ActivityDuration extends amplify_core.Model {
     return buffer.toString();
   }
   
-  ActivityDuration copyWith({String? activityId, String? name, String? description, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  ActivityDuration copyWith({String? description, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, Activity? activity}) {
     return ActivityDuration._internal(
       id: id,
-      activityId: activityId ?? this.activityId,
-      name: name ?? this.name,
       description: description ?? this.description,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt);
+      activity: activity ?? this.activity);
   }
   
   ActivityDuration copyWithModelFieldValues({
-    ModelFieldValue<String>? activityId,
-    ModelFieldValue<String>? name,
     ModelFieldValue<String?>? description,
     ModelFieldValue<amplify_core.TemporalDateTime>? startTime,
     ModelFieldValue<amplify_core.TemporalDateTime>? endTime,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
+    ModelFieldValue<Activity>? activity
   }) {
     return ActivityDuration._internal(
       id: id,
-      activityId: activityId == null ? this.activityId : activityId.value,
-      name: name == null ? this.name : name.value,
       description: description == null ? this.description : description.value,
       startTime: startTime == null ? this.startTime : startTime.value,
       endTime: endTime == null ? this.endTime : endTime.value,
-      createdAt: createdAt == null ? this.createdAt : createdAt.value,
-      updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
+      activity: activity == null ? this.activity : activity.value
     );
   }
   
   ActivityDuration.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _activityId = json['activityId'],
-      _name = json['name'],
       _description = json['description'],
       _startTime = json['startTime'] != null ? amplify_core.TemporalDateTime.fromString(json['startTime']) : null,
       _endTime = json['endTime'] != null ? amplify_core.TemporalDateTime.fromString(json['endTime']) : null,
+      _activity = json['activity']?['serializedData'] != null
+        ? Activity.fromJson(new Map<String, dynamic>.from(json['activity']['serializedData']))
+        : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'activityId': _activityId, 'name': _name, 'description': _description, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'description': _description, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'activity': _activity?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
-    'activityId': _activityId,
-    'name': _name,
     'description': _description,
     'startTime': _startTime,
     'endTime': _endTime,
+    'activity': _activity,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
 
   static final amplify_core.QueryModelIdentifier<ActivityDurationModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<ActivityDurationModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
-  static final ACTIVITYID = amplify_core.QueryField(fieldName: "activityId");
-  static final NAME = amplify_core.QueryField(fieldName: "name");
   static final DESCRIPTION = amplify_core.QueryField(fieldName: "description");
   static final STARTTIME = amplify_core.QueryField(fieldName: "startTime");
   static final ENDTIME = amplify_core.QueryField(fieldName: "endTime");
-  static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
-  static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
+  static final ACTIVITY = amplify_core.QueryField(
+    fieldName: "activity",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Activity'));
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "ActivityDuration";
     modelSchemaDefinition.pluralName = "ActivityDurations";
@@ -241,18 +210,6 @@ class ActivityDuration extends amplify_core.Model {
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: ActivityDuration.ACTIVITYID,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: ActivityDuration.NAME,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: ActivityDuration.DESCRIPTION,
@@ -272,15 +229,24 @@ class ActivityDuration extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: ActivityDuration.CREATEDAT,
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: ActivityDuration.ACTIVITY,
+      isRequired: true,
+      targetNames: ['activityId'],
+      ofModelName: 'Activity'
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
+      fieldName: 'createdAt',
       isRequired: false,
+      isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: ActivityDuration.UPDATEDAT,
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
+      fieldName: 'updatedAt',
       isRequired: false,
+      isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
   });

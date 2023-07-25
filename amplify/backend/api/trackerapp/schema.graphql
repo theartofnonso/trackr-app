@@ -7,17 +7,13 @@ type Activity @model {
   name: String!
   description: String @default(value: "")
   history: [ActivityDuration] @hasMany(indexName: "byActivity", fields: ["id"])
-  createdAt: AWSDateTime
-  updatedAt:AWSDateTime
 }
 
 type ActivityDuration @model {
   id: ID!
   activityId: ID! @index(name: "byActivity")
-  name: String!
   description: String @default(value: "")
   startTime: AWSDateTime!
   endTime: AWSDateTime!
-  createdAt: AWSDateTime
-  updatedAt:AWSDateTime
+  activity: Activity! @belongsTo(fields: ["activityId"])
 }

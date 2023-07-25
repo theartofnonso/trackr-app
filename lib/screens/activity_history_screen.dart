@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
 
 import '../models/Activity.dart';
+import '../models/ActivityDuration.dart';
+import '../utils/activity_utils.dart';
 import '../utils/datetime_utils.dart';
 import '../widgets/buttons/button_wrapper_widget.dart';
 
-class ActivityHistoryScreen extends StatelessWidget {
+class ActivityHistoryScreen extends StatefulWidget {
   final Activity activity;
   final DateTimeRange dateTimeRange;
 
   const ActivityHistoryScreen(
       {super.key, required this.activity, required this.dateTimeRange});
 
+  @override
+  State<ActivityHistoryScreen> createState() => _ActivityHistoryScreenState();
+}
+
+class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
+
+  late ActivityProvider _activityProvider;
+  List<ActivityDuration> _activityDurations = [];
+
   void _goBack({required BuildContext context}) {
     Navigator.of(context).pop();
   }
 
-  List<ListTile> _activityDurationsToButtons({required BuildContext context}) {
-    final history = activity.historyWhere(range: dateTimeRange.endInclusive());
-    history.sort((a, b) => b.startTime.getDateTimeInUtc().compareTo(a.startTime.getDateTimeInUtc()));
-    return history.map((timePeriod) {
+  List<ListTile> _activityDurationsToButtons() {
+    final activityDurations = activityDurationsWhere(range: widget.dateTimeRange.endInclusive(), activityDurations: _activityDurations);
+    activityDurations.sort((a, b) => b.startTime.getDateTimeInUtc().compareTo(a.startTime.getDateTimeInUtc()));
+    return activityDurations.map((timePeriod) {
       return ListTile(
         title: Text(timePeriod.startTime.getDateTimeInUtc().formattedDate()),
         subtitle: TimeFromAndToWidget(
@@ -57,13 +69,26 @@ class ActivityHistoryScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                children: [..._activityDurationsToButtons(context: context)],
+                children: [..._activityDurationsToButtons()],
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _activityProvider.listActivityDurationsWhere(activityId: widget.activity.id).then((activityDurations) {
+        setState(() {
+          _activityDurations = activityDurations;
+        });
+      });
+    });
   }
 }
 

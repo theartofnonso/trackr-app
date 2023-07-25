@@ -1,28 +1,7 @@
-import 'package:amplify_api/amplify_api.dart';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
-
-extension ActivityExtension on Activity {
-  List<ActivityDuration> historyWhere({required DateTimeRange range}) {
-    final history = this.history;
-    if (history != null) {
-      return history
-          .where((timePeriod) => timePeriod.startTime
-              .getDateTimeInUtc()
-              .isBetweenRange(range: range))
-          .toList();
-    }
-    return [];
-  }
-}
-
-extension ActivityDurationExtension on ActivityDuration {
-  Duration duration() {
-    return endTime.getDateTimeInUtc().difference(startTime.getDateTimeInUtc());
-  }
-}
 
 class ActivityProvider extends ChangeNotifier {
   List<Activity> _activities = [];
@@ -31,50 +10,58 @@ class ActivityProvider extends ChangeNotifier {
     return [..._activities];
   }
 
-  void listActivities() {}
-
-  Future<Activity?> addNewActivity({required String name}) async {
-    final activity = Activity(name: name);
-    final activityToCreate = ModelMutations.create(activity);
-    final response =
-        await Amplify.API.mutate(request: activityToCreate).response;
-    final createdActivity = response.data;
-    final isCreated = createdActivity != null;
-    if (isCreated) {
-      _activities.add(createdActivity);
-      notifyListeners();
-    }
-    return createdActivity;
+  void listActivities() async {
+    _activities = await Amplify.DataStore.query(Activity.classType);
+    notifyListeners();
   }
 
-  Future<Activity?> editNewActivity(
+  Future<List<ActivityDuration>> listActivityDurationsWhere({required String activityId}) async {
+    return await Amplify.DataStore.query(
+      ActivityDuration.classType,
+      where: ActivityDuration.ACTIVITY.eq(activityId),
+    );
+  }
+
+  Future<Activity> addActivity({required String name}) async {
+    final activityToCreate = Activity(name: name);
+    await Amplify.DataStore.save(activityToCreate);
+    _activities.add(activityToCreate);
+    notifyListeners();
+    return activityToCreate;
+  }
+
+  Future<Activity> editNewActivity(
       {required Activity oldActivity, required String newActivityName}) async {
     final activityToUpdate = oldActivity.copyWith(name: newActivityName);
-    final request = ModelMutations.update(activityToUpdate);
-    final response = await Amplify.API.mutate(request: request).response;
-    var updatedActivity = response.data;
-    final isUpdated = updatedActivity != null;
-    if (isUpdated) {
-      _activities = _activities
-          .map((activity) =>
-              activity.id == updatedActivity.id ? updatedActivity : activity)
-          .toList();
-      notifyListeners();
-    }
-    return updatedActivity;
+    await Amplify.DataStore.save(activityToUpdate,
+        where: Activity.ID.eq(activityToUpdate.id));
+    _activities = _activities
+        .map((activity) =>
+            activity.id == activityToUpdate.id ? activityToUpdate : activity)
+        .toList();
+    notifyListeners();
+
+    return activityToUpdate;
   }
 
-  Future<Activity?> removeActivity({required Activity activity}) async {
-    final activityToRemove = ModelMutations.deleteById(
-        Activity.classType, ActivityModelIdentifier(id: activity.id));
-    final response =
-        await Amplify.API.mutate(request: activityToRemove).response;
-    final deletedActivity = response.data;
-    final isDeleted = deletedActivity != null;
-    if (isDeleted) {
-      _activities.removeWhere((activity) => activity.id == activityToRemove.id);
-      notifyListeners();
-    }
-    return deletedActivity;
+  Future<Activity> removeActivity({required Activity activity}) async {
+    await Amplify.DataStore.delete(activity);
+    _activities.removeWhere((activity) => activity.id == activity.id);
+    notifyListeners();
+    return activity;
+  }
+
+  Future<void> addActivityDuration(
+      {required String activityId,
+      required DateTime startTime,
+      required DateTime endTime}) async {
+
+    final activity = _activities.firstWhere((activity) => activity.id == activityId);
+
+    final activityDuration = ActivityDuration(
+        activity: activity,
+        startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
+        endTime: TemporalDateTime.fromString("${endTime.toIso8601String()}Z"));
+    await Amplify.DataStore.save(activityDuration);
   }
 }

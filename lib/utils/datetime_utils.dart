@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+enum DurationType {
+  seconds("Seconds", "Secs"), minutes("Minutes", "Mins"), hours("Hours", "Hrs");
+
+  const DurationType(this.longLabel, this.shortLabel);
+
+  final String longLabel;
+  final String shortLabel;
+}
+
 extension DurationExtension on Duration {
   String _absoluteDuration(duration) {
     final durationInNum = duration > 59 ? (duration % 60) : duration;
@@ -9,6 +18,21 @@ extension DurationExtension on Duration {
 
   String friendlyTime() {
     return "${inHours.toString().padLeft(2, "0")} : ${_absoluteDuration(inMinutes)} : ${_absoluteDuration(inSeconds)}";
+  }
+
+  ({DurationType type, int durationValue}) nearestDuration() {
+
+    final duration = this;
+
+    if(duration.inHours > 0) {
+      return (durationValue: duration.inHours, type: DurationType.hours);
+    }
+
+    if(duration.inMinutes > 0) {
+      return (durationValue: duration.inMinutes, type: DurationType.minutes);
+    }
+
+    return (durationValue: duration.inSeconds.round(), type: DurationType.seconds);
   }
 }
 

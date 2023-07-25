@@ -12,12 +12,15 @@ import '../providers/activity_provider.dart';
 import '../widgets/buttons/gradient_button_widget.dart';
 
 class ActivityTrackingScreen extends StatefulWidget {
-  final String activityLabel;
+  final String activityName;
   final String activityId;
   final DateTime? lastActivityStartDatetime;
 
   const ActivityTrackingScreen(
-      {super.key, required this.activityId, this.lastActivityStartDatetime, required this.activityLabel});
+      {super.key,
+      required this.activityId,
+      this.lastActivityStartDatetime,
+      required this.activityName});
 
   @override
   State<ActivityTrackingScreen> createState() => _ActivityTrackingScreenState();
@@ -30,6 +33,8 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
 
   late DateTime _startDatetime;
 
+  late ActivityProvider _activityProvider;
+
   void _goBack() {
     SharedPrefs().removeLastActivity();
     SharedPrefs().removeLastActivityId();
@@ -38,15 +43,28 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
   }
 
   void _cacheActivityTracking() {
-    SharedPrefs().lastActivity = widget.activityLabel;
+    SharedPrefs().lastActivity = widget.activityName;
     SharedPrefs().lastActivityId = widget.activityId;
     SharedPrefs().lastActivityStartDatetime =
         _startDatetime.millisecondsSinceEpoch;
   }
 
+  void _endTracking() {
+    _addNewActivityDuration();
+    _goBack();
+  }
+
+  void _addNewActivityDuration() async {
+    await _activityProvider.addActivityDuration(
+        activityId: widget.activityId,
+        startTime: _startDatetime,
+        endTime: DateTime.now());
+  }
+
   @override
   void initState() {
     super.initState();
+    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
     _startDatetime = widget.lastActivityStartDatetime ?? DateTime.now();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -59,10 +77,9 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Activity? activity = Provider.of<ActivityProvider>(context)
-          .activities
-          .firstWhereOrNull((activity) => activity.id == widget.activityId);
+        .activities
+        .firstWhereOrNull((activity) => activity.id == widget.activityId);
 
     return Scaffold(
       body: Padding(
@@ -83,7 +100,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
               SizedBox(
                 width: 180,
                 child: Center(
-                  child: Text(activity?.name ?? widget.activityLabel,
+                  child: Text(activity?.name ?? widget.activityName,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                           fontSize: 20,
@@ -93,7 +110,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
               ),
               const Spacer(),
               GradientButton(
-                onPressed: _goBack,
+                onPressed: _endTracking,
                 label: "Stop tracking",
               )
             ],
