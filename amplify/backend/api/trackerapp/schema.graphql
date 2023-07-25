@@ -1,0 +1,23 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Activity @model {
+  id: ID!
+  name: String!
+  description: String @default(value: "")
+  history: [ActivityDuration] @hasMany(indexName: "byActivity", fields: ["id"])
+  createdAt: AWSDateTime
+  updatedAt:AWSDateTime
+}
+
+type ActivityDuration @model {
+  id: ID!
+  activityId: ID! @index(name: "byActivity")
+  name: String!
+  description: String @default(value: "")
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  createdAt: AWSDateTime
+  updatedAt:AWSDateTime
+}

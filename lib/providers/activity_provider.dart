@@ -16,11 +16,11 @@ extension ActivityDurationExtension on ActivityDuration {
 
 class Activity {
   final String id;
-  final String label;
+  final String name;
   final List<ActivityDuration> history;
-  final String notes;
+  final String description;
 
-  Activity({required this.id, required this.label, required this.history, required this.notes});
+  Activity({required this.id, required this.name, required this.history, required this.description});
 
 }
 class ActivityDuration {
@@ -28,9 +28,10 @@ class ActivityDuration {
   final String activityId;
   final DateTime start;
   final DateTime end;
+  final String description;
 
   ActivityDuration(
-      {required this.activityId, required this.start, required this.end})
+      {required this.activityId, required this.start, required this.end, required this.description,})
       : id = "id_duration_$activityId";
 }
 
@@ -48,34 +49,34 @@ class ActivityProvider extends ChangeNotifier {
   Activity addNewActivity({required String name}) {
     final activityToAdd = Activity(
         id: "id_${DateTime.now().millisecond}",
-        label: name,
+        name: name,
         history: [
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 5, hours: 5)),
               end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
-              activityId: name),
+              activityId: name, description: ''),
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 4, hours: 4)),
               end: DateTime.now().subtract(const Duration(days: 4, hours: 3)),
-              activityId: name),
+              activityId: name, description: ''),
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 3, hours: 3)),
               end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
-              activityId: name),
+              activityId: name, description: ''),
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 2, hours: 2)),
               end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
-              activityId: name),
+              activityId: name, description: ''),
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 1, hours: 10)),
               end: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
-              activityId: name),
+              activityId: name, description: ''),
           ActivityDuration(
               start: DateTime.now().subtract(const Duration(days: 1, hours: 8)),
               end: DateTime.now().subtract(const Duration(days: 1, hours: 6)),
-              activityId: name)
+              activityId: name, description: "")
         ],
-        notes: "A note");
+        description: "A note");
     _activities.add(activityToAdd);
     notifyListeners();
     return activityToAdd;
@@ -84,30 +85,30 @@ class ActivityProvider extends ChangeNotifier {
   void editNewActivity({required Activity oldActivity, required String activityLabel}) {
     final newActivity = Activity(
         id: oldActivity.id,
-        label: activityLabel,
+        name: activityLabel,
         history: [
           ActivityDuration(
               start:
               DateTime.now().subtract(const Duration(days: 5, hours: 5)),
               end: DateTime.now().subtract(const Duration(days: 5, hours: 2)),
-              activityId: activityLabel),
+              activityId: activityLabel, description: ''),
           ActivityDuration(
               start:
               DateTime.now().subtract(const Duration(days: 4, hours: 4)),
               end: DateTime.now().subtract(const Duration(days: 4, hours: 3)),
-              activityId: activityLabel),
+              activityId: activityLabel, description: ''),
           ActivityDuration(
               start:
               DateTime.now().subtract(const Duration(days: 3, hours: 3)),
               end: DateTime.now().subtract(const Duration(days: 3, hours: 1)),
-              activityId: activityLabel),
+              activityId: activityLabel, description: ''),
           ActivityDuration(
               start:
               DateTime.now().subtract(const Duration(days: 2, hours: 2)),
               end: DateTime.now().subtract(const Duration(days: 2, hours: 1)),
-              activityId: activityLabel)
+              activityId: activityLabel, description: '')
         ],
-        notes: "A note");
+        description: "A note");
     final activityToUpdate = _activities.firstWhere((activity) => activity.id == oldActivity.id);
     _activities = _activities.map((activity) => activity.id == activityToUpdate.id ? newActivity : activity).toList();
     notifyListeners();

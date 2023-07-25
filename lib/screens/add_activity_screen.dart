@@ -24,7 +24,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
   @override
   void initState() {
     super.initState();
-    _activityController = TextEditingController(text: widget.activity?.label);
+    _activityController = TextEditingController(text: widget.activity?.name);
     _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
   }
 

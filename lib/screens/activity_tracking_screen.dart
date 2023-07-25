@@ -79,11 +79,17 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
               const SizedBox(
                 height: 3,
               ),
-              Text(activity?.label ?? widget.activityLabel,
-                  style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
+              SizedBox(
+                width: 180,
+                child: Center(
+                  child: Text(activity?.name ?? widget.activityLabel,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                ),
+              ),
               const Spacer(),
               GradientButton(
                 onPressed: _goBack,

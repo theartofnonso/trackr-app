@@ -233,12 +233,16 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                     onPressed: _navigateToActivitySelectionScreen,
                     child: Row(
                       children: [
-                        Text(
-                          _activity!.label,
-                          style: GoogleFonts.poppins(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        SizedBox(
+                          width: 150,
+                          child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            _activity!.name,
+                            style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
                         const SizedBox(
                           width: 3,
@@ -283,7 +287,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               ),
               GradientButton(
                 onPressed: () => _navigateToActivityTrackingScreen(
-                    activityId: _activity!.id, activityLabel: _activity!.label),
+                    activityId: _activity!.id, activityLabel: _activity!.name),
                 label: "Start tracking",
               )
             ],

@@ -38,7 +38,7 @@ class _ActivitySelectionScreen extends State<ActivitySelectionScreen> {
         .map((activity) => CTextButtonWidget(
               onPressed: () =>
                   _goBack(activity: activity),
-              label: activity.label,
+              label: activity.name,
               textStyle: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
