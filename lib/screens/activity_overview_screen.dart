@@ -25,6 +25,9 @@ class ActivityOverviewScreen extends StatefulWidget {
 }
 
 class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
+  late ActivityProvider _activityProvider;
+  List<ActivityDuration> _activityDurations = [];
+
   Activity? _activity;
 
   DateTimeRange _dateTimeRange =
@@ -43,7 +46,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
             activityName: activityLabel,
           );
         }));
-    setState(() {});
+    _refreshAfterTracking();
   }
 
   void _navigateToActivitySelectionScreen() async {
@@ -93,8 +96,20 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
       setState(() {
         _activity = newActivity;
       });
-    } else {
-      setState(() {});
+      _refreshAfterTracking();
+    }
+  }
+
+  void _refreshAfterTracking() {
+    final activity = _activity;
+    if (activity != null) {
+      _activityProvider
+          .listActivityDurationsWhere(activityId: activity.id)
+          .then((activityDurations) {
+        setState(() {
+          _activityDurations = activityDurations;
+        });
+      });
     }
   }
 
@@ -289,13 +304,15 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
                 height: 60,
               ),
               DurationGraphWidget(
-                  activity: _activity!, dateTimeRange: _dateTimeRange),
+                dateTimeRange: _dateTimeRange,
+                activityDurations: _activityDurations,
+              ),
               const Spacer(),
               CButtonWrapperWidget(
                   onPressed: _navigateToActivityHistoryScreen,
                   child: DurationOverviewWidget(
-                    activity: _activity!,
                     dateTimeRange: _dateTimeRange,
+                    activityDurations: _activityDurations,
                   )),
               const SizedBox(
                 height: 50,
@@ -315,9 +332,8 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   void initState() {
     super.initState();
-    final activityProvider =
-        Provider.of<ActivityProvider>(context, listen: false);
-    activityProvider.listActivities();
+    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
+    _activityProvider.listActivities();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _restartPreviousTracking();
@@ -326,25 +342,24 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 }
 
 class DurationGraphWidget extends StatefulWidget {
-  final Activity activity;
+  final List<ActivityDuration> activityDurations;
   final DateTimeRange dateTimeRange;
 
   const DurationGraphWidget(
-      {super.key, required this.activity, required this.dateTimeRange});
+      {super.key,
+      required this.dateTimeRange,
+      required this.activityDurations});
 
   @override
   State<DurationGraphWidget> createState() => _DurationGraphWidgetState();
 }
 
 class _DurationGraphWidgetState extends State<DurationGraphWidget> {
-  late ActivityProvider _activityProvider;
-  List<ActivityDuration> _activityDurations = [];
-
   @override
   Widget build(BuildContext context) {
     final activityDurations = activityDurationsWhere(
         range: widget.dateTimeRange.endInclusive(),
-        activityDurations: _activityDurations);
+        activityDurations: widget.activityDurations);
 
     final durationsInMilli = activityDurations
         .map((timePeriod) => timePeriod.endTime
@@ -376,48 +391,29 @@ class _DurationGraphWidgetState extends State<DurationGraphWidget> {
             ],
     );
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _activityProvider
-          .listActivityDurationsWhere(activityId: widget.activity.id)
-          .then((activityDurations) {
-        setState(() {
-          _activityDurations = activityDurations;
-        });
-      });
-    });
-  }
 }
 
 enum DurationOverviewType { low, average, high }
 
 class DurationOverviewWidget extends StatefulWidget {
-  final Activity activity;
+  final List<ActivityDuration> activityDurations;
   final DateTimeRange dateTimeRange;
 
   const DurationOverviewWidget(
-      {super.key, required this.activity, required this.dateTimeRange});
+      {super.key,
+      required this.dateTimeRange,
+      required this.activityDurations});
 
   @override
   State<DurationOverviewWidget> createState() => _DurationOverviewWidgetState();
 }
 
 class _DurationOverviewWidgetState extends State<DurationOverviewWidget> {
-
-  late ActivityProvider _activityProvider;
-  List<ActivityDuration> _activityDurations = [];
-
   @override
   Widget build(BuildContext context) {
-
     final activityDurations = activityDurationsWhere(
         range: widget.dateTimeRange.endInclusive(),
-        activityDurations: _activityDurations);
-
+        activityDurations: widget.activityDurations);
 
     final durations = activityDurations
         .map((timePeriod) => timePeriod.endTime
@@ -430,7 +426,6 @@ class _DurationOverviewWidgetState extends State<DurationOverviewWidget> {
     Duration maxDuration = const Duration();
 
     if (durations.isNotEmpty) {
-
       minDuration = durations
           .reduce((value, element) => value < element ? value : element);
 
@@ -462,21 +457,6 @@ class _DurationOverviewWidgetState extends State<DurationOverviewWidget> {
       ],
     );
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _activityProvider = Provider.of<ActivityProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _activityProvider
-          .listActivityDurationsWhere(activityId: widget.activity.id)
-          .then((activityDurations) {
-        setState(() {
-          _activityDurations = activityDurations;
-        });
-      });
-    });
-  }
 }
 
 class DurationOverviewItem extends StatelessWidget {
@@ -489,7 +469,6 @@ class DurationOverviewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final (durationValue: value, type: type) = duration.nearestDuration();
 
     return Column(
