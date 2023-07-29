@@ -18,7 +18,10 @@ class CalendarHeader extends StatelessWidget {
   final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
 
   List<Widget> _getHeaders() {
-    return daysOfWeek.map((day) => DateWidget(label: day)).toList();
+    return daysOfWeek.map((day) => DateWidget(label: day, style: GoogleFonts.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.white),)).toList();
   }
 
   @override
@@ -54,7 +57,10 @@ class CalendarDates extends StatelessWidget {
         date.isBefore(lastDayOfMonth);
         date = date.add(const Duration(days: 1))) {
       widgets.add(DateWidget(
-        label: date.day.toString(),
+        label: date.day.toString(), style: GoogleFonts.poppins(
+          fontSize: 20,
+          fontWeight: FontWeight.w400,
+          color: Colors.white), dateTime: date,
       ));
     }
 
@@ -104,20 +110,38 @@ class CalendarDates extends StatelessWidget {
 
 class DateWidget extends StatelessWidget {
   final String label;
+  final DateTime? dateTime;
+  final TextStyle? style;
 
-  const DateWidget({super.key, required this.label});
+  const DateWidget({super.key, required this.label, this.style, this.dateTime});
+
+  bool _isCurrentDay() {
+    bool isCurrentDay = false;
+    final date = dateTime;
+    if(date != null) {
+      final now = DateTime.now();
+      isCurrentDay = date.day == now.day && date.month == now.month && date.year == now.year;
+    }
+    return isCurrentDay;
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final isCurrentDay = _isCurrentDay();
+
+    print(isCurrentDay);
+
     return Container(
-      width: 30,
-      //color: Colors.grey,
+      width: 50,
+      color: isCurrentDay ? Colors.red : Colors.transparent,
+      padding: const EdgeInsets.all(8.0),
       child: Center(
         child: Text(label,
-            style: GoogleFonts.poppins(
+            style: style ?? GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white)),
+                color: isCurrentDay ? Colors.black : Colors.white)),
       ),
     );
   }
