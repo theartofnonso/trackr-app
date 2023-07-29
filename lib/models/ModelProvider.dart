@@ -22,15 +22,17 @@
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'Activity.dart';
 import 'ActivityDuration.dart';
+import 'DateTimeEntry.dart';
 
 export 'Activity.dart';
 export 'ActivityDuration.dart';
+export 'DateTimeEntry.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "aa7d91b580c9736db1f38c3c5cf03654";
+  String version = "efe302c19bacdf5a6757c08d3befda9e";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [Activity.schema, ActivityDuration.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [Activity.schema, ActivityDuration.schema, DateTimeEntry.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -43,6 +45,8 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
         return Activity.classType;
       case "ActivityDuration":
         return ActivityDuration.classType;
+      case "DateTimeEntry":
+        return DateTimeEntry.classType;
       default:
         throw Exception("Failed to find model in model provider for model name: " + modelName);
     }

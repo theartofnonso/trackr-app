@@ -79,6 +79,21 @@ extension DateTimeExtension on DateTime {
     return isAfter(from) && isBefore(to);
   }
 
+  bool isNow() {
+    final date = this;
+    final now = DateTime.now();
+    return date.day == now.day &&
+        date.month == now.month &&
+        date.year == now.year;
+  }
+
+  bool isSameDate({required DateTime dateTimeToCompare}) {
+    final date = this;
+    return date.day == dateTimeToCompare.day &&
+        date.month == dateTimeToCompare.month &&
+        date.year == dateTimeToCompare.year;
+  }
+
 }
 
 extension DateTimeRangeExtension on DateTimeRange {

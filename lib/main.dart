@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/activity_provider.dart';
+import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -19,8 +20,8 @@ void main() async {
   await initializeDateFormatting();
 
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider<ActivityProvider>(
-      create: (BuildContext context) => ActivityProvider(),
+    ChangeNotifierProvider<DateTimeEntryProvider>(
+      create: (BuildContext context) => DateTimeEntryProvider(),
     ),
   ], child: const MyApp()));
 }

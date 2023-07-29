@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/models/DateTimeEntry.dart';
+import 'package:tracker_app/providers/datetime_entry_provider.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 
-class Calender extends StatelessWidget {
-  const Calender({super.key});
+class Calendar extends StatelessWidget {
+  const Calendar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [CalendarHeader(), const CalendarDates()],
+    return Consumer<DateTimeEntryProvider>(
+      builder: (_, dateTimeEntryProvider, __) {
+        return Column(
+          children: [CalendarHeader(), CalendarDates(dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,)],
+        );
+      },
     );
   }
 }
@@ -18,10 +26,7 @@ class CalendarHeader extends StatelessWidget {
   final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
 
   List<Widget> _getHeaders() {
-    return daysOfWeek.map((day) => DateWidget(label: day, style: GoogleFonts.poppins(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.white),)).toList();
+    return daysOfWeek.map((day) => HeaderWidget(label: day)).toList();
   }
 
   @override
@@ -34,7 +39,10 @@ class CalendarHeader extends StatelessWidget {
 }
 
 class CalendarDates extends StatelessWidget {
-  const CalendarDates({super.key});
+
+  final List<DateTimeEntry> dateTimeEntries;
+
+  const CalendarDates({super.key, required this.dateTimeEntries});
 
   List<Widget> _datesToColumns() {
     List<Widget> widgets = [];
@@ -57,17 +65,15 @@ class CalendarDates extends StatelessWidget {
         date.isBefore(lastDayOfMonth);
         date = date.add(const Duration(days: 1))) {
       widgets.add(DateWidget(
-        label: date.day.toString(), style: GoogleFonts.poppins(
-          fontSize: 20,
-          fontWeight: FontWeight.w400,
-          color: Colors.white), dateTime: date,
+        label: date.day.toString(),
+        dateTime: date,
       ));
     }
 
     // Add padding to end of month
     final succeedingDays = 35 - lastDayOfMonth.day;
     final emptyWidgets =
-        List.filled(succeedingDays, const DateWidget(label: ""));
+        List.filled(succeedingDays, const DateWidget(label: "", dateTime: null,));
     widgets.addAll(emptyWidgets);
 
     return widgets;
@@ -88,7 +94,7 @@ class CalendarDates extends StatelessWidget {
       }
 
       widgets.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [...dates.sublist(startIndex, endIndex)],
@@ -101,9 +107,29 @@ class CalendarDates extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        ..._dateToRows()
-      ],
+      children: [..._dateToRows()],
+    );
+  }
+}
+
+class HeaderWidget extends StatelessWidget {
+  final String label;
+
+  const HeaderWidget({super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 50,
+      //color: Colors.transparent,
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Text(label,
+            style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
+      ),
     );
   }
 }
@@ -111,38 +137,67 @@ class CalendarDates extends StatelessWidget {
 class DateWidget extends StatelessWidget {
   final String label;
   final DateTime? dateTime;
-  final TextStyle? style;
+  final DateTimeEntry? dateTimeEntry;
 
-  const DateWidget({super.key, required this.label, this.style, this.dateTime});
-
-  bool _isCurrentDay() {
-    bool isCurrentDay = false;
-    final date = dateTime;
-    if(date != null) {
-      final now = DateTime.now();
-      isCurrentDay = date.day == now.day && date.month == now.month && date.year == now.year;
-    }
-    return isCurrentDay;
-  }
+  const DateWidget(
+      {super.key,
+      required this.label, this.dateTime, this.dateTimeEntry});
 
   @override
   Widget build(BuildContext context) {
+    final isCurrentDay = dateTime?.isNow() ?? false;
+    // final hasDateTimeEntry = dateTime?.isSameDate(
+    //     dateTimeToCompare: dateTimeEntry?.createdAt?.getDateTimeInUtc()) ?? false;
 
-    final isCurrentDay = _isCurrentDay();
+    return isCurrentDay
+        ? DateMarkerWidget(
+            label: label,
+          )
+        : Container(
+            width: 50,
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(
+                  5), // Adjust the radius as per your requirement
+            ),
+            child: Center(
+              child: Text(label,
+                  style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white)),
+            ),
+          );
+  }
+}
 
-    print(isCurrentDay);
+class DateMarkerWidget extends StatelessWidget {
+  final String label;
+  final void Function()? onPressed;
 
-    return Container(
-      width: 50,
-      color: isCurrentDay ? Colors.red : Colors.transparent,
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: Text(label,
-            style: style ?? GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: isCurrentDay ? Colors.black : Colors.white)),
-      ),
-    );
+  const DateMarkerWidget({super.key, required this.label, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: onPressed,
+        splashColor: Colors.transparent,
+        child: Container(
+          width: 50,
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(
+                5), // Adjust the radius as per your requirement
+          ),
+          child: Center(
+            child: Text(label,
+                style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
+          ),
+        ));
   }
 }
