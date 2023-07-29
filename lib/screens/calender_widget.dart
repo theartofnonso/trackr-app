@@ -16,13 +16,56 @@ class Calendar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DateTimeEntryProvider>(
       builder: (_, dateTimeEntryProvider, __) {
-        return Column(
-          children: [
-            CalendarHeader(),
-            CalendarDates(
-              dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,
-            )
-          ],
+        return Container(
+          padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(32, 35, 37, 0.3),
+            borderRadius: BorderRadius.circular(
+                5), // Adjust the radius as per your requirement
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const InkWell(
+                    splashColor: Colors.transparent,
+                    child: Icon(
+                      Icons.arrow_circle_left_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text("January 2023",
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const Spacer(),
+                  const InkWell(
+                    splashColor: Colors.transparent,
+                    child: Icon(
+                      Icons.arrow_circle_right_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CalendarHeader(),
+              CalendarDates(
+                dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,
+              )
+            ],
+          ),
         );
       },
     );
@@ -136,13 +179,12 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      //color: Colors.transparent,
-      padding: const EdgeInsets.all(8.0),
+      width: 30,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Center(
         child: Text(label,
             style: GoogleFonts.poppins(
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.white)),
       ),
@@ -151,21 +193,36 @@ class HeaderWidget extends StatelessWidget {
 }
 
 mixin DateTimeEntryMixin {
-
-  void addNewDateTimeEntry({required BuildContext context, required DateTime? dateTime}) async {
-    if(dateTime != null) {
-      await Provider.of<DateTimeEntryProvider>(context, listen: false).addDateTimeEntry(dateTime: dateTime);
-      if(context.mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.check_circle_rounded, color: Colors.black,), message: 'Date added successfully');
+  void addNewDateTimeEntry(
+      {required BuildContext context, required DateTime? dateTime}) async {
+    if (dateTime != null) {
+      await Provider.of<DateTimeEntryProvider>(context, listen: false)
+          .addDateTimeEntry(dateTime: dateTime);
+      if (context.mounted) {
+        showSnackbar(
+            context: context,
+            icon: const Icon(
+              Icons.check_circle_rounded,
+              color: Colors.black,
+            ),
+            message: 'Date added successfully');
       }
     }
   }
 
-  void removeDateTimeEntry({required BuildContext context, required DateTimeEntry? entry}) async {
-    if(entry != null) {
-      await Provider.of<DateTimeEntryProvider>(context, listen: false).removeDateTimeEntry(entryToRemove: entry);
-      if(context.mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.check_circle_rounded, color: Colors.black,), message: 'Date removed successfully');
+  void removeDateTimeEntry(
+      {required BuildContext context, required DateTimeEntry? entry}) async {
+    if (entry != null) {
+      await Provider.of<DateTimeEntryProvider>(context, listen: false)
+          .removeDateTimeEntry(entryToRemove: entry);
+      if (context.mounted) {
+        showSnackbar(
+            context: context,
+            icon: const Icon(
+              Icons.check_circle_rounded,
+              color: Colors.black,
+            ),
+            message: 'Date removed successfully');
       }
     }
   }
@@ -185,7 +242,7 @@ class OtherDateWidget extends StatelessWidget with DateTimeEntryMixin {
 
     return InkWell(
       onDoubleTap: () {
-        if(dateTimeEntry == null) {
+        if (dateTimeEntry == null) {
           addNewDateTimeEntry(context: context, dateTime: dateTime);
         } else {
           removeDateTimeEntry(context: context, entry: dateTimeEntry);

@@ -15,11 +15,13 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
-        child: Consumer<DateTimeEntryProvider>(builder: (_, dateEntryProvider, __) {
-          return const Calendar();
-        }),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Consumer<DateTimeEntryProvider>(builder: (_, dateEntryProvider, __) {
+            return const Calendar();
+          }),
+        ),
       ),
     );
   }
