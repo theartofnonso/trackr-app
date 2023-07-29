@@ -7,6 +7,7 @@ import 'package:tracker_app/screens/activity_durations_screen.dart';
 import 'package:tracker_app/screens/activity_selection_screen.dart';
 import 'package:tracker_app/screens/activity_settings_screen.dart';
 import 'package:tracker_app/screens/activity_tracking_screen.dart';
+import 'package:tracker_app/screens/calender_widget.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/button_wrapper_widget.dart';
 
@@ -196,6 +197,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
@@ -210,120 +212,121 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
           }
 
           final activity = _activity;
+          //
+          // if (activity == null) {
+          //   return Center(
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         const SizedBox(
+          //           height: 30,
+          //         ),
+          //         Text("JUST TRACK AN ACTIVITY",
+          //             style: GoogleFonts.poppins(
+          //                 fontWeight: FontWeight.w700,
+          //                 fontSize: 24,
+          //                 color: Colors.white)),
+          //         const SizedBox(
+          //           height: 5,
+          //         ),
+          //         Text.rich(TextSpan(
+          //             style: GoogleFonts.poppins(
+          //                 fontWeight: FontWeight.w500,
+          //                 color: Colors.white70,
+          //                 fontSize: 16),
+          //             children: const <TextSpan>[
+          //               TextSpan(
+          //                   text: 'Improve or cut down',
+          //                   style: TextStyle(color: Colors.white)),
+          //               TextSpan(text: ' '),
+          //               TextSpan(text: 'time wasted on certain activities'),
+          //             ])),
+          //         const SizedBox(
+          //           height: 20,
+          //         ),
+          //         GradientButton(
+          //           label: 'Track your first Activity',
+          //           onPressed: _navigateToAddNewActivityScreen,
+          //         )
+          //       ],
+          //     ),
+          //   );
+          // }
+          //
+          // final initialDate = activity.history?[0].startTime.getDateTimeInUtc();
+          // _dateTimeRange = DateTimeRange(
+          //     start: initialDate ?? DateTime.now(), end: DateTime.now());
 
-          if (activity == null) {
-            return Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Text("JUST TRACK AN ACTIVITY",
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24,
-                          color: Colors.white)),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text.rich(TextSpan(
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white70,
-                          fontSize: 16),
-                      children: const <TextSpan>[
-                        TextSpan(
-                            text: 'Improve or cut down',
-                            style: TextStyle(color: Colors.white)),
-                        TextSpan(text: ' '),
-                        TextSpan(text: 'time wasted on certain activities'),
-                      ])),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  GradientButton(
-                    label: 'Track your first Activity',
-                    onPressed: _navigateToAddNewActivityScreen,
-                  )
-                ],
-              ),
-            );
-          }
-
-          final initialDate = activity.history?[0].startTime.getDateTimeInUtc();
-          _dateTimeRange = DateTimeRange(
-              start: initialDate ?? DateTime.now(), end: DateTime.now());
-
-          return Column(
-            children: [
-              Row(
-                children: [
-                  CButtonWrapperWidget(
-                    onPressed: _navigateToActivitySelectionScreen,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            overflow: TextOverflow.ellipsis,
-                            _activity!.name,
-                            style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 3,
-                        ),
-                        const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  InkWell(
-                    onTap: _navigateToActivitySettingsScreen,
-                    child: const Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                  const Spacer(),
-                  CButtonWrapperWidget(
-                      onPressed: _showDatePicker, child: _displayTimePeriod())
-                ],
-              ),
-              const SizedBox(
-                height: 60,
-              ),
-              DurationGraphWidget(
-                dateTimeRange: _dateTimeRange,
-                activityDurations: _activityDurations,
-              ),
-              const Spacer(),
-              CButtonWrapperWidget(
-                  onPressed: _navigateToActivityHistoryScreen,
-                  child: DurationOverviewWidget(
-                    dateTimeRange: _dateTimeRange,
-                    activityDurations: _activityDurations,
-                  )),
-              const SizedBox(
-                height: 50,
-              ),
-              GradientButton(
-                onPressed: () => _navigateToActivityTrackingScreen(
-                    activityId: _activity!.id, activityLabel: _activity!.name),
-                label: "Start tracking",
-              )
-            ],
-          );
+          return const Calender();
+          // return Column(
+          //   children: [
+          //     Row(
+          //       children: [
+          //         CButtonWrapperWidget(
+          //           onPressed: _navigateToActivitySelectionScreen,
+          //           child: Row(
+          //             children: [
+          //               SizedBox(
+          //                 width: 150,
+          //                 child: Text(
+          //                   overflow: TextOverflow.ellipsis,
+          //                   _activity!.name,
+          //                   style: GoogleFonts.poppins(
+          //                       fontSize: 18,
+          //                       fontWeight: FontWeight.bold,
+          //                       color: Colors.white),
+          //                 ),
+          //               ),
+          //               const SizedBox(
+          //                 width: 3,
+          //               ),
+          //               const Icon(
+          //                 Icons.keyboard_arrow_down,
+          //                 color: Colors.white,
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //         const SizedBox(
+          //           width: 8,
+          //         ),
+          //         InkWell(
+          //           onTap: _navigateToActivitySettingsScreen,
+          //           child: const Icon(
+          //             Icons.settings,
+          //             color: Colors.white,
+          //             size: 20,
+          //           ),
+          //         ),
+          //         const Spacer(),
+          //         CButtonWrapperWidget(
+          //             onPressed: _showDatePicker, child: _displayTimePeriod())
+          //       ],
+          //     ),
+          //     const SizedBox(
+          //       height: 60,
+          //     ),
+          //     DurationGraphWidget(
+          //       dateTimeRange: _dateTimeRange,
+          //       activityDurations: _activityDurations,
+          //     ),
+          //     const Spacer(),
+          //     CButtonWrapperWidget(
+          //         onPressed: _navigateToActivityHistoryScreen,
+          //         child: DurationOverviewWidget(
+          //           dateTimeRange: _dateTimeRange,
+          //           activityDurations: _activityDurations,
+          //         )),
+          //     const SizedBox(
+          //       height: 50,
+          //     ),
+          //     GradientButton(
+          //       onPressed: () => _navigateToActivityTrackingScreen(
+          //           activityId: _activity!.id, activityLabel: _activity!.name),
+          //       label: "Start tracking",
+          //     )
+          //   ],
+          // );
         }),
       ),
     );
