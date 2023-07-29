@@ -87,7 +87,7 @@ extension DateTimeExtension on DateTime {
         date.year == now.year;
   }
 
-  bool isSameDate({required DateTime dateTimeToCompare}) {
+  bool isSameDateAs({required DateTime dateTimeToCompare}) {
     final date = this;
     return date.day == dateTimeToCompare.day &&
         date.month == dateTimeToCompare.month &&

@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/DateTimeEntry.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/pulse_animation_container.dart';
 
 class Calendar extends StatelessWidget {
   const Calendar({super.key});
@@ -64,10 +66,12 @@ class CalendarDates extends StatelessWidget {
     for (DateTime date = firstDayOfMonth;
         date.isBefore(lastDayOfMonth);
         date = date.add(const Duration(days: 1))) {
+
       widgets.add(DateWidget(
         label: date.day.toString(),
         dateTime: date,
-      ));
+        dateTimeEntry: dateTimeEntries.firstWhereOrNull((dateTimeEntry) => dateTimeEntry.createdAt!.getDateTimeInUtc().isSameDateAs(dateTimeToCompare: date)))
+      );
     }
 
     // Add padding to end of month
@@ -145,9 +149,8 @@ class DateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final isCurrentDay = dateTime?.isNow() ?? false;
-    // final hasDateTimeEntry = dateTime?.isSameDate(
-    //     dateTimeToCompare: dateTimeEntry?.createdAt?.getDateTimeInUtc()) ?? false;
 
     return isCurrentDay
         ? DateMarkerWidget(
@@ -158,6 +161,10 @@ class DateWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Colors.transparent,
+              border: dateTimeEntry != null ? Border.all(
+                color: Colors.grey, // Set the border color here
+                width: 1.0, // Set the border width
+              ) : null,
               borderRadius: BorderRadius.circular(
                   5), // Adjust the radius as per your requirement
             ),
@@ -166,7 +173,7 @@ class DateWidget extends StatelessWidget {
                   style: GoogleFonts.poppins(
                       fontSize: 20,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white)),
+                      color: dateTimeEntry != null ? Colors.grey : Colors.white)),
             ),
           );
   }
@@ -183,20 +190,22 @@ class DateMarkerWidget extends StatelessWidget {
     return InkWell(
         onTap: onPressed,
         splashColor: Colors.transparent,
-        child: Container(
-          width: 50,
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(
-                5), // Adjust the radius as per your requirement
-          ),
-          child: Center(
-            child: Text(label,
-                style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
+        child: PulsatingWidget(
+          child: Container(
+            width: 50,
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(
+                  5), // Adjust the radius as per your requirement
+            ),
+            child: Center(
+              child: Text(label,
+                  style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
           ),
         ));
   }

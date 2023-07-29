@@ -30,6 +30,5 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
     super.initState();
     _dateTimeEntryProvider =
         Provider.of<DateTimeEntryProvider>(context, listen: false);
-    _dateTimeEntryProvider.listDateTimeEntries();
   }
 }

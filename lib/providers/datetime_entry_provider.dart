@@ -9,6 +9,10 @@ class DateTimeEntryProvider extends ChangeNotifier {
     return [..._dateTimeEntries];
   }
 
+  DateTimeEntryProvider() {
+    listDateTimeEntries();
+  }
+
   void listDateTimeEntries() async {
     _dateTimeEntries = [
       DateTimeEntry(
@@ -25,7 +29,22 @@ class DateTimeEntryProvider extends ChangeNotifier {
               "${DateTime.now().subtract(const Duration(days: 5)).toIso8601String()}z")),
       DateTimeEntry(
           createdAt: TemporalDateTime.fromString(
-              "${DateTime.now().subtract(const Duration(days: 8)).toIso8601String()}z"))
+              "${DateTime.now().subtract(const Duration(days: 8)).toIso8601String()}z")),
+      DateTimeEntry(
+          createdAt: TemporalDateTime.fromString(
+              "${DateTime.now().subtract(const Duration(days: 17)).toIso8601String()}z")),
+      DateTimeEntry(
+          createdAt: TemporalDateTime.fromString(
+              "${DateTime.now().subtract(const Duration(days: 18)).toIso8601String()}z")),
+      DateTimeEntry(
+          createdAt: TemporalDateTime.fromString(
+              "${DateTime.now().subtract(const Duration(days: 25)).toIso8601String()}z")),
+      DateTimeEntry(
+          createdAt: TemporalDateTime.fromString(
+              "${DateTime.now().subtract(const Duration(days: 26)).toIso8601String()}z")),
+      DateTimeEntry(
+          createdAt: TemporalDateTime.fromString(
+              "${DateTime.now().subtract(const Duration(days: 27)).toIso8601String()}z"))
     ];
     //_dateTimeEntries = await Amplify.DataStore.query(DateTimeEntry.classType);
     notifyListeners();
