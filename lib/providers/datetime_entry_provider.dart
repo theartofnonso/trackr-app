@@ -27,10 +27,10 @@ class DateTimeEntryProvider extends ChangeNotifier {
     return entryToCreate;
   }
 
-  Future<DateTimeEntry> removeDateTimeEntry({required DateTimeEntry entry}) async {
-    await Amplify.DataStore.delete(entry);
-    _dateTimeEntries.removeWhere((entry) => entry.id == entry.id);
+  Future<DateTimeEntry> removeDateTimeEntry({required DateTimeEntry entryToRemove}) async {
+    await Amplify.DataStore.delete(entryToRemove);
+    _dateTimeEntries.removeWhere((entry) => entry.id == entryToRemove.id);
     notifyListeners();
-    return entry;
+    return entryToRemove;
   }
 }

@@ -11,7 +11,6 @@ class ActivityOverviewScreen extends StatefulWidget {
 }
 
 class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
-  late DateTimeEntryProvider _dateTimeEntryProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,5 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   void initState() {
     super.initState();
-    _dateTimeEntryProvider =
-        Provider.of<DateTimeEntryProvider>(context, listen: false);
   }
 }

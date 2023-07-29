@@ -3,7 +3,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/providers/activity_provider.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -77,7 +76,8 @@ class _MyAppState extends State<MyApp> {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: const ColorScheme.dark(background: Colors.black, primary: Colors.white),
+        colorScheme: const ColorScheme.dark(background: Colors.black),
+
         useMaterial3: true,
       ),
       home: _isLoading

@@ -7,6 +7,8 @@ import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/pulse_animation_container.dart';
 
+import '../utils/snackbar_utils.dart';
+
 class Calendar extends StatelessWidget {
   const Calendar({super.key});
 
@@ -150,9 +152,21 @@ class HeaderWidget extends StatelessWidget {
 
 mixin DateTimeEntryMixin {
 
-  void onPressed({required BuildContext context, required DateTime? dateTime}) {
+  void addNewDateTimeEntry({required BuildContext context, required DateTime? dateTime}) async {
     if(dateTime != null) {
-      Provider.of<DateTimeEntryProvider>(context, listen: false).addDateTimeEntry(dateTime: dateTime);
+      await Provider.of<DateTimeEntryProvider>(context, listen: false).addDateTimeEntry(dateTime: dateTime);
+      if(context.mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.check_circle_rounded, color: Colors.black,), message: 'Date added successfully');
+      }
+    }
+  }
+
+  void removeDateTimeEntry({required BuildContext context, required DateTimeEntry? entry}) async {
+    if(entry != null) {
+      await Provider.of<DateTimeEntryProvider>(context, listen: false).removeDateTimeEntry(entryToRemove: entry);
+      if(context.mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.check_circle_rounded, color: Colors.black,), message: 'Date removed successfully');
+      }
     }
   }
 }
@@ -172,7 +186,9 @@ class OtherDateWidget extends StatelessWidget with DateTimeEntryMixin {
     return InkWell(
       onDoubleTap: () {
         if(dateTimeEntry == null) {
-          onPressed(context: context, dateTime: dateTime);
+          addNewDateTimeEntry(context: context, dateTime: dateTime);
+        } else {
+          removeDateTimeEntry(context: context, entry: dateTimeEntry);
         }
       },
       child: Padding(
