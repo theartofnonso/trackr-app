@@ -15,7 +15,12 @@ class Calendar extends StatelessWidget {
     return Consumer<DateTimeEntryProvider>(
       builder: (_, dateTimeEntryProvider, __) {
         return Column(
-          children: [CalendarHeader(), CalendarDates(dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,)],
+          children: [
+            CalendarHeader(),
+            CalendarDates(
+              dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,
+            )
+          ],
         );
       },
     );
@@ -41,7 +46,6 @@ class CalendarHeader extends StatelessWidget {
 }
 
 class CalendarDates extends StatelessWidget {
-
   final List<DateTimeEntry> dateTimeEntries;
 
   const CalendarDates({super.key, required this.dateTimeEntries});
@@ -58,7 +62,7 @@ class CalendarDates extends StatelessWidget {
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
       final emptyWidgets =
-          List.filled(precedingDays, const DateWidget(label: ""));
+          List.filled(precedingDays, const OtherDateWidget(label: ""));
       widgets.addAll(emptyWidgets);
     }
 
@@ -66,18 +70,24 @@ class CalendarDates extends StatelessWidget {
     for (DateTime date = firstDayOfMonth;
         date.isBefore(lastDayOfMonth);
         date = date.add(const Duration(days: 1))) {
-
-      widgets.add(DateWidget(
-        label: date.day.toString(),
-        dateTime: date,
-        dateTimeEntry: dateTimeEntries.firstWhereOrNull((dateTimeEntry) => dateTimeEntry.createdAt!.getDateTimeInUtc().isSameDateAs(dateTimeToCompare: date)))
-      );
+      final dateTimeEntry = dateTimeEntries.firstWhereOrNull((dateTimeEntry) =>
+          dateTimeEntry.createdAt!
+              .getDateTimeInUtc()
+              .isSameDateAs(dateTimeToCompare: date));
+      widgets.add(OtherDateWidget(
+          label: date.day.toString(),
+          dateTime: date,
+          dateTimeEntry: dateTimeEntry));
     }
 
     // Add padding to end of month
     final succeedingDays = 35 - lastDayOfMonth.day;
-    final emptyWidgets =
-        List.filled(succeedingDays, const DateWidget(label: "", dateTime: null,));
+    final emptyWidgets = List.filled(
+        succeedingDays,
+        const OtherDateWidget(
+          label: "",
+          dateTime: null,
+        ));
     widgets.addAll(emptyWidgets);
 
     return widgets;
@@ -98,7 +108,7 @@ class CalendarDates extends StatelessWidget {
       }
 
       widgets.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 6.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [...dates.sublist(startIndex, endIndex)],
@@ -138,75 +148,98 @@ class HeaderWidget extends StatelessWidget {
   }
 }
 
-class DateWidget extends StatelessWidget {
+mixin DateTimeEntryMixin {
+
+  void onPressed({required BuildContext context, required DateTime? dateTime}) {
+    if(dateTime != null) {
+      Provider.of<DateTimeEntryProvider>(context, listen: false).addDateTimeEntry(dateTime: dateTime);
+    }
+  }
+}
+
+class OtherDateWidget extends StatelessWidget with DateTimeEntryMixin {
   final String label;
   final DateTime? dateTime;
   final DateTimeEntry? dateTimeEntry;
 
-  const DateWidget(
-      {super.key,
-      required this.label, this.dateTime, this.dateTimeEntry});
+  const OtherDateWidget(
+      {super.key, required this.label, this.dateTime, this.dateTimeEntry});
 
   @override
   Widget build(BuildContext context) {
-
     final isCurrentDay = dateTime?.isNow() ?? false;
 
-    return isCurrentDay
-        ? DateMarkerWidget(
-            label: label,
-          )
-        : Container(
-            width: 50,
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              border: dateTimeEntry != null ? Border.all(
-                color: Colors.grey, // Set the border color here
-                width: 1.0, // Set the border width
-              ) : null,
-              borderRadius: BorderRadius.circular(
-                  5), // Adjust the radius as per your requirement
-            ),
-            child: Center(
-              child: Text(label,
-                  style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                      color: dateTimeEntry != null ? Colors.grey : Colors.white)),
-            ),
-          );
+    return InkWell(
+      onDoubleTap: () {
+        if(dateTimeEntry == null) {
+          onPressed(context: context, dateTime: dateTime);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: isCurrentDay
+            ? CurrentDateWidget(
+                label: label,
+              )
+            : Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: dateTimeEntry != null
+                      ? Border.all(
+                          color: Colors.grey, // Set the border color here
+                          width: 1.0, // Set the border width
+                        )
+                      : null,
+                  borderRadius: BorderRadius.circular(
+                      5), // Adjust the radius as per your requirement
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Center(
+                    child: Text(label,
+                        style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: dateTimeEntry != null
+                                ? Colors.grey
+                                : Colors.white)),
+                  ),
+                ),
+              ),
+      ),
+    );
   }
 }
 
-class DateMarkerWidget extends StatelessWidget {
+class CurrentDateWidget extends StatelessWidget {
   final String label;
-  final void Function()? onPressed;
 
-  const DateMarkerWidget({super.key, required this.label, this.onPressed});
+  const CurrentDateWidget({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        onTap: onPressed,
-        splashColor: Colors.transparent,
-        child: PulsatingWidget(
-          child: Container(
-            width: 50,
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(
-                  5), // Adjust the radius as per your requirement
-            ),
-            child: Center(
-              child: Text(label,
-                  style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black)),
-            ),
+    return PulsatingWidget(
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(
+              5), // Adjust the radius as per your requirement
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Center(
+            child: Text(label,
+                style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
