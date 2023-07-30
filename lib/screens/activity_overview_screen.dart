@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/screens/calender_widget.dart';
 
-import 'notes_widgets.dart';
+import 'notes_editor_widgets.dart';
 
 class ActivityOverviewScreen extends StatefulWidget {
   const ActivityOverviewScreen({super.key});
@@ -13,23 +13,31 @@ class ActivityOverviewScreen extends StatefulWidget {
 }
 
 class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
-
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child: Column(
             children: [
-              Calendar(),
-              SizedBox(height: 20,),
-              Notes()
+              const Calendar(),
+              const SizedBox(
+                height: 20,
+              ),
+              Consumer<DateTimeEntryProvider>(
+                  builder: (_, dateTimeEntryProvider, __) {
+                final dateTimeEntry = dateTimeEntryProvider.dateTimeEntry;
+                return dateTimeEntry != null
+                    ? NotesEditor(
+                        dateTimeEntryProvider: dateTimeEntryProvider,
+                        dateTimeEntry: dateTimeEntry)
+                    : const SizedBox.shrink();
+              })
             ],
           ),
         ),
       ),
     );
   }
-
 }
