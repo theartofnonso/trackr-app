@@ -27,7 +27,7 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
               ),
               Consumer<DateTimeEntryProvider>(
                   builder: (_, dateTimeEntryProvider, __) {
-                final dateTimeEntry = dateTimeEntryProvider.dateTimeEntry;
+                final dateTimeEntry = dateTimeEntryProvider.selectedDateTimeEntry;
                 return dateTimeEntry != null
                     ? NotesEditor(
                         dateTimeEntryProvider: dateTimeEntryProvider,

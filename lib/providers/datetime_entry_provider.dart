@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 class DateTimeEntryProvider extends ChangeNotifier {
-  DateTimeEntry? _dateTimeEntry;
+  DateTimeEntry? _selectedDateTimeEntry;
 
   List<DateTimeEntry> _dateTimeEntries = [];
 
-  DateTimeEntry? get dateTimeEntry {
-    return _dateTimeEntry?.copyWith();
+  DateTimeEntry? get selectedDateTimeEntry {
+    return _selectedDateTimeEntry?.copyWith();
   }
 
   List<DateTimeEntry> get dateTimeEntries {
@@ -21,7 +21,7 @@ class DateTimeEntryProvider extends ChangeNotifier {
   }
 
   void onSelectDateEntry({required DateTimeEntry entry}) {
-    _dateTimeEntry = entry;
+    _selectedDateTimeEntry = entry;
     notifyListeners();
   }
 
