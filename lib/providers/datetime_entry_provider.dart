@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 class DateTimeEntryProvider extends ChangeNotifier {
+
+  DateTimeEntry? _dateTimeEntry;
+
   List<DateTimeEntry> _dateTimeEntries = [];
+
+  DateTimeEntry? get dateTimeEntry {
+    return _dateTimeEntry?.copyWith();
+  }
 
   List<DateTimeEntry> get dateTimeEntries {
     return [..._dateTimeEntries];
@@ -13,9 +20,16 @@ class DateTimeEntryProvider extends ChangeNotifier {
     listDateTimeEntries();
   }
 
+  void onSelectDateEntry({required DateTimeEntry entry}) {
+    _dateTimeEntry = entry;
+  }
+
   void listDateTimeEntries() async {
     _dateTimeEntries = await Amplify.DataStore.query(DateTimeEntry.classType);
     _dateTimeEntries.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+    if(_dateTimeEntries.isNotEmpty) {
+      _dateTimeEntry = _dateTimeEntries.first;
+    }
     notifyListeners();
   }
 

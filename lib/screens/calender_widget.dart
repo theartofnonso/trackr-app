@@ -17,14 +17,15 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-
   DateTime _currentDate = DateTime(DateTime.now().year, DateTime.now().month);
 
   void _goToPreviousMonth({required DateTimeEntry? initialDateTimeEntry}) {
     final initialTemporalDateTime = initialDateTimeEntry?.createdAt;
-    if(initialTemporalDateTime != null) {
-      final initialDateTime = DateTime(initialTemporalDateTime.getDateTimeInUtc().year, initialTemporalDateTime.getDateTimeInUtc().month);
-      if(initialDateTime.isBefore(_currentDate)) {
+    if (initialTemporalDateTime != null) {
+      final initialDateTime = DateTime(
+          initialTemporalDateTime.getDateTimeInUtc().year,
+          initialTemporalDateTime.getDateTimeInUtc().month);
+      if (initialDateTime.isBefore(_currentDate)) {
         setState(() {
           _currentDate = DateTime(_currentDate.year, _currentDate.month - 1);
         });
@@ -61,7 +62,9 @@ class _CalendarState extends State<Calendar> {
                     width: 20,
                   ),
                   InkWell(
-                    onTap: () => _goToPreviousMonth(initialDateTimeEntry: dateTimeEntryProvider.dateTimeEntries.first),
+                    onTap: () => _goToPreviousMonth(
+                        initialDateTimeEntry:
+                            dateTimeEntryProvider.dateTimeEntries.first),
                     splashColor: Colors.transparent,
                     child: const Icon(
                       Icons.arrow_circle_left_outlined,
@@ -261,6 +264,14 @@ mixin DateTimeEntryMixin {
       }
     }
   }
+
+  void onSelectDateTimeEntry(
+      {required BuildContext context, required DateTimeEntry? entry}) async {
+    if (entry != null) {
+      Provider.of<DateTimeEntryProvider>(context, listen: false)
+          .onSelectDateEntry(entry: entry);
+    }
+  }
 }
 
 class OtherDateWidget extends StatelessWidget with DateTimeEntryMixin {
@@ -283,6 +294,8 @@ class OtherDateWidget extends StatelessWidget with DateTimeEntryMixin {
           removeDateTimeEntry(context: context, entry: dateTimeEntry);
         }
       },
+      onTap: () =>
+          onSelectDateTimeEntry(context: context, entry: dateTimeEntry),
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: isCurrentDay

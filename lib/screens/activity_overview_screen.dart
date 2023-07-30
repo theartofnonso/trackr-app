@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/screens/calender_widget.dart';
 
+import 'notes_widgets.dart';
+
 class ActivityOverviewScreen extends StatefulWidget {
   const ActivityOverviewScreen({super.key});
 
@@ -14,20 +16,20 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Consumer<DateTimeEntryProvider>(builder: (_, dateEntryProvider, __) {
-            return const Calendar();
-          }),
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: [
+              Calendar(),
+              SizedBox(height: 20,),
+              Notes()
+            ],
+          ),
         ),
       ),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
 }
