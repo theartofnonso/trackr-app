@@ -15,6 +15,7 @@ class DateTimeEntryProvider extends ChangeNotifier {
 
   void listDateTimeEntries() async {
     _dateTimeEntries = await Amplify.DataStore.query(DateTimeEntry.classType);
+    _dateTimeEntries.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
     notifyListeners();
   }
 

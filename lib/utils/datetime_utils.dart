@@ -45,6 +45,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String formattedMonthAndYear() {
+    return DateFormat("MMMM, yyyy", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedMonth() {
     return DateFormat("MMM", "en").format(this);
   }
@@ -87,11 +92,11 @@ extension DateTimeExtension on DateTime {
         date.year == now.year;
   }
 
-  bool isSameDateAs({required DateTime dateTimeToCompare}) {
+  bool isSameDateAs({required DateTime other}) {
     final date = this;
-    return date.day == dateTimeToCompare.day &&
-        date.month == dateTimeToCompare.month &&
-        date.year == dateTimeToCompare.year;
+    return date.day == other.day &&
+        date.month == other.month &&
+        date.year == other.year;
   }
 
 }
