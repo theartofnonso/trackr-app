@@ -16,124 +16,46 @@ class Notes extends StatefulWidget {
 class _NotesState extends State<Notes> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DateTimeEntryProvider>(
-      builder: (_, dateTimeEntryProvider, __) {
-        final dateEntry = dateTimeEntryProvider.dateTimeEntry;
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // const Row(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   children: [
-              //     InkWell(
-              //       splashColor: Colors.transparent,
-              //       child: Icon(
-              //         Icons.edit_note_rounded,
-              //         color: Colors.black,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-
-              NotesEditor(
-                dateTimeEntry: dateEntry,
-              )
-            ],
-          ),
-        );
-      },
-    );
+    return const NotesEditor();
   }
 }
 
-class NotesEditor extends StatefulWidget {
-  final DateTimeEntry? dateTimeEntry;
+class NotesEditor extends StatelessWidget {
 
-  const NotesEditor({super.key, this.dateTimeEntry});
+  const NotesEditor({super.key});
 
-  @override
-  State<NotesEditor> createState() => _NotesEditorState();
-}
-
-class _NotesEditorState extends State<NotesEditor> {
-
-  late TextEditingController _notesController;
-  String tempNotes;
-
-  @override
-  void initState() {
-    super.initState();
-    _notesController =
-        TextEditingController(text: widget.dateTimeEntry?.description ?? "");
+  void _autoSaveText({required BuildContext context, required DateTimeEntryProvider dateTimeEntryProvider, required DateTimeEntry dateTimeEntry, required String text}) {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      dateTimeEntryProvider.updateDateTimeEntryWithNotes(entry: dateTimeEntry, notes: text);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dateEntry = widget.dateTimeEntry;
-    if (dateEntry != null) {
-      final notes = dateEntry.description ?? "";
-      if (notes.isNotEmpty) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Notes for ${DateTime.now().formattedDate()}",
-              style: GoogleFonts.poppins(
-                decoration: TextDecoration.underline,
-                  fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              notes,
-              style: GoogleFonts.poppins(
-                  fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black),
-            ),
-          ],
-        );
-      } else {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextField(
-              cursorColor: Colors.black,
-              controller: _notesController,
-              onChanged: (text) {
-
-              },
-              maxLines: 5,
-              textCapitalization: TextCapitalization.sentences,
-              style: GoogleFonts.poppins(
-                  fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black),
-              decoration: InputDecoration(
-                hintText: "Tap to add notes",
-                hintStyle: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey), // Set
-              ),
-            ),
-            _notesController.text.isNotEmpty ? InkWell(
-              onTap: () {  },
-              splashColor: Colors.grey,
-              child: Text("Save", style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black)),
-            ) : const SizedBox.shrink(),
-          ],
-        );
-      }
+    final dateTimeEntryProvider = Provider.of<DateTimeEntryProvider>(context, listen: true);
+    final dateTimeEntry = dateTimeEntryProvider.dateTimeEntry;
+    if(dateTimeEntry != null) {
+      return TextField(
+        cursorColor: Colors.white,
+        controller: TextEditingController(text: dateTimeEntry.description),
+        maxLines: 2,
+        onChanged: (text) {
+          _autoSaveText(text: text, context: context, dateTimeEntryProvider: dateTimeEntryProvider, dateTimeEntry: dateTimeEntry);
+        },
+        textCapitalization: TextCapitalization.sentences,
+        style: GoogleFonts.poppins(
+            fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText:
+          "Tap to enter notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+          hintStyle: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: Colors.white70), // Set
+        ),
+      );
     }
-
     return const SizedBox.shrink();
   }
 }

@@ -50,6 +50,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String formattedDayAndMonthAndYear() {
+    return DateFormat("EE dd, MMM yyyy", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedMonth() {
     return DateFormat("MMM", "en").format(this);
   }
