@@ -233,7 +233,27 @@ class HeaderWidget extends StatelessWidget {
   }
 }
 
-mixin DateTimeEntryMixin {
+class DateWidget extends StatefulWidget {
+  final String label;
+  final DateTime dateTime;
+  final DateTimeEntry? dateTimeEntry;
+  final bool isSelected;
+
+  const DateWidget(
+      {super.key,
+      required this.label,
+      required this.dateTime,
+      this.dateTimeEntry,
+      this.isSelected = false});
+
+  @override
+  State<DateWidget> createState() => _DateWidgetState();
+}
+
+class _DateWidgetState extends State<DateWidget> {
+
+  bool _isPreSelected = false;
+
   void addNewDateTimeEntry(
       {required BuildContext context, required DateTime? dateTime}) async {
     if (dateTime != null) {
@@ -284,27 +304,6 @@ mixin DateTimeEntryMixin {
     Provider.of<DateTimeEntryProvider>(context, listen: false)
         .onRemoveDateEntry();
   }
-}
-
-class DateWidget extends StatefulWidget {
-  final String label;
-  final DateTime dateTime;
-  final DateTimeEntry? dateTimeEntry;
-  final bool isSelected;
-
-  const DateWidget(
-      {super.key,
-      required this.label,
-      required this.dateTime,
-      this.dateTimeEntry,
-      this.isSelected = false});
-
-  @override
-  State<DateWidget> createState() => _DateWidgetState();
-}
-
-class _DateWidgetState extends State<DateWidget> with DateTimeEntryMixin {
-  bool _isPreSelected = false;
 
   Color _getBackgroundColor() {
     if (widget.isSelected) {
