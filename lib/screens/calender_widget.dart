@@ -276,9 +276,8 @@ mixin DateTimeEntryMixin {
 
   void selectDateTimeEntry(
       {required BuildContext context, required DateTimeEntry? entry}) async {
-      Provider.of<DateTimeEntryProvider>(context, listen: false)
-          .onSelectDateEntry(entry: entry);
-
+    Provider.of<DateTimeEntryProvider>(context, listen: false)
+        .onSelectDateEntry(entry: entry);
   }
 
   void unSelectDateTimeEntry({required BuildContext context}) async {
@@ -305,7 +304,6 @@ class DateWidget extends StatefulWidget {
 }
 
 class _DateWidgetState extends State<DateWidget> with DateTimeEntryMixin {
-
   bool _isPreSelected = false;
 
   Color _getBackgroundColor() {
@@ -352,26 +350,20 @@ class _DateWidgetState extends State<DateWidget> with DateTimeEntryMixin {
           }
         }); // To update the date
       },
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(),
-            border: _getBorder(),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Center(
-              child: Text(widget.label,
-                  style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: _getTextColor())),
-            ),
-          ),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: _getBackgroundColor(),
+          border: _getBorder(),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Center(
+          child: Text(widget.label,
+              style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: _getTextColor())),
         ),
       ),
     );
