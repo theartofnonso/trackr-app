@@ -17,7 +17,7 @@ class NotesEditor extends StatelessWidget {
   void _autoSaveText({required BuildContext context, required String text}) {
     Future.delayed(const Duration(milliseconds: 500), () {
       dateTimeEntryProvider.updateDateTimeEntryWithNotes(
-          entry: dateTimeEntry, notes: text);
+          entryToUpdate: dateTimeEntry, notes: text);
     });
   }
 

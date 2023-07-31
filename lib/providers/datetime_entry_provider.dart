@@ -26,7 +26,8 @@ class DateTimeEntryProvider extends ChangeNotifier {
   }
 
   void listDateTimeEntries() async {
-    _dateTimeEntries = await Amplify.DataStore.query(DateTimeEntry.classType, sortBy: [DateTimeEntry.CREATEDAT.ascending()]);
+    _dateTimeEntries = await Amplify.DataStore.query(DateTimeEntry.classType,
+        sortBy: [DateTimeEntry.CREATEDAT.ascending()]);
     notifyListeners();
   }
 
@@ -39,17 +40,14 @@ class DateTimeEntryProvider extends ChangeNotifier {
     return entryToCreate;
   }
 
-  Future<void> updateDateTimeEntryWithNotes({required DateTimeEntry entry, required String notes}) async {
-    final entryToUpdate = _dateTimeEntries.firstWhereOrNull((dateTimeEntry) => dateTimeEntry.id == entry.id);
-    if (entryToUpdate != null) {
-      final updatedEntry = entryToUpdate.copyWith(description: notes);
-      await Amplify.DataStore.save(updatedEntry);
-      _dateTimeEntries = _dateTimeEntries
-          .map((dateTimeEntry) => dateTimeEntry.id == updatedEntry.id
-              ? updatedEntry
-              : dateTimeEntry)
-          .toList();
-    }
+  Future<void> updateDateTimeEntryWithNotes(
+      {required DateTimeEntry entryToUpdate, required String notes}) async {
+    final updatedEntry = entryToUpdate.copyWith(description: notes);
+    await Amplify.DataStore.save(updatedEntry);
+    _dateTimeEntries = _dateTimeEntries
+        .map((dateTimeEntry) =>
+            dateTimeEntry.id == updatedEntry.id ? updatedEntry : dateTimeEntry)
+        .toList();
   }
 
   Future<DateTimeEntry> removeDateTimeEntry(
