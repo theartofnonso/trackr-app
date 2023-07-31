@@ -311,7 +311,7 @@ class _DateWidgetState extends State<DateWidget> with DateTimeEntryMixin {
   Color _getBackgroundColor() {
     if (widget.isSelected) {
       return Colors.white;
-    } 
+    }
     return Colors.transparent;
   }
 
