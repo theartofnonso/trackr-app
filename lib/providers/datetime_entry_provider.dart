@@ -66,6 +66,7 @@ class DateTimeEntryProvider extends ChangeNotifier {
     await Amplify.DataStore.save(entryToCreate);
     _dateTimeEntries.add(entryToCreate);
     _selectedDateTimeEntry = entryToCreate;
+    _selectedDate = dateTime;
     notifyListeners();
     return entryToCreate;
   }
@@ -84,6 +85,8 @@ class DateTimeEntryProvider extends ChangeNotifier {
       {required DateTimeEntry entryToRemove}) async {
     await Amplify.DataStore.delete(entryToRemove);
     _dateTimeEntries.removeWhere((entry) => entry.id == entryToRemove.id);
+    _selectedDateTimeEntry = null;
+    _selectedDate = entryToRemove.createdAt!.getDateTimeInUtc();
     notifyListeners();
     return entryToRemove;
   }

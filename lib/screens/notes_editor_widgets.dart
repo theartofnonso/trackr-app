@@ -34,7 +34,8 @@ class NotesEditor extends StatelessWidget {
       style: GoogleFonts.poppins(
           fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
       decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         filled: true,
         fillColor: const Color.fromRGBO(32, 32, 32, 1), // Set
         hintText:
