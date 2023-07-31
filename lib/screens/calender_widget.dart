@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/models/DateTimeEntry.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/pulse_animation_container.dart';
 
 import '../utils/snackbar_utils.dart';
 
@@ -49,7 +48,7 @@ class _CalendarState extends State<Calendar> {
         return Container(
           padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
           decoration: BoxDecoration(
-            color: const Color.fromRGBO(32, 35, 37, 0.3),
+            color: const Color.fromRGBO(32, 32, 32, 1),
             borderRadius: BorderRadius.circular(
                 5), // Adjust the radius as per your requirement
           ),
@@ -96,8 +95,10 @@ class _CalendarState extends State<Calendar> {
               ),
               CalendarHeader(),
               CalendarDates(
-                  dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,
-                  currentDate: _currentDate)
+                dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,
+                currentDate: _currentDate,
+                selectedDate: dateTimeEntryProvider.selectedDateTime,
+              )
             ],
           ),
         );
@@ -127,9 +128,13 @@ class CalendarHeader extends StatelessWidget {
 class CalendarDates extends StatelessWidget {
   final List<DateTimeEntry> dateTimeEntries;
   final DateTime currentDate;
+  final DateTime selectedDate;
 
   const CalendarDates(
-      {super.key, required this.dateTimeEntries, required this.currentDate});
+      {super.key,
+      required this.dateTimeEntries,
+      required this.currentDate,
+      required this.selectedDate});
 
   List<Widget> _datesToColumns({required DateTime currentDateTime}) {
     int year = currentDate.year;
@@ -146,7 +151,7 @@ class CalendarDates extends StatelessWidget {
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
       final emptyWidgets =
-          List.filled(precedingDays, const OtherDateWidget(label: ""));
+          List.filled(precedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -157,20 +162,18 @@ class CalendarDates extends StatelessWidget {
           dateTimeEntry.createdAt!
               .getDateTimeInUtc()
               .isSameDateAs(other: date));
-      datesInMonths.add(OtherDateWidget(
-          label: date.day.toString(),
-          dateTime: date,
-          dateTimeEntry: dateTimeEntry));
+      datesInMonths.add(DateWidget(
+        label: date.day.toString(),
+        dateTime: date,
+        dateTimeEntry: dateTimeEntry,
+        isSelected: selectedDate.isSameDateAs(other: date),
+      ));
     }
 
     // Add padding to end of month
     final succeedingDays = 35 - lastDayOfMonth.day;
-    final emptyWidgets = List.filled(
-        succeedingDays,
-        const OtherDateWidget(
-          label: "",
-          dateTime: null,
-        ));
+    final emptyWidgets =
+        List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
     datesInMonths.addAll(emptyWidgets);
 
     return datesInMonths;
@@ -265,99 +268,111 @@ mixin DateTimeEntryMixin {
     }
   }
 
-  void onSelectDateTimeEntry(
+  void selectDate(
+      {required BuildContext context, required DateTime date}) async {
+    Provider.of<DateTimeEntryProvider>(context, listen: false)
+        .onSelectDate(date: date);
+  }
+
+  void selectDateTimeEntry(
       {required BuildContext context, required DateTimeEntry? entry}) async {
-    if (entry != null) {
       Provider.of<DateTimeEntryProvider>(context, listen: false)
           .onSelectDateEntry(entry: entry);
-    }
+
+  }
+
+  void unSelectDateTimeEntry({required BuildContext context}) async {
+    Provider.of<DateTimeEntryProvider>(context, listen: false)
+        .onRemoveDateEntry();
   }
 }
 
-class OtherDateWidget extends StatelessWidget with DateTimeEntryMixin {
+class DateWidget extends StatefulWidget {
   final String label;
-  final DateTime? dateTime;
+  final DateTime dateTime;
   final DateTimeEntry? dateTimeEntry;
+  final bool isSelected;
 
-  const OtherDateWidget(
-      {super.key, required this.label, this.dateTime, this.dateTimeEntry});
+  const DateWidget(
+      {super.key,
+      required this.label,
+      required this.dateTime,
+      this.dateTimeEntry,
+      this.isSelected = false});
+
+  @override
+  State<DateWidget> createState() => _DateWidgetState();
+}
+
+class _DateWidgetState extends State<DateWidget> with DateTimeEntryMixin {
+
+  bool _isPreSelected = false;
+
+  Color _getBackgroundColor() {
+    if (widget.isSelected) {
+      return Colors.white;
+    } else if (!widget.isSelected) {
+      return Colors.transparent;
+    }
+    return Colors.transparent;
+  }
+
+  Border? _getBorder() {
+    if (widget.dateTimeEntry != null) {
+      return Border.all(color: Colors.grey, width: 1.0);
+    }
+    return null;
+  }
+
+  Color _getTextColor() {
+    if (widget.isSelected) {
+      return Colors.black;
+    } else if (widget.dateTimeEntry != null) {
+      return Colors.grey;
+    }
+    return Colors.white;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isCurrentDay = dateTime?.isNow() ?? false;
-
     return InkWell(
       onDoubleTap: () {
-        if (dateTimeEntry == null) {
-          addNewDateTimeEntry(context: context, dateTime: dateTime);
+        if (widget.dateTimeEntry == null) {
+          addNewDateTimeEntry(context: context, dateTime: widget.dateTime);
         } else {
-          removeDateTimeEntry(context: context, entry: dateTimeEntry);
+          removeDateTimeEntry(context: context, entry: widget.dateTimeEntry);
         }
       },
-      onTap: () =>
-          onSelectDateTimeEntry(context: context, entry: dateTimeEntry),
+      onTap: () {
+        setState(() {
+          _isPreSelected = true;
+          selectDate(context: context, date: widget.dateTime);
+          if (widget.isSelected) {
+            unSelectDateTimeEntry(context: context);
+          } else {
+            selectDateTimeEntry(context: context, entry: widget.dateTimeEntry);
+          }
+        }); // To update the date
+      },
       child: Padding(
         padding: const EdgeInsets.all(4.0),
-        child: isCurrentDay
-            ? CurrentDateWidget(
-                label: label,
-              )
-            : Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: dateTimeEntry != null
-                      ? Border.all(
-                          color: Colors.grey, // Set the border color here
-                          width: 1.0, // Set the border width
-                        )
-                      : null,
-                  borderRadius: BorderRadius.circular(
-                      5), // Adjust the radius as per your requirement
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Center(
-                    child: Text(label,
-                        style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: dateTimeEntry != null
-                                ? Colors.grey
-                                : Colors.white)),
-                  ),
-                ),
-              ),
-      ),
-    );
-  }
-}
-
-class CurrentDateWidget extends StatelessWidget {
-  final String label;
-
-  const CurrentDateWidget({super.key, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return PulsatingWidget(
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(
-              5), // Adjust the radius as per your requirement
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Center(
-            child: Text(label,
-                style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: _getBackgroundColor(),
+            border: _getBorder(),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Center(
+              child: Text(widget.label,
+                  style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: _getTextColor())),
+            ),
           ),
         ),
       ),

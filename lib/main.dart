@@ -1,6 +1,7 @@
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
@@ -58,6 +59,10 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+      statusBarBrightness: Brightness.dark
+    ));
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -77,12 +82,11 @@ class _MyAppState extends State<MyApp> {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: const ColorScheme.dark(background: Colors.black, primary: Colors.white),
-
         useMaterial3: true,
       ),
       home: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : const SafeArea(child: ActivityOverviewScreen()),
+          : const ActivityOverviewScreen(),
     );
   }
 }

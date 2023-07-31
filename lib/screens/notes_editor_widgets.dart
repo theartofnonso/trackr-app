@@ -26,7 +26,7 @@ class NotesEditor extends StatelessWidget {
     return TextField(
       cursorColor: Colors.white,
       controller: TextEditingController(text: dateTimeEntry.description),
-      maxLines: 2,
+      maxLines: 5,
       onChanged: (text) {
         _autoSaveText(text: text, context: context);
       },
@@ -34,7 +34,9 @@ class NotesEditor extends StatelessWidget {
       style: GoogleFonts.poppins(
           fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
       decoration: InputDecoration(
-        border: InputBorder.none,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        filled: true,
+        fillColor: const Color.fromRGBO(32, 32, 32, 1), // Set
         hintText:
             "Tap to enter notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
         hintStyle: GoogleFonts.poppins(

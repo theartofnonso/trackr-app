@@ -16,25 +16,27 @@ class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            children: [
-              const Calendar(),
-              const SizedBox(
-                height: 20,
-              ),
-              Consumer<DateTimeEntryProvider>(
-                  builder: (_, dateTimeEntryProvider, __) {
-                final dateTimeEntry = dateTimeEntryProvider.selectedDateTimeEntry;
-                return dateTimeEntry != null
-                    ? NotesEditor(
-                        dateTimeEntryProvider: dateTimeEntryProvider,
-                        dateTimeEntry: dateTimeEntry)
-                    : const SizedBox.shrink();
-              })
-            ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              children: [
+                const Calendar(),
+                const SizedBox(
+                  height: 20,
+                ),
+                Consumer<DateTimeEntryProvider>(
+                    builder: (_, dateTimeEntryProvider, __) {
+                  final dateTimeEntry = dateTimeEntryProvider.selectedDateTimeEntry;
+                  return dateTimeEntry != null
+                      ? NotesEditor(
+                          dateTimeEntryProvider: dateTimeEntryProvider,
+                          dateTimeEntry: dateTimeEntry)
+                      : const SizedBox.shrink();
+                })
+              ],
+            ),
           ),
         ),
       ),
