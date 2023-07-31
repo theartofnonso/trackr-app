@@ -37,7 +37,7 @@ class NotesEditor extends StatelessWidget {
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         filled: true,
-        fillColor: const Color.fromRGBO(32, 32, 32, 1), // Set
+        fillColor: const Color.fromRGBO(12, 14, 18, 1), // Set
         hintText:
             "Tap to enter notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
         hintStyle: GoogleFonts.poppins(

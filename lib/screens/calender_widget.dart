@@ -48,7 +48,7 @@ class _CalendarState extends State<Calendar> {
         return Container(
           padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
           decoration: BoxDecoration(
-            color: const Color.fromRGBO(32, 32, 32, 1),
+            color: const Color.fromRGBO(12, 14, 18, 1),
             borderRadius: BorderRadius.circular(
                 5), // Adjust the radius as per your requirement
           ),
@@ -311,9 +311,7 @@ class _DateWidgetState extends State<DateWidget> with DateTimeEntryMixin {
   Color _getBackgroundColor() {
     if (widget.isSelected) {
       return Colors.white;
-    } else if (!widget.isSelected) {
-      return Colors.transparent;
-    }
+    } 
     return Colors.transparent;
   }
 
