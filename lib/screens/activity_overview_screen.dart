@@ -5,14 +5,9 @@ import 'package:tracker_app/screens/calender_widget.dart';
 
 import 'notes_editor_widgets.dart';
 
-class ActivityOverviewScreen extends StatefulWidget {
+class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
 
-  @override
-  State<ActivityOverviewScreen> createState() => _ActivityOverviewScreenState();
-}
-
-class _ActivityOverviewScreenState extends State<ActivityOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
