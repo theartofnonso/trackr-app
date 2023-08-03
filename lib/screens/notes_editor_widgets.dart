@@ -51,6 +51,7 @@ class NotesEditor extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       color: Colors.white),
                   decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5)),
                     focusedBorder: OutlineInputBorder(
