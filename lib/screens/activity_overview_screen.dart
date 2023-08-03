@@ -11,6 +11,7 @@ class ActivityOverviewScreen extends StatelessWidget {
     return const Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Padding(
             padding: EdgeInsets.all(5),
             child: Column(

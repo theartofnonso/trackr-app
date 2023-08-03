@@ -34,6 +34,7 @@ class NotesEditor extends StatelessWidget {
                   child: NotesTitle(isVisible: dateTimeEntry.description != null, message: "Notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",),
                 ),
                 TextField(
+                  textInputAction: TextInputAction.done,
                   cursorColor: Colors.white,
                   controller:
                       TextEditingController(text: dateTimeEntry.description),
