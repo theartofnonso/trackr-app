@@ -16,7 +16,7 @@ class ActivityOverviewScreen extends StatelessWidget {
             child: Column(
               children: [
                 Calendar(),
-                SizedBox(height: 20,),
+                SizedBox(height: 10,),
                 NotesEditor()
               ],
             ),

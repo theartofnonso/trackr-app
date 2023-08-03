@@ -26,40 +26,65 @@ class NotesEditor extends StatelessWidget {
         builder: (_, dateTimeEntryProvider, __) {
       final dateTimeEntry = dateTimeEntryProvider.selectedDateTimeEntry;
       return dateTimeEntry != null
-          ? TextField(
-              cursorColor: Colors.white,
-              controller:
-                  TextEditingController(text: dateTimeEntry.description),
-              maxLines: 5,
-              onChanged: (text) {
-                _autoSaveText(
-                    text: text,
-                    context: context,
-                    dateTimeEntryProvider: dateTimeEntryProvider,
-                    dateTimeEntry: dateTimeEntry);
-              },
-              textCapitalization: TextCapitalization.sentences,
-              style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white),
-              decoration: InputDecoration(
-                enabledBorder:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-                focusedBorder:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-                filled: true,
-                fillColor: const Color.fromRGBO(12, 14, 18, 1),
-                // Set
-                hintText:
-                    "Tap to enter notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                hintStyle: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white70), // Set
-              ),
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                 Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: NotesTitle(isVisible: dateTimeEntry.description != null, message: "Notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",),
+                ),
+                TextField(
+                  cursorColor: Colors.white,
+                  controller:
+                      TextEditingController(text: dateTimeEntry.description),
+                  maxLines: 5,
+                  onChanged: (text) {
+                    _autoSaveText(
+                        text: text,
+                        context: context,
+                        dateTimeEntryProvider: dateTimeEntryProvider,
+                        dateTimeEntry: dateTimeEntry);
+                  },
+                  textCapitalization: TextCapitalization.sentences,
+                  style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    hintText:
+                        "Tap to enter notes for ${dateTimeEntry.createdAt!.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                    hintStyle: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white70), // Set
+                  ),
+                ),
+              ],
             )
           : const SizedBox.shrink();
     });
+  }
+}
+
+class NotesTitle extends StatelessWidget {
+  final bool isVisible;
+  final String message;
+  const NotesTitle({
+    super.key, required this.isVisible, required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return isVisible ? Text(
+      message,
+      style: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey),
+    ) : const SizedBox.shrink();
   }
 }

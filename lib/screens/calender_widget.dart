@@ -61,14 +61,17 @@ class _CalendarState extends State<Calendar> {
                 width: 20,
               ),
               InkWell(
+                splashColor: Colors.transparent,
                 onTap: () => _goToPreviousMonth(
                     initialDateTimeEntry:
                         dateTimeEntryProvider.dateTimeEntries.first),
-                splashColor: Colors.transparent,
-                child: const Icon(
-                  Icons.arrow_circle_left_outlined,
-                  color: Colors.white,
-                ),
+                child: const SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Icon(
+                      Icons.arrow_circle_left_outlined,
+                      color: Colors.white,
+                    )),
               ),
               const Spacer(),
               Text(_currentDate.formattedMonthAndYear(),
@@ -78,11 +81,15 @@ class _CalendarState extends State<Calendar> {
                   )),
               const Spacer(),
               InkWell(
-                onTap: _goToNextMonth,
                 splashColor: Colors.transparent,
-                child: const Icon(
-                  Icons.arrow_circle_right_outlined,
-                  color: Colors.white,
+                onTap: _goToNextMonth,
+                child: const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Icon(
+                    Icons.arrow_circle_right_outlined,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(
