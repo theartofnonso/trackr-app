@@ -46,14 +46,13 @@ class _CalendarState extends State<Calendar> {
     final dateTimeEntryProvider =
         Provider.of<DateTimeEntryProvider>(context, listen: false);
     return Container(
-      padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+      padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
       decoration: BoxDecoration(
         color: const Color.fromRGBO(12, 14, 18, 1),
-        borderRadius: BorderRadius.circular(
-            5), // Adjust the radius as per your requirement
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        //mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -142,7 +141,7 @@ class CalendarDates extends StatelessWidget {
     int daysInMonth = DateTime(year, month + 1, 0).day;
 
     DateTime firstDayOfMonth = DateTime(year, month, 1);
-    DateTime lastDayOfMonth = DateTime(year, month + 1, 1);
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
 
     List<Widget> datesInMonths = [];
 
@@ -171,10 +170,13 @@ class CalendarDates extends StatelessWidget {
     }
 
     // Add padding to end of month
-    final succeedingDays = 35 - lastDayOfMonth.day;
-    final emptyWidgets =
-        List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
-    datesInMonths.addAll(emptyWidgets);
+    final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
+    if (isLastDayNotSunday) {
+      final succeedingDays = 7 - lastDayOfMonth.weekday;
+      final emptyWidgets =
+          List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
+      datesInMonths.addAll(emptyWidgets);
+    }
 
     return datesInMonths;
   }
@@ -201,7 +203,7 @@ class CalendarDates extends StatelessWidget {
       }
 
       widgets.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
+        padding: const EdgeInsets.only(top: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [...dates.sublist(startIndex, endIndex)],
@@ -234,9 +236,8 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 30,
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return SizedBox(
+      width: 40,
       child: Center(
         child: Text(label,
             style: GoogleFonts.poppins(
