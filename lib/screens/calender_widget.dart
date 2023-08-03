@@ -43,66 +43,62 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DateTimeEntryProvider>(
-      builder: (_, dateTimeEntryProvider, __) {
-        return Container(
-          padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(12, 14, 18, 1),
-            borderRadius: BorderRadius.circular(
-                5), // Adjust the radius as per your requirement
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    final dateTimeEntryProvider =
+        Provider.of<DateTimeEntryProvider>(context, listen: false);
+    return Container(
+      padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(12, 14, 18, 1),
+        borderRadius: BorderRadius.circular(
+            5), // Adjust the radius as per your requirement
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  InkWell(
-                    onTap: () => _goToPreviousMonth(
-                        initialDateTimeEntry:
-                            dateTimeEntryProvider.dateTimeEntries.first),
-                    splashColor: Colors.transparent,
-                    child: const Icon(
-                      Icons.arrow_circle_left_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(_currentDate.formattedMonthAndYear(),
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  const Spacer(),
-                  InkWell(
-                    onTap: _goToNextMonth,
-                    splashColor: Colors.transparent,
-                    child: const Icon(
-                      Icons.arrow_circle_right_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  )
-                ],
+              const SizedBox(
+                width: 20,
+              ),
+              InkWell(
+                onTap: () => _goToPreviousMonth(
+                    initialDateTimeEntry:
+                        dateTimeEntryProvider.dateTimeEntries.first),
+                splashColor: Colors.transparent,
+                child: const Icon(
+                  Icons.arrow_circle_left_outlined,
+                  color: Colors.white,
+                ),
+              ),
+              const Spacer(),
+              Text(_currentDate.formattedMonthAndYear(),
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  )),
+              const Spacer(),
+              InkWell(
+                onTap: _goToNextMonth,
+                splashColor: Colors.transparent,
+                child: const Icon(
+                  Icons.arrow_circle_right_outlined,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(
-                height: 20,
-              ),
-              CalendarHeader(),
-              CalendarDates(
-                dateTimeEntries: dateTimeEntryProvider.dateTimeEntries,
-                currentDate: _currentDate,
-                selectedDate: dateTimeEntryProvider.selectedDateTime,
+                width: 20,
               )
             ],
           ),
-        );
-      },
+          const SizedBox(
+            height: 20,
+          ),
+          CalendarHeader(),
+          CalendarDates(
+            currentDate: _currentDate,
+          )
+        ],
+      ),
     );
   }
 }
@@ -126,17 +122,14 @@ class CalendarHeader extends StatelessWidget {
 }
 
 class CalendarDates extends StatelessWidget {
-  final List<DateTimeEntry> dateTimeEntries;
   final DateTime currentDate;
-  final DateTime selectedDate;
 
-  const CalendarDates(
-      {super.key,
-      required this.dateTimeEntries,
-      required this.currentDate,
-      required this.selectedDate});
+  const CalendarDates({super.key, required this.currentDate});
 
-  List<Widget> _datesToColumns({required DateTime currentDateTime}) {
+  List<Widget> _datesToColumns(
+      {required List<DateTimeEntry> dateTimeEntries,
+      required DateTime currentDateTime,
+      required DateTime selectedDate}) {
     int year = currentDate.year;
     int month = currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -179,9 +172,16 @@ class CalendarDates extends StatelessWidget {
     return datesInMonths;
   }
 
-  List<Widget> _dateToRows({required DateTime currentDateTime}) {
+  List<Widget> _dateToRows({
+    required DateTime currentDateTime,
+    required DateTime selectedDate,
+    required List<DateTimeEntry> dateTimeEntries,
+  }) {
     List<Widget> widgets = [];
-    final dates = _datesToColumns(currentDateTime: currentDateTime);
+    final dates = _datesToColumns(
+        currentDateTime: currentDateTime,
+        selectedDate: selectedDate,
+        dateTimeEntries: dateTimeEntries);
     int iterationCount = 6;
     int numbersPerIteration = 7;
 
@@ -206,9 +206,17 @@ class CalendarDates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [..._dateToRows(currentDateTime: currentDate)],
-    );
+    return Consumer<DateTimeEntryProvider>(
+        builder: (_, dateTimeEntryProvider, __) {
+      return Column(
+        children: [
+          ..._dateToRows(
+              currentDateTime: currentDate,
+              selectedDate: dateTimeEntryProvider.selectedDateTime,
+              dateTimeEntries: dateTimeEntryProvider.dateTimeEntries)
+        ],
+      );
+    });
   }
 }
 
@@ -251,9 +259,6 @@ class DateWidget extends StatefulWidget {
 }
 
 class _DateWidgetState extends State<DateWidget> {
-
-  bool _isPreSelected = false;
-
   void addNewDateTimeEntry(
       {required BuildContext context, required DateTime? dateTime}) async {
     if (dateTime != null) {
@@ -339,15 +344,12 @@ class _DateWidgetState extends State<DateWidget> {
         }
       },
       onTap: () {
-        setState(() {
-          _isPreSelected = true;
-          selectDate(context: context, date: widget.dateTime);
-          if (widget.isSelected) {
-            unSelectDateTimeEntry(context: context);
-          } else {
-            selectDateTimeEntry(context: context, entry: widget.dateTimeEntry);
-          }
-        }); // To update the date
+        selectDate(context: context, date: widget.dateTime);
+        if (widget.isSelected) {
+          unSelectDateTimeEntry(context: context);
+        } else {
+          selectDateTimeEntry(context: context, entry: widget.dateTimeEntry);
+        } // To update the date
       },
       child: Container(
         width: 40,
