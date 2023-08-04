@@ -41,6 +41,30 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
+  int _calculateNumOfDateEntry({required List<DateTimeEntry> dateTimeEntries}) {
+    int year = _currentDate.year;
+    int month = _currentDate.month;
+    int daysInMonth = DateTime(year, month + 1, 0).day;
+
+    int numOfDateEntry = 0;
+
+    for (int day = 1; day <= daysInMonth; day++) {
+      final date = DateTime(year, month, day);
+      final dateTimeEntry = dateTimeEntries.firstWhereOrNull((dateTimeEntry) {
+        final dateTime = dateTimeEntry.createdAt;
+        if (dateTime != null) {
+          return dateTime.getDateTimeInUtc().isSameDateAs(other: date);
+        }
+        return false;
+      });
+      if (dateTimeEntry != null) {
+        numOfDateEntry += 1;
+      }
+    }
+
+    return numOfDateEntry;
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateTimeEntryProvider =
@@ -52,7 +76,7 @@ class _CalendarState extends State<Calendar> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: Column(
-        //mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -102,6 +126,23 @@ class _CalendarState extends State<Calendar> {
           CalendarHeader(),
           CalendarDates(
             currentDate: _currentDate,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              const SizedBox(
+                width: 6,
+              ),
+              Text(
+                "${_calculateNumOfDateEntry(dateTimeEntries: dateTimeEntryProvider.dateTimeEntries)} times this month",
+                style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white70),
+              ),
+            ],
           )
         ],
       ),
@@ -134,7 +175,6 @@ class CalendarDates extends StatelessWidget {
 
   List<Widget> _datesToColumns(
       {required List<DateTimeEntry> dateTimeEntries,
-      required DateTime currentDateTime,
       required DateTime selectedDate}) {
     int year = currentDate.year;
     int month = currentDate.month;
@@ -157,10 +197,13 @@ class CalendarDates extends StatelessWidget {
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      final dateTimeEntry = dateTimeEntries.firstWhereOrNull((dateTimeEntry) =>
-          dateTimeEntry.createdAt!
-              .getDateTimeInUtc()
-              .isSameDateAs(other: date));
+      final dateTimeEntry = dateTimeEntries.firstWhereOrNull((dateTimeEntry) {
+        final dateTime = dateTimeEntry.createdAt;
+        if (dateTime != null) {
+          return dateTime.getDateTimeInUtc().isSameDateAs(other: date);
+        }
+        return false;
+      });
       datesInMonths.add(DateWidget(
         label: date.day.toString(),
         dateTime: date,
@@ -182,15 +225,12 @@ class CalendarDates extends StatelessWidget {
   }
 
   List<Widget> _dateToRows({
-    required DateTime currentDateTime,
     required DateTime selectedDate,
     required List<DateTimeEntry> dateTimeEntries,
   }) {
     List<Widget> widgets = [];
     final dates = _datesToColumns(
-        currentDateTime: currentDateTime,
-        selectedDate: selectedDate,
-        dateTimeEntries: dateTimeEntries);
+        selectedDate: selectedDate, dateTimeEntries: dateTimeEntries);
     int iterationCount = 6;
     int numbersPerIteration = 7;
 
@@ -220,7 +260,6 @@ class CalendarDates extends StatelessWidget {
       return Column(
         children: [
           ..._dateToRows(
-              currentDateTime: currentDate,
               selectedDate: dateTimeEntryProvider.selectedDateTime,
               dateTimeEntries: dateTimeEntryProvider.dateTimeEntries)
         ],
