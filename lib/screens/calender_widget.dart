@@ -68,7 +68,7 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     final dateTimeEntryProvider =
-        Provider.of<DateTimeEntryProvider>(context, listen: false);
+        Provider.of<DateTimeEntryProvider>(context, listen: true);
     return Container(
       padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
       decoration: BoxDecoration(
