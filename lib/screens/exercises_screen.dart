@@ -83,10 +83,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       navigationBar: CupertinoNavigationBar(
         trailing: GestureDetector(
           onTap: _navigateBack ,
-            child: Text(
+            child: _selectedExercises.isNotEmpty ? Text(
           "Add (${_selectedExercises.length})",
           style: const TextStyle(color: CupertinoColors.white),
-        )),
+        ) : const SizedBox.shrink()),
       ),
       child: ListView(
         children: [
