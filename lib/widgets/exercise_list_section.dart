@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
+import 'exercise_item.dart';
 import 'exercise_list_item.dart';
 
 class ExerciseListSection extends StatefulWidget {
   final BodyPart bodyPart;
-  final List<Exercise> exercises;
-  final void Function(Exercise exerciseToBeAdded) onSelect;
-  final void Function(Exercise exerciseToBeRemoved) onRemove;
+  final List<ExerciseItem> exercises;
+  final void Function(ExerciseItem exerciseItemToBeAdded) onSelect;
+  final void Function(ExerciseItem exerciseItemToBeRemoved) onRemove;
 
   const ExerciseListSection(
       {super.key,
@@ -26,27 +27,30 @@ class _ExerciseListSectionState extends State<ExerciseListSection> {
       TextStyle(color: CupertinoColors.white.withOpacity(0.7));
 
   List<ExerciseListItem> _exercisesToListItem(
-      {required List<Exercise> exercises, required BodyPart bodyPart}) {
+      {required List<ExerciseItem> exercises, required BodyPart bodyPart}) {
     return exercises
-        .map((exercise) => ExerciseListItem(
-              exercise: exercise,
+        .map((exerciseItem) => ExerciseListItem(
+              exerciseItem: exerciseItem,
               onTap: (value) => _onSelectExercise(
-                  isSelected: value, selectedExercise: exercise),
+                  isSelected: value, selectedExerciseItem: exerciseItem),
             ))
         .toList();
   }
 
   void _onSelectExercise(
-      {required bool isSelected, required Exercise selectedExercise}) {
+      {required bool isSelected, required ExerciseItem selectedExerciseItem}) {
     if (isSelected) {
-      widget.onSelect(selectedExercise);
+      selectedExerciseItem.isSelected = true;
+      widget.onSelect(selectedExerciseItem);
     } else {
-      widget.onRemove(selectedExercise);
+      selectedExerciseItem.isSelected = false;
+      widget.onRemove(selectedExerciseItem);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {         
+
     return widget.exercises.isNotEmpty
         ? CupertinoListSection.insetGrouped(
             backgroundColor: Colors.transparent,

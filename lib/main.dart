@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
       theme: const CupertinoThemeData(
           brightness: Brightness.light,
           barBackgroundColor: Color.fromRGBO(12, 14, 18, 1),
+          textTheme: CupertinoTextThemeData(textStyle: TextStyle(color: CupertinoColors.white), navTitleTextStyle: TextStyle(color: CupertinoColors.white)),
           scaffoldBackgroundColor: Color.fromRGBO(12, 14, 18, 1)),
       home: _isLoading
           ? const Center(child: CircularProgressIndicator())

@@ -1,16 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/screens/exercises_screen.dart';
+import 'package:tracker_app/screens/new_workout_screen.dart';
 
 class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
 
-  Future<void> _showListOfExercises(BuildContext context) async {
-    final selectedExercises = await showCupertinoModalPopup(context: context, builder: (BuildContext context) {
-        return const ExercisesScreen();
-    }, );
-
-    print(selectedExercises);
-
+  Future<void> _showNewWorkoutScreen(BuildContext context) async {
+    final newWorkout = await Navigator.of(context).push(
+        CupertinoPageRoute(builder: (context) => const NewWorkoutScreen()));
+    print(newWorkout);
   }
 
   @override
@@ -26,7 +23,9 @@ class ActivityOverviewScreen extends StatelessWidget {
                 // Calendar(),
                 // SizedBox(height: 15,),
                 // NotesEditor(),
-                CupertinoButton.filled(child: const Text("Exercises"), onPressed: () => _showListOfExercises(context))
+                CupertinoButton.filled(
+                    child: const Text("Create Workout"),
+                    onPressed: () => _showNewWorkoutScreen(context))
               ],
             ),
           ),
