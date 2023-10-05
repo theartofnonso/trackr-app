@@ -63,12 +63,12 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       //   _selectedFruit = selectedItem;
       // });
     },
-    children: List<Widget>.generate(100, (int index) {
+    children: List<Widget>.generate(101, (int index) {
       return Center(
           child: Text(
-        "$index",
-        style: TextStyle(color: CupertinoColors.white),
-      ));
+            "$index",
+            style: TextStyle(color: CupertinoColors.white),
+          ));
     }),
   );
 
@@ -113,22 +113,32 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             children: [
               CupertinoListSection.insetGrouped(
                 backgroundColor: Colors.transparent,
-                header: const CupertinoListTile(
-                  padding: EdgeInsets.zero,
-                  title: Text("Bench Press",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
-                  trailing: Icon(CupertinoIcons.ellipsis_vertical),
+                header: Column(
+                  children: [
+                    CupertinoListTile(
+                      padding: EdgeInsets.zero,
+                      title: Text("Bench Press",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18)),
+                      trailing: Icon(CupertinoIcons.ellipsis_vertical),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      child: CupertinoTextField(
+                        decoration: BoxDecoration(color: Colors.transparent),
+                        padding: EdgeInsets.zero,
+                        keyboardType: TextInputType.number,
+                        maxLength: 100,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.9)),
+                        placeholder: "Enter a note for Bench press",
+                        placeholderStyle: TextStyle(color: CupertinoColors.inactiveGray, fontSize: 16),
+                      ),
+                    )
+                  ],
                 ),
-                footer: GestureDetector(
-                    onTap: () => _showListOfExercises(context),
-                    child: const Center(
-                        child: Text(
-                      "Add new set",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
                 children: [
                   CupertinoListTile.notched(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
@@ -204,6 +214,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                   ),
                 ],
               ),
+              GestureDetector(
+                  onTap: () => _showListOfExercises(context),
+                  child: const Center(
+                      child: Text(
+                        "Add new exercise",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
             ],
           ),
         ));
