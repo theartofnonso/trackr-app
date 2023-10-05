@@ -1,21 +1,17 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
-import 'package:tracker_app/widgets/exercise_list.dart';
+
+import '../widgets/exercise_list_section.dart';
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({super.key});
 
   @override
   State<ExercisesScreen> createState() => _ExercisesScreenState();
+
 }
 
 class _ExercisesScreenState extends State<ExercisesScreen> {
-  final listSectionStyle =
-      TextStyle(color: CupertinoColors.white.withOpacity(0.7));
-
-  final listTileStyle = const TextStyle(color: CupertinoColors.white);
-
   final _exercises = <Exercise>[
     Exercise("Incline Dumbbells", BodyPart.chest),
     Exercise("Chest Flys", BodyPart.chest),
@@ -37,10 +33,32 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
   List<Exercise> _filteredExercises = [];
 
-  void _exercisesWhere({required String searchTerm}) {
+  final List<Exercise> _selectedExercises = [];
+
+  void _whereExercises({required String searchTerm}) {
     setState(() {
-      _filteredExercises = _exercises.where((exercise) => exercise.name.toLowerCase().contains(searchTerm.toLowerCase())).toList();;
+      _filteredExercises = _exercises
+          .where((exercise) =>
+              exercise.name.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList();
+      ;
     });
+  }
+
+  void _onSelectExercise({required Exercise exercise}) {
+    setState(() {
+      _selectedExercises.add(exercise);
+    });
+  }
+
+  void _onRemoveExercise({required Exercise exercise}) {
+    setState(() {
+      _selectedExercises.remove(exercise);
+    });
+  }
+
+  void _navigateBack() {
+    Navigator.of(context).pop(_selectedExercises);
   }
 
   @override
@@ -49,7 +67,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         .where((exercise) => exercise.bodyPart == BodyPart.chest)
         .toList();
 
-    final shoulderExercises = _filteredExercises
+    final shouldersExercises = _filteredExercises
         .where((exercise) => exercise.bodyPart == BodyPart.shoulders)
         .toList();
 
@@ -61,15 +79,54 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         .where((exercise) => exercise.bodyPart == BodyPart.legs)
         .toList();
 
-    return Scaffold(
-      body: ListView(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        trailing: GestureDetector(
+          onTap: _navigateBack ,
+            child: Text(
+          "Add (${_selectedExercises.length})",
+          style: const TextStyle(color: CupertinoColors.white),
+        )),
+      ),
+      child: ListView(
         children: [
-          SearchBar(onChanged: (searchTerm) => _exercisesWhere(searchTerm: searchTerm)),
-          ExerciseList(exercises: chestExercises, bodyPart: BodyPart.chest),
-          ExerciseList(
-              exercises: shoulderExercises, bodyPart: BodyPart.shoulders),
-          ExerciseList(exercises: tricepsExercises, bodyPart: BodyPart.triceps),
-          ExerciseList(exercises: legsExercises, bodyPart: BodyPart.legs),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: CupertinoSearchTextField(
+                  onChanged: (searchTerm) =>
+                      _whereExercises(searchTerm: searchTerm))),
+          ExerciseListSection(
+            exercises: chestExercises,
+            bodyPart: BodyPart.chest,
+            onSelect: (Exercise exerciseToBeAdded) =>
+                _onSelectExercise(exercise: exerciseToBeAdded),
+            onRemove: (Exercise exerciseToBeRemoved) =>
+                _onRemoveExercise(exercise: exerciseToBeRemoved),
+          ),
+          ExerciseListSection(
+            exercises: shouldersExercises,
+            bodyPart: BodyPart.shoulders,
+            onSelect: (Exercise exerciseToBeAdded) =>
+                _onSelectExercise(exercise: exerciseToBeAdded),
+            onRemove: (Exercise exerciseToBeRemoved) =>
+                _onRemoveExercise(exercise: exerciseToBeRemoved),
+          ),
+          ExerciseListSection(
+            exercises: tricepsExercises,
+            bodyPart: BodyPart.triceps,
+            onSelect: (Exercise exerciseToBeAdded) =>
+                _onSelectExercise(exercise: exerciseToBeAdded),
+            onRemove: (Exercise exerciseToBeRemoved) =>
+                _onRemoveExercise(exercise: exerciseToBeRemoved),
+          ),
+          ExerciseListSection(
+            exercises: legsExercises,
+            bodyPart: BodyPart.legs,
+            onSelect: (Exercise exerciseToBeAdded) =>
+                _onSelectExercise(exercise: exerciseToBeAdded),
+            onRemove: (Exercise exerciseToBeRemoved) =>
+                _onRemoveExercise(exercise: exerciseToBeRemoved),
+          ),
         ],
       ),
     );
@@ -79,5 +136,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   void initState() {
     super.initState();
     _filteredExercises = _exercises;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

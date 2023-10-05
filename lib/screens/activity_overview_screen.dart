@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:tracker_app/screens/calender_widget.dart';
 import 'package:tracker_app/screens/exercises_screen.dart';
-
-import 'notes_editor_widgets.dart';
 
 class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
 
-  void _showListOfExercises(BuildContext context) {
-    showCupertinoModalPopup(context: context, builder: (BuildContext context) {
-        return ExercisesScreen();
+  Future<void> _showListOfExercises(BuildContext context) async {
+    final selectedExercises = await showCupertinoModalPopup(context: context, builder: (BuildContext context) {
+        return const ExercisesScreen();
     }, );
+
+    print(selectedExercises);
+
   }
 
   @override
