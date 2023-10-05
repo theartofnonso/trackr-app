@@ -5,14 +5,17 @@ import '../widgets/exercise_list_section.dart';
 import '../widgets/exercise_item.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
-  const ExerciseLibraryScreen({super.key});
+
+  final List<Exercise> preSelectedExercises;
+
+  const ExerciseLibraryScreen({super.key, required this.preSelectedExercises});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-  final _exercises = <ExerciseItem>[
+  List<ExerciseItem> _exerciseItems = <ExerciseItem>[
     ExerciseItem(exercise: Exercise("Incline Dumbbells", BodyPart.chest)),
     ExerciseItem(exercise: Exercise("Chest Flys", BodyPart.chest)),
     ExerciseItem(
@@ -40,7 +43,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _whereExercises({required String searchTerm}) {
     setState(() {
-      _filteredExercises = _exercises
+      _filteredExercises = _exerciseItems
           .where((exerciseItem) => exerciseItem.exercise.name
               .toLowerCase()
               .contains(searchTerm.toLowerCase()))
@@ -62,7 +65,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateBack() {
-    Navigator.of(context).pop(_selectedExercises);
+    final exercises = _selectedExercises.map((exerciseItem) => exerciseItem.exercise).toList();
+    Navigator.of(context).pop(exercises);
   }
 
   @override
@@ -145,7 +149,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   void initState() {
     super.initState();
-    _filteredExercises = _exercises;
+    final exercisesItems = _exerciseItems.where((exerciseItem) => !widget.preSelectedExercises.contains(exerciseItem.exercise)).toList();
+    if(exercisesItems.isNotEmpty) {
+      _exerciseItems = exercisesItems;
+      _filteredExercises = _exerciseItems;
+    } else {
+      _filteredExercises = _exerciseItems;
+    }
   }
 
   @override

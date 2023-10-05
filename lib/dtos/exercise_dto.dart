@@ -21,5 +21,14 @@ class Exercise {
 
   Exercise(this.name, this.bodyPart);
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Exercise &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          bodyPart == other.bodyPart;
 
+  @override
+  int get hashCode => name.hashCode ^ bodyPart.hashCode;
 }
