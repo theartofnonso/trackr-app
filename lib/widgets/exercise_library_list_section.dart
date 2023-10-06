@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
-import 'exercise_item.dart';
-import 'exercise_list_item.dart';
+import 'exercise_library_item.dart';
+import 'exercise_library_list_item.dart';
 
-class ExerciseListSection extends StatefulWidget {
+class ExerciseLibraryListSection extends StatefulWidget {
   final BodyPart bodyPart;
-  final List<ExerciseItem> exercises;
-  final void Function(ExerciseItem exerciseItemToBeAdded) onSelect;
-  final void Function(ExerciseItem exerciseItemToBeRemoved) onRemove;
+  final List<ExerciseLibraryItem> exercises;
+  final void Function(ExerciseLibraryItem exerciseItemToBeAdded) onSelect;
+  final void Function(ExerciseLibraryItem exerciseItemToBeRemoved) onRemove;
 
-  const ExerciseListSection(
+  const ExerciseLibraryListSection(
       {super.key,
       required this.exercises,
       required this.bodyPart,
@@ -19,17 +19,17 @@ class ExerciseListSection extends StatefulWidget {
       required this.onRemove});
 
   @override
-  State<ExerciseListSection> createState() => _ExerciseListSectionState();
+  State<ExerciseLibraryListSection> createState() => _ExerciseLibraryListSectionState();
 }
 
-class _ExerciseListSectionState extends State<ExerciseListSection> {
+class _ExerciseLibraryListSectionState extends State<ExerciseLibraryListSection> {
   final listSectionStyle =
       TextStyle(color: CupertinoColors.white.withOpacity(0.7));
 
-  List<ExerciseListItem> _exercisesToListItem(
-      {required List<ExerciseItem> exercises, required BodyPart bodyPart}) {
+  List<ExerciseLibraryListItem> _exercisesToListItem(
+      {required List<ExerciseLibraryItem> exercises, required BodyPart bodyPart}) {
     return exercises
-        .map((exerciseItem) => ExerciseListItem(
+        .map((exerciseItem) => ExerciseLibraryListItem(
               exerciseItem: exerciseItem,
               onTap: (value) => _onSelectExercise(
                   isSelected: value, selectedExerciseItem: exerciseItem),
@@ -38,7 +38,7 @@ class _ExerciseListSectionState extends State<ExerciseListSection> {
   }
 
   void _onSelectExercise(
-      {required bool isSelected, required ExerciseItem selectedExerciseItem}) {
+      {required bool isSelected, required ExerciseLibraryItem selectedExerciseItem}) {
     if (isSelected) {
       selectedExerciseItem.isSelected = true;
       widget.onSelect(selectedExerciseItem);

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
-import '../widgets/exercise_list_section.dart';
-import '../widgets/exercise_item.dart';
+import '../widgets/exercise_library_list_section.dart';
+import '../widgets/exercise_library_item.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
 
@@ -15,31 +15,31 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-  List<ExerciseItem> _exerciseItems = <ExerciseItem>[
-    ExerciseItem(exercise: Exercise("Incline Dumbbells", BodyPart.chest)),
-    ExerciseItem(exercise: Exercise("Chest Flys", BodyPart.chest)),
-    ExerciseItem(
+  List<ExerciseLibraryItem> _exerciseItems = <ExerciseLibraryItem>[
+    ExerciseLibraryItem(exercise: Exercise("Incline Dumbbells", BodyPart.chest)),
+    ExerciseLibraryItem(exercise: Exercise("Chest Flys", BodyPart.chest)),
+    ExerciseLibraryItem(
         exercise: Exercise("Decline Smith machine press", BodyPart.chest)),
-    ExerciseItem(exercise: Exercise("Chest Dips", BodyPart.chest)),
-    ExerciseItem(exercise: Exercise("Lateral Raises", BodyPart.shoulders)),
-    ExerciseItem(exercise: Exercise("Military press", BodyPart.shoulders)),
-    ExerciseItem(
+    ExerciseLibraryItem(exercise: Exercise("Chest Dips", BodyPart.chest)),
+    ExerciseLibraryItem(exercise: Exercise("Lateral Raises", BodyPart.shoulders)),
+    ExerciseLibraryItem(exercise: Exercise("Military press", BodyPart.shoulders)),
+    ExerciseLibraryItem(
         exercise: Exercise("Single Lateral Raises", BodyPart.shoulders)),
-    ExerciseItem(
+    ExerciseLibraryItem(
         exercise: Exercise("Double Lateral Raises", BodyPart.shoulders)),
-    ExerciseItem(exercise: Exercise("Skull Crushers", BodyPart.triceps)),
-    ExerciseItem(exercise: Exercise("Tricep Extensions", BodyPart.triceps)),
-    ExerciseItem(exercise: Exercise("Tricep Dips", BodyPart.triceps)),
-    ExerciseItem(exercise: Exercise("Pulldowns", BodyPart.triceps)),
-    ExerciseItem(exercise: Exercise("Deadlift", BodyPart.legs)),
-    ExerciseItem(exercise: Exercise("Hamstring Curls", BodyPart.legs)),
-    ExerciseItem(exercise: Exercise("Romanian Deadlift", BodyPart.legs)),
-    ExerciseItem(exercise: Exercise("Single Leg Curl", BodyPart.legs)),
+    ExerciseLibraryItem(exercise: Exercise("Skull Crushers", BodyPart.triceps)),
+    ExerciseLibraryItem(exercise: Exercise("Tricep Extensions", BodyPart.triceps)),
+    ExerciseLibraryItem(exercise: Exercise("Tricep Dips", BodyPart.triceps)),
+    ExerciseLibraryItem(exercise: Exercise("Pulldowns", BodyPart.triceps)),
+    ExerciseLibraryItem(exercise: Exercise("Deadlift", BodyPart.legs)),
+    ExerciseLibraryItem(exercise: Exercise("Hamstring Curls", BodyPart.legs)),
+    ExerciseLibraryItem(exercise: Exercise("Romanian Deadlift", BodyPart.legs)),
+    ExerciseLibraryItem(exercise: Exercise("Single Leg Curl", BodyPart.legs)),
   ];
 
-  List<ExerciseItem> _filteredExercises = [];
+  List<ExerciseLibraryItem> _filteredExercises = [];
 
-  final List<ExerciseItem> _selectedExercises = [];
+  final List<ExerciseLibraryItem> _selectedExercises = [];
 
   void _whereExercises({required String searchTerm}) {
     setState(() {
@@ -52,13 +52,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     });
   }
 
-  void _onSelectExercise({required ExerciseItem exerciseItem}) {
+  void _onSelectExercise({required ExerciseLibraryItem exerciseItem}) {
     setState(() {
       _selectedExercises.add(exerciseItem);
     });
   }
 
-  void _onRemoveExercise({required ExerciseItem exerciseItem}) {
+  void _onRemoveExercise({required ExerciseLibraryItem exerciseItem}) {
     setState(() {
       _selectedExercises.remove(exerciseItem);
     });
@@ -109,36 +109,36 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               child: CupertinoSearchTextField(
                   onChanged: (searchTerm) =>
                       _whereExercises(searchTerm: searchTerm))),
-          ExerciseListSection(
+          ExerciseLibraryListSection(
             exercises: chestExercises,
             bodyPart: BodyPart.chest,
-            onSelect: (ExerciseItem exerciseItemToBeAdded) =>
+            onSelect: (ExerciseLibraryItem exerciseItemToBeAdded) =>
                 _onSelectExercise(exerciseItem: exerciseItemToBeAdded),
-            onRemove: (ExerciseItem exerciseItemToBeRemoved) =>
+            onRemove: (ExerciseLibraryItem exerciseItemToBeRemoved) =>
                 _onRemoveExercise(exerciseItem: exerciseItemToBeRemoved),
           ),
-          ExerciseListSection(
+          ExerciseLibraryListSection(
             exercises: shouldersExercises,
             bodyPart: BodyPart.shoulders,
-            onSelect: (ExerciseItem exerciseItemToBeAdded) =>
+            onSelect: (ExerciseLibraryItem exerciseItemToBeAdded) =>
                 _onSelectExercise(exerciseItem: exerciseItemToBeAdded),
-            onRemove: (ExerciseItem exerciseItemToBeRemoved) =>
+            onRemove: (ExerciseLibraryItem exerciseItemToBeRemoved) =>
                 _onRemoveExercise(exerciseItem: exerciseItemToBeRemoved),
           ),
-          ExerciseListSection(
+          ExerciseLibraryListSection(
             exercises: tricepsExercises,
             bodyPart: BodyPart.triceps,
-            onSelect: (ExerciseItem exerciseItemToBeAdded) =>
+            onSelect: (ExerciseLibraryItem exerciseItemToBeAdded) =>
                 _onSelectExercise(exerciseItem: exerciseItemToBeAdded),
-            onRemove: (ExerciseItem exerciseItemToBeRemoved) =>
+            onRemove: (ExerciseLibraryItem exerciseItemToBeRemoved) =>
                 _onRemoveExercise(exerciseItem: exerciseItemToBeRemoved),
           ),
-          ExerciseListSection(
+          ExerciseLibraryListSection(
             exercises: legsExercises,
             bodyPart: BodyPart.legs,
-            onSelect: (ExerciseItem exerciseItemToBeAdded) =>
+            onSelect: (ExerciseLibraryItem exerciseItemToBeAdded) =>
                 _onSelectExercise(exerciseItem: exerciseItemToBeAdded),
-            onRemove: (ExerciseItem exerciseItemToBeRemoved) =>
+            onRemove: (ExerciseLibraryItem exerciseItemToBeRemoved) =>
                 _onRemoveExercise(exerciseItem: exerciseItemToBeRemoved),
           ),
         ],
