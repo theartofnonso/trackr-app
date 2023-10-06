@@ -1,5 +1,5 @@
 
-import '../dtos/exercise_dto.dart';
+import '../../dtos/exercise_dto.dart';
 
 class ExerciseLibraryItem {
 

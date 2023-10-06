@@ -43,21 +43,26 @@ void _showExerciseActionSheet(
             Navigator.pop(context);
             _showDialog(child: _repsPicker, height: 216, context: context);
           },
-          child: const Text('Add new set', style: const TextStyle(fontSize: 18)),
+          child:
+              const Text('Add new set', style: const TextStyle(fontSize: 18)),
         ),
         CupertinoActionSheetAction(
           onPressed: () {
             Navigator.pop(context);
             _showDialog(child: _repsPicker, height: 216, context: context);
           },
-          child: const Text('Add warm-up set', style: const TextStyle(fontSize: 18)),
+          child: const Text('Add warm-up set',
+              style: const TextStyle(fontSize: 18)),
         ),
         CupertinoActionSheetAction(
           onPressed: () {
             Navigator.pop(context);
             _showDialog(child: _repsPicker, height: 216, context: context);
           },
-          child: Text('Super set $exercise with ...', style: const TextStyle(fontSize: 18),),
+          child: Text(
+            'Super set $exercise with ...',
+            style: const TextStyle(fontSize: 18),
+          ),
         ),
         CupertinoActionSheetAction(
           isDestructiveAction: true,
@@ -82,7 +87,7 @@ void _showSetsActionSheet({required BuildContext context}) {
             Navigator.pop(context);
             _showDialog(child: _repsPicker, height: 216, context: context);
           },
-          child: const Text('Add Reps'),
+          child: const Text('Drop set'),
         ),
         CupertinoActionSheetAction(
           isDestructiveAction: true,
@@ -129,7 +134,6 @@ class NewWorkoutScreen extends StatefulWidget {
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
-
   final List<Exercise> _selectedExercises = [];
 
   Future<void> _showListOfExercises(BuildContext context) async {
@@ -139,15 +143,17 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         return ExerciseLibraryScreen(preSelectedExercises: _selectedExercises);
       },
     );
-    if(selectedExercises != null) {
+    if (selectedExercises != null) {
       setState(() {
         _selectedExercises.addAll(selectedExercises);
       });
     }
   }
 
-  List<WorkoutListSection> _exercisesTo() {
-    return _selectedExercises.map((exercise) => WorkoutListSection(exercise: exercise)).toList();
+  List<WorkoutProcedureListSection> _exercisesTo() {
+    return _selectedExercises
+        .map((exercise) => WorkoutProcedureListSection(exercise: exercise))
+        .toList();
   }
 
   void _navigateBack() {
@@ -156,7 +162,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: const Text(
@@ -189,10 +194,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 }
 
-class WorkoutListSection extends StatelessWidget {
+class WorkoutProcedureListSection extends StatelessWidget {
   final Exercise exercise;
 
-  const WorkoutListSection({super.key, required this.exercise});
+  const WorkoutProcedureListSection({super.key, required this.exercise});
 
   @override
   Widget build(BuildContext context) {
@@ -236,42 +241,42 @@ class WorkoutListSection extends StatelessWidget {
         ],
       ),
       children: const [
-        WorkoutListTile(
+        WorkoutProcedureListTile(
             key: Key("_asda"),
             previousWorkoutSummary: '',
             repsCount: 10,
             leading: 'W',
             weight: 0,
             leadingColor: CupertinoColors.activeOrange),
-        WorkoutListTile(
+        WorkoutProcedureListTile(
             key: Key("_acca"),
             previousWorkoutSummary: '',
             repsCount: 10,
             leading: 'W',
             weight: 0,
             leadingColor: CupertinoColors.activeOrange),
-        WorkoutListTile(
+        WorkoutProcedureListTile(
             key: Key("_aada"),
             previousWorkoutSummary: '',
             repsCount: 10,
             leading: 'W',
             weight: 0,
             leadingColor: CupertinoColors.activeOrange),
-        WorkoutListTile(
+        WorkoutProcedureListTile(
             key: Key("_asasfa"),
             previousWorkoutSummary: '',
             repsCount: 10,
             leading: '1',
             weight: 0,
             leadingColor: CupertinoColors.activeBlue),
-        WorkoutListTile(
+        WorkoutProcedureListTile(
             key: Key("_aadascca"),
             previousWorkoutSummary: '',
             repsCount: 10,
             leading: '2',
             weight: 0,
             leadingColor: CupertinoColors.activeBlue),
-        WorkoutListTile(
+        WorkoutProcedureListTile(
             key: Key("_aaasdfada"),
             previousWorkoutSummary: '',
             repsCount: 10,
@@ -283,8 +288,8 @@ class WorkoutListSection extends StatelessWidget {
   }
 }
 
-class WorkoutListTile extends StatelessWidget {
-  const WorkoutListTile({
+class WorkoutProcedureListTile extends StatelessWidget {
+  const WorkoutProcedureListTile({
     super.key,
     required this.previousWorkoutSummary,
     required this.repsCount,
@@ -302,61 +307,84 @@ class WorkoutListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: super.key!,
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: CupertinoColors.destructiveRed,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Icon(
-              CupertinoIcons.delete_solid,
-              color: CupertinoColors.white,
-            ),
-            SizedBox(
-              width: 10,
-            )
-          ],
-        ),
-      ),
-      child: CupertinoListTile.notched(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
-        leading: CircleAvatar(
-          backgroundColor: leadingColor,
-          child: Text(
-            leading,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: CupertinoColors.white),
+    return GestureDetector(
+      onTap: () => _showSetsActionSheet(context: context),
+      child: Dismissible(
+        key: super.key!,
+        direction: DismissDirection.endToStart,
+        background: Container(
+          color: CupertinoColors.destructiveRed,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(
+                CupertinoIcons.delete_solid,
+                color: CupertinoColors.white,
+              ),
+              SizedBox(
+                width: 10,
+              )
+            ],
           ),
         ),
-        title: Text("$repsCount Reps"),
-        trailing: const CTextField(
-          value: 10,
+        child: CupertinoListTile.notched(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
+          leading: CircleAvatar(
+            backgroundColor: leadingColor,
+            child: Text(
+              leading,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: CupertinoColors.white),
+            ),
+          ),
+          title: Row(
+            children: [
+              const SizedBox(width: 18,),
+              const WorkoutProcedureListTileTextField(
+                value: 10,
+                label: 'Reps',
+              ),
+              const SizedBox(width: 34,),
+              const WorkoutProcedureListTileTextField(
+                value: 10,
+                label: 'kg',
+              ),
+              const SizedBox(width: 34,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Past"),
+                  const SizedBox(height: 8,),
+                  Text(previousWorkoutSummary.isNotEmpty ? previousWorkoutSummary : "No past data",
+                      style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)))
+                ],
+              )
+            ],
+          ),
         ),
-        subtitle: Text("Past: ${previousWorkoutSummary.isNotEmpty ? previousWorkoutSummary : "No past data"}",
-            style: TextStyle(color: CupertinoColors.white.withOpacity(0.7))),
       ),
     );
   }
 }
 
-class CTextField extends StatelessWidget {
+class WorkoutProcedureListTileTextField extends StatelessWidget {
+  final String label;
   final int value;
 
-  const CTextField({super.key, required this.value});
+  const WorkoutProcedureListTileTextField(
+      {super.key, required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("kg"),
-        SizedBox(
+        Text(label, style: const TextStyle(color: CupertinoColors.opaqueSeparator),),
+        const SizedBox(
           height: 8,
         ),
-        SizedBox(
+        const SizedBox(
           width: 30,
           child: CupertinoTextField(
             decoration: BoxDecoration(color: Colors.transparent),
@@ -365,10 +393,10 @@ class CTextField extends StatelessWidget {
             maxLength: 3,
             maxLines: 1,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: TextStyle(fontWeight: FontWeight.w600),
+            style: TextStyle(fontWeight: FontWeight.bold),
             placeholder: "0",
             placeholderStyle: TextStyle(
-                fontWeight: FontWeight.w600, color: CupertinoColors.white),
+                fontWeight: FontWeight.bold, color: CupertinoColors.white),
           ),
         )
       ],
