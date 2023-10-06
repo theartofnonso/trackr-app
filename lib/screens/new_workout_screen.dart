@@ -355,55 +355,53 @@ class SetListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showSetsActionSheet(context: context),
-      child: CupertinoListTile.notched(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
-        leading: CircleAvatar(
-          backgroundColor: leadingColor,
-          child: Text(
-            isWarmup ? "W${index + 1}" : "${index + 1}",
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: CupertinoColors.white,
-                fontSize: isWarmup ? 12 : null),
-          ),
-        ),
-        title: Row(
-          children: [
-            const SizedBox(
-              width: 18,
-            ),
-            SetListItemTextField(
-              label: 'Reps',
-              textEditingController: repsController,
-            ),
-            const SizedBox(
-              width: 34,
-            ),
-            SetListItemTextField(
-              label: 'kg',
-              textEditingController: weightController,
-            ),
-            const SizedBox(
-              width: 34,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Past"),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(previousWorkoutSummary ?? "No past data",
-                    style: TextStyle(
-                        color: CupertinoColors.white.withOpacity(0.7)))
-              ],
-            )
-          ],
+    return CupertinoListTile.notched(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
+      leading: CircleAvatar(
+        backgroundColor: leadingColor,
+        child: Text(
+          isWarmup ? "W${index + 1}" : "${index + 1}",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: CupertinoColors.white,
+              fontSize: isWarmup ? 12 : null),
         ),
       ),
+      title: Row(
+        children: [
+          const SizedBox(
+            width: 18,
+          ),
+          SetListItemTextField(
+            label: 'Reps',
+            textEditingController: repsController,
+          ),
+          const SizedBox(
+            width: 28,
+          ),
+          SetListItemTextField(
+            label: 'kg',
+            textEditingController: weightController,
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Past"),
+              const SizedBox(
+                height: 8,
+              ),
+              Text(previousWorkoutSummary ?? "No past data",
+                  style:
+                      TextStyle(color: CupertinoColors.white.withOpacity(0.7)))
+            ],
+          )
+        ],
+      ),
+      trailing: GestureDetector(onTap: () => _showSetsActionSheet(context: context), child: const Icon(CupertinoIcons.ellipsis)),
     );
   }
 }
