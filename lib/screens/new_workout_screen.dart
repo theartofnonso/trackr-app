@@ -157,6 +157,19 @@ class _SetListSectionState extends State<SetListSection> {
     }
   }
 
+  void _onRemoveWarmupSetListItem(int index) {
+      setState(() {
+        _warmupSetItems.removeAt(index);
+        _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
+          item.index = index;
+          return item;
+        }).toList();
+
+        _warmupSetRepsController.removeAt(index);
+        _warmupSetWeightController.removeAt(index);
+      });
+  }
+
   void _showExerciseActionSheet(
       {required BuildContext context, required String exercise}) {
     showCupertinoModalPopup<void>(
@@ -227,7 +240,7 @@ class _SetListSectionState extends State<SetListSection> {
       index: _warmupSetItems.length,
       isWarmup: true,
       leadingColor: CupertinoColors.activeOrange,
-      onRemove: (int index) {},
+      onRemove: (int index) => _onRemoveWarmupSetListItem(index),
       repsController: repsController,
       weightController: setsController,
     );
