@@ -1,3 +1,5 @@
+
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,76 +33,6 @@ final _repsPicker = CupertinoPicker(
     ));
   }),
 );
-
-void _showExerciseActionSheet(
-    {required BuildContext context, required String exercise}) {
-  showCupertinoModalPopup<void>(
-    context: context,
-    builder: (BuildContext context) => CupertinoActionSheet(
-      actions: <CupertinoActionSheetAction>[
-        CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-            _showDialog(child: _repsPicker, height: 216, context: context);
-          },
-          child:
-              const Text('Add new set', style: const TextStyle(fontSize: 18)),
-        ),
-        CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-            _showDialog(child: _repsPicker, height: 216, context: context);
-          },
-          child: const Text('Add warm-up set',
-              style: const TextStyle(fontSize: 18)),
-        ),
-        CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-            _showDialog(child: _repsPicker, height: 216, context: context);
-          },
-          child: Text(
-            'Super set $exercise with ...',
-            style: const TextStyle(fontSize: 18),
-          ),
-        ),
-        CupertinoActionSheetAction(
-          isDestructiveAction: true,
-          onPressed: () {
-            Navigator.pop(context);
-            _showDialog(child: _repsPicker, height: 216, context: context);
-          },
-          child: Text('Remove $exercise', style: const TextStyle(fontSize: 18)),
-        ),
-      ],
-    ),
-  );
-}
-
-void _showSetsActionSheet({required BuildContext context}) {
-  showCupertinoModalPopup<void>(
-    context: context,
-    builder: (BuildContext context) => CupertinoActionSheet(
-      actions: <CupertinoActionSheetAction>[
-        CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-            _showDialog(child: _repsPicker, height: 216, context: context);
-          },
-          child: const Text('Drop set'),
-        ),
-        CupertinoActionSheetAction(
-          isDestructiveAction: true,
-          onPressed: () {
-            Navigator.pop(context);
-            _showDialog(child: _repsPicker, height: 216, context: context);
-          },
-          child: const Text('Remove'),
-        ),
-      ],
-    ),
-  );
-}
 
 void _showDialog(
     {required BuildContext context,
@@ -150,9 +82,9 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     }
   }
 
-  List<WorkoutProcedureListSection> _exercisesTo() {
+  List<SetListSection> _exercisesToProcedureListSection() {
     return _selectedExercises
-        .map((exercise) => WorkoutProcedureListSection(exercise: exercise))
+        .map((exercise) => SetListSection(exercise: exercise))
         .toList();
   }
 
@@ -179,7 +111,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                ..._exercisesTo(),
+                ..._exercisesToProcedureListSection(),
                 GestureDetector(
                     onTap: () => _showListOfExercises(context),
                     child: const Center(
@@ -194,10 +126,80 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 }
 
-class WorkoutProcedureListSection extends StatelessWidget {
+class SetListSection extends StatefulWidget {
   final Exercise exercise;
 
-  const WorkoutProcedureListSection({super.key, required this.exercise});
+  const SetListSection({super.key, required this.exercise});
+
+  @override
+  State<SetListSection> createState() => _SetListSectionState();
+}
+
+class _SetListSectionState extends State<SetListSection> {
+  List<SetListItem> _setItems = [];
+  final List<TextEditingController> _setRepsController = [];
+  final List<TextEditingController> _setWeightController = [];
+
+  void _onRemoveSetListItem(int index) {
+    if (_setItems.length > 1) {
+      setState(() {
+        _setItems.removeAt(index);
+        _setItems = _setItems.mapIndexed((index, item) {
+          item.index = index;
+          return item;
+        }).toList();
+
+        _setRepsController.removeAt(index);
+        _setWeightController.removeAt(index);
+      });
+    }
+  }
+
+  void _showExerciseActionSheet(
+      {required BuildContext context, required String exercise}) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {
+                _createNewSetListItem();
+              });
+            },
+            child: const Text('Add new set', style: TextStyle(fontSize: 18)),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _showDialog(child: _repsPicker, height: 216, context: context);
+            },
+            child:
+                const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _showDialog(child: _repsPicker, height: 216, context: context);
+            },
+            child: Text(
+              'Super set $exercise with ...',
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child:
+                Text('Remove $exercise', style: const TextStyle(fontSize: 18)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,14 +209,14 @@ class WorkoutProcedureListSection extends StatelessWidget {
         children: [
           CupertinoListTile(
             padding: EdgeInsets.zero,
-            title: Text(exercise.name,
+            title: Text(widget.exercise.name,
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 18)),
             trailing: GestureDetector(
                 onTap: () => _showExerciseActionSheet(
-                    exercise: exercise.name, context: context),
+                    exercise: widget.exercise.name, context: context),
                 child: const Icon(CupertinoIcons.ellipsis_vertical)),
           ),
           const SizedBox(
@@ -231,7 +233,7 @@ class WorkoutProcedureListSection extends StatelessWidget {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: CupertinoColors.white.withOpacity(0.8)),
-            placeholder: "Enter notes for ${exercise.name}",
+            placeholder: "Enter notes for ${widget.exercise.name}",
             placeholderStyle: const TextStyle(
                 color: CupertinoColors.inactiveGray, fontSize: 16),
           ),
@@ -240,162 +242,197 @@ class WorkoutProcedureListSection extends StatelessWidget {
           ),
         ],
       ),
-      children: const [
-        WorkoutProcedureListTile(
-            key: Key("_asda"),
-            previousWorkoutSummary: '',
-            repsCount: 10,
-            leading: 'W',
-            weight: 0,
-            leadingColor: CupertinoColors.activeOrange),
-        WorkoutProcedureListTile(
-            key: Key("_acca"),
-            previousWorkoutSummary: '',
-            repsCount: 10,
-            leading: 'W',
-            weight: 0,
-            leadingColor: CupertinoColors.activeOrange),
-        WorkoutProcedureListTile(
-            key: Key("_aada"),
-            previousWorkoutSummary: '',
-            repsCount: 10,
-            leading: 'W',
-            weight: 0,
-            leadingColor: CupertinoColors.activeOrange),
-        WorkoutProcedureListTile(
-            key: Key("_asasfa"),
-            previousWorkoutSummary: '',
-            repsCount: 10,
-            leading: '1',
-            weight: 0,
-            leadingColor: CupertinoColors.activeBlue),
-        WorkoutProcedureListTile(
-            key: Key("_aadascca"),
-            previousWorkoutSummary: '',
-            repsCount: 10,
-            leading: '2',
-            weight: 0,
-            leadingColor: CupertinoColors.activeBlue),
-        WorkoutProcedureListTile(
-            key: Key("_aaasdfada"),
-            previousWorkoutSummary: '',
-            repsCount: 10,
-            leading: '3',
-            weight: 0,
-            leadingColor: CupertinoColors.activeBlue),
+      children: [
+        // WorkoutProcedureListTile(
+        //     key: Key("_asda"),
+        //     previousWorkoutSummary: '',
+        //     repsCount: 10,
+        //     leading: 'W',
+        //     weight: 0,
+        //     leadingColor: CupertinoColors.activeOrange),
+        // WorkoutProcedureListTile(
+        //     key: Key("_acca"),
+        //     previousWorkoutSummary: '',
+        //     repsCount: 10,
+        //     leading: 'W',
+        //     weight: 0,
+        //     leadingColor: CupertinoColors.activeOrange),
+        // WorkoutProcedureListTile(
+        //     key: Key("_aada"),
+        //     previousWorkoutSummary: '',
+        //     repsCount: 10,
+        //     leading: 'W',
+        //     weight: 0,
+        //     leadingColor: CupertinoColors.activeOrange),
+        ..._setItems
       ],
     );
   }
+
+  void _createNewSetListItem() {
+    final repsController = TextEditingController();
+    final setsController = TextEditingController();
+    final setItem = SetListItem(
+      index: _setItems.length,
+      leadingColor: CupertinoColors.activeBlue,
+      onRemove: (int index) => _onRemoveSetListItem(index),
+      repsController: repsController,
+      weightController: setsController,
+    );
+    _setItems.add(setItem);
+    _setRepsController.add(repsController);
+    _setWeightController.add(setsController);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createNewSetListItem();
+  }
 }
 
-class WorkoutProcedureListTile extends StatelessWidget {
-  const WorkoutProcedureListTile({
+class SetListItem extends StatelessWidget {
+  SetListItem({
     super.key,
-    required this.previousWorkoutSummary,
-    required this.repsCount,
-    required this.leading,
-    required this.weight,
+    required this.index,
+    this.repsCount = 0,
+    this.weight = 0,
+    this.previousWorkoutSummary = "",
     required this.leadingColor,
+    required this.onRemove,
+    required this.repsController,
+    required this.weightController,
   });
 
-  final String leading;
-  final int repsCount;
-  final String previousWorkoutSummary;
-  final int weight;
+  int index;
+  int repsCount;
+  int weight;
+  String previousWorkoutSummary;
+  final TextEditingController repsController;
+  final TextEditingController weightController;
+  final void Function(int index) onRemove;
 
   final Color leadingColor;
+
+  void _showSetsActionSheet({required BuildContext context}) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _showDialog(child: _repsPicker, height: 216, context: context);
+            },
+            child: const Text('Drop set'),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              onRemove(index);
+            },
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _showSetsActionSheet(context: context),
-      child: Dismissible(
-        key: super.key!,
-        direction: DismissDirection.endToStart,
-        background: Container(
-          color: CupertinoColors.destructiveRed,
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                CupertinoIcons.delete_solid,
-                color: CupertinoColors.white,
-              ),
-              SizedBox(
-                width: 10,
-              )
-            ],
+      child: CupertinoListTile.notched(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
+        leading: CircleAvatar(
+          backgroundColor: leadingColor,
+          child: Text(
+            "${index + 1}",
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: CupertinoColors.white),
           ),
         ),
-        child: CupertinoListTile.notched(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
-          leading: CircleAvatar(
-            backgroundColor: leadingColor,
-            child: Text(
-              leading,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: CupertinoColors.white),
+        title: Row(
+          children: [
+            const SizedBox(
+              width: 18,
             ),
-          ),
-          title: Row(
-            children: [
-              const SizedBox(width: 18,),
-              const WorkoutProcedureListTileTextField(
-                value: 10,
-                label: 'Reps',
-              ),
-              const SizedBox(width: 34,),
-              const WorkoutProcedureListTileTextField(
-                value: 10,
-                label: 'kg',
-              ),
-              const SizedBox(width: 34,),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Past"),
-                  const SizedBox(height: 8,),
-                  Text(previousWorkoutSummary.isNotEmpty ? previousWorkoutSummary : "No past data",
-                      style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)))
-                ],
-              )
-            ],
-          ),
+            ProcedureListTileTextField(
+              value: repsCount,
+              label: 'Reps',
+              textEditingController: repsController,
+            ),
+            const SizedBox(
+              width: 34,
+            ),
+            ProcedureListTileTextField(
+              value: weight,
+              label: 'kg',
+              textEditingController: weightController,
+            ),
+            const SizedBox(
+              width: 34,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("Past"),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                    previousWorkoutSummary.isNotEmpty
+                        ? previousWorkoutSummary
+                        : "No past data",
+                    style: TextStyle(
+                        color: CupertinoColors.white.withOpacity(0.7)))
+              ],
+            )
+          ],
         ),
       ),
     );
   }
 }
 
-class WorkoutProcedureListTileTextField extends StatelessWidget {
+class ProcedureListTileTextField extends StatelessWidget {
   final String label;
   final int value;
+  final TextEditingController textEditingController;
 
-  const WorkoutProcedureListTileTextField(
-      {super.key, required this.value, required this.label});
+  const ProcedureListTileTextField(
+      {super.key,
+      required this.value,
+      required this.label,
+      required this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: CupertinoColors.opaqueSeparator),),
+        Text(
+          label,
+          style: const TextStyle(color: CupertinoColors.opaqueSeparator),
+        ),
         const SizedBox(
           height: 8,
         ),
-        const SizedBox(
+        SizedBox(
           width: 30,
           child: CupertinoTextField(
-            decoration: BoxDecoration(color: Colors.transparent),
+            controller: textEditingController,
+            decoration: const BoxDecoration(color: Colors.transparent),
             padding: EdgeInsets.zero,
             keyboardType: TextInputType.number,
             maxLength: 3,
             maxLines: 1,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
             placeholder: "0",
-            placeholderStyle: TextStyle(
+            placeholderStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: CupertinoColors.white),
           ),
         )
