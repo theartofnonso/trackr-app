@@ -147,8 +147,14 @@ class _SetListSectionState extends State<SetListSection> {
       setState(() {
         _setItems.removeAt(index);
         _setItems = _setItems.mapIndexed((index, item) {
-          item.index = index;
-          return item;
+          return SetListItem(
+            index: index,
+            leadingColor: item.leadingColor,
+            onRemove: item.onRemove,
+            repsController: item.repsController,
+            weightController: item.weightController,
+            isWarmup: item.isWarmup,
+          );
         }).toList();
 
         _setRepsController.removeAt(index);
@@ -158,16 +164,22 @@ class _SetListSectionState extends State<SetListSection> {
   }
 
   void _onRemoveWarmupSetListItem(int index) {
-      setState(() {
-        _warmupSetItems.removeAt(index);
-        _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
-          item.index = index;
-          return item;
-        }).toList();
+    setState(() {
+      _warmupSetItems.removeAt(index);
+      _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
+        return SetListItem(
+          index: index,
+          leadingColor: item.leadingColor,
+          onRemove: item.onRemove,
+          repsController: item.repsController,
+          weightController: item.weightController,
+          isWarmup: item.isWarmup,
+        );
+      }).toList();
 
-        _warmupSetRepsController.removeAt(index);
-        _warmupSetWeightController.removeAt(index);
-      });
+      _warmupSetRepsController.removeAt(index);
+      _warmupSetWeightController.removeAt(index);
+    });
   }
 
   void _showExerciseActionSheet(
@@ -226,7 +238,8 @@ class _SetListSectionState extends State<SetListSection> {
       leadingColor: CupertinoColors.activeBlue,
       onRemove: (int index) => _onRemoveSetListItem(index),
       repsController: repsController,
-      weightController: setsController, isWarmup: false,
+      weightController: setsController,
+      isWarmup: false,
     );
     _setItems.add(setItem);
     _setRepsController.add(repsController);
@@ -302,23 +315,19 @@ class _SetListSectionState extends State<SetListSection> {
 }
 
 class SetListItem extends StatelessWidget {
-  SetListItem({
+  const SetListItem({
     super.key,
     required this.index,
-    this.repsCount = 0,
-    this.weight = 0,
-    this.previousWorkoutSummary = "",
     required this.leadingColor,
     required this.onRemove,
     required this.repsController,
     required this.weightController,
     required this.isWarmup,
+    this.previousWorkoutSummary,
   });
 
-  int index;
-  int repsCount;
-  int weight;
-  String previousWorkoutSummary;
+  final int index;
+  final String? previousWorkoutSummary;
   final bool isWarmup;
   final TextEditingController repsController;
   final TextEditingController weightController;
@@ -356,7 +365,9 @@ class SetListItem extends StatelessWidget {
           child: Text(
             isWarmup ? "W${index + 1}" : "${index + 1}",
             style: TextStyle(
-                fontWeight: FontWeight.bold, color: CupertinoColors.white, fontSize: isWarmup ? 12 : null),
+                fontWeight: FontWeight.bold,
+                color: CupertinoColors.white,
+                fontSize: isWarmup ? 12 : null),
           ),
         ),
         title: Row(
@@ -364,16 +375,14 @@ class SetListItem extends StatelessWidget {
             const SizedBox(
               width: 18,
             ),
-            ProcedureListTileTextField(
-              value: repsCount,
+            SetListItemTextField(
               label: 'Reps',
               textEditingController: repsController,
             ),
             const SizedBox(
               width: 34,
             ),
-            ProcedureListTileTextField(
-              value: weight,
+            SetListItemTextField(
               label: 'kg',
               textEditingController: weightController,
             ),
@@ -387,10 +396,7 @@ class SetListItem extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                Text(
-                    previousWorkoutSummary.isNotEmpty
-                        ? previousWorkoutSummary
-                        : "No past data",
+                Text(previousWorkoutSummary ?? "No past data",
                     style: TextStyle(
                         color: CupertinoColors.white.withOpacity(0.7)))
               ],
@@ -402,16 +408,12 @@ class SetListItem extends StatelessWidget {
   }
 }
 
-class ProcedureListTileTextField extends StatelessWidget {
+class SetListItemTextField extends StatelessWidget {
   final String label;
-  final int value;
   final TextEditingController textEditingController;
 
-  const ProcedureListTileTextField(
-      {super.key,
-      required this.value,
-      required this.label,
-      required this.textEditingController});
+  const SetListItemTextField(
+      {super.key, required this.label, required this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
