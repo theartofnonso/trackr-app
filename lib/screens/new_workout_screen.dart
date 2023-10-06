@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +135,10 @@ class SetListSection extends StatefulWidget {
 }
 
 class _SetListSectionState extends State<SetListSection> {
+  List<SetListItem> _warmupSetItems = [];
   List<SetListItem> _setItems = [];
+  final List<TextEditingController> _warmupSetRepsController = [];
+  final List<TextEditingController> _warmupSetWeightController = [];
   final List<TextEditingController> _setRepsController = [];
   final List<TextEditingController> _setWeightController = [];
 
@@ -173,7 +175,9 @@ class _SetListSectionState extends State<SetListSection> {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _showDialog(child: _repsPicker, height: 216, context: context);
+              setState(() {
+                _createNewWarmupSetListItem();
+              });
             },
             child:
                 const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
@@ -199,6 +203,37 @@ class _SetListSectionState extends State<SetListSection> {
         ],
       ),
     );
+  }
+
+  void _createNewSetListItem() {
+    final repsController = TextEditingController();
+    final setsController = TextEditingController();
+    final setItem = SetListItem(
+      index: _setItems.length,
+      leadingColor: CupertinoColors.activeBlue,
+      onRemove: (int index) => _onRemoveSetListItem(index),
+      repsController: repsController,
+      weightController: setsController, isWarmup: false,
+    );
+    _setItems.add(setItem);
+    _setRepsController.add(repsController);
+    _setWeightController.add(setsController);
+  }
+
+  void _createNewWarmupSetListItem() {
+    final repsController = TextEditingController();
+    final setsController = TextEditingController();
+    final setItem = SetListItem(
+      index: _warmupSetItems.length,
+      isWarmup: true,
+      leadingColor: CupertinoColors.activeOrange,
+      onRemove: (int index) {},
+      repsController: repsController,
+      weightController: setsController,
+    );
+    _warmupSetItems.add(setItem);
+    _warmupSetRepsController.add(repsController);
+    _warmupSetWeightController.add(setsController);
   }
 
   @override
@@ -242,46 +277,8 @@ class _SetListSectionState extends State<SetListSection> {
           ),
         ],
       ),
-      children: [
-        // WorkoutProcedureListTile(
-        //     key: Key("_asda"),
-        //     previousWorkoutSummary: '',
-        //     repsCount: 10,
-        //     leading: 'W',
-        //     weight: 0,
-        //     leadingColor: CupertinoColors.activeOrange),
-        // WorkoutProcedureListTile(
-        //     key: Key("_acca"),
-        //     previousWorkoutSummary: '',
-        //     repsCount: 10,
-        //     leading: 'W',
-        //     weight: 0,
-        //     leadingColor: CupertinoColors.activeOrange),
-        // WorkoutProcedureListTile(
-        //     key: Key("_aada"),
-        //     previousWorkoutSummary: '',
-        //     repsCount: 10,
-        //     leading: 'W',
-        //     weight: 0,
-        //     leadingColor: CupertinoColors.activeOrange),
-        ..._setItems
-      ],
+      children: [..._warmupSetItems, ..._setItems],
     );
-  }
-
-  void _createNewSetListItem() {
-    final repsController = TextEditingController();
-    final setsController = TextEditingController();
-    final setItem = SetListItem(
-      index: _setItems.length,
-      leadingColor: CupertinoColors.activeBlue,
-      onRemove: (int index) => _onRemoveSetListItem(index),
-      repsController: repsController,
-      weightController: setsController,
-    );
-    _setItems.add(setItem);
-    _setRepsController.add(repsController);
-    _setWeightController.add(setsController);
   }
 
   @override
@@ -302,12 +299,14 @@ class SetListItem extends StatelessWidget {
     required this.onRemove,
     required this.repsController,
     required this.weightController,
+    required this.isWarmup,
   });
 
   int index;
   int repsCount;
   int weight;
   String previousWorkoutSummary;
+  final bool isWarmup;
   final TextEditingController repsController;
   final TextEditingController weightController;
   final void Function(int index) onRemove;
@@ -319,13 +318,6 @@ class SetListItem extends StatelessWidget {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _showDialog(child: _repsPicker, height: 216, context: context);
-            },
-            child: const Text('Drop set'),
-          ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
@@ -349,9 +341,9 @@ class SetListItem extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: leadingColor,
           child: Text(
-            "${index + 1}",
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: CupertinoColors.white),
+            isWarmup ? "W${index + 1}" : "${index + 1}",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: CupertinoColors.white, fontSize: isWarmup ? 12 : null),
           ),
         ),
         title: Row(
