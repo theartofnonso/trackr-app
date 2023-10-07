@@ -11,14 +11,16 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
   final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
       onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
-  final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto) onRemoveExerciseInWorkout;
+  final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto)
+      onRemoveExerciseInWorkout;
 
   const ExerciseInWorkoutListSection(
       {super.key,
       required this.exerciseInWorkoutDto,
       required this.onAddSuperSetExercises,
       required this.exercisesInWorkoutDtos,
-      required this.onRemoveSuperSetExercises, required this.onRemoveExerciseInWorkout});
+      required this.onRemoveSuperSetExercises,
+      required this.onRemoveExerciseInWorkout});
 
   @override
   State<ExerciseInWorkoutListSection> createState() =>
@@ -34,28 +36,26 @@ class _ExerciseInWorkoutListSectionState
   final List<TextEditingController> _setRepsController = [];
   final List<TextEditingController> _setWeightController = [];
 
-  void _onRemoveSetListItem(int index) {
-    if (_setItems.length > 1) {
-      setState(() {
-        _setItems.removeAt(index);
-        _setItems = _setItems.mapIndexed((index, item) {
-          return SetListItem(
-            index: index,
-            leadingColor: item.leadingColor,
-            onRemove: item.onRemove,
-            repsController: item.repsController,
-            weightController: item.weightController,
-            isWarmup: item.isWarmup,
-          );
-        }).toList();
+  void _removeSetListItem({required int index}) {
+    setState(() {
+      _setItems.removeAt(index);
+      _setItems = _setItems.mapIndexed((index, item) {
+        return SetListItem(
+          index: index,
+          leadingColor: item.leadingColor,
+          onRemove: item.onRemove,
+          repsController: item.repsController,
+          weightController: item.weightController,
+          isWarmup: item.isWarmup,
+        );
+      }).toList();
 
-        _setRepsController.removeAt(index);
-        _setWeightController.removeAt(index);
-      });
-    }
+      _setRepsController.removeAt(index);
+      _setWeightController.removeAt(index);
+    });
   }
 
-  void _onRemoveWarmupSetListItem(int index) {
+  void removeWarmupSetListItem({required int index}) {
     setState(() {
       _warmupSetItems.removeAt(index);
       _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
@@ -141,7 +141,13 @@ class _ExerciseInWorkoutListSectionState
     final setItem = SetListItem(
       index: _setItems.length,
       leadingColor: CupertinoColors.activeBlue,
-      onRemove: (int index) => _onRemoveSetListItem(index),
+      onRemove: (int index) {
+        if (_setItems.length > 1) {
+          _removeSetListItem(index: index);
+        } else {
+          widget.onRemoveExerciseInWorkout(widget.exerciseInWorkoutDto);
+        }
+      },
       repsController: repsController,
       weightController: setsController,
       isWarmup: false,
@@ -158,7 +164,7 @@ class _ExerciseInWorkoutListSectionState
       index: _warmupSetItems.length,
       isWarmup: true,
       leadingColor: CupertinoColors.activeOrange,
-      onRemove: (int index) => _onRemoveWarmupSetListItem(index),
+      onRemove: (int index) => removeWarmupSetListItem(index: index),
       repsController: repsController,
       weightController: setsController,
     );

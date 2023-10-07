@@ -32,6 +32,39 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         1;
   }
 
+  void _showRemoveExerciseAlertDialog(
+      {required ExerciseInWorkoutDto exerciseDto}) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Alert'),
+        content: const Text("Do you want to remove this exercise"),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            /// This parameter indicates this action is the default,
+            /// and turns the action's text to bold text.
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('No'),
+          ),
+          CupertinoDialogAction(
+            /// This parameter indicates the action would perform
+            /// a destructive action such as deletion, and turns
+            /// the action's text color to red.
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              _removeExerciseInWorkout(exerciseToRemove: exerciseDto);
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showExercisesInWorkoutPicker(
       {required ExerciseInWorkoutDto firstSuperSetExercise}) {
     final exercisesToSuperSetWith = _whereExercisesToSuperSetWith(
@@ -130,7 +163,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
               onRemoveSuperSetExercises: (String superSetId) =>
                   _removeSuperSets(superSetId: superSetId),
               onRemoveExerciseInWorkout:
-                  (ExerciseInWorkoutDto exerciseInWorkoutDto) => _removeExerciseInWorkout(exerciseToRemove: exerciseInWorkoutDto),
+                  (ExerciseInWorkoutDto exerciseInWorkoutDto) {
+                _showRemoveExerciseAlertDialog(
+                    exerciseDto: exerciseInWorkoutDto);
+              },
             ))
         .toList();
   }
