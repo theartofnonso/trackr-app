@@ -238,7 +238,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                 children: [
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 10, left: 18.0, bottom: 20),
+                        const EdgeInsets.only(top: 10, left: 20.0, bottom: 20),
                     child: CupertinoTextField(
                       expands: true,
                       padding: EdgeInsets.zero,
@@ -259,7 +259,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 18.0),
+                    padding: const EdgeInsets.only(left: 20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
