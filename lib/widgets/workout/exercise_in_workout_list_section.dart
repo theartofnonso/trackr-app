@@ -142,10 +142,8 @@ class _ExerciseInWorkoutListSectionState
       index: _setItems.length,
       leadingColor: CupertinoColors.activeBlue,
       onRemove: (int index) {
-        if (_setItems.length > 1) {
+        if (_setItems.isNotEmpty) {
           _removeSetListItem(index: index);
-        } else {
-          widget.onRemoveExerciseInWorkout(widget.exerciseInWorkoutDto);
         }
       },
       repsController: repsController,
