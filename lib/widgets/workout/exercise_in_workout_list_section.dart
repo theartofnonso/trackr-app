@@ -191,6 +191,7 @@ class _ExerciseInWorkoutListSectionState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CupertinoListTile(
+            padding: EdgeInsets.zero,
             title: Text(widget.exerciseInWorkoutDto.exercise.name,
                 style: const TextStyle(
                     color: Colors.white,
@@ -207,27 +208,27 @@ class _ExerciseInWorkoutListSectionState
                             fontSize: 12)),
                   )
                 : const SizedBox.shrink(),
-            trailing: GestureDetector(
-                onTap: () => _showProcedureActionSheet(context: context),
-                child: const Icon(CupertinoIcons.ellipsis)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: CupertinoTextField(
-              expands: true,
-              decoration: const BoxDecoration(color: Colors.transparent),
-              padding: EdgeInsets.zero,
-              keyboardType: TextInputType.number,
-              maxLength: 240,
-              maxLines: null,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: CupertinoColors.white.withOpacity(0.8)),
-              placeholder: "Enter notes",
-              placeholderStyle: const TextStyle(
-                  color: CupertinoColors.inactiveGray, fontSize: 14),
+            trailing: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: GestureDetector(
+                  onTap: () => _showProcedureActionSheet(context: context),
+                  child: const Icon(CupertinoIcons.ellipsis)),
             ),
+          ),
+          CupertinoTextField(
+            expands: true,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            padding: EdgeInsets.zero,
+            keyboardType: TextInputType.number,
+            maxLength: 240,
+            maxLines: null,
+            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: CupertinoColors.white.withOpacity(0.8)),
+            placeholder: "Enter notes",
+            placeholderStyle: const TextStyle(
+                color: CupertinoColors.inactiveGray, fontSize: 14),
           ),
           const SizedBox(
             height: 8,
