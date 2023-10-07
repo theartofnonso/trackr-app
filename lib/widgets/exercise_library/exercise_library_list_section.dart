@@ -30,7 +30,7 @@ class _ExerciseLibraryListSectionState extends State<ExerciseLibraryListSection>
       {required List<ExerciseInLibraryDto> exercises, required BodyPart bodyPart}) {
     return exercises
         .map((exerciseItem) => ExerciseLibraryListItem(
-              exerciseItem: exerciseItem,
+              exerciseInLibrary: exerciseItem,
               onTap: (value) => _onSelectExercise(
                   isSelected: value, selectedExerciseItem: exerciseItem),
             ))

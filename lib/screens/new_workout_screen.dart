@@ -43,8 +43,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         content: const Text("Do you want to remove this exercise"),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
-            /// This parameter indicates this action is the default,
-            /// and turns the action's text to bold text.
             isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
@@ -52,9 +50,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             child: const Text('No'),
           ),
           CupertinoDialogAction(
-            /// This parameter indicates the action would perform
-            /// a destructive action such as deletion, and turns
-            /// the action's text color to red.
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);

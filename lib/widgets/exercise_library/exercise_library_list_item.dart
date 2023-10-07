@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import '../../dtos/exercise_in_library_dto.dart';
 
 class ExerciseLibraryListItem extends StatefulWidget {
-  final ExerciseInLibraryDto exerciseItem;
+  final ExerciseInLibraryDto exerciseInLibrary;
   final void Function(bool) onTap;
 
   const ExerciseLibraryListItem(
-      {super.key, required this.exerciseItem, required this.onTap});
+      {super.key, required this.exerciseInLibrary, required this.onTap});
 
   @override
   State<ExerciseLibraryListItem> createState() => _ExerciseLibraryListItemState();
@@ -36,14 +36,14 @@ class _ExerciseLibraryListItemState extends State<ExerciseLibraryListItem> {
             onChanged: (bool? _) => _onSelect(),
           ),
           title:
-              Text(widget.exerciseItem.exercise.name)),
+              Text(widget.exerciseInLibrary.exercise.name)),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    final isSelected = widget.exerciseItem.isSelected;
+    final isSelected = widget.exerciseInLibrary.isSelected;
     _isSelected = isSelected ?? false;
   }
 }
