@@ -228,85 +228,89 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                 size: 24,
               )),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10, left: 18.0, bottom: 20),
-                  child: CupertinoTextField(
-                    expands: true,
-                    padding: EdgeInsets.zero,
-                    decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    keyboardType: TextInputType.text,
-                    maxLength: 240,
-                    maxLines: null,
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: CupertinoColors.white.withOpacity(0.8),
-                        fontSize: 18),
-                    placeholder: "New workout",
-                    placeholderStyle: const TextStyle(
-                        color: CupertinoColors.inactiveGray, fontSize: 18),
+        child: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior:  ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 18.0, bottom: 20),
+                    child: CupertinoTextField(
+                      expands: true,
+                      padding: EdgeInsets.zero,
+                      decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      keyboardType: TextInputType.text,
+                      maxLength: 240,
+                      maxLines: null,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: CupertinoColors.white.withOpacity(0.8),
+                          fontSize: 18),
+                      placeholder: "New workout",
+                      placeholderStyle: const TextStyle(
+                          color: CupertinoColors.inactiveGray, fontSize: 18),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Notes",
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Notes",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16)),
+                        CupertinoTextField(
+                          expands: true,
+                          padding: EdgeInsets.zero,
+                          decoration: const BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.all(Radius.circular(8))),
+                          keyboardType: TextInputType.text,
+                          maxLength: 240,
+                          maxLines: null,
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16)),
-                      CupertinoTextField(
-                        expands: true,
-                        padding: EdgeInsets.zero,
-                        decoration: const BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.all(Radius.circular(8))),
-                        keyboardType: TextInputType.text,
-                        maxLength: 240,
-                        maxLines: null,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: CupertinoColors.white.withOpacity(0.8),
-                            fontSize: 14,
-                            height: 1.8),
-                        placeholder: "New notes",
-                        placeholderStyle: const TextStyle(
-                            color: CupertinoColors.inactiveGray, fontSize: 14),
-                      ),
-                    ],
+                              fontWeight: FontWeight.w600,
+                              color: CupertinoColors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              height: 1.8),
+                          placeholder: "New notes",
+                          placeholderStyle: const TextStyle(
+                              color: CupertinoColors.inactiveGray, fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                ..._exercisesToExerciseInWorkoutListSection(),
-                const SizedBox(height: 18),
-                GestureDetector(
-                  onTap: _showListOfExercisesInLibrary,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.only(left: 20),
-                    margin:
-                        const EdgeInsets.only(left: 18, right: 18, bottom: 20),
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        color: Color.fromRGBO(25, 28, 36, 1),
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    height: 40,
-                    child: const Text("Add exercise",
-                        textAlign: TextAlign.start,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ..._exercisesToExerciseInWorkoutListSection(),
+                  const SizedBox(height: 18),
+                  GestureDetector(
+                    onTap: _showListOfExercisesInLibrary,
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(left: 20),
+                      margin:
+                          const EdgeInsets.only(left: 18, right: 18, bottom: 20),
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                          color: Color.fromRGBO(25, 28, 36, 1),
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      height: 40,
+                      child: const Text("Add exercise",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ));

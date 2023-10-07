@@ -219,7 +219,7 @@ class _ExerciseInWorkoutListSectionState
             expands: true,
             decoration: const BoxDecoration(color: Colors.transparent),
             padding: EdgeInsets.zero,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
             maxLength: 240,
             maxLines: null,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
