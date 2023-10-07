@@ -2,27 +2,26 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
-class SetListSection extends StatefulWidget {
-  final ExerciseDto exerciseDto;
+class ExerciseInWorkoutListSection extends StatefulWidget {
+  final ExerciseInWorkoutDto exerciseInWorkoutDto;
+  final void Function(ExerciseInWorkoutDto firstSuperSetExercise) onSuperSetExercises;
 
-  const SetListSection({super.key, required this.exerciseDto});
+  const ExerciseInWorkoutListSection({super.key, required this.exerciseInWorkoutDto, required this.onSuperSetExercises});
 
   @override
-  State<SetListSection> createState() => _SetListSectionState();
+  State<ExerciseInWorkoutListSection> createState() => _ExerciseInWorkoutListSectionState();
 }
 
-class _SetListSectionState extends State<SetListSection> {
+class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSection> {
   List<SetListItem> _warmupSetItems = [];
   List<SetListItem> _setItems = [];
   final List<TextEditingController> _warmupSetRepsController = [];
   final List<TextEditingController> _warmupSetWeightController = [];
   final List<TextEditingController> _setRepsController = [];
   final List<TextEditingController> _setWeightController = [];
-
-  bool _isSuperSet = false;
 
   void _onRemoveSetListItem(int index) {
     if (_setItems.length > 1) {
@@ -94,7 +93,7 @@ class _SetListSectionState extends State<SetListSection> {
               _markAsSuperSet();
             },
             child: Text(
-              'Super set ${widget.exerciseDto.name} with ...',
+              'Super set ${widget.exerciseInWorkoutDto.exercise.name} with ...',
               style: const TextStyle(fontSize: 18),
             ),
           ),
@@ -103,7 +102,7 @@ class _SetListSectionState extends State<SetListSection> {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Remove ${widget.exerciseDto.name}',
+            child: Text('Remove ${widget.exerciseInWorkoutDto.exercise.name}',
                 style: const TextStyle(fontSize: 18)),
           ),
         ],
@@ -144,13 +143,15 @@ class _SetListSectionState extends State<SetListSection> {
   }
 
   void _markAsSuperSet() {
-    setState(() {
-      _isSuperSet = !_isSuperSet;
-    });
+    // setState(() {
+    //   _isSuperSet = !_isSuperSet;
+    // });
+    widget.onSuperSetExercises(widget.exerciseInWorkoutDto);
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.exerciseInWorkoutDto.isSuperSet);
     return CupertinoListSection.insetGrouped(
       backgroundColor: Colors.transparent,
       header: Column(
@@ -158,15 +159,15 @@ class _SetListSectionState extends State<SetListSection> {
         children: [
           CupertinoListTile(
             //padding: EdgeInsets.zero,
-            title: Text(widget.exerciseDto.name,
+            title: Text(widget.exerciseInWorkoutDto.exercise.name,
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
-            subtitle: _isSuperSet
+            subtitle: widget.exerciseInWorkoutDto.isSuperSet
                 ? const Padding(
                   padding: EdgeInsets.only(bottom: 8.0),
-                  child: Text("Super set: Chest dips",
+                  child: Text("Super set with: Chest dips",
                       style: TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -190,7 +191,7 @@ class _SetListSectionState extends State<SetListSection> {
               style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: CupertinoColors.white.withOpacity(0.8)),
-              placeholder: "Enter notes for ${widget.exerciseDto.name}",
+              placeholder: "Enter notes for ${widget.exerciseInWorkoutDto.exercise.name}",
               placeholderStyle: const TextStyle(
                   color: CupertinoColors.inactiveGray, fontSize: 14),
             ),
