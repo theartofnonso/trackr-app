@@ -7,13 +7,18 @@ import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
+  final List<ExerciseInWorkoutDto> exercisesInWorkoutDtos;
   final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
-      onSuperSetExercises;
+      onAddSuperSetExercises;
+  final void Function(String superSetId) onRemoveSuperSetExercises;
+  final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto) onRemoveExerciseInWorkout;
 
   const ExerciseInWorkoutListSection(
       {super.key,
       required this.exerciseInWorkoutDto,
-      required this.onSuperSetExercises});
+      required this.onAddSuperSetExercises,
+      required this.exercisesInWorkoutDtos,
+      required this.onRemoveSuperSetExercises, required this.onRemoveExerciseInWorkout});
 
   @override
   State<ExerciseInWorkoutListSection> createState() =>
@@ -93,20 +98,34 @@ class _ExerciseInWorkoutListSectionState
             child:
                 const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
           ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _markAsSuperSet();
-            },
-            child: Text(
-              'Super set ${widget.exerciseInWorkoutDto.exercise.name} with ...',
-              style: const TextStyle(fontSize: 18),
-            ),
-          ),
+          widget.exerciseInWorkoutDto.isSuperSet
+              ? CupertinoActionSheetAction(
+                  isDestructiveAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.onRemoveSuperSetExercises(
+                        widget.exerciseInWorkoutDto.superSetId);
+                  },
+                  child: const Text(
+                    'Remove super set',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                )
+              : CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _markAsSuperSet();
+                  },
+                  child: Text(
+                    'Super set ${widget.exerciseInWorkoutDto.exercise.name} with ...',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
+              widget.onRemoveExerciseInWorkout(widget.exerciseInWorkoutDto);
             },
             child: Text('Remove ${widget.exerciseInWorkoutDto.exercise.name}',
                 style: const TextStyle(fontSize: 18)),
@@ -149,10 +168,15 @@ class _ExerciseInWorkoutListSectionState
   }
 
   void _markAsSuperSet() {
-    // setState(() {
-    //   _isSuperSet = !_isSuperSet;
-    // });
-    widget.onSuperSetExercises(widget.exerciseInWorkoutDto);
+    widget.onAddSuperSetExercises(widget.exerciseInWorkoutDto);
+  }
+
+  ExerciseInWorkoutDto _whereExerciseSuperSet() {
+    return widget.exercisesInWorkoutDtos.firstWhere((exerciseInWorkout) {
+      return exerciseInWorkout.superSetId ==
+              widget.exerciseInWorkoutDto.superSetId &&
+          exerciseInWorkout.exercise != widget.exerciseInWorkoutDto.exercise;
+    });
   }
 
   @override
@@ -169,10 +193,11 @@ class _ExerciseInWorkoutListSectionState
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
             subtitle: widget.exerciseInWorkoutDto.isSuperSet
-                ? const Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set with: Chest dips",
-                        style: TextStyle(
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                        "Super set: ${_whereExerciseSuperSet().exercise.name}",
+                        style: const TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
                             fontSize: 12)),

@@ -18,9 +18,18 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   List<ExerciseInWorkoutDto> _whereExercisesToSuperSetWith(
       {required ExerciseInWorkoutDto firstSuperSetExercise}) {
     return _exercisesInWorkout
-        .whereNot((exercisesInWorkout) =>
-            exercisesInWorkout.exercise == firstSuperSetExercise.exercise)
+        .whereNot((exerciseInWorkout) =>
+            exerciseInWorkout.exercise == firstSuperSetExercise.exercise)
+        .where((exerciseInWorkout) => !exerciseInWorkout.isSuperSet)
         .toList();
+  }
+
+  bool _canSuperSet() {
+    return _exercisesInWorkout
+            .where((exerciseInWorkout) => !exerciseInWorkout.isSuperSet)
+            .toList()
+            .length >
+        1;
   }
 
   void _showExercisesInWorkoutPicker(
@@ -33,32 +42,55 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         decoration: const BoxDecoration(
             color: Color.fromRGBO(12, 14, 18, 1),
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8), topRight: Radius.circular(8))),
+                topLeft: Radius.circular(12), topRight: Radius.circular(12))),
         height: 150,
         padding: const EdgeInsets.only(top: 6.0),
         // The Bottom margin is provided to align the popup above the system navigation bar.
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: SafeArea(
-            top: false,
-            child: ListView(
-              children: [
-                ...exercisesToSuperSetWith
-                    .map((exerciseInWorkout) => CupertinoListTile(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            _addSuperSets(
-                                firstSuperSetExercise: firstSuperSetExercise,
-                                secondSuperSetExercise: exerciseInWorkout);
-                          },
-                          title: Text(exerciseInWorkout.exercise.name,
-                              style: const TextStyle(
-                                  color: CupertinoColors.white, fontSize: 16)),
-                        ))
-                    .toList()
-              ],
-            )),
+        child: _canSuperSet()
+            ? SafeArea(
+                top: false,
+                child: ListView(
+                  children: [
+                    ...exercisesToSuperSetWith
+                        .map((exerciseInWorkout) => CupertinoListTile(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                _addSuperSets(
+                                    firstSuperSetExercise:
+                                        firstSuperSetExercise,
+                                    secondSuperSetExercise: exerciseInWorkout);
+                              },
+                              title: Text(exerciseInWorkout.exercise.name,
+                                  style: const TextStyle(
+                                      color: CupertinoColors.white,
+                                      fontSize: 16)),
+                            ))
+                        .toList()
+                  ],
+                ))
+            : Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Add an exercise to superset with"),
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _showListOfExercisesInLibrary(context);
+                        },
+                        child: const Center(
+                            child: Text(
+                          "Add new exercise",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )))
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -89,11 +121,16 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     return _exercisesInWorkout
         .map((exercisesInWorkout) => ExerciseInWorkoutListSection(
               exerciseInWorkoutDto: exercisesInWorkout,
-              onSuperSetExercises:
+              onAddSuperSetExercises:
                   (ExerciseInWorkoutDto firstSuperSetExercise) {
                 _showExercisesInWorkoutPicker(
                     firstSuperSetExercise: firstSuperSetExercise);
               },
+              exercisesInWorkoutDtos: _exercisesInWorkout,
+              onRemoveSuperSetExercises: (String superSetId) =>
+                  _removeSuperSets(superSetId: superSetId),
+              onRemoveExerciseInWorkout:
+                  (ExerciseInWorkoutDto exerciseInWorkoutDto) => _removeExerciseInWorkout(exerciseToRemove: exerciseInWorkoutDto),
             ))
         .toList();
   }
@@ -105,15 +142,40 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   void _addSuperSets(
       {required ExerciseInWorkoutDto firstSuperSetExercise,
       required ExerciseInWorkoutDto secondSuperSetExercise}) {
+    final id = "id_${DateTime.now().millisecond}";
     setState(() {
       _exercisesInWorkout = _exercisesInWorkout.map((exerciseInWorkout) {
         if (exerciseInWorkout.exercise == firstSuperSetExercise.exercise ||
             exerciseInWorkout.exercise == secondSuperSetExercise.exercise) {
           exerciseInWorkout.isSuperSet = true;
+          exerciseInWorkout.superSetId = id;
           return exerciseInWorkout;
         }
         return exerciseInWorkout;
       }).toList();
+    });
+  }
+
+  void _removeSuperSets({required String superSetId}) {
+    setState(() {
+      _exercisesInWorkout = _exercisesInWorkout.map((exerciseInWorkout) {
+        if (exerciseInWorkout.superSetId == superSetId) {
+          exerciseInWorkout.isSuperSet = false;
+          exerciseInWorkout.superSetId = "";
+          return exerciseInWorkout;
+        }
+        return exerciseInWorkout;
+      }).toList();
+    });
+  }
+
+  void _removeExerciseInWorkout(
+      {required ExerciseInWorkoutDto exerciseToRemove}) {
+    setState(() {
+      _exercisesInWorkout = _exercisesInWorkout
+          .whereNot((exerciseInWorkout) =>
+              exerciseInWorkout.exercise == exerciseToRemove.exercise)
+          .toList();
     });
   }
 
