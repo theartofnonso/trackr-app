@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
-import 'exercise_library_item.dart';
+import '../../dtos/exercise_in_library_dto.dart';
 import 'exercise_library_list_item.dart';
 
 class ExerciseLibraryListSection extends StatefulWidget {
   final BodyPart bodyPart;
-  final List<ExerciseLibraryItem> exercises;
-  final void Function(ExerciseLibraryItem exerciseItemToBeAdded) onSelect;
-  final void Function(ExerciseLibraryItem exerciseItemToBeRemoved) onRemove;
+  final List<ExerciseInLibraryDto> exercises;
+  final void Function(ExerciseInLibraryDto exerciseItemToBeAdded) onSelect;
+  final void Function(ExerciseInLibraryDto exerciseItemToBeRemoved) onRemove;
 
   const ExerciseLibraryListSection(
       {super.key,
@@ -27,7 +27,7 @@ class _ExerciseLibraryListSectionState extends State<ExerciseLibraryListSection>
       TextStyle(color: CupertinoColors.white.withOpacity(0.7));
 
   List<ExerciseLibraryListItem> _exercisesToListItem(
-      {required List<ExerciseLibraryItem> exercises, required BodyPart bodyPart}) {
+      {required List<ExerciseInLibraryDto> exercises, required BodyPart bodyPart}) {
     return exercises
         .map((exerciseItem) => ExerciseLibraryListItem(
               exerciseItem: exerciseItem,
@@ -38,7 +38,7 @@ class _ExerciseLibraryListSectionState extends State<ExerciseLibraryListSection>
   }
 
   void _onSelectExercise(
-      {required bool isSelected, required ExerciseLibraryItem selectedExerciseItem}) {
+      {required bool isSelected, required ExerciseInLibraryDto selectedExerciseItem}) {
     if (isSelected) {
       selectedExerciseItem.isSelected = true;
       widget.onSelect(selectedExerciseItem);

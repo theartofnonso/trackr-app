@@ -15,16 +15,16 @@ enum BodyPart {
   const BodyPart(this.label);
 }
 
-class Exercise {
+class ExerciseDto {
   final String name;
   final BodyPart bodyPart;
 
-  Exercise(this.name, this.bodyPart);
+  ExerciseDto(this.name, this.bodyPart);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Exercise &&
+      other is ExerciseDto &&
           runtimeType == other.runtimeType &&
           name == other.name &&
           bodyPart == other.bodyPart;

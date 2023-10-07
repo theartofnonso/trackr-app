@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
-import 'exercise_library_item.dart';
+import '../../dtos/exercise_in_library_dto.dart';
 
 class ExerciseLibraryListItem extends StatefulWidget {
-  final ExerciseLibraryItem exerciseItem;
+  final ExerciseInLibraryDto exerciseItem;
   final void Function(bool) onTap;
 
   const ExerciseLibraryListItem(
