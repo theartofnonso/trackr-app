@@ -34,7 +34,7 @@ class SetListItem extends StatelessWidget {
               Navigator.pop(context);
               onRemove(index);
             },
-            child: const Text('Remove'),
+            child: const Text('Remove set'),
           ),
         ],
       ),
