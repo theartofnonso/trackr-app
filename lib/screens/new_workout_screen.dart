@@ -1,12 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
-
-const double _kItemExtent = 32.0;
 
 class NewWorkoutScreen extends StatefulWidget {
   const NewWorkoutScreen({super.key});
@@ -18,7 +15,8 @@ class NewWorkoutScreen extends StatefulWidget {
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
 
-  List<ExerciseInWorkoutDto> _whereExercisesToSuperSetWith({required ExerciseInWorkoutDto firstSuperSetExercise}) {
+  List<ExerciseInWorkoutDto> _whereExercisesToSuperSetWith(
+      {required ExerciseInWorkoutDto firstSuperSetExercise}) {
     return _exercisesInWorkout
         .whereNot((exercisesInWorkout) =>
             exercisesInWorkout.exercise == firstSuperSetExercise.exercise)
@@ -32,28 +30,35 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
-        height: 216,
+        decoration: const BoxDecoration(
+            color: Color.fromRGBO(12, 14, 18, 1),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8), topRight: Radius.circular(8))),
+        height: 150,
         padding: const EdgeInsets.only(top: 6.0),
         // The Bottom margin is provided to align the popup above the system navigation bar.
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        // Provide a background color for the popup.
-        color: Colors.transparent,
-        // Use a SafeArea widget to avoid system overlaps.
         child: SafeArea(
-          top: false,
-          child: CupertinoPicker(
-            magnification: 1.22,
-            squeeze: 1.2,
-            useMagnifier: true,
-            itemExtent: _kItemExtent,
-            onSelectedItemChanged: (int selectedExerciseIndex) {
-              _markAsSuperSet(firstSuperSetExercise: firstSuperSetExercise, secondSuperSetExercise: exercisesToSuperSetWith[selectedExerciseIndex]);
-            },
-            children: exercisesToSuperSetWith.map((exerciseInWorkout) => Text(exerciseInWorkout.exercise.name, style: const TextStyle(color: CupertinoColors.white))).toList(),
-          ),
-        ),
+            top: false,
+            child: ListView(
+              children: [
+                ...exercisesToSuperSetWith
+                    .map((exerciseInWorkout) => CupertinoListTile(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            _addSuperSets(
+                                firstSuperSetExercise: firstSuperSetExercise,
+                                secondSuperSetExercise: exerciseInWorkout);
+                          },
+                          title: Text(exerciseInWorkout.exercise.name,
+                              style: const TextStyle(
+                                  color: CupertinoColors.white, fontSize: 16)),
+                        ))
+                    .toList()
+              ],
+            )),
       ),
     );
   }
@@ -97,7 +102,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     Navigator.of(context).pop();
   }
 
-  void _markAsSuperSet(
+  void _addSuperSets(
       {required ExerciseInWorkoutDto firstSuperSetExercise,
       required ExerciseInWorkoutDto secondSuperSetExercise}) {
     setState(() {

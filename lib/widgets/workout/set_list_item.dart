@@ -82,7 +82,7 @@ class SetListItem extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              Text(previousWorkoutSummary ?? "No past data",
+              Text(previousWorkoutSummary ?? "No data",
                   style:
                       TextStyle(color: CupertinoColors.white.withOpacity(0.7)))
             ],

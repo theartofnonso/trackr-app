@@ -7,15 +7,21 @@ import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
-  final void Function(ExerciseInWorkoutDto firstSuperSetExercise) onSuperSetExercises;
+  final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
+      onSuperSetExercises;
 
-  const ExerciseInWorkoutListSection({super.key, required this.exerciseInWorkoutDto, required this.onSuperSetExercises});
+  const ExerciseInWorkoutListSection(
+      {super.key,
+      required this.exerciseInWorkoutDto,
+      required this.onSuperSetExercises});
 
   @override
-  State<ExerciseInWorkoutListSection> createState() => _ExerciseInWorkoutListSectionState();
+  State<ExerciseInWorkoutListSection> createState() =>
+      _ExerciseInWorkoutListSectionState();
 }
 
-class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSection> {
+class _ExerciseInWorkoutListSectionState
+    extends State<ExerciseInWorkoutListSection> {
   List<SetListItem> _warmupSetItems = [];
   List<SetListItem> _setItems = [];
   final List<TextEditingController> _warmupSetRepsController = [];
@@ -151,14 +157,12 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
 
   @override
   Widget build(BuildContext context) {
-    print(widget.exerciseInWorkoutDto.isSuperSet);
     return CupertinoListSection.insetGrouped(
       backgroundColor: Colors.transparent,
       header: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CupertinoListTile(
-            //padding: EdgeInsets.zero,
             title: Text(widget.exerciseInWorkoutDto.exercise.name,
                 style: const TextStyle(
                     color: Colors.white,
@@ -166,13 +170,13 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
                     fontSize: 16)),
             subtitle: widget.exerciseInWorkoutDto.isSuperSet
                 ? const Padding(
-                  padding: EdgeInsets.only(bottom: 8.0),
-                  child: Text("Super set with: Chest dips",
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12)),
-                )
+                    padding: EdgeInsets.only(bottom: 8.0),
+                    child: Text("Super set with: Chest dips",
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12)),
+                  )
                 : const SizedBox.shrink(),
             trailing: GestureDetector(
                 onTap: () => _showProcedureActionSheet(context: context),
@@ -191,7 +195,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
               style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: CupertinoColors.white.withOpacity(0.8)),
-              placeholder: "Enter notes for ${widget.exerciseInWorkoutDto.exercise.name}",
+              placeholder: "Enter notes",
               placeholderStyle: const TextStyle(
                   color: CupertinoColors.inactiveGray, fontSize: 14),
             ),
