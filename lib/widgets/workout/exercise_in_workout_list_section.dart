@@ -16,7 +16,7 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
   final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto)
       onRemoveExerciseInWorkout;
 
-  ExerciseInWorkoutListSection(
+  const ExerciseInWorkoutListSection(
       {required this.index,
       required this.exerciseInWorkoutDto,
       required this.onAddSuperSetExercises,
