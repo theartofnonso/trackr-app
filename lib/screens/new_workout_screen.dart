@@ -17,6 +17,7 @@ class NewWorkoutScreen extends StatefulWidget {
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
+  List<ExerciseInWorkoutListSection> _exerciseInWorkoutListSection = [];
 
   /// Return a list of exercises to superset with [firstSuperSetExercise]
   List<ExerciseInWorkoutDto> _whereExercisesToSuperSetWith(
@@ -119,9 +120,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
-  List<ExerciseInWorkoutListSection>
-      _exercisesToExerciseInWorkoutListSection() {
-    final exerciseSections = _exercisesInWorkout
+  List<ExerciseInWorkoutListSection> _exercisesToExerciseInWorkoutListSection() {
+    _exerciseInWorkoutListSection = _exercisesInWorkout
         .mapIndexed((index, exercisesInWorkout) => ExerciseInWorkoutListSection(
               index: index,
               keyValue: Key(exercisesInWorkout.exercise.name),
@@ -143,12 +143,12 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         .toList();
 
     outerLoop:
-    for (var i = 0; i < exerciseSections.length; i++) {
-      final exerciseSection = exerciseSections[i];
+    for (var i = 0; i < _exerciseInWorkoutListSection.length; i++) {
+      final exerciseSection = _exerciseInWorkoutListSection[i];
       final exerciseInWorkoutDto = exerciseSection.exerciseInWorkoutDto;
       if (exerciseInWorkoutDto.isSuperSet) {
         final superSetId = exerciseInWorkoutDto.superSetId;
-        final otherExerciseSections = exerciseSections.where(
+        final otherExerciseSections = _exerciseInWorkoutListSection.where(
             (otherExerciseSection) =>
                 (otherExerciseSection.exerciseInWorkoutDto.superSetId ==
                     superSetId) &&
@@ -156,13 +156,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     exerciseSection.exerciseInWorkoutDto.exercise);
         if (otherExerciseSections.isNotEmpty) {
           final otherExerciseSection = otherExerciseSections.first;
-          exerciseSections.swap(
+          _exerciseInWorkoutListSection.swap(
               exerciseSection.index + 1, otherExerciseSection.index);
           break outerLoop;
         }
       }
     }
-    return exerciseSections;
+    return _exerciseInWorkoutListSection;
   }
 
   void _navigateBack() {
@@ -213,6 +213,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       _removeSuperSet(superSetId: exerciseToRemove.superSetId);
     }
   }
+
+  // void _saveWorkout() {
+  //   _exercisesInWorkout.map((exerciseInWorkout) => exerciseInWorkout.).toList();
+  // }
 
   @override
   Widget build(BuildContext context) {

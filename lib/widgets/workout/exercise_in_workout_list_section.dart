@@ -3,7 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
+
+// typedef List<ProcedureDto> createSetProcedures({required List<ProcedureDto> warmupProcedures, required List<ProcedureDto> workingProcedures}) {
+//   final procedureDtos = <ProcedureDto>[];
+//   if(warmupProcedures.isNotEmpty) {
+//     procedureDtos.addAll(warmupProcedures);
+//   }
+//   if(workingProcedures.isNotEmpty) {
+//     procedureDtos.addAll(workingProcedures);
+//   }
+//   return procedureDtos;
+// }
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
   final int index;
@@ -23,7 +35,7 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
       required this.exercisesInWorkoutDtos,
       required this.onRemoveSuperSetExercises,
       required this.onRemoveExerciseInWorkout,
-      required this.keyValue})
+      required this.keyValue,})
       : super(key: keyValue);
 
   @override
@@ -33,18 +45,43 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
 
 class _ExerciseInWorkoutListSectionState
     extends State<ExerciseInWorkoutListSection> {
-  List<SetListItem> _warmupSetItems = [];
-  List<SetListItem> _setItems = [];
-  final List<TextEditingController> _warmupSetRepsController = [];
-  final List<TextEditingController> _warmupSetWeightController = [];
-  final List<TextEditingController> _setRepsController = [];
-  final List<TextEditingController> _setWeightController = [];
 
-  /// Remove [SetListItem] from [_setItems]
+  List<SetListItem> _warmupSetItems = [];
+  List<SetListItem> _workingSetItems = [];
+  final List<TextEditingController> _warmupSetRepsControllers = [];
+  final List<TextEditingController> _warmupSetWeightControllers = [];
+  final List<TextEditingController> _workingSetRepsControllers = [];
+  final List<TextEditingController> _workingSetWeightControllers = [];
+
+  List<ProcedureDto> _createWarmupSetProcedures() {
+    final procedureDtos = <ProcedureDto>[];
+
+    for (var i = 0; i < _warmupSetItems.length; i++) {
+      final warmupSetRepsController = _warmupSetWeightControllers[i];
+      final warmupSetWeightController = _warmupSetWeightControllers[i];
+      final procedureDto = ProcedureDto(repCount: int.parse(warmupSetRepsController.text), weight: int.parse(warmupSetWeightController.text));
+      procedureDtos.add(procedureDto);
+    }
+    return procedureDtos;
+  }
+
+  List<ProcedureDto> _createWorkingSetProcedures() {
+    final procedureDtos = <ProcedureDto>[];
+
+    for (var i = 0; i < _workingSetItems.length; i++) {
+      final workingSetRepsController = _workingSetRepsControllers[i];
+      final workingSetWeightController = _workingSetWeightControllers[i];
+      final procedureDto = ProcedureDto(repCount: int.parse(workingSetRepsController.text), weight: int.parse(workingSetWeightController.text));
+      procedureDtos.add(procedureDto);
+    }
+    return procedureDtos;
+  }
+
+  /// Remove [SetListItem] from [_workingSetItems]
   void _removeSetListItem({required int index}) {
     setState(() {
-      _setItems.removeAt(index);
-      _setItems = _setItems.mapIndexed((index, item) {
+      _workingSetItems.removeAt(index);
+      _workingSetItems = _workingSetItems.mapIndexed((index, item) {
         return SetListItem(
           index: index,
           onRemove: item.onRemove,
@@ -54,8 +91,8 @@ class _ExerciseInWorkoutListSectionState
         );
       }).toList();
 
-      _setRepsController.removeAt(index);
-      _setWeightController.removeAt(index);
+      _workingSetRepsControllers.removeAt(index);
+      _workingSetWeightControllers.removeAt(index);
     });
   }
 
@@ -73,8 +110,8 @@ class _ExerciseInWorkoutListSectionState
         );
       }).toList();
 
-      _warmupSetRepsController.removeAt(index);
-      _warmupSetWeightController.removeAt(index);
+      _warmupSetRepsControllers.removeAt(index);
+      _warmupSetWeightControllers.removeAt(index);
     });
   }
 
@@ -140,14 +177,14 @@ class _ExerciseInWorkoutListSectionState
     );
   }
 
-  /// Add new [SetListItem] to list [_setItems]
+  /// Add new [SetListItem] to list [_workingSetItems]
   void _addNewSetListItem() {
     final repsController = TextEditingController();
     final setsController = TextEditingController();
     final setItem = SetListItem(
-      index: _setItems.length,
+      index: _workingSetItems.length,
       onRemove: (int index) {
-        if (_setItems.isNotEmpty) {
+        if (_workingSetItems.isNotEmpty) {
           _removeSetListItem(index: index);
         }
       },
@@ -155,9 +192,9 @@ class _ExerciseInWorkoutListSectionState
       weightController: setsController,
       isWarmup: false,
     );
-    _setItems.add(setItem);
-    _setRepsController.add(repsController);
-    _setWeightController.add(setsController);
+    _workingSetItems.add(setItem);
+    _workingSetRepsControllers.add(repsController);
+    _workingSetWeightControllers.add(setsController);
   }
 
   /// Add new [SetListItem] to list [_warmupItems]
@@ -172,8 +209,8 @@ class _ExerciseInWorkoutListSectionState
       weightController: setsController,
     );
     _warmupSetItems.add(setItem);
-    _warmupSetRepsController.add(repsController);
-    _warmupSetWeightController.add(setsController);
+    _warmupSetRepsControllers.add(repsController);
+    _warmupSetWeightControllers.add(setsController);
   }
 
   /// Mark [ExerciseInWorkoutDto] as superset
@@ -242,7 +279,7 @@ class _ExerciseInWorkoutListSectionState
           ),
         ],
       ),
-      children: [..._warmupSetItems, ..._setItems],
+      children: [..._warmupSetItems, ..._workingSetItems],
     );
   }
 
@@ -250,5 +287,22 @@ class _ExerciseInWorkoutListSectionState
   void initState() {
     super.initState();
     _addNewSetListItem();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (var controller in _warmupSetRepsControllers) {
+      controller.dispose();
+    }
+    for (var controller in _warmupSetWeightControllers) {
+      controller.dispose();
+    }
+    for (var controller in _workingSetRepsControllers) {
+      controller.dispose();
+    }
+    for (var controller in _workingSetWeightControllers) {
+      controller.dispose();
+    }
   }
 }
