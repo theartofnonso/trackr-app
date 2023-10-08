@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+import '../../app_constants.dart';
 import '../../dtos/exercise_in_library_dto.dart';
 
 class ExerciseLibraryListItem extends StatefulWidget {
@@ -31,7 +32,7 @@ class _ExerciseLibraryListItemState extends State<ExerciseLibraryListItem> {
     return GestureDetector(
       onTap: _selectExercise,
       child: CupertinoListTile.notched(
-          backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
+          backgroundColor: tealBlueLight,
           leading: CupertinoCheckbox(
             value: _isSelected,
             onChanged: (bool? _) => _selectExercise(),
