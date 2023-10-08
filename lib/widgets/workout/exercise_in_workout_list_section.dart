@@ -7,6 +7,7 @@ import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
   final int index;
+  final Key key;
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
   final List<ExerciseInWorkoutDto> exercisesInWorkoutDtos;
   final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
@@ -15,14 +16,13 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
   final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto)
       onRemoveExerciseInWorkout;
 
-  const ExerciseInWorkoutListSection(
-      {super.key,
-      required this.index,
+  ExerciseInWorkoutListSection(
+      {required this.index,
       required this.exerciseInWorkoutDto,
       required this.onAddSuperSetExercises,
       required this.exercisesInWorkoutDtos,
       required this.onRemoveSuperSetExercises,
-      required this.onRemoveExerciseInWorkout});
+      required this.onRemoveExerciseInWorkout, required this.key}) : super(key: key);
 
   @override
   State<ExerciseInWorkoutListSection> createState() =>

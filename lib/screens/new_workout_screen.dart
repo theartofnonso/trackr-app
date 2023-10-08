@@ -151,6 +151,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     final exerciseSections = _exercisesInWorkout
         .mapIndexed((index, exercisesInWorkout) => ExerciseInWorkoutListSection(
               index: index,
+              key: Key(exercisesInWorkout.exercise.name),
               exerciseInWorkoutDto: exercisesInWorkout,
               onAddSuperSetExercises:
                   (ExerciseInWorkoutDto firstSuperSetExercise) {
@@ -228,10 +229,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   void _removeExerciseInWorkout(
       {required ExerciseInWorkoutDto exerciseToRemove}) {
     setState(() {
-      _exercisesInWorkout = _exercisesInWorkout
-          .whereNot((exerciseInWorkout) =>
-              exerciseInWorkout.exercise == exerciseToRemove.exercise)
-          .toList();
+      _exercisesInWorkout.remove(exerciseToRemove);
     });
   }
 
