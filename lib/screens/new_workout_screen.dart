@@ -148,8 +148,9 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   List<ExerciseInWorkoutListSection>
       _exercisesToExerciseInWorkoutListSection() {
-    return _exercisesInWorkout
-        .map((exercisesInWorkout) => ExerciseInWorkoutListSection(
+    final exerciseSections = _exercisesInWorkout
+        .mapIndexed((index, exercisesInWorkout) => ExerciseInWorkoutListSection(
+              index: index,
               exerciseInWorkoutDto: exercisesInWorkout,
               onAddSuperSetExercises:
                   (ExerciseInWorkoutDto firstSuperSetExercise) {
@@ -166,6 +167,28 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
               },
             ))
         .toList();
+
+    outerLoop:
+    for (var i = 0; i < exerciseSections.length; i++) {
+      final exerciseSection = exerciseSections[i];
+      final exerciseInWorkoutDto = exerciseSection.exerciseInWorkoutDto;
+      if (exerciseInWorkoutDto.isSuperSet) {
+        final superSetId = exerciseInWorkoutDto.superSetId;
+        final otherExerciseSections = exerciseSections.where(
+            (otherExerciseSection) =>
+                (otherExerciseSection.exerciseInWorkoutDto.superSetId ==
+                    superSetId) &&
+                otherExerciseSection.exerciseInWorkoutDto.exercise !=
+                    exerciseSection.exerciseInWorkoutDto.exercise);
+        if (otherExerciseSections.isNotEmpty) {
+          final otherExerciseSection = otherExerciseSections.first;
+          exerciseSections.swap(
+              exerciseSection.index + 1, otherExerciseSection.index);
+          break outerLoop;
+        }
+      }
+    }
+    return exerciseSections;
   }
 
   void _navigateBack() {
@@ -227,7 +250,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: SafeArea(
             child: SingleChildScrollView(
-              keyboardDismissBehavior:  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -268,7 +291,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           padding: EdgeInsets.zero,
                           decoration: const BoxDecoration(
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.all(Radius.circular(8))),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
                           keyboardType: TextInputType.text,
                           maxLength: 240,
                           maxLines: null,
@@ -280,7 +304,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                               height: 1.8),
                           placeholder: "New notes",
                           placeholderStyle: const TextStyle(
-                              color: CupertinoColors.inactiveGray, fontSize: 14),
+                              color: CupertinoColors.inactiveGray,
+                              fontSize: 14),
                         ),
                       ],
                     ),
@@ -292,8 +317,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.only(left: 20),
-                      margin:
-                          const EdgeInsets.only(left: 18, right: 18, bottom: 20),
+                      margin: const EdgeInsets.only(
+                          left: 18, right: 18, bottom: 20),
                       width: double.infinity,
                       decoration: const BoxDecoration(
                           color: Color.fromRGBO(25, 28, 36, 1),
