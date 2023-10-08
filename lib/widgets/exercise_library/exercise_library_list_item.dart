@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import '../../dtos/exercise_in_library_dto.dart';
 
 class ExerciseLibraryListItem extends StatefulWidget {
-  final ExerciseInLibraryDto exerciseInLibrary;
-  final void Function(bool) onTap;
+  final ExerciseInLibraryDto exercise;
+  final void Function(bool isSelected) onTap;
 
   const ExerciseLibraryListItem(
-      {super.key, required this.exerciseInLibrary, required this.onTap});
+      {super.key, required this.exercise, required this.onTap});
 
   @override
   State<ExerciseLibraryListItem> createState() => _ExerciseLibraryListItemState();
@@ -17,7 +17,8 @@ class _ExerciseLibraryListItemState extends State<ExerciseLibraryListItem> {
 
   bool _isSelected = false;
 
-  void _onSelect() {
+  /// Select an exercise
+  void _selectExercise() {
     final isSelected = !_isSelected;
         setState(() {
       _isSelected = isSelected;
@@ -28,22 +29,21 @@ class _ExerciseLibraryListItemState extends State<ExerciseLibraryListItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _onSelect,
+      onTap: _selectExercise,
       child: CupertinoListTile.notched(
           backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
           leading: CupertinoCheckbox(
             value: _isSelected,
-            onChanged: (bool? _) => _onSelect(),
+            onChanged: (bool? _) => _selectExercise(),
           ),
           title:
-              Text(widget.exerciseInLibrary.exercise.name)),
+              Text(widget.exercise.exercise.name)),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    final isSelected = widget.exerciseInLibrary.isSelected;
-    _isSelected = isSelected ?? false;
+    _isSelected = widget.exercise.isSelected ?? false;
   }
 }
