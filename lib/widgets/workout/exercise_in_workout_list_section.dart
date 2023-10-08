@@ -22,7 +22,9 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
       required this.onAddSuperSetExercises,
       required this.exercisesInWorkoutDtos,
       required this.onRemoveSuperSetExercises,
-      required this.onRemoveExerciseInWorkout, required this.keyValue}) : super(key: keyValue);
+      required this.onRemoveExerciseInWorkout,
+      required this.keyValue})
+      : super(key: keyValue);
 
   @override
   State<ExerciseInWorkoutListSection> createState() =>
@@ -45,7 +47,6 @@ class _ExerciseInWorkoutListSectionState
       _setItems = _setItems.mapIndexed((index, item) {
         return SetListItem(
           index: index,
-          leadingColor: item.leadingColor,
           onRemove: item.onRemove,
           repsController: item.repsController,
           weightController: item.weightController,
@@ -58,13 +59,13 @@ class _ExerciseInWorkoutListSectionState
     });
   }
 
+  /// Remove [SetListItem] from [_warmupItems]
   void removeWarmupSetListItem({required int index}) {
     setState(() {
       _warmupSetItems.removeAt(index);
       _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
         return SetListItem(
           index: index,
-          leadingColor: item.leadingColor,
           onRemove: item.onRemove,
           repsController: item.repsController,
           weightController: item.weightController,
@@ -77,7 +78,8 @@ class _ExerciseInWorkoutListSectionState
     });
   }
 
-  void _showProcedureActionSheet({required BuildContext context}) {
+  /// Show [CupertinoActionSheet]
+  void _showExerciseInWorkoutActionSheet() {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -86,7 +88,7 @@ class _ExerciseInWorkoutListSectionState
             onPressed: () {
               Navigator.pop(context);
               setState(() {
-                _createNewSetListItem();
+                _addNewSetListItem();
               });
             },
             child: const Text('Add new set', style: TextStyle(fontSize: 18)),
@@ -95,7 +97,7 @@ class _ExerciseInWorkoutListSectionState
             onPressed: () {
               Navigator.pop(context);
               setState(() {
-                _createNewWarmupSetListItem();
+                _addNewWarmupSetListItem();
               });
             },
             child:
@@ -138,12 +140,12 @@ class _ExerciseInWorkoutListSectionState
     );
   }
 
-  void _createNewSetListItem() {
+  /// Add new [SetListItem] to list [_setItems]
+  void _addNewSetListItem() {
     final repsController = TextEditingController();
     final setsController = TextEditingController();
     final setItem = SetListItem(
       index: _setItems.length,
-      leadingColor: CupertinoColors.activeBlue,
       onRemove: (int index) {
         if (_setItems.isNotEmpty) {
           _removeSetListItem(index: index);
@@ -158,13 +160,13 @@ class _ExerciseInWorkoutListSectionState
     _setWeightController.add(setsController);
   }
 
-  void _createNewWarmupSetListItem() {
+  /// Add new [SetListItem] to list [_warmupItems]
+  void _addNewWarmupSetListItem() {
     final repsController = TextEditingController();
     final setsController = TextEditingController();
     final setItem = SetListItem(
       index: _warmupSetItems.length,
       isWarmup: true,
-      leadingColor: CupertinoColors.activeOrange,
       onRemove: (int index) => removeWarmupSetListItem(index: index),
       repsController: repsController,
       weightController: setsController,
@@ -174,10 +176,12 @@ class _ExerciseInWorkoutListSectionState
     _warmupSetWeightController.add(setsController);
   }
 
+  /// Mark [ExerciseInWorkoutDto] as superset
   void _markAsSuperSet() {
     widget.onAddSuperSetExercises(widget.exerciseInWorkoutDto);
   }
 
+  /// Find [ExerciseInWorkoutDto] in list of [widget.exercisesInWorkoutDtos]
   ExerciseInWorkoutDto _whereExerciseSuperSet() {
     return widget.exercisesInWorkoutDtos.firstWhere((exerciseInWorkout) {
       return exerciseInWorkout.superSetId ==
@@ -214,7 +218,7 @@ class _ExerciseInWorkoutListSectionState
             trailing: Padding(
               padding: const EdgeInsets.all(12.0),
               child: GestureDetector(
-                  onTap: () => _showProcedureActionSheet(context: context),
+                  onTap: _showExerciseInWorkoutActionSheet,
                   child: const Icon(CupertinoIcons.ellipsis)),
             ),
           ),
@@ -245,6 +249,6 @@ class _ExerciseInWorkoutListSectionState
   @override
   void initState() {
     super.initState();
-    _createNewSetListItem();
+    _addNewSetListItem();
   }
 }
