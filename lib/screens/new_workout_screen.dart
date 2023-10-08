@@ -300,7 +300,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           left: 18, right: 18, bottom: 20),
                       width: double.infinity,
                       decoration: const BoxDecoration(
-                          color: Color.fromRGBO(25, 28, 36, 1),
+                          color: tealBlueLight,
                           borderRadius: BorderRadius.all(Radius.circular(8))),
                       height: 40,
                       child: const Text("Add exercise",
