@@ -124,7 +124,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     final exerciseSections = _exercisesInWorkout
         .mapIndexed((index, exercisesInWorkout) => ExerciseInWorkoutListSection(
               index: index,
-              key: Key(exercisesInWorkout.exercise.name),
+              keyValue: Key(exercisesInWorkout.exercise.name),
               exerciseInWorkoutDto: exercisesInWorkout,
               onAddSuperSetExercises:
                   (ExerciseInWorkoutDto firstSuperSetExercise) {
