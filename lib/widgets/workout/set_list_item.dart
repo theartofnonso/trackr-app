@@ -52,7 +52,7 @@ class SetListItem extends StatelessWidget {
           const SizedBox(
             width: 18,
           ),
-          SetListItemTextField(
+          _SetListItemTextField(
               label: 'Reps',
               //textEditingController: repsController,
               onChanged: (value) =>
@@ -65,7 +65,7 @@ class SetListItem extends StatelessWidget {
           const SizedBox(
             width: 28,
           ),
-          SetListItemTextField(
+          _SetListItemTextField(
               label: 'kg',
               //textEditingController: weightController,
               onChanged: (value) =>
@@ -131,13 +131,12 @@ class LeadingIcon extends StatelessWidget {
   }
 }
 
-class SetListItemTextField extends StatelessWidget {
+class _SetListItemTextField extends StatelessWidget {
   final String label;
   final void Function(String)? onChanged;
 
-  const SetListItemTextField(
-      {super.key,
-      required this.label,
+  const _SetListItemTextField(
+      {required this.label,
       this.onChanged});
 
   @override

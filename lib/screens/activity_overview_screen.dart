@@ -24,7 +24,7 @@ class ActivityOverviewScreen extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: !workouts.isNotEmpty
+          child: workouts.isNotEmpty
               ? _ListOfWorkouts(workouts: workouts, onTap: () => _showNewWorkoutScreen(context),)
               : Center(
                   child: _WorkoutsEmptyState(
@@ -49,7 +49,7 @@ class _ListOfWorkouts extends StatelessWidget {
         backgroundColor: Colors.transparent,
         header: CupertinoListTile(
           padding: EdgeInsets.zero,
-          title: Text("Workouts", style: TextStyle(fontSize: 18),),
+          title: const Text("Workouts", style: TextStyle(fontSize: 18),),
           trailing: GestureDetector(
               onTap: onTap,
               child: const Icon(
@@ -58,75 +58,48 @@ class _ListOfWorkouts extends StatelessWidget {
               )),
         ),
         children:  [
-          CupertinoListTile.notched(
-              backgroundColor: Color.fromRGBO(25, 28, 36, 1),
-              title: Text("Push Day"),
-              subtitle: Text("10 exercises", style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)),),
-              leading: CircleAvatar(
-                backgroundColor: CupertinoColors.activeBlue,
-                child: Text(
-                  "P",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: CupertinoColors.white),
-                ),
-              ),
-              trailing: GestureDetector(
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 1.0),
-                    child: Icon(CupertinoIcons.ellipsis),
-                  ))
-          ),
-          CupertinoListTile.notched(
-              backgroundColor: Color.fromRGBO(25, 28, 36, 1),
-              title: Text("Pull Day"),
-              subtitle: Text("10 exercises", style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)),),
-              leading: CircleAvatar(
-                backgroundColor: CupertinoColors.activeBlue,
-                child: Text(
-                  "P",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: CupertinoColors.white),
-                ),
-              ),
-              trailing: GestureDetector(
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 1.0),
-                    child: Icon(CupertinoIcons.ellipsis),
-                  ))
-          ),
-          CupertinoListTile.notched(
-              backgroundColor: Color.fromRGBO(25, 28, 36, 1),
-              title: Text("Leg Day"),
-              subtitle: Text("8 exercises", style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)),),
-              leading: CircleAvatar(
-                backgroundColor: CupertinoColors.activeBlue,
-                child: Text(
-                  "L",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: CupertinoColors.white),
-                ),
-              ),
-              trailing: GestureDetector(
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 1.0),
-                    child: Icon(CupertinoIcons.ellipsis),
-                  ))
-          ),
+          ...workouts.map((workout) => _WorkoutListItem(workoutDto: workout,)).toList()
         ],
       ),
     ]);
-    return ListView(
-        children: workouts
-            .map((workout) =>
-                CupertinoListTile.notched(title: Text(workout.name)))
-            .toList());
   }
 }
+
+class _WorkoutListItem extends StatelessWidget {
+
+  final WorkoutDto workoutDto;
+
+
+  const _WorkoutListItem({required this.workoutDto});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTile.notched(
+        backgroundColor: tealBlueLight,
+        title: Text(workoutDto.name),
+        subtitle: Text("${workoutDto.exercises.length} exercises", style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)),),
+        leading: CircleAvatar(
+          backgroundColor: CupertinoColors.activeBlue,
+          child: Text(
+            workoutDto.name.substring(0, 1),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: CupertinoColors.white),
+          ),
+        ),
+        trailing: GestureDetector(
+            child: const Padding(
+              padding: EdgeInsets.only(right: 1.0),
+              child: Icon(CupertinoIcons.ellipsis),
+            ))
+    );
+  }
+}
+
 
 class _WorkoutsEmptyState extends StatelessWidget {
   final Function() onPressed;
 
-  const _WorkoutsEmptyState({super.key, required this.onPressed});
+  const _WorkoutsEmptyState({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

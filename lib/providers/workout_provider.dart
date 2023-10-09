@@ -155,7 +155,7 @@ class WorkoutProvider with ChangeNotifier {
   void createWorkout({required String name, required String notes}) {
     final workout = WorkoutDto(name: name, notes: notes, exercises: exercisesInWorkout);
     workouts.add(workout);
-    exercisesInWorkout.clear();
+    //exercisesInWorkout.clear();
     notifyListeners();
   }
 }
