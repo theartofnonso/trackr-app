@@ -13,14 +13,18 @@ class SetListItem extends StatelessWidget {
     required this.index,
     required this.onRemove,
     required this.isWarmup,
-    this.previousWorkoutSummary, required this.exerciseInWorkoutDto, this.procedureDto,
+    this.previousWorkoutSummary,
+    required this.exerciseInWorkoutDto,
+    this.procedureDto, required this.onChangedRepCount, required this.onChangedWeight,
   });
 
   final int index;
   final String? previousWorkoutSummary;
   final bool isWarmup;
-  final void Function(int index) onRemove;
   final ProcedureDto? procedureDto;
+  final void Function(int index) onRemove;
+  final void Function(int value) onChangedRepCount;
+  final void Function(int value) onChangedWeight;
 
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
 
@@ -56,27 +60,30 @@ class SetListItem extends StatelessWidget {
           ),
           _SetListItemTextField(
               label: 'Reps',
-              value: procedureDto?.repCount,
-              onChanged: (value) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                      .updateReps(
-                          exerciseInWorkout: exerciseInWorkoutDto,
-                          setIndex: index,
-                          repCount: int.parse(value),
-                          isWarmup: isWarmup)),
+              initialValue: procedureDto?.repCount,
+              onChanged: (value) => onChangedRepCount(int.parse(value))
+
+                  // Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                  //     .updateReps(
+                  //         exerciseInWorkout: exerciseInWorkoutDto,
+                  //         setIndex: index,
+                  //         repCount: int.parse(value),
+                  //         isWarmup: isWarmup)
+          ),
           const SizedBox(
             width: 28,
           ),
           _SetListItemTextField(
               label: 'kg',
-              value: procedureDto?.weight,
-              onChanged: (value) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                      .updateWeight(
-                          exerciseInWorkout: exerciseInWorkoutDto,
-                          setIndex: index,
-                          weight: int.parse(value),
-                          isWarmup: isWarmup)),
+              initialValue: procedureDto?.weight,
+              onChanged: (value) => onChangedWeight(int.parse(value))
+                  // Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                  //     .updateWeight(
+                  //         exerciseInWorkout: exerciseInWorkoutDto,
+                  //         setIndex: index,
+                  //         weight: int.parse(value),
+                  //         isWarmup: isWarmup)
+          ),
           const SizedBox(
             width: 20,
           ),
@@ -135,10 +142,11 @@ class LeadingIcon extends StatelessWidget {
 
 class _SetListItemTextField extends StatelessWidget {
   final String label;
-  final int? value;
-  final void Function(String)? onChanged;
+  final int? initialValue;
+  final void Function(String) onChanged;
 
-  const _SetListItemTextField({required this.label, this.onChanged, this.value});
+  const _SetListItemTextField(
+      {required this.label, required this.onChanged, this.initialValue});
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +163,9 @@ class _SetListItemTextField extends StatelessWidget {
         SizedBox(
           width: 30,
           child: CupertinoTextField(
-            controller: value != null ? TextEditingController(text: value.toString()) : null,
+            controller: initialValue != null
+                ? TextEditingController(text: initialValue.toString())
+                : null,
             onChanged: onChanged,
             decoration: const BoxDecoration(color: Colors.transparent),
             padding: EdgeInsets.zero,

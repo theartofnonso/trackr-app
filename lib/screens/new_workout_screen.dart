@@ -8,6 +8,7 @@ import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
 import '../app_constants.dart';
+import '../dtos/procedure_dto.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
 
@@ -21,6 +22,8 @@ class NewWorkoutScreen extends StatefulWidget {
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
+  List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
+
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
@@ -46,7 +49,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   /// Show list of [ExerciseInWorkoutDto] to superset with
   void _showExercisesInWorkoutPicker(
-      {required ExerciseInWorkoutDto firstSuperSetExercise}) {
+      {required ExerciseInWorkoutDto firstExercise}) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
@@ -60,19 +63,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                .canSuperSet()
+        child: _canSuperSet()
             ? _ListOfExercises(
-                exercises: Provider.of<ExerciseInWorkoutProvider>(context,
-                        listen: false)
-                    .whereOtherExercisesToSuperSetWith(
-                        firstExercise: firstSuperSetExercise),
-                onSelect: (ExerciseInWorkoutDto exercise) =>
-                    Provider.of<ExerciseInWorkoutProvider>(context,
-                            listen: false)
-                        .addSuperSets(
-                            firstExercise: firstSuperSetExercise,
-                            secondExercise: exercise),
+                exercises: _whereOtherExercisesToSuperSetWith(
+                    firstExercise: firstExercise),
+                onSelect: (ExerciseInWorkoutDto secondExercise) => _addSuperSet(
+                    firstExercise: firstExercise,
+                    secondExercise: secondExercise),
               )
             : _ExercisesInWorkoutEmptyState(onPressed: () {
                 Navigator.of(context).pop();
@@ -88,20 +85,176 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       context: context,
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(
-            preSelectedExercises:
-                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                    .exercisesInWorkout
-                    .map((exerciseInWorkout) => exerciseInWorkout.exercise)
-                    .toList());
+            preSelectedExercises: _exercisesInWorkout
+                .map((exerciseInWorkout) => exerciseInWorkout.exercise)
+                .toList());
       },
     ) as List<ExerciseDto>?;
 
     if (selectedExercises != null) {
       if (mounted) {
-        Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-            .addExercises(exercises: selectedExercises);
+        _addExercises(exercises: selectedExercises);
       }
     }
+  }
+
+  void _addExercises({required List<ExerciseDto> exercises}) {
+    final exercisesToAdd = exercises
+        .map((exercise) => ExerciseInWorkoutDto(exercise: exercise))
+        .toList();
+    setState(() {
+      _exercisesInWorkout.addAll(exercisesToAdd);
+    });
+  }
+
+  int _indexWhereExercise({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    return _exercisesInWorkout
+        .indexWhere((item) => item.exercise == exerciseInWorkout.exercise);
+  }
+
+  void _addWarmUpSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].warmupProcedures.add(ProcedureDto());
+    });
+  }
+
+  void _removeWarmUpSet(
+      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
+      required int index}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].warmupProcedures.removeAt(index);
+    });
+  }
+
+  void _addWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].workingProcedures.add(ProcedureDto());
+    });
+  }
+
+  void _removeWorkingUpSet(
+      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
+      required int index}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].workingProcedures.removeAt(index);
+    });
+  }
+
+  void _updateWarmUpSetRepCount(
+      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
+      required int index,
+      required int value}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].warmupProcedures[index].repCount =
+          value;
+    });
+  }
+
+  void _updateWarmUpSetWeight(
+      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
+      required int index,
+      required int value}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].warmupProcedures[index].weight = value;
+    });
+  }
+
+  void _updateWorkingSetRepCount(
+      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
+      required int index,
+      required int value}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].workingProcedures[index].repCount =
+          value;
+    });
+  }
+
+  void _updateWorkingSetWeight(
+      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
+      required int index,
+      required int value}) {
+    final exerciseIndex =
+        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight =
+          value;
+    });
+  }
+
+  bool _canSuperSet() {
+    return _exercisesInWorkout
+            .whereNot((exerciseInWorkout) => exerciseInWorkout.isSuperSet)
+            .toList()
+            .length >
+        1;
+  }
+
+  void _addSuperSet(
+      {required ExerciseInWorkoutDto firstExercise,
+      required ExerciseInWorkoutDto secondExercise}) {
+    final id = "id_${DateTime.now().millisecond}";
+
+    final firstIndex = _indexWhereExercise(exerciseInWorkout: firstExercise);
+    final secondIndex = _indexWhereExercise(exerciseInWorkout: secondExercise);
+
+    _exercisesInWorkout[firstIndex].isSuperSet = true;
+    _exercisesInWorkout[firstIndex].superSetId = id;
+
+    _exercisesInWorkout[secondIndex].isSuperSet = true;
+    _exercisesInWorkout[secondIndex].superSetId = id;
+  }
+
+  void _removeSuperSet({required String superSetId}) {
+    for (var exerciseInWorkout in _exercisesInWorkout) {
+      if (exerciseInWorkout.superSetId == superSetId) {
+        final index = _exercisesInWorkout
+            .indexWhere((item) => item.superSetId == superSetId);
+        setState(() {
+          _exercisesInWorkout[index].isSuperSet = false;
+          _exercisesInWorkout[index].superSetId = "";
+        });
+      }
+    }
+  }
+
+  void _removeExercise({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
+    if (exerciseInWorkoutDto.isSuperSet) {
+      _removeSuperSet(superSetId: exerciseInWorkoutDto.superSetId);
+    } else {
+      setState(() {
+        _exercisesInWorkout.remove(exerciseInWorkoutDto);
+      });
+    }
+  }
+
+  void _updateNotes(
+      {required ExerciseInWorkoutDto exerciseInWorkout,
+      required String value}) {
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
+    _exercisesInWorkout[index].notes = value;
+  }
+
+  List<ExerciseInWorkoutDto> _whereOtherExercisesToSuperSetWith(
+      {required ExerciseInWorkoutDto firstExercise}) {
+    return _exercisesInWorkout
+        .whereNot((exerciseInWorkout) =>
+            exerciseInWorkout.exercise == firstExercise.exercise ||
+            exerciseInWorkout.isSuperSet)
+        .toList();
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
@@ -111,17 +264,42 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutListSection(
         exerciseInWorkoutDto: exerciseInWorkout,
-        onAddSuperSetExercises: (ExerciseInWorkoutDto firstSuperSetExercise) {
-          _showExercisesInWorkoutPicker(
-              firstSuperSetExercise: firstSuperSetExercise);
-        },
         onRemoveSuperSetExercises: (String superSetId) =>
-            Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                .removeSuperSet(superSetId: superSetId),
-        onRemoveExerciseInWorkout: (ExerciseInWorkoutDto exerciseInWorkoutDto) {
-          Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-              .removeExercise(exerciseToRemove: exerciseInWorkoutDto);
-        },
+            _removeSuperSet(superSetId: superSetId),
+        onRemoveExercise: () =>
+            _removeExercise(exerciseInWorkoutDto: exerciseInWorkout),
+        onAddSuperSetExercises: () =>
+            _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
+        onChangedWorkingSetRepCount: (int index, int value) =>
+            _updateWorkingSetRepCount(
+                exerciseInWorkoutDto: exerciseInWorkout,
+                index: index,
+                value: value),
+        onChangedWorkingSetWeight: (int index, int value) =>
+            _updateWorkingSetWeight(
+                exerciseInWorkoutDto: exerciseInWorkout,
+                index: index,
+                value: value),
+        onChangedWarmUpSetRepCount: (int index, int value) =>
+            _updateWarmUpSetRepCount(
+                exerciseInWorkoutDto: exerciseInWorkout,
+                index: index,
+                value: value),
+        onChangedWarmUpSetWeight: (int index, int value) =>
+            _updateWarmUpSetWeight(
+                exerciseInWorkoutDto: exerciseInWorkout,
+                index: index,
+                value: value),
+        onAddWorkingSet: () =>
+            _addWorkingSet(exerciseInWorkout: exerciseInWorkout),
+        onRemoveWorkingSet: (int index) => _removeWorkingUpSet(
+            exerciseInWorkoutDto: exerciseInWorkout, index: index),
+        onAddWarmUpSet: () =>
+            _addWarmUpSet(exerciseInWorkout: exerciseInWorkout),
+        onRemoveWarmUpSet: (int index) => _removeWarmUpSet(
+            exerciseInWorkoutDto: exerciseInWorkout, index: index),
+        onUpdateNotes: (String value) =>
+            _updateNotes(exerciseInWorkout: exerciseInWorkout, value: value),
       );
     }).toList();
 
@@ -167,9 +345,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       return;
     }
 
-    if (Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .exercisesInWorkout
-        .isEmpty) {
+    if (_exercisesInWorkout.isEmpty) {
       _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
       return;
     }
@@ -177,7 +353,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
         .createWorkout(
             name: _workoutNameController.text,
-            notes: _workoutNotesController.text);
+            notes: _workoutNotesController.text,
+            exercises: _exercisesInWorkout);
 
     _navigateBack();
   }
@@ -192,9 +369,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         return;
       }
 
-      if (Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-          .exercisesInWorkout
-          .isEmpty) {
+      if (_exercisesInWorkout.isEmpty) {
         _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
         return;
       }
@@ -203,7 +378,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
           .updateWorkout(
               id: workout.id,
               name: _workoutNameController.text,
-              notes: _workoutNotesController.text);
+              notes: _workoutNotesController.text,
+              exercises: _exercisesInWorkout);
 
       _navigateBack();
     }
@@ -212,10 +388,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     final previousWorkoutDto = widget.workoutDto;
-
-    final exercises =
-        Provider.of<ExerciseInWorkoutProvider>(context, listen: true)
-            .exercisesInWorkout;
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
@@ -277,7 +449,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           color: CupertinoColors.inactiveGray, fontSize: 14),
                     ),
                     const SizedBox(height: 10),
-                    ..._exercisesToListSection(exercisesInWorkout: exercises),
+                    ..._exercisesToListSection(
+                        exercisesInWorkout: _exercisesInWorkout),
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
@@ -306,8 +479,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     _workoutNotesController = TextEditingController(text: workout?.notes);
 
     if (workout != null) {
-      Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-          .addExercisesInWorkout(exercises: workout.exercises);
+      _exercisesInWorkout = workout.exercises;
     }
   }
 

@@ -2,37 +2,44 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
-import '../../providers/exercise_in_workout_provider.dart';
-
-class ExerciseInWorkoutListSection extends StatefulWidget {
+class ExerciseInWorkoutListSection extends StatelessWidget {
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
-  final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
-      onAddSuperSetExercises;
+
+  /// Exercise
+  final void Function(String value) onUpdateNotes;
+  final void Function() onRemoveExercise;
+  final void Function() onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
-  final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto)
-      onRemoveExerciseInWorkout;
+
+  /// Sets items
+  final void Function() onAddWorkingSet;
+  final void Function(int index) onRemoveWorkingSet;
+  final void Function() onAddWarmUpSet;
+  final void Function(int index) onRemoveWarmUpSet;
+
+  /// Set Values
+  final void Function(int index, int value) onChangedWorkingSetRepCount;
+  final void Function(int index, int value) onChangedWorkingSetWeight;
+  final void Function(int index, int value) onChangedWarmUpSetRepCount;
+  final void Function(int index, int value) onChangedWarmUpSetWeight;
 
   const ExerciseInWorkoutListSection({
     super.key,
     required this.exerciseInWorkoutDto,
     required this.onAddSuperSetExercises,
     required this.onRemoveSuperSetExercises,
-    required this.onRemoveExerciseInWorkout,
+    required this.onRemoveExercise,
+    required this.onChangedWorkingSetRepCount,
+    required this.onChangedWorkingSetWeight,
+    required this.onChangedWarmUpSetRepCount,
+    required this.onChangedWarmUpSetWeight, required this.onAddWorkingSet, required this.onRemoveWorkingSet, required this.onAddWarmUpSet, required this.onRemoveWarmUpSet, required this.onUpdateNotes,
   });
 
-  @override
-  State<ExerciseInWorkoutListSection> createState() =>
-      _ExerciseInWorkoutListSectionState();
-}
-
-class _ExerciseInWorkoutListSectionState
-    extends State<ExerciseInWorkoutListSection> {
   /// Show [CupertinoActionSheet]
-  void _showExerciseInWorkoutActionSheet() {
+  void _showExerciseInWorkoutActionSheet(BuildContext context) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -40,25 +47,24 @@ class _ExerciseInWorkoutListSectionState
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _addWorkingSet();
+              onAddWorkingSet();
             },
             child: const Text('Add new set', style: TextStyle(fontSize: 18)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _addWarmupSet();
+              onAddWarmUpSet();
             },
             child:
                 const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
           ),
-          widget.exerciseInWorkoutDto.isSuperSet
+          exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
                   isDestructiveAction: true,
                   onPressed: () {
                     Navigator.pop(context);
-                    widget.onRemoveSuperSetExercises(
-                        widget.exerciseInWorkoutDto.superSetId);
+                    onRemoveSuperSetExercises(exerciseInWorkoutDto.superSetId);
                   },
                   child: const Text(
                     'Remove super set',
@@ -68,10 +74,10 @@ class _ExerciseInWorkoutListSectionState
               : CupertinoActionSheetAction(
                   onPressed: () {
                     Navigator.pop(context);
-                    _markAsSuperSet();
+                    onAddSuperSetExercises();
                   },
                   child: Text(
-                    'Super set ${widget.exerciseInWorkoutDto.exercise.name} with ...',
+                    'Super set ${exerciseInWorkoutDto.exercise.name} with ...',
                     style: const TextStyle(fontSize: 18),
                   ),
                 ),
@@ -79,9 +85,9 @@ class _ExerciseInWorkoutListSectionState
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              widget.onRemoveExerciseInWorkout(widget.exerciseInWorkoutDto);
+              onRemoveExercise();
             },
-            child: Text('Remove ${widget.exerciseInWorkoutDto.exercise.name}',
+            child: Text('Remove ${exerciseInWorkoutDto.exercise.name}',
                 style: const TextStyle(fontSize: 18)),
           ),
         ],
@@ -89,63 +95,34 @@ class _ExerciseInWorkoutListSectionState
     );
   }
 
-  /// Add new [SetListItem] to list [_workingSetItems]
-  void _addWorkingSet() {
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .addWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
-  }
-
-  /// Remove [SetListItem] from [_workingSetItems]
-  void _removeWorkingSet({required int index}) {
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .removeWorkingSet(
-            exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
-  }
-
-  /// Add new [SetListItem] to list [_warmupItems]
-  void _addWarmupSet() {
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .addWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
-  }
-
-  /// Remove [SetListItem] from [_warmupItems]
-  void _removeWarmupSet({required int index}) {
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .removeWarmupSet(
-            exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
-  }
-
-  /// Mark [ExerciseInWorkoutDto] as superset
-  void _markAsSuperSet() {
-    widget.onAddSuperSetExercises(widget.exerciseInWorkoutDto);
-  }
-
-  /// Find [ExerciseInWorkoutDto] in list of [widget.exercisesInWorkoutDtos]
-  ExerciseInWorkoutDto _whereOtherSuperSet() {
-    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .whereOtherSuperSet(firstExercise: widget.exerciseInWorkoutDto);
-  }
-
   List<SetListItem> _workingSets() {
-    return widget.exerciseInWorkoutDto.workingProcedures
+    return exerciseInWorkoutDto.workingProcedures
         .mapIndexed(((index, procedure) => SetListItem(
               index: index,
-              onRemove: (int index) => _removeWorkingSet(index: index),
+              onRemove: (int index) => onRemoveWorkingSet(index),
               isWarmup: false,
-              exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
+              exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
+              onChangedRepCount: (int value) =>
+                  onChangedWorkingSetRepCount(index, value),
+              onChangedWeight: (int value) =>
+                  onChangedWorkingSetWeight(index, value),
             )))
         .toList();
   }
 
   List<SetListItem> _warmupSets() {
-    return widget.exerciseInWorkoutDto.warmupProcedures
+    return exerciseInWorkoutDto.warmupProcedures
         .mapIndexed(((index, procedure) => SetListItem(
               index: index,
-              onRemove: (int index) => _removeWarmupSet(index: index),
+              onRemove: (int index) => onRemoveWarmUpSet(index),
               isWarmup: true,
-              exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
+              exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
+              onChangedRepCount: (int value) =>
+                  onChangedWarmUpSetRepCount(index, value),
+              onChangedWeight: (int value) =>
+                  onChangedWarmUpSetWeight(index, value),
             )))
         .toList();
   }
@@ -160,16 +137,16 @@ class _ExerciseInWorkoutListSectionState
           children: [
             CupertinoListTile(
               padding: EdgeInsets.zero,
-              title: Text(widget.exerciseInWorkoutDto.exercise.name,
+              title: Text(exerciseInWorkoutDto.exercise.name,
                   style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16)),
-              subtitle: widget.exerciseInWorkoutDto.isSuperSet
+              subtitle: exerciseInWorkoutDto.isSuperSet
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Text(
-                          "Super set: ${_whereOtherSuperSet().exercise.name}",
+                          "Super set: ",
                           style: const TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -177,19 +154,16 @@ class _ExerciseInWorkoutListSectionState
                     )
                   : const SizedBox.shrink(),
               trailing: GestureDetector(
-                  onTap: _showExerciseInWorkoutActionSheet,
+                  onTap: () => _showExerciseInWorkoutActionSheet(context),
                   child: const Padding(
                     padding: EdgeInsets.only(right: 1.0),
                     child: Icon(CupertinoIcons.ellipsis),
                   )),
             ),
             CupertinoTextField(
-              controller: TextEditingController(text: widget.exerciseInWorkoutDto.notes),
-              onChanged: (value) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                      .updateNotes(
-                          exerciseInWorkout: widget.exerciseInWorkoutDto,
-                          notes: value),
+              controller:
+                  TextEditingController(text: exerciseInWorkoutDto.notes),
+              onChanged: (value) => onUpdateNotes(value),
               expands: true,
               decoration: const BoxDecoration(color: Colors.transparent),
               padding: EdgeInsets.zero,
