@@ -2,8 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
 import '../app_constants.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
@@ -16,27 +18,6 @@ class NewWorkoutScreen extends StatefulWidget {
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
-  List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
-  List<ExerciseInWorkoutListSection> _exerciseInWorkoutListSection = [];
-
-  /// Return a list of exercises to superset with [firstSuperSetExercise]
-  List<ExerciseInWorkoutDto> _whereExercisesToSuperSetWith(
-      {required ExerciseInWorkoutDto firstSuperSetExercise}) {
-    return _exercisesInWorkout
-        .whereNot((exerciseInWorkout) =>
-            exerciseInWorkout.exercise == firstSuperSetExercise.exercise)
-        .where((exerciseInWorkout) => !exerciseInWorkout.isSuperSet)
-        .toList();
-  }
-
-  /// Check if there are any more exercises to superset with
-  bool _canSuperSet() {
-    return _exercisesInWorkout
-            .whereNot((exerciseInWorkout) => exerciseInWorkout.isSuperSet)
-            .toList()
-            .length >
-        1;
-  }
 
   /// Show [CupertinoAlertDialog]
   void _showRemoveExerciseAlertDialog(
@@ -58,7 +39,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeExerciseInWorkout(exerciseToRemove: exerciseDto);
+              Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                  .removeExercise(exerciseToRemove: exerciseDto);
             },
             child: const Text('Yes'),
           ),
@@ -70,8 +52,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   /// Show list of [ExerciseInWorkoutDto] to superset with
   void _showExercisesInWorkoutPicker(
       {required ExerciseInWorkoutDto firstSuperSetExercise}) {
-    final exercisesToSuperSetWith = _whereExercisesToSuperSetWith(
-        firstSuperSetExercise: firstSuperSetExercise);
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
@@ -85,12 +65,19 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: _canSuperSet()
+        child: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                .canSuperSet()
             ? ListOfExercises(
-                exercises: exercisesToSuperSetWith,
-                onSelect: (ExerciseInWorkoutDto exercise) => _addSuperSets(
-                    firstSuperSetExercise: firstSuperSetExercise,
-                    secondSuperSetExercise: exercise),
+                exercises: Provider.of<ExerciseInWorkoutProvider>(context,
+                        listen: false)
+                    .whereOtherExercisesToSuperSetWith(
+                        firstExercise: firstSuperSetExercise),
+                onSelect: (ExerciseInWorkoutDto exercise) =>
+                    Provider.of<ExerciseInWorkoutProvider>(context,
+                            listen: false)
+                        .addSuperSets(
+                            firstExercise: firstSuperSetExercise,
+                            secondExercise: exercise),
               )
             : ListOfExercisesEmptyState(onPress: _showListOfExercisesInLibrary),
       ),
@@ -103,37 +90,44 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       context: context,
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(
-            preSelectedExercises: _exercisesInWorkout
-                .map((exerciseInWorkout) => exerciseInWorkout.exercise)
-                .toList());
+            preSelectedExercises:
+                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                    .exercisesInWorkout
+                    .map((exerciseInWorkout) => exerciseInWorkout.exercise)
+                    .toList());
       },
     ) as List<ExerciseDto>?;
 
     if (selectedExercises != null) {
-      setState(() {
-        _exercisesInWorkout.addAll(selectedExercises
-            .map((exercise) =>
-                ExerciseInWorkoutDto(exercise: exercise, procedures: []))
-            .toList());
-      });
+      if (mounted) {
+        Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+            .addExercises(exercises: selectedExercises);
+      }
+      // setState(() {
+      //   _exercisesInWorkout.addAll(selectedExercises
+      //       .map((exercise) =>
+      //           ExerciseInWorkoutDto(exercise: exercise, procedures: []))
+      //       .toList());
+      // });
     }
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
-  List<ExerciseInWorkoutListSection> _exercisesToExerciseInWorkoutListSection() {
-    _exerciseInWorkoutListSection = _exercisesInWorkout
-        .mapIndexed((index, exercisesInWorkout) => ExerciseInWorkoutListSection(
+  List<ExerciseInWorkoutListSection> _exercisesToExerciseInWorkoutListSection(
+      {required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+    final exerciseInWorkoutListSection = exercisesInWorkout
+        .mapIndexed((index, exerciseInWorkout) => ExerciseInWorkoutListSection(
               index: index,
-              keyValue: Key(exercisesInWorkout.exercise.name),
-              exerciseInWorkoutDto: exercisesInWorkout,
+              keyValue: Key(exerciseInWorkout.exercise.name),
+              exerciseInWorkoutDto: exerciseInWorkout,
               onAddSuperSetExercises:
                   (ExerciseInWorkoutDto firstSuperSetExercise) {
                 _showExercisesInWorkoutPicker(
                     firstSuperSetExercise: firstSuperSetExercise);
               },
-              exercisesInWorkoutDtos: _exercisesInWorkout,
               onRemoveSuperSetExercises: (String superSetId) =>
-                  _removeSuperSet(superSetId: superSetId),
+                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                      .removeSuperSet(superSetId: superSetId),
               onRemoveExerciseInWorkout:
                   (ExerciseInWorkoutDto exerciseInWorkoutDto) {
                 _showRemoveExerciseAlertDialog(
@@ -143,12 +137,12 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         .toList();
 
     outerLoop:
-    for (var i = 0; i < _exerciseInWorkoutListSection.length; i++) {
-      final exerciseSection = _exerciseInWorkoutListSection[i];
+    for (var i = 0; i < exerciseInWorkoutListSection.length; i++) {
+      final exerciseSection = exerciseInWorkoutListSection[i];
       final exerciseInWorkoutDto = exerciseSection.exerciseInWorkoutDto;
       if (exerciseInWorkoutDto.isSuperSet) {
         final superSetId = exerciseInWorkoutDto.superSetId;
-        final otherExerciseSections = _exerciseInWorkoutListSection.where(
+        final otherExerciseSections = exerciseInWorkoutListSection.where(
             (otherExerciseSection) =>
                 (otherExerciseSection.exerciseInWorkoutDto.superSetId ==
                     superSetId) &&
@@ -156,67 +150,18 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     exerciseSection.exerciseInWorkoutDto.exercise);
         if (otherExerciseSections.isNotEmpty) {
           final otherExerciseSection = otherExerciseSections.first;
-          _exerciseInWorkoutListSection.swap(
+          exerciseInWorkoutListSection.swap(
               exerciseSection.index + 1, otherExerciseSection.index);
           break outerLoop;
         }
       }
     }
-    return _exerciseInWorkoutListSection;
+    return exerciseInWorkoutListSection;
   }
 
   void _navigateBack() {
     Navigator.of(context).pop();
   }
-
-  /// Update [ExerciseInWorkoutDto] isSuperset bool to true in [_exercisesInWorkout]
-  /// Set [ExerciseInWorkoutDto] supersetId to id_${DateTime.now().millisecond} in [_exercisesInWorkout]
-  void _addSuperSets(
-      {required ExerciseInWorkoutDto firstSuperSetExercise,
-      required ExerciseInWorkoutDto secondSuperSetExercise}) {
-    final id = "id_${DateTime.now().millisecond}";
-    setState(() {
-      _exercisesInWorkout = _exercisesInWorkout.map((exerciseInWorkout) {
-        if (exerciseInWorkout.exercise == firstSuperSetExercise.exercise ||
-            exerciseInWorkout.exercise == secondSuperSetExercise.exercise) {
-          exerciseInWorkout.isSuperSet = true;
-          exerciseInWorkout.superSetId = id;
-          return exerciseInWorkout;
-        }
-        return exerciseInWorkout;
-      }).toList();
-    });
-  }
-
-  /// Update [ExerciseInWorkoutDto] isSuperset bool to false in [_exercisesInWorkout]
-  /// Set [ExerciseInWorkoutDto] supersetId to empty string in [_exercisesInWorkout]
-  void _removeSuperSet({required String superSetId}) {
-    setState(() {
-      _exercisesInWorkout = _exercisesInWorkout.map((exerciseInWorkout) {
-        if (exerciseInWorkout.superSetId == superSetId) {
-          exerciseInWorkout.isSuperSet = false;
-          exerciseInWorkout.superSetId = "";
-          return exerciseInWorkout;
-        }
-        return exerciseInWorkout;
-      }).toList();
-    });
-  }
-
-  /// Remove [ExerciseInWorkoutDto] from [_exercisesInWorkout]
-  void _removeExerciseInWorkout(
-      {required ExerciseInWorkoutDto exerciseToRemove}) {
-    setState(() {
-      _exercisesInWorkout.remove(exerciseToRemove);
-    });
-    if (exerciseToRemove.isSuperSet) {
-      _removeSuperSet(superSetId: exerciseToRemove.superSetId);
-    }
-  }
-
-  // void _saveWorkout() {
-  //   _exercisesInWorkout.map((exerciseInWorkout) => exerciseInWorkout.).toList();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -234,42 +179,15 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
           child: SafeArea(
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 20.0, bottom: 20),
-                    child: CupertinoTextField(
-                      expands: true,
-                      padding: EdgeInsets.zero,
-                      decoration: const BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      keyboardType: TextInputType.text,
-                      maxLength: 240,
-                      maxLines: null,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: CupertinoColors.white.withOpacity(0.8),
-                          fontSize: 18),
-                      placeholder: "New workout",
-                      placeholderStyle: const TextStyle(
-                          color: CupertinoColors.inactiveGray, fontSize: 18),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Notes",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16)),
-                        CupertinoTextField(
+              child: Consumer<ExerciseInWorkoutProvider>(
+                builder: (context, exerciseInWorkoutProvider, _) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10, left: 20.0, bottom: 20),
+                        child: CupertinoTextField(
                           expands: true,
                           padding: EdgeInsets.zero,
                           decoration: const BoxDecoration(
@@ -283,36 +201,73 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: CupertinoColors.white.withOpacity(0.8),
-                              fontSize: 14,
-                              height: 1.8),
-                          placeholder: "New notes",
+                              fontSize: 18),
+                          placeholder: "New workout",
                           placeholderStyle: const TextStyle(
                               color: CupertinoColors.inactiveGray,
-                              fontSize: 14),
+                              fontSize: 18),
                         ),
-                      ],
-                    ),
-                  ),
-                  ..._exercisesToExerciseInWorkoutListSection(),
-                  const SizedBox(height: 18),
-                  GestureDetector(
-                    onTap: _showListOfExercisesInLibrary,
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(left: 20),
-                      margin: const EdgeInsets.only(
-                          left: 18, right: 18, bottom: 20),
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                          color: tealBlueLight,
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      height: 40,
-                      child: const Text("Add exercise",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Notes",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16)),
+                            CupertinoTextField(
+                              expands: true,
+                              padding: EdgeInsets.zero,
+                              decoration: const BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              keyboardType: TextInputType.text,
+                              maxLength: 240,
+                              maxLines: null,
+                              maxLengthEnforcement:
+                                  MaxLengthEnforcement.enforced,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: CupertinoColors.white.withOpacity(0.8),
+                                  fontSize: 14,
+                                  height: 1.8),
+                              placeholder: "New notes",
+                              placeholderStyle: const TextStyle(
+                                  color: CupertinoColors.inactiveGray,
+                                  fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ..._exercisesToExerciseInWorkoutListSection(
+                          exercisesInWorkout:
+                              exerciseInWorkoutProvider.exercisesInWorkout),
+                      const SizedBox(height: 18),
+                      GestureDetector(
+                        onTap: _showListOfExercisesInLibrary,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 20),
+                          margin: const EdgeInsets.only(
+                              left: 18, right: 18, bottom: 20),
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                              color: tealBlueLight,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          height: 40,
+                          child: const Text("Add exercise",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),

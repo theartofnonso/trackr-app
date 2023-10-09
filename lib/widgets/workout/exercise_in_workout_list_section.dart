@@ -2,41 +2,31 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
-// typedef List<ProcedureDto> createSetProcedures({required List<ProcedureDto> warmupProcedures, required List<ProcedureDto> workingProcedures}) {
-//   final procedureDtos = <ProcedureDto>[];
-//   if(warmupProcedures.isNotEmpty) {
-//     procedureDtos.addAll(warmupProcedures);
-//   }
-//   if(workingProcedures.isNotEmpty) {
-//     procedureDtos.addAll(workingProcedures);
-//   }
-//   return procedureDtos;
-// }
+import '../../providers/exercise_in_workout_provider.dart';
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
   final int index;
   final Key keyValue;
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
-  final List<ExerciseInWorkoutDto> exercisesInWorkoutDtos;
   final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
       onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
   final void Function(ExerciseInWorkoutDto exerciseInWorkoutDto)
       onRemoveExerciseInWorkout;
 
-  const ExerciseInWorkoutListSection(
-      {required this.index,
-      required this.exerciseInWorkoutDto,
-      required this.onAddSuperSetExercises,
-      required this.exercisesInWorkoutDtos,
-      required this.onRemoveSuperSetExercises,
-      required this.onRemoveExerciseInWorkout,
-      required this.keyValue,})
-      : super(key: keyValue);
+  const ExerciseInWorkoutListSection({
+    required this.index,
+    required this.exerciseInWorkoutDto,
+    required this.onAddSuperSetExercises,
+    required this.onRemoveSuperSetExercises,
+    required this.onRemoveExerciseInWorkout,
+    required this.keyValue,
+  }) : super(key: keyValue);
 
   @override
   State<ExerciseInWorkoutListSection> createState() =>
@@ -45,7 +35,6 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
 
 class _ExerciseInWorkoutListSectionState
     extends State<ExerciseInWorkoutListSection> {
-
   List<SetListItem> _warmupSetItems = [];
   List<SetListItem> _workingSetItems = [];
   final List<TextEditingController> _warmupSetRepsControllers = [];
@@ -59,7 +48,9 @@ class _ExerciseInWorkoutListSectionState
     for (var i = 0; i < _warmupSetItems.length; i++) {
       final warmupSetRepsController = _warmupSetWeightControllers[i];
       final warmupSetWeightController = _warmupSetWeightControllers[i];
-      final procedureDto = ProcedureDto(repCount: int.parse(warmupSetRepsController.text), weight: int.parse(warmupSetWeightController.text));
+      final procedureDto = ProcedureDto(
+          repCount: int.parse(warmupSetRepsController.text),
+          weight: int.parse(warmupSetWeightController.text));
       procedureDtos.add(procedureDto);
     }
     return procedureDtos;
@@ -71,7 +62,9 @@ class _ExerciseInWorkoutListSectionState
     for (var i = 0; i < _workingSetItems.length; i++) {
       final workingSetRepsController = _workingSetRepsControllers[i];
       final workingSetWeightController = _workingSetWeightControllers[i];
-      final procedureDto = ProcedureDto(repCount: int.parse(workingSetRepsController.text), weight: int.parse(workingSetWeightController.text));
+      final procedureDto = ProcedureDto(
+          repCount: int.parse(workingSetRepsController.text),
+          weight: int.parse(workingSetWeightController.text));
       procedureDtos.add(procedureDto);
     }
     return procedureDtos;
@@ -219,16 +212,14 @@ class _ExerciseInWorkoutListSectionState
   }
 
   /// Find [ExerciseInWorkoutDto] in list of [widget.exercisesInWorkoutDtos]
-  ExerciseInWorkoutDto _whereExerciseSuperSet() {
-    return widget.exercisesInWorkoutDtos.firstWhere((exerciseInWorkout) {
-      return exerciseInWorkout.superSetId ==
-              widget.exerciseInWorkoutDto.superSetId &&
-          exerciseInWorkout.exercise != widget.exerciseInWorkoutDto.exercise;
-    });
+  ExerciseInWorkoutDto _whereOtherSuperSet() {
+    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .whereOtherSuperSet(firstExercise: widget.exerciseInWorkoutDto);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return CupertinoListSection.insetGrouped(
       backgroundColor: Colors.transparent,
       header: Column(
@@ -245,7 +236,7 @@ class _ExerciseInWorkoutListSectionState
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text(
-                        "Super set: ${_whereExerciseSuperSet().exercise.name}",
+                        "Super set: ${_whereOtherSuperSet().exercise.name}",
                         style: const TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,

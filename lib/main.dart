@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
+import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -22,6 +23,9 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<DateTimeEntryProvider>(
       create: (BuildContext context) => DateTimeEntryProvider(),
+    ),
+    ChangeNotifierProvider<ExerciseInWorkoutProvider>(
+      create: (BuildContext context) => ExerciseInWorkoutProvider(),
     ),
   ], child: const MyApp()));
 }
