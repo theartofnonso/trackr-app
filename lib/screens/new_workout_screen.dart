@@ -254,7 +254,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.only(left: 20),
                       margin: const EdgeInsets.only(
-                          left: 18, right: 18, bottom: 20),
+                          left: 10, right: 10, bottom: 20),
                       width: double.infinity,
                       decoration: const BoxDecoration(
                           color: tealBlueLight,
