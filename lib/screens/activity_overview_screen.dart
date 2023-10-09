@@ -5,7 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/new_workout_screen.dart';
 
 import '../dtos/workout_dto.dart';
-import '../providers/workout_provider.dart';
+import '../providers/exercise_in_workout_provider.dart';
 
 class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
@@ -18,7 +18,7 @@ class ActivityOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final workouts =
-        Provider.of<WorkoutProvider>(context, listen: true).workouts;
+        Provider.of<ExerciseInWorkoutProvider>(context, listen: true).workouts;
 
     return CupertinoPageScaffold(
       child: SafeArea(

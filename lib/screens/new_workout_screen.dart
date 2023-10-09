@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
-import 'package:tracker_app/providers/workout_provider.dart';
+import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
 import '../app_constants.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
@@ -57,14 +57,14 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Provider.of<WorkoutProvider>(context, listen: false)
+        child: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                 .canSuperSet()
             ? _ListOfExercises(
-                exercises: Provider.of<WorkoutProvider>(context, listen: false)
+                exercises: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                     .whereOtherExercisesToSuperSetWith(
                         firstExercise: firstSuperSetExercise),
                 onSelect: (ExerciseInWorkoutDto exercise) =>
-                    Provider.of<WorkoutProvider>(context, listen: false)
+                    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                         .addSuperSets(
                             firstExercise: firstSuperSetExercise,
                             secondExercise: exercise),
@@ -84,7 +84,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(
             preSelectedExercises:
-                Provider.of<WorkoutProvider>(context, listen: false)
+                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                     .exercisesInWorkout
                     .map((exerciseInWorkout) => exerciseInWorkout.exercise)
                     .toList());
@@ -93,7 +93,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
     if (selectedExercises != null) {
       if (mounted) {
-        Provider.of<WorkoutProvider>(context, listen: false)
+        Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
             .addExercises(exercises: selectedExercises);
       }
     }
@@ -113,11 +113,11 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     firstSuperSetExercise: firstSuperSetExercise);
               },
               onRemoveSuperSetExercises: (String superSetId) =>
-                  Provider.of<WorkoutProvider>(context, listen: false)
+                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                       .removeSuperSet(superSetId: superSetId),
               onRemoveExerciseInWorkout:
                   (ExerciseInWorkoutDto exerciseInWorkoutDto) {
-                Provider.of<WorkoutProvider>(context, listen: false)
+                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                     .removeExercise(exerciseToRemove: exerciseInWorkoutDto);
               },
             ))
@@ -156,14 +156,14 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       return;
     }
 
-    if (Provider.of<WorkoutProvider>(context, listen: false)
+    if (Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
         .exercisesInWorkout
         .isEmpty) {
       _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
       return;
     }
 
-    Provider.of<WorkoutProvider>(context, listen: false).createWorkout(
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).createWorkout(
         name: _workoutNameController.text, notes: _workoutNotesController.text);
 
     _navigateBack();
@@ -172,7 +172,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     final exercises =
-        Provider.of<WorkoutProvider>(context, listen: true).exercisesInWorkout;
+        Provider.of<ExerciseInWorkoutProvider>(context, listen: true).exercisesInWorkout;
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
@@ -261,8 +261,7 @@ class _ListOfExercises extends StatelessWidget {
   final List<ExerciseInWorkoutDto> exercises;
   final void Function(ExerciseInWorkoutDto exercise) onSelect;
 
-  const _ListOfExercises(
-      {super.key, required this.exercises, required this.onSelect});
+  const _ListOfExercises({required this.exercises, required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +286,7 @@ class _ListOfExercises extends StatelessWidget {
 class _ExercisesInWorkoutEmptyState extends StatelessWidget {
   final Function() onPressed;
 
-  const _ExercisesInWorkoutEmptyState({super.key, required this.onPressed});
+  const _ExercisesInWorkoutEmptyState({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
