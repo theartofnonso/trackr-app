@@ -184,6 +184,7 @@ class _ExerciseInWorkoutListSectionState
                   )),
             ),
             CupertinoTextField(
+              controller: TextEditingController(text: widget.exerciseInWorkoutDto.notes),
               onChanged: (value) =>
                   Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                       .updateNotes(
