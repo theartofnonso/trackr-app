@@ -179,6 +179,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
 
   @override
   Widget build(BuildContext context) {
+    print(widget.exerciseInWorkoutDto);
     return CupertinoListSection.insetGrouped(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       backgroundColor: Colors.transparent,
@@ -242,6 +243,9 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
   @override
   void initState() {
     super.initState();
+    if() {
+
+    }
     _addNewSetListItem();
   }
 }

@@ -16,6 +16,10 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
 
   List<ExerciseInWorkoutDto> get exercisesInWorkout => _exercisesInWorkout;
 
+  void addExercisesInWorkout({required List<ExerciseInWorkoutDto> exercises}) {
+    _exercisesInWorkout.addAll(exercises);
+  }
+
   void addExercises({required List<ExerciseDto> exercises}) {
     final exercisesToAdd = exercises
         .map((exercise) => ExerciseInWorkoutDto(exercise: exercise))
@@ -156,9 +160,16 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
         .toList();
   }
 
-  void createWorkout({required String name, required String notes, }) {
+  void createWorkout({required String name, required String notes}) {
     final workout = WorkoutDto(name: name, notes: notes, exercises: [..._exercisesInWorkout]);
     _workouts.add(workout);
+    _exercisesInWorkout.clear();
+    notifyListeners();
+  }
+
+  void updateWorkout({required String id,required String name, required String notes}) {
+    final index = _workouts.indexWhere((workout) => workout.id == id);
+    _workouts[index] = WorkoutDto(name: name, notes: notes, exercises: [..._exercisesInWorkout]);
     _exercisesInWorkout.clear();
     notifyListeners();
   }

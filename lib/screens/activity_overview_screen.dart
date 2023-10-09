@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/new_workout_screen.dart';
 
 import '../dtos/workout_dto.dart';
 import '../providers/exercise_in_workout_provider.dart';
+import 'new_workout_screen.dart';
+
+void _showNewWorkoutScreen({required BuildContext context, WorkoutDto? workoutDto}) async {
+  Navigator.of(context).push(
+      CupertinoPageRoute(builder: (context) => NewWorkoutScreen(workoutDto: workoutDto)));
+}
 
 class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
-
-  void _showNewWorkoutScreen(BuildContext context) async {
-    Navigator.of(context).push(
-        CupertinoPageRoute(builder: (context) => const NewWorkoutScreen()));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,10 @@ class ActivityOverviewScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: workouts.isNotEmpty
-              ? _ListOfWorkouts(workouts: workouts, onTap: () => _showNewWorkoutScreen(context),)
+              ? _ListOfWorkouts(workouts: workouts, onTap: () => _showNewWorkoutScreen(context: context),)
               : Center(
                   child: _WorkoutsEmptyState(
-                      onPressed: () => _showNewWorkoutScreen(context))),
+                      onPressed: () => _showNewWorkoutScreen(context: context))),
         ),
       ),
     );
@@ -75,6 +75,7 @@ class _WorkoutListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
+      onTap: () => _showNewWorkoutScreen(context: context, workoutDto: workoutDto),
         backgroundColor: tealBlueLight,
         title: Text(workoutDto.name),
         subtitle: Text("${workoutDto.exercises.length} exercises", style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)),),

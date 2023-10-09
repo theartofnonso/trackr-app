@@ -5,21 +5,24 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
 import '../app_constants.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
 
 class NewWorkoutScreen extends StatefulWidget {
-  const NewWorkoutScreen({super.key});
+
+  final WorkoutDto? workoutDto;
+  const NewWorkoutScreen({super.key, this.workoutDto});
 
   @override
   State<NewWorkoutScreen> createState() => _NewWorkoutScreenState();
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
-  final _workoutNameController = TextEditingController();
-  final _workoutNotesController = TextEditingController();
+  late TextEditingController _workoutNameController;
+  late TextEditingController _workoutNotesController;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showCreateAlertDialog({required String message}) {
@@ -169,19 +172,44 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     _navigateBack();
   }
 
+  void _updateWorkout() {
+
+    final workout = widget.workoutDto;
+
+    if(workout != null) {
+      if (_workoutNameController.text.isEmpty) {
+        _showCreateAlertDialog(message: 'Please provide a name for this workout');
+        return;
+      }
+
+      if (Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+          .exercisesInWorkout
+          .isEmpty) {
+        _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
+        return;
+      }
+
+      Provider.of<ExerciseInWorkoutProvider>(context, listen: false).updateWorkout(
+          id: workout.id,
+          name: _workoutNameController.text, notes: _workoutNotesController.text);
+
+      _navigateBack();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final previousWorkoutDto = widget.workoutDto;
+
     final exercises =
         Provider.of<ExerciseInWorkoutProvider>(context, listen: true).exercisesInWorkout;
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           trailing: GestureDetector(
-              onTap: _createWorkout,
-              child: const Icon(
-                CupertinoIcons.check_mark_circled,
-                size: 24,
-              )),
+              onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
+              child: Text(previousWorkoutDto != null ? "Update" : "Save")),
         ),
         child: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -236,10 +264,9 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           color: CupertinoColors.inactiveGray, fontSize: 14),
                     ),
                     const SizedBox(height: 10),
-                    ..._exercisesToExerciseInWorkoutListSection(
-                        exercisesInWorkout: exercises),
+                    ..._exercisesToExerciseInWorkoutListSection(exercisesInWorkout: exercises),
                     const SizedBox(height: 18),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: CupertinoButton(
                           color: tealBlueLight,
@@ -254,6 +281,28 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             ),
           ),
         ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final workout = widget.workoutDto;
+
+    _workoutNameController = TextEditingController(text: workout?.name);
+    _workoutNotesController = TextEditingController(text: workout?.notes);
+
+    if(workout != null) {
+      Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+          .addExercisesInWorkout(exercises: workout.exercises);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _workoutNameController.dispose();
+    _workoutNotesController.dispose();
   }
 }
 
