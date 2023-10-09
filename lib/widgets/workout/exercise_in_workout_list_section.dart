@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 import '../../providers/exercise_in_workout_provider.dart';
@@ -32,10 +33,8 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
       _ExerciseInWorkoutListSectionState();
 }
 
-class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSection> {
-  List<SetListItem> _warmupSetItems = [];
-  List<SetListItem> _workingSetItems = [];
-
+class _ExerciseInWorkoutListSectionState
+    extends State<ExerciseInWorkoutListSection> {
   /// Show [CupertinoActionSheet]
   void _showExerciseInWorkoutActionSheet() {
     showCupertinoModalPopup<void>(
@@ -45,18 +44,14 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              setState(() {
-                _addNewSetListItem();
-              });
+                _addWorkingSet();
             },
             child: const Text('Add new set', style: TextStyle(fontSize: 18)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              setState(() {
-                _addNewWarmupSetListItem();
-              });
+                _addWarmupSet();
             },
             child:
                 const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
@@ -99,68 +94,26 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
   }
 
   /// Add new [SetListItem] to list [_workingSetItems]
-  void _addNewSetListItem() {
-    final setItem = SetListItem(
-      index: _workingSetItems.length,
-      onRemove: (int index) {
-        if (_workingSetItems.isNotEmpty) {
-          _removeSetListItem(index: index);
-        }
-      },
-      isWarmup: false,
-      exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
-    );
-    _workingSetItems.add(setItem);
-
+  void _addWorkingSet() {
     Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .addNewWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
+        .addWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
   }
 
   /// Remove [SetListItem] from [_workingSetItems]
-  void _removeSetListItem({required int index}) {
-    setState(() {
-      _workingSetItems.removeAt(index);
-      _workingSetItems = _workingSetItems.mapIndexed((index, item) {
-        return SetListItem(
-            index: index,
-            onRemove: item.onRemove,
-            isWarmup: item.isWarmup,
-            exerciseInWorkoutDto: widget.exerciseInWorkoutDto);
-      }).toList();
-    });
-
+  void _removeWorkingSet({required int index}) {
     Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
         .removeWorkingSet(
             exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
 
   /// Add new [SetListItem] to list [_warmupItems]
-  void _addNewWarmupSetListItem() {
-    final setItem = SetListItem(
-      index: _warmupSetItems.length,
-      isWarmup: true,
-      onRemove: (int index) => removeWarmupSetListItem(index: index),
-      exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
-    );
-    _warmupSetItems.add(setItem);
-
+  void _addWarmupSet() {
     Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .addNewWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
+        .addWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
   }
 
   /// Remove [SetListItem] from [_warmupItems]
-  void removeWarmupSetListItem({required int index}) {
-    setState(() {
-      _warmupSetItems.removeAt(index);
-      _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
-        return SetListItem(
-            index: index,
-            onRemove: item.onRemove,
-            isWarmup: item.isWarmup,
-            exerciseInWorkoutDto: widget.exerciseInWorkoutDto);
-      }).toList();
-    });
-
+  void _removeWarmupSet({required int index}) {
     Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
         .removeWarmupSet(
             exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
@@ -177,75 +130,93 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
         .whereOtherSuperSet(firstExercise: widget.exerciseInWorkoutDto);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print(widget.exerciseInWorkoutDto);
-    return CupertinoListSection.insetGrouped(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      backgroundColor: Colors.transparent,
-      header: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CupertinoListTile(
-            padding: EdgeInsets.zero,
-            title: Text(widget.exerciseInWorkoutDto.exercise.name,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
-            subtitle: widget.exerciseInWorkoutDto.isSuperSet
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                        "Super set: ${_whereOtherSuperSet().exercise.name}",
-                        style: const TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12)),
-                  )
-                : const SizedBox.shrink(),
-            trailing: GestureDetector(
-                onTap: _showExerciseInWorkoutActionSheet,
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 1.0),
-                  child: Icon(CupertinoIcons.ellipsis),
-                )),
-          ),
-          CupertinoTextField(
-            onChanged: (value) =>
-                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                    .updateNotes(
-                        exerciseInWorkout: widget.exerciseInWorkoutDto,
-                        notes: value),
-            expands: true,
-            decoration: const BoxDecoration(color: Colors.transparent),
-            padding: EdgeInsets.zero,
-            keyboardType: TextInputType.text,
-            maxLength: 240,
-            maxLines: null,
-            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: CupertinoColors.white.withOpacity(0.8)),
-            placeholder: "Enter notes",
-            placeholderStyle: const TextStyle(
-                color: CupertinoColors.inactiveGray, fontSize: 14),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-        ],
-      ),
-      children: [..._warmupSetItems, ..._workingSetItems],
-    );
+  List<SetListItem> _workingSets() {
+    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .getWorkingSets(exerciseInWorkout: widget.exerciseInWorkoutDto)
+        .mapIndexed(((index, procedure) => SetListItem(
+              index: index,
+              onRemove: (int index) => _removeWorkingSet(index: index),
+              isWarmup: false,
+              exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
+              procedureDto: procedure,
+            )))
+        .toList();
+  }
+
+  List<SetListItem> _warmupSets() {
+    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .getWarmupSets(exerciseInWorkout: widget.exerciseInWorkoutDto)
+        .mapIndexed(((index, procedure) => SetListItem(
+              index: index,
+              onRemove: (int index) => _removeWarmupSet(index: index),
+              isWarmup: false,
+              exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
+              procedureDto: procedure,
+            )))
+        .toList();
   }
 
   @override
-  void initState() {
-    super.initState();
-    if() {
-
-    }
-    _addNewSetListItem();
+  Widget build(BuildContext context) {
+    return CupertinoListSection.insetGrouped(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        backgroundColor: Colors.transparent,
+        header: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CupertinoListTile(
+              padding: EdgeInsets.zero,
+              title: Text(widget.exerciseInWorkoutDto.exercise.name,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
+              subtitle: widget.exerciseInWorkoutDto.isSuperSet
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                          "Super set: ${_whereOtherSuperSet().exercise.name}",
+                          style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12)),
+                    )
+                  : const SizedBox.shrink(),
+              trailing: GestureDetector(
+                  onTap: _showExerciseInWorkoutActionSheet,
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 1.0),
+                    child: Icon(CupertinoIcons.ellipsis),
+                  )),
+            ),
+            CupertinoTextField(
+              onChanged: (value) =>
+                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                      .updateNotes(
+                          exerciseInWorkout: widget.exerciseInWorkoutDto,
+                          notes: value),
+              expands: true,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              padding: EdgeInsets.zero,
+              keyboardType: TextInputType.text,
+              maxLength: 240,
+              maxLines: null,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: CupertinoColors.white.withOpacity(0.8)),
+              placeholder: "Enter notes",
+              placeholderStyle: const TextStyle(
+                  color: CupertinoColors.inactiveGray, fontSize: 14),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+          ],
+        ),
+        children: [
+          ..._warmupSets(),
+          ..._workingSets(),
+        ]);
   }
 }

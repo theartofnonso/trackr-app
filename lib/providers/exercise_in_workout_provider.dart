@@ -45,10 +45,11 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     _exercisesInWorkout[index].notes = notes;
   }
 
-  void addNewWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
+  void addWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
     final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
     exerciseInWorkout.exercise == exerciseInWorkout.exercise);
     _exercisesInWorkout[index].workingProcedures.add(ProcedureDto());
+    notifyListeners();
   }
 
   void removeWorkingSet(
@@ -56,12 +57,20 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
     exerciseInWorkout.exercise == exerciseInWorkout.exercise);
     _exercisesInWorkout[index].workingProcedures.removeAt(index);
+    notifyListeners();
   }
 
-  void addNewWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
+  List<ProcedureDto> getWorkingSets({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    return _exercisesInWorkout[index].workingProcedures;
+  }
+
+  void addWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
     final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
     exerciseInWorkout.exercise == exerciseInWorkout.exercise);
     _exercisesInWorkout[index].warmupProcedures.add(ProcedureDto());
+    notifyListeners();
   }
 
   void removeWarmupSet(
@@ -69,6 +78,13 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
     exerciseInWorkout.exercise == exerciseInWorkout.exercise);
     _exercisesInWorkout[index].warmupProcedures.removeAt(index);
+    notifyListeners();
+  }
+
+  List<ProcedureDto> getWarmupSets({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    return _exercisesInWorkout[index].warmupProcedures;
   }
 
   void updateReps(

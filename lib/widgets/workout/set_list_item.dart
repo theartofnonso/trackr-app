@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
 
 import '../../providers/exercise_in_workout_provider.dart';
 
@@ -12,13 +13,14 @@ class SetListItem extends StatelessWidget {
     required this.index,
     required this.onRemove,
     required this.isWarmup,
-    this.previousWorkoutSummary, required this.exerciseInWorkoutDto,
+    this.previousWorkoutSummary, required this.exerciseInWorkoutDto, this.procedureDto,
   });
 
   final int index;
   final String? previousWorkoutSummary;
   final bool isWarmup;
   final void Function(int index) onRemove;
+  final ProcedureDto? procedureDto;
 
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
 
@@ -54,7 +56,7 @@ class SetListItem extends StatelessWidget {
           ),
           _SetListItemTextField(
               label: 'Reps',
-              //textEditingController: repsController,
+              value: procedureDto?.repCount,
               onChanged: (value) =>
                   Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                       .updateReps(
@@ -67,7 +69,7 @@ class SetListItem extends StatelessWidget {
           ),
           _SetListItemTextField(
               label: 'kg',
-              //textEditingController: weightController,
+              value: procedureDto?.weight,
               onChanged: (value) =>
                   Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                       .updateWeight(
@@ -133,11 +135,10 @@ class LeadingIcon extends StatelessWidget {
 
 class _SetListItemTextField extends StatelessWidget {
   final String label;
+  final int? value;
   final void Function(String)? onChanged;
 
-  const _SetListItemTextField(
-      {required this.label,
-      this.onChanged});
+  const _SetListItemTextField({required this.label, this.onChanged, this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -154,15 +155,16 @@ class _SetListItemTextField extends StatelessWidget {
         SizedBox(
           width: 30,
           child: CupertinoTextField(
+            controller: value != null ? TextEditingController(text: value.toString()) : null,
             onChanged: onChanged,
             decoration: const BoxDecoration(color: Colors.transparent),
             padding: EdgeInsets.zero,
             keyboardType: TextInputType.number,
             maxLength: 3,
             maxLines: 1,
+            placeholder: "0",
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
             style: const TextStyle(fontWeight: FontWeight.bold),
-            placeholder: "0",
             placeholderStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: CupertinoColors.white),
             //onChanged: (value) => ,
