@@ -60,12 +60,6 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<ProcedureDto> getWorkingSets({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
-    return _exercisesInWorkout[index].workingProcedures;
-  }
-
   void addWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
     final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
     exerciseInWorkout.exercise == exerciseInWorkout.exercise);
@@ -79,12 +73,6 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     exerciseInWorkout.exercise == exerciseInWorkout.exercise);
     _exercisesInWorkout[index].warmupProcedures.removeAt(index);
     notifyListeners();
-  }
-
-  List<ProcedureDto> getWarmupSets({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
-    return _exercisesInWorkout[index].warmupProcedures;
   }
 
   void updateReps(

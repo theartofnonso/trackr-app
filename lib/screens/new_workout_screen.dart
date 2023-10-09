@@ -12,8 +12,8 @@ import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
 
 class NewWorkoutScreen extends StatefulWidget {
-
   final WorkoutDto? workoutDto;
+
   const NewWorkoutScreen({super.key, this.workoutDto});
 
   @override
@@ -63,11 +63,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         child: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
                 .canSuperSet()
             ? _ListOfExercises(
-                exercises: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                exercises: Provider.of<ExerciseInWorkoutProvider>(context,
+                        listen: false)
                     .whereOtherExercisesToSuperSetWith(
                         firstExercise: firstSuperSetExercise),
                 onSelect: (ExerciseInWorkoutDto exercise) =>
-                    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                    Provider.of<ExerciseInWorkoutProvider>(context,
+                            listen: false)
                         .addSuperSets(
                             firstExercise: firstSuperSetExercise,
                             secondExercise: exercise),
@@ -103,33 +105,30 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
-  List<ExerciseInWorkoutListSection> _exercisesToExerciseInWorkoutListSection(
+  List<ExerciseInWorkoutListSection> _exercisesToListSection(
       {required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
-    final exerciseInWorkoutListSection = exercisesInWorkout
-        .mapIndexed((index, exerciseInWorkout) => ExerciseInWorkoutListSection(
-              index: index,
-              keyValue: Key(exerciseInWorkout.exercise.name),
-              exerciseInWorkoutDto: exerciseInWorkout,
-              onAddSuperSetExercises:
-                  (ExerciseInWorkoutDto firstSuperSetExercise) {
-                _showExercisesInWorkoutPicker(
-                    firstSuperSetExercise: firstSuperSetExercise);
-              },
-              onRemoveSuperSetExercises: (String superSetId) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                      .removeSuperSet(superSetId: superSetId),
-              onRemoveExerciseInWorkout:
-                  (ExerciseInWorkoutDto exerciseInWorkoutDto) {
-                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                    .removeExercise(exerciseToRemove: exerciseInWorkoutDto);
-              },
-            ))
-        .toList();
+    final exerciseInWorkoutListSection =
+        exercisesInWorkout.map((exerciseInWorkout) {
+      return ExerciseInWorkoutListSection(
+        exerciseInWorkoutDto: exerciseInWorkout,
+        onAddSuperSetExercises: (ExerciseInWorkoutDto firstSuperSetExercise) {
+          _showExercisesInWorkoutPicker(
+              firstSuperSetExercise: firstSuperSetExercise);
+        },
+        onRemoveSuperSetExercises: (String superSetId) =>
+            Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                .removeSuperSet(superSetId: superSetId),
+        onRemoveExerciseInWorkout: (ExerciseInWorkoutDto exerciseInWorkoutDto) {
+          Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+              .removeExercise(exerciseToRemove: exerciseInWorkoutDto);
+        },
+      );
+    }).toList();
 
     outerLoop:
     for (var i = 0; i < exerciseInWorkoutListSection.length; i++) {
-      final exerciseSection = exerciseInWorkoutListSection[i];
-      final exerciseInWorkoutDto = exerciseSection.exerciseInWorkoutDto;
+      final firstExerciseSection = exerciseInWorkoutListSection[i];
+      final exerciseInWorkoutDto = firstExerciseSection.exerciseInWorkoutDto;
       if (exerciseInWorkoutDto.isSuperSet) {
         final superSetId = exerciseInWorkoutDto.superSetId;
         final otherExerciseSections = exerciseInWorkoutListSection.where(
@@ -137,11 +136,20 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                 (otherExerciseSection.exerciseInWorkoutDto.superSetId ==
                     superSetId) &&
                 otherExerciseSection.exerciseInWorkoutDto.exercise !=
-                    exerciseSection.exerciseInWorkoutDto.exercise);
+                    firstExerciseSection.exerciseInWorkoutDto.exercise);
         if (otherExerciseSections.isNotEmpty) {
-          final otherExerciseSection = otherExerciseSections.first;
+          final secondExerciseSection = otherExerciseSections.first;
+
+          final firstExerciseSectionIndex =
+              exerciseInWorkoutListSection.indexWhere((exercise) =>
+                  exercise.exerciseInWorkoutDto.exercise ==
+                  firstExerciseSection.exerciseInWorkoutDto.exercise);
+          final secondExerciseSectionIndex =
+              exerciseInWorkoutListSection.indexWhere((exercise) =>
+                  exercise.exerciseInWorkoutDto.exercise ==
+                  secondExerciseSection.exerciseInWorkoutDto.exercise);
           exerciseInWorkoutListSection.swap(
-              exerciseSection.index + 1, otherExerciseSection.index);
+              firstExerciseSectionIndex + 1, secondExerciseSectionIndex);
           break outerLoop;
         }
       }
@@ -166,19 +174,21 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       return;
     }
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).createWorkout(
-        name: _workoutNameController.text, notes: _workoutNotesController.text);
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .createWorkout(
+            name: _workoutNameController.text,
+            notes: _workoutNotesController.text);
 
     _navigateBack();
   }
 
   void _updateWorkout() {
-
     final workout = widget.workoutDto;
 
-    if(workout != null) {
+    if (workout != null) {
       if (_workoutNameController.text.isEmpty) {
-        _showCreateAlertDialog(message: 'Please provide a name for this workout');
+        _showCreateAlertDialog(
+            message: 'Please provide a name for this workout');
         return;
       }
 
@@ -189,9 +199,11 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         return;
       }
 
-      Provider.of<ExerciseInWorkoutProvider>(context, listen: false).updateWorkout(
-          id: workout.id,
-          name: _workoutNameController.text, notes: _workoutNotesController.text);
+      Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+          .updateWorkout(
+              id: workout.id,
+              name: _workoutNameController.text,
+              notes: _workoutNotesController.text);
 
       _navigateBack();
     }
@@ -199,16 +211,17 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final previousWorkoutDto = widget.workoutDto;
 
     final exercises =
-        Provider.of<ExerciseInWorkoutProvider>(context, listen: true).exercisesInWorkout;
+        Provider.of<ExerciseInWorkoutProvider>(context, listen: true)
+            .exercisesInWorkout;
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           trailing: GestureDetector(
-              onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
+              onTap:
+                  previousWorkoutDto != null ? _updateWorkout : _createWorkout,
               child: Text(previousWorkoutDto != null ? "Update" : "Save")),
         ),
         child: GestureDetector(
@@ -264,7 +277,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           color: CupertinoColors.inactiveGray, fontSize: 14),
                     ),
                     const SizedBox(height: 10),
-                    ..._exercisesToExerciseInWorkoutListSection(exercisesInWorkout: exercises),
+                    ..._exercisesToListSection(exercisesInWorkout: exercises),
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
@@ -292,7 +305,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     _workoutNameController = TextEditingController(text: workout?.name);
     _workoutNotesController = TextEditingController(text: workout?.notes);
 
-    if(workout != null) {
+    if (workout != null) {
       Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
           .addExercisesInWorkout(exercises: workout.exercises);
     }

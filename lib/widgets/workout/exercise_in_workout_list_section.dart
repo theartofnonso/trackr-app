@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 import '../../providers/exercise_in_workout_provider.dart';
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
-  final int index;
-  final Key keyValue;
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
   final void Function(ExerciseInWorkoutDto firstSuperSetExercise)
       onAddSuperSetExercises;
@@ -20,13 +17,12 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
       onRemoveExerciseInWorkout;
 
   const ExerciseInWorkoutListSection({
-    required this.index,
+    super.key,
     required this.exerciseInWorkoutDto,
     required this.onAddSuperSetExercises,
     required this.onRemoveSuperSetExercises,
     required this.onRemoveExerciseInWorkout,
-    required this.keyValue,
-  }) : super(key: keyValue);
+  });
 
   @override
   State<ExerciseInWorkoutListSection> createState() =>
@@ -44,14 +40,14 @@ class _ExerciseInWorkoutListSectionState
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-                _addWorkingSet();
+              _addWorkingSet();
             },
             child: const Text('Add new set', style: TextStyle(fontSize: 18)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-                _addWarmupSet();
+              _addWarmupSet();
             },
             child:
                 const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
@@ -131,8 +127,7 @@ class _ExerciseInWorkoutListSectionState
   }
 
   List<SetListItem> _workingSets() {
-    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .getWorkingSets(exerciseInWorkout: widget.exerciseInWorkoutDto)
+    return widget.exerciseInWorkoutDto.workingProcedures
         .mapIndexed(((index, procedure) => SetListItem(
               index: index,
               onRemove: (int index) => _removeWorkingSet(index: index),
@@ -144,12 +139,11 @@ class _ExerciseInWorkoutListSectionState
   }
 
   List<SetListItem> _warmupSets() {
-    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-        .getWarmupSets(exerciseInWorkout: widget.exerciseInWorkoutDto)
+    return widget.exerciseInWorkoutDto.warmupProcedures
         .mapIndexed(((index, procedure) => SetListItem(
               index: index,
               onRemove: (int index) => _removeWarmupSet(index: index),
-              isWarmup: false,
+              isWarmup: true,
               exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
               procedureDto: procedure,
             )))
