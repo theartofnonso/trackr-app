@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
@@ -69,9 +70,11 @@ class _MyAppState extends State<MyApp> {
       title: 'Flutter Demo',
       theme: const CupertinoThemeData(
           brightness: Brightness.light,
-          barBackgroundColor: Color.fromRGBO(12, 14, 18, 1),
-          textTheme: CupertinoTextThemeData(textStyle: TextStyle(color: CupertinoColors.white), navTitleTextStyle: TextStyle(color: CupertinoColors.white)),
-          scaffoldBackgroundColor: Color.fromRGBO(12, 14, 18, 1)),
+          barBackgroundColor: tealBlueDark,
+          textTheme: CupertinoTextThemeData(
+              textStyle: TextStyle(color: CupertinoColors.white),
+              navTitleTextStyle: TextStyle(color: CupertinoColors.white)),
+          scaffoldBackgroundColor: tealBlueDark),
       home: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : const ActivityOverviewScreen(),

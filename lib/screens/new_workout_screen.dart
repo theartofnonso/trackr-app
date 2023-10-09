@@ -59,7 +59,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         ),
         child: Provider.of<WorkoutProvider>(context, listen: false)
                 .canSuperSet()
-            ? ListOfExercises(
+            ? _ListOfExercises(
                 exercises: Provider.of<WorkoutProvider>(context, listen: false)
                     .whereOtherExercisesToSuperSetWith(
                         firstExercise: firstSuperSetExercise),
@@ -69,7 +69,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                             firstExercise: firstSuperSetExercise,
                             secondExercise: exercise),
               )
-            : ListOfExercisesEmptyState(onPress: _showListOfExercisesInLibrary),
+            : _ExercisesInWorkoutEmptyState(onPressed: () {
+                Navigator.of(context).pop();
+                _showListOfExercisesInLibrary();
+              }),
       ),
     );
   }
@@ -185,17 +188,12 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
           child: SafeArea(
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      right: 10.0,
-                      bottom: 10,
-                      left: 10.0,
-                    ),
-                    child: CupertinoTextField(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CupertinoTextField(
                       controller: _workoutNameController,
                       expands: true,
                       padding: EdgeInsets.zero,
@@ -214,10 +212,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       placeholderStyle: const TextStyle(
                           color: CupertinoColors.inactiveGray, fontSize: 18),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CupertinoTextField(
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    CupertinoTextField(
                       controller: _workoutNotesController,
                       expands: true,
                       padding: EdgeInsets.zero,
@@ -237,28 +235,21 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       placeholderStyle: const TextStyle(
                           color: CupertinoColors.inactiveGray, fontSize: 14),
                     ),
-                  ),
-                  ..._exercisesToExerciseInWorkoutListSection(
-                      exercisesInWorkout: exercises),
-                  const SizedBox(height: 18),
-                  GestureDetector(
-                    onTap: _showListOfExercisesInLibrary,
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(left: 20),
-                      margin: const EdgeInsets.only(
-                          left: 10, right: 10, bottom: 20),
+                    const SizedBox(height: 10),
+                    ..._exercisesToExerciseInWorkoutListSection(
+                        exercisesInWorkout: exercises),
+                    const SizedBox(height: 18),
+                    Container(
                       width: double.infinity,
-                      decoration: const BoxDecoration(
+                      child: CupertinoButton(
                           color: tealBlueLight,
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      height: 40,
-                      child: const Text("Add exercise",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                          onPressed: _showListOfExercisesInLibrary,
+                          child: const Text("Add exercise",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontWeight: FontWeight.bold))),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -266,39 +257,37 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 }
 
-class ListOfExercises extends StatelessWidget {
+class _ListOfExercises extends StatelessWidget {
   final List<ExerciseInWorkoutDto> exercises;
   final void Function(ExerciseInWorkoutDto exercise) onSelect;
 
-  const ListOfExercises(
+  const _ListOfExercises(
       {super.key, required this.exercises, required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        top: false,
-        child: ListView(
-          children: [
-            ...exercises
-                .map((exerciseInWorkout) => CupertinoListTile(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        onSelect(exerciseInWorkout);
-                      },
-                      title: Text(exerciseInWorkout.exercise.name,
-                          style: const TextStyle(
-                              color: CupertinoColors.white, fontSize: 16)),
-                    ))
-                .toList()
-          ],
-        ));
+    return ListView(
+      children: [
+        ...exercises
+            .map((exerciseInWorkout) => CupertinoListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onSelect(exerciseInWorkout);
+                  },
+                  title: Text(exerciseInWorkout.exercise.name,
+                      style: const TextStyle(
+                          color: CupertinoColors.white, fontSize: 16)),
+                ))
+            .toList()
+      ],
+    );
   }
 }
 
-class ListOfExercisesEmptyState extends StatelessWidget {
-  final Function() onPress;
+class _ExercisesInWorkoutEmptyState extends StatelessWidget {
+  final Function() onPressed;
 
-  const ListOfExercisesEmptyState({super.key, required this.onPress});
+  const _ExercisesInWorkoutEmptyState({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -309,16 +298,16 @@ class ListOfExercisesEmptyState extends StatelessWidget {
         children: [
           const Text("Add an exercise to superset with"),
           const SizedBox(height: 16),
-          GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-                onPress();
-              },
-              child: const Center(
-                  child: Text(
-                "Add new exercise",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )))
+          SizedBox(
+            width: double.infinity,
+            child: CupertinoButton(
+                color: tealBlueLight,
+                onPressed: onPressed,
+                child: const Text(
+                  "Add new exercise",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+          )
         ],
       ),
     );
