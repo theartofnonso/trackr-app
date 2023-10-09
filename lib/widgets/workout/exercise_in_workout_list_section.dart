@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 import '../../providers/exercise_in_workout_provider.dart';
@@ -41,72 +40,6 @@ class _ExerciseInWorkoutListSectionState
   final List<TextEditingController> _warmupSetWeightControllers = [];
   final List<TextEditingController> _workingSetRepsControllers = [];
   final List<TextEditingController> _workingSetWeightControllers = [];
-
-  List<ProcedureDto> _createWarmupSetProcedures() {
-    final procedureDtos = <ProcedureDto>[];
-
-    for (var i = 0; i < _warmupSetItems.length; i++) {
-      final warmupSetRepsController = _warmupSetWeightControllers[i];
-      final warmupSetWeightController = _warmupSetWeightControllers[i];
-      final procedureDto = ProcedureDto(
-          repCount: int.parse(warmupSetRepsController.text),
-          weight: int.parse(warmupSetWeightController.text));
-      procedureDtos.add(procedureDto);
-    }
-    return procedureDtos;
-  }
-
-  List<ProcedureDto> _createWorkingSetProcedures() {
-    final procedureDtos = <ProcedureDto>[];
-
-    for (var i = 0; i < _workingSetItems.length; i++) {
-      final workingSetRepsController = _workingSetRepsControllers[i];
-      final workingSetWeightController = _workingSetWeightControllers[i];
-      final procedureDto = ProcedureDto(
-          repCount: int.parse(workingSetRepsController.text),
-          weight: int.parse(workingSetWeightController.text));
-      procedureDtos.add(procedureDto);
-    }
-    return procedureDtos;
-  }
-
-  /// Remove [SetListItem] from [_workingSetItems]
-  void _removeSetListItem({required int index}) {
-    setState(() {
-      _workingSetItems.removeAt(index);
-      _workingSetItems = _workingSetItems.mapIndexed((index, item) {
-        return SetListItem(
-          index: index,
-          onRemove: item.onRemove,
-          repsController: item.repsController,
-          weightController: item.weightController,
-          isWarmup: item.isWarmup,
-        );
-      }).toList();
-
-      _workingSetRepsControllers.removeAt(index);
-      _workingSetWeightControllers.removeAt(index);
-    });
-  }
-
-  /// Remove [SetListItem] from [_warmupItems]
-  void removeWarmupSetListItem({required int index}) {
-    setState(() {
-      _warmupSetItems.removeAt(index);
-      _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
-        return SetListItem(
-          index: index,
-          onRemove: item.onRemove,
-          repsController: item.repsController,
-          weightController: item.weightController,
-          isWarmup: item.isWarmup,
-        );
-      }).toList();
-
-      _warmupSetRepsControllers.removeAt(index);
-      _warmupSetWeightControllers.removeAt(index);
-    });
-  }
 
   /// Show [CupertinoActionSheet]
   void _showExerciseInWorkoutActionSheet() {
@@ -188,6 +121,29 @@ class _ExerciseInWorkoutListSectionState
     _workingSetItems.add(setItem);
     _workingSetRepsControllers.add(repsController);
     _workingSetWeightControllers.add(setsController);
+
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).addNewWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
+  }
+
+  /// Remove [SetListItem] from [_workingSetItems]
+  void _removeSetListItem({required int index}) {
+    setState(() {
+      _workingSetItems.removeAt(index);
+      _workingSetItems = _workingSetItems.mapIndexed((index, item) {
+        return SetListItem(
+          index: index,
+          onRemove: item.onRemove,
+          repsController: item.repsController,
+          weightController: item.weightController,
+          isWarmup: item.isWarmup,
+        );
+      }).toList();
+
+      _workingSetRepsControllers.removeAt(index);
+      _workingSetWeightControllers.removeAt(index);
+    });
+
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).removeWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
 
   /// Add new [SetListItem] to list [_warmupItems]
@@ -204,6 +160,29 @@ class _ExerciseInWorkoutListSectionState
     _warmupSetItems.add(setItem);
     _warmupSetRepsControllers.add(repsController);
     _warmupSetWeightControllers.add(setsController);
+
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).addNewWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
+  }
+
+  /// Remove [SetListItem] from [_warmupItems]
+  void removeWarmupSetListItem({required int index}) {
+    setState(() {
+      _warmupSetItems.removeAt(index);
+      _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
+        return SetListItem(
+          index: index,
+          onRemove: item.onRemove,
+          repsController: item.repsController,
+          weightController: item.weightController,
+          isWarmup: item.isWarmup,
+        );
+      }).toList();
+
+      _warmupSetRepsControllers.removeAt(index);
+      _warmupSetWeightControllers.removeAt(index);
+    });
+
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).removeWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
 
   /// Mark [ExerciseInWorkoutDto] as superset

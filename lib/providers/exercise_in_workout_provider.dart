@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_in_workout_dto.dart';
@@ -10,7 +11,7 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
   void addExercises({required List<ExerciseDto> exercises}) {
     final exercisesToAdd = exercises
         .map((exercise) =>
-            ExerciseInWorkoutDto(exercise: exercise, procedures: []))
+            ExerciseInWorkoutDto(exercise: exercise))
         .toList();
     exercisesInWorkout.addAll(exercisesToAdd);
     notifyListeners();
@@ -78,5 +79,45 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
         .toList()
         .length >
         1;
+  }
+
+  void addNewWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
+      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+        exerciseInWorkout.workingProcedures.add(ProcedureDto());
+        return exerciseInWorkout;
+      }
+      return exerciseInWorkout;
+    }).toList();
+  }
+
+  void removeWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
+    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
+      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+        exerciseInWorkout.workingProcedures.removeAt(index);
+        return exerciseInWorkout;
+      }
+      return exerciseInWorkout;
+    }).toList();
+  }
+
+  void addNewWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
+      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+        exerciseInWorkout.warmupProcedures.add(ProcedureDto());
+        return exerciseInWorkout;
+      }
+      return exerciseInWorkout;
+    }).toList();
+  }
+
+  void removeWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
+    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
+      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+        exerciseInWorkout.warmupProcedures.removeAt(index);
+        return exerciseInWorkout;
+      }
+      return exerciseInWorkout;
+    }).toList();
   }
 }

@@ -35,6 +35,7 @@ class SetListItemTextField extends StatelessWidget {
             placeholder: "0",
             placeholderStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: CupertinoColors.white),
+            //onChanged: (value) => ,
           ),
         )
       ],

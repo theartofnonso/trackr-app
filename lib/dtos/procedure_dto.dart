@@ -1,7 +1,6 @@
 class ProcedureDto {
-  final int repCount;
-  final int weight;
+  int repCount;
+  int weight;
 
-  ProcedureDto(
-      {required this.repCount, required this.weight});
+  ProcedureDto({this.repCount = 0, this.weight = 0});
 }
