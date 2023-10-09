@@ -31,4 +31,9 @@ class ExerciseDto {
 
   @override
   int get hashCode => name.hashCode ^ bodyPart.hashCode;
+
+  @override
+  String toString() {
+    return 'ExerciseDto{name: $name, bodyPart: $bodyPart}';
+  }
 }

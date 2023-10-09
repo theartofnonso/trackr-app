@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 
-import '../../providers/exercise_in_workout_provider.dart';
+import '../../providers/workout_provider.dart';
 
 class SetListItem extends StatelessWidget {
   const SetListItem({
@@ -56,7 +56,7 @@ class SetListItem extends StatelessWidget {
               label: 'Reps',
               //textEditingController: repsController,
               onChanged: (value) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                  Provider.of<WorkoutProvider>(context, listen: false)
                       .updateReps(
                           exerciseInWorkout: exerciseInWorkoutDto,
                           setIndex: index,
@@ -69,7 +69,7 @@ class SetListItem extends StatelessWidget {
               label: 'kg',
               //textEditingController: weightController,
               onChanged: (value) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                  Provider.of<WorkoutProvider>(context, listen: false)
                       .updateWeight(
                           exerciseInWorkout: exerciseInWorkoutDto,
                           setIndex: index,

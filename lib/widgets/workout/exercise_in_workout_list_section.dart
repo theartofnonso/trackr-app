@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
-import '../../providers/exercise_in_workout_provider.dart';
+import '../../providers/workout_provider.dart';
 
 class ExerciseInWorkoutListSection extends StatefulWidget {
   final int index;
@@ -112,7 +112,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
     );
     _workingSetItems.add(setItem);
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+    Provider.of<WorkoutProvider>(context, listen: false)
         .addNewWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
   }
 
@@ -129,7 +129,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
       }).toList();
     });
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+    Provider.of<WorkoutProvider>(context, listen: false)
         .removeWorkingSet(
             exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
@@ -144,7 +144,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
     );
     _warmupSetItems.add(setItem);
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+    Provider.of<WorkoutProvider>(context, listen: false)
         .addNewWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
   }
 
@@ -161,7 +161,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
       }).toList();
     });
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+    Provider.of<WorkoutProvider>(context, listen: false)
         .removeWarmupSet(
             exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
@@ -173,7 +173,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
 
   /// Find [ExerciseInWorkoutDto] in list of [widget.exercisesInWorkoutDtos]
   ExerciseInWorkoutDto _whereOtherSuperSet() {
-    return Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+    return Provider.of<WorkoutProvider>(context, listen: false)
         .whereOtherSuperSet(firstExercise: widget.exerciseInWorkoutDto);
   }
 
@@ -212,7 +212,7 @@ class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSect
           ),
           CupertinoTextField(
             onChanged: (value) =>
-                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                Provider.of<WorkoutProvider>(context, listen: false)
                     .updateNotes(
                         exerciseInWorkout: widget.exerciseInWorkoutDto,
                         notes: value),

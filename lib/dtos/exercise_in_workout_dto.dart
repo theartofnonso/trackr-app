@@ -12,4 +12,9 @@ class ExerciseInWorkoutDto {
   bool isSuperSet;
 
   ExerciseInWorkoutDto({this.superSetId = "", this.notes = "", required this.exercise, this.isSuperSet = false});
+
+  @override
+  String toString() {
+    return 'ExerciseInWorkoutDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, warmupProcedures: $warmupProcedures, workingProcedures: $workingProcedures, isSuperSet: $isSuperSet}';
+  }
 }

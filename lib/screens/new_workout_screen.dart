@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
-import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
+import 'package:tracker_app/providers/workout_provider.dart';
 import '../app_constants.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
@@ -18,30 +18,23 @@ class NewWorkoutScreen extends StatefulWidget {
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
-  /// Show [CupertinoAlertDialog]
-  void _showRemoveExerciseAlertDialog(
-      {required ExerciseInWorkoutDto exerciseDto}) {
+  final _workoutNameController = TextEditingController();
+  final _workoutNotesController = TextEditingController();
+
+  /// Show [CupertinoAlertDialog] for creating a workout
+  void _showCreateAlertDialog({required String message}) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('Alert'),
-        content: const Text("Do you want to remove this exercise"),
+        content: Text(message),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('No'),
-          ),
-          CupertinoDialogAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                  .removeExercise(exerciseToRemove: exerciseDto);
-            },
-            child: const Text('Yes'),
+            child: const Text('Ok'),
           ),
         ],
       ),
@@ -64,16 +57,14 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        child: Provider.of<WorkoutProvider>(context, listen: false)
                 .canSuperSet()
             ? ListOfExercises(
-                exercises: Provider.of<ExerciseInWorkoutProvider>(context,
-                        listen: false)
+                exercises: Provider.of<WorkoutProvider>(context, listen: false)
                     .whereOtherExercisesToSuperSetWith(
                         firstExercise: firstSuperSetExercise),
                 onSelect: (ExerciseInWorkoutDto exercise) =>
-                    Provider.of<ExerciseInWorkoutProvider>(context,
-                            listen: false)
+                    Provider.of<WorkoutProvider>(context, listen: false)
                         .addSuperSets(
                             firstExercise: firstSuperSetExercise,
                             secondExercise: exercise),
@@ -90,7 +81,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(
             preSelectedExercises:
-                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                Provider.of<WorkoutProvider>(context, listen: false)
                     .exercisesInWorkout
                     .map((exerciseInWorkout) => exerciseInWorkout.exercise)
                     .toList());
@@ -99,15 +90,9 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
     if (selectedExercises != null) {
       if (mounted) {
-        Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        Provider.of<WorkoutProvider>(context, listen: false)
             .addExercises(exercises: selectedExercises);
       }
-      // setState(() {
-      //   _exercisesInWorkout.addAll(selectedExercises
-      //       .map((exercise) =>
-      //           ExerciseInWorkoutDto(exercise: exercise, procedures: []))
-      //       .toList());
-      // });
     }
   }
 
@@ -125,12 +110,12 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     firstSuperSetExercise: firstSuperSetExercise);
               },
               onRemoveSuperSetExercises: (String superSetId) =>
-                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                  Provider.of<WorkoutProvider>(context, listen: false)
                       .removeSuperSet(superSetId: superSetId),
               onRemoveExerciseInWorkout:
                   (ExerciseInWorkoutDto exerciseInWorkoutDto) {
-                _showRemoveExerciseAlertDialog(
-                    exerciseDto: exerciseInWorkoutDto);
+                Provider.of<WorkoutProvider>(context, listen: false)
+                    .removeExercise(exerciseToRemove: exerciseInWorkoutDto);
               },
             ))
         .toList();
@@ -162,20 +147,34 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     Navigator.of(context).pop();
   }
 
-  void _saveWorkout() {
+  void _createWorkout() {
+    if (_workoutNameController.text.isEmpty) {
+      _showCreateAlertDialog(message: 'Please provide a name for this workout');
+      return;
+    }
 
+    if (Provider.of<WorkoutProvider>(context, listen: false)
+        .exercisesInWorkout
+        .isEmpty) {
+      _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
+      return;
+    }
+
+    Provider.of<WorkoutProvider>(context, listen: false).createWorkout(
+        name: _workoutNameController.text, notes: _workoutNotesController.text);
+
+    _navigateBack();
   }
 
   @override
   Widget build(BuildContext context) {
     final exercises =
-        Provider.of<ExerciseInWorkoutProvider>(context, listen: true)
-            .exercisesInWorkout;
+        Provider.of<WorkoutProvider>(context, listen: true).exercisesInWorkout;
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           trailing: GestureDetector(
-              onTap: _navigateBack,
+              onTap: _createWorkout,
               child: const Icon(
                 CupertinoIcons.check_mark_circled,
                 size: 24,
@@ -190,9 +189,14 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 20.0, bottom: 20),
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      right: 10.0,
+                      bottom: 10,
+                      left: 10.0,
+                    ),
                     child: CupertinoTextField(
+                      controller: _workoutNameController,
                       expands: true,
                       padding: EdgeInsets.zero,
                       decoration: const BoxDecoration(
@@ -212,37 +216,26 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Notes",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16)),
-                        CupertinoTextField(
-                          expands: true,
-                          padding: EdgeInsets.zero,
-                          decoration: const BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          keyboardType: TextInputType.text,
-                          maxLength: 240,
-                          maxLines: null,
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: CupertinoColors.white.withOpacity(0.8),
-                              fontSize: 14,
-                              height: 1.8),
-                          placeholder: "New notes",
-                          placeholderStyle: const TextStyle(
-                              color: CupertinoColors.inactiveGray,
-                              fontSize: 14),
-                        ),
-                      ],
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: CupertinoTextField(
+                      controller: _workoutNotesController,
+                      expands: true,
+                      padding: EdgeInsets.zero,
+                      decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      keyboardType: TextInputType.text,
+                      maxLength: 240,
+                      maxLines: null,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: CupertinoColors.white.withOpacity(0.8),
+                        fontSize: 14,
+                      ),
+                      placeholder: "New notes",
+                      placeholderStyle: const TextStyle(
+                          color: CupertinoColors.inactiveGray, fontSize: 14),
                     ),
                   ),
                   ..._exercisesToExerciseInWorkoutListSection(
