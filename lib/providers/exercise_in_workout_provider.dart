@@ -80,73 +80,71 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
         1;
   }
 
+  void updateNotes(
+      {required ExerciseInWorkoutDto exerciseInWorkout,
+      required String notes}) {
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    exercisesInWorkout[index].notes = notes;
+  }
+
   void addNewWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
-        exerciseInWorkout.workingProcedures.add(ProcedureDto());
-        return exerciseInWorkout;
-      }
-      return exerciseInWorkout;
-    }).toList();
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    exercisesInWorkout[index].workingProcedures.add(ProcedureDto());
   }
 
   void removeWorkingSet(
       {required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
-    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
-        exerciseInWorkout.workingProcedures.removeAt(index);
-        return exerciseInWorkout;
-      }
-      return exerciseInWorkout;
-    }).toList();
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    exercisesInWorkout[index].workingProcedures.removeAt(index);
   }
 
   void addNewWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
-        exerciseInWorkout.warmupProcedures.add(ProcedureDto());
-        return exerciseInWorkout;
-      }
-      return exerciseInWorkout;
-    }).toList();
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    exercisesInWorkout[index].warmupProcedures.add(ProcedureDto());
   }
 
   void removeWarmupSet(
       {required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
-    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
-        exerciseInWorkout.warmupProcedures.removeAt(index);
-        return exerciseInWorkout;
-      }
-      return exerciseInWorkout;
-    }).toList();
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    exercisesInWorkout[index].warmupProcedures.removeAt(index);
   }
 
-  void updateReps({required ExerciseInWorkoutDto exerciseInWorkout, required int setIndex, required int repCount, required bool isWarmup}) {
-    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
-        if(isWarmup) {
-          exerciseInWorkout.warmupProcedures[setIndex].repCount = repCount;
-        } else {
-          exerciseInWorkout.workingProcedures[setIndex].repCount = repCount;
-        }
-        return exerciseInWorkout;
+  void updateReps(
+      {required ExerciseInWorkoutDto exerciseInWorkout,
+      required int setIndex,
+      required int repCount,
+      required bool isWarmup}) {
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+      if (isWarmup) {
+        exercisesInWorkout[index].warmupProcedures[setIndex].repCount =
+            repCount;
+      } else {
+        exercisesInWorkout[index].workingProcedures[setIndex].repCount =
+            repCount;
       }
-      return exerciseInWorkout;
-    }).toList();
+    }
   }
 
-  void updateWeight({required ExerciseInWorkoutDto exerciseInWorkout, required int setIndex, required int weight, required bool isWarmup}) {
-    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
-        if(isWarmup) {
-          exerciseInWorkout.warmupProcedures[setIndex].weight = weight;
-        } else {
-          exerciseInWorkout.workingProcedures[setIndex].weight = weight;
-        }
-        return exerciseInWorkout;
+  void updateWeight(
+      {required ExerciseInWorkoutDto exerciseInWorkout,
+      required int setIndex,
+      required int weight,
+      required bool isWarmup}) {
+    final index = exercisesInWorkout.indexWhere((exerciseInWorkout) =>
+        exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+      if (isWarmup) {
+        exercisesInWorkout[index].warmupProcedures[setIndex].weight = weight;
+      } else {
+        exercisesInWorkout[index].workingProcedures[setIndex].weight = weight;
       }
-      return exerciseInWorkout;
-    }).toList();
+    }
   }
 }

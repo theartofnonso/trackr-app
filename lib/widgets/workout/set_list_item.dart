@@ -1,24 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/widgets/workout/set_list_item_textfield.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+
+import '../../providers/exercise_in_workout_provider.dart';
 
 class SetListItem extends StatelessWidget {
   const SetListItem({
     super.key,
     required this.index,
     required this.onRemove,
-    required this.repsController,
-    required this.weightController,
     required this.isWarmup,
-    this.previousWorkoutSummary,
+    this.previousWorkoutSummary, required this.exerciseInWorkoutDto,
   });
 
   final int index;
   final String? previousWorkoutSummary;
   final bool isWarmup;
-  final TextEditingController repsController;
-  final TextEditingController weightController;
   final void Function(int index) onRemove;
+
+  final ExerciseInWorkoutDto exerciseInWorkoutDto;
 
   /// Show [CupertinoActionSheet]
   void _showSetActionSheet({required BuildContext context}) {
@@ -51,16 +53,28 @@ class SetListItem extends StatelessWidget {
             width: 18,
           ),
           SetListItemTextField(
-            label: 'Reps',
-            textEditingController: repsController,
-          ),
+              label: 'Reps',
+              //textEditingController: repsController,
+              onChanged: (value) =>
+                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                      .updateReps(
+                          exerciseInWorkout: exerciseInWorkoutDto,
+                          setIndex: index,
+                          repCount: int.parse(value),
+                          isWarmup: isWarmup)),
           const SizedBox(
             width: 28,
           ),
           SetListItemTextField(
-            label: 'kg',
-            textEditingController: weightController,
-          ),
+              label: 'kg',
+              //textEditingController: weightController,
+              onChanged: (value) =>
+                  Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                      .updateWeight(
+                          exerciseInWorkout: exerciseInWorkoutDto,
+                          setIndex: index,
+                          weight: int.parse(value),
+                          isWarmup: isWarmup)),
           const SizedBox(
             width: 20,
           ),
@@ -113,6 +127,49 @@ class LeadingIcon extends StatelessWidget {
               style: const TextStyle(
                   fontWeight: FontWeight.bold, color: CupertinoColors.white),
             ),
+    );
+  }
+}
+
+class SetListItemTextField extends StatelessWidget {
+  final String label;
+  final void Function(String)? onChanged;
+
+  const SetListItemTextField(
+      {super.key,
+      required this.label,
+      this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(color: CupertinoColors.opaqueSeparator),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        SizedBox(
+          width: 30,
+          child: CupertinoTextField(
+            onChanged: onChanged,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            padding: EdgeInsets.zero,
+            keyboardType: TextInputType.number,
+            maxLength: 3,
+            maxLines: 1,
+            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+            placeholder: "0",
+            placeholderStyle: const TextStyle(
+                fontWeight: FontWeight.bold, color: CupertinoColors.white),
+            //onChanged: (value) => ,
+          ),
+        )
+      ],
     );
   }
 }

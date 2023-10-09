@@ -32,14 +32,9 @@ class ExerciseInWorkoutListSection extends StatefulWidget {
       _ExerciseInWorkoutListSectionState();
 }
 
-class _ExerciseInWorkoutListSectionState
-    extends State<ExerciseInWorkoutListSection> {
+class _ExerciseInWorkoutListSectionState extends State<ExerciseInWorkoutListSection> {
   List<SetListItem> _warmupSetItems = [];
   List<SetListItem> _workingSetItems = [];
-  final List<TextEditingController> _warmupSetRepsControllers = [];
-  final List<TextEditingController> _warmupSetWeightControllers = [];
-  final List<TextEditingController> _workingSetRepsControllers = [];
-  final List<TextEditingController> _workingSetWeightControllers = [];
 
   /// Show [CupertinoActionSheet]
   void _showExerciseInWorkoutActionSheet() {
@@ -105,8 +100,6 @@ class _ExerciseInWorkoutListSectionState
 
   /// Add new [SetListItem] to list [_workingSetItems]
   void _addNewSetListItem() {
-    final repsController = TextEditingController();
-    final setsController = TextEditingController();
     final setItem = SetListItem(
       index: _workingSetItems.length,
       onRemove: (int index) {
@@ -114,15 +107,13 @@ class _ExerciseInWorkoutListSectionState
           _removeSetListItem(index: index);
         }
       },
-      repsController: repsController,
-      weightController: setsController,
       isWarmup: false,
+      exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
     );
     _workingSetItems.add(setItem);
-    _workingSetRepsControllers.add(repsController);
-    _workingSetWeightControllers.add(setsController);
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).addNewWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .addNewWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
   }
 
   /// Remove [SetListItem] from [_workingSetItems]
@@ -131,37 +122,30 @@ class _ExerciseInWorkoutListSectionState
       _workingSetItems.removeAt(index);
       _workingSetItems = _workingSetItems.mapIndexed((index, item) {
         return SetListItem(
-          index: index,
-          onRemove: item.onRemove,
-          repsController: item.repsController,
-          weightController: item.weightController,
-          isWarmup: item.isWarmup,
-        );
+            index: index,
+            onRemove: item.onRemove,
+            isWarmup: item.isWarmup,
+            exerciseInWorkoutDto: widget.exerciseInWorkoutDto);
       }).toList();
-
-      _workingSetRepsControllers.removeAt(index);
-      _workingSetWeightControllers.removeAt(index);
     });
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).removeWorkingSet(exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .removeWorkingSet(
+            exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
 
   /// Add new [SetListItem] to list [_warmupItems]
   void _addNewWarmupSetListItem() {
-    final repsController = TextEditingController();
-    final setsController = TextEditingController();
     final setItem = SetListItem(
       index: _warmupSetItems.length,
       isWarmup: true,
       onRemove: (int index) => removeWarmupSetListItem(index: index),
-      repsController: repsController,
-      weightController: setsController,
+      exerciseInWorkoutDto: widget.exerciseInWorkoutDto,
     );
     _warmupSetItems.add(setItem);
-    _warmupSetRepsControllers.add(repsController);
-    _warmupSetWeightControllers.add(setsController);
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).addNewWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .addNewWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto);
   }
 
   /// Remove [SetListItem] from [_warmupItems]
@@ -170,19 +154,16 @@ class _ExerciseInWorkoutListSectionState
       _warmupSetItems.removeAt(index);
       _warmupSetItems = _warmupSetItems.mapIndexed((index, item) {
         return SetListItem(
-          index: index,
-          onRemove: item.onRemove,
-          repsController: item.repsController,
-          weightController: item.weightController,
-          isWarmup: item.isWarmup,
-        );
+            index: index,
+            onRemove: item.onRemove,
+            isWarmup: item.isWarmup,
+            exerciseInWorkoutDto: widget.exerciseInWorkoutDto);
       }).toList();
-
-      _warmupSetRepsControllers.removeAt(index);
-      _warmupSetWeightControllers.removeAt(index);
     });
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false).removeWarmupSet(exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
+    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+        .removeWarmupSet(
+            exerciseInWorkout: widget.exerciseInWorkoutDto, index: index);
   }
 
   /// Mark [ExerciseInWorkoutDto] as superset
@@ -198,8 +179,8 @@ class _ExerciseInWorkoutListSectionState
 
   @override
   Widget build(BuildContext context) {
-
     return CupertinoListSection.insetGrouped(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       backgroundColor: Colors.transparent,
       header: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,14 +203,19 @@ class _ExerciseInWorkoutListSectionState
                             fontSize: 12)),
                   )
                 : const SizedBox.shrink(),
-            trailing: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: GestureDetector(
-                  onTap: _showExerciseInWorkoutActionSheet,
-                  child: const Icon(CupertinoIcons.ellipsis)),
-            ),
+            trailing: GestureDetector(
+                onTap: _showExerciseInWorkoutActionSheet,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 1.0),
+                  child: Icon(CupertinoIcons.ellipsis),
+                )),
           ),
           CupertinoTextField(
+            onChanged: (value) =>
+                Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+                    .updateNotes(
+                        exerciseInWorkout: widget.exerciseInWorkoutDto,
+                        notes: value),
             expands: true,
             decoration: const BoxDecoration(color: Colors.transparent),
             padding: EdgeInsets.zero,
@@ -257,22 +243,5 @@ class _ExerciseInWorkoutListSectionState
   void initState() {
     super.initState();
     _addNewSetListItem();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    for (var controller in _warmupSetRepsControllers) {
-      controller.dispose();
-    }
-    for (var controller in _warmupSetWeightControllers) {
-      controller.dispose();
-    }
-    for (var controller in _workingSetRepsControllers) {
-      controller.dispose();
-    }
-    for (var controller in _workingSetWeightControllers) {
-      controller.dispose();
-    }
   }
 }
