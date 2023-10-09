@@ -37,40 +37,37 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     }
   }
 
+  int _indexWhereExercise({required ExerciseInWorkoutDto exerciseInWorkout}) {
+    return _exercisesInWorkout.indexWhere((item) => item.exercise == exerciseInWorkout.exercise);
+  }
+
   void updateNotes(
       {required ExerciseInWorkoutDto exerciseInWorkout,
         required String notes}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     _exercisesInWorkout[index].notes = notes;
   }
 
   void addWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     _exercisesInWorkout[index].workingProcedures.add(ProcedureDto());
     notifyListeners();
   }
 
-  void removeWorkingSet(
-      {required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+  void removeWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     _exercisesInWorkout[index].workingProcedures.removeAt(index);
     notifyListeners();
   }
 
   void addWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     _exercisesInWorkout[index].warmupProcedures.add(ProcedureDto());
     notifyListeners();
   }
 
-  void removeWarmupSet(
-      {required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+  void removeWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     _exercisesInWorkout[index].warmupProcedures.removeAt(index);
     notifyListeners();
   }
@@ -80,8 +77,7 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
         required int setIndex,
         required int repCount,
         required bool isWarmup}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
       if (isWarmup) {
         _exercisesInWorkout[index].warmupProcedures[setIndex].repCount =
@@ -98,8 +94,7 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
         required int setIndex,
         required int weight,
         required bool isWarmup}) {
-    final index = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-    exerciseInWorkout.exercise == exerciseInWorkout.exercise);
+    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
     if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
       if (isWarmup) {
         _exercisesInWorkout[index].warmupProcedures[setIndex].weight = weight;
@@ -122,10 +117,8 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
       required ExerciseInWorkoutDto secondExercise}) {
     final id = "id_${DateTime.now().millisecond}";
 
-    final firstIndex = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-        exerciseInWorkout.exercise.name == firstExercise.exercise.name);
-    final secondIndex = _exercisesInWorkout.indexWhere((exerciseInWorkout) =>
-        exerciseInWorkout.exercise.name == secondExercise.exercise.name);
+    final firstIndex = _indexWhereExercise(exerciseInWorkout: firstExercise);
+    final secondIndex = _indexWhereExercise(exerciseInWorkout: secondExercise);
 
     _exercisesInWorkout[firstIndex].isSuperSet = true;
     _exercisesInWorkout[firstIndex].superSetId = id;
@@ -140,7 +133,7 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     for (var exerciseInWorkout in _exercisesInWorkout) {
       if (exerciseInWorkout.superSetId == superSetId) {
         final index = _exercisesInWorkout.indexWhere(
-            (exerciseInWorkout) => exerciseInWorkout.superSetId == superSetId);
+            (item) => item.superSetId == superSetId);
         _exercisesInWorkout[index].isSuperSet = false;
         _exercisesInWorkout[index].superSetId = "";
       }
