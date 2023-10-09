@@ -10,8 +10,7 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
 
   void addExercises({required List<ExerciseDto> exercises}) {
     final exercisesToAdd = exercises
-        .map((exercise) =>
-            ExerciseInWorkoutDto(exercise: exercise))
+        .map((exercise) => ExerciseInWorkoutDto(exercise: exercise))
         .toList();
     exercisesInWorkout.addAll(exercisesToAdd);
     notifyListeners();
@@ -75,15 +74,15 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
 
   bool canSuperSet() {
     return exercisesInWorkout
-        .whereNot((exerciseInWorkout) => exerciseInWorkout.isSuperSet)
-        .toList()
-        .length >
+            .whereNot((exerciseInWorkout) => exerciseInWorkout.isSuperSet)
+            .toList()
+            .length >
         1;
   }
 
   void addNewWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
     exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
         exerciseInWorkout.workingProcedures.add(ProcedureDto());
         return exerciseInWorkout;
       }
@@ -91,9 +90,10 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     }).toList();
   }
 
-  void removeWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
+  void removeWorkingSet(
+      {required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
     exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
         exerciseInWorkout.workingProcedures.removeAt(index);
         return exerciseInWorkout;
       }
@@ -103,7 +103,7 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
 
   void addNewWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
     exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
         exerciseInWorkout.warmupProcedures.add(ProcedureDto());
         return exerciseInWorkout;
       }
@@ -111,10 +111,39 @@ class ExerciseInWorkoutProvider with ChangeNotifier {
     }).toList();
   }
 
-  void removeWarmupSet({required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
+  void removeWarmupSet(
+      {required ExerciseInWorkoutDto exerciseInWorkout, required int index}) {
     exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
-      if(exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
         exerciseInWorkout.warmupProcedures.removeAt(index);
+        return exerciseInWorkout;
+      }
+      return exerciseInWorkout;
+    }).toList();
+  }
+
+  void updateReps({required ExerciseInWorkoutDto exerciseInWorkout, required int setIndex, required int repCount, required bool isWarmup}) {
+    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
+      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+        if(isWarmup) {
+          exerciseInWorkout.warmupProcedures[setIndex].repCount = repCount;
+        } else {
+          exerciseInWorkout.workingProcedures[setIndex].repCount = repCount;
+        }
+        return exerciseInWorkout;
+      }
+      return exerciseInWorkout;
+    }).toList();
+  }
+
+  void updateWeight({required ExerciseInWorkoutDto exerciseInWorkout, required int setIndex, required int weight, required bool isWarmup}) {
+    exercisesInWorkout = exercisesInWorkout.map((exerciseInWorkout) {
+      if (exerciseInWorkout.exercise.name == exerciseInWorkout.exercise.name) {
+        if(isWarmup) {
+          exerciseInWorkout.warmupProcedures[setIndex].weight = weight;
+        } else {
+          exerciseInWorkout.workingProcedures[setIndex].weight = weight;
+        }
         return exerciseInWorkout;
       }
       return exerciseInWorkout;
