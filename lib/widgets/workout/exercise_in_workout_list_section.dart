@@ -105,7 +105,6 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures
         .mapIndexed(((index, procedure) => SetListItem(
-              keyValue: Key(DateTime.now().microsecondsSinceEpoch.toString()),
               index: index,
               onRemoved: (int index) => onRemoveWorkingSet(index),
               isWarmup: false,
@@ -122,7 +121,6 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   List<SetListItem> _displayWarmUpSets() {
     return exerciseInWorkoutDto.warmupProcedures
         .mapIndexed(((index, procedure) => SetListItem(
-              keyValue: Key(DateTime.now().microsecondsSinceEpoch.toString()),
               index: index,
               onRemoved: (int index) => onRemoveWarmUpSet(index),
               isWarmup: true,

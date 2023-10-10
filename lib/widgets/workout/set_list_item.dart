@@ -6,7 +6,7 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 
 class SetListItem extends StatelessWidget {
   const SetListItem({
-    required this.keyValue,
+    super.key,
     required this.index,
     required this.isWarmup,
     required this.exerciseInWorkoutDto,
@@ -14,9 +14,8 @@ class SetListItem extends StatelessWidget {
     required this.onRemoved,
     required this.onChangedRepCount,
     required this.onChangedWeight,
-  }) : super(key: keyValue);
+  });
 
-  final Key keyValue;
   final int index;
   final bool isWarmup;
   final ProcedureDto? procedureDto;
@@ -29,20 +28,14 @@ class SetListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: keyValue,
+      key: UniqueKey(),
       direction: DismissDirection.endToStart,
       background: Container(
         color: CupertinoColors.destructiveRed,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text("Delete",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
-            SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
+        padding: const EdgeInsets.only(right: 10),
+        alignment: Alignment.centerRight,
+        child: const Text("Delete",
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
       ),
       onDismissed: (_) => onRemoved(index),
       child: CupertinoListTile.notched(
@@ -126,17 +119,17 @@ class _SetListItemTextField extends StatelessWidget {
         SizedBox(
           width: 85,
           child: CupertinoTextField(
-            prefix: Text(label,
-                style: const TextStyle(color: CupertinoColors.opaqueSeparator)),
+            //enabled: false,
+            prefix: Text(label, style: const TextStyle(color: CupertinoColors.opaqueSeparator)),
             controller: TextEditingController(text: initialValue?.toString()),
             onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
-            decoration: const BoxDecoration(color: Colors.grey),
+            decoration: const BoxDecoration(color: Colors.transparent),
             keyboardType: TextInputType.number,
             maxLines: 1,
             placeholder: "0",
             style: const TextStyle(fontWeight: FontWeight.bold),
             placeholderStyle: const TextStyle(
-                fontWeight: FontWeight.bold, color: CupertinoColors.white),
+                fontWeight: FontWeight.bold, color: Colors.transparent),
           ),
         )
       ],
