@@ -37,7 +37,12 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onChangedWorkingSetRepCount,
     required this.onChangedWorkingSetWeight,
     required this.onChangedWarmUpSetRepCount,
-    required this.onChangedWarmUpSetWeight, required this.onAddWorkingSet, required this.onRemoveWorkingSet, required this.onAddWarmUpSet, required this.onRemoveWarmUpSet, required this.onUpdateNotes,
+    required this.onChangedWarmUpSetWeight,
+    required this.onAddWorkingSet,
+    required this.onRemoveWorkingSet,
+    required this.onAddWarmUpSet,
+    required this.onRemoveWarmUpSet,
+    required this.onUpdateNotes,
   });
 
   /// Show [CupertinoActionSheet]
@@ -100,8 +105,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures
         .mapIndexed(((index, procedure) => SetListItem(
+              keyValue: Key(DateTime.now().microsecondsSinceEpoch.toString()),
               index: index,
-              onRemove: (int index) => onRemoveWorkingSet(index),
+              onRemoved: (int index) => onRemoveWorkingSet(index),
               isWarmup: false,
               exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
@@ -116,8 +122,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   List<SetListItem> _displayWarmUpSets() {
     return exerciseInWorkoutDto.warmupProcedures
         .mapIndexed(((index, procedure) => SetListItem(
+              keyValue: Key(DateTime.now().microsecondsSinceEpoch.toString()),
               index: index,
-              onRemove: (int index) => onRemoveWarmUpSet(index),
+              onRemoved: (int index) => onRemoveWarmUpSet(index),
               isWarmup: true,
               exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
@@ -132,7 +139,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListSection.insetGrouped(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
+        margin: EdgeInsets.zero,
         backgroundColor: Colors.transparent,
         header: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
