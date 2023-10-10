@@ -55,18 +55,18 @@ class SetListItem extends StatelessWidget {
       title: Row(
         children: [
           const SizedBox(
-            width: 18,
+            width: 12,
           ),
           _SetListItemTextField(
               label: 'Reps',
-              initialValue: procedureDto?.repCount,
+              initialValue: procedureDto?.repCount ?? 0,
               onChanged: (value) => onChangedRepCount(int.parse(value))),
           const SizedBox(
             width: 28,
           ),
           _SetListItemTextField(
               label: 'kg',
-              initialValue: procedureDto?.weight,
+              initialValue: procedureDto?.weight ?? 0,
               onChanged: (value) => onChangedWeight(int.parse(value))),
           const SizedBox(
             width: 20,
