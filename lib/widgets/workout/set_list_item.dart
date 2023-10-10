@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-
-import '../../providers/exercise_in_workout_provider.dart';
 
 class SetListItem extends StatelessWidget {
   const SetListItem({
@@ -15,7 +12,9 @@ class SetListItem extends StatelessWidget {
     required this.isWarmup,
     this.previousWorkoutSummary,
     required this.exerciseInWorkoutDto,
-    this.procedureDto, required this.onChangedRepCount, required this.onChangedWeight,
+    this.procedureDto,
+    required this.onChangedRepCount,
+    required this.onChangedWeight,
   });
 
   final int index;
@@ -61,29 +60,14 @@ class SetListItem extends StatelessWidget {
           _SetListItemTextField(
               label: 'Reps',
               initialValue: procedureDto?.repCount,
-              onChanged: (value) => onChangedRepCount(int.parse(value))
-
-                  // Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                  //     .updateReps(
-                  //         exerciseInWorkout: exerciseInWorkoutDto,
-                  //         setIndex: index,
-                  //         repCount: int.parse(value),
-                  //         isWarmup: isWarmup)
-          ),
+              onChanged: (value) => onChangedRepCount(int.parse(value))),
           const SizedBox(
             width: 28,
           ),
           _SetListItemTextField(
               label: 'kg',
               initialValue: procedureDto?.weight,
-              onChanged: (value) => onChangedWeight(int.parse(value))
-                  // Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
-                  //     .updateWeight(
-                  //         exerciseInWorkout: exerciseInWorkoutDto,
-                  //         setIndex: index,
-                  //         weight: int.parse(value),
-                  //         isWarmup: isWarmup)
-          ),
+              onChanged: (value) => onChangedWeight(int.parse(value))),
           const SizedBox(
             width: 20,
           ),
