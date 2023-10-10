@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 
@@ -117,13 +118,15 @@ class _SetListItemTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 85,
+          width: 100,
           child: CupertinoTextField(
-            //enabled: false,
-            prefix: Text(label, style: const TextStyle(color: CupertinoColors.opaqueSeparator)),
+            prefix: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(label, style: const TextStyle(color: CupertinoColors.opaqueSeparator, fontWeight: FontWeight.w600, fontSize: 12)),
+            ),
             controller: TextEditingController(text: initialValue?.toString()),
             onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
-            decoration: const BoxDecoration(color: Colors.transparent),
+            decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(8))),
             keyboardType: TextInputType.number,
             maxLines: 1,
             placeholder: "0",
