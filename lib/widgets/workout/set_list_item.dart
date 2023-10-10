@@ -129,7 +129,7 @@ class _SetListItemTextFieldState extends State<_SetListItemTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 100,
+          width: 65,
           child: CupertinoTextField(
             prefix: Text(
               widget.label,
