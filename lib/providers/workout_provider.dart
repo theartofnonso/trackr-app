@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import '../dtos/exercise_in_workout_dto.dart';
 import '../dtos/workout_dto.dart';
 
-class ExerciseInWorkoutProvider with ChangeNotifier {
+class WorkoutProvider with ChangeNotifier {
 
   final List<WorkoutDto> _workouts = [];
 

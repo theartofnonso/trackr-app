@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
-import 'package:tracker_app/providers/exercise_in_workout_provider.dart';
+import 'package:tracker_app/providers/workout_provider.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
@@ -211,11 +211,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     final firstIndex = _indexWhereExercise(exerciseInWorkout: firstExercise);
     final secondIndex = _indexWhereExercise(exerciseInWorkout: secondExercise);
 
-    _exercisesInWorkout[firstIndex].isSuperSet = true;
-    _exercisesInWorkout[firstIndex].superSetId = id;
+    setState(() {
+      _exercisesInWorkout[firstIndex].isSuperSet = true;
+      _exercisesInWorkout[firstIndex].superSetId = id;
 
-    _exercisesInWorkout[secondIndex].isSuperSet = true;
-    _exercisesInWorkout[secondIndex].superSetId = id;
+      _exercisesInWorkout[secondIndex].isSuperSet = true;
+      _exercisesInWorkout[secondIndex].superSetId = id;
+    });
   }
 
   void _removeSuperSet({required String superSetId}) {
@@ -257,6 +259,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         .toList();
   }
 
+  ExerciseInWorkoutDto? _whereOtherSuperSet({required ExerciseInWorkoutDto firstExercise}) {
+    return _exercisesInWorkout.firstWhereOrNull((exerciseInWorkout) => exerciseInWorkout.superSetId == firstExercise.superSetId && exerciseInWorkout.exercise != firstExercise.exercise);
+  }
+
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
   List<ExerciseInWorkoutListSection> _exercisesToListSection(
       {required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
@@ -264,6 +270,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutListSection(
         exerciseInWorkoutDto: exerciseInWorkout,
+        otherExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
         onRemoveSuperSetExercises: (String superSetId) =>
             _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () =>
@@ -350,7 +357,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       return;
     }
 
-    Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+    Provider.of<WorkoutProvider>(context, listen: false)
         .createWorkout(
             name: _workoutNameController.text,
             notes: _workoutNotesController.text,
@@ -374,7 +381,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         return;
       }
 
-      Provider.of<ExerciseInWorkoutProvider>(context, listen: false)
+      Provider.of<WorkoutProvider>(context, listen: false)
           .updateWorkout(
               id: workout.id,
               name: _workoutNameController.text,

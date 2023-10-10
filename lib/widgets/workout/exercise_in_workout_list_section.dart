@@ -7,20 +7,21 @@ import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
 class ExerciseInWorkoutListSection extends StatelessWidget {
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
+  final ExerciseInWorkoutDto? otherExerciseInWorkoutDto;
 
-  /// Exercise
+  /// Exercise callbacks
   final void Function(String value) onUpdateNotes;
   final void Function() onRemoveExercise;
   final void Function() onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
 
-  /// Sets items
+  /// Set callbacks
   final void Function() onAddWorkingSet;
   final void Function(int index) onRemoveWorkingSet;
   final void Function() onAddWarmUpSet;
   final void Function(int index) onRemoveWarmUpSet;
 
-  /// Set Values
+  /// Set values callbacks
   final void Function(int index, int value) onChangedWorkingSetRepCount;
   final void Function(int index, int value) onChangedWorkingSetWeight;
   final void Function(int index, int value) onChangedWarmUpSetRepCount;
@@ -29,6 +30,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   const ExerciseInWorkoutListSection({
     super.key,
     required this.exerciseInWorkoutDto,
+    required this.otherExerciseInWorkoutDto,
     required this.onAddSuperSetExercises,
     required this.onRemoveSuperSetExercises,
     required this.onRemoveExercise,
@@ -95,7 +97,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     );
   }
 
-  List<SetListItem> _workingSets() {
+  List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures
         .mapIndexed(((index, procedure) => SetListItem(
               index: index,
@@ -111,7 +113,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
         .toList();
   }
 
-  List<SetListItem> _warmupSets() {
+  List<SetListItem> _displayWarmUpSets() {
     return exerciseInWorkoutDto.warmupProcedures
         .mapIndexed(((index, procedure) => SetListItem(
               index: index,
@@ -146,7 +148,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Text(
-                          "Super set: ",
+                          "Super set: ${otherExerciseInWorkoutDto?.exercise.name}",
                           style: const TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -184,8 +186,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           ],
         ),
         children: [
-          ..._warmupSets(),
-          ..._workingSets(),
+          ..._displayWarmUpSets(),
+          ..._displayWorkingSets(),
         ]);
   }
 }

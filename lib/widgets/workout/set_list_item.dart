@@ -10,7 +10,6 @@ class SetListItem extends StatelessWidget {
     required this.index,
     required this.onRemove,
     required this.isWarmup,
-    this.previousWorkoutSummary,
     required this.exerciseInWorkoutDto,
     this.procedureDto,
     required this.onChangedRepCount,
@@ -18,7 +17,6 @@ class SetListItem extends StatelessWidget {
   });
 
   final int index;
-  final String? previousWorkoutSummary;
   final bool isWarmup;
   final ProcedureDto? procedureDto;
   final void Function(int index) onRemove;
@@ -51,7 +49,7 @@ class SetListItem extends StatelessWidget {
     return CupertinoListTile.notched(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
-      leading: LeadingIcon(isWarmup: isWarmup, index: index),
+      leading: LeadingIcon(isWarmup: isWarmup, label: index),
       title: Row(
         children: [
           const SizedBox(
@@ -59,30 +57,15 @@ class SetListItem extends StatelessWidget {
           ),
           _SetListItemTextField(
               label: 'Reps',
-              initialValue: procedureDto?.repCount ?? 0,
-              onChanged: (value) => onChangedRepCount(int.parse(value))),
+              initialValue: procedureDto?.repCount,
+              onChanged: (value) => onChangedRepCount(value)),
           const SizedBox(
-            width: 28,
+            width: 25,
           ),
           _SetListItemTextField(
               label: 'kg',
-              initialValue: procedureDto?.weight ?? 0,
-              onChanged: (value) => onChangedWeight(int.parse(value))),
-          const SizedBox(
-            width: 20,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Past"),
-              const SizedBox(
-                height: 8,
-              ),
-              Text(previousWorkoutSummary ?? "No data",
-                  style:
-                      TextStyle(color: CupertinoColors.white.withOpacity(0.7)))
-            ],
-          )
+              initialValue: procedureDto?.weight,
+              onChanged: (value) => onChangedWeight(value)),
         ],
       ),
       trailing: GestureDetector(
@@ -96,11 +79,11 @@ class LeadingIcon extends StatelessWidget {
   const LeadingIcon({
     super.key,
     required this.isWarmup,
-    required this.index,
+    required this.label,
   });
 
   final bool isWarmup;
-  final int index;
+  final int label;
 
   @override
   Widget build(BuildContext context) {
@@ -109,14 +92,14 @@ class LeadingIcon extends StatelessWidget {
           isWarmup ? CupertinoColors.activeOrange : CupertinoColors.activeBlue,
       child: isWarmup
           ? Text(
-              "W${index + 1}",
+              "W${label + 1}",
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: CupertinoColors.white,
                   fontSize: 12),
             )
           : Text(
-              "${index + 1}",
+              "${label + 1}",
               style: const TextStyle(
                   fontWeight: FontWeight.bold, color: CupertinoColors.white),
             ),
@@ -124,47 +107,52 @@ class LeadingIcon extends StatelessWidget {
   }
 }
 
-class _SetListItemTextField extends StatelessWidget {
+class _SetListItemTextField extends StatefulWidget {
   final String label;
   final int? initialValue;
-  final void Function(String) onChanged;
+  final void Function(int) onChanged;
 
   const _SetListItemTextField(
-      {required this.label, required this.onChanged, this.initialValue});
+      {required this.label,
+      required this.onChanged,
+      required this.initialValue});
+
+  @override
+  State<_SetListItemTextField> createState() => _SetListItemTextFieldState();
+}
+
+class _SetListItemTextFieldState extends State<_SetListItemTextField> {
+  int _parseOrDefault({required String value}) {
+    return int.tryParse(value) ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(color: CupertinoColors.opaqueSeparator),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
         SizedBox(
-          width: 30,
+          width: 100,
           child: CupertinoTextField(
-            controller: initialValue != null
-                ? TextEditingController(text: initialValue.toString())
-                : null,
-            onChanged: onChanged,
+            prefix: Text(
+              widget.label,
+              style: const TextStyle(color: CupertinoColors.opaqueSeparator),
+            ),
+            controller: TextEditingController(text: widget.initialValue?.toString()),
+            onChanged: (value) => widget.onChanged(_parseOrDefault(value: value)),
             decoration: const BoxDecoration(color: Colors.transparent),
-            padding: EdgeInsets.zero,
             keyboardType: TextInputType.number,
-            maxLength: 3,
             maxLines: 1,
-            placeholder: "0",
-            maxLengthEnforcement: MaxLengthEnforcement.enforced,
             style: const TextStyle(fontWeight: FontWeight.bold),
-            placeholderStyle: const TextStyle(
-                fontWeight: FontWeight.bold, color: CupertinoColors.white),
-            //onChanged: (value) => ,
+            placeholderStyle: const TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.white),
           ),
         )
       ],
     );
+  }
+
+  @override
+  void initState() {
+
   }
 }
