@@ -1,8 +1,8 @@
 class ProcedureDto {
-  int repCount;
-  int weight;
+  int? repCount;
+  int? weight;
 
-  ProcedureDto({this.repCount = 0, this.weight = 0});
+  ProcedureDto();
 
   @override
   String toString() {

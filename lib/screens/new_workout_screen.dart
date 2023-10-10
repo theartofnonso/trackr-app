@@ -163,10 +163,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       required int value}) {
     final exerciseIndex =
         _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].warmupProcedures[index].repCount =
-          value;
-    });
+    _exercisesInWorkout[exerciseIndex].warmupProcedures[index].repCount = value;
   }
 
   void _updateWarmUpSetWeight(
@@ -175,9 +172,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       required int value}) {
     final exerciseIndex =
         _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].warmupProcedures[index].weight = value;
-    });
+    _exercisesInWorkout[exerciseIndex].warmupProcedures[index].weight = value;
   }
 
   void _updateWorkingSetRepCount(
@@ -186,10 +181,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       required int value}) {
     final exerciseIndex =
         _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].workingProcedures[index].repCount =
-          value;
-    });
+    _exercisesInWorkout[exerciseIndex].workingProcedures[index].repCount =
+        value;
   }
 
   void _updateWorkingSetWeight(
@@ -198,10 +191,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       required int value}) {
     final exerciseIndex =
         _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight =
-          value;
-    });
+    _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight = value;
   }
 
   bool _canSuperSet() {
@@ -539,15 +529,18 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
         children: [
           const Text("Add an exercise to superset with"),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: CupertinoButton(
-                color: tealBlueLight,
-                onPressed: onPressed,
-                child: const Text(
-                  "Add new exercise",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: CupertinoButton(
+                  color: tealBlueLight,
+                  onPressed: onPressed,
+                  child: const Text(
+                    "Add exercise",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+            ),
           )
         ],
       ),

@@ -37,7 +37,7 @@ class SetListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text("Delete",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
             SizedBox(
               width: 10,
             ),
@@ -104,7 +104,7 @@ class LeadingIcon extends StatelessWidget {
   }
 }
 
-class _SetListItemTextField extends StatefulWidget {
+class _SetListItemTextField extends StatelessWidget {
   final String label;
   final int? initialValue;
   final void Function(int) onChanged;
@@ -114,12 +114,7 @@ class _SetListItemTextField extends StatefulWidget {
       required this.onChanged,
       required this.initialValue});
 
-  @override
-  State<_SetListItemTextField> createState() => _SetListItemTextFieldState();
-}
-
-class _SetListItemTextFieldState extends State<_SetListItemTextField> {
-  int _parseOrDefault({required String value}) {
+  int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
   }
 
@@ -129,19 +124,16 @@ class _SetListItemTextFieldState extends State<_SetListItemTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 65,
+          width: 85,
           child: CupertinoTextField(
-            prefix: Text(
-              widget.label,
-              style: const TextStyle(color: CupertinoColors.opaqueSeparator),
-            ),
-            controller:
-                TextEditingController(text: widget.initialValue?.toString()),
-            onChanged: (value) =>
-                widget.onChanged(_parseOrDefault(value: value)),
-            decoration: const BoxDecoration(color: Colors.transparent),
+            prefix: Text(label,
+                style: const TextStyle(color: CupertinoColors.opaqueSeparator)),
+            controller: TextEditingController(text: initialValue?.toString()),
+            onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
+            decoration: const BoxDecoration(color: Colors.grey),
             keyboardType: TextInputType.number,
             maxLines: 1,
+            placeholder: "0",
             style: const TextStyle(fontWeight: FontWeight.bold),
             placeholderStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: CupertinoColors.white),
