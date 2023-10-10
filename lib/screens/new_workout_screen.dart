@@ -107,6 +107,15 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     });
   }
 
+  void _removeExercise({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
+    if (exerciseInWorkoutDto.isSuperSet) {
+      _removeSuperSet(superSetId: exerciseInWorkoutDto.superSetId);
+    }
+    setState(() {
+      _exercisesInWorkout.remove(exerciseInWorkoutDto);
+    });
+  }
+
   int _indexWhereExercise({required ExerciseInWorkoutDto exerciseInWorkout}) {
     return _exercisesInWorkout
         .indexWhere((item) => item.exercise == exerciseInWorkout.exercise);
@@ -233,16 +242,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     }
   }
 
-  void _removeExercise({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
-    if (exerciseInWorkoutDto.isSuperSet) {
-      _removeSuperSet(superSetId: exerciseInWorkoutDto.superSetId);
-    } else {
-      setState(() {
-        _exercisesInWorkout.remove(exerciseInWorkoutDto);
-      });
-    }
-  }
-
   void _updateNotes(
       {required ExerciseInWorkoutDto exerciseInWorkout,
       required String value}) {
@@ -259,8 +258,11 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         .toList();
   }
 
-  ExerciseInWorkoutDto? _whereOtherSuperSet({required ExerciseInWorkoutDto firstExercise}) {
-    return _exercisesInWorkout.firstWhereOrNull((exerciseInWorkout) => exerciseInWorkout.superSetId == firstExercise.superSetId && exerciseInWorkout.exercise != firstExercise.exercise);
+  ExerciseInWorkoutDto? _whereOtherSuperSet(
+      {required ExerciseInWorkoutDto firstExercise}) {
+    return _exercisesInWorkout.firstWhereOrNull((exerciseInWorkout) =>
+        exerciseInWorkout.superSetId == firstExercise.superSetId &&
+        exerciseInWorkout.exercise != firstExercise.exercise);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
@@ -270,7 +272,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutListSection(
         exerciseInWorkoutDto: exerciseInWorkout,
-        otherExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
+        otherExerciseInWorkoutDto:
+            _whereOtherSuperSet(firstExercise: exerciseInWorkout),
         onRemoveSuperSetExercises: (String superSetId) =>
             _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () =>
@@ -357,11 +360,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       return;
     }
 
-    Provider.of<WorkoutProvider>(context, listen: false)
-        .createWorkout(
-            name: _workoutNameController.text,
-            notes: _workoutNotesController.text,
-            exercises: _exercisesInWorkout);
+    Provider.of<WorkoutProvider>(context, listen: false).createWorkout(
+        name: _workoutNameController.text,
+        notes: _workoutNotesController.text,
+        exercises: _exercisesInWorkout);
 
     _navigateBack();
   }
@@ -381,12 +383,11 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         return;
       }
 
-      Provider.of<WorkoutProvider>(context, listen: false)
-          .updateWorkout(
-              id: workout.id,
-              name: _workoutNameController.text,
-              notes: _workoutNotesController.text,
-              exercises: _exercisesInWorkout);
+      Provider.of<WorkoutProvider>(context, listen: false).updateWorkout(
+          id: workout.id,
+          name: _workoutNameController.text,
+          notes: _workoutNotesController.text,
+          exercises: _exercisesInWorkout);
 
       _navigateBack();
     }
