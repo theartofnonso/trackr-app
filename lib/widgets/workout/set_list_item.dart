@@ -122,11 +122,17 @@ class _SetListItemTextField extends StatelessWidget {
           child: CupertinoTextField(
             prefix: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text(label, style: const TextStyle(color: CupertinoColors.opaqueSeparator, fontWeight: FontWeight.w600, fontSize: 12)),
+              child: Text(label,
+                  style: const TextStyle(
+                      color: CupertinoColors.systemGrey4,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12)),
             ),
             controller: TextEditingController(text: initialValue?.toString()),
             onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
-            decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(8))),
+            decoration: const BoxDecoration(
+                color: tealBlueLighter,
+                borderRadius: BorderRadius.all(Radius.circular(8))),
             keyboardType: TextInputType.number,
             maxLines: 1,
             placeholder: "0",
