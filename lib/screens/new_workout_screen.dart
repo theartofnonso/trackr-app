@@ -22,6 +22,9 @@ class NewWorkoutScreen extends StatefulWidget {
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
+
+  final _scrollController = ScrollController();
+
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
 
   late TextEditingController _workoutNameController;
@@ -65,8 +68,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         ),
         child: _canSuperSet()
             ? _ListOfExercises(
-                exercises: _whereOtherExercisesToSuperSetWith(
-                    firstExercise: firstExercise),
+                exercises: _whereOtherExercisesToSuperSetWith(firstExercise: firstExercise),
                 onSelect: (ExerciseInWorkoutDto secondExercise) => _addSuperSet(
                     firstExercise: firstExercise,
                     secondExercise: secondExercise),
@@ -105,6 +107,19 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     setState(() {
       _exercisesInWorkout.addAll(exercisesToAdd);
     });
+  }
+
+  void _scrollToBottom() {
+    var scrollPosition = _scrollController.position;
+
+    if (scrollPosition.viewportDimension > scrollPosition.maxScrollExtent) {
+      var scrollPosition = _scrollController.position;
+      _scrollController.animateTo(
+        scrollPosition.maxScrollExtent,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   void _removeExercise({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
@@ -243,7 +258,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       {required ExerciseInWorkoutDto firstExercise}) {
     return _exercisesInWorkout
         .whereNot((exerciseInWorkout) =>
-            exerciseInWorkout.exercise == firstExercise.exercise ||
+            exerciseInWorkout.exercise.id == firstExercise.exercise.id ||
             exerciseInWorkout.isSuperSet)
         .toList();
   }
@@ -252,7 +267,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       {required ExerciseInWorkoutDto firstExercise}) {
     return _exercisesInWorkout.firstWhereOrNull((exerciseInWorkout) =>
         exerciseInWorkout.superSetId == firstExercise.superSetId &&
-        exerciseInWorkout.exercise != firstExercise.exercise);
+        exerciseInWorkout.exercise.id != firstExercise.exercise.id);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
@@ -313,19 +328,19 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             (otherExerciseSection) =>
                 (otherExerciseSection.exerciseInWorkoutDto.superSetId ==
                     superSetId) &&
-                otherExerciseSection.exerciseInWorkoutDto.exercise !=
-                    firstExerciseSection.exerciseInWorkoutDto.exercise);
+                otherExerciseSection.exerciseInWorkoutDto.exercise.id !=
+                    firstExerciseSection.exerciseInWorkoutDto.exercise.id);
         if (otherExerciseSections.isNotEmpty) {
           final secondExerciseSection = otherExerciseSections.first;
 
           final firstExerciseSectionIndex =
               exerciseInWorkoutListSection.indexWhere((exercise) =>
-                  exercise.exerciseInWorkoutDto.exercise ==
-                  firstExerciseSection.exerciseInWorkoutDto.exercise);
+                  exercise.exerciseInWorkoutDto.exercise.id ==
+                  firstExerciseSection.exerciseInWorkoutDto.exercise.id);
           final secondExerciseSectionIndex =
               exerciseInWorkoutListSection.indexWhere((exercise) =>
-                  exercise.exerciseInWorkoutDto.exercise ==
-                  secondExerciseSection.exerciseInWorkoutDto.exercise);
+                  exercise.exerciseInWorkoutDto.exercise.id ==
+                  secondExerciseSection.exerciseInWorkoutDto.exercise.id);
           exerciseInWorkoutListSection.swap(
               firstExerciseSectionIndex + 1, secondExerciseSectionIndex);
           break outerLoop;
@@ -385,6 +400,9 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
     final previousWorkoutDto = widget.workoutDto;
 
     return CupertinoPageScaffold(
@@ -398,6 +416,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: SafeArea(
             child: SingleChildScrollView(
+              controller: _scrollController,
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Container(
                 padding: const EdgeInsets.all(10),
