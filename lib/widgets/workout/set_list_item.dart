@@ -46,7 +46,7 @@ class SetListItem extends StatelessWidget {
               onChanged: (value) => onChangedWeight(value)),
         ],
       ),
-      trailing: GestureDetector(onTap: () => onRemoved(index), child: const Icon(CupertinoIcons.delete_solid, size: 18, color: CupertinoColors.destructiveRed,),),
+      trailing: GestureDetector(onTap: () => onRemoved(index), child: Icon(CupertinoIcons.delete_solid, size: 18, color: CupertinoColors.systemRed.withOpacity(0.8),),),
     );
   }
 }
