@@ -114,34 +114,29 @@ class _SetListItemTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: CupertinoTextField(
-            prefix: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(label,
-                  style: const TextStyle(
-                      color: CupertinoColors.systemGrey4,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12)),
-            ),
-            controller: TextEditingController(text: initialValue?.toString()),
-            onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
-            decoration: const BoxDecoration(
-                color: tealBlueLighter,
-                borderRadius: BorderRadius.all(Radius.circular(8))),
-            keyboardType: TextInputType.number,
-            maxLines: 1,
-            placeholder: "0",
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            placeholderStyle: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.transparent),
-          ),
-        )
-      ],
+    return SizedBox(
+      width: 100,
+      child: CupertinoTextField(
+        prefix: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(label,
+              style: const TextStyle(
+                  color: CupertinoColors.systemGrey4,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12)),
+        ),
+        controller: TextEditingController(text: initialValue?.toString()),
+        onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
+        decoration: const BoxDecoration(
+            color: tealBlueLighter,
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+        keyboardType: TextInputType.number,
+        maxLines: 1,
+        placeholder: "0",
+        style: const TextStyle(fontWeight: FontWeight.bold),
+        placeholderStyle: const TextStyle(
+            fontWeight: FontWeight.bold, color: Colors.transparent),
+      ),
     );
   }
 }
