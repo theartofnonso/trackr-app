@@ -46,6 +46,10 @@ class SetListItem extends StatelessWidget {
               onChanged: (value) => onChangedWeight(value)),
         ],
       ),
+      subtitle: const Padding(
+        padding: EdgeInsets.only(top: 8.0),
+        child: Text("Previous: 10 Reps with 35kg", style: TextStyle(color: CupertinoColors.inactiveGray),),
+      ),
       trailing: GestureDetector(onTap: () => onRemoved(index), child: Icon(CupertinoIcons.delete_solid, size: 18, color: CupertinoColors.systemRed.withOpacity(0.8),),),
     );
   }
@@ -100,7 +104,7 @@ class _SetListItemTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
+      width: 85,
       child: CupertinoTextField(
         prefix: Padding(
           padding: const EdgeInsets.only(left: 8.0),

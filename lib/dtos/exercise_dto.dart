@@ -16,10 +16,11 @@ enum BodyPart {
 }
 
 class ExerciseDto {
+  final String id;
   final String name;
   final BodyPart bodyPart;
 
-  ExerciseDto(this.name, this.bodyPart);
+  ExerciseDto(this.id, this.name, this.bodyPart);
 
   @override
   bool operator ==(Object other) =>

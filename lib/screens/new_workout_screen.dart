@@ -118,7 +118,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   int _indexWhereExercise({required ExerciseInWorkoutDto exerciseInWorkout}) {
     return _exercisesInWorkout
-        .indexWhere((item) => item.exercise == exerciseInWorkout.exercise);
+        .indexWhere((item) => item.exercise.id == exerciseInWorkout.exercise.id);
   }
 
   void _addWarmUpSet({required ExerciseInWorkoutDto exerciseInWorkout}) {

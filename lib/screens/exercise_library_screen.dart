@@ -17,33 +17,33 @@ class ExerciseLibraryScreen extends StatefulWidget {
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   final List<ExerciseInLibraryDto> _exercises = <ExerciseInLibraryDto>[
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Incline Dumbbells", BodyPart.chest)),
-    ExerciseInLibraryDto(exercise: ExerciseDto("Chest Flys", BodyPart.chest)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Incline Dumbbells", BodyPart.chest)),
+    ExerciseInLibraryDto(exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Chest Flys", BodyPart.chest)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Decline Smith machine press", BodyPart.chest)),
-    ExerciseInLibraryDto(exercise: ExerciseDto("Chest Dips", BodyPart.chest)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Decline Smith machine press", BodyPart.chest)),
+    ExerciseInLibraryDto(exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Chest Dips", BodyPart.chest)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Lateral Raises", BodyPart.shoulders)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Lateral Raises", BodyPart.shoulders)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Military press", BodyPart.shoulders)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Military press", BodyPart.shoulders)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Single Lateral Raises", BodyPart.shoulders)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Single Lateral Raises", BodyPart.shoulders)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Double Lateral Raises", BodyPart.shoulders)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Double Lateral Raises", BodyPart.shoulders)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Skull Crushers", BodyPart.triceps)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Skull Crushers", BodyPart.triceps)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Tricep Extensions", BodyPart.triceps)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Tricep Extensions", BodyPart.triceps)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Tricep Dips", BodyPart.triceps)),
-    ExerciseInLibraryDto(exercise: ExerciseDto("Pulldowns", BodyPart.triceps)),
-    ExerciseInLibraryDto(exercise: ExerciseDto("Deadlift", BodyPart.legs)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Tricep Dips", BodyPart.triceps)),
+    ExerciseInLibraryDto(exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Pulldowns", BodyPart.triceps)),
+    ExerciseInLibraryDto(exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Deadlift", BodyPart.legs)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Hamstring Curls", BodyPart.legs)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Hamstring Curls", BodyPart.legs)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Romanian Deadlift", BodyPart.legs)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Romanian Deadlift", BodyPart.legs)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("Single Leg Curl", BodyPart.legs)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Single Leg Curl", BodyPart.legs)),
   ];
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
