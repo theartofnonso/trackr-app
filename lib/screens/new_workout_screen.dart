@@ -22,7 +22,6 @@ class NewWorkoutScreen extends StatefulWidget {
 }
 
 class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
-
   final _scrollController = ScrollController();
 
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
@@ -68,10 +67,11 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         ),
         child: _canSuperSet()
             ? _ListOfExercises(
-                exercises: _whereOtherExercisesToSuperSetWith(firstExercise: firstExercise),
+                exercises: _whereOtherExercisesToSuperSetWith(
+                    firstExercise: firstExercise),
                 onSelect: (ExerciseInWorkoutDto secondExercise) => _addSuperSet(
-                    firstExercise: firstExercise,
-                    secondExercise: secondExercise),
+                    firstExerciseId: firstExercise.exercise.id,
+                    secondExerciseId: secondExercise.exercise.id),
               )
             : _ExercisesInWorkoutEmptyState(onPressed: () {
                 Navigator.of(context).pop();
@@ -107,6 +107,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     setState(() {
       _exercisesInWorkout.addAll(exercisesToAdd);
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
   void _scrollToBottom() {
@@ -122,62 +124,60 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     }
   }
 
-  void _removeExercise({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
-    if (exerciseInWorkoutDto.isSuperSet) {
-      _removeSuperSet(superSetId: exerciseInWorkoutDto.superSetId);
+  void _removeExercise({required String exerciseId}) {
+    final exercise = _exerciseWhere(id: exerciseId);
+    if (exercise.isSuperSet) {
+      _removeSuperSet(superSetId: exercise.superSetId);
     }
     setState(() {
-      _exercisesInWorkout.remove(exerciseInWorkoutDto);
+      _exercisesInWorkout.removeWhere(
+          (exerciseInWorkout) => exerciseInWorkout.exercise.id == exerciseId);
     });
   }
 
-  int _indexWhereExercise({required ExerciseInWorkoutDto exerciseInWorkout}) {
+  ExerciseInWorkoutDto _exerciseWhere({required String id}) {
     return _exercisesInWorkout
-        .indexWhere((item) => item.exercise.id == exerciseInWorkout.exercise.id);
+        .firstWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
-  void _addWarmUpSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
+  int _indexWhereExercise({required String id}) {
+    return _exercisesInWorkout
+        .indexWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
+  }
+
+  void _addWarmUpSet({required String exerciseId}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].warmupProcedures.add(ProcedureDto());
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _removeWarmUpSet(
-      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
-      required int index}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+  void _removeWarmUpSet({required String exerciseId, required int index}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].warmupProcedures.removeAt(index);
     });
   }
 
-  void _addWorkingSet({required ExerciseInWorkoutDto exerciseInWorkout}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
+  void _addWorkingSet({required String exerciseId}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].workingProcedures.add(ProcedureDto());
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _removeWorkingUpSet(
-      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
-      required int index}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+  void _removeWorkingUpSet({required String exerciseId, required int index}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].workingProcedures.removeAt(index);
     });
   }
 
   void _updateWarmUpSetRepCount(
-      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
-      required int index,
-      required int value}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+      {required String exerciseId, required int index, required int value}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].warmupProcedures[index].repCount = value;
   }
 
@@ -186,26 +186,20 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       required int index,
       required int value}) {
     final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+        _indexWhereExercise(id: exerciseInWorkoutDto.exercise.id);
     _exercisesInWorkout[exerciseIndex].warmupProcedures[index].weight = value;
   }
 
   void _updateWorkingSetRepCount(
-      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
-      required int index,
-      required int value}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+      {required String exerciseId, required int index, required int value}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].workingProcedures[index].repCount =
         value;
   }
 
   void _updateWorkingSetWeight(
-      {required ExerciseInWorkoutDto exerciseInWorkoutDto,
-      required int index,
-      required int value}) {
-    final exerciseIndex =
-        _indexWhereExercise(exerciseInWorkout: exerciseInWorkoutDto);
+      {required String exerciseId, required int index, required int value}) {
+    final exerciseIndex = _indexWhereExercise(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight = value;
   }
 
@@ -218,12 +212,11 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _addSuperSet(
-      {required ExerciseInWorkoutDto firstExercise,
-      required ExerciseInWorkoutDto secondExercise}) {
+      {required String firstExerciseId, required String secondExerciseId}) {
     final id = "id_${DateTime.now().millisecond}";
 
-    final firstIndex = _indexWhereExercise(exerciseInWorkout: firstExercise);
-    final secondIndex = _indexWhereExercise(exerciseInWorkout: secondExercise);
+    final firstIndex = _indexWhereExercise(id: firstExerciseId);
+    final secondIndex = _indexWhereExercise(id: secondExerciseId);
 
     setState(() {
       _exercisesInWorkout[firstIndex].isSuperSet = true;
@@ -247,10 +240,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     }
   }
 
-  void _updateNotes(
-      {required ExerciseInWorkoutDto exerciseInWorkout,
-      required String value}) {
-    final index = _indexWhereExercise(exerciseInWorkout: exerciseInWorkout);
+  void _updateNotes({required String exerciseId, required String value}) {
+    final index = _indexWhereExercise(id: exerciseId);
     _exercisesInWorkout[index].notes = value;
   }
 
@@ -282,22 +273,22 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onRemoveSuperSetExercises: (String superSetId) =>
             _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () =>
-            _removeExercise(exerciseInWorkoutDto: exerciseInWorkout),
+            _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
         onAddSuperSetExercises: () =>
             _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
         onChangedWorkingSetRepCount: (int index, int value) =>
             _updateWorkingSetRepCount(
-                exerciseInWorkoutDto: exerciseInWorkout,
+                exerciseId: exerciseInWorkout.exercise.id,
                 index: index,
                 value: value),
         onChangedWorkingSetWeight: (int index, int value) =>
             _updateWorkingSetWeight(
-                exerciseInWorkoutDto: exerciseInWorkout,
+                exerciseId: exerciseInWorkout.exercise.id,
                 index: index,
                 value: value),
         onChangedWarmUpSetRepCount: (int index, int value) =>
             _updateWarmUpSetRepCount(
-                exerciseInWorkoutDto: exerciseInWorkout,
+                exerciseId: exerciseInWorkout.exercise.id,
                 index: index,
                 value: value),
         onChangedWarmUpSetWeight: (int index, int value) =>
@@ -306,15 +297,15 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                 index: index,
                 value: value),
         onAddWorkingSet: () =>
-            _addWorkingSet(exerciseInWorkout: exerciseInWorkout),
+            _addWorkingSet(exerciseId: exerciseInWorkout.exercise.id),
         onRemoveWorkingSet: (int index) => _removeWorkingUpSet(
-            exerciseInWorkoutDto: exerciseInWorkout, index: index),
+            exerciseId: exerciseInWorkout.exercise.id, index: index),
         onAddWarmUpSet: () =>
-            _addWarmUpSet(exerciseInWorkout: exerciseInWorkout),
+            _addWarmUpSet(exerciseId: exerciseInWorkout.exercise.id),
         onRemoveWarmUpSet: (int index) => _removeWarmUpSet(
-            exerciseInWorkoutDto: exerciseInWorkout, index: index),
-        onUpdateNotes: (String value) =>
-            _updateNotes(exerciseInWorkout: exerciseInWorkout, value: value),
+            exerciseId: exerciseInWorkout.exercise.id, index: index),
+        onUpdateNotes: (String value) => _updateNotes(
+            exerciseId: exerciseInWorkout.exercise.id, value: value),
       );
     }).toList();
 
@@ -401,8 +392,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-
     final previousWorkoutDto = widget.workoutDto;
 
     return CupertinoPageScaffold(
@@ -427,6 +416,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       controller: _workoutNameController,
                       expands: true,
                       padding: EdgeInsets.zero,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: const BoxDecoration(
                           color: Colors.transparent,
                           borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -449,6 +439,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       controller: _workoutNotesController,
                       expands: true,
                       padding: EdgeInsets.zero,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: const BoxDecoration(
                           color: Colors.transparent,
                           borderRadius: BorderRadius.all(Radius.circular(8))),

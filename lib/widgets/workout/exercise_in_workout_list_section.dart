@@ -22,10 +22,10 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function(int index) onRemoveWarmUpSet;
 
   /// Set values callbacks
-  final void Function(int index, int value) onChangedWorkingSetRepCount;
-  final void Function(int index, int value) onChangedWorkingSetWeight;
-  final void Function(int index, int value) onChangedWarmUpSetRepCount;
-  final void Function(int index, int value) onChangedWarmUpSetWeight;
+  final void Function(int exerciseIndex, int value) onChangedWorkingSetRepCount;
+  final void Function(int exerciseIndex, int value) onChangedWorkingSetWeight;
+  final void Function(int exerciseIndex, int value) onChangedWarmUpSetRepCount;
+  final void Function(int exerciseIndex, int value) onChangedWarmUpSetWeight;
 
   const ExerciseInWorkoutListSection({
     super.key,
