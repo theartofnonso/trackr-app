@@ -67,7 +67,6 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
     return CupertinoApp(
-      title: 'Flutter Demo',
       theme: const CupertinoThemeData(
           brightness: Brightness.light,
           barBackgroundColor: tealBlueDark,
