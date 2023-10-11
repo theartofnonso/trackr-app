@@ -433,7 +433,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                           color: CupertinoColors.inactiveGray, fontSize: 18),
                     ),
                     const SizedBox(
-                      height: 12,
+                      height: 14,
                     ),
                     CupertinoTextField(
                       controller: _workoutNotesController,
