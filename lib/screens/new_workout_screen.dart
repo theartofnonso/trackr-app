@@ -116,7 +116,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _replaceExercise({required String exerciseId}) async {
+  void _handleReplaceExercise({required String exerciseId}) async {
     final selectedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -141,7 +141,18 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     }
   }
 
-  void _showReplaceExerciseAlert({required String exerciseId}) async {
+  void _replaceExercise({required String exerciseId}) {
+
+    final exerciseToBeReplaced = _exerciseWhere(id: exerciseId);
+    if(exerciseToBeReplaced.warmupProcedures.isNotEmpty || exerciseToBeReplaced.workingProcedures.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
+      _showReplaceExerciseAlert(exerciseId: exerciseId);
+    } else {
+      _handleReplaceExercise(exerciseId: exerciseId);
+    }
+
+  }
+
+  void _showReplaceExerciseAlert({required String exerciseId}) {
 
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
@@ -154,13 +165,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         isDestructiveAction: true,
         onPressed: () {
           Navigator.pop(context);
-          _replaceExercise(exerciseId: exerciseId);
+          _handleReplaceExercise(exerciseId: exerciseId);
         },
         child: const Text('Replace'),
       )
     ];
 
-    _showAlertDialog(title: "Replace Exercise", message: "All your sets will be replaced", actions: alertDialogActions);
+    _showAlertDialog(title: "Replace Exercise", message: "All your data will be replaced", actions: alertDialogActions);
 
   }
 
@@ -347,7 +358,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onUpdateNotes: (String value) => _updateNotes(
             exerciseId: exerciseInWorkout.exercise.id, value: value),
         onReplaceExercise: () =>
-            _showReplaceExerciseAlert(exerciseId: exerciseInWorkout.exercise.id),
+            _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
       );
     }).toList();
 

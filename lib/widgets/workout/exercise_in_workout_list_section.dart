@@ -58,7 +58,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onAddWorkingSet();
             },
-            child: const Text('Add new set', style: TextStyle(fontSize: 18)),
+            child: const Text('Add new set', style: TextStyle(fontSize: 16)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -66,7 +66,14 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               onAddWarmUpSet();
             },
             child:
-                const Text('Add warm-up set', style: TextStyle(fontSize: 18)),
+                const Text('Add warm-up set', style: TextStyle(fontSize: 16)),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child:
+            const Text('Set timer', style: TextStyle(fontSize: 16)),
           ),
           exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
@@ -77,7 +84,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                   },
                   child: const Text(
                     'Remove super set',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 14),
                   ),
                 )
               : CupertinoActionSheetAction(
@@ -86,8 +93,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                     onAddSuperSetExercises();
                   },
                   child: Text(
-                    'Super set ${exerciseInWorkoutDto.exercise.name} with ...',
-                    style: const TextStyle(fontSize: 18),
+                    'Super-set ${exerciseInWorkoutDto.exercise.name} with ...',
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
           CupertinoActionSheetAction(
@@ -95,9 +102,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onReplaceExercise();
             },
-            child: const Text(
-              'Replace with ...',
-              style: TextStyle(fontSize: 18),
+            child: Text(
+              'Replace ${exerciseInWorkoutDto.exercise.name} with ...',
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           CupertinoActionSheetAction(
@@ -107,7 +114,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               onRemoveExercise();
             },
             child: Text('Remove ${exerciseInWorkoutDto.exercise.name}',
-                style: const TextStyle(fontSize: 18)),
+                style: const TextStyle(fontSize: 16)),
           ),
         ],
       ),
