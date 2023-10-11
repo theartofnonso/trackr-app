@@ -60,7 +60,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               .toLowerCase()
               .contains(searchTerm.toLowerCase()))
           .toList();
-      ;
     });
   }
 

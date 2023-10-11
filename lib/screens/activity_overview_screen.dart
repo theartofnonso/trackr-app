@@ -39,7 +39,7 @@ class _ListOfWorkouts extends StatelessWidget {
   final List<WorkoutDto> workouts;
   final void Function()? onTap;
 
-  const _ListOfWorkouts({super.key, required this.workouts, this.onTap});
+  const _ListOfWorkouts({required this.workouts, this.onTap});
 
   @override
   Widget build(BuildContext context) {
