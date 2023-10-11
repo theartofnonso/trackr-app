@@ -145,13 +145,19 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
-        isDefaultAction: true,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Cancel'),
+      ),
+      CupertinoDialogAction(
+        isDestructiveAction: true,
         onPressed: () {
           Navigator.pop(context);
           _replaceExercise(exerciseId: exerciseId);
         },
         child: const Text('Replace'),
-      ),
+      )
     ];
 
     _showAlertDialog(title: "Replace Exercise", message: "All your sets will be replaced", actions: alertDialogActions);
@@ -403,7 +409,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     if (_exercisesInWorkout.isEmpty) {
       _showAlertDialog(
           title: "Alert",
-          message: "Workout can't have no exercise(s)",
+          message: "Workout must have exercise(s)",
           actions: alertDialogActions);
       return;
     }
@@ -441,7 +447,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       if (_exercisesInWorkout.isEmpty) {
         _showAlertDialog(
             title: "Alert",
-            message: "Workout can't have no exercise(s)",
+            message: "Workout must have exercise(s)",
             actions: alertDialogActions);
         return;
       }
