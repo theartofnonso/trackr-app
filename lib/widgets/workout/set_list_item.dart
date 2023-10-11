@@ -53,7 +53,7 @@ class SetListItem extends StatelessWidget {
                 initialValue: procedureDto?.repCount,
                 onChanged: (value) => onChangedRepCount(value)),
             const SizedBox(
-              width: 25,
+              width: 20,
             ),
             _SetListItemTextField(
                 label: 'kg',
