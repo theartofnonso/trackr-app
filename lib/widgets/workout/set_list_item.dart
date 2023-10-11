@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
@@ -28,41 +29,70 @@ class SetListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: UniqueKey(),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: CupertinoColors.destructiveRed,
-        padding: const EdgeInsets.only(right: 10),
-        alignment: Alignment.centerRight,
-        child: const Text("Delete",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
-      ),
-      onDismissed: (_) => onRemoved(index),
-      child: CupertinoListTile.notched(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
-        leading: LeadingIcon(isWarmup: isWarmup, label: index),
-        title: Row(
+    return Slidable(key: UniqueKey(),
+        // The start action pane is the one at the left or the top side.
+        endActionPane: ActionPane(
+          // A motion is a widget used to control how the pane animates.
+          motion: const ScrollMotion(),
+
+          // A pane can dismiss the Slidable.
+          dismissible: DismissiblePane(onDismissed: () {}),
+
+          // All actions are defined in the children parameter.
           children: [
-            const SizedBox(
-              width: 12,
+            // A SlidableAction can have an icon and/or a label.
+            SlidableAction(
+              onPressed: (context){},
+              backgroundColor: Color(0xFFFE4A49),
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              label: 'Delete',
             ),
-            _SetListItemTextField(
-                label: 'Reps',
-                initialValue: procedureDto?.repCount,
-                onChanged: (value) => onChangedRepCount(value)),
-            const SizedBox(
-              width: 20,
+            SlidableAction(
+              onPressed: (context){},
+              backgroundColor: Color(0xFF21B7CA),
+              foregroundColor: Colors.white,
+              icon: Icons.share,
+              label: 'Share',
             ),
-            _SetListItemTextField(
-                label: 'kg',
-                initialValue: procedureDto?.weight,
-                onChanged: (value) => onChangedWeight(value)),
           ],
         ),
+        child: CupertinoListTile.notched(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
+      leading: LeadingIcon(isWarmup: isWarmup, label: index),
+      title: Row(
+        children: [
+          const SizedBox(
+            width: 12,
+          ),
+          _SetListItemTextField(
+              label: 'Reps',
+              initialValue: procedureDto?.repCount,
+              onChanged: (value) => onChangedRepCount(value)),
+          const SizedBox(
+            width: 20,
+          ),
+          _SetListItemTextField(
+              label: 'kg',
+              initialValue: procedureDto?.weight,
+              onChanged: (value) => onChangedWeight(value)),
+        ],
       ),
-    );
+    ));
+    // return Dismissible(
+    //   key: UniqueKey(),
+    //   direction: DismissDirection.endToStart,
+    //   background: Container(
+    //     color: CupertinoColors.destructiveRed,
+    //     padding: const EdgeInsets.only(right: 10),
+    //     alignment: Alignment.centerRight,
+    //     child: const Text("Delete",
+    //         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+    //   ),
+    //   onDismissed: (_) => onRemoved(index),
+    //   child: ,
+    // );
   }
 }
 
@@ -114,6 +144,7 @@ class _SetListItemTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return SizedBox(
       width: 100,
       child: CupertinoTextField(
