@@ -14,6 +14,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function() onRemoveExercise;
   final void Function() onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
+  final void Function() onReplaceExercise;
 
   /// Set callbacks
   final void Function() onAddWorkingSet;
@@ -43,6 +44,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onAddWarmUpSet,
     required this.onRemoveWarmUpSet,
     required this.onUpdateNotes,
+    required this.onReplaceExercise,
   });
 
   /// Show [CupertinoActionSheet]
@@ -88,6 +90,16 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                     style: const TextStyle(fontSize: 18),
                   ),
                 ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              onReplaceExercise();
+            },
+            child: const Text(
+              'Replace with ...',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {

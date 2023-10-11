@@ -30,21 +30,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   late TextEditingController _workoutNotesController;
 
   /// Show [CupertinoAlertDialog] for creating a workout
-  void _showCreateAlertDialog({required String message}) {
+  void _showAlertDialog({required String title, required String message, required List<CupertinoDialogAction> actions}) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Alert'),
+        title: Text(title),
         content: Text(message),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Ok'),
-          ),
-        ],
+        actions: actions,
       ),
     );
   }
@@ -75,14 +67,14 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
               )
             : _ExercisesInWorkoutEmptyState(onPressed: () {
                 Navigator.of(context).pop();
-                _showListOfExercisesInLibrary();
+                _selectExercisesInLibrary();
               }),
       ),
     );
   }
 
   /// Navigate to [ExerciseLibraryScreen]
-  Future<void> _showListOfExercisesInLibrary() async {
+  Future<void> _selectExercisesInLibrary() async {
     final selectedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -100,17 +92,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     }
   }
 
-  void _addExercises({required List<ExerciseDto> exercises}) {
-    final exercisesToAdd = exercises
-        .map((exercise) => ExerciseInWorkoutDto(exercise: exercise))
-        .toList();
-    setState(() {
-      _exercisesInWorkout.addAll(exercisesToAdd);
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-  }
-
   void _scrollToBottom() {
     var scrollPosition = _scrollController.position;
 
@@ -122,6 +103,59 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         curve: Curves.easeOut,
       );
     }
+  }
+
+  void _addExercises({required List<ExerciseDto> exercises}) {
+    final exercisesToAdd = exercises
+        .map((exercise) => ExerciseInWorkoutDto(exercise: exercise))
+        .toList();
+    setState(() {
+      _exercisesInWorkout.addAll(exercisesToAdd);
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  void _replaceExercise({required String exerciseId}) async {
+    final selectedExercises = await showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return ExerciseLibraryScreen(
+            preSelectedExercises: _exercisesInWorkout
+                .map((exerciseInWorkout) => exerciseInWorkout.exercise)
+                .toList(),
+            multiSelect: false);
+      },
+    ) as List<ExerciseDto>?;
+
+    if (selectedExercises != null) {
+      if (mounted) {
+        final exerciseInLibrary = selectedExercises.first;
+        final oldExerciseInWorkoutIndex =
+        _indexWhereExerciseInWorkout(id: exerciseId);
+        setState(() {
+          _exercisesInWorkout[oldExerciseInWorkoutIndex] =
+              ExerciseInWorkoutDto(exercise: exerciseInLibrary);
+        });
+      }
+    }
+  }
+
+  void _showReplaceExerciseAlert({required String exerciseId}) async {
+
+    final alertDialogActions = <CupertinoDialogAction>[
+      CupertinoDialogAction(
+        isDefaultAction: true,
+        onPressed: () {
+          Navigator.pop(context);
+          _replaceExercise(exerciseId: exerciseId);
+        },
+        child: const Text('Replace'),
+      ),
+    ];
+
+    _showAlertDialog(title: "Replace Exercise", message: "All your sets will be replaced", actions: alertDialogActions);
+
   }
 
   void _removeExercise({required String exerciseId}) {
@@ -140,13 +174,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         .firstWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
-  int _indexWhereExercise({required String id}) {
+  int _indexWhereExerciseInWorkout({required String id}) {
     return _exercisesInWorkout
         .indexWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
   void _addWarmUpSet({required String exerciseId}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].warmupProcedures.add(ProcedureDto());
     });
@@ -154,14 +188,14 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _removeWarmUpSet({required String exerciseId, required int index}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].warmupProcedures.removeAt(index);
     });
   }
 
   void _addWorkingSet({required String exerciseId}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].workingProcedures.add(ProcedureDto());
     });
@@ -169,7 +203,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _removeWorkingUpSet({required String exerciseId, required int index}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].workingProcedures.removeAt(index);
     });
@@ -177,7 +211,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   void _updateWarmUpSetRepCount(
       {required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].warmupProcedures[index].repCount = value;
   }
 
@@ -186,20 +220,20 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       required int index,
       required int value}) {
     final exerciseIndex =
-        _indexWhereExercise(id: exerciseInWorkoutDto.exercise.id);
+        _indexWhereExerciseInWorkout(id: exerciseInWorkoutDto.exercise.id);
     _exercisesInWorkout[exerciseIndex].warmupProcedures[index].weight = value;
   }
 
   void _updateWorkingSetRepCount(
       {required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].workingProcedures[index].repCount =
         value;
   }
 
   void _updateWorkingSetWeight(
       {required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExercise(id: exerciseId);
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight = value;
   }
 
@@ -215,8 +249,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       {required String firstExerciseId, required String secondExerciseId}) {
     final id = "id_${DateTime.now().millisecond}";
 
-    final firstIndex = _indexWhereExercise(id: firstExerciseId);
-    final secondIndex = _indexWhereExercise(id: secondExerciseId);
+    final firstIndex = _indexWhereExerciseInWorkout(id: firstExerciseId);
+    final secondIndex = _indexWhereExerciseInWorkout(id: secondExerciseId);
 
     setState(() {
       _exercisesInWorkout[firstIndex].isSuperSet = true;
@@ -241,7 +275,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _updateNotes({required String exerciseId, required String value}) {
-    final index = _indexWhereExercise(id: exerciseId);
+    final index = _indexWhereExerciseInWorkout(id: exerciseId);
     _exercisesInWorkout[index].notes = value;
   }
 
@@ -306,6 +340,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             exerciseId: exerciseInWorkout.exercise.id, index: index),
         onUpdateNotes: (String value) => _updateNotes(
             exerciseId: exerciseInWorkout.exercise.id, value: value),
+        onReplaceExercise: () =>
+            _showReplaceExerciseAlert(exerciseId: exerciseInWorkout.exercise.id),
       );
     }).toList();
 
@@ -346,13 +382,29 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _createWorkout() {
+    final alertDialogActions = <CupertinoDialogAction>[
+      CupertinoDialogAction(
+        isDefaultAction: true,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Ok'),
+      ),
+    ];
+
     if (_workoutNameController.text.isEmpty) {
-      _showCreateAlertDialog(message: 'Please provide a name for this workout');
+      _showAlertDialog(
+        title: "Alert",
+          message: 'Please provide a name for this workout',
+          actions: alertDialogActions);
       return;
     }
 
     if (_exercisesInWorkout.isEmpty) {
-      _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
+      _showAlertDialog(
+          title: "Alert",
+          message: "Workout can't have no exercise(s)",
+          actions: alertDialogActions);
       return;
     }
 
@@ -365,17 +417,32 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _updateWorkout() {
+    final alertDialogActions = <CupertinoDialogAction>[
+      CupertinoDialogAction(
+        isDefaultAction: true,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Ok'),
+      ),
+    ];
+
     final workout = widget.workoutDto;
 
     if (workout != null) {
       if (_workoutNameController.text.isEmpty) {
-        _showCreateAlertDialog(
-            message: 'Please provide a name for this workout');
+        _showAlertDialog(
+            title: "Alert",
+            message: 'Please provide a name for this workout',
+            actions: alertDialogActions);
         return;
       }
 
       if (_exercisesInWorkout.isEmpty) {
-        _showCreateAlertDialog(message: "Workout can't have no exercise(s)");
+        _showAlertDialog(
+            title: "Alert",
+            message: "Workout can't have no exercise(s)",
+            actions: alertDialogActions);
         return;
       }
 
@@ -391,7 +458,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final previousWorkoutDto = widget.workoutDto;
 
     return CupertinoPageScaffold(
@@ -464,7 +530,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       width: double.infinity,
                       child: CupertinoButton(
                           color: tealBlueLight,
-                          onPressed: _showListOfExercisesInLibrary,
+                          onPressed: _selectExercisesInLibrary,
                           child: const Text("Add exercise",
                               textAlign: TextAlign.start,
                               style: TextStyle(fontWeight: FontWeight.bold))),

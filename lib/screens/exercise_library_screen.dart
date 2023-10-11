@@ -7,8 +7,10 @@ import '../dtos/exercise_in_library_dto.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final List<ExerciseDto> preSelectedExercises;
+  final bool multiSelect;
 
-  const ExerciseLibraryScreen({super.key, required this.preSelectedExercises});
+  const ExerciseLibraryScreen(
+      {super.key, required this.preSelectedExercises, this.multiSelect = true});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -18,32 +20,45 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   final List<ExerciseInLibraryDto> _exercises = <ExerciseInLibraryDto>[
     ExerciseInLibraryDto(
         exercise: ExerciseDto("1", "Incline Dumbbells", BodyPart.chest)),
-    ExerciseInLibraryDto(exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Chest Flys", BodyPart.chest)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("12", "Decline Smith machine press", BodyPart.chest)),
-    ExerciseInLibraryDto(exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(), "Chest Dips", BodyPart.chest)),
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(),
+            "Chest Flys", BodyPart.chest)),
+    ExerciseInLibraryDto(
+        exercise:
+            ExerciseDto("12", "Decline Smith machine press", BodyPart.chest)),
+    ExerciseInLibraryDto(
+        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(),
+            "Chest Dips", BodyPart.chest)),
     ExerciseInLibraryDto(
         exercise: ExerciseDto("123", "Lateral Raises", BodyPart.shoulders)),
     ExerciseInLibraryDto(
         exercise: ExerciseDto("1234", "Military press", BodyPart.shoulders)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("12345", "Single Lateral Raises", BodyPart.shoulders)),
+        exercise:
+            ExerciseDto("12345", "Single Lateral Raises", BodyPart.shoulders)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("123456", "Double Lateral Raises", BodyPart.shoulders)),
+        exercise:
+            ExerciseDto("123456", "Double Lateral Raises", BodyPart.shoulders)),
     ExerciseInLibraryDto(
         exercise: ExerciseDto("1234567", "Skull Crushers", BodyPart.triceps)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("12345678", "Tricep Extensions", BodyPart.triceps)),
+        exercise:
+            ExerciseDto("12345678", "Tricep Extensions", BodyPart.triceps)),
     ExerciseInLibraryDto(
         exercise: ExerciseDto("123456789", "Tricep Dips", BodyPart.triceps)),
-    ExerciseInLibraryDto(exercise: ExerciseDto("1234567890", "Pulldowns", BodyPart.triceps)),
-    ExerciseInLibraryDto(exercise: ExerciseDto("12345678901", "Deadlift", BodyPart.legs)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("123456789012", "Hamstring Curls", BodyPart.legs)),
+        exercise: ExerciseDto("1234567890", "Pulldowns", BodyPart.triceps)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("1234567890123", "Romanian Deadlift", BodyPart.legs)),
+        exercise: ExerciseDto("12345678901", "Deadlift", BodyPart.legs)),
     ExerciseInLibraryDto(
-        exercise: ExerciseDto("12345678901234", "Single Leg Curl", BodyPart.legs)),
+        exercise:
+            ExerciseDto("123456789012", "Hamstring Curls", BodyPart.legs)),
+    ExerciseInLibraryDto(
+        exercise:
+            ExerciseDto("1234567890123", "Romanian Deadlift", BodyPart.legs)),
+    ExerciseInLibraryDto(
+        exercise:
+            ExerciseDto("12345678901234", "Single Leg Curl", BodyPart.legs)),
   ];
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
@@ -64,10 +79,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   /// Select an exercise
-  void _selectExercise({required ExerciseInLibraryDto exercise}) {
-    setState(() {
-      _selectedExercises.add(exercise);
-    });
+  void _selectExercise({required ExerciseInLibraryDto exerciseInLibrary}) {
+    if(widget.multiSelect){
+      setState(() {
+        _selectedExercises.add(exerciseInLibrary);
+      });
+    } else {
+      Navigator.of(context).pop([exerciseInLibrary.exercise]);
+    }
   }
 
   /// Remove an exercise
@@ -129,34 +148,35 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             exercises: chestExercises,
             bodyPart: BodyPart.chest,
             onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                _selectExercise(exercise: exerciseItemToBeAdded),
+                _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
             onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
                 _removeExercise(exercise: exerciseItemToBeRemoved),
+            multiSelect: widget.multiSelect,
           ),
           ExerciseLibraryListSection(
-            exercises: shouldersExercises,
-            bodyPart: BodyPart.shoulders,
-            onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                _selectExercise(exercise: exerciseItemToBeAdded),
-            onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                _removeExercise(exercise: exerciseItemToBeRemoved),
-          ),
+              exercises: shouldersExercises,
+              bodyPart: BodyPart.shoulders,
+              onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
+                  _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
+              onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
+                  _removeExercise(exercise: exerciseItemToBeRemoved),
+              multiSelect: widget.multiSelect),
           ExerciseLibraryListSection(
-            exercises: tricepsExercises,
-            bodyPart: BodyPart.triceps,
-            onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                _selectExercise(exercise: exerciseItemToBeAdded),
-            onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                _removeExercise(exercise: exerciseItemToBeRemoved),
-          ),
+              exercises: tricepsExercises,
+              bodyPart: BodyPart.triceps,
+              onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
+                  _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
+              onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
+                  _removeExercise(exercise: exerciseItemToBeRemoved),
+              multiSelect: widget.multiSelect),
           ExerciseLibraryListSection(
-            exercises: legsExercises,
-            bodyPart: BodyPart.legs,
-            onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                _selectExercise(exercise: exerciseItemToBeAdded),
-            onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                _removeExercise(exercise: exerciseItemToBeRemoved),
-          ),
+              exercises: legsExercises,
+              bodyPart: BodyPart.legs,
+              onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
+                  _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
+              onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
+                  _removeExercise(exercise: exerciseItemToBeRemoved),
+              multiSelect: widget.multiSelect),
         ],
       ),
     );
