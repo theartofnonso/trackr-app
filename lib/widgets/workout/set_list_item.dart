@@ -133,7 +133,7 @@ class _SetListItemTextField extends StatelessWidget {
         keyboardType: TextInputType.number,
         maxLines: 1,
         placeholder: "0",
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
         placeholderStyle: const TextStyle(
             fontWeight: FontWeight.bold, color: Colors.transparent),
       ),
