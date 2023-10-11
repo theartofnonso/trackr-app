@@ -25,6 +25,25 @@ class SetListItem extends StatelessWidget {
 
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
 
+  /// Show [CupertinoActionSheet]
+  void _showSetActionSheet({required BuildContext context}) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              onRemoved(index);
+            },
+            child: const Text('Remove set'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
@@ -46,11 +65,12 @@ class SetListItem extends StatelessWidget {
               onChanged: (value) => onChangedWeight(value)),
         ],
       ),
-      subtitle: const Padding(
-        padding: EdgeInsets.only(top: 8.0),
-        child: Text("Previous: 10 Reps with 35kg", style: TextStyle(color: CupertinoColors.inactiveGray),),
-      ),
-      trailing: GestureDetector(onTap: () => onRemoved(index), child: Icon(CupertinoIcons.delete_solid, size: 18, color: CupertinoColors.systemRed.withOpacity(0.8),),),
+      trailing: GestureDetector(
+          onTap: () => _showSetActionSheet(context: context),
+          child: const Padding(
+            padding: EdgeInsets.only(right: 9.0),
+            child: Icon(CupertinoIcons.ellipsis),
+          )),
     );
   }
 }

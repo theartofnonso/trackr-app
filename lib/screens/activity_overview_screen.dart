@@ -41,6 +41,10 @@ class _ListOfWorkouts extends StatelessWidget {
 
   const _ListOfWorkouts({required this.workouts, this.onTap});
 
+  void _removeWorkout({required BuildContext context, required String workoutId}) {
+    Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
@@ -58,7 +62,7 @@ class _ListOfWorkouts extends StatelessWidget {
               )),
         ),
         children:  [
-          ...workouts.map((workout) => _WorkoutListItem(workoutDto: workout,)).toList()
+          ...workouts.map((workout) => _WorkoutListItem(workoutDto: workout, onRemoveWorkout: () => _removeWorkout(context: context, workoutId: workout.id))).toList()
         ],
       ),
     ]);
@@ -68,9 +72,29 @@ class _ListOfWorkouts extends StatelessWidget {
 class _WorkoutListItem extends StatelessWidget {
 
   final WorkoutDto workoutDto;
+  final void Function() onRemoveWorkout;
 
 
-  const _WorkoutListItem({required this.workoutDto});
+  const _WorkoutListItem({required this.workoutDto, required this.onRemoveWorkout});
+
+  /// Show [CupertinoActionSheet]
+  void _showWorkoutActionSheet({required BuildContext context}) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              onRemoveWorkout();
+            },
+            child: Text('Remove ${workoutDto.name}'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +112,7 @@ class _WorkoutListItem extends StatelessWidget {
           ),
         ),
         trailing: GestureDetector(
+          onTap: () => _showWorkoutActionSheet(context: context),
             child: const Padding(
               padding: EdgeInsets.only(right: 1.0),
               child: Icon(CupertinoIcons.ellipsis),
