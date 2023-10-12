@@ -15,18 +15,20 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function() onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
   final void Function() onReplaceExercise;
+  final void Function() onSetWarmUpTimer;
+  final void Function() onSetWorkingTimer;
 
   /// Set callbacks
   final void Function() onAddWorkingSet;
-  final void Function(int index) onRemoveWorkingSet;
+  final void Function(int setIndex) onRemoveWorkingSet;
   final void Function() onAddWarmUpSet;
-  final void Function(int index) onRemoveWarmUpSet;
+  final void Function(int setIndex) onRemoveWarmUpSet;
 
   /// Set values callbacks
-  final void Function(int exerciseIndex, int value) onChangedWorkingSetRepCount;
-  final void Function(int exerciseIndex, int value) onChangedWorkingSetWeight;
-  final void Function(int exerciseIndex, int value) onChangedWarmUpSetRepCount;
-  final void Function(int exerciseIndex, int value) onChangedWarmUpSetWeight;
+  final void Function(int setIndex, int value) onChangedWorkingSetRepCount;
+  final void Function(int setIndex, int value) onChangedWorkingSetWeight;
+  final void Function(int setIndex, int value) onChangedWarmUpSetRepCount;
+  final void Function(int setIndex, int value) onChangedWarmUpSetWeight;
 
   const ExerciseInWorkoutListSection({
     super.key,
@@ -45,6 +47,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onRemoveWarmUpSet,
     required this.onUpdateNotes,
     required this.onReplaceExercise,
+    required this.onSetWarmUpTimer,
+    required this.onSetWorkingTimer,
   });
 
   /// Show [CupertinoActionSheet]
@@ -52,7 +56,10 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: Text(exerciseInWorkoutDto.exercise.name, style: const TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(
+          exerciseInWorkoutDto.exercise.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
@@ -66,16 +73,14 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onAddWarmUpSet();
             },
-            child:
-                const Text('Add warm-up set', style: TextStyle(fontSize: 16)),
+            child: const Text('Add warm-up set', style: TextStyle(fontSize: 16)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
               _showTimerActionSheet(context);
             },
-            child:
-            const Text('Set timer', style: TextStyle(fontSize: 16)),
+            child: const Text('Set timer', style: TextStyle(fontSize: 16)),
           ),
           exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
@@ -115,8 +120,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onRemoveExercise();
             },
-            child: const Text('Remove',
-                style: TextStyle(fontSize: 16)),
+            child: const Text('Remove', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
@@ -132,44 +136,19 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-
             },
             child: const Text('Warm-up sets', style: TextStyle(fontSize: 16)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-
             },
-            child:
-            const Text('Working sets', style: TextStyle(fontSize: 16)),
+            child: const Text('Working sets', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
     );
   }
-
-  // void _showTimerDialog(BuildContext context) {
-  //     showCupertinoModalPopup<void>(
-  //       context: context,
-  //       builder: (BuildContext context) => Container(
-  //         height: 216,
-  //         padding: const EdgeInsets.only(top: 6.0),
-  //         // The bottom margin is provided to align the popup above the system
-  //         // navigation bar.
-  //         margin: EdgeInsets.only(
-  //           bottom: MediaQuery.of(context).viewInsets.bottom,
-  //         ),
-  //         // Provide a background color for the popup.
-  //         color: CupertinoColors.systemBackground.resolveFrom(context),
-  //         // Use a SafeArea widget to avoid system overlaps.
-  //         child: SafeArea(
-  //           top: false,
-  //           child: child,
-  //         ),
-  //       ),
-  //     );
-  // }
 
   List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures
@@ -179,10 +158,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               isWarmup: false,
               exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
-              onChangedRepCount: (int value) =>
-                  onChangedWorkingSetRepCount(index, value),
-              onChangedWeight: (int value) =>
-                  onChangedWorkingSetWeight(index, value),
+              onChangedRepCount: (int value) => onChangedWorkingSetRepCount(index, value),
+              onChangedWeight: (int value) => onChangedWorkingSetWeight(index, value),
             )))
         .toList();
   }
@@ -195,10 +172,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               isWarmup: true,
               exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
-              onChangedRepCount: (int value) =>
-                  onChangedWarmUpSetRepCount(index, value),
-              onChangedWeight: (int value) =>
-                  onChangedWarmUpSetWeight(index, value),
+              onChangedRepCount: (int value) => onChangedWarmUpSetRepCount(index, value),
+              onChangedWeight: (int value) => onChangedWarmUpSetWeight(index, value),
             )))
         .toList();
   }
@@ -214,19 +189,12 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             CupertinoListTile(
               padding: EdgeInsets.zero,
               title: Text(exerciseInWorkoutDto.exercise.name,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16)),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
               subtitle: exerciseInWorkoutDto.isSuperSet
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(
-                          "Super set: ${otherExerciseInWorkoutDto?.exercise.name}",
-                          style: const TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12)),
+                      child: Text("Super set: ${otherExerciseInWorkoutDto?.exercise.name}",
+                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
                     )
                   : const SizedBox.shrink(),
               trailing: GestureDetector(
@@ -237,8 +205,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                   )),
             ),
             CupertinoTextField(
-              controller:
-                  TextEditingController(text: exerciseInWorkoutDto.notes),
+              controller: TextEditingController(text: exerciseInWorkoutDto.notes),
               onChanged: (value) => onUpdateNotes(value),
               expands: true,
               decoration: const BoxDecoration(color: Colors.transparent),
@@ -247,12 +214,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               maxLength: 240,
               maxLines: null,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: CupertinoColors.white.withOpacity(0.8)),
+              style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8)),
               placeholder: "Enter notes",
-              placeholderStyle: const TextStyle(
-                  color: CupertinoColors.inactiveGray, fontSize: 14),
+              placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
             ),
             const SizedBox(
               height: 8,
