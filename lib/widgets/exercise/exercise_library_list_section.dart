@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
-import 'package:tracker_app/widgets/exercise_library/exercise_library_list_item.dart';
+import 'package:tracker_app/widgets/exercise/exercise_library_list_item.dart';
 
 import '../../dtos/exercise_in_library_dto.dart';
 import 'selectable_exercise_library_list_item.dart';

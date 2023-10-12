@@ -9,6 +9,7 @@ import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
+import '../widgets/list_tile_empty_state.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
 
@@ -30,7 +31,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   late TextEditingController _workoutNotesController;
 
   /// Show [CupertinoAlertDialog] for creating a workout
-  void _showAlertDialog({required String title, required String message, required List<CupertinoDialogAction> actions}) {
+  void _showAlertDialog(
+      {required String title,
+      required String message,
+      required List<CupertinoDialogAction> actions}) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
@@ -41,34 +45,40 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     );
   }
 
-  /// Show list of [ExerciseInWorkoutDto] to superset with
   void _showExercisesInWorkoutPicker(
       {required ExerciseInWorkoutDto firstExercise}) {
+    final exercises =
+        _whereOtherExercisesToSuperSetWith(firstExercise: firstExercise);
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
-        decoration: const BoxDecoration(
-            color: tealBlueDark,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12), topRight: Radius.circular(12))),
-        height: 150,
+        height: 216,
         padding: const EdgeInsets.only(top: 6.0),
-        // The Bottom margin is provided to align the popup above the system navigation bar.
+        // The bottom margin is provided to align the popup above the system
+        // navigation bar.
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: _canSuperSet()
-            ? _ListOfExercises(
-                exercises: _whereOtherExercisesToSuperSetWith(
-                    firstExercise: firstExercise),
-                onSelect: (ExerciseInWorkoutDto secondExercise) => _addSuperSet(
-                    firstExerciseId: firstExercise.exercise.id,
-                    secondExerciseId: secondExercise.exercise.id),
-              )
-            : _ExercisesInWorkoutEmptyState(onPressed: () {
-                Navigator.of(context).pop();
-                _selectExercisesInLibrary();
-              }),
+        // Provide a background color for the popup.
+        color: tealBlueLight,
+        // Use a SafeArea widget to avoid system overlaps.
+        child: SafeArea(
+          top: false,
+          child: _ListOfExercises(
+            exercises: exercises,
+            onSelect: (ExerciseInWorkoutDto secondExercise) {
+              Navigator.of(context).pop();
+              _addSuperSet(
+                  firstExerciseId: firstExercise.exercise.id,
+                  secondExerciseId: secondExercise.exercise.id);
+
+            },
+            onSelectExercisesInLibrary: () {
+              Navigator.of(context).pop();
+              _selectExercisesInLibrary();
+            },
+          ),
+        ),
       ),
     );
   }
@@ -117,18 +127,17 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   void _replaceExercise({required String exerciseId}) {
-
     final exerciseToBeReplaced = _exerciseWhere(id: exerciseId);
-    if(exerciseToBeReplaced.warmupProcedures.isNotEmpty || exerciseToBeReplaced.workingProcedures.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
+    if (exerciseToBeReplaced.warmupProcedures.isNotEmpty ||
+        exerciseToBeReplaced.workingProcedures.isNotEmpty ||
+        exerciseToBeReplaced.notes.isNotEmpty) {
       _showReplaceExerciseAlert(exerciseId: exerciseId);
     } else {
       _handleReplaceExercise(exerciseId: exerciseId);
     }
-
   }
 
   void _showReplaceExerciseAlert({required String exerciseId}) {
-
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
         onPressed: () {
@@ -146,8 +155,10 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       )
     ];
 
-    _showAlertDialog(title: "Replace Exercise", message: "All your data will be replaced", actions: alertDialogActions);
-
+    _showAlertDialog(
+        title: "Replace Exercise",
+        message: "All your data will be replaced",
+        actions: alertDialogActions);
   }
 
   void _handleReplaceExercise({required String exerciseId}) async {
@@ -166,7 +177,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       if (mounted) {
         final exerciseInLibrary = selectedExercises.first;
         final oldExerciseInWorkoutIndex =
-        _indexWhereExerciseInWorkout(id: exerciseId);
+            _indexWhereExerciseInWorkout(id: exerciseId);
         setState(() {
           _exercisesInWorkout[oldExerciseInWorkoutIndex] =
               ExerciseInWorkoutDto(exercise: exerciseInLibrary);
@@ -252,14 +263,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
       {required String exerciseId, required int index, required int value}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight = value;
-  }
-
-  bool _canSuperSet() {
-    return _exercisesInWorkout
-            .whereNot((exerciseInWorkout) => exerciseInWorkout.isSuperSet)
-            .toList()
-            .length >
-        1;
   }
 
   void _addSuperSet(
@@ -411,7 +414,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
     if (_workoutNameController.text.isEmpty) {
       _showAlertDialog(
-        title: "Alert",
+          title: "Alert",
           message: 'Please provide a name for this workout',
           actions: alertDialogActions);
       return;
@@ -582,29 +585,65 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 }
 
-class _ListOfExercises extends StatelessWidget {
+class _ListOfExercises extends StatefulWidget {
   final List<ExerciseInWorkoutDto> exercises;
   final void Function(ExerciseInWorkoutDto exercise) onSelect;
+  final void Function() onSelectExercisesInLibrary;
 
-  const _ListOfExercises({required this.exercises, required this.onSelect});
+  const _ListOfExercises(
+      {required this.exercises,
+      required this.onSelect,
+      required this.onSelectExercisesInLibrary});
+
+  @override
+  State<_ListOfExercises> createState() => _ListOfExercisesState();
+}
+
+class _ListOfExercisesState extends State<_ListOfExercises> {
+
+  late ExerciseInWorkoutDto _exerciseInWorkoutDto;
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ...exercises
-            .map((exerciseInWorkout) => CupertinoListTile(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    onSelect(exerciseInWorkout);
+    return widget.exercises.isNotEmpty
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () => widget.onSelect(_exerciseInWorkoutDto),
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text(
+                    "Select",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: CupertinoPicker(
+                  magnification: 1.22,
+                  squeeze: 1.2,
+                  useMagnifier: true,
+                  itemExtent: 32.0,
+                  // This is called when selected item is changed.
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      _exerciseInWorkoutDto = widget.exercises[index];
+                    });
                   },
-                  title: Text(exerciseInWorkout.exercise.name,
-                      style: const TextStyle(
-                          color: CupertinoColors.white, fontSize: 16)),
-                ))
-            .toList()
-      ],
-    );
+                  children:
+                      List<Widget>.generate(widget.exercises.length, (int index) {
+                    return Center(
+                        child: Text(
+                      widget.exercises[index].exercise.name,
+                      style: const TextStyle(color: CupertinoColors.white),
+                    ));
+                  }),
+                ),
+              ),
+            ],
+          )
+        : _ExercisesInWorkoutEmptyState(onPressed: widget.onSelectExercisesInLibrary);
   }
 }
 
@@ -617,21 +656,21 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Add an exercise to superset with"),
+          const ListStyleEmptyState(),
+          const ListStyleEmptyState(),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
               width: double.infinity,
               child: CupertinoButton(
-                  color: tealBlueLight,
+                  color: tealBlueLighter,
                   onPressed: onPressed,
                   child: const Text(
-                    "Add exercise",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    "Add more exercises",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                   )),
             ),
           )

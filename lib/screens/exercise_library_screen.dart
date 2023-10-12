@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
-import '../widgets/exercise_library/exercise_library_list_section.dart';
+import '../widgets/exercise/exercise_library_list_section.dart';
 import '../dtos/exercise_in_library_dto.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {

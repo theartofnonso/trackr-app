@@ -86,7 +86,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                   },
                   child: const Text(
                     'Remove super set',
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 16),
                   ),
                 )
               : CupertinoActionSheetAction(
@@ -132,14 +132,14 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onAddWorkingSet();
+
             },
             child: const Text('Warm-up sets', style: TextStyle(fontSize: 16)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onAddWarmUpSet();
+
             },
             child:
             const Text('Working sets', style: TextStyle(fontSize: 16)),
@@ -148,6 +148,28 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
       ),
     );
   }
+
+  // void _showTimerDialog(BuildContext context) {
+  //     showCupertinoModalPopup<void>(
+  //       context: context,
+  //       builder: (BuildContext context) => Container(
+  //         height: 216,
+  //         padding: const EdgeInsets.only(top: 6.0),
+  //         // The bottom margin is provided to align the popup above the system
+  //         // navigation bar.
+  //         margin: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).viewInsets.bottom,
+  //         ),
+  //         // Provide a background color for the popup.
+  //         color: CupertinoColors.systemBackground.resolveFrom(context),
+  //         // Use a SafeArea widget to avoid system overlaps.
+  //         child: SafeArea(
+  //           top: false,
+  //           child: child,
+  //         ),
+  //       ),
+  //     );
+  // }
 
   List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures
