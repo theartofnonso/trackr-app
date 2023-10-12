@@ -149,7 +149,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onSetWarmUpTimer();
             },
-            child: const Text('Warm-up timer', style: TextStyle(fontSize: 16)),
+            child: const Text('Set warm-up timer', style: TextStyle(fontSize: 16)),
           ),
           exerciseInWorkoutDto.workingProcedureDuration != null ? CupertinoActionSheetAction(
             isDestructiveAction: true,
@@ -163,7 +163,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onSetWorkingTimer();
             },
-            child: const Text('Working timer', style: TextStyle(fontSize: 16)),
+            child: const Text('Set working timer', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),

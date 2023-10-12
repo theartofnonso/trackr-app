@@ -585,6 +585,12 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
           )
         : _ExercisesInWorkoutEmptyState(onPressed: widget.onSelectExercisesInLibrary);
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _exerciseInWorkoutDto = widget.exercises[0];
+  }
 }
 
 class _Timer extends StatefulWidget {
@@ -632,6 +638,12 @@ class _TimerState extends State<_Timer> {
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _duration = Duration(minutes: 0, seconds: 0);
   }
 }
 
