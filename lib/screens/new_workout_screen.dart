@@ -269,6 +269,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   void _setWarmUpTimer({required String exerciseId, required Duration duration}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    Navigator.of(context).pop();
     setState(() {
       _exercisesInWorkout[exerciseIndex].warmUpProcedureDuration = duration;
     });
@@ -276,8 +277,23 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   void _setWorkingTimer({required String exerciseId, required Duration duration}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    Navigator.of(context).pop();
     setState(() {
       _exercisesInWorkout[exerciseIndex].workingProcedureDuration = duration;
+    });
+  }
+
+  void _removeWarmUpTimer({required String exerciseId}) {
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].warmUpProcedureDuration = null;
+    });
+  }
+
+  void _removeWorkingTimer({required String exerciseId}) {
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].workingProcedureDuration = null;
     });
   }
 
@@ -290,13 +306,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onRemoveSuperSetExercises: (String superSetId) => _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
         onAddSuperSetExercises: () => _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
-        onChangedWorkingSetRepCount: (int setIndex, int value) =>
+        onChangedWorkingRepCount: (int setIndex, int value) =>
             _updateWorkingSetRepCount(exerciseId: exerciseInWorkout.exercise.id, index: setIndex, value: value),
-        onChangedWorkingSetWeight: (int setIndex, int value) =>
+        onChangedWorkingWeight: (int setIndex, int value) =>
             _updateWorkingSetWeight(exerciseId: exerciseInWorkout.exercise.id, index: setIndex, value: value),
-        onChangedWarmUpSetRepCount: (int setIndex, int value) =>
+        onChangedWarmUpRepCount: (int setIndex, int value) =>
             _updateWarmUpSetRepCount(exerciseId: exerciseInWorkout.exercise.id, index: setIndex, value: value),
-        onChangedWarmUpSetWeight: (int setIndex, int value) =>
+        onChangedWarmUpWeight: (int setIndex, int value) =>
             _updateWarmUpSetWeight(exerciseInWorkoutDto: exerciseInWorkout, index: setIndex, value: value),
         onAddWorkingSet: () => _addWorkingSet(exerciseId: exerciseInWorkout.exercise.id),
         onRemoveWorkingSet: (int setIndex) =>
@@ -318,6 +334,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
               onSelect: (Duration duration) =>
                   _setWorkingTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
             )),
+        onRemoveWarmUpTimer: () => _removeWarmUpTimer(exerciseId: exerciseInWorkout.exercise.id),
+        onRemoveWorkingTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
       );
     }).toList();
 

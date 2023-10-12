@@ -17,6 +17,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function() onReplaceExercise;
   final void Function() onSetWarmUpTimer;
   final void Function() onSetWorkingTimer;
+  final void Function() onRemoveWarmUpTimer;
+  final void Function() onRemoveWorkingTimer;
 
   /// Set callbacks
   final void Function() onAddWorkingSet;
@@ -25,10 +27,10 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function(int setIndex) onRemoveWarmUpSet;
 
   /// Set values callbacks
-  final void Function(int setIndex, int value) onChangedWorkingSetRepCount;
-  final void Function(int setIndex, int value) onChangedWorkingSetWeight;
-  final void Function(int setIndex, int value) onChangedWarmUpSetRepCount;
-  final void Function(int setIndex, int value) onChangedWarmUpSetWeight;
+  final void Function(int setIndex, int value) onChangedWorkingRepCount;
+  final void Function(int setIndex, int value) onChangedWorkingWeight;
+  final void Function(int setIndex, int value) onChangedWarmUpRepCount;
+  final void Function(int setIndex, int value) onChangedWarmUpWeight;
 
   const ExerciseInWorkoutListSection({
     super.key,
@@ -37,10 +39,10 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onAddSuperSetExercises,
     required this.onRemoveSuperSetExercises,
     required this.onRemoveExercise,
-    required this.onChangedWorkingSetRepCount,
-    required this.onChangedWorkingSetWeight,
-    required this.onChangedWarmUpSetRepCount,
-    required this.onChangedWarmUpSetWeight,
+    required this.onChangedWorkingRepCount,
+    required this.onChangedWorkingWeight,
+    required this.onChangedWarmUpRepCount,
+    required this.onChangedWarmUpWeight,
     required this.onAddWorkingSet,
     required this.onRemoveWorkingSet,
     required this.onAddWarmUpSet,
@@ -48,7 +50,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onUpdateNotes,
     required this.onReplaceExercise,
     required this.onSetWarmUpTimer,
-    required this.onSetWorkingTimer,
+    required this.onSetWorkingTimer, required this.onRemoveWarmUpTimer, required this.onRemoveWorkingTimer,
   });
 
   /// Show [CupertinoActionSheet]
@@ -75,12 +77,14 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             },
             child: const Text('Add warm-up set', style: TextStyle(fontSize: 16)),
           ),
-          exerciseInWorkoutDto.CupertinoActionSheetAction(
+          CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
               _showTimerActionSheet(context);
             },
-            child: const Text('Set timer', style: TextStyle(fontSize: 16)),
+            child: _hasTimer()
+                ? const Text('Remove timer', style: TextStyle(fontSize: 16, color: CupertinoColors.destructiveRed))
+                : const Text('Set timers', style: TextStyle(fontSize: 16)),
           ),
           exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
@@ -131,28 +135,45 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text("Set timer for", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Timers", style: TextStyle(fontWeight: FontWeight.bold)),
         actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
+          exerciseInWorkoutDto.warmUpProcedureDuration != null ? CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              onRemoveWarmUpTimer();
+            },
+            child: const Text('Remove warm-up timer', style: TextStyle(fontSize: 16)),
+          ) : CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
               onSetWarmUpTimer();
             },
-            child: const Text('Warm-up sets', style: TextStyle(fontSize: 16)),
+            child: const Text('Warm-up timer', style: TextStyle(fontSize: 16)),
           ),
-          CupertinoActionSheetAction(
+          exerciseInWorkoutDto.workingProcedureDuration != null ? CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              onRemoveWorkingTimer();
+            },
+            child: const Text('Remove working timer', style: TextStyle(fontSize: 16)),
+          ) : CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
               onSetWorkingTimer();
             },
-            child: const Text('Working sets', style: TextStyle(fontSize: 16)),
+            child: const Text('Working timer', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
     );
   }
 
-  bool _hasTimer
+  bool _hasTimer() {
+    return exerciseInWorkoutDto.warmUpProcedureDuration != null ||
+        exerciseInWorkoutDto.workingProcedureDuration != null;
+  }
 
   List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures
@@ -162,8 +183,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               isWarmup: false,
               exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
-              onChangedRepCount: (int value) => onChangedWorkingSetRepCount(index, value),
-              onChangedWeight: (int value) => onChangedWorkingSetWeight(index, value),
+              onChangedRepCount: (int value) => onChangedWorkingRepCount(index, value),
+              onChangedWeight: (int value) => onChangedWorkingWeight(index, value),
             )))
         .toList();
   }
@@ -176,8 +197,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               isWarmup: true,
               exerciseInWorkoutDto: exerciseInWorkoutDto,
               procedureDto: procedure,
-              onChangedRepCount: (int value) => onChangedWarmUpSetRepCount(index, value),
-              onChangedWeight: (int value) => onChangedWarmUpSetWeight(index, value),
+              onChangedRepCount: (int value) => onChangedWarmUpRepCount(index, value),
+              onChangedWeight: (int value) => onChangedWarmUpWeight(index, value),
             )))
         .toList();
   }
