@@ -102,9 +102,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   void _replaceExercise({required String exerciseId}) {
     final exerciseToBeReplaced = _exerciseWhere(id: exerciseId);
-    if (exerciseToBeReplaced.warmupProcedures.isNotEmpty ||
-        exerciseToBeReplaced.workingProcedures.isNotEmpty ||
-        exerciseToBeReplaced.notes.isNotEmpty) {
+    if (exerciseToBeReplaced.procedures.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
       _showReplaceExerciseAlert(exerciseId: exerciseId);
     } else {
       _handleReplaceExercise(exerciseId: exerciseId);
@@ -171,55 +169,37 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     return _exercisesInWorkout.indexWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
-  void _addWarmUpSet({required String exerciseId}) {
+  void _addProcedure({required String exerciseId}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
-      _exercisesInWorkout[exerciseIndex].warmupProcedures.add(ProcedureDto());
+      _exercisesInWorkout[exerciseIndex].procedures.add(ProcedureDto());
     });
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _removeWarmUpSet({required String exerciseId, required int index}) {
+  void _removeProcedure({required String exerciseId, required int index}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
-      _exercisesInWorkout[exerciseIndex].warmupProcedures.removeAt(index);
+      _exercisesInWorkout[exerciseIndex].procedures.removeAt(index);
     });
   }
 
-  void _addWorkingSet({required String exerciseId}) {
+  void _updateProcedureRepCount({required String exerciseId, required int index, required int value}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    _exercisesInWorkout[exerciseIndex].procedures[index].repCount = value;
+  }
+
+  void _updateProcedureWeight({required String exerciseId, required int index, required int value}) {
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    _exercisesInWorkout[exerciseIndex].procedures[index].weight = value;
+  }
+
+  void _updateProcedureType({required String exerciseId, required int index, required ProcedureType type}) {
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    Navigator.of(context).pop();
     setState(() {
-      _exercisesInWorkout[exerciseIndex].workingProcedures.add(ProcedureDto());
+      _exercisesInWorkout[exerciseIndex].procedures[index].type = type;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-  }
-
-  void _removeWorkingUpSet({required String exerciseId, required int index}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].workingProcedures.removeAt(index);
-    });
-  }
-
-  void _updateWarmUpSetRepCount({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
-    _exercisesInWorkout[exerciseIndex].warmupProcedures[index].repCount = value;
-  }
-
-  void _updateWarmUpSetWeight(
-      {required ExerciseInWorkoutDto exerciseInWorkoutDto, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseInWorkoutDto.exercise.id);
-    _exercisesInWorkout[exerciseIndex].warmupProcedures[index].weight = value;
-  }
-
-  void _updateWorkingSetRepCount({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
-    _exercisesInWorkout[exerciseIndex].workingProcedures[index].repCount = value;
-  }
-
-  void _updateWorkingSetWeight({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
-    _exercisesInWorkout[exerciseIndex].workingProcedures[index].weight = value;
   }
 
   void _addSuperSet({required String firstExerciseId, required String secondExerciseId}) {
@@ -267,33 +247,18 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
   }
 
-  void _setWarmUpTimer({required String exerciseId, required Duration duration}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
-    Navigator.of(context).pop();
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].warmUpProcedureDuration = duration;
-    });
-  }
-
   void _setWorkingTimer({required String exerciseId, required Duration duration}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     Navigator.of(context).pop();
     setState(() {
-      _exercisesInWorkout[exerciseIndex].workingProcedureDuration = duration;
-    });
-  }
-
-  void _removeWarmUpTimer({required String exerciseId}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
-    setState(() {
-      _exercisesInWorkout[exerciseIndex].warmUpProcedureDuration = null;
+      _exercisesInWorkout[exerciseIndex].procedureDuration = duration;
     });
   }
 
   void _removeWorkingTimer({required String exerciseId}) {
     final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
     setState(() {
-      _exercisesInWorkout[exerciseIndex].workingProcedureDuration = null;
+      _exercisesInWorkout[exerciseIndex].procedureDuration = null;
     });
   }
 
@@ -306,36 +271,24 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onRemoveSuperSetExercises: (String superSetId) => _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
         onAddSuperSetExercises: () => _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
-        onChangedWorkingRepCount: (int setIndex, int value) =>
-            _updateWorkingSetRepCount(exerciseId: exerciseInWorkout.exercise.id, index: setIndex, value: value),
-        onChangedWorkingWeight: (int setIndex, int value) =>
-            _updateWorkingSetWeight(exerciseId: exerciseInWorkout.exercise.id, index: setIndex, value: value),
-        onChangedWarmUpRepCount: (int setIndex, int value) =>
-            _updateWarmUpSetRepCount(exerciseId: exerciseInWorkout.exercise.id, index: setIndex, value: value),
-        onChangedWarmUpWeight: (int setIndex, int value) =>
-            _updateWarmUpSetWeight(exerciseInWorkoutDto: exerciseInWorkout, index: setIndex, value: value),
-        onAddWorkingSet: () => _addWorkingSet(exerciseId: exerciseInWorkout.exercise.id),
-        onRemoveWorkingSet: (int setIndex) =>
-            _removeWorkingUpSet(exerciseId: exerciseInWorkout.exercise.id, index: setIndex),
-        onAddWarmUpSet: () => _addWarmUpSet(exerciseId: exerciseInWorkout.exercise.id),
-        onRemoveWarmUpSet: (int setIndex) =>
-            _removeWarmUpSet(exerciseId: exerciseInWorkout.exercise.id, index: setIndex),
+        onChangedProcedureRepCount: (int procedureIndex, int value) =>
+            _updateProcedureRepCount(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, value: value),
+        onChangedProcedureWeight: (int procedureIndex, int value) =>
+            _updateProcedureWeight(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, value: value),
+        onAddProcedure: () => _addProcedure(exerciseId: exerciseInWorkout.exercise.id),
+        onRemoveProcedure: (int procedureIndex) =>
+            _removeProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
         onUpdateNotes: (String value) => _updateNotes(exerciseId: exerciseInWorkout.exercise.id, value: value),
         onReplaceExercise: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
-        onSetWarmUpTimer: () => showModalPopup(
-            context: context,
-            child: _Timer(
-              onSelect: (Duration duration) =>
-                  _setWarmUpTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
-            )),
-        onSetWorkingTimer: () => showModalPopup(
+        onSetProcedureTimer: () => showModalPopup(
             context: context,
             child: _Timer(
               onSelect: (Duration duration) =>
                   _setWorkingTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
             )),
-        onRemoveWarmUpTimer: () => _removeWarmUpTimer(exerciseId: exerciseInWorkout.exercise.id),
-        onRemoveWorkingTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
+        onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
+        onChangedProcedureType: (int procedureIndex, ProcedureType type) =>
+            _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
       );
     }).toList();
 

@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
+import '../../dtos/procedure_dto.dart';
+
 class ExerciseInWorkoutListSection extends StatelessWidget {
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
   final ExerciseInWorkoutDto? otherExerciseInWorkoutDto;
@@ -15,22 +17,17 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function() onAddSuperSetExercises;
   final void Function(String superSetId) onRemoveSuperSetExercises;
   final void Function() onReplaceExercise;
-  final void Function() onSetWarmUpTimer;
-  final void Function() onSetWorkingTimer;
-  final void Function() onRemoveWarmUpTimer;
-  final void Function() onRemoveWorkingTimer;
+  final void Function() onSetProcedureTimer;
+  final void Function() onRemoveProcedureTimer;
 
-  /// Set callbacks
-  final void Function() onAddWorkingSet;
-  final void Function(int setIndex) onRemoveWorkingSet;
-  final void Function() onAddWarmUpSet;
-  final void Function(int setIndex) onRemoveWarmUpSet;
+  /// Procedure callbacks
+  final void Function() onAddProcedure;
+  final void Function(int procedureIndex) onRemoveProcedure;
 
-  /// Set values callbacks
-  final void Function(int setIndex, int value) onChangedWorkingRepCount;
-  final void Function(int setIndex, int value) onChangedWorkingWeight;
-  final void Function(int setIndex, int value) onChangedWarmUpRepCount;
-  final void Function(int setIndex, int value) onChangedWarmUpWeight;
+  /// Procedure values callbacks
+  final void Function(int procedureIndex, int value) onChangedProcedureRepCount;
+  final void Function(int procedureIndex, int value) onChangedProcedureWeight;
+  final void Function(int procedureIndex, ProcedureType type) onChangedProcedureType;
 
   const ExerciseInWorkoutListSection({
     super.key,
@@ -39,18 +36,15 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onAddSuperSetExercises,
     required this.onRemoveSuperSetExercises,
     required this.onRemoveExercise,
-    required this.onChangedWorkingRepCount,
-    required this.onChangedWorkingWeight,
-    required this.onChangedWarmUpRepCount,
-    required this.onChangedWarmUpWeight,
-    required this.onAddWorkingSet,
-    required this.onRemoveWorkingSet,
-    required this.onAddWarmUpSet,
-    required this.onRemoveWarmUpSet,
+    required this.onChangedProcedureRepCount,
+    required this.onChangedProcedureWeight,
+    required this.onAddProcedure,
+    required this.onRemoveProcedure,
     required this.onUpdateNotes,
     required this.onReplaceExercise,
-    required this.onSetWarmUpTimer,
-    required this.onSetWorkingTimer, required this.onRemoveWarmUpTimer, required this.onRemoveWorkingTimer,
+    required this.onSetProcedureTimer,
+    required this.onRemoveProcedureTimer,
+    required this.onChangedProcedureType,
   });
 
   /// Show [CupertinoActionSheet]
@@ -66,26 +60,26 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onAddWorkingSet();
+              onAddProcedure();
             },
             child: const Text('Add new set', style: TextStyle(fontSize: 16)),
           ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              onAddWarmUpSet();
-            },
-            child: const Text('Add warm-up set', style: TextStyle(fontSize: 16)),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _showTimerActionSheet(context);
-            },
-            child: _hasTimer()
-                ? const Text('Remove timer', style: TextStyle(fontSize: 16, color: CupertinoColors.destructiveRed))
-                : const Text('Set timers', style: TextStyle(fontSize: 16)),
-          ),
+          exerciseInWorkoutDto.procedureDuration != null
+              ? CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onSetProcedureTimer();
+                  },
+                  child: const Text('Set timer', style: TextStyle(fontSize: 16)),
+                )
+              : CupertinoActionSheetAction(
+                  isDestructiveAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onRemoveProcedureTimer();
+                  },
+                  child: const Text('Remove timer', style: TextStyle(fontSize: 16)),
+                ),
           exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
                   isDestructiveAction: true,
@@ -131,75 +125,38 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     );
   }
 
-  void _showTimerActionSheet(BuildContext context) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text("Timers", style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: <CupertinoActionSheetAction>[
-          exerciseInWorkoutDto.warmUpProcedureDuration != null ? CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              onRemoveWarmUpTimer();
-            },
-            child: const Text('Remove warm-up timer', style: TextStyle(fontSize: 16)),
-          ) : CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              onSetWarmUpTimer();
-            },
-            child: const Text('Set warm-up timer', style: TextStyle(fontSize: 16)),
-          ),
-          exerciseInWorkoutDto.workingProcedureDuration != null ? CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              onRemoveWorkingTimer();
-            },
-            child: const Text('Remove working timer', style: TextStyle(fontSize: 16)),
-          ) : CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              onSetWorkingTimer();
-            },
-            child: const Text('Set working timer', style: TextStyle(fontSize: 16)),
-          ),
-        ],
-      ),
-    );
-  }
+  List<SetListItem> _displayProcedures() {
+    final workingProcedures = []; //3
 
-  bool _hasTimer() {
-    return exerciseInWorkoutDto.warmUpProcedureDuration != null ||
-        exerciseInWorkoutDto.workingProcedureDuration != null;
-  }
+    SetListItem item;
 
-  List<SetListItem> _displayWorkingSets() {
-    return exerciseInWorkoutDto.workingProcedures
-        .mapIndexed(((index, procedure) => SetListItem(
-              index: index,
-              onRemoved: (int index) => onRemoveWorkingSet(index),
-              isWarmup: false,
-              exerciseInWorkoutDto: exerciseInWorkoutDto,
-              procedureDto: procedure,
-              onChangedRepCount: (int value) => onChangedWorkingRepCount(index, value),
-              onChangedWeight: (int value) => onChangedWorkingWeight(index, value),
-            )))
-        .toList();
-  }
-
-  List<SetListItem> _displayWarmUpSets() {
-    return exerciseInWorkoutDto.warmupProcedures
-        .mapIndexed(((index, procedure) => SetListItem(
-              index: index,
-              onRemoved: (int index) => onRemoveWarmUpSet(index),
-              isWarmup: true,
-              exerciseInWorkoutDto: exerciseInWorkoutDto,
-              procedureDto: procedure,
-              onChangedRepCount: (int value) => onChangedWarmUpRepCount(index, value),
-              onChangedWeight: (int value) => onChangedWarmUpWeight(index, value),
-            )))
+    return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
+      if(procedure.type == ProcedureType.working) {
+        item = SetListItem(
+          index: index,
+          onRemoved: (int index) => onRemoveProcedure(index),
+          workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
+          exerciseInWorkoutDto: exerciseInWorkoutDto,
+          procedureDto: procedure,
+          onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
+          onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
+          onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
+        );
+        workingProcedures.add(procedure);
+      } else {
+        item = SetListItem(
+          index: index,
+          onRemoved: (int index) => onRemoveProcedure(index),
+          workingIndex: -1,
+          exerciseInWorkoutDto: exerciseInWorkoutDto,
+          procedureDto: procedure,
+          onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
+          onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
+          onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
+        );
+      }
+      return item;
+    }))
         .toList();
   }
 
@@ -249,8 +206,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           ],
         ),
         children: [
-          ..._displayWarmUpSets(),
-          ..._displayWorkingSets(),
+          ..._displayProcedures(),
         ]);
   }
 }

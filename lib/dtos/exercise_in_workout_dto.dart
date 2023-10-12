@@ -8,16 +8,14 @@ class ExerciseInWorkoutDto {
   String superSetId;
   final ExerciseDto exercise;
   String notes;
-  List<ProcedureDto> warmupProcedures = [];
-  List<ProcedureDto> workingProcedures = [];
+  List<ProcedureDto> procedures = [];
   bool isSuperSet;
-  Duration? warmUpProcedureDuration;
-  Duration? workingProcedureDuration;
+  Duration? procedureDuration;
 
   ExerciseInWorkoutDto({this.superSetId = "", this.notes = "", required this.exercise, this.isSuperSet = false});
 
   @override
   String toString() {
-    return 'ExerciseInWorkoutDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, warmupProcedures: $warmupProcedures, workingProcedures: $workingProcedures, isSuperSet: $isSuperSet}';
+    return 'ExerciseInWorkoutDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, procedures: $procedures, isSuperSet: $isSuperSet}';
   }
 }
