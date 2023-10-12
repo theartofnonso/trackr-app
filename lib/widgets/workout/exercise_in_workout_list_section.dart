@@ -52,6 +52,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
+        title: Text(exerciseInWorkoutDto.exercise.name, style: const TextStyle(fontWeight: FontWeight.bold),),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
@@ -71,6 +72,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
+              _showTimerActionSheet(context);
             },
             child:
             const Text('Set timer', style: TextStyle(fontSize: 16)),
@@ -92,9 +94,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                     Navigator.pop(context);
                     onAddSuperSetExercises();
                   },
-                  child: Text(
-                    'Super-set ${exerciseInWorkoutDto.exercise.name} with ...',
-                    style: const TextStyle(fontSize: 16),
+                  child: const Text(
+                    'Super-set with ...',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
           CupertinoActionSheetAction(
@@ -102,9 +104,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onReplaceExercise();
             },
-            child: Text(
-              'Replace ${exerciseInWorkoutDto.exercise.name} with ...',
-              style: const TextStyle(fontSize: 16),
+            child: const Text(
+              'Replace with ...',
+              style: TextStyle(fontSize: 16),
             ),
           ),
           CupertinoActionSheetAction(
@@ -113,8 +115,34 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onRemoveExercise();
             },
-            child: Text('Remove ${exerciseInWorkoutDto.exercise.name}',
-                style: const TextStyle(fontSize: 16)),
+            child: const Text('Remove',
+                style: TextStyle(fontSize: 16)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTimerActionSheet(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text("Set timer for", style: TextStyle(fontWeight: FontWeight.bold)),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              onAddWorkingSet();
+            },
+            child: const Text('Warm-up sets', style: TextStyle(fontSize: 16)),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              onAddWarmUpSet();
+            },
+            child:
+            const Text('Working sets', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
