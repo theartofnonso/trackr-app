@@ -64,22 +64,6 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             },
             child: const Text('Add new set', style: TextStyle(fontSize: 16)),
           ),
-          exerciseInWorkoutDto.procedureDuration != null
-              ? CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onSetProcedureTimer();
-                  },
-                  child: const Text('Set timer', style: TextStyle(fontSize: 16)),
-                )
-              : CupertinoActionSheetAction(
-                  isDestructiveAction: true,
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onRemoveProcedureTimer();
-                  },
-                  child: const Text('Remove timer', style: TextStyle(fontSize: 16)),
-                ),
           exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
                   isDestructiveAction: true,
