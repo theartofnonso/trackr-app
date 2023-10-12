@@ -11,6 +11,8 @@ class ExerciseInWorkoutDto {
   List<ProcedureDto> warmupProcedures = [];
   List<ProcedureDto> workingProcedures = [];
   bool isSuperSet;
+  Duration? warmUpProcedureDuration;
+  Duration? workingProcedureDuration;
 
   ExerciseInWorkoutDto({this.superSetId = "", this.notes = "", required this.exercise, this.isSuperSet = false});
 

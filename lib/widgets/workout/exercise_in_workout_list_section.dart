@@ -75,7 +75,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             },
             child: const Text('Add warm-up set', style: TextStyle(fontSize: 16)),
           ),
-          CupertinoActionSheetAction(
+          exerciseInWorkoutDto.CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
               _showTimerActionSheet(context);
@@ -136,12 +136,14 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
+              onSetWarmUpTimer();
             },
             child: const Text('Warm-up sets', style: TextStyle(fontSize: 16)),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
+              onSetWorkingTimer();
             },
             child: const Text('Working sets', style: TextStyle(fontSize: 16)),
           ),
@@ -149,6 +151,8 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
       ),
     );
   }
+
+  bool _hasTimer
 
   List<SetListItem> _displayWorkingSets() {
     return exerciseInWorkoutDto.workingProcedures

@@ -267,6 +267,20 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
   }
 
+  void _setWarmUpTimer({required String exerciseId, required Duration duration}) {
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].warmUpProcedureDuration = duration;
+    });
+  }
+
+  void _setWorkingTimer({required String exerciseId, required Duration duration}) {
+    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].workingProcedureDuration = duration;
+    });
+  }
+
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
   List<ExerciseInWorkoutListSection> _exercisesToListSection({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
     final exerciseInWorkoutListSection = exercisesInWorkout.map((exerciseInWorkout) {
@@ -292,8 +306,18 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
             _removeWarmUpSet(exerciseId: exerciseInWorkout.exercise.id, index: setIndex),
         onUpdateNotes: (String value) => _updateNotes(exerciseId: exerciseInWorkout.exercise.id, value: value),
         onReplaceExercise: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
-        onSetWarmUpTimer: () {},
-        onSetWorkingTimer: () {},
+        onSetWarmUpTimer: () => showModalPopup(
+            context: context,
+            child: _Timer(
+              onSelect: (Duration duration) =>
+                  _setWarmUpTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
+            )),
+        onSetWorkingTimer: () => showModalPopup(
+            context: context,
+            child: _Timer(
+              onSelect: (Duration duration) =>
+                  _setWorkingTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
+            )),
       );
     }).toList();
 
@@ -511,7 +535,7 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
               GestureDetector(
                 onTap: () => widget.onSelect(_exerciseInWorkoutDto),
                 child: const Padding(
-                  padding: EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(14.0),
                   child: Text(
                     "Select",
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -542,6 +566,54 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
             ],
           )
         : _ExercisesInWorkoutEmptyState(onPressed: widget.onSelectExercisesInLibrary);
+  }
+}
+
+class _Timer extends StatefulWidget {
+  final void Function(Duration duration) onSelect;
+
+  const _Timer({required this.onSelect});
+
+  @override
+  State<_Timer> createState() => _TimerState();
+}
+
+class _TimerState extends State<_Timer> {
+  late Duration _duration;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: () => widget.onSelect(_duration),
+          child: const Padding(
+            padding: EdgeInsets.all(14.0),
+            child: Text(
+              "Select",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Flexible(
+          child: CupertinoTheme(
+            data: const CupertinoThemeData(
+              brightness: Brightness.dark,
+            ),
+            child: CupertinoTimerPicker(
+              backgroundColor: tealBlueLight,
+              mode: CupertinoTimerPickerMode.ms,
+              // This is called when the user changes the timer's
+              // duration.
+              onTimerDurationChanged: (Duration newDuration) {
+                setState(() => _duration = newDuration);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
