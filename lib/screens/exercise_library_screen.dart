@@ -80,7 +80,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Select an exercise
   void _selectExercise({required ExerciseInLibraryDto exerciseInLibrary}) {
-    if(widget.multiSelect){
+    if (widget.multiSelect) {
       setState(() {
         _selectedExercises.add(exerciseInLibrary);
       });
@@ -90,9 +90,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   /// Remove an exercise
-  void _removeExercise({required ExerciseInLibraryDto exercise}) {
+  void _removeExercise({required ExerciseInLibraryDto exerciseInLibrary}) {
     setState(() {
-      _selectedExercises.remove(exercise);
+      _selectedExercises.remove(exerciseInLibrary);
     });
   }
 
@@ -150,7 +150,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                 _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
             onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                _removeExercise(exercise: exerciseItemToBeRemoved),
+                _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
             multiSelect: widget.multiSelect,
           ),
           ExerciseLibraryListSection(
@@ -159,7 +159,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                   _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
               onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                  _removeExercise(exercise: exerciseItemToBeRemoved),
+                  _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
               multiSelect: widget.multiSelect),
           ExerciseLibraryListSection(
               exercises: tricepsExercises,
@@ -167,7 +167,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                   _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
               onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                  _removeExercise(exercise: exerciseItemToBeRemoved),
+                  _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
               multiSelect: widget.multiSelect),
           ExerciseLibraryListSection(
               exercises: legsExercises,
@@ -175,7 +175,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                   _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
               onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                  _removeExercise(exercise: exerciseItemToBeRemoved),
+                  _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
               multiSelect: widget.multiSelect),
         ],
       ),

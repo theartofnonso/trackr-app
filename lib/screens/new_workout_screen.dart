@@ -116,31 +116,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _handleReplaceExercise({required String exerciseId}) async {
-    final selectedExercises = await showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return ExerciseLibraryScreen(
-            preSelectedExercises: _exercisesInWorkout
-                .map((exerciseInWorkout) => exerciseInWorkout.exercise)
-                .toList(),
-            multiSelect: false);
-      },
-    ) as List<ExerciseDto>?;
-
-    if (selectedExercises != null) {
-      if (mounted) {
-        final exerciseInLibrary = selectedExercises.first;
-        final oldExerciseInWorkoutIndex =
-        _indexWhereExerciseInWorkout(id: exerciseId);
-        setState(() {
-          _exercisesInWorkout[oldExerciseInWorkoutIndex] =
-              ExerciseInWorkoutDto(exercise: exerciseInLibrary);
-        });
-      }
-    }
-  }
-
   void _replaceExercise({required String exerciseId}) {
 
     final exerciseToBeReplaced = _exerciseWhere(id: exerciseId);
@@ -173,6 +148,31 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
     _showAlertDialog(title: "Replace Exercise", message: "All your data will be replaced", actions: alertDialogActions);
 
+  }
+
+  void _handleReplaceExercise({required String exerciseId}) async {
+    final selectedExercises = await showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return ExerciseLibraryScreen(
+            preSelectedExercises: _exercisesInWorkout
+                .map((exerciseInWorkout) => exerciseInWorkout.exercise)
+                .toList(),
+            multiSelect: false);
+      },
+    ) as List<ExerciseDto>?;
+
+    if (selectedExercises != null) {
+      if (mounted) {
+        final exerciseInLibrary = selectedExercises.first;
+        final oldExerciseInWorkoutIndex =
+        _indexWhereExerciseInWorkout(id: exerciseId);
+        setState(() {
+          _exercisesInWorkout[oldExerciseInWorkoutIndex] =
+              ExerciseInWorkoutDto(exercise: exerciseInLibrary);
+        });
+      }
+    }
   }
 
   void _removeExercise({required String exerciseId}) {
