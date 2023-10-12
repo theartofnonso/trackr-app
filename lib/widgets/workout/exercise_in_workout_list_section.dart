@@ -128,33 +128,23 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   List<SetListItem> _displayProcedures() {
     final workingProcedures = []; //3
 
-    SetListItem item;
-
     return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
+
+      final item = SetListItem(
+        index: index,
+        onRemoved: (int index) => onRemoveProcedure(index),
+        workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
+        exerciseInWorkoutDto: exerciseInWorkoutDto,
+        procedureDto: procedure,
+        onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
+        onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
+        onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
+      );
+
       if(procedure.type == ProcedureType.working) {
-        item = SetListItem(
-          index: index,
-          onRemoved: (int index) => onRemoveProcedure(index),
-          workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
-          exerciseInWorkoutDto: exerciseInWorkoutDto,
-          procedureDto: procedure,
-          onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
-          onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
-          onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
-        );
         workingProcedures.add(procedure);
-      } else {
-        item = SetListItem(
-          index: index,
-          onRemoved: (int index) => onRemoveProcedure(index),
-          workingIndex: -1,
-          exerciseInWorkoutDto: exerciseInWorkoutDto,
-          procedureDto: procedure,
-          onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
-          onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
-          onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
-        );
       }
+
       return item;
     }))
         .toList();

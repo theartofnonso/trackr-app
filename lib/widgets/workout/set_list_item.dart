@@ -62,7 +62,6 @@ class SetListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(workingIndex);
     return CupertinoListTile.notched(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
