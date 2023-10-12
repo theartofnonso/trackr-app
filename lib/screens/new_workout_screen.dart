@@ -495,7 +495,7 @@ class _ListOfExercises extends StatefulWidget {
 }
 
 class _ListOfExercisesState extends State<_ListOfExercises> {
-  late ExerciseInWorkoutDto _exerciseInWorkoutDto;
+  late ExerciseInWorkoutDto? _exerciseInWorkoutDto;
 
   @override
   Widget build(BuildContext context) {
@@ -504,7 +504,12 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: () => widget.onSelect(_exerciseInWorkoutDto),
+                onTap: () {
+                  final exerciseInWorkoutDto = _exerciseInWorkoutDto;
+                  if(exerciseInWorkoutDto != null) {
+                    widget.onSelect(exerciseInWorkoutDto);
+                  }
+                },
                 child: const Padding(
                   padding: EdgeInsets.all(14.0),
                   child: Text(
@@ -542,7 +547,7 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
   @override
   void initState() {
     super.initState();
-    _exerciseInWorkoutDto = widget.exercises[0];
+    _exerciseInWorkoutDto = widget.exercises.firstOrNull;
   }
 }
 
@@ -596,7 +601,7 @@ class _TimerState extends State<_Timer> {
   @override
   void initState() {
     super.initState();
-    _duration = Duration(minutes: 0, seconds: 0);
+    _duration = const Duration(minutes: 0, seconds: 0);
   }
 }
 

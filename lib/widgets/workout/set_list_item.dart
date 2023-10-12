@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -57,7 +58,7 @@ class SetListItem extends StatelessWidget {
 
   void _showProcedureTypePicker({required BuildContext context}) {
     showModalPopup(
-        context: context, child: _ListOfProcedureTypes(onSelect: (ProcedureType type) => onChangedType(type)));
+        context: context, child: _ListOfProcedureTypes(onSelect: (ProcedureType type) => onChangedType(type), currentType: procedureDto.type,));
   }
 
   @override
@@ -115,7 +116,7 @@ class LeadingIcon extends StatelessWidget {
 
 class _SetListItemTextField extends StatelessWidget {
   final String label;
-  final int? initialValue;
+  final int initialValue;
   final void Function(int) onChanged;
 
   const _SetListItemTextField({required this.label, required this.onChanged, required this.initialValue});
@@ -134,7 +135,7 @@ class _SetListItemTextField extends StatelessWidget {
           child: Text(label,
               style: const TextStyle(color: CupertinoColors.systemGrey4, fontWeight: FontWeight.w600, fontSize: 12)),
         ),
-        controller: TextEditingController(text: initialValue?.toString()),
+        controller: TextEditingController(text: initialValue.toString()),
         onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
         decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(8))),
         keyboardType: TextInputType.number,
@@ -148,9 +149,10 @@ class _SetListItemTextField extends StatelessWidget {
 }
 
 class _ListOfProcedureTypes extends StatefulWidget {
+  final ProcedureType currentType;
   final void Function(ProcedureType type) onSelect;
 
-  const _ListOfProcedureTypes({required this.onSelect});
+  const _ListOfProcedureTypes({required this.onSelect, required this.currentType});
 
   @override
   State<_ListOfProcedureTypes> createState() => _ListOfProcedureTypesState();
@@ -158,6 +160,7 @@ class _ListOfProcedureTypes extends StatefulWidget {
 
 class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
   late ProcedureType _procedureType;
+  late List<ProcedureType> _procedureTypes;
 
   @override
   Widget build(BuildContext context) {
@@ -183,13 +186,13 @@ class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
             // This is called when selected item is changed.
             onSelectedItemChanged: (int index) {
               setState(() {
-                _procedureType = ProcedureType.values[index];
+                _procedureType = _procedureTypes[index];
               });
             },
-            children: List<Widget>.generate(ProcedureType.values.length, (int index) {
+            children: List<Widget>.generate(_procedureTypes.length, (int index) {
               return Center(
                   child: Text(
-                ProcedureType.values[index].name,
+                    _procedureTypes[index].name,
                 style: const TextStyle(color: CupertinoColors.white),
               ));
             }),
@@ -202,6 +205,7 @@ class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
   @override
   void initState() {
     super.initState();
-    _procedureType = ProcedureType.values[0];
+    _procedureTypes = ProcedureType.values.whereNot((type) => type == widget.currentType).toList();
+    _procedureType = _procedureTypes.first;
   }
 }

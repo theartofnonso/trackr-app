@@ -1,8 +1,10 @@
-
 import 'package:flutter/cupertino.dart';
 
 enum ProcedureType {
-  warmUp("Warm Up", "W", CupertinoColors.activeOrange), working("Working", "", CupertinoColors.activeBlue), failure("Failure", "F", CupertinoColors.systemRed), drop("Drop Set", "D", CupertinoColors.activeGreen);
+  warmUp("Warm Up", "W", CupertinoColors.activeOrange),
+  working("Working", "", CupertinoColors.activeBlue),
+  failure("Failure", "F", CupertinoColors.systemRed),
+  drop("Drop Set", "D", CupertinoColors.activeGreen);
 
   const ProcedureType(this.name, this.label, this.color);
 
@@ -12,8 +14,8 @@ enum ProcedureType {
 }
 
 class ProcedureDto {
-  int? repCount;
-  int? weight;
+  int repCount = 0;
+  int weight = 0;
   ProcedureType type = ProcedureType.working;
 
   ProcedureDto();
