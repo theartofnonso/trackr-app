@@ -53,6 +53,10 @@ class _ReOrderExercisesState extends State<ReOrderExercises> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: tealBlueDark,
+        middle: const Text(
+          "Reorder",
+          style: TextStyle(color: CupertinoColors.white),
+        ),
         trailing: GestureDetector(
             onTap: _saveReOrdering,
             child: _hasReOrdered
