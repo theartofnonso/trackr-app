@@ -264,7 +264,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
   List<ExerciseInWorkoutListSection> _exercisesToListSection({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
-    final exerciseInWorkoutListSection = exercisesInWorkout.map((exerciseInWorkout) {
+    return exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutListSection(
         exerciseInWorkoutDto: exerciseInWorkout,
         otherExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
@@ -293,30 +293,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onReOrderExercises: () {},
       );
     }).toList();
-
-    outerLoop:
-    for (var i = 0; i < exerciseInWorkoutListSection.length; i++) {
-      final firstExerciseSection = exerciseInWorkoutListSection[i];
-      final exerciseInWorkoutDto = firstExerciseSection.exerciseInWorkoutDto;
-      if (exerciseInWorkoutDto.isSuperSet) {
-        final superSetId = exerciseInWorkoutDto.superSetId;
-        final otherExerciseSections = exerciseInWorkoutListSection.where((otherExerciseSection) =>
-            (otherExerciseSection.exerciseInWorkoutDto.superSetId == superSetId) &&
-            otherExerciseSection.exerciseInWorkoutDto.exercise.id !=
-                firstExerciseSection.exerciseInWorkoutDto.exercise.id);
-        if (otherExerciseSections.isNotEmpty) {
-          final secondExerciseSection = otherExerciseSections.first;
-
-          final firstExerciseSectionIndex = exerciseInWorkoutListSection.indexWhere((exercise) =>
-              exercise.exerciseInWorkoutDto.exercise.id == firstExerciseSection.exerciseInWorkoutDto.exercise.id);
-          final secondExerciseSectionIndex = exerciseInWorkoutListSection.indexWhere((exercise) =>
-              exercise.exerciseInWorkoutDto.exercise.id == secondExerciseSection.exerciseInWorkoutDto.exercise.id);
-          exerciseInWorkoutListSection.swap(firstExerciseSectionIndex + 1, secondExerciseSectionIndex);
-          break outerLoop;
-        }
-      }
-    }
-    return exerciseInWorkoutListSection;
   }
 
   void _navigateBack() {
