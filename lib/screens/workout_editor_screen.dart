@@ -15,16 +15,16 @@ import '../widgets/empty_states/list_tile_empty_state.dart';
 import '../widgets/workout/exercise_in_workout_list_section.dart';
 import 'exercise_library_screen.dart';
 
-class NewWorkoutScreen extends StatefulWidget {
+class WorkoutEditorScreen extends StatefulWidget {
   final WorkoutDto? workoutDto;
 
-  const NewWorkoutScreen({super.key, this.workoutDto});
+  const WorkoutEditorScreen({super.key, this.workoutDto});
 
   @override
-  State<NewWorkoutScreen> createState() => _NewWorkoutScreenState();
+  State<WorkoutEditorScreen> createState() => _WorkoutEditorScreenState();
 }
 
-class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
+class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   final _scrollController = ScrollController();
 
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
@@ -193,7 +193,6 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     setState(() {
       _exercisesInWorkout[exerciseIndex].procedures.add(ProcedureDto());
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
   void _removeProcedure({required String exerciseId, required int index}) {

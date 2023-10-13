@@ -193,7 +193,11 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             backgroundColorActivated: Colors.transparent,
             onTap: onSetProcedureTimer,
             padding: EdgeInsets.zero,
-            leading: const Icon(CupertinoIcons.timer, color: CupertinoColors.white, size: 20,),
+            leading: const Icon(
+              CupertinoIcons.timer,
+              color: CupertinoColors.white,
+              size: 20,
+            ),
             title: Text("Rest Timer", style: Theme.of(context).textTheme.bodySmall),
             trailing: Text(_displayTimer(), style: Theme.of(context).textTheme.bodyMedium),
           ),
@@ -209,21 +213,6 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           ),
         ],
       ),
-      // footer: Padding(
-      //   padding: const EdgeInsets.only(top: 2.0),
-      //   child: SizedBox(
-      //     width: double.infinity,
-      //     child: CupertinoListTile(
-      //       padding: EdgeInsets.zero,
-      //       onTap: onAddProcedure,
-      //       title: Text(
-      //         "Add Set",
-      //         style: Theme.of(context).textTheme.bodyMedium,
-      //       ),
-      //       leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white),
-      //     ),
-      //   ),
-      // ),
       children: [
         ..._displayProcedures(),
       ],

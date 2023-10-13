@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/screens/workout_preview_screen.dart';
 
 import '../dtos/workout_dto.dart';
 import '../providers/workout_provider.dart';
-import 'new_workout_screen.dart';
+import 'workout_editor_screen.dart';
 
-void _showNewWorkoutScreen({required BuildContext context, WorkoutDto? workoutDto}) async {
-  Navigator.of(context).push(
-      CupertinoPageRoute(builder: (context) => NewWorkoutScreen(workoutDto: workoutDto)));
+void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) async {
+  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workoutDto)));
 }
 
 class ActivityOverviewScreen extends StatelessWidget {
@@ -17,18 +17,15 @@ class ActivityOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workouts =
-        Provider.of<WorkoutProvider>(context, listen: true).workouts;
+    final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
 
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: workouts.isNotEmpty
-              ? _ListOfWorkouts(workouts: workouts, onTap: () => _showNewWorkoutScreen(context: context),)
-              : Center(
-                  child: _WorkoutsEmptyState(
-                      onPressed: () => _showNewWorkoutScreen(context: context))),
+              ? _ListOfWorkouts(workouts: workouts)
+              : Center(child: _WorkoutsEmptyState(onPressed: () => _showWorkoutEditorScreen(context: context))),
         ),
       ),
     );
@@ -37,9 +34,8 @@ class ActivityOverviewScreen extends StatelessWidget {
 
 class _ListOfWorkouts extends StatelessWidget {
   final List<WorkoutDto> workouts;
-  final void Function()? onTap;
 
-  const _ListOfWorkouts({required this.workouts, this.onTap});
+  const _ListOfWorkouts({required this.workouts});
 
   void _removeWorkout({required BuildContext context, required String workoutId}) {
     Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
@@ -55,15 +51,18 @@ class _ListOfWorkouts extends StatelessWidget {
           padding: EdgeInsets.zero,
           title: Text("Workouts", style: Theme.of(context).textTheme.titleLarge),
           trailing: GestureDetector(
-              onTap: onTap,
+              onTap: () => _showWorkoutEditorScreen(context: context),
               child: const Icon(
                 CupertinoIcons.plus,
                 size: 24,
                 color: CupertinoColors.white,
               )),
         ),
-        children:  [
-          ...workouts.map((workout) => _WorkoutListItem(workoutDto: workout, onRemoveWorkout: () => _removeWorkout(context: context, workoutId: workout.id))).toList()
+        children: [
+          ...workouts
+              .map((workout) => _WorkoutListItem(
+                  workoutDto: workout, onRemoveWorkout: () => _removeWorkout(context: context, workoutId: workout.id)))
+              .toList()
         ],
       ),
     ]);
@@ -71,10 +70,8 @@ class _ListOfWorkouts extends StatelessWidget {
 }
 
 class _WorkoutListItem extends StatelessWidget {
-
   final WorkoutDto workoutDto;
   final void Function() onRemoveWorkout;
-
 
   const _WorkoutListItem({required this.workoutDto, required this.onRemoveWorkout});
 
@@ -90,20 +87,30 @@ class _WorkoutListItem extends StatelessWidget {
               Navigator.pop(context);
               onRemoveWorkout();
             },
-            child: Text('Remove ${workoutDto.name}', style: const TextStyle(fontSize: 16),),
+            child: Text(
+              'Remove ${workoutDto.name}',
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
         ],
       ),
     );
   }
 
+  void _showWorkoutPreviewScreen({required BuildContext context, required WorkoutDto workoutDto}) async {
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutDto: workoutDto)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      onTap: () => _showNewWorkoutScreen(context: context, workoutDto: workoutDto),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        onTap: () => _showWorkoutPreviewScreen(context: context, workoutDto: workoutDto),
         backgroundColor: tealBlueLight,
-        title: Text(workoutDto.name, style: Theme.of(context).textTheme.bodyLarge,),
+        title: Text(
+          workoutDto.name,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         subtitle: Text("${workoutDto.exercises.length} exercises", style: Theme.of(context).textTheme.bodySmall),
         leading: CircleAvatar(
           backgroundColor: CupertinoColors.activeBlue,
@@ -113,15 +120,16 @@ class _WorkoutListItem extends StatelessWidget {
           ),
         ),
         trailing: GestureDetector(
-          onTap: () => _showWorkoutActionSheet(context: context),
+            onTap: () => _showWorkoutActionSheet(context: context),
             child: const Padding(
               padding: EdgeInsets.only(right: 1.0),
-              child: Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white,),
-            ))
-    );
+              child: Icon(
+                CupertinoIcons.ellipsis,
+                color: CupertinoColors.white,
+              ),
+            )));
   }
 }
-
 
 class _WorkoutsEmptyState extends StatelessWidget {
   final Function() onPressed;
