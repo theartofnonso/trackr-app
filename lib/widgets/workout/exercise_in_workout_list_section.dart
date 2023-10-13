@@ -152,7 +152,6 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
       margin: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
       header: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CupertinoListTile(
             onTap: () => _showExerciseInWorkoutActionSheet(context),
