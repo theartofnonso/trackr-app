@@ -189,6 +189,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             height: 8,
           ),
           CupertinoListTile(
+            backgroundColorActivated: Colors.transparent,
             onTap: onSetProcedureTimer,
             padding: EdgeInsets.zero,
             leading: const Icon(CupertinoIcons.timer, color: CupertinoColors.white),
