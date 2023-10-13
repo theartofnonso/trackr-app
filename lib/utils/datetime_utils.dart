@@ -19,14 +19,12 @@ extension DurationExtension on Duration {
   }
 
   String secondsOrMinute() {
+    String display = "${inSeconds}s";
     if (inSeconds > 59) {
       final remainingSeconds = inSeconds.remainder(60);
-      if(remainingSeconds > 0) {
-        return "${inMinutes}m ${remainingSeconds}s";
-      }
-      return "${inMinutes}m";
+      display = remainingSeconds > 0 ? "${inMinutes}m ${remainingSeconds}s" : "${inMinutes}m";
     }
-    return "${inSeconds}s";
+    return display;
   }
 
   String friendlyTime() {

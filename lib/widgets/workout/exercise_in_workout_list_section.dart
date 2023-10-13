@@ -138,6 +138,11 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     })).toList();
   }
 
+  String _displayTimer() {
+    final duration = exerciseInWorkoutDto.procedureDuration;
+    return duration != null && duration != Duration.zero ? duration.secondsOrMinute() : "Off";
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoListSection.insetGrouped(
@@ -185,7 +190,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             padding: EdgeInsets.zero,
             leading: const Icon(CupertinoIcons.timer),
             title: const Text("Rest Timer", style: TextStyle(fontWeight: FontWeight.w600)),
-            trailing: Text("${const Duration(minutes: 1, seconds: 2).secondsOrMinute()}", style: TextStyle(fontSize: 14),),
+            trailing: Text(_displayTimer(), style: const TextStyle(fontSize: 14),),
           )
         ],
       ),

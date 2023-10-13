@@ -283,6 +283,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onSetProcedureTimer: () => showModalPopup(
             context: context,
             child: _Timer(
+              previousDuration: exerciseInWorkout.procedureDuration,
               onSelect: (Duration duration) =>
                   _setWorkingTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
             )),
@@ -553,9 +554,10 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
 }
 
 class _Timer extends StatefulWidget {
+  final Duration? previousDuration;
   final void Function(Duration duration) onSelect;
 
-  const _Timer({required this.onSelect});
+  const _Timer({required this.onSelect, required this.previousDuration});
 
   @override
   State<_Timer> createState() => _TimerState();
@@ -585,6 +587,7 @@ class _TimerState extends State<_Timer> {
               brightness: Brightness.dark,
             ),
             child: CupertinoTimerPicker(
+              initialTimerDuration: _duration,
               backgroundColor: tealBlueLight,
               mode: CupertinoTimerPickerMode.ms,
               // This is called when the user changes the timer's
@@ -602,7 +605,8 @@ class _TimerState extends State<_Timer> {
   @override
   void initState() {
     super.initState();
-    _duration = const Duration(minutes: 0, seconds: 0);
+    final previousDuration = widget.previousDuration;
+    _duration = previousDuration ?? Duration.zero;
   }
 }
 
