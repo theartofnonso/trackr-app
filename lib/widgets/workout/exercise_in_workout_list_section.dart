@@ -199,16 +199,18 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
         ],
       ),
       footer: Padding(
-        padding: const EdgeInsets.only(top: 12.0),
+        padding: const EdgeInsets.only(top: 2.0),
         child: SizedBox(
           width: double.infinity,
-          child: CupertinoButton(
-              color: tealBlueLight,
-              onPressed: onAddProcedure,
-              child: Text(
-                "Add Set",
-                style: Theme.of(context).textTheme.labelLarge,
-              )),
+          child: CupertinoListTile(
+            padding: EdgeInsets.zero,
+            onTap: onAddProcedure,
+            title: Text(
+              "Add Set",
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white),
+          ),
         ),
       ),
       children: [
