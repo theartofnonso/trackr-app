@@ -133,16 +133,16 @@ class _WorkoutsEmptyState extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Start tracking your performance"),
+        Text("Start tracking your performance", style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: CupertinoButton(
               color: tealBlueLight,
               onPressed: onPressed,
-              child: const Text(
+              child: Text(
                 "Create Workout",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.labelLarge,
               )),
         )
       ],

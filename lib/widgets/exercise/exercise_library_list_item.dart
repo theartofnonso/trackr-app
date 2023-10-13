@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_in_library_dto.dart';
@@ -15,7 +16,7 @@ class ExrLibraryListItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: CupertinoListTile.notched(
-          backgroundColor: tealBlueLight, title: Text(exercise.exercise.name)),
+          backgroundColor: tealBlueLight, title: Text(exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium)),
     );
   }
 }

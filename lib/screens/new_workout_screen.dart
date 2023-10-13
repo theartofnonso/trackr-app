@@ -8,6 +8,7 @@ import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/widgets/workout/reorder_exercises_in_workout.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
@@ -62,7 +63,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
   }
 
   /// Navigate to [ExerciseLibraryScreen]
-  Future<void> _selectExercisesInLibrary() async {
+  void _selectExercisesInLibrary() async {
     final selectedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -74,6 +75,24 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     if (selectedExercises != null) {
       if (mounted) {
         _addExercises(exercises: selectedExercises);
+      }
+    }
+  }
+
+  // Navigate to [ReOrderExercises]
+  void _reOrderExercises() async {
+    final reOrderedExercises = await showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return ReOrderExercises(exercises: _exercisesInWorkout);
+      },
+    ) as List<ExerciseInWorkoutDto>?;
+
+    if (reOrderedExercises != null) {
+      if (mounted) {
+        setState(() {
+          _exercisesInWorkout = reOrderedExercises;
+        });
       }
     }
   }
@@ -290,7 +309,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
         onChangedProcedureType: (int procedureIndex, ProcedureType type) =>
             _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
-        onReOrderExercises: () {},
+        onReOrderExercises: () => _reOrderExercises(),
       );
     }).toList();
   }
@@ -366,10 +385,12 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     final previousWorkoutDto = widget.workoutDto;
 
     return CupertinoPageScaffold(
+      backgroundColor: tealBlueDark,
         navigationBar: CupertinoNavigationBar(
+          backgroundColor: tealBlueDark,
           trailing: GestureDetector(
               onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
-              child: Text(previousWorkoutDto != null ? "Update" : "Save")),
+              child: Text(previousWorkoutDto != null ? "Update" : "Save", style: Theme.of(context).textTheme.labelMedium)),
         ),
         child: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -428,8 +449,8 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                       child: CupertinoButton(
                           color: tealBlueLight,
                           onPressed: _selectExercisesInLibrary,
-                          child: const Text("Add exercise",
-                              textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold))),
+                          child: Text("Add exercise",
+                              textAlign: TextAlign.start, style: Theme.of(context).textTheme.labelLarge)),
                     ),
                   ],
                 ),
@@ -549,11 +570,11 @@ class _TimerState extends State<_Timer> {
       children: [
         GestureDetector(
           onTap: () => widget.onSelect(_duration),
-          child: const Padding(
-            padding: EdgeInsets.all(14.0),
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
             child: Text(
               "Select",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.labelLarge,
             ),
           ),
         ),
@@ -607,9 +628,9 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
               child: CupertinoButton(
                   color: tealBlueLighter,
                   onPressed: onPressed,
-                  child: const Text(
+                  child: Text(
                     "Add more exercises",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: Theme.of(context).textTheme.labelLarge,
                   )),
             ),
           )

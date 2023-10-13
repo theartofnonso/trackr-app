@@ -50,8 +50,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _configureAmplify() async {
     try {
       //await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(
-          AmplifyDataStore(modelProvider: ModelProvider.instance));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
       setState(() {
         _isLoading = false; // important to set the state!
@@ -64,19 +63,26 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
-    return CupertinoApp(
-      theme: const CupertinoThemeData(
-          brightness: Brightness.light,
-          barBackgroundColor: tealBlueDark,
-          textTheme: CupertinoTextThemeData(
-              textStyle: TextStyle(color: CupertinoColors.white),
-              navTitleTextStyle: TextStyle(color: CupertinoColors.white)),
-          scaffoldBackgroundColor: tealBlueDark),
-      home: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : const ActivityOverviewScreen(),
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
+    return MaterialApp(
+      theme: ThemeData(
+        scaffoldBackgroundColor: tealBlueDark,
+        colorScheme: const ColorScheme.light(background: tealBlueLight, primary: Colors.white),
+        textTheme: const TextTheme(
+            headlineSmall: TextStyle(color: CupertinoColors.white),
+            titleSmall: TextStyle(color: CupertinoColors.white),
+            titleMedium: TextStyle(color: CupertinoColors.white),
+            bodySmall: TextStyle(color: CupertinoColors.white),
+            bodyMedium: TextStyle(color: CupertinoColors.white, fontSize: 15),
+            bodyLarge: TextStyle(color: CupertinoColors.white, fontSize: 16),
+            labelLarge: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.bold),
+            labelMedium: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.w500)
+        ),
+
+        useMaterial3: true,
+      ),
+      home: _isLoading ? const Center(child: CircularProgressIndicator()) : const ActivityOverviewScreen(),
     );
   }
 }

@@ -32,6 +32,7 @@ class SetListItem extends StatelessWidget {
 
   /// Show [CupertinoActionSheet]
   void _showSetActionSheet({required BuildContext context}) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -41,7 +42,7 @@ class SetListItem extends StatelessWidget {
               Navigator.pop(context);
               _showProcedureTypePicker(context: context);
             },
-            child: const Text('Change Set type', style: TextStyle(fontSize: 16)),
+            child: Text('Change Set type', style: textStyle),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
@@ -49,7 +50,7 @@ class SetListItem extends StatelessWidget {
               Navigator.pop(context);
               onRemoved(index);
             },
-            child: const Text('Remove set', style: TextStyle(fontSize: 16)),
+            child: Text('Remove set', style: textStyle),
           ),
         ],
       ),
@@ -82,7 +83,7 @@ class SetListItem extends StatelessWidget {
           onTap: () => _showSetActionSheet(context: context),
           child: const Padding(
             padding: EdgeInsets.only(right: 9.0),
-            child: Icon(CupertinoIcons.ellipsis),
+            child: Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white,),
           )),
     );
   }
@@ -104,7 +105,7 @@ class LeadingIcon extends StatelessWidget {
       backgroundColor: type.color,
       child: Text(
         _generateLabel(),
-        style: const TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.white, fontSize: 12),
+        style: Theme.of(context).textTheme.labelMedium,
       ),
     );
   }
@@ -140,8 +141,7 @@ class _SetListItemTextField extends StatelessWidget {
         decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(8))),
         keyboardType: TextInputType.number,
         maxLines: 1,
-        placeholder: "0",
-        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+        style: Theme.of(context).textTheme.bodyMedium,
         placeholderStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.transparent),
       ),
     );
@@ -169,11 +169,11 @@ class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
       children: [
         GestureDetector(
           onTap: () => widget.onSelect(_procedureType),
-          child: const Padding(
-            padding: EdgeInsets.all(14.0),
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
             child: Text(
               "Select",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.labelLarge,
             ),
           ),
         ),

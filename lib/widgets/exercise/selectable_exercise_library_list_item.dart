@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_in_library_dto.dart';
@@ -38,7 +39,7 @@ class _SelectableExrLibraryListItemState
             value: _isSelected,
             onChanged: (bool? _) => _selectExercise(),
           ),
-          title: Text(widget.exercise.exercise.name)),
+          title: Text(widget.exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium)),
     );
   }
 

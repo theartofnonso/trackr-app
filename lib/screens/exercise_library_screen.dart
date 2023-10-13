@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 
+import '../app_constants.dart';
 import '../widgets/exercise/exercise_library_list_section.dart';
 import '../dtos/exercise_in_library_dto.dart';
 
@@ -97,7 +98,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   /// Navigate to previous screen
-  void _navigateBack() {
+  void _addSelectedExercises() {
     final exercises = _selectedExercises
         .map((exerciseInLibrary) => exerciseInLibrary.exercise)
         .toList();
@@ -128,8 +129,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        backgroundColor: tealBlueDark,
         trailing: GestureDetector(
-            onTap: _navigateBack,
+            onTap: _addSelectedExercises,
             child: _selectedExercises.isNotEmpty
                 ? Text(
                     "Add (${_selectedExercises.length})",

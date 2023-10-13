@@ -47,17 +47,20 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onReplaceExercise,
     required this.onSetProcedureTimer,
     required this.onRemoveProcedureTimer,
-    required this.onChangedProcedureType, required this.onReOrderExercises,
+    required this.onChangedProcedureType,
+    required this.onReOrderExercises,
   });
 
   /// Show [CupertinoActionSheet]
   void _showExerciseInWorkoutActionSheet(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
+
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: Text(
           exerciseInWorkoutDto.exercise.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
@@ -65,9 +68,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onReOrderExercises();
             },
-            child: const Text(
+            child: Text(
               'Reorder Exercises',
-              style: TextStyle(fontSize: 16),
+              style: textStyle,
             ),
           ),
           exerciseInWorkoutDto.isSuperSet
@@ -77,9 +80,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                     Navigator.pop(context);
                     onRemoveSuperSetExercises(exerciseInWorkoutDto.superSetId);
                   },
-                  child: const Text(
+                  child: Text(
                     'Remove super set',
-                    style: TextStyle(fontSize: 16),
+                    style: textStyle,
                   ),
                 )
               : CupertinoActionSheetAction(
@@ -87,9 +90,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                     Navigator.pop(context);
                     onAddSuperSetExercises();
                   },
-                  child: const Text(
+                  child: Text(
                     'Super-set with ...',
-                    style: TextStyle(fontSize: 16),
+                    style: textStyle,
                   ),
                 ),
           CupertinoActionSheetAction(
@@ -97,9 +100,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
               Navigator.pop(context);
               onReplaceExercise();
             },
-            child: const Text(
+            child: Text(
               'Replace with ...',
-              style: TextStyle(fontSize: 16),
+              style: textStyle,
             ),
           ),
           CupertinoActionSheetAction(
@@ -165,7 +168,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                 : const SizedBox.shrink(),
             trailing: const Padding(
               padding: EdgeInsets.only(right: 1.0),
-              child: Icon(CupertinoIcons.ellipsis),
+              child: Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
             ),
           ),
           CupertinoTextField(
@@ -185,12 +188,12 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
-           CupertinoListTile(
+          CupertinoListTile(
             onTap: onSetProcedureTimer,
             padding: EdgeInsets.zero,
-            leading: const Icon(CupertinoIcons.timer),
-            title: const Text("Rest Timer", style: TextStyle(fontWeight: FontWeight.w600)),
-            trailing: Text(_displayTimer(), style: const TextStyle(fontSize: 14),),
+            leading: const Icon(CupertinoIcons.timer, color: CupertinoColors.white),
+            title: Text("Rest Timer", style: Theme.of(context).textTheme.bodyMedium),
+            trailing: Text(_displayTimer(), style: Theme.of(context).textTheme.bodyMedium),
           )
         ],
       ),
@@ -201,9 +204,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           child: CupertinoButton(
               color: tealBlueLight,
               onPressed: onAddProcedure,
-              child: const Text(
+              child: Text(
                 "Add Set",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                style: Theme.of(context).textTheme.labelLarge,
               )),
         ),
       ),
