@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/workout/set_list_item.dart';
 
+import '../../app_constants.dart';
 import '../../dtos/procedure_dto.dart';
 
 class ExerciseInWorkoutListSection extends StatelessWidget {
@@ -19,6 +21,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function() onReplaceExercise;
   final void Function() onSetProcedureTimer;
   final void Function() onRemoveProcedureTimer;
+  final void Function() onReOrderExercises;
 
   /// Procedure callbacks
   final void Function() onAddProcedure;
@@ -44,7 +47,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     required this.onReplaceExercise,
     required this.onSetProcedureTimer,
     required this.onRemoveProcedureTimer,
-    required this.onChangedProcedureType,
+    required this.onChangedProcedureType, required this.onReOrderExercises,
   });
 
   /// Show [CupertinoActionSheet]
@@ -60,9 +63,12 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onAddProcedure();
+              onReOrderExercises();
             },
-            child: const Text('Add new set', style: TextStyle(fontSize: 16)),
+            child: const Text(
+              'Reorder Exercises',
+              style: TextStyle(fontSize: 16),
+            ),
           ),
           exerciseInWorkoutDto.isSuperSet
               ? CupertinoActionSheetAction(
@@ -113,7 +119,6 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     final workingProcedures = []; //3
 
     return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
-
       final item = SetListItem(
         index: index,
         onRemoved: (int index) => onRemoveProcedure(index),
@@ -125,62 +130,81 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
         onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
       );
 
-      if(procedure.type == ProcedureType.working) {
+      if (procedure.type == ProcedureType.working) {
         workingProcedures.add(procedure);
       }
 
       return item;
-    }))
-        .toList();
+    })).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoListSection.insetGrouped(
-        margin: EdgeInsets.zero,
-        backgroundColor: Colors.transparent,
-        header: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CupertinoListTile(
-              padding: EdgeInsets.zero,
-              title: Text(exerciseInWorkoutDto.exercise.name,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-              subtitle: exerciseInWorkoutDto.isSuperSet
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text("Super set: ${otherExerciseInWorkoutDto?.exercise.name}",
-                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
-                    )
-                  : const SizedBox.shrink(),
-              trailing: GestureDetector(
-                  onTap: () => _showExerciseInWorkoutActionSheet(context),
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 1.0),
-                    child: Icon(CupertinoIcons.ellipsis),
-                  )),
-            ),
-            CupertinoTextField(
-              controller: TextEditingController(text: exerciseInWorkoutDto.notes),
-              onChanged: (value) => onUpdateNotes(value),
-              expands: true,
-              decoration: const BoxDecoration(color: Colors.transparent),
-              padding: EdgeInsets.zero,
-              keyboardType: TextInputType.text,
-              maxLength: 240,
-              maxLines: null,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8)),
-              placeholder: "Enter notes",
-              placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-          ],
-        ),
+      margin: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._displayProcedures(),
-        ]);
+          CupertinoListTile(
+            onTap: () => _showExerciseInWorkoutActionSheet(context),
+            padding: EdgeInsets.zero,
+            title: Text(exerciseInWorkoutDto.exercise.name,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+            subtitle: exerciseInWorkoutDto.isSuperSet
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text("Super set: ${otherExerciseInWorkoutDto?.exercise.name}",
+                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                  )
+                : const SizedBox.shrink(),
+            trailing: const Padding(
+              padding: EdgeInsets.only(right: 1.0),
+              child: Icon(CupertinoIcons.ellipsis),
+            ),
+          ),
+          CupertinoTextField(
+            controller: TextEditingController(text: exerciseInWorkoutDto.notes),
+            onChanged: (value) => onUpdateNotes(value),
+            expands: true,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            padding: EdgeInsets.zero,
+            keyboardType: TextInputType.text,
+            maxLength: 240,
+            maxLines: null,
+            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8)),
+            placeholder: "Enter notes",
+            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+           CupertinoListTile(
+            onTap: onSetProcedureTimer,
+            padding: EdgeInsets.zero,
+            leading: const Icon(CupertinoIcons.timer),
+            title: const Text("Rest Timer", style: TextStyle(fontWeight: FontWeight.w600)),
+            trailing: Text("${const Duration(minutes: 1, seconds: 2).secondsOrMinute()}", style: TextStyle(fontSize: 14),),
+          )
+        ],
+      ),
+      footer: Padding(
+        padding: const EdgeInsets.only(top: 12.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: CupertinoButton(
+              color: tealBlueLight,
+              onPressed: onAddProcedure,
+              child: const Text(
+                "Add Set",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              )),
+        ),
+      ),
+      children: [
+        ..._displayProcedures(),
+      ],
+    );
   }
 }

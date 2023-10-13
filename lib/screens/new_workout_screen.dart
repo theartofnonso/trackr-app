@@ -289,6 +289,7 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
         onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
         onChangedProcedureType: (int procedureIndex, ProcedureType type) =>
             _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
+        onReOrderExercises: () {},
       );
     }).toList();
 
@@ -506,7 +507,7 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
               GestureDetector(
                 onTap: () {
                   final exerciseInWorkoutDto = _exerciseInWorkoutDto;
-                  if(exerciseInWorkoutDto != null) {
+                  if (exerciseInWorkoutDto != null) {
                     widget.onSelect(exerciseInWorkoutDto);
                   }
                 },

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 enum DurationType {
-  seconds("Seconds", "Secs"), minutes("Minutes", "Mins"), hours("Hours", "Hrs");
+  seconds("Seconds", "Secs"),
+  minutes("Minutes", "Mins"),
+  hours("Hours", "Hrs");
 
   const DurationType(this.longName, this.shortName);
 
@@ -16,29 +18,37 @@ extension DurationExtension on Duration {
     return durationInNum.toString().padLeft(2, "0");
   }
 
+  String secondsOrMinute() {
+    if (inSeconds > 59) {
+      final remainingSeconds = inSeconds.remainder(60);
+      if(remainingSeconds > 0) {
+        return "${inMinutes}m ${remainingSeconds}s";
+      }
+      return "${inMinutes}m";
+    }
+    return "${inSeconds}s";
+  }
+
   String friendlyTime() {
     return "${inHours.toString().padLeft(2, "0")} : ${_absoluteDuration(inMinutes)} : ${_absoluteDuration(inSeconds)}";
   }
 
   ({DurationType type, int durationValue}) nearestDuration() {
-
     final duration = this;
 
-    if(duration.inHours > 0) {
+    if (duration.inHours > 0) {
       return (durationValue: duration.inHours, type: DurationType.hours);
     }
 
-    if(duration.inMinutes > 0) {
+    if (duration.inMinutes > 0) {
       return (durationValue: duration.inMinutes, type: DurationType.minutes);
     }
 
     return (durationValue: duration.inSeconds.round(), type: DurationType.seconds);
   }
-
 }
 
 extension DateTimeExtension on DateTime {
-
   /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);
@@ -92,24 +102,19 @@ extension DateTimeExtension on DateTime {
   bool isNow() {
     final date = this;
     final now = DateTime.now();
-    return date.day == now.day &&
-        date.month == now.month &&
-        date.year == now.year;
+    return date.day == now.day && date.month == now.month && date.year == now.year;
   }
 
   bool isSameDateAs({required DateTime other}) {
     final date = this;
-    return date.day == other.day &&
-        date.month == other.month &&
-        date.year == other.year;
+    return date.day == other.day && date.month == other.month && date.year == other.year;
   }
-
 }
 
 extension DateTimeRangeExtension on DateTimeRange {
-
   DateTimeRange endInclusive() {
-    return start.isAtSameMomentAs(end) ? DateTimeRange(start: start, end: start.add(const Duration(days: 1))) : DateTimeRange(start: start, end: end.add(const Duration(days: 1)));
+    return start.isAtSameMomentAs(end)
+        ? DateTimeRange(start: start, end: start.add(const Duration(days: 1)))
+        : DateTimeRange(start: start, end: end.add(const Duration(days: 1)));
   }
 }
-
