@@ -189,30 +189,41 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             height: 8,
           ),
           CupertinoListTile(
+            leadingToTitle: 8,
             backgroundColorActivated: Colors.transparent,
             onTap: onSetProcedureTimer,
             padding: EdgeInsets.zero,
-            leading: const Icon(CupertinoIcons.timer, color: CupertinoColors.white),
-            title: Text("Rest Timer", style: Theme.of(context).textTheme.bodyMedium),
+            leading: const Icon(CupertinoIcons.timer, color: CupertinoColors.white, size: 20,),
+            title: Text("Rest Timer", style: Theme.of(context).textTheme.bodySmall),
             trailing: Text(_displayTimer(), style: Theme.of(context).textTheme.bodyMedium),
-          )
-        ],
-      ),
-      footer: Padding(
-        padding: const EdgeInsets.only(top: 2.0),
-        child: SizedBox(
-          width: double.infinity,
-          child: CupertinoListTile(
+          ),
+          CupertinoListTile(
+            leadingToTitle: 8,
             padding: EdgeInsets.zero,
             onTap: onAddProcedure,
             title: Text(
               "Add Set",
-              style: Theme.of(context).textTheme.labelLarge,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
-            leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white),
+            leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white, size: 20),
           ),
-        ),
+        ],
       ),
+      // footer: Padding(
+      //   padding: const EdgeInsets.only(top: 2.0),
+      //   child: SizedBox(
+      //     width: double.infinity,
+      //     child: CupertinoListTile(
+      //       padding: EdgeInsets.zero,
+      //       onTap: onAddProcedure,
+      //       title: Text(
+      //         "Add Set",
+      //         style: Theme.of(context).textTheme.bodyMedium,
+      //       ),
+      //       leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white),
+      //     ),
+      //   ),
+      // ),
       children: [
         ..._displayProcedures(),
       ],

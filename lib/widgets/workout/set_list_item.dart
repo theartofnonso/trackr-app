@@ -65,7 +65,6 @@ class SetListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
       leading: LeadingIcon(type: procedureDto.type, label: workingIndex),
       title: Row(
