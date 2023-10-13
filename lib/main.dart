@@ -72,8 +72,9 @@ class _MyAppState extends State<MyApp> {
         textTheme: const TextTheme(
             headlineSmall: TextStyle(color: CupertinoColors.white),
             titleSmall: TextStyle(color: CupertinoColors.white),
+            titleLarge: TextStyle(color: CupertinoColors.white),
             titleMedium: TextStyle(color: CupertinoColors.white),
-            bodySmall: TextStyle(color: CupertinoColors.white),
+            bodySmall: TextStyle(color: CupertinoColors.white, fontSize: 14),
             bodyMedium: TextStyle(color: CupertinoColors.white, fontSize: 15),
             bodyLarge: TextStyle(color: CupertinoColors.white, fontSize: 16),
             labelLarge: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.bold),

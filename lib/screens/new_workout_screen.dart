@@ -385,12 +385,13 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
     final previousWorkoutDto = widget.workoutDto;
 
     return CupertinoPageScaffold(
-      backgroundColor: tealBlueDark,
+        backgroundColor: tealBlueDark,
         navigationBar: CupertinoNavigationBar(
           backgroundColor: tealBlueDark,
           trailing: GestureDetector(
               onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
-              child: Text(previousWorkoutDto != null ? "Update" : "Save", style: Theme.of(context).textTheme.labelMedium)),
+              child:
+                  Text(previousWorkoutDto != null ? "Update" : "Save", style: Theme.of(context).textTheme.labelMedium)),
         ),
         child: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -403,43 +404,54 @@ class _NewWorkoutScreenState extends State<NewWorkoutScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CupertinoTextField(
-                      controller: _workoutNameController,
-                      expands: true,
-                      padding: EdgeInsets.zero,
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: const BoxDecoration(
-                          color: Colors.transparent, borderRadius: BorderRadius.all(Radius.circular(8))),
-                      keyboardType: TextInputType.text,
-                      maxLength: 240,
-                      maxLines: null,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 18),
-                      placeholder: "New workout",
-                      placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
-                    ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    CupertinoTextField(
-                      controller: _workoutNotesController,
-                      expands: true,
-                      padding: EdgeInsets.zero,
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: const BoxDecoration(
-                          color: Colors.transparent, borderRadius: BorderRadius.all(Radius.circular(8))),
-                      keyboardType: TextInputType.text,
-                      maxLength: 240,
-                      maxLines: null,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: CupertinoColors.white.withOpacity(0.8),
-                        fontSize: 14,
-                      ),
-                      placeholder: "New notes",
-                      placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+                    CupertinoListSection.insetGrouped(
+                      hasLeading: false,
+                      margin: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      children: [
+                        CupertinoListTile(
+                          backgroundColor: tealBlueLight,
+                          title: CupertinoTextField.borderless(
+                            controller: _workoutNameController,
+                            expands: true,
+                            padding: const EdgeInsets.only(left: 20),
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.text,
+                            maxLength: 240,
+                            maxLines: null,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: CupertinoColors.white.withOpacity(0.8),
+                                fontSize: 18),
+                            placeholder: "New workout",
+                            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        CupertinoListTile.notched(
+                          backgroundColor: tealBlueLight,
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          title: CupertinoTextField.borderless(
+                            controller: _workoutNotesController,
+                            expands: true,
+                            padding: EdgeInsets.zero,
+                            textCapitalization: TextCapitalization.sentences,
+                           keyboardType: TextInputType.text,
+                            maxLength: 240,
+                            maxLines: null,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            style: TextStyle(
+                              height: 1.5,
+                              fontWeight: FontWeight.w600,
+                              color: CupertinoColors.white.withOpacity(0.8),
+                              fontSize: 16,
+                            ),
+                            placeholder: "New notes",
+                            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     ..._exercisesToListSection(exercisesInWorkout: _exercisesInWorkout),
@@ -509,11 +521,11 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
                     widget.onSelect(exerciseInWorkoutDto);
                   }
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(14.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(14.0),
                   child: Text(
                     "Select",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
               ),

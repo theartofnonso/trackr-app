@@ -53,12 +53,13 @@ class _ListOfWorkouts extends StatelessWidget {
         backgroundColor: Colors.transparent,
         header: CupertinoListTile(
           padding: EdgeInsets.zero,
-          title: const Text("Workouts", style: TextStyle(fontSize: 18),),
+          title: Text("Workouts", style: Theme.of(context).textTheme.titleLarge),
           trailing: GestureDetector(
               onTap: onTap,
               child: const Icon(
                 CupertinoIcons.plus,
                 size: 24,
+                color: CupertinoColors.white,
               )),
         ),
         children:  [
@@ -89,7 +90,7 @@ class _WorkoutListItem extends StatelessWidget {
               Navigator.pop(context);
               onRemoveWorkout();
             },
-            child: Text('Remove ${workoutDto.name}'),
+            child: Text('Remove ${workoutDto.name}', style: const TextStyle(fontSize: 16),),
           ),
         ],
       ),
@@ -99,23 +100,23 @@ class _WorkoutListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       onTap: () => _showNewWorkoutScreen(context: context, workoutDto: workoutDto),
         backgroundColor: tealBlueLight,
-        title: Text(workoutDto.name),
-        subtitle: Text("${workoutDto.exercises.length} exercises", style: TextStyle(color: CupertinoColors.white.withOpacity(0.7)),),
+        title: Text(workoutDto.name, style: Theme.of(context).textTheme.bodyLarge,),
+        subtitle: Text("${workoutDto.exercises.length} exercises", style: Theme.of(context).textTheme.bodySmall),
         leading: CircleAvatar(
           backgroundColor: CupertinoColors.activeBlue,
           child: Text(
             workoutDto.name.substring(0, 1),
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: CupertinoColors.white),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
         trailing: GestureDetector(
           onTap: () => _showWorkoutActionSheet(context: context),
             child: const Padding(
               padding: EdgeInsets.only(right: 1.0),
-              child: Icon(CupertinoIcons.ellipsis),
+              child: Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white,),
             ))
     );
   }

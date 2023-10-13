@@ -80,9 +80,9 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
                     Navigator.pop(context);
                     onRemoveSuperSetExercises(exerciseInWorkoutDto.superSetId);
                   },
-                  child: Text(
+                  child: const Text(
                     'Remove super set',
-                    style: textStyle,
+                    style: TextStyle(fontSize: 16),
                   ),
                 )
               : CupertinoActionSheetAction(
