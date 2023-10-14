@@ -1,16 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../app_constants.dart';
 import '../dtos/exercise_in_workout_dto.dart';
 import '../dtos/workout_dto.dart';
+import '../providers/workout_provider.dart';
 import '../widgets/workout/preview/exercise_in_workout_preview.dart';
 
 class WorkoutPreviewScreen extends StatelessWidget {
-  final WorkoutDto workoutDto;
+  final String workoutId;
+  final void Function() onUpdateWorkout;
+  final void Function() onRemoveWorkout;
 
-  const WorkoutPreviewScreen({super.key, required this.workoutDto});
+  const WorkoutPreviewScreen({super.key, required this.workoutId, required this.onUpdateWorkout, required this.onRemoveWorkout});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context}) {
@@ -22,6 +26,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
+              onUpdateWorkout();
             },
             child: Text('Edit Workout', style: textStyle),
           ),
@@ -29,6 +34,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
+              onRemoveWorkout();
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -38,16 +44,16 @@ class WorkoutPreviewScreen extends StatelessWidget {
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  List<ExerciseInWorkoutPreview> _exercisesToWidgets({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+  List<ExerciseInWorkoutPreview> _exercisesToWidgets({required WorkoutDto workoutDto, required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
     return exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutPreview(
         exerciseInWorkoutDto: exerciseInWorkout,
-        superSetExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
+        superSetExerciseInWorkoutDto: _whereOtherSuperSet(workoutDto: workoutDto, firstExercise: exerciseInWorkout),
       );
     }).toList();
   }
 
-  ExerciseInWorkoutDto? _whereOtherSuperSet({required ExerciseInWorkoutDto firstExercise}) {
+  ExerciseInWorkoutDto? _whereOtherSuperSet({required WorkoutDto workoutDto, required ExerciseInWorkoutDto firstExercise}) {
     return workoutDto.exercises.firstWhereOrNull((exerciseInWorkout) =>
         exerciseInWorkout.superSetId == firstExercise.superSetId &&
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
@@ -55,19 +61,18 @@ class WorkoutPreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
+    final workout = workouts.firstWhere((workout) => workout.id == workoutId);
     return CupertinoPageScaffold(
         backgroundColor: tealBlueDark,
         navigationBar: CupertinoNavigationBar(
           backgroundColor: tealBlueDark,
           trailing: GestureDetector(
               onTap: () => _showWorkoutPreviewActionSheet(context: context),
-              child: const Padding(
-                padding: EdgeInsets.only(right: 9.0),
-                child: Icon(
-                  CupertinoIcons.ellipsis_vertical,
-                  color: CupertinoColors.white,
-                  size: 24,
-                ),
+              child: const Icon(
+                CupertinoIcons.ellipsis_vertical,
+                color: CupertinoColors.white,
+                size: 24,
               )),
         ),
         child: SafeArea(
@@ -84,7 +89,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
                     children: [
                       CupertinoListTile(
                         backgroundColor: tealBlueLight,
-                        title: Text(workoutDto.name,
+                        title: Text(workout.name,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: CupertinoColors.white.withOpacity(0.8),
@@ -94,7 +99,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
                       CupertinoListTile.notched(
                         backgroundColor: tealBlueLight,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        title: Text(workoutDto.notes,
+                        title: Text(workout.notes,
                             style: TextStyle(
                               height: 1.5,
                               fontWeight: FontWeight.w600,
@@ -105,7 +110,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  ..._exercisesToWidgets(exercisesInWorkout: workoutDto.exercises),
+                  ..._exercisesToWidgets(workoutDto: workout, exercisesInWorkout: workout.exercises),
                 ],
               ),
             ),

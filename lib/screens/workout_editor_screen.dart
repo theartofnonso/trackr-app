@@ -120,7 +120,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _replaceExercise({required String exerciseId}) {
-    final exerciseToBeReplaced = _exerciseWhere(id: exerciseId);
+    final exerciseToBeReplaced = _whereExercise(id: exerciseId);
     if (exerciseToBeReplaced.procedures.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
       _showReplaceExerciseAlert(exerciseId: exerciseId);
     } else {
@@ -162,7 +162,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     if (selectedExercises != null) {
       if (mounted) {
         final exerciseInLibrary = selectedExercises.first;
-        final oldExerciseInWorkoutIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+        final oldExerciseInWorkoutIndex = _whereExerciseIndex(id: exerciseId);
         setState(() {
           _exercisesInWorkout[oldExerciseInWorkoutIndex] = ExerciseInWorkoutDto(exercise: exerciseInLibrary);
         });
@@ -171,7 +171,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _removeExercise({required String exerciseId}) {
-    final exercise = _exerciseWhere(id: exerciseId);
+    final exercise = _whereExercise(id: exerciseId);
     if (exercise.isSuperSet) {
       _removeSuperSet(superSetId: exercise.superSetId);
     }
@@ -180,40 +180,40 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     });
   }
 
-  ExerciseInWorkoutDto _exerciseWhere({required String id}) {
+  ExerciseInWorkoutDto _whereExercise({required String id}) {
     return _exercisesInWorkout.firstWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
-  int _indexWhereExerciseInWorkout({required String id}) {
+  int _whereExerciseIndex({required String id}) {
     return _exercisesInWorkout.indexWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
   void _addProcedure({required String exerciseId}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].procedures.add(ProcedureDto());
     });
   }
 
   void _removeProcedure({required String exerciseId, required int index}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].procedures.removeAt(index);
     });
   }
 
   void _updateProcedureRepCount({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].procedures[index].repCount = value;
   }
 
   void _updateProcedureWeight({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].procedures[index].weight = value;
   }
 
   void _updateProcedureType({required String exerciseId, required int index, required ProcedureType type}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     Navigator.of(context).pop();
     setState(() {
       _exercisesInWorkout[exerciseIndex].procedures[index].type = type;
@@ -223,8 +223,8 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   void _addSuperSet({required String firstExerciseId, required String secondExerciseId}) {
     final id = "id_${DateTime.now().millisecond}";
 
-    final firstIndex = _indexWhereExerciseInWorkout(id: firstExerciseId);
-    final secondIndex = _indexWhereExerciseInWorkout(id: secondExerciseId);
+    final firstIndex = _whereExerciseIndex(id: firstExerciseId);
+    final secondIndex = _whereExerciseIndex(id: secondExerciseId);
 
     setState(() {
       _exercisesInWorkout[firstIndex].isSuperSet = true;
@@ -248,7 +248,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _updateNotes({required String exerciseId, required String value}) {
-    final index = _indexWhereExerciseInWorkout(id: exerciseId);
+    final index = _whereExerciseIndex(id: exerciseId);
     _exercisesInWorkout[index].notes = value;
   }
 
@@ -266,7 +266,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _setWorkingTimer({required String exerciseId, required Duration duration}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     Navigator.of(context).pop();
     setState(() {
       _exercisesInWorkout[exerciseIndex].procedureDuration = duration;
@@ -274,7 +274,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _removeWorkingTimer({required String exerciseId}) {
-    final exerciseIndex = _indexWhereExerciseInWorkout(id: exerciseId);
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     setState(() {
       _exercisesInWorkout[exerciseIndex].procedureDuration = null;
     });

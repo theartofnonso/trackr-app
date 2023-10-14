@@ -12,6 +12,10 @@ void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workou
   Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workoutDto)));
 }
 
+void _removeWorkout({required BuildContext context, required String workoutId}) {
+  Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
+}
+
 class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
 
@@ -37,10 +41,6 @@ class _ListOfWorkouts extends StatelessWidget {
 
   const _ListOfWorkouts({required this.workouts});
 
-  void _removeWorkout({required BuildContext context, required String workoutId}) {
-    Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
@@ -58,12 +58,7 @@ class _ListOfWorkouts extends StatelessWidget {
                 color: CupertinoColors.white,
               )),
         ),
-        children: [
-          ...workouts
-              .map((workout) => _WorkoutListItem(
-                  workoutDto: workout, onRemoveWorkout: () => _removeWorkout(context: context, workoutId: workout.id)))
-              .toList()
-        ],
+        children: [...workouts.map((workout) => _WorkoutListItem(workoutDto: workout)).toList()],
       ),
     ]);
   }
@@ -71,9 +66,8 @@ class _ListOfWorkouts extends StatelessWidget {
 
 class _WorkoutListItem extends StatelessWidget {
   final WorkoutDto workoutDto;
-  final void Function() onRemoveWorkout;
 
-  const _WorkoutListItem({required this.workoutDto, required this.onRemoveWorkout});
+  const _WorkoutListItem({required this.workoutDto});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutActionSheet({required BuildContext context}) {
@@ -97,7 +91,7 @@ class _WorkoutListItem extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              onRemoveWorkout();
+              _removeWorkout(context: context, workoutId: workoutDto.id);
             },
             child: Text(
               'Remove ${workoutDto.name}',
@@ -110,7 +104,15 @@ class _WorkoutListItem extends StatelessWidget {
   }
 
   void _showWorkoutPreviewScreen({required BuildContext context, required WorkoutDto workoutDto}) async {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutDto: workoutDto)));
+    Navigator.of(context).push(CupertinoPageRoute(
+        builder: (context) => WorkoutPreviewScreen(
+              workoutId: workoutDto.id,
+              onUpdateWorkout: () => _showWorkoutEditorScreen(context: context, workoutDto: workoutDto),
+              onRemoveWorkout: () {
+                Navigator.of(context).pop();
+                _removeWorkout(context: context, workoutId: workoutDto.id);
+              },
+            )));
   }
 
   @override

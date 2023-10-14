@@ -7,5 +7,5 @@ class WorkoutDto {
   final String notes;
   final Duration? setsInterval;
 
-  WorkoutDto({required this.name, required this.exercises, this.notes = "", this.setsInterval}): id = "id_${DateTime.now().millisecond}";
+  WorkoutDto({required this.id, required this.name, required this.exercises, this.notes = "", this.setsInterval});
 }

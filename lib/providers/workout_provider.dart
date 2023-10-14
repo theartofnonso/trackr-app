@@ -9,14 +9,14 @@ class WorkoutProvider with ChangeNotifier {
   List<WorkoutDto> get workouts => _workouts;
 
   void createWorkout({required String name, required String notes, required List<ExerciseInWorkoutDto> exercises}) {
-    final workout = WorkoutDto(name: name, notes: notes, exercises: [...exercises]);
+    final workout = WorkoutDto(id: "id_${DateTime.now().millisecond}",name: name, notes: notes, exercises: [...exercises]);
     _workouts.add(workout);
     notifyListeners();
   }
 
   void updateWorkout({required String id, required String name, required String notes, required List<ExerciseInWorkoutDto> exercises}) {
     final index = _indexWhereWorkout(id: id);
-    _workouts[index] = WorkoutDto(name: name, notes: notes, exercises: [...exercises]);
+    _workouts[index] = WorkoutDto(id: id, name: name, notes: notes, exercises: [...exercises]);
     notifyListeners();
   }
 
