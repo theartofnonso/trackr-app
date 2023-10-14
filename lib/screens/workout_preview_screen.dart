@@ -84,21 +84,23 @@ class WorkoutPreviewScreen extends StatelessWidget {
                     children: [
                       CupertinoListTile(
                         backgroundColor: tealBlueLight,
-                        title: Text(workoutDto.name, style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: CupertinoColors.white.withOpacity(0.8),
-                            fontSize: 18)),
+                        title: Text(workoutDto.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: CupertinoColors.white.withOpacity(0.8),
+                                fontSize: 18)),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       CupertinoListTile.notched(
                         backgroundColor: tealBlueLight,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        title: Text(workoutDto.notes ?? "",  style: TextStyle(
-                          height: 1.5,
-                          fontWeight: FontWeight.w600,
-                          color: CupertinoColors.white.withOpacity(0.8),
-                          fontSize: 16,
-                        )),
+                        title: Text(workoutDto.notes,
+                            style: TextStyle(
+                              height: 1.5,
+                              fontWeight: FontWeight.w600,
+                              color: CupertinoColors.white.withOpacity(0.8),
+                              fontSize: 16,
+                            )),
                       ),
                     ],
                   ),

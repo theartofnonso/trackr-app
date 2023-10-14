@@ -180,9 +180,9 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
             maxLength: 240,
             maxLines: null,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8)),
+            style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 15),
             placeholder: "Enter notes",
-            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 15),
           ),
           const SizedBox(
             height: 8,

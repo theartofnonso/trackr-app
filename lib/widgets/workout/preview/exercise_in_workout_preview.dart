@@ -36,19 +36,25 @@ class ExerciseInWorkoutPreview extends StatelessWidget {
       margin: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
       header: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CupertinoListTile(
             padding: EdgeInsets.zero,
             title: Text(exerciseInWorkoutDto.exercise.name,
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
             subtitle: exerciseInWorkoutDto.isSuperSet
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set: ${superSetExerciseInWorkoutDto?.exercise.name}",
-                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
-                  )
+                ? Text("Super set: ${superSetExerciseInWorkoutDto?.exercise.name}",
+                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12))
                 : const SizedBox.shrink(),
           ),
+          exerciseInWorkoutDto.notes.isNotEmpty
+              ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(exerciseInWorkoutDto.notes,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 15)),
+              )
+              : const SizedBox.shrink(),
         ],
       ),
       children: [
