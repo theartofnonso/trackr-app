@@ -8,11 +8,11 @@ import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
-import 'package:tracker_app/widgets/workout/reorder_exercises_in_workout.dart';
+import 'package:tracker_app/widgets/workout/editor/reorder_exercises_in_workout_editor.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
-import '../widgets/workout/exercise_in_workout_list_section.dart';
+import '../widgets/workout/editor/exercise_in_workout_editor.dart';
 import 'exercise_library_screen.dart';
 
 class WorkoutEditorScreen extends StatefulWidget {
@@ -84,7 +84,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     final reOrderedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ReOrderExercises(exercises: _exercisesInWorkout);
+        return ReOrderExercisesInWorkoutEditor(exercises: _exercisesInWorkout);
       },
     ) as List<ExerciseInWorkoutDto>?;
 
@@ -280,12 +280,12 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     });
   }
 
-  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutListSection]
-  List<ExerciseInWorkoutListSection> _exercisesToListSection({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
+  List<ExerciseInWorkoutEditor> _exercisesToWidgets({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
     return exercisesInWorkout.map((exerciseInWorkout) {
-      return ExerciseInWorkoutListSection(
+      return ExerciseInWorkoutEditor(
         exerciseInWorkoutDto: exerciseInWorkout,
-        otherExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
+        superSetExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
         onRemoveSuperSetExercises: (String superSetId) => _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
         onAddSuperSetExercises: () => _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
@@ -453,7 +453,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    ..._exercisesToListSection(exercisesInWorkout: _exercisesInWorkout),
+                    ..._exercisesToWidgets(exercisesInWorkout: _exercisesInWorkout),
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,

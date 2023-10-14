@@ -2,19 +2,19 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
-import '../../dtos/exercise_in_workout_dto.dart';
+import '../../../app_constants.dart';
+import '../../../dtos/exercise_in_workout_dto.dart';
 
-class ReOrderExercises extends StatefulWidget {
+class ReOrderExercisesInWorkoutEditor extends StatefulWidget {
   final List<ExerciseInWorkoutDto> exercises;
 
-  const ReOrderExercises({super.key, required this.exercises});
+  const ReOrderExercisesInWorkoutEditor({super.key, required this.exercises});
 
   @override
-  State<ReOrderExercises> createState() => _ReOrderExercisesState();
+  State<ReOrderExercisesInWorkoutEditor> createState() => _ReOrderExercisesInWorkoutEditorState();
 }
 
-class _ReOrderExercisesState extends State<ReOrderExercises> {
+class _ReOrderExercisesInWorkoutEditorState extends State<ReOrderExercisesInWorkoutEditor> {
   bool _hasReOrdered = false;
   late List<ExerciseInWorkoutDto> _reOrderedExercises;
 

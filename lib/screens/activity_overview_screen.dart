@@ -77,10 +77,22 @@ class _WorkoutListItem extends StatelessWidget {
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutActionSheet({required BuildContext context}) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
+
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _showWorkoutEditorScreen(context: context, workoutDto: workoutDto);
+            },
+            child: Text(
+              'Edit ${workoutDto.name}',
+              style: textStyle,
+            ),
+          ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {

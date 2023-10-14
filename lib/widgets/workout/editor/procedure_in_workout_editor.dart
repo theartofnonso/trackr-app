@@ -5,10 +5,10 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 
-import '../helper_widgets/dialog_helper.dart';
+import '../../helper_widgets/dialog_helper.dart';
 
-class SetListItem extends StatelessWidget {
-  const SetListItem({
+class ProcedureInWorkoutEditor extends StatelessWidget {
+  const ProcedureInWorkoutEditor({
     super.key,
     required this.index,
     required this.workingIndex,
@@ -69,12 +69,12 @@ class SetListItem extends StatelessWidget {
       leading: LeadingIcon(type: procedureDto.type, label: workingIndex),
       title: Row(
         children: [
-          _SetListItemTextField(
+          _ProcedureTextField(
               label: 'Reps', initialValue: procedureDto.repCount, onChanged: (value) => onChangedRepCount(value)),
           const SizedBox(
             width: 15,
           ),
-          _SetListItemTextField(
+          _ProcedureTextField(
               label: 'kg', initialValue: procedureDto.weight, onChanged: (value) => onChangedWeight(value)),
         ],
       ),
@@ -114,12 +114,12 @@ class LeadingIcon extends StatelessWidget {
   }
 }
 
-class _SetListItemTextField extends StatelessWidget {
+class _ProcedureTextField extends StatelessWidget {
   final String label;
   final int initialValue;
   final void Function(int) onChanged;
 
-  const _SetListItemTextField({required this.label, required this.onChanged, required this.initialValue});
+  const _ProcedureTextField({required this.label, required this.onChanged, required this.initialValue});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;

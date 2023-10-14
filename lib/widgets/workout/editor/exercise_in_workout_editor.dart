@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/workout/set_list_item.dart';
+import 'package:tracker_app/widgets/workout/editor/procedure_in_workout_editor.dart';
 
-import '../../app_constants.dart';
-import '../../dtos/procedure_dto.dart';
+import '../../../app_constants.dart';
+import '../../../dtos/procedure_dto.dart';
 
-class ExerciseInWorkoutListSection extends StatelessWidget {
+class ExerciseInWorkoutEditor extends StatelessWidget {
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
-  final ExerciseInWorkoutDto? otherExerciseInWorkoutDto;
+  final ExerciseInWorkoutDto? superSetExerciseInWorkoutDto;
 
   /// Exercise callbacks
   final void Function(String value) onUpdateNotes;
@@ -32,10 +32,10 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
   final void Function(int procedureIndex, int value) onChangedProcedureWeight;
   final void Function(int procedureIndex, ProcedureType type) onChangedProcedureType;
 
-  const ExerciseInWorkoutListSection({
+  const ExerciseInWorkoutEditor({
     super.key,
     required this.exerciseInWorkoutDto,
-    required this.otherExerciseInWorkoutDto,
+    required this.superSetExerciseInWorkoutDto,
     required this.onAddSuperSetExercises,
     required this.onRemoveSuperSetExercises,
     required this.onRemoveExercise,
@@ -118,11 +118,11 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
     );
   }
 
-  List<SetListItem> _displayProcedures() {
-    final workingProcedures = []; //3
+  List<ProcedureInWorkoutEditor> _displayProcedures() {
+    final workingProcedures = [];
 
     return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
-      final item = SetListItem(
+      final item = ProcedureInWorkoutEditor(
         index: index,
         onRemoved: (int index) => onRemoveProcedure(index),
         workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
@@ -161,7 +161,7 @@ class ExerciseInWorkoutListSection extends StatelessWidget {
             subtitle: exerciseInWorkoutDto.isSuperSet
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set: ${otherExerciseInWorkoutDto?.exercise.name}",
+                    child: Text("Super set: ${superSetExerciseInWorkoutDto?.exercise.name}",
                         style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
                   )
                 : const SizedBox.shrink(),

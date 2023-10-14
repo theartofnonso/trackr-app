@@ -1,8 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../app_constants.dart';
+import '../dtos/exercise_in_workout_dto.dart';
 import '../dtos/workout_dto.dart';
+import '../widgets/workout/preview/exercise_in_workout_preview.dart';
 
 class WorkoutPreviewScreen extends StatelessWidget {
   final WorkoutDto workoutDto;
@@ -34,6 +37,22 @@ class WorkoutPreviewScreen extends StatelessWidget {
     );
   }
 
+  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
+  List<ExerciseInWorkoutPreview> _exercisesToWidgets({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+    return exercisesInWorkout.map((exerciseInWorkout) {
+      return ExerciseInWorkoutPreview(
+        exerciseInWorkoutDto: exerciseInWorkout,
+        superSetExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
+      );
+    }).toList();
+  }
+
+  ExerciseInWorkoutDto? _whereOtherSuperSet({required ExerciseInWorkoutDto firstExercise}) {
+    return workoutDto.exercises.firstWhereOrNull((exerciseInWorkout) =>
+        exerciseInWorkout.superSetId == firstExercise.superSetId &&
+        exerciseInWorkout.exercise.id != firstExercise.exercise.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -47,6 +66,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
                 child: Icon(
                   CupertinoIcons.ellipsis_vertical,
                   color: CupertinoColors.white,
+                  size: 24,
                 ),
               )),
         ),
@@ -62,32 +82,28 @@ class WorkoutPreviewScreen extends StatelessWidget {
                     margin: EdgeInsets.zero,
                     backgroundColor: Colors.transparent,
                     children: [
-                      CupertinoListTile(title: Text(workoutDto.name))
-                      // CupertinoListTile(
-                      //   backgroundColor: tealBlueLight,
-                      //   title: CupertinoTextField.borderless(
-                      //     controller: _workoutNameController,
-                      //     expands: true,
-                      //     padding: const EdgeInsets.only(left: 20),
-                      //     textCapitalization: TextCapitalization.sentences,
-                      //     keyboardType: TextInputType.text,
-                      //     maxLength: 240,
-                      //     maxLines: null,
-                      //     maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      //     style: TextStyle(
-                      //         fontWeight: FontWeight.w600,
-                      //         color: CupertinoColors.white.withOpacity(0.8),
-                      //         fontSize: 18),
-                      //     placeholder: "New workout",
-                      //     placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
-                      //   ),
-                      //   padding: EdgeInsets.zero,
-                      // ),
+                      CupertinoListTile(
+                        backgroundColor: tealBlueLight,
+                        title: Text(workoutDto.name, style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: CupertinoColors.white.withOpacity(0.8),
+                            fontSize: 18)),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      CupertinoListTile.notched(
+                        backgroundColor: tealBlueLight,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        title: Text(workoutDto.notes ?? "",  style: TextStyle(
+                          height: 1.5,
+                          fontWeight: FontWeight.w600,
+                          color: CupertinoColors.white.withOpacity(0.8),
+                          fontSize: 16,
+                        )),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  //..._exercisesToListSection(exercisesInWorkout: _exercisesInWorkout),
-                  const SizedBox(height: 18),
+                  ..._exercisesToWidgets(exercisesInWorkout: workoutDto.exercises),
                 ],
               ),
             ),
