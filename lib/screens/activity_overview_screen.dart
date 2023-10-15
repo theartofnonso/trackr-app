@@ -25,7 +25,7 @@ class ActivityOverviewScreen extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: workouts.isNotEmpty
               ? _ListOfWorkouts(workouts: workouts)
-              : Center(child: _WorkoutsEmptyState(onPressed: () => _navigateToWorkoutEditorScreen(context: context))),
+              : const Center(child: _WorkoutsEmptyState()),
         ),
       ),
     );
@@ -111,21 +111,14 @@ class _WorkoutListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
-        //padding: const EdgeInsets.symmetric(vertical: 10),
         onTap: () => _navigateToWorkoutPreviewScreen(context: context),
         backgroundColor: tealBlueLight,
+        backgroundColorActivated: tealBlueLighter,
         title: Text(
           workoutDto.name,
           style: const TextStyle(color: CupertinoColors.white),
         ),
         subtitle: Text("${workoutDto.exercises.length} exercises", style: const TextStyle(color: CupertinoColors.white)),
-        leading: CircleAvatar(
-          backgroundColor: CupertinoColors.activeBlue,
-          child: Text(
-            workoutDto.name.substring(0, 1),
-            style: const TextStyle(color: CupertinoColors.white),
-          ),
-        ),
         trailing: GestureDetector(
             onTap: () => _showWorkoutActionSheet(context: context),
             child: const Padding(
@@ -139,9 +132,8 @@ class _WorkoutListItem extends StatelessWidget {
 }
 
 class _WorkoutsEmptyState extends StatelessWidget {
-  final Function() onPressed;
 
-  const _WorkoutsEmptyState({required this.onPressed});
+  const _WorkoutsEmptyState();
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +147,7 @@ class _WorkoutsEmptyState extends StatelessWidget {
           width: double.infinity,
           child: CupertinoButton(
               color: tealBlueLight,
-              onPressed: onPressed,
+              onPressed: () => _navigateToWorkoutEditorScreen(context: context),
               child: Text(
                 "Create Workout",
                 style: Theme.of(context).textTheme.labelLarge,
