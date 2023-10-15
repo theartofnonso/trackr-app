@@ -18,7 +18,7 @@ extension DurationExtension on Duration {
     return durationInNum.toString().padLeft(2, "0");
   }
 
-  String secondsOrMinute() {
+  String secondsOrMinutes() {
     String display = "${inSeconds}s";
     if (inSeconds > 59) {
       final remainingSeconds = inSeconds.remainder(60);

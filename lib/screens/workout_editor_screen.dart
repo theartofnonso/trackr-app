@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/workout/editor/reorder_exercises_in_workout_editor.dart';
 import '../app_constants.dart';
@@ -35,7 +38,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
-  Duration _workoutDuration = Duration.zero;
+  Timer? _workoutTimer;
   Duration? _intervalDuration;
 
   /// Show [CupertinoAlertDialog] for creating a workout
@@ -522,7 +525,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: CupertinoColors.white.withOpacity(0.8),
                                     fontSize: 18)),
-                            trailing: Text("10 mins 11s"),
+                            trailing: _workoutTimer != null ? Text("${Duration(seconds: _workoutTimer?.tick ?? 0).secondsOrMinutes()}") : null,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
                           CupertinoListTile(
@@ -562,19 +565,29 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
     final workout = widget.workoutDto;
 
-    _workoutNameController = TextEditingController(text: workout?.name);
-    _workoutNotesController = TextEditingController(text: workout?.notes);
-
-    if (workout != null) {
-      _exercisesInWorkout = workout.exercises;
+    if(widget.editorType == WorkoutEditorType.editing) {
+      _workoutNameController = TextEditingController(text: workout?.name);
+      _workoutNotesController = TextEditingController(text: workout?.notes);
+      _exercisesInWorkout = workout?.exercises ?? [];
+    } else {
+      _exercisesInWorkout = workout?.exercises ?? [];
+      _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if(mounted) {
+          setState(() {});
+        }
+      });
     }
   }
 
   @override
   void dispose() {
     super.dispose();
-    _workoutNameController.dispose();
-    _workoutNotesController.dispose();
+    if(widget.editorType == WorkoutEditorType.editing) {
+      _workoutNameController.dispose();
+      _workoutNotesController.dispose();
+    } else {
+      _workoutTimer?.cancel();
+    }
   }
 }
 
