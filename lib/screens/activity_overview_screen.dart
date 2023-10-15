@@ -8,7 +8,7 @@ import '../dtos/workout_dto.dart';
 import '../providers/workout_provider.dart';
 import 'workout_editor_screen.dart';
 
-void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) async {
+void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) {
   Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workoutDto)));
 }
 

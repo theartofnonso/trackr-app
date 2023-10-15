@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/workout/editor/reorder_exercises_in_workout_editor.dart';
 import '../app_constants.dart';
@@ -15,10 +16,13 @@ import '../widgets/empty_states/list_tile_empty_state.dart';
 import '../widgets/workout/editor/exercise_in_workout_editor.dart';
 import 'exercise_library_screen.dart';
 
+enum WorkoutEditorType { editing, routine }
+
 class WorkoutEditorScreen extends StatefulWidget {
   final WorkoutDto? workoutDto;
+  final WorkoutEditorType editorType;
 
-  const WorkoutEditorScreen({super.key, this.workoutDto});
+  const WorkoutEditorScreen({super.key, this.workoutDto, this.editorType = WorkoutEditorType.editing});
 
   @override
   State<WorkoutEditorScreen> createState() => _WorkoutEditorScreenState();
@@ -31,6 +35,8 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
+
+  Duration _workoutDuration = Duration.zero;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -383,76 +389,128 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   Widget build(BuildContext context) {
     final previousWorkoutDto = widget.workoutDto;
 
-    return CupertinoPageScaffold(
+    return Scaffold(
         backgroundColor: tealBlueDark,
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: tealBlueDark,
-          trailing: GestureDetector(
-              onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
-              child:
-                  Text(previousWorkoutDto != null ? "Update" : "Save", style: Theme.of(context).textTheme.labelMedium)),
-        ),
-        child: GestureDetector(
+        appBar: widget.editorType == WorkoutEditorType.editing
+            ? CupertinoNavigationBar(
+                backgroundColor: tealBlueDark,
+                trailing: GestureDetector(
+                    onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
+                    child: Text(previousWorkoutDto != null ? "Update" : "Save",
+                        style: Theme.of(context).textTheme.labelMedium)),
+              )
+            : CupertinoNavigationBar(
+                backgroundColor: tealBlueDark,
+                leading: const Icon(
+                  CupertinoIcons.clear_thick,
+                  color: CupertinoColors.white,
+                  size: 24,
+                ),
+                trailing: GestureDetector(
+                    onTap: () {},
+                    child: const Icon(
+                      CupertinoIcons.timer,
+                      color: CupertinoColors.white,
+                      size: 24,
+                    )),
+              ),
+        floatingActionButton: widget.editorType == WorkoutEditorType.routine
+            ? FloatingActionButton(
+                onPressed: _navigateBack,
+                backgroundColor: tealBlueLight,
+                child: const Icon(CupertinoIcons.stop_fill),
+              )
+            : null,
+        body: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CupertinoListSection.insetGrouped(
-                      hasLeading: false,
-                      margin: EdgeInsets.zero,
-                      backgroundColor: Colors.transparent,
-                      children: [
-                        CupertinoListTile(
-                          backgroundColor: tealBlueLight,
-                          title: CupertinoTextField.borderless(
-                            controller: _workoutNameController,
-                            expands: true,
-                            padding: const EdgeInsets.only(left: 20),
-                            textCapitalization: TextCapitalization.sentences,
-                            keyboardType: TextInputType.text,
-                            maxLength: 240,
-                            maxLines: null,
-                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                            style: TextStyle(
+                    if (widget.editorType == WorkoutEditorType.editing)
+                      CupertinoListSection.insetGrouped(
+                        hasLeading: false,
+                        margin: EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        children: [
+                          CupertinoListTile(
+                            backgroundColor: tealBlueLight,
+                            title: CupertinoTextField.borderless(
+                              controller: _workoutNameController,
+                              expands: true,
+                              padding: const EdgeInsets.only(left: 20),
+                              textCapitalization: TextCapitalization.sentences,
+                              keyboardType: TextInputType.text,
+                              maxLength: 240,
+                              maxLines: null,
+                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: CupertinoColors.white.withOpacity(0.8),
+                                  fontSize: 18),
+                              placeholder: "New workout",
+                              placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
+                          CupertinoListTile.notched(
+                            backgroundColor: tealBlueLight,
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                            title: CupertinoTextField.borderless(
+                              controller: _workoutNotesController,
+                              expands: true,
+                              padding: EdgeInsets.zero,
+                              textCapitalization: TextCapitalization.sentences,
+                              keyboardType: TextInputType.text,
+                              maxLength: 240,
+                              maxLines: null,
+                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                              style: TextStyle(
+                                height: 1.5,
                                 fontWeight: FontWeight.w600,
                                 color: CupertinoColors.white.withOpacity(0.8),
-                                fontSize: 18),
-                            placeholder: "New workout",
-                            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
-                          ),
-                          padding: EdgeInsets.zero,
-                        ),
-                        CupertinoListTile.notched(
-                          backgroundColor: tealBlueLight,
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                          title: CupertinoTextField.borderless(
-                            controller: _workoutNotesController,
-                            expands: true,
-                            padding: EdgeInsets.zero,
-                            textCapitalization: TextCapitalization.sentences,
-                           keyboardType: TextInputType.text,
-                            maxLength: 240,
-                            maxLines: null,
-                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                            style: TextStyle(
-                              height: 1.5,
-                              fontWeight: FontWeight.w600,
-                              color: CupertinoColors.white.withOpacity(0.8),
-                              fontSize: 16,
+                                fontSize: 16,
+                              ),
+                              placeholder: "New notes",
+                              placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
                             ),
-                            placeholder: "New notes",
-                            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
+                        ],
+                      )
+                    else
+                      CupertinoListSection.insetGrouped(
+                        hasLeading: false,
+                        margin: EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        children: [
+                          CupertinoListTile(
+                            backgroundColor: tealBlueLight,
+                            title: Text(previousWorkoutDto!.name,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: CupertinoColors.white.withOpacity(0.8),
+                                    fontSize: 18)),
+                            trailing: Text("10 mins 11s"),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          CupertinoListTile(
+                            backgroundColor: tealBlueLight,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            title: Text(previousWorkoutDto.notes,
+                                style: TextStyle(
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: CupertinoColors.white.withOpacity(0.8),
+                                  fontSize: 16,
+                                )),
+                          ),
+                        ],
+                      ),
                     ..._exercisesToWidgets(exercisesInWorkout: _exercisesInWorkout),
                     const SizedBox(height: 18),
                     SizedBox(
@@ -647,6 +705,33 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class _RoutineDisplay extends StatelessWidget {
+  final void Function() onCancelWorkout;
+  final Duration workoutDuration;
+
+  const _RoutineDisplay({required this.onCancelWorkout, required this.workoutDuration});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+      child: Row(children: [
+        GestureDetector(
+            onTap: onCancelWorkout,
+            child: const Icon(
+              CupertinoIcons.clear_thick,
+              size: 24,
+              color: CupertinoColors.white,
+            )),
+        const Spacer(),
+        GestureDetector(
+            onTap: () {},
+            child: Text(workoutDuration.secondsOrMinuteOrHours(), style: Theme.of(context).textTheme.labelMedium)),
+      ]),
     );
   }
 }

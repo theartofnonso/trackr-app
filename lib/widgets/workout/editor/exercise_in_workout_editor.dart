@@ -154,6 +154,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
       header: Column(
         children: [
           CupertinoListTile(
+            backgroundColorActivated: Colors.transparent,
             onTap: () => _showExerciseInWorkoutActionSheet(context),
             padding: EdgeInsets.zero,
             title: Text(exerciseInWorkoutDto.exercise.name,

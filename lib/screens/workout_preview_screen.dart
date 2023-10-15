@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/screens/workout_editor_screen.dart';
 
 import '../app_constants.dart';
 import '../dtos/exercise_in_workout_dto.dart';
@@ -14,7 +15,8 @@ class WorkoutPreviewScreen extends StatelessWidget {
   final void Function() onUpdateWorkout;
   final void Function() onRemoveWorkout;
 
-  const WorkoutPreviewScreen({super.key, required this.workoutId, required this.onUpdateWorkout, required this.onRemoveWorkout});
+  const WorkoutPreviewScreen(
+      {super.key, required this.workoutId, required this.onUpdateWorkout, required this.onRemoveWorkout});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context}) {
@@ -43,8 +45,13 @@ class WorkoutPreviewScreen extends StatelessWidget {
     );
   }
 
+  void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) async {
+    final result = await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workoutDto, editorType: WorkoutEditorType.routine,)));
+  }
+
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  List<ExerciseInWorkoutPreview> _exercisesToWidgets({required WorkoutDto workoutDto, required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+  List<ExerciseInWorkoutPreview> _exercisesToWidgets(
+      {required WorkoutDto workoutDto, required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
     return exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutPreview(
         exerciseInWorkoutDto: exerciseInWorkout,
@@ -53,7 +60,8 @@ class WorkoutPreviewScreen extends StatelessWidget {
     }).toList();
   }
 
-  ExerciseInWorkoutDto? _whereOtherSuperSet({required WorkoutDto workoutDto, required ExerciseInWorkoutDto firstExercise}) {
+  ExerciseInWorkoutDto? _whereOtherSuperSet(
+      {required WorkoutDto workoutDto, required ExerciseInWorkoutDto firstExercise}) {
     return workoutDto.exercises.firstWhereOrNull((exerciseInWorkout) =>
         exerciseInWorkout.superSetId == firstExercise.superSetId &&
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
@@ -63,9 +71,14 @@ class WorkoutPreviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
     final workout = workouts.firstWhere((workout) => workout.id == workoutId);
-    return CupertinoPageScaffold(
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _showWorkoutEditorScreen(context: context, workoutDto: workout),
+          backgroundColor: tealBlueLight,
+          child: const Icon(CupertinoIcons.play_arrow_solid),
+        ),
         backgroundColor: tealBlueDark,
-        navigationBar: CupertinoNavigationBar(
+        appBar: CupertinoNavigationBar(
           backgroundColor: tealBlueDark,
           trailing: GestureDetector(
               onTap: () => _showWorkoutPreviewActionSheet(context: context),
@@ -75,7 +88,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
                 size: 24,
               )),
         ),
-        child: SafeArea(
+        body: SafeArea(
           child: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(10),

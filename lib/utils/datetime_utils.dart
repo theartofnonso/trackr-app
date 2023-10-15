@@ -27,6 +27,15 @@ extension DurationExtension on Duration {
     return display;
   }
 
+  String secondsOrMinuteOrHours() {
+    String display = "${inSeconds}s";
+    if (inSeconds > 59) {
+      final remainingSeconds = inSeconds.remainder(60);
+      display = remainingSeconds > 0 ? "${inMinutes}m ${remainingSeconds}s" : "${inMinutes}m";
+    }
+    return display;
+  }
+
   String friendlyTime() {
     return "${inHours.toString().padLeft(2, "0")} : ${_absoluteDuration(inMinutes)} : ${_absoluteDuration(inSeconds)}";
   }
