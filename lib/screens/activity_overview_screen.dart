@@ -123,7 +123,7 @@ class _WorkoutListItem extends StatelessWidget {
           backgroundColor: CupertinoColors.activeBlue,
           child: Text(
             workoutDto.name.substring(0, 1),
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: const TextStyle(color: CupertinoColors.white),
           ),
         ),
         trailing: GestureDetector(
