@@ -211,6 +211,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     });
   }
 
+  void _checkProcedure({required String exerciseId, required int index}) {
+    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
+    final isChecked = _exercisesInWorkout[exerciseIndex].procedures[index].checked;
+    setState(() {
+      _exercisesInWorkout[exerciseIndex].procedures[index].checked = !isChecked;
+    });
+  }
+
   void _updateProcedureRepCount({required String exerciseId, required int index, required int value}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     _exercisesInWorkout[exerciseIndex].procedures[index].repCount = value;
@@ -278,14 +286,13 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     showModalPopup(
         context: context,
         child: _TimerPicker(
-          previousDuration: _intervalDuration,
-          onSelect: (Duration duration) {
-            Navigator.of(context).pop();
-            setState(() {
-              _intervalDuration = duration;
-            });
-          }
-        ));
+            previousDuration: _intervalDuration,
+            onSelect: (Duration duration) {
+              Navigator.of(context).pop();
+              setState(() {
+                _intervalDuration = duration;
+              });
+            }));
   }
 
   void _showWorkingTimePicker({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
@@ -293,7 +300,8 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         context: context,
         child: _TimerPicker(
           previousDuration: exerciseInWorkoutDto.procedureDuration,
-          onSelect: (Duration duration) => _setWorkingTimer(exerciseId: exerciseInWorkoutDto.exercise.id, duration: duration),
+          onSelect: (Duration duration) =>
+              _setWorkingTimer(exerciseId: exerciseInWorkoutDto.exercise.id, duration: duration),
         ));
   }
 
@@ -317,6 +325,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     return exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutEditor(
         exerciseInWorkoutDto: exerciseInWorkout,
+        editorType: widget.editorType,
         superSetExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
         onRemoveSuperSetExercises: (String superSetId) => _removeSuperSet(superSetId: superSetId),
         onRemoveExercise: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
@@ -335,6 +344,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         onChangedProcedureType: (int procedureIndex, ProcedureType type) =>
             _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
         onReOrderExercises: () => _reOrderExercises(),
+        onCheckProcedure: (int procedureIndex) => _checkProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
       );
     }).toList();
   }
@@ -434,7 +444,9 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        _intervalDuration != null ? Text("10mins 11s", style: Theme.of(context).textTheme.labelLarge) : const SizedBox.shrink(),
+                        _intervalDuration != null
+                            ? Text("10mins 11s", style: Theme.of(context).textTheme.labelLarge)
+                            : const SizedBox.shrink(),
                         const SizedBox(width: 4),
                         const Icon(
                           CupertinoIcons.timer,
@@ -525,7 +537,9 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: CupertinoColors.white.withOpacity(0.8),
                                     fontSize: 18)),
-                            trailing: widget.editorType == WorkoutEditorType.routine ? Text(Duration(seconds: _workoutTimer.tick ?? 0).secondsOrMinutesOrHours()) : null,
+                            trailing: widget.editorType == WorkoutEditorType.routine
+                                ? Text(Duration(seconds: _workoutTimer.tick).secondsOrMinutesOrHours())
+                                : null,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
                           CupertinoListTile(
@@ -565,14 +579,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
     final workout = widget.workoutDto;
 
-    if(widget.editorType == WorkoutEditorType.editing) {
+    if (widget.editorType == WorkoutEditorType.editing) {
       _workoutNameController = TextEditingController(text: workout?.name);
       _workoutNotesController = TextEditingController(text: workout?.notes);
       _exercisesInWorkout = workout?.exercises ?? [];
     } else {
       _exercisesInWorkout = workout?.exercises ?? [];
       _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if(mounted) {
+        if (mounted) {
           setState(() {});
         }
       });
@@ -582,7 +596,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   @override
   void dispose() {
     super.dispose();
-    if(widget.editorType == WorkoutEditorType.editing) {
+    if (widget.editorType == WorkoutEditorType.editing) {
       _workoutNameController.dispose();
       _workoutNotesController.dispose();
     } else {

@@ -5,6 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 
+import '../../../screens/workout_editor_screen.dart';
 import '../../helper_widgets/dialog_helper.dart';
 
 class ProcedureInWorkoutEditor extends StatelessWidget {
@@ -14,6 +15,8 @@ class ProcedureInWorkoutEditor extends StatelessWidget {
     required this.workingIndex,
     required this.exerciseInWorkoutDto,
     required this.procedureDto,
+    this.editorType = WorkoutEditorType.editing,
+    required this.onTapCheck,
     required this.onRemoved,
     required this.onChangedRepCount,
     required this.onChangedWeight,
@@ -23,7 +26,9 @@ class ProcedureInWorkoutEditor extends StatelessWidget {
   final int index;
   final int workingIndex;
   final ProcedureDto procedureDto;
-  final void Function(int index) onRemoved;
+  final WorkoutEditorType editorType;
+  final void Function() onTapCheck;
+  final void Function() onRemoved;
   final void Function(int value) onChangedRepCount;
   final void Function(int value) onChangedWeight;
   final void Function(ProcedureType type) onChangedType;
@@ -48,7 +53,7 @@ class ProcedureInWorkoutEditor extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              onRemoved(index);
+              onRemoved();
             },
             child: const Text('Remove set', style: TextStyle(fontSize: 16)),
           ),
@@ -65,7 +70,7 @@ class ProcedureInWorkoutEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
-      backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
+      backgroundColor: tealBlueLight,
       leading: LeadingIcon(type: procedureDto.type, label: workingIndex),
       title: Row(
         children: [
@@ -76,6 +81,13 @@ class ProcedureInWorkoutEditor extends StatelessWidget {
           ),
           _ProcedureTextField(
               label: 'kg', initialValue: procedureDto.weight, onChanged: (value) => onChangedWeight(value)),
+          editorType == WorkoutEditorType.routine ? GestureDetector(
+            onTap: onTapCheck,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: procedureDto.checked ? const Icon(CupertinoIcons.check_mark_circled_solid, color: CupertinoColors.activeGreen) : const Icon(CupertinoIcons.check_mark_circled, color: CupertinoColors.inactiveGray),
+            ),
+          ) : const SizedBox.shrink()
         ],
       ),
       trailing: GestureDetector(

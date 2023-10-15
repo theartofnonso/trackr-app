@@ -17,6 +17,7 @@ class ProcedureDto {
   int repCount = 0;
   int weight = 0;
   ProcedureType type = ProcedureType.working;
+  bool checked = false;
 
   ProcedureDto();
 

@@ -8,8 +8,11 @@ import 'package:tracker_app/widgets/workout/editor/procedure_in_workout_editor.d
 
 import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
+import '../../../screens/workout_editor_screen.dart';
 
 class ExerciseInWorkoutEditor extends StatelessWidget {
+  final WorkoutEditorType editorType;
+
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
   final ExerciseInWorkoutDto? superSetExerciseInWorkoutDto;
 
@@ -26,6 +29,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
   /// Procedure callbacks
   final void Function() onAddProcedure;
   final void Function(int procedureIndex) onRemoveProcedure;
+  final void Function(int procedureIndex) onCheckProcedure;
 
   /// Procedure values callbacks
   final void Function(int procedureIndex, int value) onChangedProcedureRepCount;
@@ -34,6 +38,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
 
   const ExerciseInWorkoutEditor({
     super.key,
+    this.editorType = WorkoutEditorType.editing,
     required this.exerciseInWorkoutDto,
     required this.superSetExerciseInWorkoutDto,
     required this.onAddSuperSetExercises,
@@ -49,6 +54,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
     required this.onRemoveProcedureTimer,
     required this.onChangedProcedureType,
     required this.onReOrderExercises,
+    required this.onCheckProcedure,
   });
 
   /// Show [CupertinoActionSheet]
@@ -124,13 +130,15 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
     return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
       final item = ProcedureInWorkoutEditor(
         index: index,
-        onRemoved: (int index) => onRemoveProcedure(index),
+        onRemoved: () => onRemoveProcedure(index),
         workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
         exerciseInWorkoutDto: exerciseInWorkoutDto,
         procedureDto: procedure,
+        editorType: editorType,
         onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
         onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
         onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
+        onTapCheck: () => onCheckProcedure(index),
       );
 
       if (procedure.type == ProcedureType.working) {
