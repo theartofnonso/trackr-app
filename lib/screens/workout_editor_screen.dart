@@ -21,10 +21,10 @@ import 'exercise_library_screen.dart';
 enum WorkoutEditorType { editing, routine }
 
 class WorkoutEditorScreen extends StatefulWidget {
-  final WorkoutDto? workoutDto;
+  final String? workoutId;
   final WorkoutEditorType editorType;
 
-  const WorkoutEditorScreen({super.key, this.workoutDto, this.editorType = WorkoutEditorType.editing});
+  const WorkoutEditorScreen({super.key, this.workoutId, this.editorType = WorkoutEditorType.editing});
 
   @override
   State<WorkoutEditorScreen> createState() => _WorkoutEditorScreenState();
@@ -35,13 +35,13 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
 
-  WorkoutDto? _previousWorkout;
-
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
   late Timer _workoutTimer;
   Duration? _intervalDuration;
+
+  WorkoutDto? _previousWorkout;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -411,7 +411,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final previousWorkoutDto = _previousWorkout;
+    final previousWorkout = _previousWorkout;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -419,8 +419,8 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
             ? CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 trailing: GestureDetector(
-                    onTap: previousWorkoutDto != null ? _updateWorkout : _createWorkout,
-                    child: Text(previousWorkoutDto != null ? "Update" : "Save",
+                    onTap: previousWorkout != null ? _updateWorkout : _createWorkout,
+                    child: Text(previousWorkout != null ? "Update" : "Save",
                         style: Theme.of(context).textTheme.labelMedium)),
               )
             : CupertinoNavigationBar(
@@ -526,7 +526,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                         children: [
                           CupertinoListTile(
                             backgroundColor: tealBlueLight,
-                            title: Text(previousWorkoutDto!.name,
+                            title: Text(previousWorkout!.name,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: CupertinoColors.white.withOpacity(0.8),
@@ -539,7 +539,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                           CupertinoListTile(
                             backgroundColor: tealBlueLight,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            title: Text(previousWorkoutDto.notes,
+                            title: Text(previousWorkout.notes,
                                 style: TextStyle(
                                   height: 1.5,
                                   fontWeight: FontWeight.w600,
@@ -567,11 +567,23 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         ));
   }
 
+  WorkoutDto? _getWorkout() {
+    WorkoutDto? workoutDto;
+    final workoutId = widget.workoutId;
+    if(workoutId != null) {
+      final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
+      workoutDto = workouts.firstWhere((workout) => workout.id == workoutId);
+    }
+   return workoutDto;
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _previousWorkout = widget.workoutDto;
+    _previousWorkout = _getWorkout();
+
+    print(_previousWorkout?.exercises[0].procedures);
 
     if (widget.editorType == WorkoutEditorType.editing) {
       _workoutNameController = TextEditingController(text: _previousWorkout?.name);
