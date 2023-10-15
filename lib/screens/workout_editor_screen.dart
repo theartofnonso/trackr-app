@@ -35,6 +35,9 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
 
+
+  WorkoutDto? _previousWorkout;
+
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
@@ -366,18 +369,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
     if (_workoutNameController.text.isEmpty) {
       _showAlertDialog(title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
-      return;
-    }
-
-    if (_exercisesInWorkout.isEmpty) {
+    } else if (_exercisesInWorkout.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
-      return;
+    } else {
+      Provider.of<WorkoutProvider>(context, listen: false).createWorkout(
+          name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _exercisesInWorkout);
+
+      _navigateBack();
     }
-
-    Provider.of<WorkoutProvider>(context, listen: false).createWorkout(
-        name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _exercisesInWorkout);
-
-    _navigateBack();
   }
 
   void _updateWorkout() {
@@ -391,33 +390,29 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
       ),
     ];
 
-    final workout = widget.workoutDto;
-
-    if (workout != null) {
+    final previousWorkout = _previousWorkout;
+    if (previousWorkout != null) {
       if (_workoutNameController.text.isEmpty) {
         _showAlertDialog(
             title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
-        return;
-      }
-
-      if (_exercisesInWorkout.isEmpty) {
+      } else if (_exercisesInWorkout.isEmpty) {
         _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
-        return;
+      } else {
+        Provider.of<WorkoutProvider>(context, listen: false).updateWorkout(
+            id: previousWorkout.id,
+            name: _workoutNameController.text,
+            notes: _workoutNotesController.text,
+            exercises: _exercisesInWorkout);
+
+        _navigateBack();
       }
-
-      Provider.of<WorkoutProvider>(context, listen: false).updateWorkout(
-          id: workout.id,
-          name: _workoutNameController.text,
-          notes: _workoutNotesController.text,
-          exercises: _exercisesInWorkout);
-
-      _navigateBack();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final previousWorkoutDto = widget.workoutDto;
+
+    final previousWorkoutDto = _previousWorkout;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -577,14 +572,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   void initState() {
     super.initState();
 
-    final workout = widget.workoutDto;
+    _previousWorkout = widget.workoutDto;
 
     if (widget.editorType == WorkoutEditorType.editing) {
-      _workoutNameController = TextEditingController(text: workout?.name);
-      _workoutNotesController = TextEditingController(text: workout?.notes);
-      _exercisesInWorkout = workout?.exercises ?? [];
+      _workoutNameController = TextEditingController(text: _previousWorkout?.name);
+      _workoutNotesController = TextEditingController(text: _previousWorkout?.notes);
+      _exercisesInWorkout = _previousWorkout?.exercises ?? [];
     } else {
-      _exercisesInWorkout = workout?.exercises ?? [];
+      _exercisesInWorkout = _previousWorkout?.exercises ?? [];
       _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (mounted) {
           setState(() {});
