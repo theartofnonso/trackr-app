@@ -211,6 +211,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
           ),
           CupertinoListTile(
             leadingToTitle: 8,
+            backgroundColorActivated: Colors.transparent,
             padding: EdgeInsets.zero,
             onTap: onAddProcedure,
             title: Text(
