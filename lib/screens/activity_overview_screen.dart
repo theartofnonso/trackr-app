@@ -111,14 +111,14 @@ class _WorkoutListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        //padding: const EdgeInsets.symmetric(vertical: 10),
         onTap: () => _navigateToWorkoutPreviewScreen(context: context),
         backgroundColor: tealBlueLight,
         title: Text(
           workoutDto.name,
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: const TextStyle(color: CupertinoColors.white),
         ),
-        subtitle: Text("${workoutDto.exercises.length} exercises", style: Theme.of(context).textTheme.bodySmall),
+        subtitle: Text("${workoutDto.exercises.length} exercises", style: const TextStyle(color: CupertinoColors.white)),
         leading: CircleAvatar(
           backgroundColor: CupertinoColors.activeBlue,
           child: Text(
