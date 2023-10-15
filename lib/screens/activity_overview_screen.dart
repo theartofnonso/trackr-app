@@ -12,10 +12,6 @@ void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workou
   Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workoutDto)));
 }
 
-void _removeWorkout({required BuildContext context, required String workoutId}) {
-  Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
-}
-
 class ActivityOverviewScreen extends StatelessWidget {
   const ActivityOverviewScreen({super.key});
 
@@ -91,7 +87,7 @@ class _WorkoutListItem extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeWorkout(context: context, workoutId: workoutDto.id);
+              _removeWorkout(context: context);
             },
             child: Text(
               'Remove ${workoutDto.name}',
@@ -103,23 +99,20 @@ class _WorkoutListItem extends StatelessWidget {
     );
   }
 
-  void _showWorkoutPreviewScreen({required BuildContext context, required WorkoutDto workoutDto}) async {
-    Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) => WorkoutPreviewScreen(
-              workoutId: workoutDto.id,
-              onUpdateWorkout: () => _showWorkoutEditorScreen(context: context, workoutDto: workoutDto),
-              onRemoveWorkout: () {
-                Navigator.of(context).pop();
-                _removeWorkout(context: context, workoutId: workoutDto.id);
-              },
-            )));
+  void _removeWorkout({required BuildContext context}) {
+    Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutDto.id);
+  }
+
+  void _showWorkoutPreviewScreen({required BuildContext context}) async {
+    Navigator.of(context)
+        .push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutId: workoutDto.id)));
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        onTap: () => _showWorkoutPreviewScreen(context: context, workoutDto: workoutDto),
+        onTap: () => _showWorkoutPreviewScreen(context: context),
         backgroundColor: tealBlueLight,
         title: Text(
           workoutDto.name,

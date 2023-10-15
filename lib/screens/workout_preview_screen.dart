@@ -12,11 +12,9 @@ import '../widgets/workout/preview/exercise_in_workout_preview.dart';
 
 class WorkoutPreviewScreen extends StatelessWidget {
   final String workoutId;
-  final void Function() onUpdateWorkout;
-  final void Function() onRemoveWorkout;
 
   const WorkoutPreviewScreen(
-      {super.key, required this.workoutId, required this.onUpdateWorkout, required this.onRemoveWorkout});
+      {super.key, required this.workoutId});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context}) {
@@ -28,7 +26,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onUpdateWorkout();
+              _showWorkoutEditorScreen(context: context, type: WorkoutEditorType.editing);
             },
             child: Text('Edit Workout', style: textStyle),
           ),
@@ -36,7 +34,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              onRemoveWorkout();
+              _removeWorkout(context: context);
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -45,8 +43,13 @@ class WorkoutPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _showWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) async {
-    final result = await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workoutDto, editorType: WorkoutEditorType.routine,)));
+  void _showWorkoutEditorScreen({required BuildContext context, required WorkoutEditorType type}) {
+    final workout = _getWorkout(context: context);
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutDto: workout, editorType: type)));
+  }
+
+  void _removeWorkout({required BuildContext context}) {
+    Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
@@ -67,13 +70,18 @@ class WorkoutPreviewScreen extends StatelessWidget {
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
   }
 
+  WorkoutDto _getWorkout({required BuildContext context}) {
+    final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
+    final workout = workouts.firstWhere((workout) => workout.id == workoutId);
+    return workout;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
-    final workout = workouts.firstWhere((workout) => workout.id == workoutId);
+   final workout = _getWorkout(context: context);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _showWorkoutEditorScreen(context: context, workoutDto: workout),
+          onPressed: () => _showWorkoutEditorScreen(context: context, type: WorkoutEditorType.routine),
           backgroundColor: tealBlueLight,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),

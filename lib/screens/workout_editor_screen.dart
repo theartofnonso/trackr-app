@@ -35,7 +35,6 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
 
-
   WorkoutDto? _previousWorkout;
 
   late TextEditingController _workoutNameController;
@@ -582,7 +581,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
       _exercisesInWorkout = _previousWorkout?.exercises ?? [];
       _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (mounted) {
-          setState(() {});
+          //setState(() {});
         }
       });
     }
@@ -597,6 +596,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     } else {
       _workoutTimer.cancel();
     }
+    _scrollController.dispose();
   }
 }
 
