@@ -38,7 +38,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
-  Timer? _workoutTimer;
+  late Timer _workoutTimer;
   Duration? _intervalDuration;
 
   /// Show [CupertinoAlertDialog] for creating a workout
@@ -525,7 +525,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: CupertinoColors.white.withOpacity(0.8),
                                     fontSize: 18)),
-                            trailing: _workoutTimer != null ? Text("${Duration(seconds: _workoutTimer?.tick ?? 0).secondsOrMinutes()}") : null,
+                            trailing: widget.editorType == WorkoutEditorType.routine ? Text(Duration(seconds: _workoutTimer.tick ?? 0).secondsOrMinutesOrHours()) : null,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
                           CupertinoListTile(
@@ -586,7 +586,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
       _workoutNameController.dispose();
       _workoutNotesController.dispose();
     } else {
-      _workoutTimer?.cancel();
+      _workoutTimer.cancel();
     }
   }
 }

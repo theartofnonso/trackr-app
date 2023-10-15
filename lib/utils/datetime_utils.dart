@@ -18,20 +18,19 @@ extension DurationExtension on Duration {
     return durationInNum.toString().padLeft(2, "0");
   }
 
-  String secondsOrMinutes() {
-    String display = "${inSeconds}s";
-    if (inSeconds > 59) {
-      final remainingSeconds = inSeconds.remainder(60);
-      display = remainingSeconds > 0 ? "${inMinutes}m ${remainingSeconds}s" : "${inMinutes}m";
-    }
-    return display;
-  }
-
-  String secondsOrMinuteOrHours() {
-    String display = "${inSeconds}s";
-    if (inSeconds > 59) {
-      final remainingSeconds = inSeconds.remainder(60);
-      display = remainingSeconds > 0 ? "${inMinutes}m ${remainingSeconds}s" : "${inMinutes}m";
+  String secondsOrMinutesOrHours() {
+    String display;
+    final remainingSeconds = inSeconds.remainder(60);
+    final remainingMinutes = inMinutes.remainder(60);
+    final remainingHours = inHours.remainder(24);
+    if (inHours > 24) {
+      display = "${inDays}d ${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s";
+    } else if (inMinutes > 59) {
+      display = "${inHours}h ${remainingMinutes}m ${remainingSeconds}s";
+    } else if (inSeconds > 59) {
+      display = "${inMinutes}m ${remainingSeconds}s";
+    } else {
+      display = "${inSeconds}s";
     }
     return display;
   }

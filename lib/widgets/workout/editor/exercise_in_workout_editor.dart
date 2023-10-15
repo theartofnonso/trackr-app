@@ -143,7 +143,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
 
   String _displayTimer() {
     final duration = exerciseInWorkoutDto.procedureDuration;
-    return duration != null && duration != Duration.zero ? duration.secondsOrMinutes() : "Off";
+    return duration != null && duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
   }
 
   @override
