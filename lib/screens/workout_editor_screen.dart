@@ -7,7 +7,6 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/workout/editor/reorder_exercises_in_workout_editor.dart';
 import '../app_constants.dart';
@@ -37,6 +36,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   late TextEditingController _workoutNotesController;
 
   Duration _workoutDuration = Duration.zero;
+  Duration? _intervalDuration;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -271,6 +271,29 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
   }
 
+  void _showIntervalTimePicker() {
+    showModalPopup(
+        context: context,
+        child: _TimerPicker(
+          previousDuration: _intervalDuration,
+          onSelect: (Duration duration) {
+            Navigator.of(context).pop();
+            setState(() {
+              _intervalDuration = duration;
+            });
+          }
+        ));
+  }
+
+  void _showWorkingTimePicker({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
+    showModalPopup(
+        context: context,
+        child: _TimerPicker(
+          previousDuration: exerciseInWorkoutDto.procedureDuration,
+          onSelect: (Duration duration) => _setWorkingTimer(exerciseId: exerciseInWorkoutDto.exercise.id, duration: duration),
+        ));
+  }
+
   void _setWorkingTimer({required String exerciseId, required Duration duration}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     Navigator.of(context).pop();
@@ -304,13 +327,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
             _removeProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
         onUpdateNotes: (String value) => _updateNotes(exerciseId: exerciseInWorkout.exercise.id, value: value),
         onReplaceExercise: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
-        onSetProcedureTimer: () => showModalPopup(
-            context: context,
-            child: _Timer(
-              previousDuration: exerciseInWorkout.procedureDuration,
-              onSelect: (Duration duration) =>
-                  _setWorkingTimer(exerciseId: exerciseInWorkout.exercise.id, duration: duration),
-            )),
+        onSetProcedureTimer: () => _showWorkingTimePicker(exerciseInWorkoutDto: exerciseInWorkout),
         onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
         onChangedProcedureType: (int procedureIndex, ProcedureType type) =>
             _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
@@ -401,17 +418,27 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
               )
             : CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
-                leading: const Icon(
-                  CupertinoIcons.clear_thick,
-                  color: CupertinoColors.white,
-                  size: 24,
+                leading: GestureDetector(
+                  onTap: _navigateBack,
+                  child: const Icon(
+                    CupertinoIcons.clear_thick,
+                    color: CupertinoColors.white,
+                    size: 24,
+                  ),
                 ),
                 trailing: GestureDetector(
-                    onTap: () {},
-                    child: const Icon(
-                      CupertinoIcons.timer,
-                      color: CupertinoColors.white,
-                      size: 24,
+                    onTap: _showIntervalTimePicker,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _intervalDuration != null ? Text("10mins 11s", style: Theme.of(context).textTheme.labelLarge) : const SizedBox.shrink(),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          CupertinoIcons.timer,
+                          color: CupertinoColors.white,
+                          size: 24,
+                        )
+                      ],
                     )),
               ),
         floatingActionButton: widget.editorType == WorkoutEditorType.routine
@@ -619,17 +646,17 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
   }
 }
 
-class _Timer extends StatefulWidget {
+class _TimerPicker extends StatefulWidget {
   final Duration? previousDuration;
   final void Function(Duration duration) onSelect;
 
-  const _Timer({required this.onSelect, required this.previousDuration});
+  const _TimerPicker({required this.onSelect, required this.previousDuration});
 
   @override
-  State<_Timer> createState() => _TimerState();
+  State<_TimerPicker> createState() => _TimerPickerState();
 }
 
-class _TimerState extends State<_Timer> {
+class _TimerPickerState extends State<_TimerPicker> {
   late Duration _duration;
 
   @override
@@ -705,33 +732,6 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class _RoutineDisplay extends StatelessWidget {
-  final void Function() onCancelWorkout;
-  final Duration workoutDuration;
-
-  const _RoutineDisplay({required this.onCancelWorkout, required this.workoutDuration});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-      child: Row(children: [
-        GestureDetector(
-            onTap: onCancelWorkout,
-            child: const Icon(
-              CupertinoIcons.clear_thick,
-              size: 24,
-              color: CupertinoColors.white,
-            )),
-        const Spacer(),
-        GestureDetector(
-            onTap: () {},
-            child: Text(workoutDuration.secondsOrMinuteOrHours(), style: Theme.of(context).textTheme.labelMedium)),
-      ]),
     );
   }
 }
