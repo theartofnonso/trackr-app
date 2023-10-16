@@ -28,7 +28,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
               Navigator.pop(context);
               _navigateToWorkoutEditorScreen(context: context, type: WorkoutEditorType.editing);
             },
-            child: Text('Edit Workout', style: textStyle),
+            child: Text('Edit', style: textStyle),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
@@ -78,7 +78,8 @@ class WorkoutPreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   final workout = _getWorkout(context: context);
+    final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
+    final workout = workouts.firstWhere((workout) => workout.id == workoutId);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () => _navigateToWorkoutEditorScreen(context: context, type: WorkoutEditorType.routine),

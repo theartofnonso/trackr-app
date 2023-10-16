@@ -72,6 +72,10 @@ class _WorkoutListItem extends StatelessWidget {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
+        title: Text(
+          workoutDto.name,
+          style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
+        ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
@@ -79,7 +83,7 @@ class _WorkoutListItem extends StatelessWidget {
               _navigateToWorkoutEditorScreen(context: context, workoutDto: workoutDto);
             },
             child: Text(
-              'Edit ${workoutDto.name}',
+              'Edit',
               style: textStyle,
             ),
           ),
@@ -89,9 +93,9 @@ class _WorkoutListItem extends StatelessWidget {
               Navigator.pop(context);
               _removeWorkout(context: context);
             },
-            child: Text(
-              'Remove ${workoutDto.name}',
-              style: const TextStyle(fontSize: 16),
+            child: const Text(
+              'Remove',
+              style: TextStyle(fontSize: 16),
             ),
           ),
         ],
