@@ -9,7 +9,7 @@ import '../providers/workout_provider.dart';
 import 'workout_editor_screen.dart';
 
 void _navigateToWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) {
-  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workoutDto?.id)));
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workoutDto?.id)));
 }
 
 class ActivityOverviewScreen extends StatelessWidget {
@@ -109,7 +109,7 @@ class _WorkoutListItem extends StatelessWidget {
 
   void _navigateToWorkoutPreviewScreen({required BuildContext context}) async {
     Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutId: workoutDto.id)));
+        .push(MaterialPageRoute(builder: (context) => WorkoutPreviewScreen(workoutId: workoutDto.id)));
   }
 
   @override

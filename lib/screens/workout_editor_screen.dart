@@ -352,7 +352,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _navigateBack() {
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
   void _createWorkout() {
@@ -570,6 +570,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   WorkoutDto? _getWorkout() {
     WorkoutDto? workoutDto;
     final workoutId = widget.workoutId;
+    print(workoutId);
     if(workoutId != null) {
       final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
       workoutDto = workouts.firstWhere((workout) => workout.id == workoutId);
@@ -580,17 +581,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   @override
   void initState() {
     super.initState();
-
     _previousWorkout = _getWorkout();
 
-    print(_previousWorkout?.exercises[0].procedures);
+    _exercisesInWorkout = [...?_previousWorkout?.exercises];
 
     if (widget.editorType == WorkoutEditorType.editing) {
       _workoutNameController = TextEditingController(text: _previousWorkout?.name);
       _workoutNotesController = TextEditingController(text: _previousWorkout?.notes);
-      _exercisesInWorkout = _previousWorkout?.exercises ?? [];
     } else {
-      _exercisesInWorkout = _previousWorkout?.exercises ?? [];
       _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (mounted) {
           //setState(() {});
@@ -610,6 +608,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     }
     _scrollController.dispose();
   }
+
 }
 
 class _ListOfExercises extends StatefulWidget {

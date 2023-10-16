@@ -45,7 +45,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
 
   void _navigateToWorkoutEditorScreen({required BuildContext context, required WorkoutEditorType type}) {
     final workout = _getWorkout(context: context);
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workout.id, editorType: type)));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workout.id, editorType: type)));
   }
 
   void _removeWorkout({required BuildContext context}) {

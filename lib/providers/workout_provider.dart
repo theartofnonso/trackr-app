@@ -6,10 +6,10 @@ class WorkoutProvider with ChangeNotifier {
 
   final List<WorkoutDto> _workouts = [];
 
-  List<WorkoutDto> get workouts => _workouts;
+  List<WorkoutDto> get workouts => [..._workouts];
 
   void createWorkout({required String name, required String notes, required List<ExerciseInWorkoutDto> exercises}) {
-    final workout = WorkoutDto(id: "id_${DateTime.now().millisecond}",name: name, notes: notes, exercises: [...exercises]);
+    final workout = WorkoutDto(id: "id_${DateTime.now().millisecondsSinceEpoch}",name: name, notes: notes, exercises: [...exercises]);
     _workouts.add(workout);
     notifyListeners();
   }
