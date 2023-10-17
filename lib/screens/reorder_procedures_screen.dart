@@ -2,39 +2,39 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../app_constants.dart';
-import '../../../dtos/procedure_dto.dart';
+import '../app_constants.dart';
+import '../dtos/procedure_dto.dart';
 
-class ReOrderExercisesInWorkoutEditor extends StatefulWidget {
-  final List<ProcedureDto> exercises;
+class ReOrderProceduresScreen extends StatefulWidget {
+  final List<ProcedureDto> procedures;
 
-  const ReOrderExercisesInWorkoutEditor({super.key, required this.exercises});
+  const ReOrderProceduresScreen({super.key, required this.procedures});
 
   @override
-  State<ReOrderExercisesInWorkoutEditor> createState() => _ReOrderExercisesInWorkoutEditorState();
+  State<ReOrderProceduresScreen> createState() => _ReOrderProceduresScreenState();
 }
 
-class _ReOrderExercisesInWorkoutEditorState extends State<ReOrderExercisesInWorkoutEditor> {
+class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
   bool _hasReOrdered = false;
-  late List<ProcedureDto> _reOrderedExercises;
+  late List<ProcedureDto> _procedures;
 
-  void _reOrderExercises({required int oldIndex, required int newIndex}) {
+  void _reOrderProcedures({required int oldIndex, required int newIndex}) {
     setState(() {
       _hasReOrdered = true;
 
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
-      final ProcedureDto item = _reOrderedExercises.removeAt(oldIndex);
-      _reOrderedExercises.insert(newIndex, item);
+      final ProcedureDto item = _procedures.removeAt(oldIndex);
+      _procedures.insert(newIndex, item);
     });
   }
 
-  List<Widget> _exerciseToListTile() {
-    return _reOrderedExercises
-        .mapIndexed((index, exercise) => CupertinoListTile(
+  List<Widget> _proceduresToWidgets() {
+    return _procedures
+        .mapIndexed((index, procedure) => CupertinoListTile(
               key: Key("$index"),
-              title: Text(exercise.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
+              title: Text(procedure.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
               trailing: const Icon(
                 CupertinoIcons.bars,
                 color: CupertinoColors.white,
@@ -45,7 +45,7 @@ class _ReOrderExercisesInWorkoutEditorState extends State<ReOrderExercisesInWork
 
   /// Navigate to previous screen
   void _saveReOrdering() {
-    Navigator.of(context).pop(_reOrderedExercises);
+    Navigator.of(context).pop(_procedures);
   }
 
   @override
@@ -67,14 +67,14 @@ class _ReOrderExercisesInWorkoutEditorState extends State<ReOrderExercisesInWork
                 : const SizedBox.shrink()),
       ),
       child: ReorderableListView(
-          children: _exerciseToListTile(),
-          onReorder: (int oldIndex, int newIndex) => _reOrderExercises(oldIndex: oldIndex, newIndex: newIndex)),
+          children: _proceduresToWidgets(),
+          onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _reOrderedExercises = widget.exercises;
+    _procedures = widget.procedures;
   }
 }

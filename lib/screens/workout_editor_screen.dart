@@ -11,7 +11,7 @@ import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
-import 'package:tracker_app/widgets/workout/editor/reorder_exercises_in_workout_editor.dart';
+import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../app_constants.dart';
 import '../dtos/set_dto.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
@@ -95,7 +95,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     final reOrderedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ReOrderExercisesInWorkoutEditor(exercises: _exercisesInWorkout);
+        return ReOrderProceduresScreen(procedures: _exercisesInWorkout);
       },
     ) as List<ProcedureDto>?;
 
@@ -559,6 +559,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                           ),
                         ],
                       ),
+                    const SizedBox(height: 12),
                     ..._exercisesToWidgets(exercisesInWorkout: _exercisesInWorkout),
                     const SizedBox(height: 18),
                     SizedBox(
