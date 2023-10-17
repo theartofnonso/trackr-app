@@ -25,7 +25,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToWorkoutEditorScreen(context: context, type: WorkoutEditorType.editing);
+              _navigateToWorkoutEditorScreen(context: context, type: RoutineEditorMode.editing);
             },
             child: Text('Edit', style: textStyle),
           ),
@@ -42,9 +42,9 @@ class WorkoutPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToWorkoutEditorScreen({required BuildContext context, required WorkoutEditorType type}) {
-    final workout = _getWorkout(context: context);
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workout.id, editorType: type)));
+  void _navigateToWorkoutEditorScreen({required BuildContext context, required RoutineEditorMode type}) {
+    final routine = _getWorkout(context: context);
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: type)));
   }
 
   void _removeWorkout({required BuildContext context}) {
@@ -81,7 +81,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
     final workout = workouts.firstWhere((workout) => workout.id == workoutId);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToWorkoutEditorScreen(context: context, type: WorkoutEditorType.routine),
+          onPressed: () => _navigateToWorkoutEditorScreen(context: context, type: RoutineEditorMode.routine),
           backgroundColor: tealBlueLight,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),

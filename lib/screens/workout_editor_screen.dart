@@ -18,19 +18,19 @@ import '../widgets/empty_states/list_tile_empty_state.dart';
 import '../widgets/workout/editor/procedure_widget.dart';
 import 'exercise_library_screen.dart';
 
-enum WorkoutEditorType { editing, routine }
+enum RoutineEditorMode { editing, routine }
 
-class WorkoutEditorScreen extends StatefulWidget {
-  final String? workoutId;
-  final WorkoutEditorType editorType;
+class RoutineEditorScreen extends StatefulWidget {
+  final RoutineDto? routine;
+  final RoutineEditorMode mode;
 
-  const WorkoutEditorScreen({super.key, this.workoutId, this.editorType = WorkoutEditorType.editing});
+  const RoutineEditorScreen({super.key, this.routine, this.mode = RoutineEditorMode.editing});
 
   @override
-  State<WorkoutEditorScreen> createState() => _WorkoutEditorScreenState();
+  State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
 }
 
-class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
+class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   final _scrollController = ScrollController();
 
   List<ProcedureDto> _procedures = [];
@@ -327,7 +327,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     return procedures.map((procedure) {
       return ProcedureWidget(
         procedureDto: procedure,
-        editorType: widget.editorType,
+        editorType: widget.mode,
         superSetProcedureDto: _whereOtherSuperSet(firstExercise: procedure),
         onRemoveSuperSetProcedure: (String superSetId) => _removeSuperSet(superSetId: superSetId),
         onRemoveProcedure: () => _removeExercise(exerciseId: procedure.exercise.id),
@@ -408,7 +408,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
     return Scaffold(
         backgroundColor: tealBlueDark,
-        appBar: widget.editorType == WorkoutEditorType.editing
+        appBar: widget.mode == RoutineEditorMode.editing
             ? CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 trailing: GestureDetector(
@@ -443,7 +443,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                       ],
                     )),
               ),
-        floatingActionButton: widget.editorType == WorkoutEditorType.routine
+        floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
                 onPressed: _navigateBack,
                 backgroundColor: tealBlueLight,
@@ -461,7 +461,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (widget.editorType == WorkoutEditorType.editing)
+                    if (widget.mode == RoutineEditorMode.editing)
                       CupertinoListSection.insetGrouped(
                         hasLeading: false,
                         margin: EdgeInsets.zero,
@@ -524,7 +524,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: CupertinoColors.white.withOpacity(0.8),
                                     fontSize: 18)),
-                            trailing: widget.editorType == WorkoutEditorType.routine
+                            trailing: widget.mode == RoutineEditorMode.routine
                                 ? Text(Duration(seconds: _workoutTimer.tick).secondsOrMinutesOrHours())
                                 : null,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -563,23 +563,23 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   RoutineDto? _fetchRoutine() {
     RoutineDto? workoutDto;
-    final routineId = widget.workoutId;
-    if (routineId != null) {
-      final routines = Provider.of<RoutineProvider>(context, listen: false).workouts;
-      workoutDto = routines.firstWhere((workout) => workout.id == routineId);
-      // print(workoutDto.procedures[0].notes);
-    }
+    final routine = widget.routine?.id;
+    // if (routine != null) {
+    //   final routines = Provider.of<RoutineProvider>(context, listen: false).workouts;
+    //   workoutDto = routines.firstWhere((workout) => workout.id == routineId);
+    //   // print(workoutDto.procedures[0].notes);
+    // }
     return workoutDto;
   }
 
   @override
   void initState() {
     super.initState();
-    _previousRoutine = _fetchRoutine();
+    _previousRoutine = widget.routine;//_fetchRoutine();
 
     _procedures = [...?_previousRoutine?.procedures];
 
-    if (widget.editorType == WorkoutEditorType.editing) {
+    if (widget.mode == RoutineEditorMode.editing) {
       _workoutNameController = TextEditingController(text: _previousRoutine?.name);
       _workoutNotesController = TextEditingController(text: _previousRoutine?.notes);
     } else {
@@ -594,7 +594,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.editorType == WorkoutEditorType.editing) {
+    if (widget.mode == RoutineEditorMode.editing) {
       _workoutNameController.dispose();
       _workoutNotesController.dispose();
     } else {

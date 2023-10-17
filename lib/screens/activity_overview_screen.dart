@@ -8,8 +8,8 @@ import '../dtos/routine_dto.dart';
 import '../providers/workout_provider.dart';
 import 'workout_editor_screen.dart';
 
-void _navigateToWorkoutEditorScreen({required BuildContext context, RoutineDto? workoutDto}) {
-  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workoutDto?.id)));
+void _navigateToWorkoutEditorScreen({required BuildContext context, RoutineDto? routineDto}) {
+  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routineDto)));
 }
 
 class ActivityOverviewScreen extends StatelessWidget {
@@ -80,7 +80,7 @@ class _WorkoutListItem extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToWorkoutEditorScreen(context: context, workoutDto: workoutDto);
+              _navigateToWorkoutEditorScreen(context: context, routineDto: workoutDto);
             },
             child: Text(
               'Edit',
