@@ -48,7 +48,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
   }
 
   void _removeWorkout({required BuildContext context}) {
-    Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutId);
+    Provider.of<RoutineProvider>(context, listen: false).removeWorkout(id: workoutId);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
@@ -70,14 +70,14 @@ class WorkoutPreviewScreen extends StatelessWidget {
   }
 
   RoutineDto _getWorkout({required BuildContext context}) {
-    final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
+    final workouts = Provider.of<RoutineProvider>(context, listen: false).workouts;
     final workout = workouts.firstWhere((workout) => workout.id == workoutId);
     return workout;
   }
 
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
+    final workouts = Provider.of<RoutineProvider>(context, listen: true).workouts;
     final workout = workouts.firstWhere((workout) => workout.id == workoutId);
     return Scaffold(
         floatingActionButton: FloatingActionButton(

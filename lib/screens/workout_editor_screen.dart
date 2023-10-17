@@ -367,7 +367,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     } else if (_procedures.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      Provider.of<WorkoutProvider>(context, listen: false).createWorkout(name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
+      Provider.of<RoutineProvider>(context, listen: false).createWorkout(name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
 
       _navigateBack();
     }
@@ -391,7 +391,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
       } else if (_procedures.isEmpty) {
         _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
       } else {
-        Provider.of<WorkoutProvider>(context, listen: false).updateWorkout(
+        Provider.of<RoutineProvider>(context, listen: false).updateWorkout(
             id: previousWorkout.id,
             name: _workoutNameController.text,
             notes: _workoutNotesController.text,
@@ -563,10 +563,10 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   RoutineDto? _fetchRoutine() {
     RoutineDto? workoutDto;
-    final workoutId = widget.workoutId;
-    if (workoutId != null) {
-      final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
-      workoutDto = workouts.firstWhere((workout) => workout.id == workoutId);
+    final routineId = widget.workoutId;
+    if (routineId != null) {
+      final routines = Provider.of<RoutineProvider>(context, listen: false).workouts;
+      workoutDto = routines.firstWhere((workout) => workout.id == routineId);
       // print(workoutDto.procedures[0].notes);
     }
     return workoutDto;

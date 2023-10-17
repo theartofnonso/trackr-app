@@ -25,8 +25,8 @@ void main() async {
     ChangeNotifierProvider<DateTimeEntryProvider>(
       create: (BuildContext context) => DateTimeEntryProvider(),
     ),
-    ChangeNotifierProvider<WorkoutProvider>(
-      create: (BuildContext context) => WorkoutProvider(),
+    ChangeNotifierProvider<RoutineProvider>(
+      create: (BuildContext context) => RoutineProvider(),
     ),
   ], child: const MyApp()));
 }

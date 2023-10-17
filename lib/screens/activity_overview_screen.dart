@@ -17,7 +17,7 @@ class ActivityOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
+    final workouts = Provider.of<RoutineProvider>(context, listen: true).workouts;
 
     return CupertinoPageScaffold(
       child: SafeArea(
@@ -104,7 +104,7 @@ class _WorkoutListItem extends StatelessWidget {
   }
 
   void _removeWorkout({required BuildContext context}) {
-    Provider.of<WorkoutProvider>(context, listen: false).removeWorkout(id: workoutDto.id);
+    Provider.of<RoutineProvider>(context, listen: false).removeWorkout(id: workoutDto.id);
   }
 
   void _navigateToWorkoutPreviewScreen({required BuildContext context}) async {

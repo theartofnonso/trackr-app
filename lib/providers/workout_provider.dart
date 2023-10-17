@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/routine_dto.dart';
 
-class WorkoutProvider with ChangeNotifier {
+class RoutineProvider with ChangeNotifier {
 
   final List<RoutineDto> _workouts = [];
 
