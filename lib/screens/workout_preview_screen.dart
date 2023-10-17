@@ -6,7 +6,7 @@ import 'package:tracker_app/screens/workout_editor_screen.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
-import '../dtos/workout_dto.dart';
+import '../dtos/routine_dto.dart';
 import '../providers/workout_provider.dart';
 import '../widgets/workout/preview/exercise_in_workout_preview.dart';
 
@@ -53,7 +53,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
   List<ExerciseInWorkoutPreview> _exercisesToWidgets(
-      {required WorkoutDto workoutDto, required List<ProcedureDto> exercisesInWorkout}) {
+      {required RoutineDto workoutDto, required List<ProcedureDto> exercisesInWorkout}) {
     return exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutPreview(
         exerciseInWorkoutDto: exerciseInWorkout,
@@ -63,13 +63,13 @@ class WorkoutPreviewScreen extends StatelessWidget {
   }
 
   ProcedureDto? _whereOtherSuperSet(
-      {required WorkoutDto workoutDto, required ProcedureDto firstExercise}) {
-    return workoutDto.exercises.firstWhereOrNull((exerciseInWorkout) =>
+      {required RoutineDto workoutDto, required ProcedureDto firstExercise}) {
+    return workoutDto.procedures.firstWhereOrNull((exerciseInWorkout) =>
         exerciseInWorkout.superSetId == firstExercise.superSetId &&
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
   }
 
-  WorkoutDto _getWorkout({required BuildContext context}) {
+  RoutineDto _getWorkout({required BuildContext context}) {
     final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
     final workout = workouts.firstWhere((workout) => workout.id == workoutId);
     return workout;
@@ -131,7 +131,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  ..._exercisesToWidgets(workoutDto: workout, exercisesInWorkout: workout.exercises),
+                  ..._exercisesToWidgets(workoutDto: workout, exercisesInWorkout: workout.procedures),
                 ],
               ),
             ),

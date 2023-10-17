@@ -189,6 +189,7 @@ class ProcedureWidget extends StatelessWidget {
             placeholder: "Enter notes",
             placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 15),
           ),
+          const SizedBox(height: 6),
           CupertinoListTile(
             leadingToTitle: 8,
             backgroundColorActivated: Colors.transparent,

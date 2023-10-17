@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/workout_preview_screen.dart';
 
-import '../dtos/workout_dto.dart';
+import '../dtos/routine_dto.dart';
 import '../providers/workout_provider.dart';
 import 'workout_editor_screen.dart';
 
-void _navigateToWorkoutEditorScreen({required BuildContext context, WorkoutDto? workoutDto}) {
+void _navigateToWorkoutEditorScreen({required BuildContext context, RoutineDto? workoutDto}) {
   Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workoutDto?.id)));
 }
 
@@ -33,7 +33,7 @@ class ActivityOverviewScreen extends StatelessWidget {
 }
 
 class _ListOfWorkouts extends StatelessWidget {
-  final List<WorkoutDto> workouts;
+  final List<RoutineDto> workouts;
 
   const _ListOfWorkouts({required this.workouts});
 
@@ -61,7 +61,7 @@ class _ListOfWorkouts extends StatelessWidget {
 }
 
 class _WorkoutListItem extends StatelessWidget {
-  final WorkoutDto workoutDto;
+  final RoutineDto workoutDto;
 
   const _WorkoutListItem({required this.workoutDto});
 
@@ -122,7 +122,7 @@ class _WorkoutListItem extends StatelessWidget {
           workoutDto.name,
           style: const TextStyle(color: CupertinoColors.white),
         ),
-        subtitle: Text("${workoutDto.exercises.length} exercises", style: const TextStyle(color: CupertinoColors.white)),
+        subtitle: Text("${workoutDto.procedures.length} exercises", style: const TextStyle(color: CupertinoColors.white)),
         trailing: GestureDetector(
             onTap: () => _showWorkoutActionSheet(context: context),
             child: const Padding(
