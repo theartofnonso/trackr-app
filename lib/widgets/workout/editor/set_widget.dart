@@ -13,7 +13,7 @@ class SetWidget extends StatelessWidget {
     required this.index,
     required this.workingIndex,
     required this.setDto,
-    this.editorType = WorkoutEditorType.editing,
+    this.editorType = RoutineEditorMode.editing,
     required this.onTapCheck,
     required this.onRemoved,
     required this.onChangedRep,
@@ -24,7 +24,7 @@ class SetWidget extends StatelessWidget {
   final int index;
   final int workingIndex;
   final SetDto setDto;
-  final WorkoutEditorType editorType;
+  final RoutineEditorMode editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(int value) onChangedRep;
@@ -79,7 +79,7 @@ class SetWidget extends StatelessWidget {
             width: 15,
           ),
           _SetTextField(label: 'kg', initialValue: setDto.weight, onChanged: (value) => onChangedWeight(value)),
-          editorType == WorkoutEditorType.routine
+          editorType == RoutineEditorMode.routine
               ? GestureDetector(
                   onTap: onTapCheck,
                   child: Padding(

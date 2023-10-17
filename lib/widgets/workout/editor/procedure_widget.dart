@@ -11,7 +11,7 @@ import '../../../dtos/set_dto.dart';
 import '../../../screens/workout_editor_screen.dart';
 
 class ProcedureWidget extends StatelessWidget {
-  final WorkoutEditorType editorType;
+  final RoutineEditorMode editorType;
 
   final ProcedureDto procedureDto;
   final ProcedureDto? superSetProcedureDto;
@@ -36,7 +36,7 @@ class ProcedureWidget extends StatelessWidget {
 
   const ProcedureWidget({
     super.key,
-    this.editorType = WorkoutEditorType.editing,
+    this.editorType = RoutineEditorMode.editing,
     required this.procedureDto,
     required this.superSetProcedureDto,
     required this.onAddSuperSetProcedure,
