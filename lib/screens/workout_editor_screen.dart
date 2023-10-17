@@ -353,9 +353,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _navigateBack() {
-    Navigator.pop(context);
-    _procedures.clear();
-    print(_procedures);
+    Navigator.of(context).pop();
   }
 
   void _createWorkout() {
@@ -420,14 +418,6 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         appBar: widget.editorType == WorkoutEditorType.editing
             ? CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
-                leading: GestureDetector(
-                  onTap: _navigateBack,
-                  child: const Icon(
-                    CupertinoIcons.back,
-                    color: CupertinoColors.white,
-                    size: 24,
-                  ),
-                ),
                 trailing: GestureDetector(
                     onTap: previousWorkout != null ? _updateWorkout : _createWorkout,
                     child: Text(previousWorkout != null ? "Update" : "Save",
@@ -584,6 +574,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     if (workoutId != null) {
       final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
       workoutDto = workouts.firstWhere((workout) => workout.id == workoutId);
+      print(workoutDto.procedures[0].notes);
     }
     return workoutDto;
   }
