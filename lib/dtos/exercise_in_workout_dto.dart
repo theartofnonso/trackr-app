@@ -8,7 +8,7 @@ class ExerciseInWorkoutDto {
   String superSetId;
   final ExerciseDto exercise;
   String notes;
-  List<ProcedureDto> procedures = [];
+  List<SetDto> procedures = [];
   bool isSuperSet;
   Duration? procedureDuration;
 

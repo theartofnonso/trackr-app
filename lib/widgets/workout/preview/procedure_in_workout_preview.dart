@@ -14,7 +14,7 @@ class ProcedureInWorkoutPreview extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final ProcedureDto procedureDto;
+  final SetDto procedureDto;
   final ExerciseInWorkoutDto exerciseInWorkoutDto;
 
   @override
@@ -22,7 +22,7 @@ class ProcedureInWorkoutPreview extends StatelessWidget {
     return CupertinoListTile.notched(
         backgroundColor: const Color.fromRGBO(25, 28, 36, 1),
         leading: LeadingIcon(type: procedureDto.type, label: workingIndex),
-        title: Text("${procedureDto.repCount} Reps - ${procedureDto.weight}kg", style: Theme.of(context).textTheme.bodyMedium,));
+        title: Text("${procedureDto.rep} Reps - ${procedureDto.weight}kg", style: Theme.of(context).textTheme.bodyMedium,));
   }
 }
 
@@ -33,7 +33,7 @@ class LeadingIcon extends StatelessWidget {
     required this.label,
   });
 
-  final ProcedureType type;
+  final SetType type;
   final int label;
 
   @override
@@ -48,6 +48,6 @@ class LeadingIcon extends StatelessWidget {
   }
 
   String _generateLabel() {
-    return type == ProcedureType.working ? "${label + 1}" : type.label;
+    return type == SetType.working ? "${label + 1}" : type.label;
   }
 }

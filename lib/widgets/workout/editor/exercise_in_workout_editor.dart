@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/workout/editor/procedure_in_workout_editor.dart';
+import 'package:tracker_app/widgets/workout/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
@@ -34,7 +34,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
   /// Procedure values callbacks
   final void Function(int procedureIndex, int value) onChangedProcedureRepCount;
   final void Function(int procedureIndex, int value) onChangedProcedureWeight;
-  final void Function(int procedureIndex, ProcedureType type) onChangedProcedureType;
+  final void Function(int procedureIndex, SetType type) onChangedProcedureType;
 
   const ExerciseInWorkoutEditor({
     super.key,
@@ -124,28 +124,27 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
     );
   }
 
-  List<ProcedureInWorkoutEditor> _displayProcedures() {
-    final workingProcedures = [];
+  List<SetWidget> _displayProcedures() {
+    int workingSets = 0;
 
-    return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
-      final item = ProcedureInWorkoutEditor(
+    return exerciseInWorkoutDto.procedures.mapIndexed(((index, setDto) {
+      final widget = SetWidget(
         index: index,
         onRemoved: () => onRemoveProcedure(index),
-        workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
-        exerciseInWorkoutDto: exerciseInWorkoutDto,
-        procedureDto: procedure,
+        workingIndex: setDto.type == SetType.working ? workingSets : -1,
+        setDto: setDto,
         editorType: editorType,
-        onChangedRepCount: (int value) => onChangedProcedureRepCount(index, value),
+        onChangedRep: (int value) => onChangedProcedureRepCount(index, value),
         onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
-        onChangedType: (ProcedureType type) => onChangedProcedureType(index, type),
+        onChangedType: (SetType type) => onChangedProcedureType(index, type),
         onTapCheck: () => onCheckProcedure(index),
       );
 
-      if (procedure.type == ProcedureType.working) {
-        workingProcedures.add(procedure);
+      if (setDto.type == SetType.working) {
+        workingSets += 1;
       }
 
-      return item;
+      return widget;
     })).toList();
   }
 

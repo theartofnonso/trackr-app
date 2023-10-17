@@ -18,11 +18,11 @@ class ExerciseInWorkoutPreview extends StatelessWidget {
     return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
       final item = ProcedureInWorkoutPreview(
           index: index,
-          workingIndex: procedure.type == ProcedureType.working ? workingProcedures.length : -1,
+          workingIndex: procedure.type == SetType.working ? workingProcedures.length : -1,
           exerciseInWorkoutDto: exerciseInWorkoutDto,
           procedureDto: procedure);
 
-      if (procedure.type == ProcedureType.working) {
+      if (procedure.type == SetType.working) {
         workingProcedures.add(procedure);
       }
 

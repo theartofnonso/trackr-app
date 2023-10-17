@@ -2,38 +2,34 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 
 import '../../../screens/workout_editor_screen.dart';
 import '../../helper_widgets/dialog_helper.dart';
 
-class ProcedureInWorkoutEditor extends StatelessWidget {
-  const ProcedureInWorkoutEditor({
+class SetWidget extends StatelessWidget {
+  const SetWidget({
     super.key,
     required this.index,
     required this.workingIndex,
-    required this.exerciseInWorkoutDto,
-    required this.procedureDto,
+    required this.setDto,
     this.editorType = WorkoutEditorType.editing,
     required this.onTapCheck,
     required this.onRemoved,
-    required this.onChangedRepCount,
+    required this.onChangedRep,
     required this.onChangedWeight,
     required this.onChangedType,
   });
 
   final int index;
   final int workingIndex;
-  final ProcedureDto procedureDto;
+  final SetDto setDto;
   final WorkoutEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
-  final void Function(int value) onChangedRepCount;
+  final void Function(int value) onChangedRep;
   final void Function(int value) onChangedWeight;
-  final void Function(ProcedureType type) onChangedType;
-
-  final ExerciseInWorkoutDto exerciseInWorkoutDto;
+  final void Function(SetType type) onChangedType;
 
   /// Show [CupertinoActionSheet]
   void _showSetActionSheet({required BuildContext context}) {
@@ -64,50 +60,58 @@ class ProcedureInWorkoutEditor extends StatelessWidget {
 
   void _showProcedureTypePicker({required BuildContext context}) {
     showModalPopup(
-        context: context, child: _ListOfProcedureTypes(onSelect: (ProcedureType type) => onChangedType(type), currentType: procedureDto.type,));
+        context: context,
+        child: _SetTypesList(
+          onSelect: (SetType type) => onChangedType(type),
+          currentType: setDto.type,
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
       backgroundColor: tealBlueLight,
-      leading: LeadingIcon(type: procedureDto.type, label: workingIndex),
+      leading: _SetIcon(type: setDto.type, label: workingIndex),
       title: Row(
         children: [
-          _ProcedureTextField(
-              label: 'Reps', initialValue: procedureDto.repCount, onChanged: (value) => onChangedRepCount(value)),
+          _SetTextField(label: 'Reps', initialValue: setDto.rep, onChanged: (value) => onChangedRep(value)),
           const SizedBox(
             width: 15,
           ),
-          _ProcedureTextField(
-              label: 'kg', initialValue: procedureDto.weight, onChanged: (value) => onChangedWeight(value)),
-          editorType == WorkoutEditorType.routine ? GestureDetector(
-            onTap: onTapCheck,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: procedureDto.checked ? const Icon(CupertinoIcons.check_mark_circled_solid, color: CupertinoColors.activeGreen) : const Icon(CupertinoIcons.check_mark_circled, color: CupertinoColors.inactiveGray),
-            ),
-          ) : const SizedBox.shrink()
+          _SetTextField(label: 'kg', initialValue: setDto.weight, onChanged: (value) => onChangedWeight(value)),
+          editorType == WorkoutEditorType.routine
+              ? GestureDetector(
+                  onTap: onTapCheck,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: setDto.checked
+                        ? const Icon(CupertinoIcons.check_mark_circled_solid, color: CupertinoColors.activeGreen)
+                        : const Icon(CupertinoIcons.check_mark_circled, color: CupertinoColors.inactiveGray),
+                  ),
+                )
+              : const SizedBox.shrink()
         ],
       ),
       trailing: GestureDetector(
           onTap: () => _showSetActionSheet(context: context),
           child: const Padding(
             padding: EdgeInsets.only(right: 9.0),
-            child: Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white,),
+            child: Icon(
+              CupertinoIcons.ellipsis,
+              color: CupertinoColors.white,
+            ),
           )),
     );
   }
 }
 
-class LeadingIcon extends StatelessWidget {
-  const LeadingIcon({
-    super.key,
+class _SetIcon extends StatelessWidget {
+  const _SetIcon({
     required this.type,
     required this.label,
   });
 
-  final ProcedureType type;
+  final SetType type;
   final int label;
 
   @override
@@ -115,23 +119,19 @@ class LeadingIcon extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: type.color,
       child: Text(
-        _generateLabel(),
+        type == SetType.working ? "${label + 1}" : type.label,
         style: Theme.of(context).textTheme.labelMedium,
       ),
     );
   }
-
-  String _generateLabel() {
-    return type == ProcedureType.working ? "${label + 1}" : type.label;
-  }
 }
 
-class _ProcedureTextField extends StatelessWidget {
+class _SetTextField extends StatelessWidget {
   final String label;
   final int initialValue;
   final void Function(int) onChanged;
 
-  const _ProcedureTextField({required this.label, required this.onChanged, required this.initialValue});
+  const _SetTextField({required this.label, required this.onChanged, required this.initialValue});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -159,19 +159,19 @@ class _ProcedureTextField extends StatelessWidget {
   }
 }
 
-class _ListOfProcedureTypes extends StatefulWidget {
-  final ProcedureType currentType;
-  final void Function(ProcedureType type) onSelect;
+class _SetTypesList extends StatefulWidget {
+  final SetType currentType;
+  final void Function(SetType type) onSelect;
 
-  const _ListOfProcedureTypes({required this.onSelect, required this.currentType});
+  const _SetTypesList({required this.onSelect, required this.currentType});
 
   @override
-  State<_ListOfProcedureTypes> createState() => _ListOfProcedureTypesState();
+  State<_SetTypesList> createState() => _SetTypesListState();
 }
 
-class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
-  late ProcedureType _procedureType;
-  late List<ProcedureType> _procedureTypes;
+class _SetTypesListState extends State<_SetTypesList> {
+  late SetType _procedureType;
+  late List<SetType> _procedureTypes;
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +203,7 @@ class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
             children: List<Widget>.generate(_procedureTypes.length, (int index) {
               return Center(
                   child: Text(
-                    _procedureTypes[index].name,
+                _procedureTypes[index].name,
                 style: const TextStyle(color: CupertinoColors.white),
               ));
             }),
@@ -216,7 +216,7 @@ class _ListOfProcedureTypesState extends State<_ListOfProcedureTypes> {
   @override
   void initState() {
     super.initState();
-    _procedureTypes = ProcedureType.values.whereNot((type) => type == widget.currentType).toList();
+    _procedureTypes = SetType.values.whereNot((type) => type == widget.currentType).toList();
     _procedureType = _procedureTypes.first;
   }
 }

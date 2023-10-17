@@ -13,8 +13,7 @@ import '../widgets/workout/preview/exercise_in_workout_preview.dart';
 class WorkoutPreviewScreen extends StatelessWidget {
   final String workoutId;
 
-  const WorkoutPreviewScreen(
-      {super.key, required this.workoutId});
+  const WorkoutPreviewScreen({super.key, required this.workoutId});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context}) {
@@ -45,7 +44,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
 
   void _navigateToWorkoutEditorScreen({required BuildContext context, required WorkoutEditorType type}) {
     final workout = _getWorkout(context: context);
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workout.id, editorType: type)));
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => WorkoutEditorScreen(workoutId: workout.id, editorType: type)));
   }
 
   void _removeWorkout({required BuildContext context}) {

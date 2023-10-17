@@ -202,7 +202,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   void _addProcedure({required String exerciseId}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     setState(() {
-      _exercisesInWorkout[exerciseIndex].procedures.add(ProcedureDto());
+      _exercisesInWorkout[exerciseIndex].procedures.add(SetDto());
     });
   }
 
@@ -223,7 +223,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   void _updateProcedureRepCount({required String exerciseId, required int index, required int value}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    _exercisesInWorkout[exerciseIndex].procedures[index].repCount = value;
+    _exercisesInWorkout[exerciseIndex].procedures[index].rep = value;
   }
 
   void _updateProcedureWeight({required String exerciseId, required int index, required int value}) {
@@ -231,7 +231,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     _exercisesInWorkout[exerciseIndex].procedures[index].weight = value;
   }
 
-  void _updateProcedureType({required String exerciseId, required int index, required ProcedureType type}) {
+  void _updateProcedureType({required String exerciseId, required int index, required SetType type}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     Navigator.of(context).pop();
     setState(() {
@@ -343,16 +343,19 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         onReplaceExercise: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
         onSetProcedureTimer: () => _showWorkingTimePicker(exerciseInWorkoutDto: exerciseInWorkout),
         onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
-        onChangedProcedureType: (int procedureIndex, ProcedureType type) =>
+        onChangedProcedureType: (int procedureIndex, SetType type) =>
             _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
         onReOrderExercises: () => _reOrderExercises(),
-        onCheckProcedure: (int procedureIndex) => _checkProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
+        onCheckProcedure: (int procedureIndex) =>
+            _checkProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
       );
     }).toList();
   }
 
   void _navigateBack() {
     Navigator.pop(context);
+    _exercisesInWorkout.clear();
+    print(_exercisesInWorkout);
   }
 
   void _createWorkout() {
@@ -410,7 +413,6 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final previousWorkout = _previousWorkout;
 
     return Scaffold(
@@ -418,6 +420,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         appBar: widget.editorType == WorkoutEditorType.editing
             ? CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
+                leading: GestureDetector(
+                  onTap: _navigateBack,
+                  child: const Icon(
+                    CupertinoIcons.back,
+                    color: CupertinoColors.white,
+                    size: 24,
+                  ),
+                ),
                 trailing: GestureDetector(
                     onTap: previousWorkout != null ? _updateWorkout : _createWorkout,
                     child: Text(previousWorkout != null ? "Update" : "Save",
@@ -570,12 +580,11 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   WorkoutDto? _getWorkout() {
     WorkoutDto? workoutDto;
     final workoutId = widget.workoutId;
-    print(workoutId);
-    if(workoutId != null) {
+    if (workoutId != null) {
       final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
       workoutDto = workouts.firstWhere((workout) => workout.id == workoutId);
     }
-   return workoutDto;
+    return workoutDto;
   }
 
   @override
@@ -608,7 +617,6 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     }
     _scrollController.dispose();
   }
-
 }
 
 class _ListOfExercises extends StatefulWidget {

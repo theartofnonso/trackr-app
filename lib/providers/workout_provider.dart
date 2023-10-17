@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import '../dtos/exercise_in_workout_dto.dart';
 import '../dtos/workout_dto.dart';
@@ -6,7 +8,7 @@ class WorkoutProvider with ChangeNotifier {
 
   final List<WorkoutDto> _workouts = [];
 
-  List<WorkoutDto> get workouts => [..._workouts];
+  UnmodifiableListView<WorkoutDto> get workouts => UnmodifiableListView(_workouts);
 
   void createWorkout({required String name, required String notes, required List<ExerciseInWorkoutDto> exercises}) {
     final workout = WorkoutDto(id: "id_${DateTime.now().millisecondsSinceEpoch}",name: name, notes: notes, exercises: [...exercises]);
