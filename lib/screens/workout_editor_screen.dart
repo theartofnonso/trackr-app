@@ -41,7 +41,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   late Timer _workoutTimer;
   Duration? _intervalDuration;
 
-  RoutineDto? _previousWorkout;
+  RoutineDto? _previousRoutine;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -90,7 +90,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     }
   }
 
-  // Navigate to [ReOrderExercises]
+  // Navigate to [ReOrderProcedures]
   void _reOrderExercises() async {
     final reOrderedExercises = await showCupertinoModalPopup(
       context: context,
@@ -323,31 +323,26 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
-  List<ProcedureWidget> _exercisesToWidgets({required List<ProcedureDto> exercisesInWorkout}) {
-    return exercisesInWorkout.map((exerciseInWorkout) {
+  List<ProcedureWidget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+    return procedures.map((procedure) {
       return ProcedureWidget(
-        procedureDto: exerciseInWorkout,
+        procedureDto: procedure,
         editorType: widget.editorType,
-        superSetProcedureDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
+        superSetProcedureDto: _whereOtherSuperSet(firstExercise: procedure),
         onRemoveSuperSetProcedure: (String superSetId) => _removeSuperSet(superSetId: superSetId),
-        onRemoveProcedure: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
-        onAddSuperSetProcedure: () => _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
-        onChangedSetRep: (int procedureIndex, int value) =>
-            _updateProcedureRepCount(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, value: value),
-        onChangedSetWeight: (int procedureIndex, int value) =>
-            _updateProcedureWeight(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, value: value),
-        onAddSet: () => _addProcedure(exerciseId: exerciseInWorkout.exercise.id),
-        onRemoveSet: (int procedureIndex) =>
-            _removeProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
-        onUpdateNotes: (String value) => _updateNotes(exerciseId: exerciseInWorkout.exercise.id, value: value),
-        onReplaceProcedure: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
-        onSetProcedureTimer: () => _showWorkingTimePicker(exerciseInWorkoutDto: exerciseInWorkout),
-        onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
-        onChangedSetType: (int procedureIndex, SetType type) =>
-            _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
+        onRemoveProcedure: () => _removeExercise(exerciseId: procedure.exercise.id),
+        onAddSuperSetProcedure: () => _showExercisesInWorkoutPicker(firstExercise: procedure),
+        onChangedSetRep: (int procedureIndex, int value) => _updateProcedureRepCount(exerciseId: procedure.exercise.id, index: procedureIndex, value: value),
+        onChangedSetWeight: (int procedureIndex, int value) => _updateProcedureWeight(exerciseId: procedure.exercise.id, index: procedureIndex, value: value),
+        onAddSet: () => _addProcedure(exerciseId: procedure.exercise.id),
+        onRemoveSet: (int procedureIndex) => _removeProcedure(exerciseId: procedure.exercise.id, index: procedureIndex),
+        onUpdateNotes: (String value) => _updateNotes(exerciseId: procedure.exercise.id, value: value),
+        onReplaceProcedure: () => _replaceExercise(exerciseId: procedure.exercise.id),
+        onSetProcedureTimer: () => _showWorkingTimePicker(exerciseInWorkoutDto: procedure),
+        onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: procedure.exercise.id),
+        onChangedSetType: (int procedureIndex, SetType type) => _updateProcedureType(exerciseId: procedure.exercise.id, index: procedureIndex, type: type),
         onReOrderProcedures: () => _reOrderExercises(),
-        onCheckSet: (int procedureIndex) =>
-            _checkProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
+        onCheckSet: (int procedureIndex) => _checkProcedure(exerciseId: procedure.exercise.id, index: procedureIndex),
       );
     }).toList();
   }
@@ -356,7 +351,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  void _createWorkout() {
+  void _createRoutine() {
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
         isDefaultAction: true,
@@ -372,14 +367,13 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     } else if (_procedures.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      Provider.of<WorkoutProvider>(context, listen: false).createWorkout(
-          name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
+      Provider.of<WorkoutProvider>(context, listen: false).createWorkout(name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
 
       _navigateBack();
     }
   }
 
-  void _updateWorkout() {
+  void _updateRoutine() {
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
         isDefaultAction: true,
@@ -390,11 +384,10 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
       ),
     ];
 
-    final previousWorkout = _previousWorkout;
+    final previousWorkout = _previousRoutine;
     if (previousWorkout != null) {
       if (_workoutNameController.text.isEmpty) {
-        _showAlertDialog(
-            title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
+        _showAlertDialog(title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
       } else if (_procedures.isEmpty) {
         _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
       } else {
@@ -411,7 +404,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final previousWorkout = _previousWorkout;
+    final previousWorkout = _previousRoutine;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -419,7 +412,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
             ? CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 trailing: GestureDetector(
-                    onTap: previousWorkout != null ? _updateWorkout : _createWorkout,
+                    onTap: previousWorkout != null ? _updateRoutine : _createRoutine,
                     child: Text(previousWorkout != null ? "Update" : "Save",
                         style: Theme.of(context).textTheme.labelMedium)),
               )
@@ -550,7 +543,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
                         ],
                       ),
                     const SizedBox(height: 12),
-                    ..._exercisesToWidgets(exercisesInWorkout: _procedures),
+                    ..._proceduresToWidgets(procedures: _procedures),
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
@@ -568,13 +561,13 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         ));
   }
 
-  RoutineDto? _getWorkout() {
+  RoutineDto? _fetchRoutine() {
     RoutineDto? workoutDto;
     final workoutId = widget.workoutId;
     if (workoutId != null) {
       final workouts = Provider.of<WorkoutProvider>(context, listen: false).workouts;
       workoutDto = workouts.firstWhere((workout) => workout.id == workoutId);
-      print(workoutDto.procedures[0].notes);
+      // print(workoutDto.procedures[0].notes);
     }
     return workoutDto;
   }
@@ -582,13 +575,13 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   @override
   void initState() {
     super.initState();
-    _previousWorkout = _getWorkout();
+    _previousRoutine = _fetchRoutine();
 
-    _procedures = [...?_previousWorkout?.procedures];
+    _procedures = [...?_previousRoutine?.procedures];
 
     if (widget.editorType == WorkoutEditorType.editing) {
-      _workoutNameController = TextEditingController(text: _previousWorkout?.name);
-      _workoutNotesController = TextEditingController(text: _previousWorkout?.notes);
+      _workoutNameController = TextEditingController(text: _previousRoutine?.name);
+      _workoutNotesController = TextEditingController(text: _previousRoutine?.notes);
     } else {
       _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (mounted) {
