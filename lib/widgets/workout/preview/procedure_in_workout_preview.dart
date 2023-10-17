@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
 
 class ProcedureInWorkoutPreview extends StatelessWidget {
   const ProcedureInWorkoutPreview({
@@ -15,7 +15,7 @@ class ProcedureInWorkoutPreview extends StatelessWidget {
   final int index;
   final int workingIndex;
   final SetDto procedureDto;
-  final ExerciseInWorkoutDto exerciseInWorkoutDto;
+  final ProcedureDto exerciseInWorkoutDto;
 
   @override
   Widget build(BuildContext context) {

@@ -2,89 +2,87 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/workout/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
-import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/set_dto.dart';
 import '../../../screens/workout_editor_screen.dart';
 
-class ExerciseInWorkoutEditor extends StatelessWidget {
+class ProcedureWidget extends StatelessWidget {
   final WorkoutEditorType editorType;
 
-  final ExerciseInWorkoutDto exerciseInWorkoutDto;
-  final ExerciseInWorkoutDto? superSetExerciseInWorkoutDto;
-
-  /// Exercise callbacks
-  final void Function(String value) onUpdateNotes;
-  final void Function() onRemoveExercise;
-  final void Function() onAddSuperSetExercises;
-  final void Function(String superSetId) onRemoveSuperSetExercises;
-  final void Function() onReplaceExercise;
-  final void Function() onSetProcedureTimer;
-  final void Function() onRemoveProcedureTimer;
-  final void Function() onReOrderExercises;
+  final ProcedureDto procedureDto;
+  final ProcedureDto? superSetProcedureDto;
 
   /// Procedure callbacks
-  final void Function() onAddProcedure;
-  final void Function(int procedureIndex) onRemoveProcedure;
-  final void Function(int procedureIndex) onCheckProcedure;
+  final void Function(String value) onUpdateNotes;
+  final void Function() onReplaceProcedure;
+  final void Function() onRemoveProcedure;
+  final void Function() onAddSuperSetProcedure;
+  final void Function(String superSetId) onRemoveSuperSetProcedure;
+  final void Function() onSetProcedureTimer;
+  final void Function() onRemoveProcedureTimer;
+  final void Function() onReOrderProcedures;
 
-  /// Procedure values callbacks
-  final void Function(int procedureIndex, int value) onChangedProcedureRepCount;
-  final void Function(int procedureIndex, int value) onChangedProcedureWeight;
-  final void Function(int procedureIndex, SetType type) onChangedProcedureType;
+  /// Set callbacks
+  final void Function() onAddSet;
+  final void Function(int procedureIndex) onRemoveSet;
+  final void Function(int procedureIndex) onCheckSet;
+  final void Function(int procedureIndex, int value) onChangedSetRep;
+  final void Function(int procedureIndex, int value) onChangedSetWeight;
+  final void Function(int procedureIndex, SetType type) onChangedSetType;
 
-  const ExerciseInWorkoutEditor({
+  const ProcedureWidget({
     super.key,
     this.editorType = WorkoutEditorType.editing,
-    required this.exerciseInWorkoutDto,
-    required this.superSetExerciseInWorkoutDto,
-    required this.onAddSuperSetExercises,
-    required this.onRemoveSuperSetExercises,
-    required this.onRemoveExercise,
-    required this.onChangedProcedureRepCount,
-    required this.onChangedProcedureWeight,
-    required this.onAddProcedure,
+    required this.procedureDto,
+    required this.superSetProcedureDto,
+    required this.onAddSuperSetProcedure,
+    required this.onRemoveSuperSetProcedure,
     required this.onRemoveProcedure,
+    required this.onChangedSetRep,
+    required this.onChangedSetWeight,
+    required this.onAddSet,
+    required this.onRemoveSet,
     required this.onUpdateNotes,
-    required this.onReplaceExercise,
+    required this.onReplaceProcedure,
     required this.onSetProcedureTimer,
     required this.onRemoveProcedureTimer,
-    required this.onChangedProcedureType,
-    required this.onReOrderExercises,
-    required this.onCheckProcedure,
+    required this.onChangedSetType,
+    required this.onReOrderProcedures,
+    required this.onCheckSet,
   });
 
   /// Show [CupertinoActionSheet]
-  void _showExerciseInWorkoutActionSheet(BuildContext context) {
+  void _showProcedureActionSheet(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
 
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: Text(
-          exerciseInWorkoutDto.exercise.name,
+          procedureDto.exercise.name,
           style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onReOrderExercises();
+              onReOrderProcedures();
             },
             child: Text(
               'Reorder Exercises',
               style: textStyle,
             ),
           ),
-          exerciseInWorkoutDto.isSuperSet
+          procedureDto.isSuperSet
               ? CupertinoActionSheetAction(
                   isDestructiveAction: true,
                   onPressed: () {
                     Navigator.pop(context);
-                    onRemoveSuperSetExercises(exerciseInWorkoutDto.superSetId);
+                    onRemoveSuperSetProcedure(procedureDto.superSetId);
                   },
                   child: const Text(
                     'Remove super set',
@@ -94,7 +92,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
               : CupertinoActionSheetAction(
                   onPressed: () {
                     Navigator.pop(context);
-                    onAddSuperSetExercises();
+                    onAddSuperSetProcedure();
                   },
                   child: Text(
                     'Super-set with ...',
@@ -104,7 +102,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              onReplaceExercise();
+              onReplaceProcedure();
             },
             child: Text(
               'Replace with ...',
@@ -115,7 +113,7 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              onRemoveExercise();
+              onRemoveProcedure();
             },
             child: const Text('Remove', style: TextStyle(fontSize: 16)),
           ),
@@ -124,20 +122,23 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
     );
   }
 
-  List<SetWidget> _displayProcedures() {
+  List<Widget> _displaySets() {
     int workingSets = 0;
 
-    return exerciseInWorkoutDto.procedures.mapIndexed(((index, setDto) {
-      final widget = SetWidget(
-        index: index,
-        onRemoved: () => onRemoveProcedure(index),
-        workingIndex: setDto.type == SetType.working ? workingSets : -1,
-        setDto: setDto,
-        editorType: editorType,
-        onChangedRep: (int value) => onChangedProcedureRepCount(index, value),
-        onChangedWeight: (int value) => onChangedProcedureWeight(index, value),
-        onChangedType: (SetType type) => onChangedProcedureType(index, type),
-        onTapCheck: () => onCheckProcedure(index),
+    return procedureDto.sets.mapIndexed(((index, setDto) {
+      final widget = Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: SetWidget(
+          index: index,
+          onRemoved: () => onRemoveSet(index),
+          workingIndex: setDto.type == SetType.working ? workingSets : -1,
+          setDto: setDto,
+          editorType: editorType,
+          onChangedRep: (int value) => onChangedSetRep(index, value),
+          onChangedWeight: (int value) => onChangedSetWeight(index, value),
+          onChangedType: (SetType type) => onChangedSetType(index, type),
+          onTapCheck: () => onCheckSet(index),
+        ),
       );
 
       if (setDto.type == SetType.working) {
@@ -149,37 +150,33 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
   }
 
   String _displayTimer() {
-    final duration = exerciseInWorkoutDto.procedureDuration;
+    final duration = procedureDto.procedureDuration;
     return duration != null && duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListSection.insetGrouped(
-      margin: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
-      header: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Column(
         children: [
           CupertinoListTile(
             backgroundColorActivated: Colors.transparent,
-            onTap: () => _showExerciseInWorkoutActionSheet(context),
+            onTap: () => _showProcedureActionSheet(context),
             padding: EdgeInsets.zero,
-            title: Text(exerciseInWorkoutDto.exercise.name,
+            title: Text(procedureDto.exercise.name,
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-            subtitle: exerciseInWorkoutDto.isSuperSet
+            subtitle: procedureDto.isSuperSet
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set: ${superSetExerciseInWorkoutDto?.exercise.name}",
+                    child: Text("Super set: ${superSetProcedureDto?.exercise.name}",
                         style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
                   )
                 : const SizedBox.shrink(),
-            trailing: const Padding(
-              padding: EdgeInsets.only(right: 1.0),
-              child: Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
-            ),
+            trailing: const Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
           ),
           CupertinoTextField(
-            controller: TextEditingController(text: exerciseInWorkoutDto.notes),
+            controller: TextEditingController(text: procedureDto.notes),
             onChanged: (value) => onUpdateNotes(value),
             expands: true,
             decoration: const BoxDecoration(color: Colors.transparent),
@@ -191,9 +188,6 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 15),
             placeholder: "Enter notes",
             placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 15),
-          ),
-          const SizedBox(
-            height: 8,
           ),
           CupertinoListTile(
             leadingToTitle: 8,
@@ -212,18 +206,21 @@ class ExerciseInWorkoutEditor extends StatelessWidget {
             leadingToTitle: 8,
             backgroundColorActivated: Colors.transparent,
             padding: EdgeInsets.zero,
-            onTap: onAddProcedure,
+            onTap: onAddSet,
             title: Text(
               "Add Set",
               style: Theme.of(context).textTheme.bodySmall,
             ),
             leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white, size: 20),
           ),
+          const SizedBox(
+            height: 4,
+          ),
+          Column(
+            children: [..._displaySets()],
+          )
         ],
       ),
-      children: [
-        ..._displayProcedures(),
-      ],
     );
   }
 }

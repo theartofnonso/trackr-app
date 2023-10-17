@@ -1,28 +1,21 @@
-import 'package:flutter/cupertino.dart';
 
-enum SetType {
-  warmUp("Warm Up", "W", CupertinoColors.activeOrange),
-  working("Working", "", CupertinoColors.activeBlue),
-  failure("Failure", "F", CupertinoColors.systemRed),
-  drop("Drop Set", "D", CupertinoColors.activeGreen);
+import 'package:tracker_app/dtos/set_dto.dart';
 
-  const SetType(this.name, this.label, this.color);
+import 'exercise_dto.dart';
 
-  final String name;
-  final String label;
-  final CupertinoDynamicColor color;
-}
+class ProcedureDto {
 
-class SetDto {
-  int rep = 0;
-  int weight = 0;
-  SetType type = SetType.working;
-  bool checked = false;
+  String superSetId;
+  final ExerciseDto exercise;
+  String notes;
+  List<SetDto> sets = [];
+  bool isSuperSet;
+  Duration? procedureDuration;
 
-  SetDto();
+  ProcedureDto({this.superSetId = "", this.notes = "", required this.exercise, this.isSuperSet = false});
 
   @override
   String toString() {
-    return 'SetDto{repCount: $rep, weight: $weight}';
+    return 'ProcedureDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, isSuperSet: $isSuperSet}';
   }
 }

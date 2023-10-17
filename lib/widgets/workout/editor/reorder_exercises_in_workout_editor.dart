@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app_constants.dart';
-import '../../../dtos/exercise_in_workout_dto.dart';
+import '../../../dtos/procedure_dto.dart';
 
 class ReOrderExercisesInWorkoutEditor extends StatefulWidget {
-  final List<ExerciseInWorkoutDto> exercises;
+  final List<ProcedureDto> exercises;
 
   const ReOrderExercisesInWorkoutEditor({super.key, required this.exercises});
 
@@ -16,7 +16,7 @@ class ReOrderExercisesInWorkoutEditor extends StatefulWidget {
 
 class _ReOrderExercisesInWorkoutEditorState extends State<ReOrderExercisesInWorkoutEditor> {
   bool _hasReOrdered = false;
-  late List<ExerciseInWorkoutDto> _reOrderedExercises;
+  late List<ProcedureDto> _reOrderedExercises;
 
   void _reOrderExercises({required int oldIndex, required int newIndex}) {
     setState(() {
@@ -25,7 +25,7 @@ class _ReOrderExercisesInWorkoutEditorState extends State<ReOrderExercisesInWork
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
-      final ExerciseInWorkoutDto item = _reOrderedExercises.removeAt(oldIndex);
+      final ProcedureDto item = _reOrderedExercises.removeAt(oldIndex);
       _reOrderedExercises.insert(newIndex, item);
     });
   }

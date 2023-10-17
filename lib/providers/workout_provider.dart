@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
-import '../dtos/exercise_in_workout_dto.dart';
+import '../dtos/procedure_dto.dart';
 import '../dtos/workout_dto.dart';
 
 class WorkoutProvider with ChangeNotifier {
@@ -10,13 +10,13 @@ class WorkoutProvider with ChangeNotifier {
 
   UnmodifiableListView<WorkoutDto> get workouts => UnmodifiableListView(_workouts);
 
-  void createWorkout({required String name, required String notes, required List<ExerciseInWorkoutDto> exercises}) {
+  void createWorkout({required String name, required String notes, required List<ProcedureDto> exercises}) {
     final workout = WorkoutDto(id: "id_${DateTime.now().millisecondsSinceEpoch}",name: name, notes: notes, exercises: [...exercises]);
     _workouts.add(workout);
     notifyListeners();
   }
 
-  void updateWorkout({required String id, required String name, required String notes, required List<ExerciseInWorkoutDto> exercises}) {
+  void updateWorkout({required String id, required String name, required String notes, required List<ProcedureDto> exercises}) {
     final index = _indexWhereWorkout(id: id);
     _workouts[index] = WorkoutDto(id: id, name: name, notes: notes, exercises: [...exercises]);
     notifyListeners();

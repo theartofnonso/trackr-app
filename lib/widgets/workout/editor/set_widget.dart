@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../../../screens/workout_editor_screen.dart';
 import '../../helper_widgets/dialog_helper.dart';
@@ -94,12 +94,9 @@ class SetWidget extends StatelessWidget {
       ),
       trailing: GestureDetector(
           onTap: () => _showSetActionSheet(context: context),
-          child: const Padding(
-            padding: EdgeInsets.only(right: 9.0),
-            child: Icon(
-              CupertinoIcons.ellipsis,
-              color: CupertinoColors.white,
-            ),
+          child: const Icon(
+            CupertinoIcons.ellipsis,
+            color: CupertinoColors.white,
           )),
     );
   }

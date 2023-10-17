@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/workout_editor_screen.dart';
 
 import '../app_constants.dart';
-import '../dtos/exercise_in_workout_dto.dart';
+import '../dtos/procedure_dto.dart';
 import '../dtos/workout_dto.dart';
 import '../providers/workout_provider.dart';
 import '../widgets/workout/preview/exercise_in_workout_preview.dart';
@@ -53,7 +53,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
   List<ExerciseInWorkoutPreview> _exercisesToWidgets(
-      {required WorkoutDto workoutDto, required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+      {required WorkoutDto workoutDto, required List<ProcedureDto> exercisesInWorkout}) {
     return exercisesInWorkout.map((exerciseInWorkout) {
       return ExerciseInWorkoutPreview(
         exerciseInWorkoutDto: exerciseInWorkout,
@@ -62,8 +62,8 @@ class WorkoutPreviewScreen extends StatelessWidget {
     }).toList();
   }
 
-  ExerciseInWorkoutDto? _whereOtherSuperSet(
-      {required WorkoutDto workoutDto, required ExerciseInWorkoutDto firstExercise}) {
+  ProcedureDto? _whereOtherSuperSet(
+      {required WorkoutDto workoutDto, required ProcedureDto firstExercise}) {
     return workoutDto.exercises.firstWhereOrNull((exerciseInWorkout) =>
         exerciseInWorkout.superSetId == firstExercise.superSetId &&
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);

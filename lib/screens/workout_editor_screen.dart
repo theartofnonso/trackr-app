@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
-import 'package:tracker_app/dtos/exercise_in_workout_dto.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/workout_dto.dart';
 import 'package:tracker_app/providers/workout_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/workout/editor/reorder_exercises_in_workout_editor.dart';
 import '../app_constants.dart';
-import '../dtos/procedure_dto.dart';
+import '../dtos/set_dto.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
-import '../widgets/workout/editor/exercise_in_workout_editor.dart';
+import '../widgets/workout/editor/procedure_widget.dart';
 import 'exercise_library_screen.dart';
 
 enum WorkoutEditorType { editing, routine }
@@ -33,7 +33,7 @@ class WorkoutEditorScreen extends StatefulWidget {
 class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   final _scrollController = ScrollController();
 
-  List<ExerciseInWorkoutDto> _exercisesInWorkout = [];
+  List<ProcedureDto> _exercisesInWorkout = [];
 
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
@@ -56,13 +56,13 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     );
   }
 
-  void _showExercisesInWorkoutPicker({required ExerciseInWorkoutDto firstExercise}) {
+  void _showExercisesInWorkoutPicker({required ProcedureDto firstExercise}) {
     final exercises = _whereOtherExercisesToSuperSetWith(firstExercise: firstExercise);
     showModalPopup(
         context: context,
         child: _ListOfExercises(
           exercises: exercises,
-          onSelect: (ExerciseInWorkoutDto secondExercise) {
+          onSelect: (ProcedureDto secondExercise) {
             Navigator.of(context).pop();
             _addSuperSet(firstExerciseId: firstExercise.exercise.id, secondExerciseId: secondExercise.exercise.id);
           },
@@ -97,7 +97,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
       builder: (BuildContext context) {
         return ReOrderExercisesInWorkoutEditor(exercises: _exercisesInWorkout);
       },
-    ) as List<ExerciseInWorkoutDto>?;
+    ) as List<ProcedureDto>?;
 
     if (reOrderedExercises != null) {
       if (mounted) {
@@ -122,7 +122,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   }
 
   void _addExercises({required List<ExerciseDto> exercises}) {
-    final exercisesToAdd = exercises.map((exercise) => ExerciseInWorkoutDto(exercise: exercise)).toList();
+    final exercisesToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
       _exercisesInWorkout.addAll(exercisesToAdd);
     });
@@ -132,7 +132,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 
   void _replaceExercise({required String exerciseId}) {
     final exerciseToBeReplaced = _whereExercise(id: exerciseId);
-    if (exerciseToBeReplaced.procedures.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
+    if (exerciseToBeReplaced.sets.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
       _showReplaceExerciseAlert(exerciseId: exerciseId);
     } else {
       _handleReplaceExercise(exerciseId: exerciseId);
@@ -175,7 +175,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
         final exerciseInLibrary = selectedExercises.first;
         final oldExerciseInWorkoutIndex = _whereExerciseIndex(id: exerciseId);
         setState(() {
-          _exercisesInWorkout[oldExerciseInWorkoutIndex] = ExerciseInWorkoutDto(exercise: exerciseInLibrary);
+          _exercisesInWorkout[oldExerciseInWorkoutIndex] = ProcedureDto(exercise: exerciseInLibrary);
         });
       }
     }
@@ -191,7 +191,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     });
   }
 
-  ExerciseInWorkoutDto _whereExercise({required String id}) {
+  ProcedureDto _whereExercise({required String id}) {
     return _exercisesInWorkout.firstWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
@@ -202,40 +202,40 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
   void _addProcedure({required String exerciseId}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     setState(() {
-      _exercisesInWorkout[exerciseIndex].procedures.add(SetDto());
+      _exercisesInWorkout[exerciseIndex].sets.add(SetDto());
     });
   }
 
   void _removeProcedure({required String exerciseId, required int index}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     setState(() {
-      _exercisesInWorkout[exerciseIndex].procedures.removeAt(index);
+      _exercisesInWorkout[exerciseIndex].sets.removeAt(index);
     });
   }
 
   void _checkProcedure({required String exerciseId, required int index}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    final isChecked = _exercisesInWorkout[exerciseIndex].procedures[index].checked;
+    final isChecked = _exercisesInWorkout[exerciseIndex].sets[index].checked;
     setState(() {
-      _exercisesInWorkout[exerciseIndex].procedures[index].checked = !isChecked;
+      _exercisesInWorkout[exerciseIndex].sets[index].checked = !isChecked;
     });
   }
 
   void _updateProcedureRepCount({required String exerciseId, required int index, required int value}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    _exercisesInWorkout[exerciseIndex].procedures[index].rep = value;
+    _exercisesInWorkout[exerciseIndex].sets[index].rep = value;
   }
 
   void _updateProcedureWeight({required String exerciseId, required int index, required int value}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    _exercisesInWorkout[exerciseIndex].procedures[index].weight = value;
+    _exercisesInWorkout[exerciseIndex].sets[index].weight = value;
   }
 
   void _updateProcedureType({required String exerciseId, required int index, required SetType type}) {
     final exerciseIndex = _whereExerciseIndex(id: exerciseId);
     Navigator.of(context).pop();
     setState(() {
-      _exercisesInWorkout[exerciseIndex].procedures[index].type = type;
+      _exercisesInWorkout[exerciseIndex].sets[index].type = type;
     });
   }
 
@@ -271,14 +271,14 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     _exercisesInWorkout[index].notes = value;
   }
 
-  List<ExerciseInWorkoutDto> _whereOtherExercisesToSuperSetWith({required ExerciseInWorkoutDto firstExercise}) {
+  List<ProcedureDto> _whereOtherExercisesToSuperSetWith({required ProcedureDto firstExercise}) {
     return _exercisesInWorkout
         .whereNot((exerciseInWorkout) =>
             exerciseInWorkout.exercise.id == firstExercise.exercise.id || exerciseInWorkout.isSuperSet)
         .toList();
   }
 
-  ExerciseInWorkoutDto? _whereOtherSuperSet({required ExerciseInWorkoutDto firstExercise}) {
+  ProcedureDto? _whereOtherSuperSet({required ProcedureDto firstExercise}) {
     return _exercisesInWorkout.firstWhereOrNull((exerciseInWorkout) =>
         exerciseInWorkout.superSetId == firstExercise.superSetId &&
         exerciseInWorkout.exercise.id != firstExercise.exercise.id);
@@ -297,7 +297,7 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
             }));
   }
 
-  void _showWorkingTimePicker({required ExerciseInWorkoutDto exerciseInWorkoutDto}) {
+  void _showWorkingTimePicker({required ProcedureDto exerciseInWorkoutDto}) {
     showModalPopup(
         context: context,
         child: _TimerPicker(
@@ -322,31 +322,31 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
     });
   }
 
-  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  List<ExerciseInWorkoutEditor> _exercisesToWidgets({required List<ExerciseInWorkoutDto> exercisesInWorkout}) {
+  /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
+  List<ProcedureWidget> _exercisesToWidgets({required List<ProcedureDto> exercisesInWorkout}) {
     return exercisesInWorkout.map((exerciseInWorkout) {
-      return ExerciseInWorkoutEditor(
-        exerciseInWorkoutDto: exerciseInWorkout,
+      return ProcedureWidget(
+        procedureDto: exerciseInWorkout,
         editorType: widget.editorType,
-        superSetExerciseInWorkoutDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
-        onRemoveSuperSetExercises: (String superSetId) => _removeSuperSet(superSetId: superSetId),
-        onRemoveExercise: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
-        onAddSuperSetExercises: () => _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
-        onChangedProcedureRepCount: (int procedureIndex, int value) =>
+        superSetProcedureDto: _whereOtherSuperSet(firstExercise: exerciseInWorkout),
+        onRemoveSuperSetProcedure: (String superSetId) => _removeSuperSet(superSetId: superSetId),
+        onRemoveProcedure: () => _removeExercise(exerciseId: exerciseInWorkout.exercise.id),
+        onAddSuperSetProcedure: () => _showExercisesInWorkoutPicker(firstExercise: exerciseInWorkout),
+        onChangedSetRep: (int procedureIndex, int value) =>
             _updateProcedureRepCount(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, value: value),
-        onChangedProcedureWeight: (int procedureIndex, int value) =>
+        onChangedSetWeight: (int procedureIndex, int value) =>
             _updateProcedureWeight(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, value: value),
-        onAddProcedure: () => _addProcedure(exerciseId: exerciseInWorkout.exercise.id),
-        onRemoveProcedure: (int procedureIndex) =>
+        onAddSet: () => _addProcedure(exerciseId: exerciseInWorkout.exercise.id),
+        onRemoveSet: (int procedureIndex) =>
             _removeProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
         onUpdateNotes: (String value) => _updateNotes(exerciseId: exerciseInWorkout.exercise.id, value: value),
-        onReplaceExercise: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
+        onReplaceProcedure: () => _replaceExercise(exerciseId: exerciseInWorkout.exercise.id),
         onSetProcedureTimer: () => _showWorkingTimePicker(exerciseInWorkoutDto: exerciseInWorkout),
         onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: exerciseInWorkout.exercise.id),
-        onChangedProcedureType: (int procedureIndex, SetType type) =>
+        onChangedSetType: (int procedureIndex, SetType type) =>
             _updateProcedureType(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex, type: type),
-        onReOrderExercises: () => _reOrderExercises(),
-        onCheckProcedure: (int procedureIndex) =>
+        onReOrderProcedures: () => _reOrderExercises(),
+        onCheckSet: (int procedureIndex) =>
             _checkProcedure(exerciseId: exerciseInWorkout.exercise.id, index: procedureIndex),
       );
     }).toList();
@@ -620,8 +620,8 @@ class _WorkoutEditorScreenState extends State<WorkoutEditorScreen> {
 }
 
 class _ListOfExercises extends StatefulWidget {
-  final List<ExerciseInWorkoutDto> exercises;
-  final void Function(ExerciseInWorkoutDto exercise) onSelect;
+  final List<ProcedureDto> exercises;
+  final void Function(ProcedureDto exercise) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
   const _ListOfExercises({required this.exercises, required this.onSelect, required this.onSelectExercisesInLibrary});
@@ -631,7 +631,7 @@ class _ListOfExercises extends StatefulWidget {
 }
 
 class _ListOfExercisesState extends State<_ListOfExercises> {
-  late ExerciseInWorkoutDto? _exerciseInWorkoutDto;
+  late ProcedureDto? _exerciseInWorkoutDto;
 
   @override
   Widget build(BuildContext context) {

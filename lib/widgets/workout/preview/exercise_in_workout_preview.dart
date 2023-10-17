@@ -3,19 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/workout/preview/procedure_in_workout_preview.dart';
 
-import '../../../dtos/exercise_in_workout_dto.dart';
 import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/set_dto.dart';
 
 class ExerciseInWorkoutPreview extends StatelessWidget {
-  final ExerciseInWorkoutDto exerciseInWorkoutDto;
-  final ExerciseInWorkoutDto? superSetExerciseInWorkoutDto;
+  final ProcedureDto exerciseInWorkoutDto;
+  final ProcedureDto? superSetExerciseInWorkoutDto;
 
   const ExerciseInWorkoutPreview({super.key, required this.exerciseInWorkoutDto, this.superSetExerciseInWorkoutDto});
 
   List<ProcedureInWorkoutPreview> _displayProcedures() {
     final workingProcedures = [];
 
-    return exerciseInWorkoutDto.procedures.mapIndexed(((index, procedure) {
+    return exerciseInWorkoutDto.sets.mapIndexed(((index, procedure) {
       final item = ProcedureInWorkoutPreview(
           index: index,
           workingIndex: procedure.type == SetType.working ? workingProcedures.length : -1,
