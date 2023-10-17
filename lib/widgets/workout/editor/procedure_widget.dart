@@ -28,11 +28,11 @@ class ProcedureWidget extends StatelessWidget {
 
   /// Set callbacks
   final void Function() onAddSet;
-  final void Function(int procedureIndex) onRemoveSet;
-  final void Function(int procedureIndex) onCheckSet;
-  final void Function(int procedureIndex, int value) onChangedSetRep;
-  final void Function(int procedureIndex, int value) onChangedSetWeight;
-  final void Function(int procedureIndex, SetType type) onChangedSetType;
+  final void Function(int setIndex) onRemoveSet;
+  final void Function(int setIndex) onCheckSet;
+  final void Function(int setIndex, int value) onChangedSetRep;
+  final void Function(int setIndex, int value) onChangedSetWeight;
+  final void Function(int setIndex, SetType type) onChangedSetType;
 
   const ProcedureWidget({
     super.key,
