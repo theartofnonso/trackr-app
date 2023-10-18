@@ -30,12 +30,13 @@ type Routine @model {
   name: String!
   procedures: [AWSJSON]!
   notes: String!
-  logs: [RoutineLog!] @hasMany(indexName: "byRoutine", fields: ["id"])
 }
 
 type RoutineLog @model {
   id: ID!
-  routineId: ID! @index(name: "byRoutine")
+  name: String!
+  procedures: [AWSJSON]!
+  notes: String!
   startTime: AWSDateTime!
   endTime: AWSDateTime!
 }

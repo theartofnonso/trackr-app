@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
 
 class RoutineLogProvider with ChangeNotifier {
@@ -11,18 +12,20 @@ class RoutineLogProvider with ChangeNotifier {
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
   RoutineLogProvider() {
-    _listRoutinesLogs();
+    _listRoutineLogs();
   }
 
-  void _listRoutinesLogs() async {
+  void _listRoutineLogs() async {
     final logs = await Amplify.DataStore.query(RoutineLog.classType);
     _logs.addAll(logs);
     notifyListeners();
   }
 
-  void logRoutine({required String routineId, required DateTime startTime}) {
-    final log = RoutineLog(routineId: routineId, startTime: TemporalDateTime.fromString(startTime.toIso8601String()), endTime: TemporalDateTime.now());
-    _logs.add(log);
+  void logRoutine({required String name, required String notes, required List<ProcedureDto> procedures, required DateTime startTime}) async {
+    final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
+    final logToSave = RoutineLog(name: name, notes: notes, procedures: proceduresJson, startTime: TemporalDateTime.fromString(startTime.toIso8601String()), endTime: TemporalDateTime.now());
+    await Amplify.DataStore.save<RoutineLog>(logToSave);
+    _logs.add(logToSave);
     notifyListeners();
   }
 

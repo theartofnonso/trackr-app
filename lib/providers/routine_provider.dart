@@ -21,8 +21,8 @@ class RoutineProvider with ChangeNotifier {
   }
 
   void saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
-    final routineToSave =
-        Routine(name: name, procedures: procedures.map((procedure) => procedure.toJson()).toList(), notes: notes);
+    final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
+    final routineToSave = Routine(name: name, procedures: proceduresJson, notes: notes);
     await Amplify.DataStore.save<Routine>(routineToSave);
     _routines.add(routineToSave);
     notifyListeners();

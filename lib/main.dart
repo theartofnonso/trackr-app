@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
+import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/activity_overview_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -31,6 +32,9 @@ void main() async {
     ),
     ChangeNotifierProvider<RoutineProvider>(
       create: (BuildContext context) => RoutineProvider(),
+    ),
+    ChangeNotifierProvider<RoutineLogProvider>(
+      create: (BuildContext context) => RoutineLogProvider(),
     ),
   ], child: const MyApp()));
 }

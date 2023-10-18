@@ -420,20 +420,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  bool _isRoutineComplete() {
-    return _procedures.every((procedure) => procedure.sets.every((set) => set.checked));
-  }
-
-  bool _isRoutineInComplete() {
+  bool _isRoutinePartiallyComplete() {
     return _procedures.any((procedure) => procedure.sets.any((set) => set.checked));
   }
 
+  List<ProcedureDto> _completedProceduresAndSets() {
+    final completedProcedures = <ProcedureDto>[];
+    for (var procedure in _procedures) {
+      final completedSets = procedure.sets.where((set) => set.checked).toList();
+      final completedProcedure = procedure.copyWith(sets: completedSets);
+      completedProcedures.add(completedProcedure);
+    }
+    return completedProcedures;
+  }
+
   void _endRoutine() {
-    final isCompleted = _isRoutineComplete();
-    if(isCompleted) {
+    final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
+    if(isRoutinePartiallyComplete) {
       final routine = widget.routine;
       if(routine != null) {
-        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(routineId: routine.id, startTime: _routineStartTime);
+        final completedProcedures = _completedProceduresAndSets();
+        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(name: routine.name, notes: routine.notes, procedures: completedProcedures, startTime: _routineStartTime);
       }
     } else {
       final actions = <CupertinoDialogAction>[
@@ -450,7 +457,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _cancelRoutine() {
-    final isIncomplete = _isRoutineInComplete();
+    final isIncomplete = _isRoutinePartiallyComplete();
     if(isIncomplete) {
       final actions = <CupertinoDialogAction>[
         CupertinoDialogAction(
