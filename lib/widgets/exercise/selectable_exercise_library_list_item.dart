@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_constants.dart';
-import '../../dtos/exercise_in_library_dto.dart';
+import '../../screens/exercise_library_screen.dart';
 
 class SelectableExrLibraryListItem extends StatefulWidget {
   final ExerciseInLibraryDto exercise;

@@ -2,7 +2,6 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
-
 type DateTimeEntry @model {
   id: ID!
   description: String @default(value: "")
@@ -24,4 +23,38 @@ type ActivityDuration @model {
   startTime: AWSDateTime!
   endTime: AWSDateTime!
   activity: Activity! @belongsTo(fields: ["activityId"])
+}
+
+type Routine @model {
+  id: ID!
+  name: String!
+  procedures: [AWSJSON]!
+  notes: String!
+  logs: [RoutineLog!] @hasMany(indexName: "byRoutine", fields: ["id"])
+}
+
+type RoutineLog @model {
+  id: ID!
+  routineId: ID! @index(name: "byRoutine")
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+}
+
+type Exercise @model {
+  id: ID!
+  name: String!
+  bodyPart: BodyPart!
+}
+
+enum BodyPart {
+  CHEST
+  SHOULDERS
+  BACK
+  BICEPS
+  TRICEPS
+  FOREARMS
+  ABS
+  LEGS
+  GLUTES
+  CALVES
 }

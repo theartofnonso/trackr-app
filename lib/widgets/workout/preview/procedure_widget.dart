@@ -51,7 +51,7 @@ class ProcedureWidget extends StatelessWidget {
             padding: EdgeInsets.zero,
             title: Text(procedureDto.exercise.name,
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-            subtitle: procedureDto.isSuperSet
+            subtitle: procedureDto.superSetId.isNotEmpty
                 ? Text("Super set: ${otherSuperSetProcedureDto?.exercise.name}",
                 style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12))
                 : const SizedBox.shrink(),

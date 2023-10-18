@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/widgets/exercise/exercise_library_list_item.dart';
 
-import '../../dtos/exercise_in_library_dto.dart';
+import '../../models/BodyPart.dart';
+import '../../screens/exercise_library_screen.dart';
 import 'selectable_exercise_library_list_item.dart';
 
 class ExerciseLibraryListSection extends StatelessWidget {
@@ -61,9 +61,9 @@ class ExerciseLibraryListSection extends StatelessWidget {
     return exercises.isNotEmpty
         ? CupertinoListSection.insetGrouped(
             backgroundColor: Colors.transparent,
-            header: Text(bodyPart.label,
+            header: Text(bodyPart.name[0] + bodyPart.name.substring(1).toLowerCase(),
                 style:
-                    TextStyle(color: CupertinoColors.white.withOpacity(0.7))),
+                    TextStyle(color: CupertinoColors.white.withOpacity(0.7), fontSize: 16)),
             children: [
               ..._exercisesToListItem(exercises: exercises, bodyPart: bodyPart)
             ],

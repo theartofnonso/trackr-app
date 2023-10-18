@@ -1,19 +1,21 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../app_constants.dart';
 import '../dtos/set_dto.dart';
+import '../models/Exercise.dart';
+import '../models/Routine.dart';
+import '../providers/routine_log_provider.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
 import '../widgets/workout/editor/procedure_widget.dart';
 import 'exercise_library_screen.dart';
@@ -21,7 +23,7 @@ import 'exercise_library_screen.dart';
 enum RoutineEditorMode { editing, routine }
 
 class RoutineEditorScreen extends StatefulWidget {
-  final RoutineDto? routine;
+  final Routine? routine;
   final RoutineEditorMode mode;
 
   const RoutineEditorScreen({super.key, this.routine, this.mode = RoutineEditorMode.editing});
@@ -38,11 +40,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
-  Duration? _routineIntervalDuration;
-
-  RoutineDto? _previousRoutine;
-
-  int _routineTimeElapsed = 0;
+  Duration? _routineDuration;
+  
+  late DateTime _routineStartTime;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -75,17 +75,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   /// Navigate to [ExerciseLibraryScreen]
   void _selectExercisesInLibrary() async {
-    final selectedExercises = await showCupertinoModalPopup(
+    final exercisesFromLibrary = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(
-            preSelectedExercises: _procedures.map((exerciseInWorkout) => exerciseInWorkout.exercise).toList());
+            preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList());
       },
-    ) as List<ExerciseDto>?;
+    ) as List<Exercise>?;
 
-    if (selectedExercises != null) {
+    if (exercisesFromLibrary != null) {
       if (mounted) {
-        _addProcedures(exercises: selectedExercises);
+        _addProcedures(exercises: exercisesFromLibrary);
       }
     }
   }
@@ -121,7 +121,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _addProcedures({required List<ExerciseDto> exercises}) {
+  void _addProcedures({required List<Exercise> exercises}) {
     final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
       _procedures.addAll(proceduresToAdd);
@@ -133,7 +133,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _removeProcedure({required String procedureId}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedureToBeRemoved = _procedures[procedureIndex];
-    if (procedureToBeRemoved.isSuperSet) {
+    if (procedureToBeRemoved.superSetId.isNotEmpty) {
       _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
     }
     setState(() {
@@ -185,13 +185,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         return ExerciseLibraryScreen(
             preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList(), multiSelect: false);
       },
-    ) as List<ExerciseDto>?;
+    ) as List<Exercise>?;
 
     if (selectedExercises != null) {
       if (mounted) {
         final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
         final procedureToBeReplaced = _procedures[procedureIndex];
-        if (procedureToBeReplaced.isSuperSet) {
+        if (procedureToBeReplaced.superSetId.isNotEmpty) {
           _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
         }
 
@@ -273,8 +273,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final secondProcedure = _procedures[secondProcedureIndex];
 
     setState(() {
-      _procedures[firstProcedureIndex] = firstProcedure.copyWith(isSuperSet: true, superSetId: id);
-      _procedures[secondProcedureIndex] = secondProcedure.copyWith(isSuperSet: true, superSetId: id);
+      _procedures[firstProcedureIndex] = firstProcedure.copyWith(superSetId: id);
+      _procedures[secondProcedureIndex] = secondProcedure.copyWith(superSetId: id);
     });
   }
 
@@ -283,7 +283,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       if (procedure.superSetId == superSetId) {
         final procedureIndex = _indexWhereProcedure(procedureId: procedure.exercise.id);
         setState(() {
-          _procedures[procedureIndex] = procedure.copyWith(isSuperSet: false, superSetId: "");
+          _procedures[procedureIndex] = procedure.copyWith(superSetId: "");
         });
       }
     }
@@ -291,7 +291,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
     return _procedures
-        .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.isSuperSet)
+        .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.superSetId.isNotEmpty)
         .toList();
   }
 
@@ -304,11 +304,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     showModalPopup(
         context: context,
         child: _TimerPicker(
-            initialDuration: _routineIntervalDuration,
+            initialDuration: _routineDuration,
             onSelect: (Duration duration) {
               Navigator.of(context).pop();
               setState(() {
-                _routineIntervalDuration = duration;
+                _routineDuration = duration;
               });
             }));
   }
@@ -367,10 +367,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
   }
 
-  void _navigateBack() {
-    Navigator.of(context).pop();
-  }
-
   void _createRoutine() {
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
@@ -387,8 +383,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     } else if (_procedures.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      Provider.of<RoutineProvider>(context, listen: false).createRoutine(
-          name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
+      Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
+          name: _workoutNameController.text, notes: _workoutNotesController.text, procedures: _procedures);
 
       _navigateBack();
     }
@@ -405,7 +401,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ),
     ];
 
-    final previousWorkout = _previousRoutine;
+    final previousWorkout = widget.routine;
     if (previousWorkout != null) {
       if (_workoutNameController.text.isEmpty) {
         _showAlertDialog(
@@ -424,9 +420,43 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  bool _isRoutineComplete() {
+    return _procedures.every((procedure) => procedure.sets.every((set) => set.checked));
+  }
+
+  void _endRoutine() {
+    final isCompleted = _isRoutineComplete();
+    if(!isCompleted) {
+      final actions = <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('No'),
+        ),
+        CupertinoDialogAction(
+          isDestructiveAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+            final routine = widget.routine;
+            if(routine != null) {
+              Provider.of<RoutineLogProvider>(context, listen: false).createRoutineLog(routineId: routine.id, startTime: _routineStartTime);  
+            }
+          },
+          child: const Text('End workout'),
+        )
+      ];
+      _showAlertDialog(title: "End Workout", message: "Do you want to end workout?", actions: actions);
+    }
+  }
+
+  void _navigateBack() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final previousWorkout = _previousRoutine;
+    final previousWorkout = widget.routine;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -453,7 +483,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        _routineIntervalDuration != null
+                        _routineDuration != null
                             ? Text("10mins 11s", style: Theme.of(context).textTheme.labelLarge)
                             : const SizedBox.shrink(),
                         const SizedBox(width: 4),
@@ -467,7 +497,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
-                onPressed: _navigateBack,
+                onPressed: _endRoutine,
                 backgroundColor: tealBlueLight,
                 child: const Icon(CupertinoIcons.stop_fill),
               )
@@ -540,9 +570,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 fontWeight: FontWeight.w600,
                                 color: CupertinoColors.white.withOpacity(0.8),
                                 fontSize: 18)),
-                        trailing: _TimerWidget(started: widget.mode == RoutineEditorMode.routine, onTick: (int elapsedTime) {
-                          _routineTimeElapsed = elapsedTime;
-                        })
+                        trailing: _TimerWidget(started: widget.mode == RoutineEditorMode.routine)
                       ),
                     ],
                   ),
@@ -576,12 +604,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   @override
   void initState() {
     super.initState();
-    _previousRoutine = widget.routine;
-    _procedures.addAll([...?_previousRoutine?.procedures]);
+
+    _routineStartTime = DateTime.now();
+    
+    final previousRoutine = widget.routine;
+    final procedures = previousRoutine?.procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
+    _procedures.addAll([...?procedures]);
 
     if (widget.mode == RoutineEditorMode.editing) {
-      _workoutNameController = TextEditingController(text: _previousRoutine?.name);
-      _workoutNotesController = TextEditingController(text: _previousRoutine?.notes);
+      _workoutNameController = TextEditingController(text: previousRoutine?.name);
+      _workoutNotesController = TextEditingController(text: previousRoutine?.notes);
     }
   }
 
@@ -757,8 +789,7 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
 
 class _TimerWidget extends StatefulWidget {
   final bool started;
-  final void Function(int elapsedTime) onTick;
-  const _TimerWidget({required this.started, required this.onTick});
+  const _TimerWidget({required this.started});
 
   @override
   State<_TimerWidget> createState() => _TimerWidgetState();
@@ -779,9 +810,7 @@ class _TimerWidgetState extends State<_TimerWidget> {
     if(widget.started) {
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (mounted) {
-          setState(() {
-            widget.onTick(timer.tick);
-          });
+          setState(() {});
         }
       });
     }

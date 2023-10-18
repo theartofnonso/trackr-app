@@ -77,7 +77,7 @@ class ProcedureWidget extends StatelessWidget {
               style: textStyle,
             ),
           ),
-          procedureDto.isSuperSet
+          procedureDto.superSetId.isNotEmpty
               ? CupertinoActionSheetAction(
                   isDestructiveAction: true,
                   onPressed: () {
@@ -167,7 +167,7 @@ class ProcedureWidget extends StatelessWidget {
             padding: EdgeInsets.zero,
             title: Text(procedureDto.exercise.name,
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-            subtitle: procedureDto.isSuperSet
+            subtitle: procedureDto.superSetId.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text("Super set: ${otherSuperSetProcedureDto?.exercise.name}",

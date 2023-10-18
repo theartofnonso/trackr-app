@@ -1,13 +1,23 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/dtos/exercise_dto.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/providers/exercises_provider.dart';
 
 import '../app_constants.dart';
+import '../models/BodyPart.dart';
+import '../models/Exercise.dart';
 import '../widgets/exercise/exercise_library_list_section.dart';
-import '../dtos/exercise_in_library_dto.dart';
+
+class ExerciseInLibraryDto {
+
+  bool? isSelected;
+  final Exercise exercise;
+
+  ExerciseInLibraryDto({this.isSelected = false, required this.exercise});
+}
 
 class ExerciseLibraryScreen extends StatefulWidget {
-  final List<ExerciseDto> preSelectedExercises;
+  final List<Exercise> preSelectedExercises;
   final bool multiSelect;
 
   const ExerciseLibraryScreen(
@@ -18,49 +28,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-  final List<ExerciseInLibraryDto> _exercises = <ExerciseInLibraryDto>[
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("1", "Incline Dumbbells", BodyPart.chest)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(),
-            "Chest Flys", BodyPart.chest)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("12", "Decline Smith machine press", BodyPart.chest)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto(DateTime.now().millisecondsSinceEpoch.toString(),
-            "Chest Dips", BodyPart.chest)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("123", "Lateral Raises", BodyPart.shoulders)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("1234", "Military press", BodyPart.shoulders)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("12345", "Single Lateral Raises", BodyPart.shoulders)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("123456", "Double Lateral Raises", BodyPart.shoulders)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("1234567", "Skull Crushers", BodyPart.triceps)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("12345678", "Tricep Extensions", BodyPart.triceps)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("123456789", "Tricep Dips", BodyPart.triceps)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("1234567890", "Pulldowns", BodyPart.triceps)),
-    ExerciseInLibraryDto(
-        exercise: ExerciseDto("12345678901", "Deadlift", BodyPart.legs)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("123456789012", "Hamstring Curls", BodyPart.legs)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("1234567890123", "Romanian Deadlift", BodyPart.legs)),
-    ExerciseInLibraryDto(
-        exercise:
-            ExerciseDto("12345678901234", "Single Leg Curl", BodyPart.legs)),
-  ];
+  final List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
   List<ExerciseInLibraryDto> _filteredExercises = [];
@@ -71,7 +39,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Search through the list of exercises
   void _whereExercises({required String searchTerm}) {
     setState(() {
-      _filteredExercises = _exercises
+      _filteredExercises = _exercisesInLibrary
           .where((exerciseItem) => exerciseItem.exercise.name
               .toLowerCase()
               .contains(searchTerm.toLowerCase()))
@@ -109,22 +77,22 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   Widget build(BuildContext context) {
     final chestExercises = _filteredExercises
         .where(
-            (exerciseItem) => exerciseItem.exercise.bodyPart == BodyPart.chest)
+            (exerciseItem) => exerciseItem.exercise.bodyPart == BodyPart.CHEST)
         .toList();
 
     final shouldersExercises = _filteredExercises
         .where((exerciseItem) =>
-            exerciseItem.exercise.bodyPart == BodyPart.shoulders)
+            exerciseItem.exercise.bodyPart == BodyPart.SHOULDERS)
         .toList();
 
     final tricepsExercises = _filteredExercises
         .where((exerciseItem) =>
-            exerciseItem.exercise.bodyPart == BodyPart.triceps)
+            exerciseItem.exercise.bodyPart == BodyPart.TRICEPS)
         .toList();
 
     final legsExercises = _filteredExercises
         .where(
-            (exerciseItem) => exerciseItem.exercise.bodyPart == BodyPart.legs)
+            (exerciseItem) => exerciseItem.exercise.bodyPart == BodyPart.LEGS)
         .toList();
 
     return CupertinoPageScaffold(
@@ -148,7 +116,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                       _whereExercises(searchTerm: searchTerm))),
           ExerciseLibraryListSection(
             exercises: chestExercises,
-            bodyPart: BodyPart.chest,
+            bodyPart: BodyPart.CHEST,
             onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                 _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
             onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
@@ -157,7 +125,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ),
           ExerciseLibraryListSection(
               exercises: shouldersExercises,
-              bodyPart: BodyPart.shoulders,
+              bodyPart: BodyPart.SHOULDERS,
               onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                   _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
               onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
@@ -165,7 +133,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               multiSelect: widget.multiSelect),
           ExerciseLibraryListSection(
               exercises: tricepsExercises,
-              bodyPart: BodyPart.triceps,
+              bodyPart: BodyPart.TRICEPS,
               onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                   _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
               onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
@@ -173,7 +141,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               multiSelect: widget.multiSelect),
           ExerciseLibraryListSection(
               exercises: legsExercises,
-              bodyPart: BodyPart.legs,
+              bodyPart: BodyPart.LEGS,
               onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
                   _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
               onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
@@ -187,9 +155,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   void initState() {
     super.initState();
-    _filteredExercises = _exercises
-        .whereNot((exerciseItem) =>
-            widget.preSelectedExercises.contains(exerciseItem.exercise))
+    final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise));
+    _exercisesInLibrary.addAll(exercises);
+    _filteredExercises = _exercisesInLibrary
+        .whereNot((exerciseInLibrary) =>
+            widget.preSelectedExercises.contains(exerciseInLibrary.exercise))
         .toList();
   }
 }

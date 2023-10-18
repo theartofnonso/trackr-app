@@ -1,24 +1,37 @@
 import 'dart:collection';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tracker_app/models/Routine.dart';
 import '../dtos/procedure_dto.dart';
-import '../dtos/routine_dto.dart';
 
 class RoutineProvider with ChangeNotifier {
+  final List<Routine> _routines = [];
 
-  final List<RoutineDto> _routines = [];
+  UnmodifiableListView<Routine> get routines => UnmodifiableListView(_routines);
 
-  UnmodifiableListView<RoutineDto> get routines => UnmodifiableListView(_routines);
+  RoutineProvider() {
+    _listRoutines();
+  }
 
-  void createRoutine({required String name, required String notes, required List<ProcedureDto> exercises}) {
-    final routine = RoutineDto(id: "id_${DateTime.now().millisecondsSinceEpoch}",name: name, notes: notes, procedures: [...exercises]);
-    _routines.add(routine);
+  void _listRoutines() async {
+    final routines = await Amplify.DataStore.query(Routine.classType);
+    _routines.addAll(routines);
     notifyListeners();
   }
 
-  void updateRoutine({required String id, required String name, required String notes, required List<ProcedureDto> exercises}) {
+  void saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
+    final routineToSave =
+        Routine(name: name, procedures: procedures.map((procedure) => procedure.toJson()).toList(), notes: notes);
+    await Amplify.DataStore.save<Routine>(routineToSave);
+    _routines.add(routineToSave);
+    notifyListeners();
+  }
+
+  void updateRoutine(
+      {required String id, required String name, required String notes, required List<ProcedureDto> exercises}) {
     final index = _indexWhereRoutine(id: id);
-    _routines[index] = RoutineDto(id: id, name: name, notes: notes, procedures: [...exercises]);
+    //_routines[index] = RoutineDto(id: id, name: name, notes: notes, procedures: [...exercises]);
     notifyListeners();
   }
 
@@ -31,6 +44,8 @@ class RoutineProvider with ChangeNotifier {
   int _indexWhereRoutine({required String id}) {
     return _routines.indexWhere((routine) => routine.id == id);
   }
+
+  Routine whereRoutine({required String id}) {
+    return _routines.firstWhere((routine) => routine.id == id);
+  }
 }
-
-
