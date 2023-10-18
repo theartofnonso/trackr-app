@@ -33,7 +33,7 @@ class RoutineEditorScreen extends StatefulWidget {
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   final _scrollController = ScrollController();
 
-  List<ProcedureDto> _procedures = [];
+  final List<ProcedureDto> _procedures = [];
 
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
@@ -56,15 +56,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
   }
 
-  void _showExercisesInWorkoutPicker({required ProcedureDto firstExercise}) {
-    final exercises = _whereOtherExercisesToSuperSetWith(firstExercise: firstExercise);
+  void _showProceduresPicker({required ProcedureDto firstProcedure}) {
+    final procedures = _whereOtherProcedures(firstProcedure: firstProcedure);
     showModalPopup(
         context: context,
-        child: _ListOfExercises(
-          exercises: exercises,
-          onSelect: (ProcedureDto secondExercise) {
-            Navigator.of(context).pop();
-            _addSuperSet(firstExerciseId: firstExercise.exercise.id, secondExerciseId: secondExercise.exercise.id);
+        child: _ProceduresList(
+          procedures: procedures,
+          onSelect: (ProcedureDto secondProcedure) {
+            _addSuperSet(firstProcedureId: firstProcedure.exercise.id, secondProcedureId: secondProcedure.exercise.id);
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -85,7 +84,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (selectedExercises != null) {
       if (mounted) {
-        _addExercises(exercises: selectedExercises);
+        _addProcedures(exercises: selectedExercises);
       }
     }
   }
@@ -101,9 +100,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (reOrderedExercises != null) {
       if (mounted) {
-        setState(() {
-          _procedures = reOrderedExercises;
-        });
+        // setState(() {
+        //   _procedures = reOrderedExercises;
+        // });
       }
     }
   }
@@ -121,25 +120,40 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _addExercises({required List<ExerciseDto> exercises}) {
-    final exercisesToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
+  void _addProcedures({required List<ExerciseDto> exercises}) {
+    final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
-      _procedures.addAll(exercisesToAdd);
+      _procedures.addAll(proceduresToAdd);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _replaceExercise({required String exerciseId}) {
-    final exerciseToBeReplaced = _whereExercise(id: exerciseId);
-    if (exerciseToBeReplaced.sets.isNotEmpty || exerciseToBeReplaced.notes.isNotEmpty) {
-      _showReplaceExerciseAlert(exerciseId: exerciseId);
+  void _removeProcedure({required String procedureId}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedureToBeRemoved = _procedures[procedureIndex];
+    if (procedureToBeRemoved.isSuperSet) {
+      _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
+    }
+    setState(() {
+      _procedures.removeAt(procedureIndex);
+    });
+  }
+
+  void _replaceProcedure({required String procedureId}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedureToBeReplaced = _procedures[procedureIndex];
+    if (procedureToBeReplaced.isNotEmpty()) {
+      if (procedureToBeReplaced.isSuperSet) {
+        _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
+      }
+      _showReplaceProcedureAlert(procedureId: procedureId);
     } else {
-      _handleReplaceExercise(exerciseId: exerciseId);
+      _doReplaceProcedure(procedureId: procedureId);
     }
   }
 
-  void _showReplaceExerciseAlert({required String exerciseId}) {
+  void _showReplaceProcedureAlert({required String procedureId}) {
     final alertDialogActions = <CupertinoDialogAction>[
       CupertinoDialogAction(
         onPressed: () {
@@ -151,7 +165,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         isDestructiveAction: true,
         onPressed: () {
           Navigator.pop(context);
-          _handleReplaceExercise(exerciseId: exerciseId);
+          _doReplaceProcedure(procedureId: procedureId);
         },
         child: const Text('Replace'),
       )
@@ -160,128 +174,126 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _showAlertDialog(title: "Replace Exercise", message: "All your data will be replaced", actions: alertDialogActions);
   }
 
-  void _handleReplaceExercise({required String exerciseId}) async {
+  void _doReplaceProcedure({required String procedureId}) async {
     final selectedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(
-            preSelectedExercises: _procedures.map((exerciseInWorkout) => exerciseInWorkout.exercise).toList(),
-            multiSelect: false);
+            preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList(), multiSelect: false);
       },
     ) as List<ExerciseDto>?;
 
     if (selectedExercises != null) {
       if (mounted) {
         final exerciseInLibrary = selectedExercises.first;
-        final oldExerciseInWorkoutIndex = _whereExerciseIndex(id: exerciseId);
+        final oldProcedureIndex = _indexWhereProcedure(procedureId: procedureId);
         setState(() {
-          _procedures[oldExerciseInWorkoutIndex] = ProcedureDto(exercise: exerciseInLibrary);
+          _procedures[oldProcedureIndex] = ProcedureDto(exercise: exerciseInLibrary);
         });
       }
     }
   }
 
-  void _removeExercise({required String exerciseId}) {
-    final exercise = _whereExercise(id: exerciseId);
-    if (exercise.isSuperSet) {
-      _removeSuperSet(superSetId: exercise.superSetId);
-    }
-    setState(() {
-      _procedures.removeWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == exerciseId);
-    });
-  }
-
-  ProcedureDto _whereExercise({required String id}) {
+  ProcedureDto _whereProcedure({required String id}) {
     return _procedures.firstWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
   }
 
-  int _whereExerciseIndex({required String id}) {
-    return _procedures.indexWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
+  int _indexWhereProcedure({required String procedureId}) {
+    return _procedures.indexWhere((procedure) => procedure.exercise.id == procedureId);
   }
 
-  void _addProcedure({required String exerciseId}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
+  void _addSet({required String procedureId}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets, SetDto()];
     setState(() {
-      _procedures[exerciseIndex].sets.add(SetDto());
+      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
   }
 
-  void _removeProcedure({required String exerciseId, required int index}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
+  void _removeSet({required String procedureId, required int setIndex}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    sets.removeAt(setIndex);
     setState(() {
-      _procedures[exerciseIndex].sets.removeAt(index);
+      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
   }
 
-  void _checkProcedure({required String exerciseId, required int index}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    final isChecked = _procedures[exerciseIndex].sets[index].checked;
+  // void _checkSet({required String exerciseId, required int index}) {
+  //   final exerciseIndex = _indexWhereProcedure(id: exerciseId);
+  //   final isChecked = _procedures[exerciseIndex].sets[index].checked;
+  //   setState(() {
+  //     _procedures[exerciseIndex].sets[index].checked = !isChecked;
+  //   });
+  // }
+
+  void _updateSetRep({required String procedureId, required int setIndex, required int value}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    sets[setIndex] = sets[setIndex].copyWith(rep: value);
+    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+  }
+
+  void _updateWeight({required String procedureId, required int setIndex, required int value}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    sets[setIndex] = sets[setIndex].copyWith(weight: value);
+    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+  }
+
+  void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    sets[setIndex] = sets[setIndex].copyWith(type: type);
     setState(() {
-      _procedures[exerciseIndex].sets[index].checked = !isChecked;
+      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
   }
 
-  void _updateProcedureRepCount({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    _procedures[exerciseIndex].sets[index].rep = value;
-  }
+  void _addSuperSet({required String firstProcedureId, required String secondProcedureId}) {
+    final id = "superset_id_${DateTime.now().millisecondsSinceEpoch}";
 
-  void _updateProcedureWeight({required String exerciseId, required int index, required int value}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    _procedures[exerciseIndex].sets[index].weight = value;
-  }
-
-  void _updateProcedureType({required String exerciseId, required int index, required SetType type}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    Navigator.of(context).pop();
-    setState(() {
-      _procedures[exerciseIndex].sets[index].type = type;
-    });
-  }
-
-  void _addSuperSet({required String firstExerciseId, required String secondExerciseId}) {
-    final id = "id_${DateTime.now().millisecond}";
-
-    final firstIndex = _whereExerciseIndex(id: firstExerciseId);
-    final secondIndex = _whereExerciseIndex(id: secondExerciseId);
+    final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
+    final firstProcedure = _procedures[firstProcedureIndex];
+    final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
+    final secondProcedure = _procedures[secondProcedureIndex];
 
     setState(() {
-      _procedures[firstIndex].isSuperSet = true;
-      _procedures[firstIndex].superSetId = id;
-
-      _procedures[secondIndex].isSuperSet = true;
-      _procedures[secondIndex].superSetId = id;
+      _procedures[firstProcedureIndex] = firstProcedure.copyWith(isSuperSet: true, superSetId: id);
+      _procedures[secondProcedureIndex] = secondProcedure.copyWith(isSuperSet: true, superSetId: id);
     });
   }
 
   void _removeSuperSet({required String superSetId}) {
-    for (var exerciseInWorkout in _procedures) {
-      if (exerciseInWorkout.superSetId == superSetId) {
-        final index = _procedures.indexWhere((item) => item.superSetId == superSetId);
+    for (var procedure in _procedures) {
+      if (procedure.superSetId == superSetId) {
+        final procedureIndex = _indexWhereProcedure(procedureId: procedure.exercise.id);
         setState(() {
-          _procedures[index].isSuperSet = false;
-          _procedures[index].superSetId = "";
+          _procedures[procedureIndex] = procedure.copyWith(isSuperSet: false, superSetId: "");
         });
       }
     }
   }
 
-  void _updateNotes({required String exerciseId, required String value}) {
-    final index = _whereExerciseIndex(id: exerciseId);
-    _procedures[index].notes = value;
-  }
+  // void _updateNotes({required String exerciseId, required String value}) {
+  //   final index = _indexWhereProcedure(id: exerciseId);
+  //   _procedures[index].notes = value;
+  // }
 
-  List<ProcedureDto> _whereOtherExercisesToSuperSetWith({required ProcedureDto firstExercise}) {
+  List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
     return _procedures
-        .whereNot((exerciseInWorkout) =>
-            exerciseInWorkout.exercise.id == firstExercise.exercise.id || exerciseInWorkout.isSuperSet)
+        .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.isSuperSet)
         .toList();
   }
 
-  ProcedureDto? _whereOtherSuperSet({required ProcedureDto firstExercise}) {
-    return _procedures.firstWhereOrNull((exerciseInWorkout) =>
-        exerciseInWorkout.superSetId == firstExercise.superSetId &&
-        exerciseInWorkout.exercise.id != firstExercise.exercise.id);
+  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure}) {
+    return _procedures.firstWhereOrNull((procedure) =>
+        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   void _showIntervalTimePicker() {
@@ -297,30 +309,30 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             }));
   }
 
-  void _showWorkingTimePicker({required ProcedureDto exerciseInWorkoutDto}) {
-    showModalPopup(
-        context: context,
-        child: _TimerPicker(
-          previousDuration: exerciseInWorkoutDto.procedureDuration,
-          onSelect: (Duration duration) =>
-              _setWorkingTimer(exerciseId: exerciseInWorkoutDto.exercise.id, duration: duration),
-        ));
-  }
+  // void _showWorkingTimePicker({required ProcedureDto exerciseInWorkoutDto}) {
+  //   showModalPopup(
+  //       context: context,
+  //       child: _TimerPicker(
+  //         previousDuration: exerciseInWorkoutDto.procedureDuration,
+  //         onSelect: (Duration duration) =>
+  //             _setWorkingTimer(exerciseId: exerciseInWorkoutDto.exercise.id, duration: duration),
+  //       ));
+  // }
 
-  void _setWorkingTimer({required String exerciseId, required Duration duration}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    Navigator.of(context).pop();
-    setState(() {
-      _procedures[exerciseIndex].procedureDuration = duration;
-    });
-  }
-
-  void _removeWorkingTimer({required String exerciseId}) {
-    final exerciseIndex = _whereExerciseIndex(id: exerciseId);
-    setState(() {
-      _procedures[exerciseIndex].procedureDuration = null;
-    });
-  }
+  // void _setWorkingTimer({required String exerciseId, required Duration duration}) {
+  //   final exerciseIndex = _indexWhereProcedure(id: exerciseId);
+  //   Navigator.of(context).pop();
+  //   setState(() {
+  //     _procedures[exerciseIndex].procedureDuration = duration;
+  //   });
+  // }
+  //
+  // void _removeWorkingTimer({required String exerciseId}) {
+  //   final exerciseIndex = _indexWhereProcedure(id: exerciseId);
+  //   setState(() {
+  //     _procedures[exerciseIndex].procedureDuration = null;
+  //   });
+  // }
 
   /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
   List<ProcedureWidget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
@@ -328,21 +340,24 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       return ProcedureWidget(
         procedureDto: procedure,
         editorType: widget.mode,
-        superSetProcedureDto: _whereOtherSuperSet(firstExercise: procedure),
-        onRemoveSuperSetProcedure: (String superSetId) => _removeSuperSet(superSetId: superSetId),
-        onRemoveProcedure: () => _removeExercise(exerciseId: procedure.exercise.id),
-        onAddSuperSetProcedure: () => _showExercisesInWorkoutPicker(firstExercise: procedure),
-        onChangedSetRep: (int procedureIndex, int value) => _updateProcedureRepCount(exerciseId: procedure.exercise.id, index: procedureIndex, value: value),
-        onChangedSetWeight: (int procedureIndex, int value) => _updateProcedureWeight(exerciseId: procedure.exercise.id, index: procedureIndex, value: value),
-        onAddSet: () => _addProcedure(exerciseId: procedure.exercise.id),
-        onRemoveSet: (int procedureIndex) => _removeProcedure(exerciseId: procedure.exercise.id, index: procedureIndex),
-        onUpdateNotes: (String value) => _updateNotes(exerciseId: procedure.exercise.id, value: value),
-        onReplaceProcedure: () => _replaceExercise(exerciseId: procedure.exercise.id),
-        onSetProcedureTimer: () => _showWorkingTimePicker(exerciseInWorkoutDto: procedure),
-        onRemoveProcedureTimer: () => _removeWorkingTimer(exerciseId: procedure.exercise.id),
-        onChangedSetType: (int procedureIndex, SetType type) => _updateProcedureType(exerciseId: procedure.exercise.id, index: procedureIndex, type: type),
+        otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
+        onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
+        onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+        onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+        onChangedSetRep: (int setIndex, int value) =>
+            _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+        onChangedSetWeight: (int setIndex, int value) =>
+            _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+        onChangedSetType: (int setIndex, SetType type) =>
+            _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
+        onAddSet: () => _addSet(procedureId: procedure.exercise.id),
+        onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+        onUpdateNotes: (String value) {},
+        onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
+        onSetProcedureTimer: () {},
+        onRemoveProcedureTimer: () {},
         onReOrderProcedures: () => _reOrderExercises(),
-        onCheckSet: (int procedureIndex) => _checkProcedure(exerciseId: procedure.exercise.id, index: procedureIndex),
+        onCheckSet: (int procedureIndex) {},
       );
     }).toList();
   }
@@ -367,7 +382,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     } else if (_procedures.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      Provider.of<RoutineProvider>(context, listen: false).createWorkout(name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
+      Provider.of<RoutineProvider>(context, listen: false).createWorkout(
+          name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
 
       _navigateBack();
     }
@@ -387,7 +403,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final previousWorkout = _previousRoutine;
     if (previousWorkout != null) {
       if (_workoutNameController.text.isEmpty) {
-        _showAlertDialog(title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
+        _showAlertDialog(
+            title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
       } else if (_procedures.isEmpty) {
         _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
       } else {
@@ -575,9 +592,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   @override
   void initState() {
     super.initState();
-    _previousRoutine = widget.routine;//_fetchRoutine();
-
-    _procedures = [...?_previousRoutine?.procedures];
+    _previousRoutine = widget.routine; //_fetchRoutine();
+    _procedures.addAll([...?_previousRoutine?.procedures]);
 
     if (widget.mode == RoutineEditorMode.editing) {
       _workoutNameController = TextEditingController(text: _previousRoutine?.name);
@@ -604,31 +620,32 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 }
 
-class _ListOfExercises extends StatefulWidget {
-  final List<ProcedureDto> exercises;
-  final void Function(ProcedureDto exercise) onSelect;
+class _ProceduresList extends StatefulWidget {
+  final List<ProcedureDto> procedures;
+  final void Function(ProcedureDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const _ListOfExercises({required this.exercises, required this.onSelect, required this.onSelectExercisesInLibrary});
+  const _ProceduresList({required this.procedures, required this.onSelect, required this.onSelectExercisesInLibrary});
 
   @override
-  State<_ListOfExercises> createState() => _ListOfExercisesState();
+  State<_ProceduresList> createState() => _ProceduresListState();
 }
 
-class _ListOfExercisesState extends State<_ListOfExercises> {
-  late ProcedureDto? _exerciseInWorkoutDto;
+class _ProceduresListState extends State<_ProceduresList> {
+  late ProcedureDto? _procedure;
 
   @override
   Widget build(BuildContext context) {
-    return widget.exercises.isNotEmpty
+    return widget.procedures.isNotEmpty
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
                 onTap: () {
-                  final exerciseInWorkoutDto = _exerciseInWorkoutDto;
-                  if (exerciseInWorkoutDto != null) {
-                    widget.onSelect(exerciseInWorkoutDto);
+                  final procedure = _procedure;
+                  if (procedure != null) {
+                    Navigator.of(context).pop();
+                    widget.onSelect(procedure);
                   }
                 },
                 child: Padding(
@@ -648,13 +665,13 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
                   // This is called when selected item is changed.
                   onSelectedItemChanged: (int index) {
                     setState(() {
-                      _exerciseInWorkoutDto = widget.exercises[index];
+                      _procedure = widget.procedures[index];
                     });
                   },
-                  children: List<Widget>.generate(widget.exercises.length, (int index) {
+                  children: List<Widget>.generate(widget.procedures.length, (int index) {
                     return Center(
                         child: Text(
-                      widget.exercises[index].exercise.name,
+                      widget.procedures[index].exercise.name,
                       style: const TextStyle(color: CupertinoColors.white),
                     ));
                   }),
@@ -668,7 +685,7 @@ class _ListOfExercisesState extends State<_ListOfExercises> {
   @override
   void initState() {
     super.initState();
-    _exerciseInWorkoutDto = widget.exercises.firstOrNull;
+    _procedure = widget.procedures.firstOrNull;
   }
 }
 

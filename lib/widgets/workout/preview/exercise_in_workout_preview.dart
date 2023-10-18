@@ -12,10 +12,10 @@ class ExerciseInWorkoutPreview extends StatelessWidget {
 
   const ExerciseInWorkoutPreview({super.key, required this.exerciseInWorkoutDto, this.superSetExerciseInWorkoutDto});
 
-  List<ProcedureInWorkoutPreview> _displayProcedures() {
+  List<ProcedureInWorkoutPreview>? _displayProcedures() {
     final workingProcedures = [];
 
-    return exerciseInWorkoutDto.sets.mapIndexed(((index, procedure) {
+    return exerciseInWorkoutDto.sets?.mapIndexed(((index, procedure) {
       final item = ProcedureInWorkoutPreview(
           index: index,
           workingIndex: procedure.type == SetType.working ? workingProcedures.length : -1,
@@ -47,10 +47,10 @@ class ExerciseInWorkoutPreview extends StatelessWidget {
                     style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12))
                 : const SizedBox.shrink(),
           ),
-          exerciseInWorkoutDto.notes.isNotEmpty
+          exerciseInWorkoutDto.notes != null
               ? Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(exerciseInWorkoutDto.notes,
+                child: Text("${exerciseInWorkoutDto.notes}",
                     style: TextStyle(
                         fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 15)),
               )
@@ -58,7 +58,7 @@ class ExerciseInWorkoutPreview extends StatelessWidget {
         ],
       ),
       children: [
-        ..._displayProcedures(),
+        ...?_displayProcedures(),
       ],
     );
   }

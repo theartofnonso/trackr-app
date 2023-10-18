@@ -14,15 +14,24 @@ enum SetType {
 }
 
 class SetDto {
-  int rep = 0;
-  int weight = 0;
-  SetType type = SetType.working;
-  bool checked = false;
+  final int rep;
+  final int weight;
+  final SetType type;
+  final bool checked;
 
-  SetDto();
+  SetDto({this.rep = 0, this.weight = 0, this.type = SetType.working, this.checked = false});
+
+  SetDto copyWith({int? rep, int? weight, SetType? type, bool? checked}) {
+    return SetDto(
+      rep: rep ?? this.rep,
+      weight: weight ?? this.weight,
+      type: type ?? this.type,
+      checked: checked ?? this.checked,
+    );
+  }
 
   @override
   String toString() {
-    return 'SetDto{repCount: $rep, weight: $weight}';
+    return 'SetDto{rep: $rep, weight: $weight}';
   }
 }

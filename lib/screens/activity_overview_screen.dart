@@ -54,16 +54,16 @@ class _ListOfWorkouts extends StatelessWidget {
                 color: CupertinoColors.white,
               )),
         ),
-        children: [...workouts.map((workout) => _WorkoutListItem(workoutDto: workout)).toList()],
+        children: [...workouts.map((workout) => _RoutineWidget(routineDto: workout)).toList()],
       ),
     ]);
   }
 }
 
-class _WorkoutListItem extends StatelessWidget {
-  final RoutineDto workoutDto;
+class _RoutineWidget extends StatelessWidget {
+  final RoutineDto routineDto;
 
-  const _WorkoutListItem({required this.workoutDto});
+  const _RoutineWidget({required this.routineDto});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutActionSheet({required BuildContext context}) {
@@ -73,14 +73,14 @@ class _WorkoutListItem extends StatelessWidget {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: Text(
-          workoutDto.name,
+          routineDto.name,
           style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToWorkoutEditorScreen(context: context, routineDto: workoutDto);
+              _navigateToWorkoutEditorScreen(context: context, routineDto: routineDto);
             },
             child: Text(
               'Edit',
@@ -104,12 +104,12 @@ class _WorkoutListItem extends StatelessWidget {
   }
 
   void _removeWorkout({required BuildContext context}) {
-    Provider.of<RoutineProvider>(context, listen: false).removeWorkout(id: workoutDto.id);
+    Provider.of<RoutineProvider>(context, listen: false).removeWorkout(id: routineDto.id);
   }
 
   void _navigateToWorkoutPreviewScreen({required BuildContext context}) async {
     Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutId: workoutDto.id)));
+        .push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutId: routineDto.id)));
   }
 
   @override
@@ -119,10 +119,10 @@ class _WorkoutListItem extends StatelessWidget {
         backgroundColor: tealBlueLight,
         backgroundColorActivated: tealBlueLighter,
         title: Text(
-          workoutDto.name,
+          routineDto.name,
           style: const TextStyle(color: CupertinoColors.white),
         ),
-        subtitle: Text("${workoutDto.procedures.length} exercises", style: const TextStyle(color: CupertinoColors.white)),
+        subtitle: Text("${routineDto.procedures.length} exercises", style: const TextStyle(color: CupertinoColors.white)),
         trailing: GestureDetector(
             onTap: () => _showWorkoutActionSheet(context: context),
             child: const Padding(

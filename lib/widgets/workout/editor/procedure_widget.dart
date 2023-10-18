@@ -14,14 +14,14 @@ class ProcedureWidget extends StatelessWidget {
   final RoutineEditorMode editorType;
 
   final ProcedureDto procedureDto;
-  final ProcedureDto? superSetProcedureDto;
+  final ProcedureDto? otherSuperSetProcedureDto;
 
   /// Procedure callbacks
   final void Function(String value) onUpdateNotes;
   final void Function() onReplaceProcedure;
   final void Function() onRemoveProcedure;
-  final void Function() onAddSuperSetProcedure;
-  final void Function(String superSetId) onRemoveSuperSetProcedure;
+  final void Function() onSuperSet;
+  final void Function(String superSetId) onRemoveSuperSet;
   final void Function() onSetProcedureTimer;
   final void Function() onRemoveProcedureTimer;
   final void Function() onReOrderProcedures;
@@ -38,9 +38,9 @@ class ProcedureWidget extends StatelessWidget {
     super.key,
     this.editorType = RoutineEditorMode.editing,
     required this.procedureDto,
-    required this.superSetProcedureDto,
-    required this.onAddSuperSetProcedure,
-    required this.onRemoveSuperSetProcedure,
+    required this.otherSuperSetProcedureDto,
+    required this.onSuperSet,
+    required this.onRemoveSuperSet,
     required this.onRemoveProcedure,
     required this.onChangedSetRep,
     required this.onChangedSetWeight,
@@ -82,7 +82,7 @@ class ProcedureWidget extends StatelessWidget {
                   isDestructiveAction: true,
                   onPressed: () {
                     Navigator.pop(context);
-                    onRemoveSuperSetProcedure(procedureDto.superSetId);
+                    onRemoveSuperSet(procedureDto.superSetId);
                   },
                   child: const Text(
                     'Remove super set',
@@ -92,7 +92,7 @@ class ProcedureWidget extends StatelessWidget {
               : CupertinoActionSheetAction(
                   onPressed: () {
                     Navigator.pop(context);
-                    onAddSuperSetProcedure();
+                    onSuperSet();
                   },
                   child: Text(
                     'Super-set with ...',
@@ -122,7 +122,7 @@ class ProcedureWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _displaySets() {
+  List<Widget>? _displaySets() {
     int workingSets = 0;
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
@@ -150,7 +150,7 @@ class ProcedureWidget extends StatelessWidget {
   }
 
   String _displayTimer() {
-    final duration = procedureDto.procedureDuration;
+    final duration = procedureDto.restInterval;
     return duration != null && duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
   }
 
@@ -169,7 +169,7 @@ class ProcedureWidget extends StatelessWidget {
             subtitle: procedureDto.isSuperSet
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set: ${superSetProcedureDto?.exercise.name}",
+                    child: Text("Super set: ${otherSuperSetProcedureDto?.exercise.name}",
                         style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
                   )
                 : const SizedBox.shrink(),
@@ -218,7 +218,7 @@ class ProcedureWidget extends StatelessWidget {
             height: 4,
           ),
           Column(
-            children: [..._displaySets()],
+            children: [...?_displaySets()],
           )
         ],
       ),

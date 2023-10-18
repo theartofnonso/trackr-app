@@ -167,7 +167,7 @@ class _SetTypesList extends StatefulWidget {
 }
 
 class _SetTypesListState extends State<_SetTypesList> {
-  late SetType _procedureType;
+  late SetType _setType;
   late List<SetType> _procedureTypes;
 
   @override
@@ -176,7 +176,10 @@ class _SetTypesListState extends State<_SetTypesList> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         GestureDetector(
-          onTap: () => widget.onSelect(_procedureType),
+          onTap: () {
+            Navigator.of(context).pop();
+            widget.onSelect(_setType);
+          },
           child: Padding(
             padding: const EdgeInsets.all(14.0),
             child: Text(
@@ -194,7 +197,7 @@ class _SetTypesListState extends State<_SetTypesList> {
             // This is called when selected item is changed.
             onSelectedItemChanged: (int index) {
               setState(() {
-                _procedureType = _procedureTypes[index];
+                _setType = _procedureTypes[index];
               });
             },
             children: List<Widget>.generate(_procedureTypes.length, (int index) {
@@ -214,6 +217,6 @@ class _SetTypesListState extends State<_SetTypesList> {
   void initState() {
     super.initState();
     _procedureTypes = SetType.values.whereNot((type) => type == widget.currentType).toList();
-    _procedureType = _procedureTypes.first;
+    _setType = _procedureTypes.first;
   }
 }
