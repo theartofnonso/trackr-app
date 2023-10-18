@@ -163,7 +163,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Cancel'),
+        child: const Text('Cancel', style: TextStyle(color: CupertinoColors.black)),
       ),
       CupertinoDialogAction(
         isDestructiveAction: true,
@@ -374,7 +374,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok'),
+        child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
       ),
     ];
 
@@ -397,7 +397,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok'),
+        child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
       ),
     ];
 
@@ -424,29 +424,53 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return _procedures.every((procedure) => procedure.sets.every((set) => set.checked));
   }
 
+  bool _isRoutineInComplete() {
+    return _procedures.any((procedure) => procedure.sets.any((set) => set.checked));
+  }
+
   void _endRoutine() {
     final isCompleted = _isRoutineComplete();
-    if(!isCompleted) {
+    if(isCompleted) {
+      final routine = widget.routine;
+      if(routine != null) {
+        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(routineId: routine.id, startTime: _routineStartTime);
+      }
+    } else {
+      final actions = <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
+        )
+      ];
+      _showAlertDialog(title: "End Workout", message: "You have not completed any sets", actions: actions);
+    }
+  }
+
+  void _cancelRoutine() {
+    final isIncomplete = _isRoutineInComplete();
+    if(isIncomplete) {
       final actions = <CupertinoDialogAction>[
         CupertinoDialogAction(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('No'),
+          child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
         ),
         CupertinoDialogAction(
           isDestructiveAction: true,
           onPressed: () {
             Navigator.pop(context);
-            final routine = widget.routine;
-            if(routine != null) {
-              Provider.of<RoutineLogProvider>(context, listen: false).createRoutineLog(routineId: routine.id, startTime: _routineStartTime);  
-            }
+            _navigateBack();
           },
-          child: const Text('End workout'),
+          child: const Text('Cancel Workout', style: TextStyle(fontWeight: FontWeight.bold)),
         )
       ];
-      _showAlertDialog(title: "End Workout", message: "Do you want to end workout?", actions: actions);
+      _showAlertDialog(title: "Cancel Workout", message: "You will lose all your progress", actions: actions);
+    } else {
+      _navigateBack();
     }
   }
 
@@ -471,7 +495,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             : CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
-                  onTap: _navigateBack,
+                  onTap: _cancelRoutine,
                   child: const Icon(
                     CupertinoIcons.clear_thick,
                     color: CupertinoColors.white,
@@ -498,7 +522,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
                 onPressed: _endRoutine,
-                backgroundColor: tealBlueLight,
+                backgroundColor: tealBlueLighter,
                 child: const Icon(CupertinoIcons.stop_fill),
               )
             : null,

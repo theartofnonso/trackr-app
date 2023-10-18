@@ -76,7 +76,7 @@ class RoutinePreviewScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () =>
               _navigateToRoutineEditor(context: context, routine: routine, type: RoutineEditorMode.routine),
-          backgroundColor: tealBlueLight,
+          backgroundColor: tealBlueLighter,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),
         backgroundColor: tealBlueDark,

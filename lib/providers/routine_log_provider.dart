@@ -20,7 +20,7 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void createRoutineLog({required String routineId, required DateTime startTime}) {
+  void logRoutine({required String routineId, required DateTime startTime}) {
     final log = RoutineLog(routineId: routineId, startTime: TemporalDateTime.fromString(startTime.toIso8601String()), endTime: TemporalDateTime.now());
     _logs.add(log);
     notifyListeners();
