@@ -205,10 +205,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  ProcedureDto _whereProcedure({required String id}) {
-    return _procedures.firstWhere((exerciseInWorkout) => exerciseInWorkout.exercise.id == id);
-  }
-
   int _indexWhereProcedure({required String procedureId}) {
     return _procedures.indexWhere((procedure) => procedure.exercise.id == procedureId);
   }
