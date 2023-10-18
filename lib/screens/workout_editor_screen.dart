@@ -33,7 +33,7 @@ class RoutineEditorScreen extends StatefulWidget {
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   final _scrollController = ScrollController();
 
-  final List<ProcedureDto> _procedures = [];
+  List<ProcedureDto> _procedures = [];
 
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
@@ -90,19 +90,19 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   // Navigate to [ReOrderProcedures]
-  void _reOrderExercises() async {
-    final reOrderedExercises = await showCupertinoModalPopup(
+  void _reOrderProcedures() async {
+    final reOrderedList = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
         return ReOrderProceduresScreen(procedures: _procedures);
       },
     ) as List<ProcedureDto>?;
 
-    if (reOrderedExercises != null) {
+    if (reOrderedList != null) {
       if (mounted) {
-        // setState(() {
-        //   _procedures = reOrderedExercises;
-        // });
+        setState(() {
+          _procedures = reOrderedList;
+        });
       }
     }
   }
@@ -140,13 +140,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
+  void _updateProcedureNotes({required String procedureId, required String value}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    _procedures[procedureIndex] = procedure.copyWith(notes: value);
+  }
+
   void _replaceProcedure({required String procedureId}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedureToBeReplaced = _procedures[procedureIndex];
     if (procedureToBeReplaced.isNotEmpty()) {
-      if (procedureToBeReplaced.isSuperSet) {
-        _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
-      }
       _showReplaceProcedureAlert(procedureId: procedureId);
     } else {
       _doReplaceProcedure(procedureId: procedureId);
@@ -175,6 +178,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doReplaceProcedure({required String procedureId}) async {
+
     final selectedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -185,6 +189,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (selectedExercises != null) {
       if (mounted) {
+
+        final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+        final procedureToBeReplaced = _procedures[procedureIndex];
+        if (procedureToBeReplaced.isSuperSet) {
+          _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
+        }
+
         final exerciseInLibrary = selectedExercises.first;
         final oldProcedureIndex = _indexWhereProcedure(procedureId: procedureId);
         setState(() {
@@ -280,11 +291,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  // void _updateNotes({required String exerciseId, required String value}) {
-  //   final index = _indexWhereProcedure(id: exerciseId);
-  //   _procedures[index].notes = value;
-  // }
-
   List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
     return _procedures
         .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.isSuperSet)
@@ -335,29 +341,32 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   // }
 
   /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
-  List<ProcedureWidget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
     return procedures.map((procedure) {
-      return ProcedureWidget(
-        procedureDto: procedure,
-        editorType: widget.mode,
-        otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
-        onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
-        onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-        onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-        onChangedSetRep: (int setIndex, int value) =>
-            _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
-        onChangedSetWeight: (int setIndex, int value) =>
-            _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
-        onChangedSetType: (int setIndex, SetType type) =>
-            _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
-        onAddSet: () => _addSet(procedureId: procedure.exercise.id),
-        onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
-        onUpdateNotes: (String value) {},
-        onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
-        onSetProcedureTimer: () {},
-        onRemoveProcedureTimer: () {},
-        onReOrderProcedures: () => _reOrderExercises(),
-        onCheckSet: (int procedureIndex) {},
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12.0),
+        child: ProcedureWidget(
+          procedureDto: procedure,
+          editorType: widget.mode,
+          otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
+          onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
+          onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+          onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+          onChangedSetRep: (int setIndex, int value) =>
+              _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+          onChangedSetWeight: (int setIndex, int value) =>
+              _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+          onChangedSetType: (int setIndex, SetType type) =>
+              _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
+          onAddSet: () => _addSet(procedureId: procedure.exercise.id),
+          onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+          onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
+          onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
+          onSetProcedureTimer: () {},
+          onRemoveProcedureTimer: () {},
+          onReOrderProcedures: () => _reOrderProcedures(),
+          onCheckSet: (int procedureIndex) {},
+        ),
       );
     }).toList();
   }
