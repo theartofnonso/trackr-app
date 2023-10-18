@@ -11,12 +11,12 @@ import '../dtos/routine_dto.dart';
 import '../providers/routine_provider.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
-  final RoutineDto routine;
+  final String routineId;
 
-  const RoutinePreviewScreen({super.key, required this.routine});
+  const RoutinePreviewScreen({super.key, required this.routineId});
 
   /// Show [CupertinoActionSheet]
-  void _showWorkoutPreviewActionSheet({required BuildContext context}) {
+  void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineDto routine}) {
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
     showCupertinoModalPopup<void>(
       context: context,
@@ -25,7 +25,7 @@ class RoutinePreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, type: RoutineEditorMode.editing);
+              _navigateToRoutineEditor(context: context, routine: routine, type: RoutineEditorMode.editing);
             },
             child: Text('Edit', style: textStyle),
           ),
@@ -33,7 +33,7 @@ class RoutinePreviewScreen extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeRoutine(context: context);
+              _removeRoutine(context: context, routine: routine);
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -42,35 +42,35 @@ class RoutinePreviewScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToRoutineEditor({required BuildContext context, RoutineEditorMode type = RoutineEditorMode.editing}) {
+  void _navigateToRoutineEditor({required BuildContext context, required RoutineDto routine, RoutineEditorMode type = RoutineEditorMode.editing}) {
     Navigator.of(context)
         .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: type)));
   }
 
-  void _removeRoutine({required BuildContext context}) {
+  void _removeRoutine({required BuildContext context, required RoutineDto routine}) {
     Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  ProcedureWidget _procedureToWidget({required ProcedureDto procedure}) {
+  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required RoutineDto routine}) {
     return ProcedureWidget(
       procedureDto: procedure,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
+      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, routine: routine),
     );
   }
 
-  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure}) {
+  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required RoutineDto routine}) {
     return routine.procedures.firstWhereOrNull((procedure) =>
         procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<RoutineProvider>(context, listen: true).routines;
-    final workout = workouts.firstWhere((routine) => routine.id == routine.id);
+    final routines = Provider.of<RoutineProvider>(context, listen: true).routines;
+    final routineToPreview = routines.firstWhere((item) => item.id == routineId);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToRoutineEditor(context: context, type: RoutineEditorMode.routine),
+          onPressed: () => _navigateToRoutineEditor(context: context, routine: routineToPreview, type: RoutineEditorMode.routine),
           backgroundColor: tealBlueLight,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),
@@ -78,7 +78,7 @@ class RoutinePreviewScreen extends StatelessWidget {
         appBar: CupertinoNavigationBar(
           backgroundColor: tealBlueDark,
           trailing: GestureDetector(
-              onTap: () => _showWorkoutPreviewActionSheet(context: context),
+              onTap: () => _showWorkoutPreviewActionSheet(context: context, routine: routineToPreview),
               child: const Icon(
                 CupertinoIcons.ellipsis_vertical,
                 color: CupertinoColors.white,
@@ -98,7 +98,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                   children: [
                     CupertinoListTile(
                       backgroundColor: tealBlueLight,
-                      title: Text(routine.name,
+                      title: Text(routineToPreview.name,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: CupertinoColors.white.withOpacity(0.8),
@@ -107,7 +107,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                     CupertinoListTile(
                       backgroundColor: tealBlueLight,
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                      title: Text(workout.notes,
+                      title: Text(routineToPreview.notes,
                           style: TextStyle(
                             height: 1.5,
                             fontWeight: FontWeight.w600,
@@ -122,11 +122,11 @@ class RoutinePreviewScreen extends StatelessWidget {
                   child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) {
                         // Build the item widget based on the data at the specified index.
-                        final procedure = routine.procedures[index];
-                        return _procedureToWidget(procedure: procedure);
+                        final procedure = routineToPreview.procedures[index];
+                        return _procedureToWidget(procedure: procedure, routine: routineToPreview);
                       },
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                      itemCount: routine.procedures.length),
+                      itemCount: routineToPreview.procedures.length),
                 ),
               ],
             ),

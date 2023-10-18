@@ -148,7 +148,7 @@ class ProcedureWidget extends StatelessWidget {
 
   String _displayTimer() {
     final duration = procedureDto.restInterval;
-    return duration != null && duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
+    return duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
   }
 
   @override
@@ -157,7 +157,7 @@ class ProcedureWidget extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: tealBlueLight, // Set the background color
-        borderRadius: BorderRadius.circular(20), // Set the border radius to make it rounded
+        borderRadius: BorderRadius.circular(10), // Set the border radius to make it rounded
       ),
       child: Column(
         children: [

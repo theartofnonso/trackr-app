@@ -17,7 +17,7 @@ class ProcedureWidget extends StatelessWidget {
     required this.otherSuperSetProcedureDto,
   });
 
-  List<Widget>? _displaySets() {
+  List<Widget> _displaySets() {
     int workingSets = 0;
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
@@ -41,9 +41,10 @@ class ProcedureWidget extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: tealBlueLight, // Set the background color
-        borderRadius: BorderRadius.circular(20), // Set the border radius to make it rounded
+        borderRadius: BorderRadius.circular(10), // Set the border radius to make it rounded
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CupertinoListTile(
             backgroundColorActivated: Colors.transparent,
@@ -51,24 +52,19 @@ class ProcedureWidget extends StatelessWidget {
             title: Text(procedureDto.exercise.name,
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
             subtitle: procedureDto.isSuperSet
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set: ${otherSuperSetProcedureDto?.exercise.name}",
-                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
-                  )
+                ? Text("Super set: ${otherSuperSetProcedureDto?.exercise.name}",
+                style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12))
                 : const SizedBox.shrink(),
           ),
           procedureDto.notes.isNotEmpty
               ? Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(procedureDto.notes,
                 style: TextStyle(
                     fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 15)),
           )
               : const SizedBox.shrink(),
-          Column(
-            children: [...?_displaySets()],
-          )
+          ..._displaySets()
         ],
       ),
     );
