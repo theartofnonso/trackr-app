@@ -69,8 +69,8 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile.notched(
-      backgroundColor: tealBlueLight,
+    return CupertinoListTile(
+      padding: EdgeInsets.zero,
       leading: _SetIcon(type: setDto.type, label: workingIndex),
       title: Row(
         children: [

@@ -337,34 +337,29 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   // }
 
   /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
-  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
-    return procedures.map((procedure) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: ProcedureWidget(
-          procedureDto: procedure,
-          editorType: widget.mode,
-          otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
-          onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
-          onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-          onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-          onChangedSetRep: (int setIndex, int value) =>
-              _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
-          onChangedSetWeight: (int setIndex, int value) =>
-              _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
-          onChangedSetType: (int setIndex, SetType type) =>
-              _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
-          onAddSet: () => _addSet(procedureId: procedure.exercise.id),
-          onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
-          onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
-          onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
-          onSetProcedureTimer: () {},
-          onRemoveProcedureTimer: () {},
-          onReOrderProcedures: () => _reOrderProcedures(),
-          onCheckSet: (int procedureIndex) {},
-        ),
-      );
-    }).toList();
+  Widget _procedureToWidget({required ProcedureDto procedure}) {
+    return ProcedureWidget(
+      procedureDto: procedure,
+      editorType: widget.mode,
+      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
+      onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
+      onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+      onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+      onChangedSetRep: (int setIndex, int value) =>
+          _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+      onChangedSetWeight: (int setIndex, int value) =>
+          _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+      onChangedSetType: (int setIndex, SetType type) =>
+          _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
+      onAddSet: () => _addSet(procedureId: procedure.exercise.id),
+      onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+      onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
+      onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
+      onSetProcedureTimer: () {},
+      onRemoveProcedureTimer: () {},
+      onReOrderProcedures: () => _reOrderProcedures(),
+      onCheckSet: (int procedureIndex) {},
+    );
   }
 
   void _navigateBack() {
@@ -475,110 +470,120 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         body: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: SafeArea(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Container(
-                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (widget.mode == RoutineEditorMode.editing)
-                      CupertinoListSection.insetGrouped(
-                        hasLeading: false,
-                        margin: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        children: [
-                          CupertinoListTile(
-                            backgroundColor: tealBlueLight,
-                            title: CupertinoTextField.borderless(
-                              controller: _workoutNameController,
-                              expands: true,
-                              padding: const EdgeInsets.only(left: 20),
-                              textCapitalization: TextCapitalization.sentences,
-                              keyboardType: TextInputType.text,
-                              maxLength: 240,
-                              maxLines: null,
-                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.mode == RoutineEditorMode.editing)
+                    CupertinoListSection.insetGrouped(
+                      hasLeading: false,
+                      margin: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      children: [
+                        CupertinoListTile(
+                          backgroundColor: tealBlueLight,
+                          title: CupertinoTextField.borderless(
+                            controller: _workoutNameController,
+                            expands: true,
+                            padding: const EdgeInsets.only(left: 20),
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.text,
+                            maxLength: 240,
+                            maxLines: null,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: CupertinoColors.white.withOpacity(0.8),
+                                fontSize: 18),
+                            placeholder: "New workout",
+                            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        CupertinoListTile.notched(
+                          backgroundColor: tealBlueLight,
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          title: CupertinoTextField.borderless(
+                            controller: _workoutNotesController,
+                            expands: true,
+                            padding: EdgeInsets.zero,
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.text,
+                            maxLength: 240,
+                            maxLines: null,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            style: TextStyle(
+                              height: 1.5,
+                              fontWeight: FontWeight.w600,
+                              color: CupertinoColors.white.withOpacity(0.8),
+                              fontSize: 16,
+                            ),
+                            placeholder: "New notes",
+                            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    CupertinoListSection.insetGrouped(
+                      hasLeading: false,
+                      margin: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      children: [
+                        CupertinoListTile(
+                          backgroundColor: tealBlueLight,
+                          title: Text(previousWorkout!.name,
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: CupertinoColors.white.withOpacity(0.8),
-                                  fontSize: 18),
-                              placeholder: "New workout",
-                              placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
-                            ),
-                            padding: EdgeInsets.zero,
-                          ),
-                          CupertinoListTile.notched(
-                            backgroundColor: tealBlueLight,
-                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                            title: CupertinoTextField.borderless(
-                              controller: _workoutNotesController,
-                              expands: true,
-                              padding: EdgeInsets.zero,
-                              textCapitalization: TextCapitalization.sentences,
-                              keyboardType: TextInputType.text,
-                              maxLength: 240,
-                              maxLines: null,
-                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                  fontSize: 18)),
+                          trailing: widget.mode == RoutineEditorMode.routine
+                              ? Text(Duration(seconds: _workoutTimer.tick).secondsOrMinutesOrHours())
+                              : null,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        CupertinoListTile(
+                          backgroundColor: tealBlueLight,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          title: Text(previousWorkout.notes,
                               style: TextStyle(
                                 height: 1.5,
                                 fontWeight: FontWeight.w600,
                                 color: CupertinoColors.white.withOpacity(0.8),
                                 fontSize: 16,
-                              ),
-                              placeholder: "New notes",
-                              placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
-                            ),
-                          ),
-                        ],
-                      )
-                    else
-                      CupertinoListSection.insetGrouped(
-                        hasLeading: false,
-                        margin: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        children: [
-                          CupertinoListTile(
-                            backgroundColor: tealBlueLight,
-                            title: Text(previousWorkout!.name,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: CupertinoColors.white.withOpacity(0.8),
-                                    fontSize: 18)),
-                            trailing: widget.mode == RoutineEditorMode.routine
-                                ? Text(Duration(seconds: _workoutTimer.tick).secondsOrMinutesOrHours())
-                                : null,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          CupertinoListTile(
-                            backgroundColor: tealBlueLight,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            title: Text(previousWorkout.notes,
-                                style: TextStyle(
-                                  height: 1.5,
-                                  fontWeight: FontWeight.w600,
-                                  color: CupertinoColors.white.withOpacity(0.8),
-                                  fontSize: 16,
-                                )),
-                          ),
-                        ],
-                      ),
-                    const SizedBox(height: 12),
-                    ..._proceduresToWidgets(procedures: _procedures),
-                    const SizedBox(height: 18),
-                    SizedBox(
-                      width: double.infinity,
-                      child: CupertinoButton(
-                          color: tealBlueLight,
-                          onPressed: _selectExercisesInLibrary,
-                          child: Text("Add exercise",
-                              textAlign: TextAlign.start, style: Theme.of(context).textTheme.labelLarge)),
+                              )),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                      child: ListView.separated(scrollDirection: Axis.vertical, shrinkWrap: true, itemBuilder: (BuildContext context, int index) {
+                        // Build the item widget based on the data at the specified index.
+                        final procedure = _procedures[index];
+                        return _procedureToWidget(procedure: procedure);
+                      }, separatorBuilder: (BuildContext context, int index) {
+                        // Build a separator widget between the items.
+                        return const SizedBox(height: 12);
+                      }, itemCount: _procedures.length),
+                    ),
+                  ),
+                  //..._proceduresToWidgets(procedures: _procedures),
+                  // const SizedBox(height: 18),
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: CupertinoButton(
+                  //       color: tealBlueLight,
+                  //       onPressed: _selectExercisesInLibrary,
+                  //       child: Text("Add exercise",
+                  //           textAlign: TextAlign.start, style: Theme.of(context).textTheme.labelLarge)),
+                  // ),
+                ],
               ),
-            ),
+            )
           ),
         ));
   }

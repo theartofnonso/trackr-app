@@ -126,19 +126,16 @@ class ProcedureWidget extends StatelessWidget {
     int workingSets = 0;
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
-      final widget = Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: SetWidget(
-          index: index,
-          onRemoved: () => onRemoveSet(index),
-          workingIndex: setDto.type == SetType.working ? workingSets : -1,
-          setDto: setDto,
-          editorType: editorType,
-          onChangedRep: (int value) => onChangedSetRep(index, value),
-          onChangedWeight: (int value) => onChangedSetWeight(index, value),
-          onChangedType: (SetType type) => onChangedSetType(index, type),
-          onTapCheck: () => onCheckSet(index),
-        ),
+      final widget = SetWidget(
+        index: index,
+        onRemoved: () => onRemoveSet(index),
+        workingIndex: setDto.type == SetType.working ? workingSets : -1,
+        setDto: setDto,
+        editorType: editorType,
+        onChangedRep: (int value) => onChangedSetRep(index, value),
+        onChangedWeight: (int value) => onChangedSetWeight(index, value),
+        onChangedType: (SetType type) => onChangedSetType(index, type),
+        onTapCheck: () => onCheckSet(index),
       );
 
       if (setDto.type == SetType.working) {
@@ -156,8 +153,12 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: tealBlueLight, // Set the background color
+        borderRadius: BorderRadius.circular(20), // Set the border radius to make it rounded
+      ),
       child: Column(
         children: [
           CupertinoListTile(
