@@ -39,7 +39,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late TextEditingController _workoutNotesController;
 
   late Timer _workoutTimer;
-  Duration? _intervalDuration;
+  Duration? _routineIntervalDuration;
 
   RoutineDto? _previousRoutine;
 
@@ -226,13 +226,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  // void _checkSet({required String exerciseId, required int index}) {
-  //   final exerciseIndex = _indexWhereProcedure(id: exerciseId);
-  //   final isChecked = _procedures[exerciseIndex].sets[index].checked;
-  //   setState(() {
-  //     _procedures[exerciseIndex].sets[index].checked = !isChecked;
-  //   });
-  // }
+  void _checkSet({required String procedureId, required int setIndex}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    final set = sets[setIndex];
+    sets[setIndex] = sets[setIndex].copyWith(checked: !set.checked);
+    setState(() {
+      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+    });
+  }
 
   void _updateSetRep({required String procedureId, required int setIndex, required int value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
@@ -296,43 +299,46 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 
-  void _showIntervalTimePicker() {
+  void _showRoutineIntervalPicker() {
     showModalPopup(
         context: context,
         child: _TimerPicker(
-            previousDuration: _intervalDuration,
+            initialDuration: _routineIntervalDuration,
             onSelect: (Duration duration) {
               Navigator.of(context).pop();
               setState(() {
-                _intervalDuration = duration;
+                _routineIntervalDuration = duration;
               });
             }));
   }
 
-  // void _showWorkingTimePicker({required ProcedureDto exerciseInWorkoutDto}) {
-  //   showModalPopup(
-  //       context: context,
-  //       child: _TimerPicker(
-  //         previousDuration: exerciseInWorkoutDto.procedureDuration,
-  //         onSelect: (Duration duration) =>
-  //             _setWorkingTimer(exerciseId: exerciseInWorkoutDto.exercise.id, duration: duration),
-  //       ));
-  // }
+  void _showRestIntervalTimePicker({required ProcedureDto procedure}) {
+    showModalPopup(
+        context: context,
+        child: _TimerPicker(
+          initialDuration: procedure.restInterval,
+          onSelect: (Duration duration) {
+            Navigator.of(context).pop();
+            _setRestInterval(procedureId: procedure.exercise.id, duration: duration);
+          },
+        ));
+  }
 
-  // void _setWorkingTimer({required String exerciseId, required Duration duration}) {
-  //   final exerciseIndex = _indexWhereProcedure(id: exerciseId);
-  //   Navigator.of(context).pop();
-  //   setState(() {
-  //     _procedures[exerciseIndex].procedureDuration = duration;
-  //   });
-  // }
-  //
-  // void _removeWorkingTimer({required String exerciseId}) {
-  //   final exerciseIndex = _indexWhereProcedure(id: exerciseId);
-  //   setState(() {
-  //     _procedures[exerciseIndex].procedureDuration = null;
-  //   });
-  // }
+  void _setRestInterval({required String procedureId, required Duration duration}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    setState(() {
+      _procedures[procedureIndex] = procedure.copyWith(restInterval: duration);
+    });
+  }
+
+  void _removeRestInterval({required String procedureId}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    setState(() {
+      _procedures[procedureIndex] = procedure.copyWith(restInterval: Duration.zero);
+    });
+  }
 
   /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
   Widget _procedureToWidget({required ProcedureDto procedure}) {
@@ -353,10 +359,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
       onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
       onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
-      onSetProcedureTimer: () {},
-      onRemoveProcedureTimer: () {},
+      onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
+      onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
       onReOrderProcedures: () => _reOrderProcedures(),
-      onCheckSet: (int procedureIndex) {},
+      onCheckSet: (int setIndex) => _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex),
     );
   }
 
@@ -442,11 +448,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   ),
                 ),
                 trailing: GestureDetector(
-                    onTap: _showIntervalTimePicker,
+                    onTap: _showRoutineIntervalPicker,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        _intervalDuration != null
+                        _routineIntervalDuration != null
                             ? Text("10mins 11s", style: Theme.of(context).textTheme.labelLarge)
                             : const SizedBox.shrink(),
                         const SizedBox(width: 4),
@@ -567,21 +573,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         ));
   }
 
-  RoutineDto? _fetchRoutine() {
-    RoutineDto? workoutDto;
-    final routine = widget.routine?.id;
-    // if (routine != null) {
-    //   final routines = Provider.of<RoutineProvider>(context, listen: false).workouts;
-    //   workoutDto = routines.firstWhere((workout) => workout.id == routineId);
-    //   // print(workoutDto.procedures[0].notes);
-    // }
-    return workoutDto;
-  }
-
   @override
   void initState() {
     super.initState();
-    _previousRoutine = widget.routine; //_fetchRoutine();
+    _previousRoutine = widget.routine;
     _procedures.addAll([...?_previousRoutine?.procedures]);
 
     if (widget.mode == RoutineEditorMode.editing) {
@@ -679,10 +674,10 @@ class _ProceduresListState extends State<_ProceduresList> {
 }
 
 class _TimerPicker extends StatefulWidget {
-  final Duration? previousDuration;
+  final Duration? initialDuration;
   final void Function(Duration duration) onSelect;
 
-  const _TimerPicker({required this.onSelect, required this.previousDuration});
+  const _TimerPicker({required this.onSelect, required this.initialDuration});
 
   @override
   State<_TimerPicker> createState() => _TimerPickerState();
@@ -730,7 +725,7 @@ class _TimerPickerState extends State<_TimerPicker> {
   @override
   void initState() {
     super.initState();
-    final previousDuration = widget.previousDuration;
+    final previousDuration = widget.initialDuration;
     _duration = previousDuration ?? Duration.zero;
   }
 }

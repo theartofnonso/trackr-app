@@ -22,7 +22,7 @@ class ProcedureWidget extends StatelessWidget {
   final void Function() onRemoveProcedure;
   final void Function() onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
-  final void Function() onSetProcedureTimer;
+  final void Function() onSetRestInterval;
   final void Function() onRemoveProcedureTimer;
   final void Function() onReOrderProcedures;
 
@@ -48,7 +48,7 @@ class ProcedureWidget extends StatelessWidget {
     required this.onRemoveSet,
     required this.onUpdateNotes,
     required this.onReplaceProcedure,
-    required this.onSetProcedureTimer,
+    required this.onSetRestInterval,
     required this.onRemoveProcedureTimer,
     required this.onChangedSetType,
     required this.onReOrderProcedures,
@@ -193,7 +193,7 @@ class ProcedureWidget extends StatelessWidget {
           CupertinoListTile(
             leadingToTitle: 8,
             backgroundColorActivated: Colors.transparent,
-            onTap: onSetProcedureTimer,
+            onTap: onSetRestInterval,
             padding: EdgeInsets.zero,
             leading: const Icon(
               CupertinoIcons.timer,
