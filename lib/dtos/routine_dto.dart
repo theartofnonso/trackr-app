@@ -5,7 +5,10 @@ class RoutineDto {
   final String name;
   final List<ProcedureDto> procedures;
   final String notes;
-  final Duration? setsInterval;
 
-  RoutineDto({required this.id, required this.name, required this.procedures, this.notes = "", this.setsInterval});
+  RoutineDto(
+      {required this.id,
+      required this.name,
+      required this.procedures,
+      this.notes = ""});
 }

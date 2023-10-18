@@ -38,10 +38,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late TextEditingController _workoutNameController;
   late TextEditingController _workoutNotesController;
 
-  late Timer _workoutTimer;
   Duration? _routineIntervalDuration;
 
   RoutineDto? _previousRoutine;
+
+  int _routineTimeElapsed = 0;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -539,10 +540,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 fontWeight: FontWeight.w600,
                                 color: CupertinoColors.white.withOpacity(0.8),
                                 fontSize: 18)),
-                        trailing: widget.mode == RoutineEditorMode.routine
-                            ? Text(Duration(seconds: _workoutTimer.tick).secondsOrMinutesOrHours())
-                            : null,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        trailing: _TimerWidget(started: widget.mode == RoutineEditorMode.routine, onTick: (int elapsedTime) {
+                          _routineTimeElapsed = elapsedTime;
+                        })
                       ),
                     ],
                   ),
@@ -582,12 +582,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (widget.mode == RoutineEditorMode.editing) {
       _workoutNameController = TextEditingController(text: _previousRoutine?.name);
       _workoutNotesController = TextEditingController(text: _previousRoutine?.notes);
-    } else {
-      _workoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (mounted) {
-          //setState(() {});
-        }
-      });
     }
   }
 
@@ -597,8 +591,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (widget.mode == RoutineEditorMode.editing) {
       _workoutNameController.dispose();
       _workoutNotesController.dispose();
-    } else {
-      _workoutTimer.cancel();
     }
     _scrollController.dispose();
   }
@@ -762,3 +754,43 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
     );
   }
 }
+
+class _TimerWidget extends StatefulWidget {
+  final bool started;
+  final void Function(int elapsedTime) onTick;
+  const _TimerWidget({required this.started, required this.onTick});
+
+  @override
+  State<_TimerWidget> createState() => _TimerWidgetState();
+}
+
+class _TimerWidgetState extends State<_TimerWidget> {
+
+  Timer? _timer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(Duration(seconds: _timer?.tick ?? 0).secondsOrMinutesOrHours());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.started) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (mounted) {
+          setState(() {
+            widget.onTick(timer.tick);
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
+  }
+}
+
