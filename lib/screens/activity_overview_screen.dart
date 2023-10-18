@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/workout_preview_screen.dart';
+import 'package:tracker_app/screens/routine_preview_screen.dart';
 
 import '../dtos/routine_dto.dart';
-import '../providers/workout_provider.dart';
-import 'workout_editor_screen.dart';
+import '../providers/routine_provider.dart';
+import 'routine_editor_screen.dart';
 
 void _navigateToWorkoutEditorScreen({required BuildContext context, RoutineDto? routineDto}) {
   Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routineDto)));
@@ -17,7 +17,7 @@ class ActivityOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<RoutineProvider>(context, listen: true).workouts;
+    final workouts = Provider.of<RoutineProvider>(context, listen: true).routines;
 
     return CupertinoPageScaffold(
       child: SafeArea(
@@ -104,12 +104,12 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _removeWorkout({required BuildContext context}) {
-    Provider.of<RoutineProvider>(context, listen: false).removeWorkout(id: routineDto.id);
+    Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
   }
 
   void _navigateToWorkoutPreviewScreen({required BuildContext context}) async {
     Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => WorkoutPreviewScreen(workoutId: routineDto.id)));
+        .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routine: routineDto)));
   }
 
   @override

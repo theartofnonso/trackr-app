@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
-import '../../../screens/workout_editor_screen.dart';
+import '../../../screens/routine_editor_screen.dart';
 import '../../helper_widgets/dialog_helper.dart';
 
 class SetWidget extends StatelessWidget {

@@ -8,7 +8,7 @@ import 'package:tracker_app/widgets/workout/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../screens/workout_editor_screen.dart';
+import '../../../screens/routine_editor_screen.dart';
 
 class ProcedureWidget extends StatelessWidget {
   final RoutineEditorMode editorType;

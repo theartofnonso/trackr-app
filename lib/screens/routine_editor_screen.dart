@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/routine_dto.dart';
-import 'package:tracker_app/providers/workout_provider.dart';
+import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
@@ -386,7 +386,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     } else if (_procedures.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      Provider.of<RoutineProvider>(context, listen: false).createWorkout(
+      Provider.of<RoutineProvider>(context, listen: false).createRoutine(
           name: _workoutNameController.text, notes: _workoutNotesController.text, exercises: _procedures);
 
       _navigateBack();
@@ -412,7 +412,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       } else if (_procedures.isEmpty) {
         _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
       } else {
-        Provider.of<RoutineProvider>(context, listen: false).updateWorkout(
+        Provider.of<RoutineProvider>(context, listen: false).updateRoutine(
             id: previousWorkout.id,
             name: _workoutNameController.text,
             notes: _workoutNotesController.text,
@@ -549,6 +549,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
+                    controller: _scrollController,
                       itemBuilder: (BuildContext context, int index) {
                         // Build the item widget based on the data at the specified index.
                         final procedure = _procedures[index];
@@ -557,7 +558,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                       itemCount: _procedures.length),
                 ),
-                //..._proceduresToWidgets(procedures: _procedures),
                 const SizedBox(height: 18),
                 SizedBox(
                   width: double.infinity,

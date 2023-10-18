@@ -2,18 +2,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/workout_editor_screen.dart';
+import 'package:tracker_app/screens/routine_editor_screen.dart';
+import 'package:tracker_app/widgets/workout/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/routine_dto.dart';
-import '../providers/workout_provider.dart';
-import '../widgets/workout/preview/exercise_in_workout_preview.dart';
+import '../providers/routine_provider.dart';
 
-class WorkoutPreviewScreen extends StatelessWidget {
-  final String workoutId;
+class RoutinePreviewScreen extends StatelessWidget {
+  final RoutineDto routine;
 
-  const WorkoutPreviewScreen({super.key, required this.workoutId});
+  const RoutinePreviewScreen({super.key, required this.routine});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context}) {
@@ -25,7 +25,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToWorkoutEditorScreen(context: context, type: RoutineEditorMode.editing);
+              _navigateToRoutineEditor(context: context, type: RoutineEditorMode.editing);
             },
             child: Text('Edit', style: textStyle),
           ),
@@ -33,7 +33,7 @@ class WorkoutPreviewScreen extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeWorkout(context: context);
+              _removeRoutine(context: context);
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -42,46 +42,34 @@ class WorkoutPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToWorkoutEditorScreen({required BuildContext context, required RoutineEditorMode type}) {
-    final routine = _getWorkout(context: context);
+  void _navigateToRoutineEditor({required BuildContext context, RoutineEditorMode type = RoutineEditorMode.editing}) {
     Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: type)));
   }
 
-  void _removeWorkout({required BuildContext context}) {
-    Provider.of<RoutineProvider>(context, listen: false).removeWorkout(id: workoutId);
+  void _removeRoutine({required BuildContext context}) {
+    Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  List<ExerciseInWorkoutPreview> _exercisesToWidgets(
-      {required RoutineDto workoutDto, required List<ProcedureDto> exercisesInWorkout}) {
-    return exercisesInWorkout.map((exerciseInWorkout) {
-      return ExerciseInWorkoutPreview(
-        exerciseInWorkoutDto: exerciseInWorkout,
-        superSetExerciseInWorkoutDto: _whereOtherSuperSet(workoutDto: workoutDto, firstExercise: exerciseInWorkout),
-      );
-    }).toList();
+  ProcedureWidget _procedureToWidget({required ProcedureDto procedure}) {
+    return ProcedureWidget(
+      procedureDto: procedure,
+      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
+    );
   }
 
-  ProcedureDto? _whereOtherSuperSet(
-      {required RoutineDto workoutDto, required ProcedureDto firstExercise}) {
-    return workoutDto.procedures.firstWhereOrNull((exerciseInWorkout) =>
-        exerciseInWorkout.superSetId == firstExercise.superSetId &&
-        exerciseInWorkout.exercise.id != firstExercise.exercise.id);
-  }
-
-  RoutineDto _getWorkout({required BuildContext context}) {
-    final workouts = Provider.of<RoutineProvider>(context, listen: false).workouts;
-    final workout = workouts.firstWhere((workout) => workout.id == workoutId);
-    return workout;
+  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure}) {
+    return routine.procedures.firstWhereOrNull((procedure) =>
+    procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<RoutineProvider>(context, listen: true).workouts;
-    final workout = workouts.firstWhere((workout) => workout.id == workoutId);
+    final workouts = Provider.of<RoutineProvider>(context, listen: true).routines;
+    final workout = workouts.firstWhere((routine) => routine.id == routine.id);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToWorkoutEditorScreen(context: context, type: RoutineEditorMode.routine),
+          onPressed: () => _navigateToRoutineEditor(context: context, type: RoutineEditorMode.routine),
           backgroundColor: tealBlueLight,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),
@@ -97,12 +85,11 @@ class WorkoutPreviewScreen extends StatelessWidget {
               )),
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   CupertinoListSection.insetGrouped(
                     hasLeading: false,
                     margin: EdgeInsets.zero,
@@ -115,11 +102,11 @@ class WorkoutPreviewScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color: CupertinoColors.white.withOpacity(0.8),
                                 fontSize: 18)),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.zero,
                       ),
-                      CupertinoListTile.notched(
+                      CupertinoListTile(
                         backgroundColor: tealBlueLight,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                         title: Text(workout.notes,
                             style: TextStyle(
                               height: 1.5,
@@ -130,10 +117,18 @@ class WorkoutPreviewScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  ..._exercisesToWidgets(workoutDto: workout, exercisesInWorkout: workout.procedures),
-                ],
-              ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: ListView.separated(
+                      itemBuilder: (BuildContext context, int index) {
+                        // Build the item widget based on the data at the specified index.
+                        final procedure = routine.procedures[index];
+                        return _procedureToWidget(procedure: procedure);
+                      },
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                      itemCount: routine.procedures.length),
+                ),
+              ],
             ),
           ),
         ));
