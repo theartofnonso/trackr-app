@@ -43,7 +43,8 @@ class RoutinePreviewScreen extends StatelessWidget {
   }
 
   void _navigateToRoutineEditor({required BuildContext context, RoutineEditorMode type = RoutineEditorMode.editing}) {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: type)));
+    Navigator.of(context)
+        .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: type)));
   }
 
   void _removeRoutine({required BuildContext context}) {
@@ -60,7 +61,7 @@ class RoutinePreviewScreen extends StatelessWidget {
 
   ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure}) {
     return routine.procedures.firstWhereOrNull((procedure) =>
-    procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
+        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   @override
@@ -90,33 +91,32 @@ class RoutinePreviewScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  CupertinoListSection.insetGrouped(
-                    hasLeading: false,
-                    margin: EdgeInsets.zero,
-                    backgroundColor: Colors.transparent,
-                    children: [
-                      CupertinoListTile(
-                        backgroundColor: tealBlueLight,
-                        title: Text(workout.name,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: CupertinoColors.white.withOpacity(0.8),
-                                fontSize: 18)),
-                        padding: EdgeInsets.zero,
-                      ),
-                      CupertinoListTile(
-                        backgroundColor: tealBlueLight,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        title: Text(workout.notes,
-                            style: TextStyle(
-                              height: 1.5,
+                CupertinoListSection.insetGrouped(
+                  hasLeading: false,
+                  margin: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  children: [
+                    CupertinoListTile(
+                      backgroundColor: tealBlueLight,
+                      title: Text(routine.name,
+                          style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: CupertinoColors.white.withOpacity(0.8),
-                              fontSize: 16,
-                            )),
-                      ),
-                    ],
-                  ),
+                              fontSize: 18)),
+                    ),
+                    CupertinoListTile(
+                      backgroundColor: tealBlueLight,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                      title: Text(workout.notes,
+                          style: TextStyle(
+                            height: 1.5,
+                            fontWeight: FontWeight.w600,
+                            color: CupertinoColors.white.withOpacity(0.8),
+                            fontSize: 16,
+                          )),
+                    )
+                  ],
+                ),
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
