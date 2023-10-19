@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:tracker_app/app_constants.dart';
 
 enum SetType {
   warmUp("Warm Up", "W", CupertinoColors.activeOrange),
-  working("Working", "WK", CupertinoColors.activeBlue),
+  working("Working", "WK", CupertinoColors.white),
   failure("Failure", "F", CupertinoColors.systemRed),
   drop("Drop Set", "D", CupertinoColors.activeGreen);
 
@@ -12,7 +13,7 @@ enum SetType {
 
   final String name;
   final String label;
-  final CupertinoDynamicColor color;
+  final Color color;
 }
 
 class SetDto {

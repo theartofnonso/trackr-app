@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../app_constants.dart';
 import '../models/RoutineLog.dart';
@@ -12,15 +16,20 @@ class RoutineLogsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+
     return CupertinoPageScaffold(
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: logs.isNotEmpty
-              ? _RoutineLogsList(logs: logs)
-              : const Center(child: _RoutineLogsEmptyState()),
-        ),
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: Colors.transparent,
+        trailing: GestureDetector(
+            onTap: () => {},
+            child: const Icon(
+              CupertinoIcons.plus_app,
+              size: 24,
+              color: CupertinoColors.white,
+            )),
       ),
+      child: SafeArea(
+          child: logs.isNotEmpty ? _RoutineLogsList(logs: logs) : const Center(child: _RoutineLogsEmptyState())),
     );
   }
 }
@@ -32,24 +41,19 @@ class _RoutineLogsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      CupertinoListSection.insetGrouped(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
-        backgroundColor: Colors.transparent,
-        header: CupertinoListTile(
-          padding: EdgeInsets.zero,
-          title: Text("History", style: Theme.of(context).textTheme.titleLarge),
-          trailing: GestureDetector(
-              onTap: () => {},
-              child: const Icon(
-                CupertinoIcons.plus,
-                size: 24,
-                color: CupertinoColors.white,
-              )),
-        ),
-        children: [...logs.map((log) => _RoutineLogWidget(log: log)).toList()],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+                itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+                itemCount: logs.length),
+          )
+        ],
       ),
-    ]);
+    );
   }
 }
 
@@ -57,6 +61,63 @@ class _RoutineLogWidget extends StatelessWidget {
   final RoutineLog log;
 
   const _RoutineLogWidget({required this.log});
+
+  @override
+  Widget build(BuildContext context) {
+    final procedures =
+        log.procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CupertinoListTile(
+            title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
+            subtitle: Row(children: [
+              const Icon(CupertinoIcons.calendar, color: CupertinoColors.white, size: 12,),
+              Text("Yesterday", style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+              const SizedBox(width: 10),
+              const Icon(CupertinoIcons.timer, color: CupertinoColors.white, size: 12,),
+              Text(_logDuration(), style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+            ]), trailing: GestureDetector(
+            onTap: () => _showWorkoutActionSheet(context: context),
+            child: const Icon(
+              CupertinoIcons.ellipsis,
+              color: CupertinoColors.white,
+            ))),
+        const SizedBox(height: 8),
+        ..._proceduresToWidgets(context: context, procedures: procedures),
+        log.procedures.length > 3
+            ? Text(_footerLabel(), style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
+            : const SizedBox.shrink()
+      ],
+    );
+  }
+
+  String _footerLabel() {
+    final exercisesPlural = log.procedures.length - 3 > 1 ? "exercises" : "exercise";
+    return "See ${log.procedures.length - 3} more $exercisesPlural";
+  }
+
+  String _logDuration() {
+    final startTime = log.startTime.getDateTimeInUtc();
+    final endTime = log.endTime.getDateTimeInUtc();
+    final interval = endTime.difference(startTime);
+    return interval.secondsOrMinutesOrHours();
+  }
+
+  List<Widget> _proceduresToWidgets({required BuildContext context, required List<ProcedureDto> procedures}) {
+    return procedures
+        .take(3)
+        .map((procedure) => Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: CupertinoListTile(
+                  backgroundColor: tealBlueLight,
+                  title:
+                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14)),
+                  trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
+            ))
+        .toList();
+  }
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutActionSheet({required BuildContext context}) {
@@ -71,10 +132,20 @@ class _RoutineLogWidget extends StatelessWidget {
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              //Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: log)));
+            },
+            child: Text(
+              'Edit',
+              style: textStyle,
+            ),
+          ),
+          CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeLog(context: context);
+              Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: log.id);
             },
             child: const Text(
               'Remove',
@@ -86,39 +157,13 @@ class _RoutineLogWidget extends StatelessWidget {
     );
   }
 
-  void _removeLog({required BuildContext context}) {
-   // Provider.of<RoutineLogProvider>(context, listen: false).removeRoutine(id: routine.id);
-  }
-
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
     // Navigator.of(context)
     //     .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)));
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoListTile.notched(
-        onTap: () => _navigateToRoutineLogPreview(context: context),
-        backgroundColor: tealBlueLight,
-        backgroundColorActivated: tealBlueLighter,
-        title: Text(
-          log.name,
-          style: const TextStyle(color: CupertinoColors.white),
-        ),
-        subtitle: const Column(children: [
-          Text("3 Sets Chest Fly"),
-          SizedBox(height: 4),
-          Text("3 Sets Leg Press"),
-          SizedBox(height: 4),
-          Text("3 Sets Bulgarian Split")
-        ],),
-        trailing: Text("1hr 3mins"));
-  }
-
 }
 
 class _RoutineLogsEmptyState extends StatelessWidget {
-
   const _RoutineLogsEmptyState();
 
   @override

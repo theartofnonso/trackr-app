@@ -30,12 +30,11 @@ class ExerciseProvider with ChangeNotifier {
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
 
   ExerciseProvider() {
-    _listExercises();
+    //_listExercises();
   }
 
   void _listExercises() async {
     final exercises = await Amplify.DataStore.query(Exercise.classType);
-    print(exercises);
     _exercises.addAll(exercises);
     notifyListeners();
   }

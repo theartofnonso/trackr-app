@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ import '../models/Exercise.dart';
 import '../models/Routine.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
-import '../widgets/workout/editor/procedure_widget.dart';
+import '../widgets/routine/editor/procedure_widget.dart';
 import 'exercise_library_screen.dart';
 
 enum RoutineEditorMode { editing, routine }
@@ -42,7 +43,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _routineDuration;
   
-  late DateTime _routineStartTime;
+  late TemporalDateTime _routineStartTime;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -115,7 +116,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       var scrollPosition = _scrollController.position;
       _scrollController.animateTo(
         scrollPosition.maxScrollExtent,
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 400),
         curve: Curves.easeOut,
       );
     }
@@ -413,7 +414,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             id: previousWorkout.id,
             name: _workoutNameController.text,
             notes: _workoutNotesController.text,
-            exercises: _procedures);
+            procedures: _procedures);
 
         _navigateBack();
       }
@@ -428,8 +429,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final completedProcedures = <ProcedureDto>[];
     for (var procedure in _procedures) {
       final completedSets = procedure.sets.where((set) => set.checked).toList();
-      final completedProcedure = procedure.copyWith(sets: completedSets);
-      completedProcedures.add(completedProcedure);
+      if(completedSets.isNotEmpty) {
+        final completedProcedure = procedure.copyWith(sets: completedSets);
+        completedProcedures.add(completedProcedure);
+      }
     }
     return completedProcedures;
   }
@@ -441,6 +444,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       if(routine != null) {
         final completedProcedures = _completedProceduresAndSets();
         Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(name: routine.name, notes: routine.notes, procedures: completedProcedures, startTime: _routineStartTime);
+        _navigateBack();
       }
     } else {
       final actions = <CupertinoDialogAction>[
@@ -636,7 +640,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
-    _routineStartTime = DateTime.now();
+    _routineStartTime = TemporalDateTime.now();
     
     final previousRoutine = widget.routine;
     final procedures = previousRoutine?.procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();

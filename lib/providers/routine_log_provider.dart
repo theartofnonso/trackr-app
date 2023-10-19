@@ -21,9 +21,9 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void logRoutine({required String name, required String notes, required List<ProcedureDto> procedures, required DateTime startTime}) async {
+  void logRoutine({required String name, required String notes, required List<ProcedureDto> procedures, required TemporalDateTime startTime}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
-    final logToSave = RoutineLog(name: name, notes: notes, procedures: proceduresJson, startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"), endTime: TemporalDateTime.now());
+    final logToSave = RoutineLog(name: name, notes: notes, procedures: proceduresJson, startTime: startTime, endTime: TemporalDateTime.now());
     await Amplify.DataStore.save<RoutineLog>(logToSave);
     _logs.add(logToSave);
     notifyListeners();
@@ -34,14 +34,15 @@ class RoutineLogProvider with ChangeNotifier {
   //   _logs[index] = RoutineDto(id: id, name: name, notes: notes, procedures: [...exercises]);
   //   notifyListeners();
   // }
-  //
-  // void removeRoutine({required String id}) {
-  //   final index = _indexWhereRoutine(id: id);
-  //   _logs.removeAt(index);
-  //   notifyListeners();
-  // }
-  //
-  // int _indexWhereRoutine({required String id}) {
-  //   return _logs.indexWhere((routine) => routine.id == id);
-  // }
+
+  void removeLog({required String id}) async {
+    final index = _indexWhereRoutineLog(id: id);
+    final logToBeRemoved = _logs.removeAt(index);
+    await Amplify.DataStore.delete<RoutineLog>(logToBeRemoved);
+    notifyListeners();
+  }
+
+  int _indexWhereRoutineLog({required String id}) {
+    return _logs.indexWhere((routine) => routine.id == id);
+  }
 }

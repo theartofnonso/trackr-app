@@ -114,10 +114,10 @@ class _SetIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor: type.color,
+      backgroundColor: Colors.transparent,
       child: Text(
         type == SetType.working ? "${label + 1}" : type.label,
-        style: Theme.of(context).textTheme.labelMedium,
+        style: TextStyle(color: type.color, fontWeight: FontWeight.bold),
       ),
     );
   }

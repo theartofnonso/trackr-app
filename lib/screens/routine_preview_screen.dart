@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
-import 'package:tracker_app/widgets/workout/preview/procedure_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
@@ -125,11 +125,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) {
-                        // Build the item widget based on the data at the specified index.
-                        final procedure = procedures[index];
-                        return _procedureToWidget(procedure: procedure, procedures: procedures);
-                      },
+                      itemBuilder: (BuildContext context, int index) =>  _procedureToWidget(procedure: procedures[index], procedures: procedures),
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                       itemCount: routine.procedures.length),
                 ),
