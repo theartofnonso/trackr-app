@@ -12,19 +12,19 @@ void _navigateToRoutineEditor({required BuildContext context, Routine? routine})
   Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine)));
 }
 
-class ActivityOverviewScreen extends StatelessWidget {
-  const ActivityOverviewScreen({super.key});
+class RoutinesScreen extends StatelessWidget {
+  const RoutinesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final workouts = Provider.of<RoutineProvider>(context, listen: true).routines;
+    final routines = Provider.of<RoutineProvider>(context, listen: true).routines;
 
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: workouts.isNotEmpty
-              ? _RoutineList(routines: workouts)
+          child: routines.isNotEmpty
+              ? _RoutineList(routines: routines)
               : const Center(child: _WorkoutsEmptyState()),
         ),
       ),
