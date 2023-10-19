@@ -36,9 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.6
 
   # Amplify Flutter
-  amplify_flutter: ^1.2.1
-  amplify_api: ^1.2.0
-  amplify_datastore: ^1.2.0-supports-only-mobile+1
+  amplify_flutter: ^1.4.1
+  amplify_api: ^1.4.0
+  amplify_datastore: ^1.4.2
 
   # FL Chart is a highly customizable Flutter chart library
   syncfusion_flutter_charts: ^23.1.39

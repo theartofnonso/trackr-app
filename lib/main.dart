@@ -11,7 +11,6 @@ import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
-import 'package:tracker_app/screens/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routines_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -93,7 +92,7 @@ class _MyAppState extends State<MyApp> {
 
         useMaterial3: true,
       ),
-      home: _isLoading ? const Center(child: CircularProgressIndicator()) : const RoutineLogsScreen(),
+      home: _isLoading ? const Center(child: CupertinoActivityIndicator(color: CupertinoColors.white, radius: 16)) : const HomeScreen(),
     );
   }
 }

@@ -5,66 +5,66 @@ packages:
     dependency: "direct main"
     description:
       name: amplify_api
-      sha256: "39b7a94d53cbfb51e630838079dd08582c7f1ff483248b20d2124177b35fd34b"
+      sha256: a58a65a8b2c4caaf93be528123737d73fc96e2861f2c710e7771ea45a93d1903
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.4.0"
   amplify_api_dart:
     dependency: transitive
     description:
       name: amplify_api_dart
-      sha256: "0cb295fa2805215b0e63cdc8d112bfb7638e4264dd5a1a4e857cdb36c9464846"
+      sha256: "0e09f1c592336cb8b389df21b6437602cc2c3b20554ff69b7946f3f644965069"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0+1"
+    version: "0.3.1+1"
   amplify_core:
     dependency: transitive
     description:
       name: amplify_core
-      sha256: "7133f02426e3cf9982f4c1eb4a04cbae3808a92ff6802bc0597e9eed43314a79"
+      sha256: "41614540fce7b64234217675771a355a7ac0d0cb965bc0f640c09b19e37209d9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.4.1"
   amplify_datastore:
     dependency: "direct main"
     description:
       name: amplify_datastore
-      sha256: "0a80df1b8c934eeba2ad988196ce27ef0cd0c9f0c975280e049aba46ae249457"
+      sha256: b4672dabe4997ecf1da0fbf88a0d2a1edc6890622f94e5c7ef82ecc18d8f4f98
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0-supports-only-mobile+1"
+    version: "1.4.2"
   amplify_datastore_plugin_interface:
     dependency: transitive
     description:
       name: amplify_datastore_plugin_interface
-      sha256: bfa66b68d95bacef9662300008f640d5157019619e0cd87c02e9ce56adaa504e
+      sha256: "25ab8c498a54c6d664e0f9a5aa2f43917a738711290444a164ee7577fe6805d4"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.4.0"
   amplify_flutter:
     dependency: "direct main"
     description:
       name: amplify_flutter
-      sha256: "864383bebc9234a91d4b76192f622115b290f73f35f652e1c2278bf6954386ee"
+      sha256: "43f41c61d53be6343db3e88942f3fa412d6fe9a3f4c6bf584569429fbdd5150e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.4.1"
   amplify_secure_storage:
     dependency: transitive
     description:
       name: amplify_secure_storage
-      sha256: "425a61bc2332cc6bfda378e298412928e3e3b975352b9824822a5baab726ed8c"
+      sha256: "97c516a527f11a4734b58644665ffd1b9e87cdcd26faa46ec4d5894144316f42"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0+2"
+    version: "0.4.0+6"
   amplify_secure_storage_dart:
     dependency: transitive
     description:
       name: amplify_secure_storage_dart
-      sha256: c8f28ba8414b9def2ebc1965c57eac92a56129937e907218be9232c2b7f23fb4
+      sha256: f20850f56264316e7b0eba0b26a7fa44c29d97841c1844d06d3489ffd765e144
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0+3"
+    version: "0.4.0+7"
   args:
     dependency: transitive
     description:
@@ -85,18 +85,18 @@ packages:
     dependency: transitive
     description:
       name: aws_common
-      sha256: "58bd3c1d5cfa3e34dfacc9c0ea5fd155c5c1398cd0a90e06252aa0c3218fc880"
+      sha256: "692b58b26fb2b98ccb029029b565b3d7bc95620bbb9ece2ad0c91194f57681f2"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0+3"
+    version: "0.6.1"
   aws_signature_v4:
     dependency: transitive
     description:
       name: aws_signature_v4
-      sha256: b38da32e6fdec4476957fe441f37cbeb37280de972f18a250d09cee922a7160d
+      sha256: "916029d558b8bc9742ea4adc2f5179ef414ee627aa345abd36919e8c9c0907f2"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0+2"
+    version: "0.5.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -665,10 +665,10 @@ packages:
     dependency: transitive
     description:
       name: worker_bee
-      sha256: "4ad7a078ca9f75fddfce65598e1134ad1af7c133b1ba1a99da114c096b183cad"
+      sha256: "97013bbba42a536fbf8c7577198ce76407c40450a1592be09388536db9cea3be"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0+2"
+    version: "0.2.0+5"
   xdg_directories:
     dependency: transitive
     description:

@@ -25,7 +25,7 @@ class RoutinesScreen extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: routines.isNotEmpty
               ? _RoutineList(routines: routines)
-              : const Center(child: _WorkoutsEmptyState()),
+              : const Center(child: _RoutinesEmptyState()),
         ),
       ),
     );
@@ -91,7 +91,7 @@ class _RoutineWidget extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeWorkout(context: context);
+              _removeRoutine(context: context);
             },
             child: const Text(
               'Remove',
@@ -103,11 +103,11 @@ class _RoutineWidget extends StatelessWidget {
     );
   }
 
-  void _removeWorkout({required BuildContext context}) {
+  void _removeRoutine({required BuildContext context}) {
     Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
   }
 
-  void _navigateToWorkoutPreviewScreen({required BuildContext context}) async {
+  void _navigateToRoutinePreview({required BuildContext context}) async {
     Navigator.of(context)
         .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)));
   }
@@ -115,7 +115,7 @@ class _RoutineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile.notched(
-        onTap: () => _navigateToWorkoutPreviewScreen(context: context),
+        onTap: () => _navigateToRoutinePreview(context: context),
         backgroundColor: tealBlueLight,
         backgroundColorActivated: tealBlueLighter,
         title: Text(
@@ -136,9 +136,9 @@ class _RoutineWidget extends StatelessWidget {
 
 }
 
-class _WorkoutsEmptyState extends StatelessWidget {
+class _RoutinesEmptyState extends StatelessWidget {
 
-  const _WorkoutsEmptyState();
+  const _RoutinesEmptyState();
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +146,7 @@ class _WorkoutsEmptyState extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("Start tracking your performance", style: Theme.of(context).textTheme.titleMedium),
+        Text("Create workouts ahead of gym time", style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
