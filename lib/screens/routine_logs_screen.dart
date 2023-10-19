@@ -113,7 +113,7 @@ class _RoutineLogWidget extends StatelessWidget {
               child: CupertinoListTile(
                   backgroundColor: tealBlueLight,
                   title:
-                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14)),
+                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
             ))
         .toList();

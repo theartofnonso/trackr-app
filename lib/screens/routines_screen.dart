@@ -26,7 +26,7 @@ class RoutinesScreen extends StatelessWidget {
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.transparent,
         trailing: GestureDetector(
-            onTap: () => {},
+            onTap: () => _navigateToRoutineEditor(context: context),
             child: const Icon(
               CupertinoIcons.plus_app,
               size: 24,
@@ -159,7 +159,7 @@ class _RoutineWidget extends StatelessWidget {
               child: CupertinoListTile(
                   backgroundColor: tealBlueLight,
                   title:
-                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14)),
+                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
             ))
         .toList();
