@@ -1,18 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
 
 import '../dtos/procedure_dto.dart';
-import '../models/Routine.dart';
 import '../providers/routine_provider.dart';
 import 'routine_editor_screen.dart';
 
-void _navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
+void _navigateToRoutineEditor({required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
 }
 
 class RoutinesScreen extends StatelessWidget {
@@ -34,16 +32,16 @@ class RoutinesScreen extends StatelessWidget {
             )),
       ),
       child: SafeArea(
-        child: routines.isNotEmpty ? _RoutineList(routines: routines) : const Center(child: _RoutinesEmptyState()),
+        child: routines.isNotEmpty ? _RoutineList(routinesDtos: routines) : const Center(child: _RoutinesEmptyState()),
       ),
     );
   }
 }
 
 class _RoutineList extends StatelessWidget {
-  final List<Routine> routines;
+  final List<RoutineDto> routinesDtos;
 
-  const _RoutineList({required this.routines});
+  const _RoutineList({required this.routinesDtos});
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +50,18 @@ class _RoutineList extends StatelessWidget {
         child: Column(children: [
           Expanded(
             child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => _RoutineWidget(routine: routines[index]),
+                itemBuilder: (BuildContext context, int index) => _RoutineWidget(routineDto: routinesDtos[index]),
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                itemCount: routines.length),
+                itemCount: routinesDtos.length),
           )
         ]));
   }
 }
 
 class _RoutineWidget extends StatelessWidget {
-  final Routine routine;
+  final RoutineDto routineDto;
 
-  const _RoutineWidget({required this.routine});
+  const _RoutineWidget({required this.routineDto});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutActionSheet({required BuildContext context}) {
@@ -73,14 +71,14 @@ class _RoutineWidget extends StatelessWidget {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: Text(
-          routine.name,
+          routineDto.name,
           style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, routine: routine);
+              _navigateToRoutineEditor(context: context, routineDto: routineDto);
             },
             child: Text(
               'Edit',
@@ -91,7 +89,7 @@ class _RoutineWidget extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
+              Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
             },
             child: const Text(
               'Remove',
@@ -104,30 +102,29 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)));
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)));
   }
 
   @override
   Widget build(BuildContext context) {
-    final procedures =
-        routine.procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
+
     return GestureDetector(
       onTap: () => _navigateToRoutinePreview(context: context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CupertinoListTile(
-              onTap: () => _navigateToRoutinePreview(context: context),
+              onTap: () => _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
               leading:
-                  GestureDetector(onTap: () => _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.routine) ,child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
-              title: Text(routine.name, style: Theme.of(context).textTheme.labelLarge),
+                  GestureDetector(onTap: () => _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine) ,child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
+              title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
               subtitle: Row(children: [
                 const Icon(
                   CupertinoIcons.number,
                   color: CupertinoColors.white,
                   size: 12,
                 ),
-                Text("${routine.procedures.length} exercises",
+                Text("${routineDto.procedures.length} exercises",
                     style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               ]),
               trailing: GestureDetector(
@@ -137,8 +134,8 @@ class _RoutineWidget extends StatelessWidget {
                     color: CupertinoColors.white,
                   ))),
           const SizedBox(height: 8),
-          ..._proceduresToWidgets(context: context, procedures: procedures),
-          routine.procedures.length > 3
+          ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
+          routineDto.procedures.length > 3
               ? Text(_footerLabel(), style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
               : const SizedBox.shrink()
         ],
@@ -147,8 +144,8 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   String _footerLabel() {
-    final exercisesPlural = routine.procedures.length - 3 > 1 ? "exercises" : "exercise";
-    return "See ${routine.procedures.length - 3} more $exercisesPlural";
+    final exercisesPlural = routineDto.procedures.length - 3 > 1 ? "exercises" : "exercise";
+    return "See ${routineDto.procedures.length - 3} more $exercisesPlural";
   }
 
   List<Widget> _proceduresToWidgets({required BuildContext context, required List<ProcedureDto> procedures}) {
@@ -171,23 +168,26 @@ class _RoutinesEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Create workouts ahead of gym time", style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: CupertinoButton(
-              color: tealBlueLight,
-              onPressed: () => _navigateToRoutineEditor(context: context),
-              child: Text(
-                "Create Workout",
-                style: Theme.of(context).textTheme.labelLarge,
-              )),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Create workouts ahead of gym time", style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: CupertinoButton(
+                color: tealBlueLight,
+                onPressed: () => _navigateToRoutineEditor(context: context),
+                child: Text(
+                  "Create Workout",
+                  style: Theme.of(context).textTheme.labelLarge,
+                )),
+          )
+        ],
+      ),
     );
   }
 }

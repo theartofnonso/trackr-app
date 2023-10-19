@@ -4,53 +4,53 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/models/Routine.dart';
 import '../dtos/procedure_dto.dart';
+import '../dtos/routine_dto.dart';
 
 class RoutineProvider with ChangeNotifier {
-  final List<Routine> _routines = [];
+  final List<RoutineDto> _routineDtos = [];
 
-  UnmodifiableListView<Routine> get routines => UnmodifiableListView(_routines);
+  UnmodifiableListView<RoutineDto> get routines => UnmodifiableListView(_routineDtos);
 
-  RoutineProvider() {
-    _listRoutines();
-  }
-
-  void _listRoutines() async {
+  void listRoutines(BuildContext context) async {
     final routines = await Amplify.DataStore.query(Routine.classType);
-    _routines.addAll(routines);
+    final routineDtos = routines.map((routine) => routine.toRoutineDto(context)).toList();
+    _routineDtos.addAll(routineDtos);
     notifyListeners();
   }
 
-  void saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
+  void saveRoutine({required BuildContext context, required String name, required String notes, required List<ProcedureDto> procedures}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
-    final routineToSave = Routine(name: name, procedures: proceduresJson, notes: notes);
+    final routineToSave = Routine(name: name, procedures: proceduresJson, notes: notes, createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
     await Amplify.DataStore.save<Routine>(routineToSave);
-    _routines.add(routineToSave);
+   if(context.mounted) {
+     _routineDtos.add(routineToSave.toRoutineDto(context));
+   }
     notifyListeners();
   }
 
-  void updateRoutine({required String id, required String name, required String notes, required List<ProcedureDto> procedures}) async{
-    final index = _indexWhereRoutine(id: id);
-    final oldRoutines = await Amplify.DataStore.query<Routine>(Routine.classType, where: Routine.ID.eq(id));
-    final oldRoutine = oldRoutines.first;
-    final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
-    final newRoutine = oldRoutine.copyWith(name: name, procedures: proceduresJson, notes: notes);
-    await Amplify.DataStore.save<Routine>(newRoutine);
-    _routines[index] = newRoutine;
+
+  void updateRoutine({required RoutineDto dto}) async{
+    print(dto.createdAt);
+    print(dto.updatedAt);
+    final routine = dto.toRoutine();
+    await Amplify.DataStore.save<Routine>(routine);
+    final index = _indexWhereRoutine(id: dto.id);
+    _routineDtos[index] = dto;
     notifyListeners();
   }
 
   void removeRoutine({required String id}) async {
     final index = _indexWhereRoutine(id: id);
-    final routineToBeRemoved = _routines.removeAt(index);
-    await Amplify.DataStore.delete<Routine>(routineToBeRemoved);
+    final dtoToBeRemoved = _routineDtos.removeAt(index);
+    await Amplify.DataStore.delete<Routine>(dtoToBeRemoved.toRoutine());
     notifyListeners();
   }
 
   int _indexWhereRoutine({required String id}) {
-    return _routines.indexWhere((routine) => routine.id == id);
+    return _routineDtos.indexWhere((routine) => routine.id == id);
   }
 
-  Routine whereRoutine({required String id}) {
-    return _routines.firstWhere((routine) => routine.id == id);
+  RoutineDto whereRoutineDto({required String id}) {
+    return _routineDtos.firstWhere((dto) => dto.id == id);
   }
 }

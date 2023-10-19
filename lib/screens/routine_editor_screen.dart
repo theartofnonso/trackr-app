@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
@@ -13,9 +12,9 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../app_constants.dart';
+import '../dtos/routine_dto.dart';
 import '../dtos/set_dto.dart';
 import '../models/Exercise.dart';
-import '../models/Routine.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
 import '../widgets/routine/editor/procedure_widget.dart';
@@ -24,10 +23,10 @@ import 'exercise_library_screen.dart';
 enum RoutineEditorMode { editing, routine }
 
 class RoutineEditorScreen extends StatefulWidget {
-  final Routine? routine;
+  final RoutineDto? routineDto;
   final RoutineEditorMode mode;
 
-  const RoutineEditorScreen({super.key, this.routine, this.mode = RoutineEditorMode.editing});
+  const RoutineEditorScreen({super.key, this.routineDto, this.mode = RoutineEditorMode.editing});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -38,11 +37,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   List<ProcedureDto> _procedures = [];
 
-  late TextEditingController _workoutNameController;
-  late TextEditingController _workoutNotesController;
+  late TextEditingController _routineNameController;
+  late TextEditingController _routineNotesController;
 
   Duration? _routineDuration;
-  
+
   late TemporalDateTime _routineStartTime;
 
   /// Show [CupertinoAlertDialog] for creating a workout
@@ -79,8 +78,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final exercisesFromLibrary = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ExerciseLibraryScreen(
-            preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList());
+        return ExerciseLibraryScreen(preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList());
       },
     ) as List<Exercise>?;
 
@@ -379,14 +377,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ),
     ];
 
-    if (_workoutNameController.text.isEmpty) {
+    if (_routineNameController.text.isEmpty) {
       _showAlertDialog(title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
     } else if (_procedures.isEmpty) {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
       Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
-          name: _workoutNameController.text, notes: _workoutNotesController.text, procedures: _procedures);
-
+          name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures, context: context);
       _navigateBack();
     }
   }
@@ -402,19 +399,23 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ),
     ];
 
-    final previousWorkout = widget.routine;
+    final previousWorkout = widget.routineDto;
     if (previousWorkout != null) {
-      if (_workoutNameController.text.isEmpty) {
+      if (_routineNameController.text.isEmpty) {
         _showAlertDialog(
             title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
       } else if (_procedures.isEmpty) {
         _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
       } else {
-        Provider.of<RoutineProvider>(context, listen: false).updateRoutine(
-            id: previousWorkout.id,
-            name: _workoutNameController.text,
-            notes: _workoutNotesController.text,
-            procedures: _procedures);
+        final previousRoutine = widget.routineDto;
+        if (previousRoutine != null) {
+          final routineDto = previousRoutine.copyWith(
+              name: _routineNameController.text,
+              notes: _routineNotesController.text,
+              procedures: _procedures,
+              updatedAt: DateTime.now());
+          Provider.of<RoutineProvider>(context, listen: false).updateRoutine(dto: routineDto);
+        }
 
         _navigateBack();
       }
@@ -429,7 +430,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final completedProcedures = <ProcedureDto>[];
     for (var procedure in _procedures) {
       final completedSets = procedure.sets.where((set) => set.checked).toList();
-      if(completedSets.isNotEmpty) {
+      if (completedSets.isNotEmpty) {
         final completedProcedure = procedure.copyWith(sets: completedSets);
         completedProcedures.add(completedProcedure);
       }
@@ -437,13 +438,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return completedProcedures;
   }
 
-  void _endRoutine() {
+  void _logRoutine() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
-    if(isRoutinePartiallyComplete) {
-      final routine = widget.routine;
-      if(routine != null) {
+    if (isRoutinePartiallyComplete) {
+      final routine = widget.routineDto;
+      if (routine != null) {
         final completedProcedures = _completedProceduresAndSets();
-        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(name: routine.name, notes: routine.notes, procedures: completedProcedures, startTime: _routineStartTime);
+        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(context: context,
+            name: routine.name, notes: routine.notes, procedures: completedProcedures, startTime: _routineStartTime);
         _navigateBack();
       }
     } else {
@@ -460,9 +462,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _cancelRoutine() {
+  void _cancelRunningRoutine() {
     final isIncomplete = _isRoutinePartiallyComplete();
-    if(isIncomplete) {
+    if (isIncomplete) {
       final actions = <CupertinoDialogAction>[
         CupertinoDialogAction(
           onPressed: () {
@@ -491,7 +493,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final previousWorkout = widget.routine;
+    final previousRoutine = widget.routineDto;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -499,14 +501,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             ? CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 trailing: GestureDetector(
-                    onTap: previousWorkout != null ? _updateRoutine : _createRoutine,
-                    child: Text(previousWorkout != null ? "Update" : "Save",
+                    onTap: previousRoutine != null ? _updateRoutine : _createRoutine,
+                    child: Text(previousRoutine != null ? "Update" : "Save",
                         style: Theme.of(context).textTheme.labelMedium)),
               )
             : CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
-                  onTap: _cancelRoutine,
+                  onTap: _cancelRunningRoutine,
                   child: const Icon(
                     CupertinoIcons.clear_thick,
                     color: CupertinoColors.white,
@@ -532,7 +534,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
-                onPressed: _endRoutine,
+                onPressed: _logRoutine,
                 backgroundColor: tealBlueLighter,
                 child: const Icon(CupertinoIcons.stop_fill),
               )
@@ -553,7 +555,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       CupertinoListTile(
                         backgroundColor: tealBlueLight,
                         title: CupertinoTextField.borderless(
-                          controller: _workoutNameController,
+                          controller: _routineNameController,
                           expands: true,
                           padding: const EdgeInsets.only(left: 20),
                           textCapitalization: TextCapitalization.sentences,
@@ -572,7 +574,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         backgroundColor: tealBlueLight,
                         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                         title: CupertinoTextField.borderless(
-                          controller: _workoutNotesController,
+                          controller: _routineNotesController,
                           expands: true,
                           padding: EdgeInsets.zero,
                           textCapitalization: TextCapitalization.sentences,
@@ -599,20 +601,19 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     backgroundColor: Colors.transparent,
                     children: [
                       CupertinoListTile(
-                        backgroundColor: tealBlueLight,
-                        title: Text(previousWorkout!.name,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: CupertinoColors.white.withOpacity(0.8),
-                                fontSize: 18)),
-                        trailing: _TimerWidget(started: widget.mode == RoutineEditorMode.routine)
-                      ),
+                          backgroundColor: tealBlueLight,
+                          title: Text(previousRoutine!.name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: CupertinoColors.white.withOpacity(0.8),
+                                  fontSize: 18)),
+                          trailing: _TimerWidget(started: widget.mode == RoutineEditorMode.routine)),
                     ],
                   ),
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
-                    controller: _scrollController,
+                      controller: _scrollController,
                       itemBuilder: (BuildContext context, int index) {
                         // Build the item widget based on the data at the specified index.
                         final procedure = _procedures[index];
@@ -641,14 +642,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     super.initState();
 
     _routineStartTime = TemporalDateTime.now();
-    
-    final previousRoutine = widget.routine;
-    final procedures = previousRoutine?.procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
-    _procedures.addAll([...?procedures]);
+
+    final previousRoutine = widget.routineDto;
+    if (previousRoutine != null) {
+      _procedures.addAll([...previousRoutine.procedures]);
+    }
 
     if (widget.mode == RoutineEditorMode.editing) {
-      _workoutNameController = TextEditingController(text: previousRoutine?.name);
-      _workoutNotesController = TextEditingController(text: previousRoutine?.notes);
+      _routineNameController = TextEditingController(text: previousRoutine?.name);
+      _routineNotesController = TextEditingController(text: previousRoutine?.notes);
     }
   }
 
@@ -656,8 +658,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void dispose() {
     super.dispose();
     if (widget.mode == RoutineEditorMode.editing) {
-      _workoutNameController.dispose();
-      _workoutNotesController.dispose();
+      _routineNameController.dispose();
+      _routineNotesController.dispose();
     }
     _scrollController.dispose();
   }
@@ -824,6 +826,7 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
 
 class _TimerWidget extends StatefulWidget {
   final bool started;
+
   const _TimerWidget({required this.started});
 
   @override
@@ -831,7 +834,6 @@ class _TimerWidget extends StatefulWidget {
 }
 
 class _TimerWidgetState extends State<_TimerWidget> {
-
   Timer? _timer;
 
   @override
@@ -842,7 +844,7 @@ class _TimerWidgetState extends State<_TimerWidget> {
   @override
   void initState() {
     super.initState();
-    if(widget.started) {
+    if (widget.started) {
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (mounted) {
           setState(() {});
@@ -857,4 +859,3 @@ class _TimerWidgetState extends State<_TimerWidget> {
     _timer?.cancel();
   }
 }
-

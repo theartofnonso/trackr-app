@@ -1,15 +1,14 @@
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
-import '../models/Routine.dart';
 import '../providers/routine_provider.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
@@ -18,7 +17,7 @@ class RoutinePreviewScreen extends StatelessWidget {
   const RoutinePreviewScreen({super.key, required this.routineId});
 
   /// Show [CupertinoActionSheet]
-  void _showWorkoutPreviewActionSheet({required BuildContext context, required Routine routine}) {
+  void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineDto routineDto}) {
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
     showCupertinoModalPopup<void>(
       context: context,
@@ -27,7 +26,7 @@ class RoutinePreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.editing);
+              _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.editing);
             },
             child: Text('Edit', style: textStyle),
           ),
@@ -35,7 +34,7 @@ class RoutinePreviewScreen extends StatelessWidget {
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
-              _removeRoutine(context: context, routine: routine);
+              _removeRoutine(context: context, routineDto: routineDto);
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -45,20 +44,20 @@ class RoutinePreviewScreen extends StatelessWidget {
   }
 
   void _navigateToRoutineEditor(
-      {required BuildContext context, required Routine routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+      {required BuildContext context, required RoutineDto routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
     Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
+        .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
   }
 
-  void _removeRoutine({required BuildContext context, required Routine routine}) {
-    Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
+  void _removeRoutine({required BuildContext context, required RoutineDto routineDto}) {
+    Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> procedures}) {
+  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
     return ProcedureWidget(
       procedureDto: procedure,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: procedures),
+      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
     );
   }
 
@@ -69,13 +68,12 @@ class RoutinePreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routine = Provider.of<RoutineProvider>(context, listen: true).whereRoutine(id: routineId);
-    final procedures = routine.procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
+    final routineDto = Provider.of<RoutineProvider>(context, listen: true).whereRoutineDto(id: routineId);
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () =>
-              _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.routine),
+              _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
           backgroundColor: tealBlueLighter,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),
@@ -83,7 +81,7 @@ class RoutinePreviewScreen extends StatelessWidget {
         appBar: CupertinoNavigationBar(
           backgroundColor: tealBlueDark,
           trailing: GestureDetector(
-              onTap: () => _showWorkoutPreviewActionSheet(context: context, routine: routine),
+              onTap: () => _showWorkoutPreviewActionSheet(context: context, routineDto: routineDto),
               child: const Icon(
                 CupertinoIcons.ellipsis_vertical,
                 color: CupertinoColors.white,
@@ -103,7 +101,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                   children: [
                     CupertinoListTile(
                       backgroundColor: tealBlueLight,
-                      title: Text(routine.name,
+                      title: Text(routineDto.name,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: CupertinoColors.white.withOpacity(0.8),
@@ -112,7 +110,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                     CupertinoListTile(
                       backgroundColor: tealBlueLight,
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                      title: Text(routine.notes,
+                      title: Text(routineDto.notes,
                           style: TextStyle(
                             height: 1.5,
                             fontWeight: FontWeight.w600,
@@ -125,9 +123,9 @@ class RoutinePreviewScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) =>  _procedureToWidget(procedure: procedures[index], procedures: procedures),
+                      itemBuilder: (BuildContext context, int index) =>  _procedureToWidget(procedure: routineDto.procedures[index], otherProcedures: routineDto.procedures),
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                      itemCount: routine.procedures.length),
+                      itemCount: routineDto.procedures.length),
                 ),
               ],
             ),

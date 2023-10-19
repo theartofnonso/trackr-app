@@ -30,6 +30,10 @@ type Routine @model {
   name: String!
   procedures: [AWSJSON]!
   notes: String!
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }
 
 type RoutineLog @model {
@@ -39,12 +43,16 @@ type RoutineLog @model {
   notes: String!
   startTime: AWSDateTime!
   endTime: AWSDateTime!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }
 
 type Exercise @model {
   id: ID!
   name: String!
   bodyPart: BodyPart!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }
 
 enum BodyPart {

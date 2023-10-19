@@ -24,11 +24,23 @@ extension DurationExtension on Duration {
     final remainingMinutes = inMinutes.remainder(60);
     final remainingHours = inHours.remainder(24);
     if (inHours > 24) {
-      display = "${inDays}d ${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s";
+      if(remainingHours > 0 && remainingMinutes > 0 && remainingSeconds > 0) {
+        display = "${inDays}d ${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s";
+      } else if(remainingMinutes > 0 && remainingSeconds <= 0) {
+        display = "${inHours}h ${remainingMinutes}m";
+      }  else {
+        display = "${inHours}h";
+      }
     } else if (inMinutes > 59) {
-      display = "${inHours}h ${remainingMinutes}m ${remainingSeconds}s";
+      if(remainingMinutes > 0 && remainingSeconds > 0) {
+        display = "${inHours}h ${remainingMinutes}m ${remainingSeconds}s";
+      } else if(remainingMinutes > 0 && remainingSeconds <= 0) {
+        display = "${inHours}h ${remainingMinutes}m";
+      }  else {
+        display = "${inHours}h";
+      }
     } else if (inSeconds > 59) {
-      display = "${inMinutes}m ${remainingSeconds}s";
+      display = remainingSeconds > 0 ? "${inMinutes}m ${remainingSeconds}s" : "${inMinutes}m";
     } else {
       display = "${inSeconds}s";
     }

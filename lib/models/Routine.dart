@@ -31,6 +31,8 @@ class Routine extends amplify_core.Model {
   final String? _name;
   final List<String>? _procedures;
   final String? _notes;
+  final amplify_core.TemporalDateTime? _startTime;
+  final amplify_core.TemporalDateTime? _endTime;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -86,22 +88,52 @@ class Routine extends amplify_core.Model {
     }
   }
   
-  amplify_core.TemporalDateTime? get createdAt {
-    return _createdAt;
+  amplify_core.TemporalDateTime? get startTime {
+    return _startTime;
   }
   
-  amplify_core.TemporalDateTime? get updatedAt {
-    return _updatedAt;
+  amplify_core.TemporalDateTime? get endTime {
+    return _endTime;
   }
   
-  const Routine._internal({required this.id, required name, required procedures, required notes, createdAt, updatedAt}): _name = name, _procedures = procedures, _notes = notes, _createdAt = createdAt, _updatedAt = updatedAt;
+  amplify_core.TemporalDateTime get createdAt {
+    try {
+      return _createdAt!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
   
-  factory Routine({String? id, required String name, required List<String> procedures, required String notes}) {
+  amplify_core.TemporalDateTime get updatedAt {
+    try {
+      return _updatedAt!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  const Routine._internal({required this.id, required name, required procedures, required notes, startTime, endTime, required createdAt, required updatedAt}): _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
+  
+  factory Routine({String? id, required String name, required List<String> procedures, required String notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return Routine._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       procedures: procedures != null ? List<String>.unmodifiable(procedures) : procedures,
-      notes: notes);
+      notes: notes,
+      startTime: startTime,
+      endTime: endTime,
+      createdAt: createdAt,
+      updatedAt: updatedAt);
   }
   
   bool equals(Object other) {
@@ -115,7 +147,11 @@ class Routine extends amplify_core.Model {
       id == other.id &&
       _name == other._name &&
       DeepCollectionEquality().equals(_procedures, other._procedures) &&
-      _notes == other._notes;
+      _notes == other._notes &&
+      _startTime == other._startTime &&
+      _endTime == other._endTime &&
+      _createdAt == other._createdAt &&
+      _updatedAt == other._updatedAt;
   }
   
   @override
@@ -130,6 +166,8 @@ class Routine extends amplify_core.Model {
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("procedures=" + (_procedures != null ? _procedures!.toString() : "null") + ", ");
     buffer.write("notes=" + "$_notes" + ", ");
+    buffer.write("startTime=" + (_startTime != null ? _startTime!.format() : "null") + ", ");
+    buffer.write("endTime=" + (_endTime != null ? _endTime!.format() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -137,24 +175,36 @@ class Routine extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Routine copyWith({String? name, List<String>? procedures, String? notes}) {
+  Routine copyWith({String? name, List<String>? procedures, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return Routine._internal(
       id: id,
       name: name ?? this.name,
       procedures: procedures ?? this.procedures,
-      notes: notes ?? this.notes);
+      notes: notes ?? this.notes,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt);
   }
   
   Routine copyWithModelFieldValues({
     ModelFieldValue<String>? name,
     ModelFieldValue<List<String>?>? procedures,
-    ModelFieldValue<String>? notes
+    ModelFieldValue<String>? notes,
+    ModelFieldValue<amplify_core.TemporalDateTime?>? startTime,
+    ModelFieldValue<amplify_core.TemporalDateTime?>? endTime,
+    ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
+    ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
     return Routine._internal(
       id: id,
       name: name == null ? this.name : name.value,
       procedures: procedures == null ? this.procedures : procedures.value,
-      notes: notes == null ? this.notes : notes.value
+      notes: notes == null ? this.notes : notes.value,
+      startTime: startTime == null ? this.startTime : startTime.value,
+      endTime: endTime == null ? this.endTime : endTime.value,
+      createdAt: createdAt == null ? this.createdAt : createdAt.value,
+      updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
   }
   
@@ -163,11 +213,13 @@ class Routine extends amplify_core.Model {
       _name = json['name'],
       _procedures = json['procedures']?.cast<String>(),
       _notes = json['notes'],
+      _startTime = json['startTime'] != null ? amplify_core.TemporalDateTime.fromString(json['startTime']) : null,
+      _endTime = json['endTime'] != null ? amplify_core.TemporalDateTime.fromString(json['endTime']) : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'procedures': _procedures, 'notes': _notes, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'procedures': _procedures, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -175,6 +227,8 @@ class Routine extends amplify_core.Model {
     'name': _name,
     'procedures': _procedures,
     'notes': _notes,
+    'startTime': _startTime,
+    'endTime': _endTime,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -184,6 +238,10 @@ class Routine extends amplify_core.Model {
   static final NAME = amplify_core.QueryField(fieldName: "name");
   static final PROCEDURES = amplify_core.QueryField(fieldName: "procedures");
   static final NOTES = amplify_core.QueryField(fieldName: "notes");
+  static final STARTTIME = amplify_core.QueryField(fieldName: "startTime");
+  static final ENDTIME = amplify_core.QueryField(fieldName: "endTime");
+  static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
+  static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Routine";
     modelSchemaDefinition.pluralName = "Routines";
@@ -209,17 +267,27 @@ class Routine extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
-      fieldName: 'createdAt',
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Routine.STARTTIME,
       isRequired: false,
-      isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
-      fieldName: 'updatedAt',
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Routine.ENDTIME,
       isRequired: false,
-      isReadOnly: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Routine.CREATEDAT,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Routine.UPDATEDAT,
+      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
   });
