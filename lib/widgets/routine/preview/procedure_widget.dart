@@ -5,7 +5,6 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/set_widget.dart';
 
-import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
 
 class ProcedureWidget extends StatelessWidget {

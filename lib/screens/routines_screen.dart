@@ -11,8 +11,8 @@ import '../models/Routine.dart';
 import '../providers/routine_provider.dart';
 import 'routine_editor_screen.dart';
 
-void _navigateToRoutineEditor({required BuildContext context, Routine? routine}) {
-  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine)));
+void _navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
 }
 
 class RoutinesScreen extends StatelessWidget {
@@ -119,7 +119,7 @@ class _RoutineWidget extends StatelessWidget {
           CupertinoListTile(
               onTap: () => _navigateToRoutinePreview(context: context),
               leading:
-                  GestureDetector(child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
+                  GestureDetector(onTap: () => _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.routine) ,child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
               title: Text(routine.name, style: Theme.of(context).textTheme.labelLarge),
               subtitle: Row(children: [
                 const Icon(

@@ -27,7 +27,7 @@ class RoutinePreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, routine: routine, type: RoutineEditorMode.editing);
+              _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.editing);
             },
             child: Text('Edit', style: textStyle),
           ),
@@ -45,9 +45,9 @@ class RoutinePreviewScreen extends StatelessWidget {
   }
 
   void _navigateToRoutineEditor(
-      {required BuildContext context, required Routine routine, RoutineEditorMode type = RoutineEditorMode.editing}) {
+      {required BuildContext context, required Routine routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
     Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: type)));
+        .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
   }
 
   void _removeRoutine({required BuildContext context, required Routine routine}) {
@@ -75,7 +75,7 @@ class RoutinePreviewScreen extends StatelessWidget {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () =>
-              _navigateToRoutineEditor(context: context, routine: routine, type: RoutineEditorMode.routine),
+              _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.routine),
           backgroundColor: tealBlueLighter,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),
