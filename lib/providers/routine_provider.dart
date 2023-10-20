@@ -30,8 +30,6 @@ class RoutineProvider with ChangeNotifier {
 
 
   void updateRoutine({required RoutineDto dto}) async{
-    print(dto.createdAt);
-    print(dto.updatedAt);
     final routine = dto.toRoutine();
     await Amplify.DataStore.save<Routine>(routine);
     final index = _indexWhereRoutine(id: dto.id);

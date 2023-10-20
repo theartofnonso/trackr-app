@@ -15,11 +15,12 @@ class MinimisedRoutineControllerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
+      height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      margin: const EdgeInsets.only(right: 12, bottom: 12, left: 12),
       decoration: BoxDecoration(
         color: tealBlueLighter,
-        borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
+        borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
       ),
       child: Row(
         children: [

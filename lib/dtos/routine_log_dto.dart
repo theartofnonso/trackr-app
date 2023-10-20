@@ -34,10 +34,10 @@ extension RoutineLogDtoExtension on RoutineLogDto {
         name: name,
         notes: notes,
         procedures: procedureJsons,
-        startTime: TemporalDateTime.fromString("${startTime?.toIso8601String()}Z"),
-        endTime: TemporalDateTime.fromString("${endTime?.toIso8601String()}Z"),
+        startTime: TemporalDateTime.fromString("${startTime?.toLocal().toIso8601String()}Z"),
+        endTime: TemporalDateTime.fromString("${endTime?.toLocal().toIso8601String()}Z"),
         createdAt: TemporalDateTime.fromString("${createdAt.toLocal().toIso8601String()}Z"),
-        updatedAt: TemporalDateTime.fromString("${updatedAt.toIso8601String()}Z"));
+        updatedAt: TemporalDateTime.fromString("${updatedAt.toLocal().toIso8601String()}Z"));
   }
 }
 

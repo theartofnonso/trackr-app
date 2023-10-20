@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +8,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import '../app_constants.dart';
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
+import '../widgets/routine/minimised_routine_controller_widget.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
   const RoutineLogsScreen({super.key});
@@ -16,6 +16,9 @@ class RoutineLogsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+
+    final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cacheLogDto;
+
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.transparent,
@@ -28,7 +31,16 @@ class RoutineLogsScreen extends StatelessWidget {
             )),
       ),
       child: SafeArea(
-          child: logs.isNotEmpty ? _RoutineLogsList(logDtos: logs) : const Center(child: _RoutineLogsEmptyState())),
+        child: logs.isNotEmpty
+            ? Stack(children: [
+                _RoutineLogsList(logDtos: logs),
+                cachedRoutineLog != null
+                    ? Positioned(
+                        right: 0, bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+                    : const SizedBox.shrink()
+              ])
+            : const Center(child: _RoutineLogsEmptyState()),
+      ),
     );
   }
 }
@@ -63,28 +75,42 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CupertinoListTile(
             title: Text(logDto.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [
-              const Icon(CupertinoIcons.calendar, color: CupertinoColors.white, size: 12,),
-              Text(logDto.endTime?.hoursSinceOrDate() ?? logDto.createdAt.hoursSinceOrDate(), style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+              const Icon(
+                CupertinoIcons.calendar,
+                color: CupertinoColors.white,
+                size: 12,
+              ),
+              Text(logDto.endTime?.hoursSinceOrDate() ?? logDto.createdAt.hoursSinceOrDate(),
+                  style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
-              const Icon(CupertinoIcons.timer, color: CupertinoColors.white, size: 12,),
-              Text(_logDuration(), style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-            ]), trailing: GestureDetector(
-            onTap: () => _showWorkoutActionSheet(context: context),
-            child: const Icon(
-              CupertinoIcons.ellipsis,
-              color: CupertinoColors.white,
-            ))),
+              const Icon(
+                CupertinoIcons.timer,
+                color: CupertinoColors.white,
+                size: 12,
+              ),
+              Text(_logDuration(),
+                  style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+            ]),
+            trailing: GestureDetector(
+                onTap: () => _showWorkoutActionSheet(context: context),
+                child: const Icon(
+                  CupertinoIcons.ellipsis,
+                  color: CupertinoColors.white,
+                ))),
         const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedures: logDto.procedures),
         logDto.procedures.length > 3
-            ? Text(_footerLabel(), style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
+            ? Text(_footerLabel(),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
             : const SizedBox.shrink()
       ],
     );
@@ -99,7 +125,7 @@ class _RoutineLogWidget extends StatelessWidget {
     String interval = "";
     final startTime = logDto.startTime;
     final endTime = logDto.endTime;
-    if(startTime != null && endTime != null) {
+    if (startTime != null && endTime != null) {
       final difference = endTime.difference(startTime);
       interval = difference.secondsOrMinutesOrHours();
     }
@@ -113,8 +139,8 @@ class _RoutineLogWidget extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 4.0),
               child: CupertinoListTile(
                   backgroundColor: tealBlueLight,
-                  title:
-                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                  title: Text(procedure.exercise.name,
+                      style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
             ))
         .toList();
@@ -135,7 +161,8 @@ class _RoutineLogWidget extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto)));
+              Navigator.of(context)
+                  .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto)));
             },
             child: Text(
               'Edit',
