@@ -885,7 +885,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: tealBlueLight,
-        borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+        borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
       ),
       child: Row(
         children: [
