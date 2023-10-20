@@ -888,24 +888,24 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 70,
-            child: Row(
-              children: [
-                const Text("Sets", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-                const SizedBox(width: 4),
-                Text(sets.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
-              ],
-            ),
+          Row(
+            children: [
+              const Text("Sets", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              const SizedBox(
+                width: 4,
+              ),
+              Text(sets.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
+            ],
           ),
-          const SizedBox(
-            width: 20,
-          ),
+          const SizedBox(width: 25),
           Row(
             children: [
               const Text("Kg", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-              const SizedBox(width: 4),
+              const SizedBox(
+                width: 4,
+              ),
               Text(weight.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
             ],
           ),
