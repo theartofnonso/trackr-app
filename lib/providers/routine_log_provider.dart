@@ -10,7 +10,13 @@ import '../models/RoutineLog.dart';
 class RoutineLogProvider with ChangeNotifier {
   final List<RoutineLogDto> _logs = [];
 
+  RoutineLogDto? cacheLogDto;
+
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
+
+  void notifyAllListeners() {
+    notifyListeners();
+  }
 
   void listRoutineLogs(BuildContext context) async {
     final logs = await Amplify.DataStore.query(RoutineLog.classType);
@@ -19,17 +25,45 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void logRoutine({required BuildContext context, required String name, required String notes, required List<ProcedureDto> procedures, required TemporalDateTime startTime}) async {
+  void logRoutine(
+      {required BuildContext context,
+      required String name,
+      required String notes,
+      required List<ProcedureDto> procedures,
+      required TemporalDateTime startTime}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
-    final logToSave = RoutineLog(name: name, notes: notes, procedures: proceduresJson, startTime: startTime, endTime: TemporalDateTime.now(), createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
+    final logToSave = RoutineLog(
+        name: name,
+        notes: notes,
+        procedures: proceduresJson,
+        startTime: startTime,
+        endTime: TemporalDateTime.now(),
+        createdAt: TemporalDateTime.now(),
+        updatedAt: TemporalDateTime.now());
     await Amplify.DataStore.save<RoutineLog>(logToSave);
-    if(context.mounted) {
+    if (context.mounted) {
       _logs.add(logToSave.toRoutineLogDto(context));
     }
     notifyListeners();
   }
 
-  void updateLog({required RoutineLogDto dto}) async{
+  void cacheRoutine(
+      {required String name,
+      required String notes,
+      required List<ProcedureDto> procedures,
+      required TemporalDateTime startTime}) {
+    cacheLogDto = RoutineLogDto(
+        id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
+        name: name,
+        notes: notes,
+        procedures: procedures,
+        startTime: startTime.getDateTimeInUtc(),
+        endTime: DateTime.now(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
+  }
+
+  void updateLog({required RoutineLogDto dto}) async {
     final routineLog = dto.toRoutineLog();
     await Amplify.DataStore.save<RoutineLog>(routineLog);
     final index = _indexWhereRoutineLog(id: dto.id);

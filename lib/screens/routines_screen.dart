@@ -6,19 +6,30 @@ import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
 
 import '../dtos/procedure_dto.dart';
+import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
+import '../widgets/routine/minimised_routine_controller_widget.dart';
 import 'routine_editor_screen.dart';
 
-void _navigateToRoutineEditor({required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
+void _navigateToRoutineEditor(
+    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+  Navigator.of(context)
+      .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
 }
 
-class RoutinesScreen extends StatelessWidget {
+class RoutinesScreen extends StatefulWidget with WidgetsBindingObserver {
   const RoutinesScreen({super.key});
 
   @override
+  State<RoutinesScreen> createState() => _RoutinesScreenState();
+}
+
+class _RoutinesScreenState extends State<RoutinesScreen> {
+  @override
   Widget build(BuildContext context) {
     final routines = Provider.of<RoutineProvider>(context, listen: true).routines;
+
+    final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cacheLogDto;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -32,7 +43,18 @@ class RoutinesScreen extends StatelessWidget {
             )),
       ),
       child: SafeArea(
-        child: routines.isNotEmpty ? _RoutineList(routinesDtos: routines) : const Center(child: _RoutinesEmptyState()),
+        child: routines.isNotEmpty
+            ? Stack(children: [
+                _RoutineList(routinesDtos: routines),
+                cachedRoutineLog != null
+                    ? Positioned(
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+                    : const SizedBox.shrink()
+              ])
+            : const Center(child: _RoutinesEmptyState()),
       ),
     );
   }
@@ -102,21 +124,24 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)));
+    Navigator.of(context)
+        .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)));
   }
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () => _navigateToRoutinePreview(context: context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CupertinoListTile(
-              onTap: () => _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
-              leading:
-                  GestureDetector(onTap: () => _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine) ,child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
+              onTap: () =>
+                  _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+              leading: GestureDetector(
+                  onTap: () => _navigateToRoutineEditor(
+                      context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+                  child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
               title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
               subtitle: Row(children: [
                 const Icon(
@@ -136,7 +161,11 @@ class _RoutineWidget extends StatelessWidget {
           const SizedBox(height: 8),
           ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
           routineDto.procedures.length > 3
-              ? Text(_footerLabel(), style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
+              ? Text(_footerLabel(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
               : const SizedBox.shrink()
         ],
       ),
@@ -155,8 +184,8 @@ class _RoutineWidget extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 4.0),
               child: CupertinoListTile(
                   backgroundColor: tealBlueLight,
-                  title:
-                      Text(procedure.exercise.name, style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                  title: Text(procedure.exercise.name,
+                      style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
             ))
         .toList();

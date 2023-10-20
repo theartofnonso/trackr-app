@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+
     final screens = [const RoutineLogsScreen(), const RoutinesScreen()];
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
@@ -34,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ), tabBuilder: (BuildContext context, int index) { return screens[index]; },
-
     );
   }
 

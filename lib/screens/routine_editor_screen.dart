@@ -91,7 +91,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  // Navigate to [ReOrderProcedures]
+  // Navigate to [ReOrderProceduresScreen]
   void _reOrderProcedures() async {
     final reOrderedList = await showCupertinoModalPopup(
       context: context,
@@ -106,6 +106,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           _procedures = reOrderedList;
         });
       }
+      _cacheRoutine();
     }
   }
 
@@ -128,6 +129,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _procedures.addAll(proceduresToAdd);
     });
 
+    _cacheRoutine();
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
@@ -137,6 +140,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (procedureToBeRemoved.superSetId.isNotEmpty) {
       _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
     }
+
+    _cacheRoutine();
+
     setState(() {
       _procedures.removeAt(procedureIndex);
     });
@@ -146,6 +152,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     _procedures[procedureIndex] = procedure.copyWith(notes: value);
+    _cacheRoutine();
   }
 
   void _replaceProcedure({required String procedureId}) {
@@ -202,6 +209,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           _procedures[oldProcedureIndex] = ProcedureDto(exercise: exerciseInLibrary);
         });
       }
+      _cacheRoutine();
     }
   }
 
@@ -213,6 +221,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets, SetDto()];
+
+    _cacheRoutine();
+
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
@@ -223,6 +234,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
     sets.removeAt(setIndex);
+
+    _cacheRoutine();
+
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
@@ -234,6 +248,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     final set = sets[setIndex];
     sets[setIndex] = sets[setIndex].copyWith(checked: !set.checked);
+
+    _cacheRoutine();
+
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
       _calculateCompletedSets();
@@ -246,6 +263,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(rep: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+    _cacheRoutine();
   }
 
   void _updateWeight({required String procedureId, required int setIndex, required int value}) {
@@ -254,6 +272,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+    _cacheRoutine();
   }
 
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
@@ -261,6 +280,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(type: type);
+
+    _cacheRoutine();
+
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
@@ -273,6 +295,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final firstProcedure = _procedures[firstProcedureIndex];
     final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
     final secondProcedure = _procedures[secondProcedureIndex];
+
+    _cacheRoutine();
 
     setState(() {
       _procedures[firstProcedureIndex] = firstProcedure.copyWith(superSetId: id);
@@ -289,6 +313,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         });
       }
     }
+    _cacheRoutine();
   }
 
   List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
@@ -330,6 +355,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _setRestInterval({required String procedureId, required Duration duration}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
+
+    _cacheRoutine();
+
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(restInterval: duration);
     });
@@ -338,6 +366,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _removeRestInterval({required String procedureId}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
+
+    _cacheRoutine();
+
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(restInterval: Duration.zero);
     });
@@ -492,24 +523,38 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  void _cacheRoutine() {
+    final routine = widget.routineDto;
+    if (routine != null) {
+      Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutine(
+          name: routine.name,
+          notes: routine.notes,
+          procedures: _procedures,
+          startTime: _routineStartTime);
+    }
+  }
+
   void _cancelRunningRoutine() {
     final isIncomplete = _isRoutinePartiallyComplete();
     if (isIncomplete) {
       final actions = <CupertinoDialogAction>[
-        CupertinoDialogAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
-        ),
         CupertinoDialogAction(
           isDestructiveAction: true,
           onPressed: () {
             Navigator.pop(context);
             _navigateBack();
           },
-          child: const Text('Cancel Workout', style: TextStyle(fontWeight: FontWeight.bold)),
-        )
+          child: const Text('Cancel'),
+        ),
+        CupertinoDialogAction(
+          onPressed: () {
+            Navigator.pop(context);
+            _cacheRoutine(); // Just in case previous calls fail for whatever reason
+            Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
+            _navigateBack(minimised: true);
+          },
+          child: const Text('Minimise', style: TextStyle(color: CupertinoColors.activeBlue, fontWeight: FontWeight.bold)),
+        ),
       ];
       _showAlertDialog(title: "Cancel Workout", message: "You will lose all your progress", actions: actions);
     } else {
@@ -517,8 +562,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _navigateBack() {
-    Navigator.of(context).pop();
+  void _navigateBack({bool minimised = false}) {
+    Navigator.of(context).pop(minimised);
   }
 
   @override

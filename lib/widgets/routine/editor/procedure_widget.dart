@@ -180,7 +180,7 @@ class ProcedureWidget extends StatelessWidget {
             controller: TextEditingController(text: procedureDto.notes),
             onChanged: (value) => onUpdateNotes(value),
             expands: true,
-            decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(8))),
+            decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(2))),
             keyboardType: TextInputType.text,
             maxLength: 150,
             maxLines: null,

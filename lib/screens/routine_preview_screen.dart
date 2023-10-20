@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +43,20 @@ class RoutinePreviewScreen extends StatelessWidget {
   }
 
   void _navigateToRoutineEditor(
-      {required BuildContext context, required RoutineDto routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-    Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
+      {required BuildContext context,
+      required RoutineDto routineDto,
+      RoutineEditorMode mode = RoutineEditorMode.editing}) async {
+    if (mode == RoutineEditorMode.routine) {
+      final isMinimised = await Navigator.of(context)
+          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
+      if (context.mounted) {
+        if (isMinimised) {
+          Navigator.of(context).pop();
+        }
+      }
+    } else {
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto)));
+    }
   }
 
   void _removeRoutine({required BuildContext context, required RoutineDto routineDto}) {
@@ -123,7 +133,8 @@ class RoutinePreviewScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) =>  _procedureToWidget(procedure: routineDto.procedures[index], otherProcedures: routineDto.procedures),
+                      itemBuilder: (BuildContext context, int index) => _procedureToWidget(
+                          procedure: routineDto.procedures[index], otherProcedures: routineDto.procedures),
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                       itemCount: routineDto.procedures.length),
                 ),
