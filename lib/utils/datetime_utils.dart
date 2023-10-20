@@ -26,8 +26,10 @@ extension DurationExtension on Duration {
     if (inHours > 24) {
       if(remainingHours > 0 && remainingMinutes > 0 && remainingSeconds > 0) {
         display = "${inDays}d ${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s";
-      } else if(remainingMinutes > 0 && remainingSeconds <= 0) {
-        display = "${inHours}h ${remainingMinutes}m";
+      } else if(remainingHours > 0 && remainingMinutes > 0 && remainingSeconds <= 0) {
+        display = "${inDays}d ${inHours}h ${remainingMinutes}m";
+      } else if(remainingHours > 0 && remainingMinutes <= 0 && remainingSeconds <= 0) {
+        display = "${inDays}d ${inHours}h";
       }  else {
         display = "${inHours}h";
       }
