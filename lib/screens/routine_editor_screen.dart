@@ -927,11 +927,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        color: tealBlueLight,
-        borderRadius: BorderRadius.circular(2), // Adjust the radius as needed
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
