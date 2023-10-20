@@ -37,6 +37,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   List<ProcedureDto> _procedures = [];
 
+  List<SetDto> _totalCompletedSets = [];
+
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
 
@@ -234,6 +236,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     sets[setIndex] = sets[setIndex].copyWith(checked: !set.checked);
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+      _calculateCompletedSets();
     });
   }
 
@@ -383,7 +386,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
       Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
-          name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures, context: context);
+          name: _routineNameController.text,
+          notes: _routineNotesController.text,
+          procedures: _procedures,
+          context: context);
       _navigateBack();
     }
   }
@@ -422,11 +428,31 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  void _calculateCompletedSets() {
+    List<SetDto> completedSets = [];
+    for (var procedure in _procedures) {
+      final sets = procedure.sets.where((set) => set.checked).toList();
+      completedSets.addAll(sets);
+    }
+    setState(() {
+      _totalCompletedSets = completedSets;
+    });
+  }
+
+  int _totalWeight() {
+    int totalWeight = 0;
+    for (var set in _totalCompletedSets) {
+      final weightPerSet = set.rep * set.weight;
+      totalWeight += weightPerSet;
+    }
+    return totalWeight;
+  }
+
   bool _isRoutinePartiallyComplete() {
     return _procedures.any((procedure) => procedure.sets.any((set) => set.checked));
   }
 
-  List<ProcedureDto> _completedProceduresAndSets() {
+  List<ProcedureDto> _totalCompletedProceduresAndSets() {
     final completedProcedures = <ProcedureDto>[];
     for (var procedure in _procedures) {
       final completedSets = procedure.sets.where((set) => set.checked).toList();
@@ -443,9 +469,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (isRoutinePartiallyComplete) {
       final routine = widget.routineDto;
       if (routine != null) {
-        final completedProcedures = _completedProceduresAndSets();
-        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(context: context,
-            name: routine.name, notes: routine.notes, procedures: completedProcedures, startTime: _routineStartTime);
+        final completedProcedures = _totalCompletedProceduresAndSets();
+        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(
+            context: context,
+            name: routine.name,
+            notes: routine.notes,
+            procedures: completedProcedures,
+            startTime: _routineStartTime);
         _navigateBack();
       }
     } else {
@@ -515,21 +545,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     size: 24,
                   ),
                 ),
+                middle: Text(
+                  "${previousRoutine?.name}",
+                  style: const TextStyle(color: Colors.white),
+                ),
                 trailing: GestureDetector(
                     onTap: _showRoutineIntervalPicker,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        _routineDuration != null
-                            ? Text("10mins 11s", style: Theme.of(context).textTheme.labelLarge)
-                            : const SizedBox.shrink(),
-                        const SizedBox(width: 4),
-                        const Icon(
-                          CupertinoIcons.timer,
-                          color: CupertinoColors.white,
-                          size: 24,
-                        )
-                      ],
+                    child: const Icon(
+                      CupertinoIcons.timer,
+                      color: CupertinoColors.white,
+                      size: 24,
                     )),
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
@@ -595,20 +620,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     ],
                   )
                 else
-                  CupertinoListSection.insetGrouped(
-                    hasLeading: false,
-                    margin: EdgeInsets.zero,
-                    backgroundColor: Colors.transparent,
-                    children: [
-                      CupertinoListTile(
-                          backgroundColor: tealBlueLight,
-                          title: Text(previousRoutine!.name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: CupertinoColors.white.withOpacity(0.8),
-                                  fontSize: 18)),
-                          trailing: _TimerWidget(started: widget.mode == RoutineEditorMode.routine)),
-                    ],
+                  RunningRoutineSummaryWidget(
+                    sets: _totalCompletedSets.length,
+                    weight: _totalWeight(),
+                    timer: const _TimerWidget(),
                   ),
                 const SizedBox(height: 12),
                 Expanded(
@@ -825,9 +840,7 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
 }
 
 class _TimerWidget extends StatefulWidget {
-  final bool started;
-
-  const _TimerWidget({required this.started});
+  const _TimerWidget();
 
   @override
   State<_TimerWidget> createState() => _TimerWidgetState();
@@ -838,24 +851,68 @@ class _TimerWidgetState extends State<_TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(Duration(seconds: _timer?.tick ?? 0).secondsOrMinutesOrHours());
+    return Text(Duration(seconds: _timer?.tick ?? 0).secondsOrMinutesOrHours(),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600));
   }
 
   @override
   void initState() {
     super.initState();
-    if (widget.started) {
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    }
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     _timer?.cancel();
+  }
+}
+
+class RunningRoutineSummaryWidget extends StatelessWidget {
+  final int sets;
+  final int weight;
+  final Widget timer;
+
+  const RunningRoutineSummaryWidget({super.key, required this.sets, required this.weight, required this.timer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: tealBlueLight,
+        borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 70,
+            child: Row(
+              children: [
+                const Text("Sets", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+                const SizedBox(width: 4),
+                Text(sets.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
+              ],
+            ),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Row(
+            children: [
+              const Text("Kg", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              const SizedBox(width: 4),
+              Text(weight.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
+            ],
+          ),
+          const Spacer(),
+          timer,
+        ],
+      ),
+    );
   }
 }
