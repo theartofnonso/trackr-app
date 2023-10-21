@@ -534,36 +534,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _cancelRunningRoutine() {
-    final isIncomplete = _isRoutinePartiallyComplete();
-    if (isIncomplete) {
-      final actions = <CupertinoDialogAction>[
-        CupertinoDialogAction(
-          isDestructiveAction: true,
-          onPressed: () {
-            Navigator.pop(context);
-            Provider.of<RoutineLogProvider>(context, listen: false).cacheLogDto = null;
-            _navigateBack();
-          },
-          child: const Text('Cancel'),
-        ),
-        CupertinoDialogAction(
-          onPressed: () {
-            Navigator.pop(context);
-            _cacheRoutine(); // Just in case previous calls fail for whatever reason
-            Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
-            _navigateBack(minimised: true);
-          },
-          child: const Text('Minimise', style: TextStyle(color: CupertinoColors.activeBlue, fontWeight: FontWeight.bold)),
-        ),
-      ];
-      _showAlertDialog(title: "Cancel Workout", message: "You will lose all your progress", actions: actions);
-    } else {
-      _navigateBack();
-    }
-  }
-
   void _navigateBack({bool minimised = false}) {
+    if(minimised) {
+      Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
+    }
     Navigator.of(context).pop(minimised);
   }
 
@@ -584,11 +558,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             : CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
-                  onTap: _cancelRunningRoutine,
+                  onTap: () => _navigateBack(minimised: true),
                   child: const Icon(
-                    CupertinoIcons.clear_thick,
+                    Icons.keyboard_arrow_down_rounded,
                     color: CupertinoColors.white,
-                    size: 24,
                   ),
                 ),
                 middle: Text(
@@ -709,7 +682,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _procedures.addAll([...previousRoutine.procedures]);
       if(previousRoutine.startTime != null) {
         _routineStartTime = TemporalDateTime.fromString("${previousRoutine.startTime?.toLocal().toIso8601String()}Z");
-        print(_routineStartTime);
       }
     }
 
@@ -719,6 +691,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _routineNameController = TextEditingController(text: previousRoutine?.name);
       _routineNotesController = TextEditingController(text: previousRoutine?.notes);
     }
+
+    _cacheRoutine();
   }
 
   @override
