@@ -28,6 +28,7 @@ class RoutineLogProvider with ChangeNotifier {
   void listRoutineLogs(BuildContext context) async {
     final logs = await Amplify.DataStore.query(RoutineLog.classType, sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
     final routineLogDtos = logs.map((log) => log.toRoutineLogDto(context)).toList();
+    _logs.clear();
     _logs.addAll(routineLogDtos);
     notifyListeners();
   }
