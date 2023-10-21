@@ -54,7 +54,10 @@ class ProcedureWidget extends StatelessWidget {
               const SizedBox(width: 10),
               Text("${procedureDto.restInterval.secondsOrMinutesOrHours()} rest interval",
                   style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-            ])),
+            ]),
+          trailing: otherSuperSetProcedureDto != null ? Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+              style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)) : const SizedBox.shrink(),
+        ),
         procedureDto.notes.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),

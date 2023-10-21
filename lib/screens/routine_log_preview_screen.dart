@@ -25,7 +25,7 @@ class RoutineLogPreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, logDto: logDto, mode: RoutineEditorMode.editing);
+              _navigateToRoutineEditor(context: context, logDto: logDto);
             },
             child: Text('Edit', style: textStyle),
           ),
@@ -42,18 +42,11 @@ class RoutineLogPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto, RoutineEditorMode mode = RoutineEditorMode.editing}) async {
-    if (mode == RoutineEditorMode.routine) {
-      final isMinimised = await Navigator.of(context)
-          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: mode, type: RoutineEditingType.log)));
-      if (context.mounted) {
-        if (isMinimised) {
-          Navigator.of(context).pop();
-        }
-      }
-    } else {
-      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
-    }
+  void _navigateToRoutineEditor(
+      {required BuildContext context,
+      required RoutineLogDto logDto}) async {
+    Navigator.of(context).push(CupertinoPageRoute(
+        builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
   }
 
   void _removeLog({required BuildContext context, required RoutineLogDto logDto}) {
@@ -79,7 +72,7 @@ class RoutineLogPreviewScreen extends StatelessWidget {
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto, mode: RoutineEditorMode.routine),
+          onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
           backgroundColor: tealBlueLighter,
           child: const Icon(Icons.edit),
         ),
@@ -101,8 +94,7 @@ class RoutineLogPreviewScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(logDto.name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
+                    style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
                 const SizedBox(height: 8),
                 Text(logDto.notes,
                     style: TextStyle(

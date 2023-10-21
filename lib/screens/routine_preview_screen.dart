@@ -73,7 +73,7 @@ class RoutinePreviewScreen extends StatelessWidget {
 
   ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
     return procedures.firstWhereOrNull((procedure) =>
-        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
+    procedure.superSetId.isNotEmpty && procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   @override

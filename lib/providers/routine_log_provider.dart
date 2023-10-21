@@ -63,7 +63,6 @@ class RoutineLogProvider with ChangeNotifier {
       required String notes,
       required List<ProcedureDto> procedures,
       required DateTime startTime}) {
-    print("caching");
     _cachedLogDto = RoutineLogDto(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
         name: name,

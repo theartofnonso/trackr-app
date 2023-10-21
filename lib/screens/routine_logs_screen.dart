@@ -13,20 +13,23 @@ import '../widgets/routine/minimised_routine_controller_widget.dart';
 
 void _navigateToRoutineEditor(
     {required BuildContext context, RoutineLogDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context)
-      .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.log)));
+  Navigator.of(context).push(CupertinoPageRoute(
+      builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.log)));
 }
 
-class RoutineLogsScreen extends StatelessWidget {
+class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
 
   @override
+  State<RoutineLogsScreen> createState() => _RoutineLogsScreenState();
+}
+
+class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindingObserver {
+  late RoutineLogProvider _routineLogProvider;
+
+  @override
   Widget build(BuildContext context) {
-
-    final provider = Provider.of<RoutineLogProvider>(context, listen: true);
-
-    final logs = provider.logs;
-    final cachedRoutineLog = provider.cachedLogDto;
+    final cachedRoutineLog = _routineLogProvider.cachedLogDto;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -35,17 +38,38 @@ class RoutineLogsScreen extends StatelessWidget {
         child: const Icon(CupertinoIcons.play_arrow_solid),
       ),
       body: SafeArea(
-        child: logs.isNotEmpty
-            ? Stack(children: [
-                _RoutineLogsList(logDtos: logs),
-                cachedRoutineLog != null
-                    ? Positioned(
-                        right: 0, bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
-                    : const SizedBox.shrink()
-              ])
-            : const Center(child: _RoutineLogsEmptyState()),
-      ),
+          child: Stack(children: [
+        Consumer<RoutineLogProvider>(builder: (_, provider, __) {
+          return provider.logs.isNotEmpty
+              ? _RoutineLogsList(logDtos: provider.logs)
+              : const Center(child: _RoutineLogsEmptyState());
+        }),
+        cachedRoutineLog != null
+            ? Positioned(
+                right: 0, bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+            : const SizedBox.shrink()
+      ])),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _routineLogProvider.listRoutineLogs(context));
+    }
   }
 }
 
@@ -91,7 +115,7 @@ class _RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(logDto.updatedAt.durationSinceOrDate(),
+              Text(logDto.createdAt.durationSinceOrDate(),
                   style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
               const Icon(
@@ -173,8 +197,8 @@ class _RoutineLogWidget extends StatelessWidget {
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.of(context)
-                  .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
+              Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
             },
             child: Text(
               'Edit',
