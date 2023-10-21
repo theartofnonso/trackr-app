@@ -150,9 +150,9 @@ extension DateTimeExtension on DateTime {
     } else if(duration.inHours > 24) {
       display = "${duration.inDays} day ago";
     } else if(duration.inMinutes > 59) {
-      display = "${duration.inHours} hours ago";
+      display = duration.inHours == 1 ? "${duration.inHours} hour ago" : "${duration.inHours} hours ago";
     } else if(duration.inSeconds > 59) {
-      display = duration.inMinutes == 1 ?  "${duration.inMinutes} minute ago" : "${duration.inMinutes} minutes ago";
+      display = duration.inMinutes == 1 ? "${duration.inMinutes} minute ago" : "${duration.inMinutes} minutes ago";
     } else {
       display = "now";
     }
