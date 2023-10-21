@@ -542,6 +542,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           isDestructiveAction: true,
           onPressed: () {
             Navigator.pop(context);
+            Provider.of<RoutineLogProvider>(context, listen: false).cacheLogDto = null;
             _navigateBack();
           },
           child: const Text('Cancel'),
@@ -668,7 +669,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   RunningRoutineSummaryWidget(
                     sets: _totalCompletedSets.length,
                     weight: _totalWeight(),
-                    timer: const _TimerWidget(Duration(seconds: 2)),
+                    timer: _TimerWidget(_routineStartTime.getDateTimeInUtc().difference(DateTime.now())),
                   ),
                 const SizedBox(height: 12),
                 Expanded(
@@ -706,6 +707,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final previousRoutine = widget.routineDto;
     if (previousRoutine != null) {
       _procedures.addAll([...previousRoutine.procedures]);
+      if(previousRoutine.startTime != null) {
+        _routineStartTime = TemporalDateTime.fromString("${previousRoutine.startTime?.toLocal().toIso8601String()}Z");
+        print(_routineStartTime);
+      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
@@ -887,10 +892,9 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
 }
 
 class _TimerWidget extends StatefulWidget {
-  final Duration initialDuration;
+  final Duration elapsedTime;
 
-
-  const _TimerWidget(this.initialDuration);
+  const _TimerWidget(this.elapsedTime);
 
   @override
   State<_TimerWidget> createState() => _TimerWidgetState();
@@ -898,19 +902,22 @@ class _TimerWidget extends StatefulWidget {
 
 class _TimerWidgetState extends State<_TimerWidget> {
   Timer? _timer;
+  int _elapsedTime = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Text(Duration(seconds: _timer?.tick ?? 0).secondsOrMinutesOrHours(),
+    return Text(Duration(seconds: _elapsedTime).secondsOrMinutesOrHours(),
         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600));
   }
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(widget.initialDuration, (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
-        setState(() {});
+        setState(() {
+          _elapsedTime = widget.elapsedTime.inSeconds + timer.tick;
+        });
       }
     });
   }
