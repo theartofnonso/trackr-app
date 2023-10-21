@@ -668,7 +668,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   RunningRoutineSummaryWidget(
                     sets: _totalCompletedSets.length,
                     weight: _totalWeight(),
-                    timer: const _TimerWidget(),
+                    timer: const _TimerWidget(Duration(seconds: 2)),
                   ),
                 const SizedBox(height: 12),
                 Expanded(
@@ -707,6 +707,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (previousRoutine != null) {
       _procedures.addAll([...previousRoutine.procedures]);
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
 
     if (widget.mode == RoutineEditorMode.editing) {
       _routineNameController = TextEditingController(text: previousRoutine?.name);
@@ -885,7 +887,10 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
 }
 
 class _TimerWidget extends StatefulWidget {
-  const _TimerWidget();
+  final Duration initialDuration;
+
+
+  const _TimerWidget(this.initialDuration);
 
   @override
   State<_TimerWidget> createState() => _TimerWidgetState();
@@ -903,7 +908,7 @@ class _TimerWidgetState extends State<_TimerWidget> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(widget.initialDuration, (timer) {
       if (mounted) {
         setState(() {});
       }
