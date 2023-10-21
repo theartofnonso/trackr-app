@@ -26,18 +26,13 @@ class RoutinesScreen extends StatelessWidget {
 
     final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cachedLogDto;
 
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Colors.transparent,
-        trailing: GestureDetector(
-            onTap: () => _navigateToRoutineEditor(context: context),
-            child: const Icon(
-              CupertinoIcons.plus_app,
-              size: 24,
-              color: CupertinoColors.white,
-            )),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _navigateToRoutineEditor(context: context),
+        backgroundColor: tealBlueLighter,
+        child: const Icon(Icons.add),
       ),
-      child: SafeArea(
+      body: SafeArea(
         child: routines.isNotEmpty
             ? Stack(children: [
                 _RoutineList(routinesDtos: routines),
@@ -192,17 +187,6 @@ class _RoutinesEmptyState extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Create workouts ahead of gym time", style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: CupertinoButton(
-                color: tealBlueLight,
-                onPressed: () => _navigateToRoutineEditor(context: context),
-                child: Text(
-                  "Create Workout",
-                  style: Theme.of(context).textTheme.labelLarge,
-                )),
-          )
         ],
       ),
     );

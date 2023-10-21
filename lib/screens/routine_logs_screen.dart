@@ -11,6 +11,12 @@ import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/routine/minimised_routine_controller_widget.dart';
 
+void _navigateToRoutineEditor(
+    {required BuildContext context, RoutineLogDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+  Navigator.of(context)
+      .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.log)));
+}
+
 class RoutineLogsScreen extends StatelessWidget {
   const RoutineLogsScreen({super.key});
 
@@ -22,18 +28,13 @@ class RoutineLogsScreen extends StatelessWidget {
     final logs = provider.logs;
     final cachedRoutineLog = provider.cachedLogDto;
 
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Colors.transparent,
-        trailing: GestureDetector(
-            onTap: () => {},
-            child: const Icon(
-              CupertinoIcons.plus_app,
-              size: 24,
-              color: CupertinoColors.white,
-            )),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _navigateToRoutineEditor(context: context, mode: RoutineEditorMode.routine),
+        backgroundColor: tealBlueLighter,
+        child: const Icon(CupertinoIcons.play_arrow_solid),
       ),
-      child: SafeArea(
+      body: SafeArea(
         child: logs.isNotEmpty
             ? Stack(children: [
                 _RoutineLogsList(logDtos: logs),
@@ -209,17 +210,6 @@ class _RoutineLogsEmptyState extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Start tracking your performance", style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: CupertinoButton(
-                color: tealBlueLight,
-                onPressed: () => {},
-                child: Text(
-                  "Start a new workout",
-                  style: Theme.of(context).textTheme.labelLarge,
-                )),
-          )
         ],
       ),
     );
