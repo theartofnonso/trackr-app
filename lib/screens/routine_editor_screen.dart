@@ -602,7 +602,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                           controller: _routineNameController,
                           expands: true,
                           padding: const EdgeInsets.only(left: 20),
-                          textCapitalization: TextCapitalization.sentences,
+                          textCapitalization: TextCapitalization.words,
                           keyboardType: TextInputType.text,
                           maxLength: 240,
                           maxLines: null,

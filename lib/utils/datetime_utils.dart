@@ -135,7 +135,7 @@ extension DateTimeExtension on DateTime {
     String display;
 
     final date = this;
-    final duration = DateTime.now().difference(date.toLocal().subtract(const Duration(hours: 1)));
+    final duration = DateTime.now().difference(date);
 
     if(duration.inDays > 30) {
       display = date.formattedDayAndMonthAndYear();

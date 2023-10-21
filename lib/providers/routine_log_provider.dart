@@ -26,7 +26,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void listRoutineLogs(BuildContext context) async {
-    final logs = await Amplify.DataStore.query(RoutineLog.classType);
+    final logs = await Amplify.DataStore.query(RoutineLog.classType, sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
     final routineLogDtos = logs.map((log) => log.toRoutineLogDto(context)).toList();
     _logs.addAll(routineLogDtos);
     notifyListeners();
@@ -39,19 +39,18 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required DateTime startTime}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
-    final temporalStartTime = TemporalDateTime.fromString("${startTime.toIso8601String()}Z");
 
     final logToSave = RoutineLog(
         name: name,
         notes: notes,
         procedures: proceduresJson,
-        startTime: temporalStartTime,
+        startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
         endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        createdAt: temporalStartTime,
+        createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now());
     await Amplify.DataStore.save<RoutineLog>(logToSave);
     if (context.mounted) {
-      _logs.add(logToSave.toRoutineLogDto(context));
+      _logs.insert(0, logToSave.toRoutineLogDto(context));
     }
     if(_cacheLogDto != null) {
       _cacheLogDto = null;
@@ -71,7 +70,7 @@ class RoutineLogProvider with ChangeNotifier {
         procedures: procedures,
         startTime: startTime,
         endTime: DateTime.now(),
-        createdAt: startTime,
+        createdAt: DateTime.now(),
         updatedAt: DateTime.now());
   }
 

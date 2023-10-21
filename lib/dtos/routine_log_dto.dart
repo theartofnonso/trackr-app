@@ -12,8 +12,6 @@ extension RoutineLogExtension on RoutineLog {
   RoutineLogDto toRoutineLogDto(BuildContext context) {
     final procedureDtos = procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
 
-    //print(createdAt.getDateTimeInUtc());
-
     return RoutineLogDto(
         id: id,
         name: name,
