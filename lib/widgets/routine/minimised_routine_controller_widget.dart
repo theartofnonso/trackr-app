@@ -34,8 +34,10 @@ class MinimisedRoutineControllerWidget extends StatelessWidget {
           const SizedBox(width: 30),
           GestureDetector(
               onTap: () => {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.routine)))
-              },
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => RoutineEditorScreen(
+                            routineDto: logDto, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)))
+                  },
               child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white))
         ],
       ),

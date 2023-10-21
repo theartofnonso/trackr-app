@@ -14,7 +14,7 @@ import 'routine_editor_screen.dart';
 void _navigateToRoutineEditor(
     {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
   Navigator.of(context)
-      .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
+      .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
 }
 
 class RoutinesScreen extends StatelessWidget {

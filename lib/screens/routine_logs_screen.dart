@@ -173,7 +173,7 @@ class _RoutineLogWidget extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
               Navigator.of(context)
-                  .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto)));
+                  .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
             },
             child: Text(
               'Edit',

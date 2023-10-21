@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 extension RoutineExtension on Routine {
   RoutineDto toRoutineDto(BuildContext context) {
-    final procedureDtos =
-        procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
+    final procedureDtos = procedures.map((procedureJson) => ProcedureDto.fromJson(json.decode(procedureJson), context)).toList();
     return RoutineDto(
         id: id,
         name: name,
@@ -28,6 +28,18 @@ extension RoutineDtoExtension on RoutineDto {
         procedures: procedureJsons,
         updatedAt: TemporalDateTime.fromString("${updatedAt.toIso8601String()}Z"),
         createdAt: TemporalDateTime.fromString("${createdAt.toLocal().toIso8601String()}Z"));
+  }
+
+  RoutineLogDto toRoutineLog() {
+    return RoutineLogDto(
+        id: id,
+        name: name,
+        notes: notes,
+        procedures: procedures,
+        startTime: startTime!,
+        endTime: endTime!,
+        updatedAt: updatedAt,
+        createdAt: createdAt);
   }
 }
 

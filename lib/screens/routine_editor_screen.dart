@@ -21,11 +21,14 @@ import 'exercise_library_screen.dart';
 
 enum RoutineEditorMode { editing, routine }
 
+enum RoutineEditingType { template, log }
+
 class RoutineEditorScreen extends StatefulWidget {
   final RoutineDto? routineDto;
   final RoutineEditorMode mode;
+  final RoutineEditingType type;
 
-  const RoutineEditorScreen({super.key, this.routineDto, this.mode = RoutineEditorMode.editing});
+  const RoutineEditorScreen({super.key, this.routineDto, this.mode = RoutineEditorMode.editing, required this.type});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -450,7 +453,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               notes: _routineNotesController.text,
               procedures: _procedures,
               updatedAt: DateTime.now());
-          Provider.of<RoutineProvider>(context, listen: false).updateRoutine(dto: routineDto);
+          if(widget.type == RoutineEditingType.template) {
+            Provider.of<RoutineProvider>(context, listen: false).updateRoutine(dto: routineDto);
+          } else {
+            Provider.of<RoutineLogProvider>(context, listen: false).updateLog(dto: routineDto.toRoutineLog());
+          }
         }
 
         _navigateBack();
@@ -591,50 +598,42 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (widget.mode == RoutineEditorMode.editing)
-                  CupertinoListSection.insetGrouped(
-                    hasLeading: false,
-                    margin: EdgeInsets.zero,
-                    backgroundColor: Colors.transparent,
+                  Column(
                     children: [
-                      CupertinoListTile(
-                        backgroundColor: tealBlueLight,
-                        title: CupertinoTextField.borderless(
-                          controller: _routineNameController,
-                          expands: true,
-                          padding: const EdgeInsets.only(left: 20),
-                          textCapitalization: TextCapitalization.words,
-                          keyboardType: TextInputType.text,
-                          maxLength: 240,
-                          maxLines: null,
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 18),
-                          placeholder: "New workout",
-                          placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
-                        ),
-                        padding: EdgeInsets.zero,
+                      CupertinoTextField(
+                        controller: _routineNameController,
+                        decoration: const BoxDecoration(color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
+                        expands: true,
+                        padding: const EdgeInsets.all(10),
+                        textCapitalization: TextCapitalization.words,
+                        keyboardType: TextInputType.text,
+                        maxLength: 240,
+                        maxLines: null,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 18),
+                        placeholder: "New workout",
+                        placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
                       ),
-                      CupertinoListTile(
-                        backgroundColor: tealBlueLight,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        title: CupertinoTextField.borderless(
-                          controller: _routineNotesController,
-                          expands: true,
-                          padding: EdgeInsets.zero,
-                          textCapitalization: TextCapitalization.sentences,
-                          keyboardType: TextInputType.text,
-                          maxLength: 240,
-                          maxLines: null,
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          style: TextStyle(
-                            height: 1.5,
-                            fontWeight: FontWeight.w600,
-                            color: CupertinoColors.white.withOpacity(0.8),
-                            fontSize: 16,
-                          ),
-                          placeholder: "New notes",
-                          placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+                      const SizedBox(height: 8),
+                      CupertinoTextField(
+                        controller: _routineNotesController,
+                        decoration: const BoxDecoration(color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
+                        expands: true,
+                        padding: const EdgeInsets.all(10),
+                        textCapitalization: TextCapitalization.sentences,
+                        keyboardType: TextInputType.text,
+                        maxLength: 240,
+                        maxLines: null,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(
+                          height: 1.5,
+                          fontWeight: FontWeight.w600,
+                          color: CupertinoColors.white.withOpacity(0.8),
+                          fontSize: 16,
                         ),
+                        placeholder: "New notes",
+                        placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
                       ),
                     ],
                   )

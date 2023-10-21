@@ -48,14 +48,14 @@ class RoutinePreviewScreen extends StatelessWidget {
       RoutineEditorMode mode = RoutineEditorMode.editing}) async {
     if (mode == RoutineEditorMode.routine) {
       final isMinimised = await Navigator.of(context)
-          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
+          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
       if (context.mounted) {
         if (isMinimised) {
           Navigator.of(context).pop();
         }
       }
     } else {
-      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto)));
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, type: RoutineEditingType.template)));
     }
   }
 
@@ -110,9 +110,8 @@ class RoutinePreviewScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(routineDto.notes,
                     style: const TextStyle(
-                      fontWeight: FontWeight.w600,
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 14,
                     )),
                 const SizedBox(height: 12),
                 Expanded(

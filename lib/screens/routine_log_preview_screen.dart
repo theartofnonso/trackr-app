@@ -42,20 +42,17 @@ class RoutineLogPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToRoutineEditor(
-      {required BuildContext context,
-      required RoutineLogDto logDto,
-      RoutineEditorMode mode = RoutineEditorMode.editing}) async {
+  void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto, RoutineEditorMode mode = RoutineEditorMode.editing}) async {
     if (mode == RoutineEditorMode.routine) {
       final isMinimised = await Navigator.of(context)
-          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: mode)));
+          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: mode, type: RoutineEditingType.log)));
       if (context.mounted) {
         if (isMinimised) {
           Navigator.of(context).pop();
         }
       }
     } else {
-      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto)));
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
     }
   }
 
@@ -84,7 +81,7 @@ class RoutineLogPreviewScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto, mode: RoutineEditorMode.routine),
           backgroundColor: tealBlueLighter,
-          child: const Icon(CupertinoIcons.play_arrow_solid),
+          child: const Icon(Icons.edit),
         ),
         backgroundColor: tealBlueDark,
         appBar: CupertinoNavigationBar(
