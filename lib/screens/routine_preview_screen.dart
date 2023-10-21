@@ -104,32 +104,17 @@ class RoutinePreviewScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CupertinoListSection.insetGrouped(
-                  hasLeading: false,
-                  margin: EdgeInsets.zero,
-                  backgroundColor: Colors.transparent,
-                  children: [
-                    CupertinoListTile(
-                      backgroundColor: tealBlueLight,
-                      title: Text(routineDto.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: CupertinoColors.white.withOpacity(0.8),
-                              fontSize: 18)),
-                    ),
-                    CupertinoListTile(
-                      backgroundColor: tealBlueLight,
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                      title: Text(routineDto.notes,
-                          style: TextStyle(
-                            height: 1.5,
-                            fontWeight: FontWeight.w600,
-                            color: CupertinoColors.white.withOpacity(0.8),
-                            fontSize: 16,
-                          )),
-                    )
-                  ],
-                ),
+                Text(routineDto.name,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 18)),
+                const SizedBox(height: 8),
+                Text(routineDto.notes,
+                    style: TextStyle(
+                      //height: 1.5,
+                      fontWeight: FontWeight.w600,
+                      color: CupertinoColors.white.withOpacity(0.8),
+                      fontSize: 14,
+                    )),
                 const SizedBox(height: 12),
                 Expanded(
                   child: ListView.separated(
