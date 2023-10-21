@@ -19,7 +19,7 @@ class MinimisedRoutineControllerWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       margin: const EdgeInsets.only(right: 12, bottom: 12, left: 12),
       decoration: BoxDecoration(
-        color: tealBlueLighter,
+        color: tealBlueLight,
         borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
       ),
       child: Row(
