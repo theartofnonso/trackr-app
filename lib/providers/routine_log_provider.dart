@@ -90,6 +90,10 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   int _indexWhereRoutineLog({required String id}) {
-    return _logs.indexWhere((routine) => routine.id == id);
+    return _logs.indexWhere((log) => log.id == id);
+  }
+
+  RoutineLogDto whereRoutineLog({required String id}) {
+    return _logs.firstWhere((log) => log.id == id);
   }
 }

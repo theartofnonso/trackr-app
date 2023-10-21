@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
+import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../app_constants.dart';
@@ -120,6 +121,11 @@ class _RoutineLogWidget extends StatelessWidget {
     );
   }
 
+  void _navigateToRoutineLogPreview({required BuildContext context}) async {
+    Navigator.of(context)
+        .push(CupertinoPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)));
+  }
+
   String _footerLabel() {
     final exercisesPlural = logDto.procedures.length - 3 > 1 ? "exercises" : "exercise";
     return "See ${logDto.procedures.length - 3} more $exercisesPlural";
@@ -142,6 +148,7 @@ class _RoutineLogWidget extends StatelessWidget {
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
               child: CupertinoListTile(
+                  onTap: () => _navigateToRoutineLogPreview(context: context),
                   backgroundColor: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),

@@ -43,10 +43,7 @@ class RoutinesScreen extends StatelessWidget {
                 _RoutineList(routinesDtos: routines),
                 cachedRoutineLog != null
                     ? Positioned(
-                        right: 0,
-                        bottom: 0,
-                        left: 0,
-                        child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+                        right: 0, bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
                     : const SizedBox.shrink()
               ])
             : const Center(child: _RoutinesEmptyState()),
@@ -125,44 +122,40 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _navigateToRoutinePreview(context: context),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CupertinoListTile(
-              backgroundColorActivated: tealBlueLight,
-              leading: GestureDetector(
-                  onTap: () => _navigateToRoutineEditor(
-                      context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
-                  child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
-              title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
-              subtitle: Row(children: [
-                const Icon(
-                  CupertinoIcons.number,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CupertinoListTile(
+            backgroundColorActivated: tealBlueLight,
+            leading: GestureDetector(
+                onTap: () => _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+                child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
+            title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
+            subtitle: Row(children: [
+              const Icon(
+                CupertinoIcons.number,
+                color: CupertinoColors.white,
+                size: 12,
+              ),
+              Text("${routineDto.procedures.length} exercises",
+                  style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+            ]),
+            trailing: GestureDetector(
+                onTap: () => _showWorkoutActionSheet(context: context),
+                child: const Icon(
+                  CupertinoIcons.ellipsis,
                   color: CupertinoColors.white,
-                  size: 12,
-                ),
-                Text("${routineDto.procedures.length} exercises",
-                    style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-              ]),
-              trailing: GestureDetector(
-                  onTap: () => _showWorkoutActionSheet(context: context),
-                  child: const Icon(
-                    CupertinoIcons.ellipsis,
-                    color: CupertinoColors.white,
-                  ))),
-          const SizedBox(height: 8),
-          ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
-          routineDto.procedures.length > 3
-              ? Text(_footerLabel(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall
-                      ?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
-              : const SizedBox.shrink()
-        ],
-      ),
+                ))),
+        const SizedBox(height: 8),
+        ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
+        routineDto.procedures.length > 3
+            ? Text(_footerLabel(),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
+            : const SizedBox.shrink()
+      ],
     );
   }
 
@@ -177,7 +170,7 @@ class _RoutineWidget extends StatelessWidget {
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
               child: CupertinoListTile(
-                onTap: () => _navigateToRoutinePreview(context: context),
+                  onTap: () => _navigateToRoutinePreview(context: context),
                   backgroundColor: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
