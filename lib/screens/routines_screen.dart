@@ -37,8 +37,7 @@ class RoutinesScreen extends StatelessWidget {
             ? Stack(children: [
                 _RoutineList(routinesDtos: routines),
                 cachedRoutineLog != null
-                    ? Positioned(
-                        right: 0, bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+                    ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
                     : const SizedBox.shrink()
               ])
             : const Center(child: _RoutinesEmptyState()),

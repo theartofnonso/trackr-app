@@ -16,22 +16,23 @@ class MinimisedRoutineControllerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
+      width: 280,
+      margin: const EdgeInsets.only(left: 12, bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      margin: const EdgeInsets.only(right: 12, bottom: 12, left: 12),
       decoration: BoxDecoration(
-        color: tealBlueLight,
+          color: Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
       ),
       child: Row(
         children: [
-          Text(logDto.name, style: Theme.of(context).textTheme.labelMedium),
+          SizedBox(width: 150, child: Text(logDto.name, style: Theme.of(context).textTheme.labelMedium?.copyWith(overflow: TextOverflow.ellipsis, fontWeight: FontWeight.bold))),
           const Spacer(),
           GestureDetector(
               onTap: () {
                 Provider.of<RoutineLogProvider>(context, listen: false).cachedLogDto = null;
               },
               child: Icon(CupertinoIcons.stop_fill, color: Colors.white.withOpacity(0.8))),
-          const SizedBox(width: 30),
+          const SizedBox(width: 20),
           GestureDetector(
               onTap: () => {
                     Navigator.of(context).push(CupertinoPageRoute(
