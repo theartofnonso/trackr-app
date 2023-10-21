@@ -51,7 +51,9 @@ class RoutineLogProvider with ChangeNotifier {
     if (context.mounted) {
       _logs.add(logToSave.toRoutineLogDto(context));
     }
-    _cacheLogDto ??= null;
+    if(_cacheLogDto != null) {
+      _cacheLogDto = null;
+    }
     notifyListeners();
   }
 
