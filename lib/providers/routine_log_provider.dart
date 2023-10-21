@@ -39,13 +39,15 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required DateTime startTime}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
+    final temporalStartTime = TemporalDateTime.fromString("${startTime.toIso8601String()}Z");
+
     final logToSave = RoutineLog(
         name: name,
         notes: notes,
         procedures: proceduresJson,
-        startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
+        startTime: temporalStartTime,
         endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        createdAt: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
+        createdAt: temporalStartTime,
         updatedAt: TemporalDateTime.now());
     await Amplify.DataStore.save<RoutineLog>(logToSave);
     if (context.mounted) {

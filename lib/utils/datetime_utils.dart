@@ -130,31 +130,31 @@ extension DateTimeExtension on DateTime {
     return date.day == other.day && date.month == other.month && date.year == other.year;
   }
 
-  String hoursSinceOrDate() {
+  String durationSinceOrDate() {
 
     String display;
 
     final date = this;
-    final difference = DateTime.now().difference(date);
+    final duration = DateTime.now().difference(date.toLocal().subtract(const Duration(hours: 1)));
 
-    if(difference.inDays > 30) {
+    if(duration.inDays > 30) {
       display = date.formattedDayAndMonthAndYear();
-    } else if(difference.inDays > 21) {
+    } else if(duration.inDays > 21) {
       display = "3 weeks ago";
-    } else if(difference.inDays > 14) {
+    } else if(duration.inDays > 14) {
       display = "2 weeks ago";
-    } else if(difference.inDays > 7) {
+    } else if(duration.inDays > 7) {
       display = "1 week ago";
-    } else if(difference.inDays == 1) {
+    } else if(duration.inDays == 1) {
       display = "Yesterday";
-    } else if(difference.inHours > 24) {
-      display = "${difference.inDays} day ago";
-    } else if(difference.inMinutes > 59) {
-      display = "${difference.inHours} hours ago";
-    } else if(difference.inSeconds > 59) {
-      display = "${difference.inMinutes} minutes ago";
+    } else if(duration.inHours > 24) {
+      display = "${duration.inDays} day ago";
+    } else if(duration.inMinutes > 59) {
+      display = "${duration.inHours} hours ago";
+    } else if(duration.inSeconds > 59) {
+      display = duration.inMinutes == 1 ?  "${duration.inMinutes} minute ago" : "${duration.inMinutes} minutes ago";
     } else {
-      display = "${difference.inSeconds} seconds ago";
+      display = "now";
     }
 
     return display;

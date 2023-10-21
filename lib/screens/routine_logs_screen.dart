@@ -15,9 +15,11 @@ class RoutineLogsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
-    final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cacheLogDto;
+    final provider = Provider.of<RoutineLogProvider>(context, listen: true);
+
+    final logs = provider.logs;
+    final cachedRoutineLog = provider.cacheLogDto;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -86,7 +88,8 @@ class _RoutineLogWidget extends StatelessWidget {
                 color: CupertinoColors.white,
                 size: 12,
               ),
-              Text(logDto.createdAt.hoursSinceOrDate(),
+              const SizedBox(width: 1),
+              Text(logDto.createdAt.durationSinceOrDate(),
                   style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
               const Icon(
@@ -94,6 +97,7 @@ class _RoutineLogWidget extends StatelessWidget {
                 color: CupertinoColors.white,
                 size: 12,
               ),
+              const SizedBox(width: 1),
               Text(_logDuration(),
                   style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
             ]),

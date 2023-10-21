@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +43,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _routineDuration;
 
-  late DateTime _routineStartTime;
+  DateTime _routineStartTime = DateTime.now();
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -676,24 +675,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
-    _routineStartTime = DateTime.now();
-
     final previousRoutine = widget.routineDto;
     if (previousRoutine != null) {
       _procedures.addAll([...previousRoutine.procedures]);
-      if(previousRoutine.startTime != null) {
-        _routineStartTime = previousRoutine.startTime ?? _routineStartTime; //TemporalDateTime.fromString("${previousRoutine.startTime?.toLocal().toIso8601String()}Z");
+
+      if(widget.mode == RoutineEditorMode.routine) {
+        /// If [RoutineDto] was instantiated from a [RoutineLogDto]
+        _routineStartTime = previousRoutine.startTime ?? _routineStartTime;
       }
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
 
     if (widget.mode == RoutineEditorMode.editing) {
       _routineNameController = TextEditingController(text: previousRoutine?.name);
       _routineNotesController = TextEditingController(text: previousRoutine?.notes);
     }
 
-    _cacheRoutine();
+    if(widget.mode == RoutineEditorMode.routine) {
+      /// Show progress of resumed routine
+      WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
+      /// Cache initial state of running routine
+      _cacheRoutine();
+    }
   }
 
   @override
