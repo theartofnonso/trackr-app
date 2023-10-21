@@ -106,9 +106,8 @@ class RoutineLogPreviewScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(logDto.notes,
                     style: TextStyle(
-                      fontWeight: FontWeight.w600,
                       color: CupertinoColors.white.withOpacity(0.8),
-                      fontSize: 16,
+                      fontSize: 14,
                     )),
                 const SizedBox(height: 12),
                 Expanded(
