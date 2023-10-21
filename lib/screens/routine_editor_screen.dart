@@ -560,8 +560,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 leading: GestureDetector(
                   onTap: () => _navigateBack(minimised: true),
                   child: const Icon(
-                    Icons.keyboard_arrow_down_rounded,
+                    Icons.arrow_back_ios_new_rounded,
                     color: CupertinoColors.white,
+                    size: 24,
                   ),
                 ),
                 middle: Text(
