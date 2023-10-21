@@ -530,13 +530,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _cacheRoutine() {
-    final routine = widget.routineDto;
-    if (routine != null) {
-      Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutine(
-          name: routine.name,
-          notes: routine.notes,
-          procedures: _procedures,
-          startTime: _routineStartTime);
+    if(widget.mode == RoutineEditorMode.routine) {
+      final routine = widget.routineDto;
+      if (routine != null) {
+        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutine(
+            name: routine.name,
+            notes: routine.notes,
+            procedures: _procedures,
+            startTime: _routineStartTime);
+      }
     }
   }
 
@@ -628,9 +630,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         style: TextStyle(
                           height: 1.5,
-                          fontWeight: FontWeight.w600,
                           color: CupertinoColors.white.withOpacity(0.8),
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                         placeholder: "New notes",
                         placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),

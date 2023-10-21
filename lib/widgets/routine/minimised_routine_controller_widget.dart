@@ -28,7 +28,7 @@ class MinimisedRoutineControllerWidget extends StatelessWidget {
           const Spacer(),
           GestureDetector(
               onTap: () {
-                Provider.of<RoutineLogProvider>(context, listen: false).cacheLogDto = null;
+                Provider.of<RoutineLogProvider>(context, listen: false).cachedLogDto = null;
               },
               child: Icon(CupertinoIcons.stop_fill, color: Colors.white.withOpacity(0.8))),
           const SizedBox(width: 30),

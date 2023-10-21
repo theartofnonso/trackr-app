@@ -20,7 +20,7 @@ class RoutineLogsScreen extends StatelessWidget {
     final provider = Provider.of<RoutineLogProvider>(context, listen: true);
 
     final logs = provider.logs;
-    final cachedRoutineLog = provider.cacheLogDto;
+    final cachedRoutineLog = provider.cachedLogDto;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(

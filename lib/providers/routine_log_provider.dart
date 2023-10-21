@@ -10,14 +10,14 @@ import '../models/RoutineLog.dart';
 class RoutineLogProvider with ChangeNotifier {
   final List<RoutineLogDto> _logs = [];
 
-  RoutineLogDto? _cacheLogDto;
+  RoutineLogDto? _cachedLogDto;
 
   UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
 
-  RoutineLogDto? get cacheLogDto => _cacheLogDto;
+  RoutineLogDto? get cachedLogDto => _cachedLogDto;
 
-  set cacheLogDto(RoutineLogDto? value) {
-    _cacheLogDto = value;
+  set cachedLogDto(RoutineLogDto? value) {
+    _cachedLogDto = value;
     notifyListeners();
   }
 
@@ -52,8 +52,8 @@ class RoutineLogProvider with ChangeNotifier {
     if (context.mounted) {
       _logs.insert(0, logToSave.toRoutineLogDto(context));
     }
-    if(_cacheLogDto != null) {
-      _cacheLogDto = null;
+    if(_cachedLogDto != null) {
+      _cachedLogDto = null;
     }
     notifyListeners();
   }
@@ -63,7 +63,8 @@ class RoutineLogProvider with ChangeNotifier {
       required String notes,
       required List<ProcedureDto> procedures,
       required DateTime startTime}) {
-    _cacheLogDto = RoutineLogDto(
+    print("caching");
+    _cachedLogDto = RoutineLogDto(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
         name: name,
         notes: notes,

@@ -24,7 +24,7 @@ class RoutinesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final routines = Provider.of<RoutineProvider>(context, listen: true).routines;
 
-    final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cacheLogDto;
+    final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cachedLogDto;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
