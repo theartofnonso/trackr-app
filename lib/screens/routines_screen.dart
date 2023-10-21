@@ -17,14 +17,9 @@ void _navigateToRoutineEditor(
       .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode)));
 }
 
-class RoutinesScreen extends StatefulWidget with WidgetsBindingObserver {
+class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
 
-  @override
-  State<RoutinesScreen> createState() => _RoutinesScreenState();
-}
-
-class _RoutinesScreenState extends State<RoutinesScreen> {
   @override
   Widget build(BuildContext context) {
     final routines = Provider.of<RoutineProvider>(context, listen: true).routines;
@@ -136,8 +131,7 @@ class _RoutineWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CupertinoListTile(
-              onTap: () =>
-                  _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+              backgroundColorActivated: tealBlueLight,
               leading: GestureDetector(
                   onTap: () => _navigateToRoutineEditor(
                       context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
@@ -183,6 +177,7 @@ class _RoutineWidget extends StatelessWidget {
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
               child: CupertinoListTile(
+                onTap: () => _navigateToRoutinePreview(context: context),
                   backgroundColor: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
