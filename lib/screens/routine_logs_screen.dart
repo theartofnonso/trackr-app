@@ -86,7 +86,7 @@ class _RoutineLogWidget extends StatelessWidget {
                 color: CupertinoColors.white,
                 size: 12,
               ),
-              Text(logDto.endTime?.hoursSinceOrDate() ?? logDto.createdAt.hoursSinceOrDate(),
+              Text(logDto.createdAt.hoursSinceOrDate(),
                   style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
               const Icon(

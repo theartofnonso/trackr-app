@@ -44,7 +44,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _routineDuration;
 
-  late TemporalDateTime _routineStartTime;
+  late DateTime _routineStartTime;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog(
@@ -643,7 +643,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   RunningRoutineSummaryWidget(
                     sets: _totalCompletedSets.length,
                     weight: _totalWeight(),
-                    timer: _TimerWidget(_routineStartTime.getDateTimeInUtc().difference(DateTime.now())),
+                    timer: _TimerWidget(DateTime.now().difference(_routineStartTime)),
                   ),
                 const SizedBox(height: 12),
                 Expanded(
@@ -676,13 +676,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
-    _routineStartTime = TemporalDateTime.now();
+    _routineStartTime = DateTime.now();
 
     final previousRoutine = widget.routineDto;
     if (previousRoutine != null) {
       _procedures.addAll([...previousRoutine.procedures]);
       if(previousRoutine.startTime != null) {
-        _routineStartTime = TemporalDateTime.fromString("${previousRoutine.startTime?.toLocal().toIso8601String()}Z");
+        _routineStartTime = previousRoutine.startTime ?? _routineStartTime; //TemporalDateTime.fromString("${previousRoutine.startTime?.toLocal().toIso8601String()}Z");
       }
     }
 
