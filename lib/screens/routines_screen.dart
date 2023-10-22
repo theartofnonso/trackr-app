@@ -13,8 +13,9 @@ import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
     {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context)
-      .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
+  Navigator.of(context).push(CupertinoPageRoute(
+      builder: (context) =>
+          RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
 }
 
 class RoutinesScreen extends StatelessWidget {
@@ -22,27 +23,24 @@ class RoutinesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routines = Provider.of<RoutineProvider>(context, listen: true).routines;
-
-    final cachedRoutineLog = Provider.of<RoutineLogProvider>(context, listen: true).cachedLogDto;
-
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToRoutineEditor(context: context),
-        backgroundColor: tealBlueLighter,
-        child: const Icon(Icons.add),
-      ),
-      body: SafeArea(
-        child: routines.isNotEmpty
-            ? Stack(children: [
-                _RoutineList(routinesDtos: routines),
-                cachedRoutineLog != null
-                    ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
-                    : const SizedBox.shrink()
-              ])
-            : const Center(child: _RoutinesEmptyState()),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _navigateToRoutineEditor(context: context),
+          backgroundColor: tealBlueLighter,
+          child: const Icon(Icons.add),
+        ),
+        body: SafeArea(child:
+            Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
+          final cachedRoutineLog = routineLogProvider.cachedLogDto;
+          return Stack(children: [
+            routineProvider.routines.isNotEmpty
+                ? _RoutineList(routinesDtos: routineProvider.routines)
+                : const Center(child: _RoutinesEmptyState()),
+            cachedRoutineLog != null
+                ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+                : const SizedBox.shrink()
+          ]);
+        })));
   }
 }
 
@@ -122,7 +120,8 @@ class _RoutineWidget extends StatelessWidget {
         CupertinoListTile(
             backgroundColorActivated: tealBlueLight,
             leading: GestureDetector(
-                onTap: () => _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+                onTap: () =>
+                    _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
                 child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
             title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [

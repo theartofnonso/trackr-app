@@ -1,7 +1,9 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/routine_log_dto.dart';
@@ -34,6 +36,14 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void retrieveCachedRoutineLog(BuildContext context) {
+    final cache = SharedPrefs().cachedRoutineLog;
+    if(cache.isNotEmpty) {
+      _cachedLogDto = RoutineLogDto.fromJson(jsonDecode(cache), context);
+      notifyListeners();
+    }
+  }
+
   void logRoutine(
       {required BuildContext context,
       required String name,
@@ -56,6 +66,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
     if (_cachedLogDto != null) {
       _cachedLogDto = null;
+      SharedPrefs().cachedRoutineLog = "";
     }
     notifyListeners();
   }
@@ -74,6 +85,10 @@ class RoutineLogProvider with ChangeNotifier {
         endTime: DateTime.now(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
+    final cachedLogDto = _cachedLogDto;
+    if(cachedLogDto != null) {
+      SharedPrefs().cachedRoutineLog = cachedLogDto.toJson();
+    }
   }
 
   void updateLog({required RoutineLogDto dto}) async {

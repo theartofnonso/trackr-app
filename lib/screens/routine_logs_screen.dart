@@ -25,11 +25,9 @@ class RoutineLogsScreen extends StatefulWidget {
 }
 
 class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindingObserver {
-  late RoutineLogProvider _routineLogProvider;
 
   @override
   Widget build(BuildContext context) {
-    final cachedRoutineLog = _routineLogProvider.cachedLogDto;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -37,18 +35,17 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
         backgroundColor: tealBlueLighter,
         child: const Icon(CupertinoIcons.play_arrow_solid),
       ),
-      body: SafeArea(
-          child: Stack(children: [
-        Consumer<RoutineLogProvider>(builder: (_, provider, __) {
-          return provider.logs.isNotEmpty
+      body: SafeArea(child: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
+        final cachedRoutineLog = provider.cachedLogDto;
+        return Stack(children: [
+          provider.logs.isNotEmpty
               ? _RoutineLogsList(logDtos: provider.logs)
-              : const Center(child: _RoutineLogsEmptyState());
-        }),
-        cachedRoutineLog != null
-            ? Positioned(
-                right: 0, bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
-            : const SizedBox.shrink()
-      ])),
+              : const Center(child: _RoutineLogsEmptyState()),
+          cachedRoutineLog != null
+              ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
+              : const SizedBox.shrink()
+        ]);
+      })),
     );
   }
 
@@ -56,7 +53,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) => Provider.of<RoutineLogProvider>(context, listen: false).retrieveCachedRoutineLog(context));
   }
 
   @override
@@ -68,7 +65,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _routineLogProvider.listRoutineLogs(context));
+      WidgetsBinding.instance.addPostFrameCallback((_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context));
     }
   }
 }

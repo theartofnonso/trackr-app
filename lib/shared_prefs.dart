@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String lastActivityStartDatetimeKey = "last_activity_start_datetime_key";
 const String lastActivityIdKey = "last_activity_id_key";
 const String lastActivityKey = "last_activity_key";
+const String cachedRoutineLogKey = "cached_routine_log_key";
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;
@@ -49,5 +50,9 @@ class SharedPrefs {
     _sharedPrefs?.remove(lastActivityStartDatetimeKey);
   }
 
+  set cachedRoutineLog(String value) {
+    _sharedPrefs?.setString(cachedRoutineLogKey, value);
+  }
 
+  String get cachedRoutineLog => _sharedPrefs?.getString(cachedRoutineLogKey) ?? "";
 }

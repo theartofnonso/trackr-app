@@ -6,6 +6,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import '../../app_constants.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../screens/routine_editor_screen.dart';
+import '../../shared_prefs.dart';
 
 class MinimisedRoutineControllerWidget extends StatelessWidget {
   final RoutineLogDto logDto;
@@ -30,6 +31,7 @@ class MinimisedRoutineControllerWidget extends StatelessWidget {
           GestureDetector(
               onTap: () {
                 Provider.of<RoutineLogProvider>(context, listen: false).cachedLogDto = null;
+                SharedPrefs().cachedRoutineLog = "";
               },
               child: Icon(CupertinoIcons.stop_fill, color: Colors.white.withOpacity(0.8))),
           const SizedBox(width: 20),

@@ -38,6 +38,20 @@ extension RoutineLogDtoExtension on RoutineLogDto {
         createdAt: TemporalDateTime.fromString("${createdAt.toLocal().toIso8601String()}Z"),
         updatedAt: TemporalDateTime.fromString("${updatedAt.toLocal().toIso8601String()}Z"));
   }
+
+  String toJson() {
+    final log = {
+      "id": id,
+      "name": name,
+      "notes": notes,
+      "procedures": procedures.map((procedure) => procedure.toJson()).toList(),
+      "startTime": startTime?.toIso8601String(),
+      "endTime": endTime?.toIso8601String(),
+      "createdAt": createdAt.toIso8601String(),
+      "updatedAt": updatedAt.toIso8601String(),
+    };
+    return jsonEncode(log);
+  }
 }
 
 class RoutineLogDto extends RoutineDto {
@@ -65,4 +79,17 @@ class RoutineLogDto extends RoutineDto {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  factory RoutineLogDto.fromJson(Map<String, dynamic> json, BuildContext context) {
+    final id = json["id"];
+    final name = json["name"];
+    final procedures = json["procedures"] as List<dynamic>;
+    final procedureDtos = procedures.map((procedureJson) => ProcedureDto.fromJson(jsonDecode(procedureJson), context)).toList();
+    final startTime = DateTime.parse(json["startTime"] as String);
+    final endTime = DateTime.parse(json["endTime"] as String);
+    final createdAt = DateTime.parse(json["createdAt"] as String);
+    final updatedAt = DateTime.parse(json["updatedAt"] as String);
+    return RoutineLogDto(id: id, name: name, procedures: procedureDtos, startTime: startTime, endTime: endTime, createdAt: createdAt, updatedAt: updatedAt);
+  }
+
 }
