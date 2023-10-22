@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
@@ -23,31 +24,41 @@ class RoutinesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToRoutineEditor(context: context),
-          backgroundColor: tealBlueLighter,
-          child: const Icon(Icons.add),
-        ),
-        body: SafeArea(child:
-            Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
-          final cachedRoutineLog = routineLogProvider.cachedLogDto;
-          return Stack(children: [
+    return Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
+      final cachedRoutineLog = routineLogProvider.cachedLogDto;
+      return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigateToRoutineEditor(context: context),
+            backgroundColor: tealBlueLighter,
+            child: const Icon(Icons.add),
+          ),
+          body: SafeArea(
+              child: Stack(children: [
             routineProvider.routines.isNotEmpty
-                ? _RoutineList(routinesDtos: routineProvider.routines)
+                ? Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(children: [
+                  Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, int index) => _RoutineWidget(routineDto: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
+                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                        itemCount: routineProvider.routines.length),
+                  )
+                ]))
                 : const Center(child: _RoutinesEmptyState()),
             cachedRoutineLog != null
                 ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
                 : const SizedBox.shrink()
-          ]);
-        })));
+          ])));
+    });
   }
 }
 
 class _RoutineList extends StatelessWidget {
   final List<RoutineDto> routinesDtos;
+  final bool canStartRoutine;
 
-  const _RoutineList({required this.routinesDtos});
+  const _RoutineList({required this.routinesDtos, required this.canStartRoutine});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +67,7 @@ class _RoutineList extends StatelessWidget {
         child: Column(children: [
           Expanded(
             child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => _RoutineWidget(routineDto: routinesDtos[index]),
+                itemBuilder: (BuildContext context, int index) => _RoutineWidget(routineDto: routinesDtos[index], canStartRoutine: canStartRoutine),
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                 itemCount: routinesDtos.length),
           )
@@ -66,8 +77,9 @@ class _RoutineList extends StatelessWidget {
 
 class _RoutineWidget extends StatelessWidget {
   final RoutineDto routineDto;
+  final bool canStartRoutine;
 
-  const _RoutineWidget({required this.routineDto});
+  const _RoutineWidget({required this.routineDto, required this.canStartRoutine});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutActionSheet({required BuildContext context}) {
@@ -120,8 +132,13 @@ class _RoutineWidget extends StatelessWidget {
         CupertinoListTile(
             backgroundColorActivated: tealBlueLight,
             leading: GestureDetector(
-                onTap: () =>
-                    _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+                onTap: () {
+                  if(canStartRoutine) {
+                    _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+                  } else {
+                    showSnackbar(context: context, icon: const Icon(Icons.info_outline, color: Colors.white), message: "You already have a workout running");
+                  }
+                },
                 child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
             title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [

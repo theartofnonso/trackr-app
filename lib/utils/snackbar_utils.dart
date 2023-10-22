@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/app_constants.dart';
 
 void showSnackbar(
     {required BuildContext context,
     required Widget icon,
     required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: tealBlueLight,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       content: Row(
@@ -20,7 +22,7 @@ void showSnackbar(
               style: GoogleFonts.poppins(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
