@@ -263,7 +263,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     minHeight: 15,
                     borderRadius: BorderRadius.circular(2));
               }),
-          const SizedBox(height: 8)
+          const SizedBox(height: 12)
         ],
       );
       splitList.add(widget);
