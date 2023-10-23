@@ -136,8 +136,12 @@ class RoutineLogPreviewScreen extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: SizedBox(
-                      height: 30,
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: tealBlueLight, // Set the background color
+                      ),
                       child: Flex(
                         direction: Axis.horizontal,
                         children: [
@@ -151,6 +155,8 @@ class RoutineLogPreviewScreen extends StatelessWidget {
                           const VerticalDivider(
                             color: tealBlueLighter,
                             thickness: 2,
+                            indent: 12,
+                            endIndent: 12,
                             width: 20,
                           ),
                           Expanded(
@@ -163,6 +169,8 @@ class RoutineLogPreviewScreen extends StatelessWidget {
                           const VerticalDivider(
                             color: tealBlueLighter,
                             thickness: 2,
+                            indent: 12,
+                            endIndent: 12,
                             width: 20,
                           ),
                           Expanded(
