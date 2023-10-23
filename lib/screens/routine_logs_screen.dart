@@ -153,7 +153,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
   String _footerLabel() {
     final exercisesPlural = logDto.procedures.length - 3 > 1 ? "exercises" : "exercise";
-    return "See ${logDto.procedures.length - 3} more $exercisesPlural";
+    return "Plus ${logDto.procedures.length - 3} more $exercisesPlural";
   }
 
   String _logDuration() {

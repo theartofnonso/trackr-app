@@ -163,7 +163,7 @@ class _RoutineWidget extends StatelessWidget {
 
   String _footerLabel() {
     final exercisesPlural = routineDto.procedures.length - 3 > 1 ? "exercises" : "exercise";
-    return "See ${routineDto.procedures.length - 3} more $exercisesPlural";
+    return "Plus ${routineDto.procedures.length - 3} more $exercisesPlural";
   }
 
   List<Widget> _proceduresToWidgets({required BuildContext context, required List<ProcedureDto> procedures}) {

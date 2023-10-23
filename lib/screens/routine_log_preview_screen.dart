@@ -10,62 +10,25 @@ import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
+import '../models/BodyPart.dart';
 import '../providers/routine_log_provider.dart';
 
-class RoutineLogPreviewScreen extends StatelessWidget {
+class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;
 
   const RoutineLogPreviewScreen({super.key, required this.routineLogId});
 
-  /// Show [CupertinoActionSheet]
-  void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineLogDto logDto}) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, logDto: logDto);
-            },
-            child: Text('Edit', style: textStyle),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop({"id": routineLogId});
-            },
-            child: const Text('Delete', style: TextStyle(fontSize: 16)),
-          ),
-        ],
-      ),
-    );
-  }
+  @override
+  State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
+}
 
-  void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto}) async {
-    Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) =>
-            RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
-  }
-
-  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
-    return ProcedureWidget(
-      procedureDto: procedure,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
-    );
-  }
-
-  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
-    return procedures.firstWhereOrNull((procedure) =>
-        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
-  }
+class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Color?> _colorAnimation;
 
   @override
   Widget build(BuildContext context) {
-    final logDto = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: routineLogId);
+    final logDto = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if (logDto != null) {
       final completedSets = _calculateCompletedSets(procedures: logDto.procedures);
@@ -184,6 +147,10 @@ class RoutineLogPreviewScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Column(
+                    children: [..._bodyPartSplit(procedures: logDto.procedures)],
+                  ),
+                  const SizedBox(height: 16),
                   Expanded(
                     child: ListView.separated(
                         itemBuilder: (BuildContext context, int index) =>
@@ -198,6 +165,33 @@ class RoutineLogPreviewScreen extends StatelessWidget {
     }
 
     return const SizedBox.shrink();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Create an animation controller with a duration
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 700),
+      vsync: this,
+    );
+
+    // Create a tween for the color animation
+    _colorAnimation = ColorTween(
+      begin: tealBlueLight,
+      end: Colors.white,
+    ).animate(_controller);
+
+    // Start the animation
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   String _logDuration({required RoutineLogDto logDto}) {
@@ -227,5 +221,99 @@ class RoutineLogPreviewScreen extends StatelessWidget {
       totalWeight += weightPerSet;
     }
     return totalWeight;
+  }
+
+  Map<String, double> _calculateFrequencyPercentage(List<BodyPart> itemList) {
+    final Map<BodyPart, int> frequencyMap = {};
+
+    // Count the occurrences of each item
+    for (var item in itemList) {
+      frequencyMap[item] = (frequencyMap[item] ?? 0) + 1;
+    }
+
+    final int totalItems = itemList.length;
+    final Map<String, double> percentageMap = {};
+
+    // Calculate the percentage for each item
+    frequencyMap.forEach((item, count) {
+      final double percentage = ((count / totalItems) * 100.0) / 100;
+      percentageMap[item.name] = percentage;
+    });
+
+    return percentageMap;
+  }
+
+  List<Widget> _bodyPartSplit({required List<ProcedureDto> procedures}) {
+    final parts = procedures.map((procedure) => procedure.exercise.bodyPart).toList();
+    final splitMap = _calculateFrequencyPercentage(parts);
+    final splitList = <Widget>[];
+    splitMap.forEach((key, value) {
+      final widget = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("${key.substring(0,1)}${key.substring(1).toLowerCase()}", style: const TextStyle(fontWeight: FontWeight.w400),),
+          const SizedBox(height: 2),
+          AnimatedBuilder(
+              animation: _controller,
+              builder: (_, __) {
+                return LinearProgressIndicator(
+                    value: value,
+                    valueColor: _colorAnimation,
+                    backgroundColor: tealBlueLight,
+                    minHeight: 15,
+                    borderRadius: BorderRadius.circular(2));
+              }),
+          const SizedBox(height: 8)
+        ],
+      );
+      splitList.add(widget);
+    });
+    return splitList;
+  }
+
+  /// Show [CupertinoActionSheet]
+  void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineLogDto logDto}) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _navigateToRoutineEditor(context: context, logDto: logDto);
+            },
+            child: Text('Edit', style: textStyle),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop({"id": widget.routineLogId});
+            },
+            child: const Text('Delete', style: TextStyle(fontSize: 16)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto}) async {
+    Navigator.of(context).push(CupertinoPageRoute(
+        builder: (context) =>
+            RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
+  }
+
+  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
+  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
+    return ProcedureWidget(
+      procedureDto: procedure,
+      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
+    );
+  }
+
+  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
+    return procedures.firstWhereOrNull((procedure) =>
+        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 }
