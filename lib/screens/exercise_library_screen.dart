@@ -76,18 +76,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   Widget _exercisesToWidgets() {
     if (widget.multiSelect) {
       return ListView.separated(
-          itemBuilder: (BuildContext context, int index) =>
-              SelectableExrLibraryListItem(
-                  exercise: _filteredExercises[index],
-                  onTap: (isSelected) => _selectCheckedExercise(isSelected: isSelected, selectedExercise: _filteredExercises[index])),
+          itemBuilder: (BuildContext context, int index) => SelectableExrLibraryListItem(
+              exercise: _filteredExercises[index],
+              onTap: (isSelected) =>
+                  _selectCheckedExercise(isSelected: isSelected, selectedExercise: _filteredExercises[index])),
           separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
           itemCount: _filteredExercises.length);
     }
     return ListView.separated(
-        itemBuilder: (BuildContext context, int index) =>
-            ExrLibraryListItem(
-                exercise: _filteredExercises[index],
-                onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
+        itemBuilder: (BuildContext context, int index) => ExrLibraryListItem(
+            exercise: _filteredExercises[index],
+            onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
         itemCount: _filteredExercises.length);
   }
@@ -108,11 +107,28 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-        child: Column(children: [
-          CupertinoSearchTextField(onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm)),
-          const SizedBox(height: 12),
-          Expanded(child: _exercisesToWidgets())
-        ],),
+        child: Column(
+          children: [
+            SearchBar(
+              onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm),
+              leading: const Icon(
+                Icons.search_rounded,
+                color: Colors.white,
+              ),
+              hintText: "Search exercises",
+              hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
+              textStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
+              surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
+              backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
+              shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              )),
+              constraints: const BoxConstraints(minHeight: 50),
+            ),
+            const SizedBox(height: 12),
+            Expanded(child: _exercisesToWidgets())
+          ],
+        ),
       ),
     );
   }

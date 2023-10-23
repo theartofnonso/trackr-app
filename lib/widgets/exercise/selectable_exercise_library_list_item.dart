@@ -28,7 +28,7 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        splashColor: Colors.transparent, // Set splashColor to transparent
+        splashColor: Colors.transparent,
       ),
       child: CheckboxListTile(
         value: _isSelected,
