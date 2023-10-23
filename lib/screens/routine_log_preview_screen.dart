@@ -110,7 +110,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                         children: [
                           Expanded(
                             child: Center(
-                              child: Text(_logDuration(logDto: logDto),
+                              child: Text(completedSetsSummary,
                                   style: const TextStyle(
                                       color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                             ),
@@ -138,7 +138,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                           ),
                           Expanded(
                             child: Center(
-                              child: Text(completedSetsSummary,
+                              child: Text(_logDuration(logDto: logDto),
                                   style: const TextStyle(
                                       color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                             ),
