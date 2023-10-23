@@ -1,15 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 
 import '../app_constants.dart';
 import '../models/BodyPart.dart';
 import '../models/Exercise.dart';
-import '../widgets/exercise/exercise_library_list_section.dart';
+import '../widgets/exercise/exercise_library_list_item.dart';
+import '../widgets/exercise/selectable_exercise_library_list_item.dart';
 
 class ExerciseInLibraryDto {
-
   bool? isSelected;
   final Exercise exercise;
 
@@ -20,8 +21,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
   final List<Exercise> preSelectedExercises;
   final bool multiSelect;
 
-  const ExerciseLibraryScreen(
-      {super.key, required this.preSelectedExercises, this.multiSelect = true});
+  const ExerciseLibraryScreen({super.key, required this.preSelectedExercises, this.multiSelect = true});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -40,63 +40,63 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void _whereExercises({required String searchTerm}) {
     setState(() {
       _filteredExercises = _exercisesInLibrary
-          .where((exerciseItem) => exerciseItem.exercise.name
-              .toLowerCase()
-              .contains(searchTerm.toLowerCase()))
+          .where((exerciseItem) => exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()))
           .toList();
-    });
-  }
-
-  /// Select an exercise
-  void _selectExercise({required ExerciseInLibraryDto exerciseInLibrary}) {
-    if (widget.multiSelect) {
-      setState(() {
-        _selectedExercises.add(exerciseInLibrary);
-      });
-    } else {
-      Navigator.of(context).pop([exerciseInLibrary.exercise]);
-    }
-  }
-
-  /// Remove an exercise
-  void _removeExercise({required ExerciseInLibraryDto exerciseInLibrary}) {
-    setState(() {
-      _selectedExercises.remove(exerciseInLibrary);
     });
   }
 
   /// Navigate to previous screen
   void _addSelectedExercises() {
-    final exercises = _selectedExercises
-        .map((exerciseInLibrary) => exerciseInLibrary.exercise)
-        .toList();
+    final exercises = _selectedExercises.map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
     Navigator.of(context).pop(exercises);
+  }
+
+  /// Select up to many exercise
+  void _selectCheckedExercise({required bool isSelected, required ExerciseInLibraryDto selectedExercise}) {
+    if (isSelected) {
+      selectedExercise.isSelected = true;
+      setState(() {
+        _selectedExercises.add(selectedExercise);
+      });
+    } else {
+      selectedExercise.isSelected = false;
+      setState(() {
+        _selectedExercises.remove(selectedExercise);
+      });
+    }
+  }
+
+  /// Select an exercise
+  void _selectExercise({required ExerciseInLibraryDto selectedExercise}) {
+    setState(() {
+      _selectedExercises.add(selectedExercise);
+    });
+  }
+
+  /// Convert [ExerciseInLibraryDto] to [SelectableExrLibraryListItem]
+  Widget _exercisesToWidgets() {
+    if (widget.multiSelect) {
+      return ListView.separated(
+          itemBuilder: (BuildContext context, int index) =>
+              SelectableExrLibraryListItem(
+                  exercise: _filteredExercises[index],
+                  onTap: (isSelected) => _selectCheckedExercise(isSelected: isSelected, selectedExercise: _filteredExercises[index])),
+          separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.3)),
+          itemCount: _filteredExercises.length);
+    }
+    return ListView.separated(
+        itemBuilder: (BuildContext context, int index) =>
+            ExrLibraryListItem(
+                exercise: _filteredExercises[index],
+                onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+        itemCount: _filteredExercises.length);
   }
 
   @override
   Widget build(BuildContext context) {
-    final chestExercises = _filteredExercises
-        .where(
-            (exerciseItem) => exerciseItem.exercise.bodyPart == BodyPart.CHEST)
-        .toList();
-
-    final shouldersExercises = _filteredExercises
-        .where((exerciseItem) =>
-            exerciseItem.exercise.bodyPart == BodyPart.SHOULDERS)
-        .toList();
-
-    final tricepsExercises = _filteredExercises
-        .where((exerciseItem) =>
-            exerciseItem.exercise.bodyPart == BodyPart.TRICEPS)
-        .toList();
-
-    final legsExercises = _filteredExercises
-        .where(
-            (exerciseItem) => exerciseItem.exercise.bodyPart == BodyPart.LEGS)
-        .toList();
-
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+    return Scaffold(
+      appBar: CupertinoNavigationBar(
         backgroundColor: tealBlueDark,
         trailing: GestureDetector(
             onTap: _addSelectedExercises,
@@ -107,47 +107,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   )
                 : const SizedBox.shrink()),
       ),
-      child: ListView(
-        children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: CupertinoSearchTextField(
-                  onChanged: (searchTerm) =>
-                      _whereExercises(searchTerm: searchTerm))),
-          ExerciseLibraryListSection(
-            exercises: chestExercises,
-            bodyPart: BodyPart.CHEST,
-            onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
-            onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
-            multiSelect: widget.multiSelect,
-          ),
-          ExerciseLibraryListSection(
-              exercises: shouldersExercises,
-              bodyPart: BodyPart.SHOULDERS,
-              onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                  _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
-              onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                  _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
-              multiSelect: widget.multiSelect),
-          ExerciseLibraryListSection(
-              exercises: tricepsExercises,
-              bodyPart: BodyPart.TRICEPS,
-              onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                  _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
-              onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                  _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
-              multiSelect: widget.multiSelect),
-          ExerciseLibraryListSection(
-              exercises: legsExercises,
-              bodyPart: BodyPart.LEGS,
-              onSelect: (ExerciseInLibraryDto exerciseItemToBeAdded) =>
-                  _selectExercise(exerciseInLibrary: exerciseItemToBeAdded),
-              onRemove: (ExerciseInLibraryDto exerciseItemToBeRemoved) =>
-                  _removeExercise(exerciseInLibrary: exerciseItemToBeRemoved),
-              multiSelect: widget.multiSelect),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+        child: Column(children: [
+          SearchBar(onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm)),
+          const SizedBox(height: 12),
+          Expanded(child: _exercisesToWidgets())
+        ],),
       ),
     );
   }
@@ -155,11 +121,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   void initState() {
     super.initState();
-    final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise));
+    final exercises = Provider.of<ExerciseProvider>(context, listen: false)
+        .exercises
+        .map((exercise) => ExerciseInLibraryDto(exercise: exercise));
+
     _exercisesInLibrary.addAll(exercises);
+
     _filteredExercises = _exercisesInLibrary
-        .whereNot((exerciseInLibrary) =>
-            widget.preSelectedExercises.contains(exerciseInLibrary.exercise))
+        .whereNot((exerciseInLibrary) => widget.preSelectedExercises.contains(exerciseInLibrary.exercise))
         .toList();
   }
 }

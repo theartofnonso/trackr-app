@@ -1,23 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
 import '../../screens/exercise_library_screen.dart';
 
 class SelectableExrLibraryListItem extends StatefulWidget {
   final ExerciseInLibraryDto exercise;
   final void Function(bool isSelected) onTap;
 
-  const SelectableExrLibraryListItem(
-      {super.key, required this.exercise, required this.onTap});
+  const SelectableExrLibraryListItem({super.key, required this.exercise, required this.onTap});
 
   @override
-  State<SelectableExrLibraryListItem> createState() =>
-      _SelectableExrLibraryListItemState();
+  State<SelectableExrLibraryListItem> createState() => _SelectableExrLibraryListItemState();
 }
 
-class _SelectableExrLibraryListItemState
-    extends State<SelectableExrLibraryListItem> {
+class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListItem> {
   bool _isSelected = false;
 
   /// Select an exercise
@@ -31,15 +26,15 @@ class _SelectableExrLibraryListItemState
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _selectExercise,
-      child: CupertinoListTile.notched(
-          backgroundColor: tealBlueLight,
-          leading: CupertinoCheckbox(
-            value: _isSelected,
-            onChanged: (bool? _) => _selectExercise(),
-          ),
-          title: Text(widget.exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium)),
+    return CheckboxListTile(
+      value: _isSelected,
+      onChanged: (bool? _) => _selectExercise(),
+      activeColor: Colors.white,
+      checkColor: Colors.black,
+      hoverColor: Colors.transparent,
+      contentPadding: EdgeInsets.zero,
+      dense: true,
+      title: Text(widget.exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
     );
   }
 
