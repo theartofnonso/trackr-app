@@ -3,11 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/routine_log_dto.dart';
+import '../dtos/set_dto.dart';
 import '../providers/routine_log_provider.dart';
 
 class RoutineLogPreviewScreen extends StatelessWidget {
@@ -42,11 +44,10 @@ class RoutineLogPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToRoutineEditor(
-      {required BuildContext context,
-      required RoutineLogDto logDto}) async {
+  void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto}) async {
     Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
+        builder: (context) =>
+            RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
@@ -66,48 +67,157 @@ class RoutineLogPreviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final logDto = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: routineLogId);
 
-    return logDto != null ? Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
-          backgroundColor: tealBlueLighter,
-          child: const Icon(Icons.edit),
-        ),
-        backgroundColor: tealBlueDark,
-        appBar: CupertinoNavigationBar(
-          backgroundColor: tealBlueDark,
-          trailing: GestureDetector(
-              onTap: () => _showWorkoutPreviewActionSheet(context: context, logDto: logDto),
-              child: const Icon(
-                CupertinoIcons.ellipsis_vertical,
-                color: CupertinoColors.white,
-                size: 24,
-              )),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(logDto.name,
-                    style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
-                const SizedBox(height: 8),
-                Text(logDto.notes,
-                    style: TextStyle(
-                      color: CupertinoColors.white.withOpacity(0.8),
-                      fontSize: 14,
-                    )),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) =>
-                          _procedureToWidget(procedure: logDto.procedures[index], otherProcedures: logDto.procedures),
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                      itemCount: logDto.procedures.length),
-                ),
-              ],
-            ),
+    if (logDto != null) {
+      final completedSets = _calculateCompletedSets(procedures: logDto.procedures);
+      final completedSetsSummary =
+          completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
+
+      final totalWeight = _totalWeight(sets: completedSets);
+      final totalWeightSummary = "$totalWeight kg";
+
+      return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
+            backgroundColor: tealBlueLighter,
+            child: const Icon(Icons.edit),
           ),
-        )) : const SizedBox.shrink();
+          backgroundColor: tealBlueDark,
+          appBar: CupertinoNavigationBar(
+            backgroundColor: tealBlueDark,
+            trailing: GestureDetector(
+                onTap: () => _showWorkoutPreviewActionSheet(context: context, logDto: logDto),
+                child: const Icon(
+                  CupertinoIcons.ellipsis_vertical,
+                  color: CupertinoColors.white,
+                  size: 24,
+                )),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(logDto.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
+                  const SizedBox(height: 8),
+                  Text(logDto.notes,
+                      style: TextStyle(
+                        color: CupertinoColors.white.withOpacity(0.8),
+                        fontSize: 14,
+                      )),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Icon(
+                        CupertinoIcons.calendar,
+                        color: CupertinoColors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(logDto.createdAt.formattedDayAndMonthAndYear(),
+                          style: TextStyle(
+                              color: CupertinoColors.white.withOpacity(0.95),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12)),
+                      const SizedBox(width: 10),
+                      const Icon(
+                        CupertinoIcons.time,
+                        color: CupertinoColors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(logDto.createdAt.formattedTime(),
+                          style: TextStyle(
+                              color: CupertinoColors.white.withOpacity(0.95),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12)),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: SizedBox(
+                      height: 30,
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: Text(_logDuration(logDto: logDto),
+                                  style: const TextStyle(
+                                      color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                            ),
+                          ),
+                          const VerticalDivider(
+                            color: tealBlueLighter,
+                            thickness: 2,
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(totalWeightSummary,
+                                  style: const TextStyle(
+                                      color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                            ),
+                          ),
+                          const VerticalDivider(
+                            color: tealBlueLighter,
+                            thickness: 2,
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(completedSetsSummary,
+                                  style: const TextStyle(
+                                      color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, int index) =>
+                            _procedureToWidget(procedure: logDto.procedures[index], otherProcedures: logDto.procedures),
+                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                        itemCount: logDto.procedures.length),
+                  ),
+                ],
+              ),
+            ),
+          ));
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  String _logDuration({required RoutineLogDto logDto}) {
+    String interval = "";
+    final startTime = logDto.startTime;
+    final endTime = logDto.endTime;
+    if (startTime != null && endTime != null) {
+      final difference = endTime.difference(startTime);
+      interval = difference.secondsOrMinutesOrHours();
+    }
+    return interval;
+  }
+
+  List<SetDto> _calculateCompletedSets({required List<ProcedureDto> procedures}) {
+    List<SetDto> completedSets = [];
+    for (var procedure in procedures) {
+      final sets = procedure.sets.where((set) => set.checked).toList();
+      completedSets.addAll(sets);
+    }
+    return completedSets;
+  }
+
+  int _totalWeight({required List<SetDto> sets}) {
+    int totalWeight = 0;
+    for (var set in sets) {
+      final weightPerSet = set.rep * set.weight;
+      totalWeight += weightPerSet;
+    }
+    return totalWeight;
   }
 }
