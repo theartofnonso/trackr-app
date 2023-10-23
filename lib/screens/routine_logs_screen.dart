@@ -9,7 +9,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import '../app_constants.dart';
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
-import '../widgets/routine/minimised_routine_controller_widget.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
 
 void _navigateToRoutineEditor(
     {required BuildContext context, RoutineLogDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
@@ -35,30 +35,26 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                 onPressed: () => _navigateToRoutineEditor(context: context, mode: RoutineEditorMode.routine),
                 backgroundColor: tealBlueLighter,
                 child: const Icon(CupertinoIcons.play_arrow_solid),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               )
             : null,
         body: SafeArea(
-          child: Stack(children: [
-            provider.logs.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView.separated(
-                              itemBuilder: (BuildContext context, int index) =>
-                                  _RoutineLogWidget(logDto: provider.logs[index]),
-                              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
-                              itemCount: provider.logs.length),
-                        )
-                      ],
-                    ),
-                  )
-                : const Center(child: _RoutineLogsEmptyState()),
-            cachedRoutineLog != null
-                ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
-                : const SizedBox.shrink()
-          ]),
+          child: provider.logs.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (BuildContext context, int index) =>
+                                _RoutineLogWidget(logDto: provider.logs[index]),
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+                            itemCount: provider.logs.length),
+                      )
+                    ],
+                  ),
+                )
+              : const Center(child: _RoutineLogsEmptyState()),
         ),
       );
     }));
@@ -68,8 +64,10 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => Provider.of<RoutineLogProvider>(context, listen: false).retrieveCachedRoutineLog(context));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<RoutineLogProvider>(context, listen: false).retrieveCachedRoutineLog(context);
+      showMinimisedRoutineBanner(context);
+    });
   }
 
   @override
@@ -138,9 +136,9 @@ class _RoutineLogWidget extends StatelessWidget {
   }
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
-    final routine = await Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)))
-    as Map<String, String>?;
+    final routine = await Navigator.of(context)
+            .push(CupertinoPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)))
+        as Map<String, String>?;
     if (routine != null) {
       final id = routine["id"] ?? "";
       if (id.isNotEmpty) {

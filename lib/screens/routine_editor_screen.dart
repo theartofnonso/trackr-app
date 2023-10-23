@@ -223,7 +223,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final previousSet = procedure.sets.lastOrNull;
-    final sets = [...procedure.sets, SetDto(rep: previousSet?.rep ?? 0, weight: previousSet?.weight ?? 0) ];
+    final sets = [...procedure.sets, SetDto(rep: previousSet?.rep ?? 0, weight: previousSet?.weight ?? 0)];
 
     _cacheRoutine();
 
@@ -454,7 +454,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               notes: _routineNotesController.text,
               procedures: _procedures,
               updatedAt: DateTime.now());
-          if(widget.type == RoutineEditingType.template) {
+          if (widget.type == RoutineEditingType.template) {
             Provider.of<RoutineProvider>(context, listen: false).updateRoutine(dto: routineDto);
           } else {
             Provider.of<RoutineLogProvider>(context, listen: false).updateLog(dto: routineDto.toRoutineLog());
@@ -531,23 +531,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _cacheRoutine() {
-    if(widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorMode.routine) {
       final routine = widget.routineDto;
       if (routine != null) {
         Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutine(
-            name: routine.name,
-            notes: routine.notes,
-            procedures: _procedures,
-            startTime: _routineStartTime);
+            name: routine.name, notes: routine.notes, procedures: _procedures, startTime: _routineStartTime);
       }
     }
   }
 
-  void _navigateBack({bool minimised = false}) {
-    if(minimised) {
-      Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
-    }
-    Navigator.of(context).pop(minimised);
+  void _navigateBack() {
+    Navigator.of(context).pop();
   }
 
   @override
@@ -567,7 +561,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             : CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
-                  onTap: () => _navigateBack(minimised: true),
+                  onTap: () => _navigateBack(),
                   child: const Icon(
                     Icons.arrow_back_ios_new_rounded,
                     color: CupertinoColors.white,
@@ -590,6 +584,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             ? FloatingActionButton(
                 onPressed: _logRoutine,
                 backgroundColor: tealBlueLighter,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(CupertinoIcons.stop_fill),
               )
             : null,
@@ -605,7 +600,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     children: [
                       CupertinoTextField(
                         controller: _routineNameController,
-                        decoration: const BoxDecoration(color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
+                        decoration: const BoxDecoration(
+                            color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
                         expands: true,
                         padding: const EdgeInsets.all(10),
                         textCapitalization: TextCapitalization.words,
@@ -621,7 +617,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       const SizedBox(height: 8),
                       CupertinoTextField(
                         controller: _routineNotesController,
-                        decoration: const BoxDecoration(color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
+                        decoration: const BoxDecoration(
+                            color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
                         expands: true,
                         padding: const EdgeInsets.all(10),
                         textCapitalization: TextCapitalization.sentences,
@@ -680,7 +677,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (previousRoutine != null) {
       _procedures.addAll([...previousRoutine.procedures]);
 
-      if(widget.mode == RoutineEditorMode.routine) {
+      if (widget.mode == RoutineEditorMode.routine) {
         /// If [RoutineDto] was instantiated from a [RoutineLogDto]
         _routineStartTime = previousRoutine.startTime ?? _routineStartTime;
       }
@@ -691,9 +688,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _routineNotesController = TextEditingController(text: previousRoutine?.notes);
     }
 
-    if(widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorMode.routine) {
       /// Show progress of resumed routine
       WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
+
       /// Cache initial state of running routine
       _cacheRoutine();
     }

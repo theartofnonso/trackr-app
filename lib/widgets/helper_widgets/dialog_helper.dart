@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../app_constants.dart';
+import '../../providers/routine_log_provider.dart';
+import '../../screens/routine_editor_screen.dart';
+import '../../shared_prefs.dart';
 
 void showModalPopup({required BuildContext context, required Widget child}) {
   showCupertinoModalPopup<void>(
@@ -22,4 +27,43 @@ void showModalPopup({required BuildContext context, required Widget child}) {
       ),
     ),
   );
+}
+
+void showMinimisedRoutineBanner(BuildContext context) {
+  final provider = Provider.of<RoutineLogProvider>(context, listen: false);
+  final cachedRoutineLog = provider.cachedLogDto;
+
+  if (cachedRoutineLog != null) {
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        padding: const EdgeInsets.only(left: 12, top: 12),
+        margin: const EdgeInsets.all(12),
+        content: Text('${cachedRoutineLog.name} is running'),
+        leading: const Icon(
+          Icons.info_outline,
+          color: Colors.white,
+        ),
+        backgroundColor: tealBlueLight.withOpacity(0.4),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              provider.cachedLogDto = null;
+              SharedPrefs().cachedRoutineLog = "";
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            },
+            child: const Text('End', style: TextStyle(color: Colors.white)),
+          ),
+          TextButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) => RoutineEditorScreen(
+                      routineDto: cachedRoutineLog, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+            },
+            child: const Text('Continue', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
 }

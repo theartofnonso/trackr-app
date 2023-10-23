@@ -42,6 +42,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
           floatingActionButton: FloatingActionButton(
             onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
             backgroundColor: tealBlueLighter,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.edit),
           ),
           backgroundColor: tealBlueDark,

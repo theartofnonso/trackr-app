@@ -26,12 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: tealBlueLight,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home, size: 22),
-            label: 'Home',
+            icon: Icon(CupertinoIcons.list_dash, size: 22),
+            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.add, size: 22),
-            label: 'Workouts',
+            label: 'Templates',
           ),
         ],
       ), tabBuilder: (BuildContext context, int index) { return screens[index]; },

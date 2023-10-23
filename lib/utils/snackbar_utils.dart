@@ -7,7 +7,7 @@ void showSnackbar(
     required Widget icon,
     required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    backgroundColor: tealBlueLight,
+    backgroundColor: tealBlueLighter,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       content: Row(

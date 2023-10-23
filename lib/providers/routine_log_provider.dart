@@ -41,7 +41,7 @@ class RoutineLogProvider with ChangeNotifier {
     final cache = SharedPrefs().cachedRoutineLog;
     if(cache.isNotEmpty) {
       _cachedLogDto = RoutineLogDto.fromJson(jsonDecode(cache), context);
-      notifyListeners();
+      //notifyListeners();
     }
   }
 

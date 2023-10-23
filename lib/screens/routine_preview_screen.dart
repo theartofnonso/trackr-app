@@ -10,6 +10,7 @@ import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_provider.dart';
 import '../utils/snackbar_utils.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
   final String routineId;
@@ -48,18 +49,11 @@ class RoutinePreviewScreen extends StatelessWidget {
       {required BuildContext context,
       required RoutineDto routineDto,
       RoutineEditorMode mode = RoutineEditorMode.editing}) async {
-    if (mode == RoutineEditorMode.routine) {
-      final isMinimised = await Navigator.of(context).push(CupertinoPageRoute(
-          builder: (context) =>
-              RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
-      if (context.mounted) {
-        if (isMinimised) {
-          Navigator.of(context).pop();
-        }
-      }
-    } else {
-      Navigator.of(context).push(CupertinoPageRoute(
-          builder: (context) => RoutineEditorScreen(routineDto: routineDto, type: RoutineEditingType.template)));
+    await Navigator.of(context).push(CupertinoPageRoute(
+        builder: (context) =>
+            RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
+    if (context.mounted) {
+      showMinimisedRoutineBanner(context);
     }
   }
 
@@ -85,19 +79,19 @@ class RoutinePreviewScreen extends StatelessWidget {
     return routineDto != null
         ? Scaffold(
             floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                if (canStartRoutine) {
-                  _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
-                } else {
-                  showSnackbar(
-                      context: context,
-                      icon: const Icon(Icons.info_outline, color: Colors.white),
-                      message: "You already have a workout running");
-                }
-              },
-              backgroundColor: tealBlueLighter,
-              child: const Icon(CupertinoIcons.play_arrow_solid),
-            ),
+                onPressed: () {
+                  if (canStartRoutine) {
+                    _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+                  } else {
+                    showSnackbar(
+                        context: context,
+                        icon: const Icon(Icons.info_outline, color: Colors.white),
+                        message: "You already have a workout running");
+                  }
+                },
+                backgroundColor: tealBlueLighter,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                child: const Icon(CupertinoIcons.play_arrow_solid)),
             backgroundColor: tealBlueDark,
             appBar: CupertinoNavigationBar(
               backgroundColor: tealBlueDark,

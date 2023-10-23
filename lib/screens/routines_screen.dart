@@ -9,14 +9,17 @@ import 'package:tracker_app/utils/snackbar_utils.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../widgets/routine/minimised_routine_controller_widget.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
 import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
-    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context).push(CupertinoPageRoute(
+    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) async {
+  await Navigator.of(context).push(CupertinoPageRoute(
       builder: (context) =>
           RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
+  if (context.mounted) {
+    showMinimisedRoutineBanner(context);
+  }
 }
 
 class RoutinesScreen extends StatelessWidget {
@@ -30,27 +33,24 @@ class RoutinesScreen extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: () => _navigateToRoutineEditor(context: context),
             backgroundColor: tealBlueLighter,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.add),
           ),
           body: SafeArea(
-              child: Stack(children: [
-            routineProvider.routines.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(children: [
-                      Expanded(
-                        child: ListView.separated(
-                            itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                routineDto: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
-                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                            itemCount: routineProvider.routines.length),
-                      )
-                    ]))
-                : const Center(child: _RoutinesEmptyState()),
-            cachedRoutineLog != null
-                ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
-                : const SizedBox.shrink()
-          ])));
+              child: routineProvider.routines.isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(children: [
+                        Expanded(
+                          child: ListView.separated(
+                              itemBuilder: (BuildContext context, int index) => _RoutineWidget(
+                                  routineDto: routineProvider.routines[index],
+                                  canStartRoutine: cachedRoutineLog == null),
+                              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                              itemCount: routineProvider.routines.length),
+                        )
+                      ]))
+                  : const Center(child: _RoutinesEmptyState())));
     });
   }
 }
