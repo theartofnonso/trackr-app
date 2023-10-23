@@ -100,7 +100,7 @@ class _RoutineWidget extends StatelessWidget {
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
     Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)));
+        .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id, canStartRoutine: canStartRoutine)));
   }
 
   @override

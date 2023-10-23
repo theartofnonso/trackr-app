@@ -9,11 +9,13 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_provider.dart';
+import '../utils/snackbar_utils.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
   final String routineId;
+  final bool canStartRoutine;
 
-  const RoutinePreviewScreen({super.key, required this.routineId});
+  const RoutinePreviewScreen({super.key, required this.routineId, required this.canStartRoutine});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineDto routineDto}) {
@@ -82,8 +84,13 @@ class RoutinePreviewScreen extends StatelessWidget {
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () =>
-              _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine),
+          onPressed: () {
+            if(canStartRoutine) {
+              _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+            } else {
+              showSnackbar(context: context, icon: const Icon(Icons.info_outline, color: Colors.white), message: "You already have a workout running");
+            }
+          },
           backgroundColor: tealBlueLighter,
           child: const Icon(CupertinoIcons.play_arrow_solid),
         ),
