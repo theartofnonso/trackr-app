@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 
 import '../app_constants.dart';
-import '../models/BodyPart.dart';
 import '../models/Exercise.dart';
 import '../widgets/exercise/exercise_library_list_item.dart';
 import '../widgets/exercise/selectable_exercise_library_list_item.dart';
@@ -81,7 +80,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               SelectableExrLibraryListItem(
                   exercise: _filteredExercises[index],
                   onTap: (isSelected) => _selectCheckedExercise(isSelected: isSelected, selectedExercise: _filteredExercises[index])),
-          separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.3)),
+          separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
           itemCount: _filteredExercises.length);
     }
     return ListView.separated(
@@ -110,7 +109,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(children: [
-          SearchBar(onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm)),
+          CupertinoSearchTextField(onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm)),
           const SizedBox(height: 12),
           Expanded(child: _exercisesToWidgets())
         ],),

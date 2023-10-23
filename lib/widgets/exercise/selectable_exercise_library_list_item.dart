@@ -26,15 +26,20 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      value: _isSelected,
-      onChanged: (bool? _) => _selectExercise(),
-      activeColor: Colors.white,
-      checkColor: Colors.black,
-      hoverColor: Colors.transparent,
-      contentPadding: EdgeInsets.zero,
-      dense: true,
-      title: Text(widget.exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+    return Theme(
+      data: ThemeData(
+        splashColor: Colors.transparent, // Set splashColor to transparent
+      ),
+      child: CheckboxListTile(
+        value: _isSelected,
+        onChanged: (bool? _) => _selectExercise(),
+        activeColor: Colors.white,
+        checkColor: Colors.black,
+        hoverColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        dense: true,
+        title: Text(widget.exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+      ),
     );
   }
 
