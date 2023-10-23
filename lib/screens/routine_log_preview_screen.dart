@@ -223,7 +223,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return totalWeight;
   }
 
-  Map<String, double> _calculateFrequencyPercentage(List<BodyPart> itemList) {
+  Map<String, double> _calculateBodySplitPercentage(List<BodyPart> itemList) {
     final Map<BodyPart, int> frequencyMap = {};
 
     // Count the occurrences of each item
@@ -245,14 +245,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   List<Widget> _bodyPartSplit({required List<ProcedureDto> procedures}) {
     final parts = procedures.map((procedure) => procedure.exercise.bodyPart).toList();
-    final splitMap = _calculateFrequencyPercentage(parts);
+    final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {
       final widget = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("${key.substring(0,1)}${key.substring(1).toLowerCase()}", style: const TextStyle(fontWeight: FontWeight.w400),),
-          const SizedBox(height: 2),
+          Text("${key.substring(0,1)}${key.substring(1).toLowerCase()} ${(value * 100).toInt()}%", style: const TextStyle(fontWeight: FontWeight.w400),),
+          const SizedBox(height: 4),
           AnimatedBuilder(
               animation: _controller,
               builder: (_, __) {
