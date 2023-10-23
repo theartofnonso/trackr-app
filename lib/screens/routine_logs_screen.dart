@@ -30,15 +30,30 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
       final cachedRoutineLog = provider.cachedLogDto;
       return Scaffold(
-        floatingActionButton: cachedRoutineLog == null ? FloatingActionButton(
-          onPressed: () => _navigateToRoutineEditor(context: context, mode: RoutineEditorMode.routine),
-          backgroundColor: tealBlueLighter,
-          child: const Icon(CupertinoIcons.play_arrow_solid),
-        ) : null,
+        floatingActionButton: cachedRoutineLog == null
+            ? FloatingActionButton(
+                onPressed: () => _navigateToRoutineEditor(context: context, mode: RoutineEditorMode.routine),
+                backgroundColor: tealBlueLighter,
+                child: const Icon(CupertinoIcons.play_arrow_solid),
+              )
+            : null,
         body: SafeArea(
           child: Stack(children: [
             provider.logs.isNotEmpty
-                ? _RoutineLogsList(logDtos: provider.logs)
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView.separated(
+                              itemBuilder: (BuildContext context, int index) =>
+                                  _RoutineLogWidget(logDto: provider.logs[index]),
+                              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+                              itemCount: provider.logs.length),
+                        )
+                      ],
+                    ),
+                  )
                 : const Center(child: _RoutineLogsEmptyState()),
             cachedRoutineLog != null
                 ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
@@ -69,29 +84,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       WidgetsBinding.instance.addPostFrameCallback(
           (_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context));
     }
-  }
-}
-
-class _RoutineLogsList extends StatelessWidget {
-  final List<RoutineLogDto> logDtos;
-
-  const _RoutineLogsList({required this.logDtos});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(logDto: logDtos[index]),
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
-                itemCount: logDtos.length),
-          )
-        ],
-      ),
-    );
   }
 }
 

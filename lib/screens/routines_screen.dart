@@ -54,27 +54,6 @@ class RoutinesScreen extends StatelessWidget {
   }
 }
 
-class _RoutineList extends StatelessWidget {
-  final List<RoutineDto> routinesDtos;
-  final bool canStartRoutine;
-
-  const _RoutineList({required this.routinesDtos, required this.canStartRoutine});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(children: [
-          Expanded(
-            child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => _RoutineWidget(routineDto: routinesDtos[index], canStartRoutine: canStartRoutine),
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                itemCount: routinesDtos.length),
-          )
-        ]));
-  }
-}
-
 class _RoutineWidget extends StatelessWidget {
   final RoutineDto routineDto;
   final bool canStartRoutine;
