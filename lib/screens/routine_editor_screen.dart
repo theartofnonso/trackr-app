@@ -222,7 +222,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _addSet({required String procedureId}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets, SetDto()];
+    final previousSet = procedure.sets.lastOrNull;
+    final sets = [...procedure.sets, SetDto(rep: previousSet?.rep ?? 0, weight: previousSet?.weight ?? 0) ];
 
     _cacheRoutine();
 
