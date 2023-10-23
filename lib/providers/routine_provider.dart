@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/models/Routine.dart';
 import '../dtos/procedure_dto.dart';
@@ -48,7 +49,7 @@ class RoutineProvider with ChangeNotifier {
     return _routineDtos.indexWhere((routine) => routine.id == id);
   }
 
-  RoutineDto whereRoutineDto({required String id}) {
-    return _routineDtos.firstWhere((dto) => dto.id == id);
+  RoutineDto? whereRoutineDto({required String id}) {
+    return _routineDtos.firstWhereOrNull((dto) => dto.id == id);
   }
 }

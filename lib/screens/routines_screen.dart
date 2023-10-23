@@ -36,15 +36,16 @@ class RoutinesScreen extends StatelessWidget {
               child: Stack(children: [
             routineProvider.routines.isNotEmpty
                 ? Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(children: [
-                  Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (BuildContext context, int index) => _RoutineWidget(routineDto: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
-                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                        itemCount: routineProvider.routines.length),
-                  )
-                ]))
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(children: [
+                      Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (BuildContext context, int index) => _RoutineWidget(
+                                routineDto: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                            itemCount: routineProvider.routines.length),
+                      )
+                    ]))
                 : const Center(child: _RoutinesEmptyState()),
             cachedRoutineLog != null
                 ? Positioned(bottom: 0, left: 0, child: MinimisedRoutineControllerWidget(logDto: cachedRoutineLog))
@@ -99,8 +100,17 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
-    Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id, canStartRoutine: canStartRoutine)));
+    final routine = await Navigator.of(context).push(CupertinoPageRoute(
+            builder: (context) => RoutinePreviewScreen(routineId: routineDto.id, canStartRoutine: canStartRoutine)))
+        as Map<String, String>?;
+    if (routine != null) {
+      final id = routine["id"] ?? "";
+      if (id.isNotEmpty) {
+        if (context.mounted) {
+          Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: id);
+        }
+      }
+    }
   }
 
   @override
@@ -112,10 +122,13 @@ class _RoutineWidget extends StatelessWidget {
             backgroundColorActivated: tealBlueLight,
             leading: GestureDetector(
                 onTap: () {
-                  if(canStartRoutine) {
+                  if (canStartRoutine) {
                     _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
                   } else {
-                    showSnackbar(context: context, icon: const Icon(Icons.info_outline, color: Colors.white), message: "You already have a workout running");
+                    showSnackbar(
+                        context: context,
+                        icon: const Icon(Icons.info_outline, color: Colors.white),
+                        message: "You already have a workout running");
                   }
                 },
                 child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
@@ -161,6 +174,7 @@ class _RoutineWidget extends StatelessWidget {
               child: CupertinoListTile(
                   onTap: () => _navigateToRoutinePreview(context: context),
                   backgroundColor: tealBlueLight,
+                  backgroundColorActivated: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),

@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -110,7 +111,7 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.indexWhere((log) => log.id == id);
   }
 
-  RoutineLogDto whereRoutineLog({required String id}) {
-    return _logs.firstWhere((log) => log.id == id);
+  RoutineLogDto? whereRoutineLog({required String id}) {
+    return _logs.firstWhereOrNull((log) => log.id == id);
   }
 }

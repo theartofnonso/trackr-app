@@ -138,8 +138,17 @@ class _RoutineLogWidget extends StatelessWidget {
   }
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
-    Navigator.of(context)
-        .push(CupertinoPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)));
+    final routine = await Navigator.of(context).push(CupertinoPageRoute(
+        builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)))
+    as Map<String, String>?;
+    if (routine != null) {
+      final id = routine["id"] ?? "";
+      if (id.isNotEmpty) {
+        if (context.mounted) {
+          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
+        }
+      }
+    }
   }
 
   String _footerLabel() {
@@ -166,6 +175,7 @@ class _RoutineLogWidget extends StatelessWidget {
               child: CupertinoListTile(
                   onTap: () => _navigateToRoutineLogPreview(context: context),
                   backgroundColor: tealBlueLight,
+                  backgroundColorActivated: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),

@@ -32,8 +32,8 @@ class RoutineLogPreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
-              Navigator.pop(context);
-              _removeLog(context: context, logDto: logDto);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop({"id": routineLogId});
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -47,10 +47,6 @@ class RoutineLogPreviewScreen extends StatelessWidget {
       required RoutineLogDto logDto}) async {
     Navigator.of(context).push(CupertinoPageRoute(
         builder: (context) => RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
-  }
-
-  void _removeLog({required BuildContext context, required RoutineLogDto logDto}) {
-    Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: logDto.id);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
@@ -70,7 +66,7 @@ class RoutineLogPreviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final logDto = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: routineLogId);
 
-    return Scaffold(
+    return logDto != null ? Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
           backgroundColor: tealBlueLighter,
@@ -112,6 +108,6 @@ class RoutineLogPreviewScreen extends StatelessWidget {
               ],
             ),
           ),
-        ));
+        )) : const SizedBox.shrink();
   }
 }

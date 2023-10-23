@@ -34,8 +34,8 @@ class RoutinePreviewScreen extends StatelessWidget {
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
-              Navigator.pop(context);
-              _removeRoutine(context: context, routineDto: routineDto);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop({"id": routineId});
             },
             child: const Text('Delete', style: TextStyle(fontSize: 16)),
           ),
@@ -49,20 +49,18 @@ class RoutinePreviewScreen extends StatelessWidget {
       required RoutineDto routineDto,
       RoutineEditorMode mode = RoutineEditorMode.editing}) async {
     if (mode == RoutineEditorMode.routine) {
-      final isMinimised = await Navigator.of(context)
-          .push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
+      final isMinimised = await Navigator.of(context).push(CupertinoPageRoute(
+          builder: (context) =>
+              RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
       if (context.mounted) {
         if (isMinimised) {
           Navigator.of(context).pop();
         }
       }
     } else {
-      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: routineDto, type: RoutineEditingType.template)));
+      Navigator.of(context).push(CupertinoPageRoute(
+          builder: (context) => RoutineEditorScreen(routineDto: routineDto, type: RoutineEditingType.template)));
     }
-  }
-
-  void _removeRoutine({required BuildContext context, required RoutineDto routineDto}) {
-    Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
@@ -75,62 +73,68 @@ class RoutinePreviewScreen extends StatelessWidget {
 
   ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
     return procedures.firstWhereOrNull((procedure) =>
-    procedure.superSetId.isNotEmpty && procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
+        procedure.superSetId.isNotEmpty &&
+        procedure.superSetId == firstProcedure.superSetId &&
+        procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   @override
   Widget build(BuildContext context) {
     final routineDto = Provider.of<RoutineProvider>(context, listen: true).whereRoutineDto(id: routineId);
 
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if(canStartRoutine) {
-              _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
-            } else {
-              showSnackbar(context: context, icon: const Icon(Icons.info_outline, color: Colors.white), message: "You already have a workout running");
-            }
-          },
-          backgroundColor: tealBlueLighter,
-          child: const Icon(CupertinoIcons.play_arrow_solid),
-        ),
-        backgroundColor: tealBlueDark,
-        appBar: CupertinoNavigationBar(
-          backgroundColor: tealBlueDark,
-          trailing: GestureDetector(
-              onTap: () => _showWorkoutPreviewActionSheet(context: context, routineDto: routineDto),
-              child: const Icon(
-                CupertinoIcons.ellipsis_vertical,
-                color: CupertinoColors.white,
-                size: 24,
-              )),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(routineDto.name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
-                const SizedBox(height: 8),
-                Text(routineDto.notes,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    )),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) => _procedureToWidget(
-                          procedure: routineDto.procedures[index], otherProcedures: routineDto.procedures),
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                      itemCount: routineDto.procedures.length),
-                ),
-              ],
+    return routineDto != null
+        ? Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                if (canStartRoutine) {
+                  _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+                } else {
+                  showSnackbar(
+                      context: context,
+                      icon: const Icon(Icons.info_outline, color: Colors.white),
+                      message: "You already have a workout running");
+                }
+              },
+              backgroundColor: tealBlueLighter,
+              child: const Icon(CupertinoIcons.play_arrow_solid),
             ),
-          ),
-        ));
+            backgroundColor: tealBlueDark,
+            appBar: CupertinoNavigationBar(
+              backgroundColor: tealBlueDark,
+              trailing: GestureDetector(
+                  onTap: () => _showWorkoutPreviewActionSheet(context: context, routineDto: routineDto),
+                  child: const Icon(
+                    CupertinoIcons.ellipsis_vertical,
+                    color: CupertinoColors.white,
+                    size: 24,
+                  )),
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(routineDto.name,
+                        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
+                    const SizedBox(height: 8),
+                    Text(routineDto.notes,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        )),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) => _procedureToWidget(
+                              procedure: routineDto.procedures[index], otherProcedures: routineDto.procedures),
+                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                          itemCount: routineDto.procedures.length),
+                    ),
+                  ],
+                ),
+              ),
+            ))
+        : const SizedBox.shrink();
   }
 }

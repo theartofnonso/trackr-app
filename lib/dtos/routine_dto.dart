@@ -26,7 +26,7 @@ extension RoutineDtoExtension on RoutineDto {
         name: name,
         notes: notes,
         procedures: procedureJsons,
-        updatedAt: TemporalDateTime.fromString("${updatedAt.toIso8601String()}Z"),
+        updatedAt: TemporalDateTime.fromString("${updatedAt.toLocal().toIso8601String()}Z"),
         createdAt: TemporalDateTime.fromString("${createdAt.toLocal().toIso8601String()}Z"));
   }
 
