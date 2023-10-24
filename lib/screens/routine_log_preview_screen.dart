@@ -252,7 +252,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       final widget = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("${key.substring(0,1)}${key.substring(1).toLowerCase()} ${(value * 100).toInt()}%", style: const TextStyle(fontWeight: FontWeight.w400),),
+          Text("$key ${(value * 100).toInt()}%", style: const TextStyle(fontWeight: FontWeight.w400),),
           const SizedBox(height: 4),
           AnimatedBuilder(
               animation: _controller,

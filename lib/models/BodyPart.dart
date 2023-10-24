@@ -21,7 +21,7 @@
 
 enum BodyPart {
   Chest,
-  Shoulders,
+  Shoulder,
   Back,
   Biceps,
   Triceps,
