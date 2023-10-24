@@ -24,7 +24,15 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void notifyAllListeners() {
-    if(_cachedLogDto != null) {
+    if (_cachedLogDto != null) {
+      notifyListeners();
+    }
+  }
+
+  void clearCachedLog() {
+    if (_cachedLogDto != null) {
+      _cachedLogDto = null;
+      SharedPrefs().cachedRoutineLog = "";
       notifyListeners();
     }
   }
@@ -40,7 +48,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   void retrieveCachedRoutineLog(BuildContext context) {
     final cache = SharedPrefs().cachedRoutineLog;
-    if(cache.isNotEmpty) {
+    if (cache.isNotEmpty) {
       _cachedLogDto = RoutineLogDto.fromJson(jsonDecode(cache), context);
     }
   }
@@ -65,10 +73,7 @@ class RoutineLogProvider with ChangeNotifier {
     if (context.mounted) {
       _logs.insert(0, logToSave.toRoutineLogDto(context));
     }
-    if (_cachedLogDto != null) {
-      _cachedLogDto = null;
-      SharedPrefs().cachedRoutineLog = "";
-    }
+    clearCachedLog();
     notifyListeners();
   }
 
@@ -87,7 +92,7 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
     final cachedLogDto = _cachedLogDto;
-    if(cachedLogDto != null) {
+    if (cachedLogDto != null) {
       SharedPrefs().cachedRoutineLog = cachedLogDto.toJson();
     }
   }

@@ -424,7 +424,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           notes: _routineNotesController.text,
           procedures: _procedures,
           context: context);
-      _navigateBack();
+      _navigateAndPop();
     }
   }
 
@@ -461,7 +461,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           }
         }
 
-        _navigateBack();
+        _navigateAndPop();
       }
     }
   }
@@ -510,20 +510,28 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         final completedProcedures = _totalCompletedProceduresAndSets();
         Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(
             context: context,
-            name: routine.name,
+            name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
             notes: routine.notes,
             procedures: completedProcedures,
             startTime: _routineStartTime);
-        _navigateBack();
+        _navigateAndPop();
       }
     } else {
       final actions = <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          isDestructiveAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+            _navigateAndPop();
+          },
+          child: const Text('End'),
+        ),
         CupertinoDialogAction(
           isDefaultAction: true,
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
+          child: const Text('Continue', style: TextStyle(color: CupertinoColors.activeBlue)),
         )
       ];
       _showAlertDialog(title: "End Workout", message: "You have not completed any sets", actions: actions);
@@ -540,7 +548,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _navigateBack() {
+  void _navigateAndPop() {
+    Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
+    Navigator.of(context).pop();
+  }
+
+  void _minimiseRunningRoutine() {
     Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
     Navigator.of(context).pop();
   }
@@ -562,7 +575,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             : CupertinoNavigationBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
-                  onTap: () => _navigateBack(),
+                  onTap: () => _minimiseRunningRoutine(),
                   child: const Icon(
                     Icons.arrow_back_ios_new_rounded,
                     color: CupertinoColors.white,
@@ -644,24 +657,32 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     timer: _TimerWidget(DateTime.now().difference(_routineStartTime)),
                   ),
                 const SizedBox(height: 12),
-                Expanded(
-                  child: ListView.separated(
-                      controller: _scrollController,
-                      itemBuilder: (BuildContext context, int index) {
-                        // Build the item widget based on the data at the specified index.
-                        final procedure = _procedures[index];
-                        return _procedureToWidget(procedure: procedure);
-                      },
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                      itemCount: _procedures.length),
-                ),
+                _procedures.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            controller: _scrollController,
+                            itemBuilder: (BuildContext context, int index) {
+                              // Build the item widget based on the data at the specified index.
+                              final procedure = _procedures[index];
+                              return _procedureToWidget(procedure: procedure);
+                            },
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                            itemCount: _procedures.length),
+                      )
+                    : const Expanded(
+                        child: Center(
+                        child: Text(
+                          "You have no exercises and sets",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      )),
                 const SizedBox(height: 18),
                 SizedBox(
                   width: double.infinity,
                   child: CupertinoButton(
                       color: tealBlueLight,
                       onPressed: _selectExercisesInLibrary,
-                      child: Text("Add exercise",
+                      child: Text("Add exercises",
                           textAlign: TextAlign.start, style: Theme.of(context).textTheme.labelLarge)),
                 ),
               ],
@@ -690,7 +711,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
 
     if (widget.mode == RoutineEditorMode.routine) {
-
       /// Show progress of resumed routine
       WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
 

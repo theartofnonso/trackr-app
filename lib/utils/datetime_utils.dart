@@ -159,6 +159,17 @@ extension DateTimeExtension on DateTime {
 
     return display;
   }
+
+  String timeOfDay() {
+    var hour = this.hour;
+    if (hour < 12) {
+      return 'Morning';
+    }
+    if (hour < 17) {
+      return 'Afternoon';
+    }
+    return 'Evening';
+  }
 }
 
 extension DateTimeRangeExtension on DateTimeRange {
