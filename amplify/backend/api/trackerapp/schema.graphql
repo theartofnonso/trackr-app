@@ -29,7 +29,7 @@ type Exercise
   id: ID!
   name: String!
   primary: [String!]!
-  secondary: [String!]!
+  secondary: [String]!
   bodyPart: BodyPart!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!

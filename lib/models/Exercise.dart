@@ -190,7 +190,7 @@ class Exercise extends amplify_core.Model {
   Exercise copyWithModelFieldValues({
     ModelFieldValue<String>? name,
     ModelFieldValue<List<String>>? primary,
-    ModelFieldValue<List<String>>? secondary,
+    ModelFieldValue<List<String>?>? secondary,
     ModelFieldValue<BodyPart>? bodyPart,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt

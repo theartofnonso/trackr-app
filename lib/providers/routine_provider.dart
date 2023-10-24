@@ -13,9 +13,11 @@ class RoutineProvider with ChangeNotifier {
 
   void listRoutines(BuildContext context) async {
     final routines = await Amplify.DataStore.query(Routine.classType);
-    final routineDtos = routines.map((routine) => routine.toRoutineDto(context)).toList();
-    _routineDtos.addAll(routineDtos);
-    notifyListeners();
+    if(routines.isNotEmpty) {
+      final routineDtos = routines.map((routine) => routine.toRoutineDto(context)).toList();
+      _routineDtos.addAll(routineDtos);
+      notifyListeners();
+    }
   }
 
   void saveRoutine({required BuildContext context, required String name, required String notes, required List<ProcedureDto> procedures}) async {

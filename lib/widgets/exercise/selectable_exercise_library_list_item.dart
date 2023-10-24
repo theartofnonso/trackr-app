@@ -45,9 +45,9 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Primary: ${widget.exerciseInLibrary.exercise.primary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold),),
+            SizedBox(width: 300, child: Text("Primary: ${widget.exerciseInLibrary.exercise.primary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),)),
             const SizedBox(height: 5),
-            Text("Secondary: ${widget.exerciseInLibrary.exercise.secondary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold),),
+            SizedBox(width: 300, child: Text("Secondary: ${widget.exerciseInLibrary.exercise.secondary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),)),
           ],
         ),
       ),

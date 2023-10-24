@@ -16,7 +16,7 @@ class ExerciseProvider with ChangeNotifier {
 
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
 
-  void listExercises() async {
+  Future<void> listExercises() async {
     final request = ModelQueries.list(Exercise.classType);
     final response = await Amplify.API.query(request: request).response;
 
@@ -29,31 +29,31 @@ class ExerciseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // void uploadExercises() async {
-  //   var file = '/Users/nonsobiose/IdeaProjects/tracker_app/';
-  //   var bytes = File(file).readAsBytesSync();
-  //   var excel = Excel.decodeBytes(bytes);
-  //
-  //   final createdAt = TemporalDateTime.now();
-  //   final updatedAt = TemporalDateTime.now();
-  //   for (var table in excel.tables.keys) {
-  //     print(excel.tables[table]?.maxRows);
-  //     for (var row in excel.tables[table]!.rows) {
-  //       final name = row.first?.value.toString();
-  //       final primary = row[1]?.value.toString().split(",").map((item) => item.trim()).toList();
-  //       final secondary = row[2]?.value.toString().split(",").map((item) => item.trim()).toList();
-  //       final exercise = Exercise(name: name!, primary: primary!, secondary: secondary!, bodyPart: BodyPart.Chest, createdAt: createdAt, updatedAt: updatedAt);
-  //       final request = ModelMutations.create(exercise);
-  //       try {
-  //         final result = await Amplify.API.mutate(request: request).response;
-  //         print(result);
-  //       } catch(e) {
-  //         print(e);
-  //       }
-  //     }
-  //   }
-  //
-  // }
+  void uploadExercises() async {
+    var file = '/Users/nonsobiose/IdeaProjects/tracker_app/.xlsx';
+    var bytes = File(file).readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
+
+    final createdAt = TemporalDateTime.now();
+    final updatedAt = TemporalDateTime.now();
+    for (var table in excel.tables.keys) {
+      print(excel.tables[table]?.maxRows);
+      for (var row in excel.tables[table]!.rows) {
+        final name = row.first?.value.toString();
+        final primary = row[1]?.value.toString().split(",").map((item) => item.trim()).toList();
+        final secondary = row[2]?.value != null ? row[2]?.value.toString().split(",").map((item) => item.trim()).toList() : <String>[];
+        final exercise = Exercise(name: name!, primary: primary!, secondary: secondary!, bodyPart: BodyPart.Shoulder, createdAt: createdAt, updatedAt: updatedAt);
+        final request = ModelMutations.create(exercise);
+        try {
+          final result = await Amplify.API.mutate(request: request).response;
+          print(result);
+        } catch(e) {
+          print(e);
+        }
+      }
+    }
+
+  }
 
   Future<void> saveExercise({required String id, required String name, required BodyPart bodyPart}) async {
     // final exerciseToSave =
