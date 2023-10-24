@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
-import 'package:tracker_app/utils/snackbar_utils.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
@@ -120,18 +119,14 @@ class _RoutineWidget extends StatelessWidget {
       children: [
         CupertinoListTile(
             backgroundColorActivated: tealBlueLight,
-            leading: GestureDetector(
-                onTap: () {
-                  if (canStartRoutine) {
-                    _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
-                  } else {
-                    showSnackbar(
-                        context: context,
-                        icon: const Icon(Icons.info_outline, color: Colors.white),
-                        message: "You already have a workout running");
-                  }
-                },
-                child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white)),
+            leading: canStartRoutine
+                ? GestureDetector(
+                    onTap: () {
+                      _navigateToRoutineEditor(
+                          context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+                    },
+                    child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white))
+                : null,
             title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [
               const Icon(

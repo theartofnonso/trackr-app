@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -25,7 +24,9 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void notifyAllListeners() {
-    notifyListeners();
+    if(_cachedLogDto != null) {
+      notifyListeners();
+    }
   }
 
   void listRoutineLogs(BuildContext context) async {
@@ -41,7 +42,6 @@ class RoutineLogProvider with ChangeNotifier {
     final cache = SharedPrefs().cachedRoutineLog;
     if(cache.isNotEmpty) {
       _cachedLogDto = RoutineLogDto.fromJson(jsonDecode(cache), context);
-      //notifyListeners();
     }
   }
 

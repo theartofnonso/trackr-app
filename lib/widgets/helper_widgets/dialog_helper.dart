@@ -38,7 +38,7 @@ void showMinimisedRoutineBanner(BuildContext context) {
       MaterialBanner(
         padding: const EdgeInsets.only(left: 12, top: 12),
         margin: const EdgeInsets.all(12),
-        content: Text('${cachedRoutineLog.name} is running'),
+        content: Text('${cachedRoutineLog.name.isNotEmpty ? cachedRoutineLog.name : "Workout"} is running'),
         leading: const Icon(
           Icons.info_outline,
           color: Colors.white,
@@ -54,11 +54,12 @@ void showMinimisedRoutineBanner(BuildContext context) {
             child: const Text('End', style: TextStyle(color: Colors.white)),
           ),
           TextButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-              Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (context) => RoutineEditorScreen(
-                      routineDto: cachedRoutineLog, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+            onPressed: () async {
+              ScaffoldMessenger.of(context).removeCurrentMaterialBanner();
+              await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => RoutineEditorScreen(routineDto: cachedRoutineLog, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+              if(context.mounted) {
+                showMinimisedRoutineBanner(context);
+              }
             },
             child: const Text('Continue', style: TextStyle(color: Colors.white)),
           ),

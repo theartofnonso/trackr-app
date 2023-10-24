@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -10,12 +11,6 @@ import '../app_constants.dart';
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
-
-void _navigateToRoutineEditor(
-    {required BuildContext context, RoutineLogDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context).push(CupertinoPageRoute(
-      builder: (context) => RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.log)));
-}
 
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
@@ -29,13 +24,16 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
       final cachedRoutineLog = provider.cachedLogDto;
+
       return Scaffold(
         floatingActionButton: cachedRoutineLog == null
             ? FloatingActionButton(
-                onPressed: () => _navigateToRoutineEditor(context: context, mode: RoutineEditorMode.routine),
+                onPressed: () {
+                  _navigateToRoutineEditor(context: context);
+                },
                 backgroundColor: tealBlueLighter,
-                child: const Icon(CupertinoIcons.play_arrow_solid),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                child: const Icon(CupertinoIcons.play_arrow_solid),
               )
             : null,
         body: SafeArea(
@@ -58,6 +56,17 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
         ),
       );
     }));
+  }
+
+  void _navigateToRoutineEditor({required BuildContext context}) async {
+    final routine = RoutineDto(id: '', name: '', procedures: [], createdAt: DateTime.now(), updatedAt: DateTime.now());
+    await Navigator.of(context).push(CupertinoPageRoute(
+        builder: (context) =>
+            RoutineEditorScreen(routineDto: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+    print("Returned to Routine Logs");
+    if (context.mounted) {
+      showMinimisedRoutineBanner(context);
+    }
   }
 
   @override

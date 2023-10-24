@@ -541,6 +541,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _navigateBack() {
+    Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
     Navigator.of(context).pop();
   }
 
@@ -689,6 +690,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
 
     if (widget.mode == RoutineEditorMode.routine) {
+
       /// Show progress of resumed routine
       WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
 
