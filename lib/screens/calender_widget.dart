@@ -1,12 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/models/DateTimeEntry.dart';
-import 'package:tracker_app/providers/datetime_entry_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-
-import '../utils/snackbar_utils.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({super.key});
@@ -21,9 +17,8 @@ class _CalendarState extends State<Calendar> {
   void _goToPreviousMonth({required DateTimeEntry? initialDateTimeEntry}) {
     final initialTemporalDateTime = initialDateTimeEntry?.createdAt;
     if (initialTemporalDateTime != null) {
-      final initialDateTime = DateTime(
-          initialTemporalDateTime.getDateTimeInUtc().year,
-          initialTemporalDateTime.getDateTimeInUtc().month);
+      final initialDateTime =
+          DateTime(initialTemporalDateTime.getDateTimeInUtc().year, initialTemporalDateTime.getDateTimeInUtc().month);
       if (initialDateTime.isBefore(_currentDate)) {
         setState(() {
           _currentDate = DateTime(_currentDate.year, _currentDate.month - 1);
@@ -67,8 +62,7 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    final dateTimeEntryProvider =
-        Provider.of<DateTimeEntryProvider>(context, listen: true);
+    // final dateTimeEntryProvider = Provider.of<DateTimeEntryProvider>(context, listen: true);
     return Container(
       padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
       decoration: BoxDecoration(
@@ -85,9 +79,7 @@ class _CalendarState extends State<Calendar> {
               ),
               InkWell(
                 splashColor: Colors.transparent,
-                onTap: () => _goToPreviousMonth(
-                    initialDateTimeEntry:
-                        dateTimeEntryProvider.dateTimeEntries.first),
+                //onTap: () => _goToPreviousMonth(initialDateTimeEntry: dateTimeEntryProvider.dateTimeEntries.first),
                 child: const SizedBox(
                     width: 40,
                     height: 40,
@@ -136,11 +128,8 @@ class _CalendarState extends State<Calendar> {
                 width: 6,
               ),
               Text(
-                "${_calculateNumOfDateEntry(dateTimeEntries: dateTimeEntryProvider.dateTimeEntries)} times this month",
-                style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white70),
+                "times this month",
+                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white70),
               ),
             ],
           )
@@ -173,9 +162,7 @@ class CalendarDates extends StatelessWidget {
 
   const CalendarDates({super.key, required this.currentDate});
 
-  List<Widget> _datesToColumns(
-      {required List<DateTimeEntry> dateTimeEntries,
-      required DateTime selectedDate}) {
+  List<Widget> _datesToColumns({required List<DateTimeEntry> dateTimeEntries, required DateTime selectedDate}) {
     int year = currentDate.year;
     int month = currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -189,8 +176,7 @@ class CalendarDates extends StatelessWidget {
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets =
-          List.filled(precedingDays, const SizedBox(width: 40, height: 40));
+      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -216,8 +202,7 @@ class CalendarDates extends StatelessWidget {
     final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
     if (isLastDayNotSunday) {
       final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets =
-          List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
+      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -229,8 +214,7 @@ class CalendarDates extends StatelessWidget {
     required List<DateTimeEntry> dateTimeEntries,
   }) {
     List<Widget> widgets = [];
-    final dates = _datesToColumns(
-        selectedDate: selectedDate, dateTimeEntries: dateTimeEntries);
+    final dates = _datesToColumns(selectedDate: selectedDate, dateTimeEntries: dateTimeEntries);
     int iterationCount = 6;
     int numbersPerIteration = 7;
 
@@ -255,16 +239,17 @@ class CalendarDates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DateTimeEntryProvider>(
-        builder: (_, dateTimeEntryProvider, __) {
-      return Column(
-        children: [
-          ..._dateToRows(
-              selectedDate: dateTimeEntryProvider.selectedDateTime,
-              dateTimeEntries: dateTimeEntryProvider.dateTimeEntries)
-        ],
-      );
-    });
+    // return Consumer<DateTimeEntryProvider>(
+    //     builder: (_, dateTimeEntryProvider, __) {
+    //   return Column(
+    //     children: [
+    //       ..._dateToRows(
+    //           selectedDate: dateTimeEntryProvider.selectedDateTime,
+    //           dateTimeEntries: dateTimeEntryProvider.dateTimeEntries)
+    //     ],
+    //   );
+    // });
+    return const Center(child: Text("HELLO"));
   }
 }
 
@@ -278,11 +263,7 @@ class HeaderWidget extends StatelessWidget {
     return SizedBox(
       width: 40,
       child: Center(
-        child: Text(label,
-            style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white)),
+        child: Text(label, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
       ),
     );
   }
@@ -295,66 +276,57 @@ class DateWidget extends StatefulWidget {
   final bool isSelected;
 
   const DateWidget(
-      {super.key,
-      required this.label,
-      required this.dateTime,
-      this.dateTimeEntry,
-      this.isSelected = false});
+      {super.key, required this.label, required this.dateTime, this.dateTimeEntry, this.isSelected = false});
 
   @override
   State<DateWidget> createState() => _DateWidgetState();
 }
 
 class _DateWidgetState extends State<DateWidget> {
-  void addNewDateTimeEntry(
-      {required BuildContext context, required DateTime? dateTime}) async {
-    if (dateTime != null) {
-      await Provider.of<DateTimeEntryProvider>(context, listen: false)
-          .addDateTimeEntry(dateTime: dateTime);
-      if (context.mounted) {
-        showSnackbar(
-            context: context,
-            icon: const Icon(
-              Icons.check_circle_rounded,
-              color: Colors.black,
-            ),
-            message: 'Date added successfully');
-      }
-    }
+  void addNewDateTimeEntry({required BuildContext context, required DateTime? dateTime}) async {
+    // if (dateTime != null) {
+    //   await Provider.of<DateTimeEntryProvider>(context, listen: false)
+    //       .addDateTimeEntry(dateTime: dateTime);
+    //   if (context.mounted) {
+    //     showSnackbar(
+    //         context: context,
+    //         icon: const Icon(
+    //           Icons.check_circle_rounded,
+    //           color: Colors.black,
+    //         ),
+    //         message: 'Date added successfully');
+    //   }
+    // }
   }
 
-  void removeDateTimeEntry(
-      {required BuildContext context, required DateTimeEntry? entry}) async {
-    if (entry != null) {
-      await Provider.of<DateTimeEntryProvider>(context, listen: false)
-          .removeDateTimeEntry(entryToRemove: entry);
-      if (context.mounted) {
-        showSnackbar(
-            context: context,
-            icon: const Icon(
-              Icons.check_circle_rounded,
-              color: Colors.black,
-            ),
-            message: 'Date removed successfully');
-      }
-    }
+  void removeDateTimeEntry({required BuildContext context, required DateTimeEntry? entry}) async {
+    // if (entry != null) {
+    //   await Provider.of<DateTimeEntryProvider>(context, listen: false)
+    //       .removeDateTimeEntry(entryToRemove: entry);
+    //   if (context.mounted) {
+    //     showSnackbar(
+    //         context: context,
+    //         icon: const Icon(
+    //           Icons.check_circle_rounded,
+    //           color: Colors.black,
+    //         ),
+    //         message: 'Date removed successfully');
+    //   }
+    // }
   }
 
-  void selectDate(
-      {required BuildContext context, required DateTime date}) async {
-    Provider.of<DateTimeEntryProvider>(context, listen: false)
-        .onSelectDate(date: date);
+  void selectDate({required BuildContext context, required DateTime date}) async {
+    // Provider.of<DateTimeEntryProvider>(context, listen: false)
+    //     .onSelectDate(date: date);
   }
 
-  void selectDateTimeEntry(
-      {required BuildContext context, required DateTimeEntry? entry}) async {
-    Provider.of<DateTimeEntryProvider>(context, listen: false)
-        .onSelectDateEntry(entry: entry);
+  void selectDateTimeEntry({required BuildContext context, required DateTimeEntry? entry}) async {
+    // Provider.of<DateTimeEntryProvider>(context, listen: false).onSelectDateEntry(entry: entry);
   }
 
   void unSelectDateTimeEntry({required BuildContext context}) async {
-    Provider.of<DateTimeEntryProvider>(context, listen: false)
-        .onRemoveDateEntry();
+    // Provider.of<DateTimeEntryProvider>(context, listen: false)
+    //     .onRemoveDateEntry();
   }
 
   Color _getBackgroundColor() {
@@ -408,10 +380,7 @@ class _DateWidgetState extends State<DateWidget> {
         ),
         child: Center(
           child: Text(widget.label,
-              style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: _getTextColor())),
+              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w400, color: _getTextColor())),
         ),
       ),
     );
