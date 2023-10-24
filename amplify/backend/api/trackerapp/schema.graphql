@@ -24,23 +24,26 @@ type RoutineLog @model {
   updatedAt: AWSDateTime!
 }
 
-type Exercise @model {
+type Exercise
+    @model {
   id: ID!
   name: String!
+  primary: [String!]!
+  secondary: [String!]!
   bodyPart: BodyPart!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
 
 enum BodyPart {
-  CHEST
-  SHOULDERS
-  BACK
-  BICEPS
-  TRICEPS
-  FOREARMS
-  ABS
-  LEGS
-  GLUTES
-  CALVES
+  Chest
+  Shoulders
+  Back
+  Biceps
+  Triceps
+  Forearms
+  Abs
+  Legs
+  Glutes
+  Calves
 }

@@ -19,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-
     final screens = [const RoutineLogsScreen(), const RoutinesScreen()];
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
@@ -34,15 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Templates',
           ),
         ],
-      ), tabBuilder: (BuildContext context, int index) { return screens[index]; },
+      ),
+      tabBuilder: (BuildContext context, int index) {
+        return screens[index];
+      },
     );
   }
 
   @override
   void initState() {
     super.initState();
-    //Provider.of<ExerciseProvider>(context, listen: false).listExercises(context);
     Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
     Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context);
+    Provider.of<ExerciseProvider>(context, listen: false).listExercises();
   }
 }

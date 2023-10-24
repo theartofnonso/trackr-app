@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
+import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the Exercise type in your schema. */
@@ -28,6 +29,8 @@ class Exercise extends amplify_core.Model {
   static const classType = const _ExerciseModelType();
   final String id;
   final String? _name;
+  final List<String>? _primary;
+  final List<String>? _secondary;
   final BodyPart? _bodyPart;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -48,6 +51,32 @@ class Exercise extends amplify_core.Model {
   String get name {
     try {
       return _name!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  List<String> get primary {
+    try {
+      return _primary!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  List<String> get secondary {
+    try {
+      return _secondary!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -97,12 +126,14 @@ class Exercise extends amplify_core.Model {
     }
   }
   
-  const Exercise._internal({required this.id, required name, required bodyPart, required createdAt, required updatedAt}): _name = name, _bodyPart = bodyPart, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Exercise._internal({required this.id, required name, required primary, required secondary, required bodyPart, required createdAt, required updatedAt}): _name = name, _primary = primary, _secondary = secondary, _bodyPart = bodyPart, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Exercise({String? id, required String name, required BodyPart bodyPart, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory Exercise({String? id, required String name, required List<String> primary, required List<String> secondary, required BodyPart bodyPart, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return Exercise._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
+      primary: primary != null ? List<String>.unmodifiable(primary) : primary,
+      secondary: secondary != null ? List<String>.unmodifiable(secondary) : secondary,
       bodyPart: bodyPart,
       createdAt: createdAt,
       updatedAt: updatedAt);
@@ -118,6 +149,8 @@ class Exercise extends amplify_core.Model {
     return other is Exercise &&
       id == other.id &&
       _name == other._name &&
+      DeepCollectionEquality().equals(_primary, other._primary) &&
+      DeepCollectionEquality().equals(_secondary, other._secondary) &&
       _bodyPart == other._bodyPart &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
@@ -133,6 +166,8 @@ class Exercise extends amplify_core.Model {
     buffer.write("Exercise {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
+    buffer.write("primary=" + (_primary != null ? _primary!.toString() : "null") + ", ");
+    buffer.write("secondary=" + (_secondary != null ? _secondary!.toString() : "null") + ", ");
     buffer.write("bodyPart=" + (_bodyPart != null ? amplify_core.enumToString(_bodyPart)! : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -141,10 +176,12 @@ class Exercise extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Exercise copyWith({String? name, BodyPart? bodyPart, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  Exercise copyWith({String? name, List<String>? primary, List<String>? secondary, BodyPart? bodyPart, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return Exercise._internal(
       id: id,
       name: name ?? this.name,
+      primary: primary ?? this.primary,
+      secondary: secondary ?? this.secondary,
       bodyPart: bodyPart ?? this.bodyPart,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
@@ -152,6 +189,8 @@ class Exercise extends amplify_core.Model {
   
   Exercise copyWithModelFieldValues({
     ModelFieldValue<String>? name,
+    ModelFieldValue<List<String>>? primary,
+    ModelFieldValue<List<String>>? secondary,
     ModelFieldValue<BodyPart>? bodyPart,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
@@ -159,6 +198,8 @@ class Exercise extends amplify_core.Model {
     return Exercise._internal(
       id: id,
       name: name == null ? this.name : name.value,
+      primary: primary == null ? this.primary : primary.value,
+      secondary: secondary == null ? this.secondary : secondary.value,
       bodyPart: bodyPart == null ? this.bodyPart : bodyPart.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
@@ -168,17 +209,21 @@ class Exercise extends amplify_core.Model {
   Exercise.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
+      _primary = json['primary']?.cast<String>(),
+      _secondary = json['secondary']?.cast<String>(),
       _bodyPart = amplify_core.enumFromString<BodyPart>(json['bodyPart'], BodyPart.values),
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'bodyPart': amplify_core.enumToString(_bodyPart), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'primary': _primary, 'secondary': _secondary, 'bodyPart': amplify_core.enumToString(_bodyPart), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'name': _name,
+    'primary': _primary,
+    'secondary': _secondary,
     'bodyPart': _bodyPart,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
@@ -187,6 +232,8 @@ class Exercise extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<ExerciseModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<ExerciseModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final NAME = amplify_core.QueryField(fieldName: "name");
+  static final PRIMARY = amplify_core.QueryField(fieldName: "primary");
+  static final SECONDARY = amplify_core.QueryField(fieldName: "secondary");
   static final BODYPART = amplify_core.QueryField(fieldName: "bodyPart");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
@@ -200,6 +247,20 @@ class Exercise extends amplify_core.Model {
       key: Exercise.NAME,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Exercise.PRIMARY,
+      isRequired: true,
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Exercise.SECONDARY,
+      isRequired: true,
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

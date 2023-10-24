@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../screens/exercise_library_screen.dart';
 
 class SelectableExrLibraryListItem extends StatefulWidget {
-  final ExerciseInLibraryDto exercise;
+  final ExerciseInLibraryDto exerciseInLibrary;
   final void Function(bool isSelected) onTap;
 
-  const SelectableExrLibraryListItem({super.key, required this.exercise, required this.onTap});
+  const SelectableExrLibraryListItem({super.key, required this.exerciseInLibrary, required this.onTap});
 
   @override
   State<SelectableExrLibraryListItem> createState() => _SelectableExrLibraryListItemState();
@@ -38,7 +38,18 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         dense: true,
-        title: Text(widget.exercise.exercise.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(widget.exerciseInLibrary.exercise.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Primary: ${widget.exerciseInLibrary.exercise.primary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold),),
+            const SizedBox(height: 5),
+            Text("Secondary: ${widget.exerciseInLibrary.exercise.secondary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold),),
+          ],
+        ),
       ),
     );
   }
@@ -46,6 +57,6 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
   @override
   void initState() {
     super.initState();
-    _isSelected = widget.exercise.isSelected ?? false;
+    _isSelected = widget.exerciseInLibrary.isSelected ?? false;
   }
 }

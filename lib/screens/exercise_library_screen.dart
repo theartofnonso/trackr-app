@@ -77,7 +77,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     if (widget.multiSelect) {
       return ListView.separated(
           itemBuilder: (BuildContext context, int index) => SelectableExrLibraryListItem(
-              exercise: _filteredExercises[index],
+              exerciseInLibrary: _filteredExercises[index],
               onTap: (isSelected) =>
                   _selectCheckedExercise(isSelected: isSelected, selectedExercise: _filteredExercises[index])),
           separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),

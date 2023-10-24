@@ -1,4 +1,5 @@
 import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ void main() async {
   await initializeDateFormatting();
 
   runApp(MultiProvider(providers: [
-   ChangeNotifierProvider<ExerciseProvider>(
+    ChangeNotifierProvider<ExerciseProvider>(
       create: (BuildContext context) => ExerciseProvider(),
     ),
     ChangeNotifierProvider<RoutineProvider>(
@@ -53,7 +54,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     try {
-      //await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+      await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
       setState(() {
@@ -82,12 +83,12 @@ class _MyAppState extends State<MyApp> {
             bodyMedium: TextStyle(color: CupertinoColors.white, fontSize: 15),
             bodyLarge: TextStyle(color: CupertinoColors.white, fontSize: 16),
             labelLarge: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.bold),
-            labelMedium: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.w500)
-        ),
-
+            labelMedium: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.w500)),
         useMaterial3: true,
       ),
-      home: _isLoading ? const Center(child: CupertinoActivityIndicator(color: CupertinoColors.white, radius: 16)) : const HomeScreen(),
+      home: _isLoading
+          ? const Center(child: CupertinoActivityIndicator(color: CupertinoColors.white, radius: 16))
+          : const HomeScreen(),
     );
   }
 }
