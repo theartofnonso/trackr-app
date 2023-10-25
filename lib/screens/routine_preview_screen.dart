@@ -8,14 +8,14 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
+import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
   final String routineId;
-  final bool canStartRoutine;
 
-  const RoutinePreviewScreen({super.key, required this.routineId, required this.canStartRoutine});
+  const RoutinePreviewScreen({super.key, required this.routineId});
 
   /// Show [CupertinoActionSheet]
   void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineDto routineDto}) {
@@ -75,9 +75,11 @@ class RoutinePreviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineDto = Provider.of<RoutineProvider>(context, listen: true).whereRoutineDto(id: routineId);
 
+    final cachedRoutineLogDto = Provider.of<RoutineLogProvider>(context, listen: true).cachedLogDto;
+
     return routineDto != null
         ? Scaffold(
-            floatingActionButton: canStartRoutine
+            floatingActionButton: cachedRoutineLogDto == null
                 ? FloatingActionButton(
                     onPressed: () {
                       _navigateToRoutineEditor(

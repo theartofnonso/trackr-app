@@ -100,7 +100,7 @@ class _RoutineWidget extends StatelessWidget {
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
     final routine = await Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) => RoutinePreviewScreen(routineId: routineDto.id, canStartRoutine: canStartRoutine)))
+            builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)))
         as Map<String, String>?;
     if (routine != null) {
       final id = routine["id"] ?? "";
