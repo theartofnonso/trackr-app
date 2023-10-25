@@ -46,15 +46,33 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             child: const Icon(Icons.edit),
           ),
           backgroundColor: tealBlueDark,
-          appBar: CupertinoNavigationBar(
+          appBar: AppBar(
             backgroundColor: tealBlueDark,
-            trailing: GestureDetector(
-                onTap: () => _showWorkoutPreviewActionSheet(context: context, logDto: logDto),
-                child: const Icon(
-                  CupertinoIcons.ellipsis_vertical,
-                  color: CupertinoColors.white,
-                  size: 24,
-                )),
+            actions: [
+              MenuAnchor(
+                style: MenuStyle(
+                  backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                ),
+                builder: (BuildContext context, MenuController controller, Widget? child) {
+                  return IconButton(
+                    onPressed: () {
+                      if (controller.isOpen) {
+                        controller.close();
+                      } else {
+                        controller.open();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.more_vert_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    tooltip: 'Show menu',
+                  );
+                },
+                menuChildren: _menuActionButtons(context: context, logDto: logDto),
+              )
+            ],
           ),
           body: SafeArea(
             child: Padding(
@@ -79,25 +97,25 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     children: [
                       const Icon(
                         CupertinoIcons.calendar,
-                        color: CupertinoColors.white,
+                        color: Colors.white,
                         size: 12,
                       ),
                       const SizedBox(width: 1),
                       Text(logDto.createdAt.formattedDayAndMonthAndYear(),
                           style: TextStyle(
-                              color: CupertinoColors.white.withOpacity(0.95),
+                              color: Colors.white.withOpacity(0.95),
                               fontWeight: FontWeight.w500,
                               fontSize: 12)),
                       const SizedBox(width: 10),
                       const Icon(
                         CupertinoIcons.time,
-                        color: CupertinoColors.white,
+                        color: Colors.white,
                         size: 12,
                       ),
                       const SizedBox(width: 1),
                       Text(logDto.createdAt.formattedTime(),
                           style: TextStyle(
-                              color: CupertinoColors.white.withOpacity(0.95),
+                              color: Colors.white.withOpacity(0.95),
                               fontWeight: FontWeight.w500,
                               fontSize: 12)),
                     ],
@@ -117,7 +135,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             child: Center(
                               child: Text(completedSetsSummary,
                                   style: const TextStyle(
-                                      color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                             ),
                           ),
                           const VerticalDivider(
@@ -131,7 +149,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             child: Center(
                               child: Text(totalWeightSummary,
                                   style: const TextStyle(
-                                      color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                             ),
                           ),
                           const VerticalDivider(
@@ -145,7 +163,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             child: Center(
                               child: Text(_logDuration(logDto: logDto),
                                   style: const TextStyle(
-                                      color: CupertinoColors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                             ),
                           ),
                         ],
@@ -279,31 +297,26 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return splitList;
   }
 
-  /// Show [CupertinoActionSheet]
-  void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineLogDto logDto}) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, logDto: logDto);
-            },
-            child: Text('Edit', style: textStyle),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop({"id": widget.routineLogId});
-            },
-            child: const Text('Delete', style: TextStyle(fontSize: 16)),
-          ),
-        ],
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons({required BuildContext context, required RoutineLogDto logDto}) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          _navigateToRoutineEditor(context: context, logDto: logDto);
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.edit),
+        child: const Text("Edit"),
       ),
-    );
+      MenuItemButton(
+        onPressed: () {
+          Navigator.of(context).pop({"id": widget.routineLogId});
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+      )
+    ];
   }
 
   void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto}) async {

@@ -56,8 +56,8 @@ class ProcedureWidget extends StatelessWidget {
     required this.onCheckSet,
   });
 
-  /// Show [CupertinoActionSheet]
-  List<Widget> _menuActionButtons(BuildContext context) {
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons() {
     return [
       MenuItemButton(
         onPressed: () {
@@ -161,11 +161,11 @@ class ProcedureWidget extends StatelessWidget {
                           controller.open();
                         }
                       },
-                      icon: const Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
+                      icon: const Icon(CupertinoIcons.ellipsis, color: Colors.white),
                       tooltip: 'Show menu',
                     );
                   },
-                  menuChildren: _menuActionButtons(context))
+                  menuChildren: _menuActionButtons())
             ],
           ),
           procedureDto.superSetId.isNotEmpty
@@ -185,13 +185,13 @@ class ProcedureWidget extends StatelessWidget {
               filled: true,
               fillColor: tealBlueLighter,
               hintText: "Enter notes",
-              hintStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
+            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 6),
           Row(

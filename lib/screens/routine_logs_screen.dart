@@ -108,28 +108,45 @@ class _RoutineLogWidget extends StatelessWidget {
             subtitle: Row(children: [
               const Icon(
                 CupertinoIcons.calendar,
-                color: CupertinoColors.white,
+                color: Colors.white,
                 size: 12,
               ),
               const SizedBox(width: 1),
               Text(logDto.createdAt.durationSinceOrDate(),
-                  style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
               const Icon(
                 CupertinoIcons.timer,
-                color: CupertinoColors.white,
+                color: Colors.white,
                 size: 12,
               ),
               const SizedBox(width: 1),
               Text(_logDuration(),
-                  style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
             ]),
-            trailing: GestureDetector(
-                onTap: () => _showWorkoutActionSheet(context: context),
-                child: const Icon(
-                  CupertinoIcons.ellipsis,
-                  color: CupertinoColors.white,
-                ))),
+            trailing: MenuAnchor(
+              style: MenuStyle(
+                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+              ),
+              builder: (BuildContext context, MenuController controller, Widget? child) {
+                return IconButton(
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.more_horiz_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  tooltip: 'Show menu',
+                );
+              },
+              menuChildren: _menuActionButtons(context: context),
+            )),
         const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedures: logDto.procedures),
         logDto.procedures.length > 3
@@ -137,10 +154,33 @@ class _RoutineLogWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .labelSmall
-                    ?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
+                    ?.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.6)))
             : const SizedBox.shrink()
       ],
     );
+  }
+
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons({required BuildContext context}) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.edit),
+        child: const Text("Edit"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: logDto.id);
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+      )
+    ];
   }
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
@@ -183,49 +223,10 @@ class _RoutineLogWidget extends StatelessWidget {
                   backgroundColor: tealBlueLight,
                   backgroundColorActivated: tealBlueLight,
                   title: Text(procedure.exercise.name,
-                      style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                      style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
             ))
         .toList();
-  }
-
-  /// Show [CupertinoActionSheet]
-  void _showWorkoutActionSheet({required BuildContext context}) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: Text(
-          logDto.name,
-          style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
-        ),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
-            },
-            child: Text(
-              'Edit',
-              style: textStyle,
-            ),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: logDto.id);
-            },
-            child: const Text(
-              'Remove',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

@@ -17,31 +17,26 @@ class RoutinePreviewScreen extends StatelessWidget {
 
   const RoutinePreviewScreen({super.key, required this.routineId});
 
-  /// Show [CupertinoActionSheet]
-  void _showWorkoutPreviewActionSheet({required BuildContext context, required RoutineDto routineDto}) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.editing);
-            },
-            child: Text('Edit', style: textStyle),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop({"id": routineId});
-            },
-            child: const Text('Delete', style: TextStyle(fontSize: 16)),
-          ),
-        ],
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons({required BuildContext context, required RoutineDto routineDto}) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.editing);
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.edit),
+        child: const Text("Edit"),
       ),
-    );
+      MenuItemButton(
+        onPressed: () {
+          Navigator.of(context).pop({"id": routineId});
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+      )
+    ];
   }
 
   void _navigateToRoutineEditor(
@@ -87,18 +82,36 @@ class RoutinePreviewScreen extends StatelessWidget {
                     },
                     backgroundColor: tealBlueLighter,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const Icon(CupertinoIcons.play_arrow_solid))
+                    child: const Icon(Icons.play_arrow))
                 : null,
             backgroundColor: tealBlueDark,
-            appBar: CupertinoNavigationBar(
+            appBar: AppBar(
               backgroundColor: tealBlueDark,
-              trailing: GestureDetector(
-                  onTap: () => _showWorkoutPreviewActionSheet(context: context, routineDto: routineDto),
-                  child: const Icon(
-                    CupertinoIcons.ellipsis_vertical,
-                    color: CupertinoColors.white,
-                    size: 24,
-                  )),
+              actions: [
+                MenuAnchor(
+                  style: MenuStyle(
+                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                  ),
+                  builder: (BuildContext context, MenuController controller, Widget? child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.more_vert_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      tooltip: 'Show menu',
+                    );
+                  },
+                  menuChildren: _menuActionButtons(context: context, routineDto: routineDto),
+                )
+              ],
             ),
             body: SafeArea(
               child: Padding(
@@ -109,14 +122,16 @@ class RoutinePreviewScreen extends StatelessWidget {
                     Text(routineDto.name,
                         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
                     const SizedBox(height: 10),
-                    routineDto.notes.isNotEmpty ? Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Text(routineDto.notes,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                          )),
-                    ): const SizedBox.shrink(),
+                    routineDto.notes.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Text(routineDto.notes,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                )),
+                          )
+                        : const SizedBox.shrink(),
                     Expanded(
                       child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) => _procedureToWidget(

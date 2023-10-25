@@ -60,47 +60,31 @@ class _RoutineWidget extends StatelessWidget {
 
   const _RoutineWidget({required this.routineDto, required this.canStartRoutine});
 
-  /// Show [CupertinoActionSheet]
-  void _showWorkoutActionSheet({required BuildContext context}) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: Text(
-          routineDto.name,
-          style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
-        ),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _navigateToRoutineEditor(context: context, routineDto: routineDto);
-            },
-            child: Text(
-              'Edit',
-              style: textStyle,
-            ),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
-            },
-            child: const Text(
-              'Remove',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-        ],
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons({required BuildContext context, required RoutineDto routineDto}) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          _navigateToRoutineEditor(context: context, routineDto: routineDto);
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.edit),
+        child: const Text("Edit"),
       ),
-    );
+      MenuItemButton(
+        onPressed: () {
+          Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+      )
+    ];
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
-    final routine = await Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)))
+    final routine = await Navigator.of(context)
+            .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)))
         as Map<String, String>?;
     if (routine != null) {
       final id = routine["id"] ?? "";
@@ -125,24 +109,41 @@ class _RoutineWidget extends StatelessWidget {
                       _navigateToRoutineEditor(
                           context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
                     },
-                    child: const Icon(CupertinoIcons.play_arrow_solid, color: CupertinoColors.white))
+                    child: const Icon(Icons.play_arrow, color: Colors.white))
                 : null,
             title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [
               const Icon(
-                CupertinoIcons.number,
-                color: CupertinoColors.white,
+                Icons.numbers,
+                color: Colors.white,
                 size: 12,
               ),
               Text("${routineDto.procedures.length} exercises",
-                  style: TextStyle(color: CupertinoColors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
             ]),
-            trailing: GestureDetector(
-                onTap: () => _showWorkoutActionSheet(context: context),
-                child: const Icon(
-                  CupertinoIcons.ellipsis,
-                  color: CupertinoColors.white,
-                ))),
+            trailing: MenuAnchor(
+              style: MenuStyle(
+                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+              ),
+              builder: (BuildContext context, MenuController controller, Widget? child) {
+                return IconButton(
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.more_horiz_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  tooltip: 'Show menu',
+                );
+              },
+              menuChildren: _menuActionButtons(context: context, routineDto: routineDto),
+            )),
         const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
         routineDto.procedures.length > 3
@@ -150,7 +151,7 @@ class _RoutineWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .labelSmall
-                    ?.copyWith(fontSize: 14, color: CupertinoColors.white.withOpacity(0.6)))
+                    ?.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.6)))
             : const SizedBox.shrink()
       ],
     );
@@ -171,7 +172,7 @@ class _RoutineWidget extends StatelessWidget {
                   backgroundColor: tealBlueLight,
                   backgroundColorActivated: tealBlueLight,
                   title: Text(procedure.exercise.name,
-                      style: const TextStyle(color: CupertinoColors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                      style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
             ))
         .toList();

@@ -85,8 +85,8 @@ class SetWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: setDto.checked
-                        ? const Icon(CupertinoIcons.check_mark_circled_solid, color: CupertinoColors.activeGreen)
-                        : const Icon(CupertinoIcons.check_mark_circled, color: CupertinoColors.inactiveGray),
+                        ? const Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.green)
+                        : const Icon(CupertinoIcons.check_mark_circled, color: Colors.grey),
                   ),
                 )
               : const SizedBox.shrink()
@@ -96,7 +96,7 @@ class SetWidget extends StatelessWidget {
           onTap: () => _showSetActionSheet(context: context),
           child: const Icon(
             CupertinoIcons.ellipsis,
-            color: CupertinoColors.white,
+            color: Colors.white,
           )),
     );
   }
@@ -142,7 +142,7 @@ class _SetTextField extends StatelessWidget {
         prefix: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(label,
-              style: const TextStyle(color: CupertinoColors.systemGrey4, fontWeight: FontWeight.w600, fontSize: 12)),
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 12)),
         ),
         onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
         decoration: const BoxDecoration(color: tealBlueLight),
@@ -204,7 +204,7 @@ class _SetTypesListState extends State<_SetTypesList> {
               return Center(
                   child: Text(
                 _procedureTypes[index].name,
-                style: const TextStyle(color: CupertinoColors.white),
+                style: const TextStyle(color: Colors.white),
               ));
             }),
           ),

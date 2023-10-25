@@ -631,7 +631,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
+                        style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -648,7 +648,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
+                        style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                       ),
                     ],
                   )

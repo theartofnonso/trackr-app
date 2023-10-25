@@ -37,7 +37,7 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
               title: Text(procedure.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
               trailing: const Icon(
                 CupertinoIcons.bars,
-                color: CupertinoColors.white,
+                color: Colors.white,
               ),
             ))
         .toList();
@@ -55,14 +55,14 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
         backgroundColor: tealBlueDark,
         middle: const Text(
           "Reorder",
-          style: TextStyle(color: CupertinoColors.white),
+          style: TextStyle(color: Colors.white),
         ),
         trailing: GestureDetector(
             onTap: _saveReOrdering,
             child: _hasReOrdered
                 ? const Text(
                     "Save",
-                    style: TextStyle(color: CupertinoColors.white),
+                    style: TextStyle(color: Colors.white),
                   )
                 : const SizedBox.shrink()),
       ),

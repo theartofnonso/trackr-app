@@ -101,7 +101,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             child: _selectedExercises.isNotEmpty
                 ? Text(
                     "Add (${_selectedExercises.length})",
-                    style: const TextStyle(color: CupertinoColors.white),
+                    style: const TextStyle(color: Colors.white),
                   )
                 : const SizedBox.shrink()),
       ),

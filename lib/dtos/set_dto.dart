@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:flutter/material.dart';
 
 enum SetType {
-  warmUp("Warm Up", "W", CupertinoColors.activeOrange),
-  working("Working", "WK", CupertinoColors.white),
-  failure("Failure", "F", CupertinoColors.systemRed),
-  drop("Drop Set", "D", CupertinoColors.activeGreen);
+  warmUp("Warm Up", "W", Colors.orange),
+  working("Working", "WK", Colors.white),
+  failure("Failure", "F", Colors.red),
+  drop("Drop Set", "D", Colors.green);
 
   const SetType(this.name, this.label, this.color);
 
