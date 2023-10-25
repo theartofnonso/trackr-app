@@ -31,6 +31,8 @@ type Exercise
   primary: [String!]!
   secondary: [String]!
   bodyPart: BodyPart!
+  asset: AWSURL
+  notes: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }

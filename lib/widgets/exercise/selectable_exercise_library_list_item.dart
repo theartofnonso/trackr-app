@@ -40,14 +40,27 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
         dense: true,
         title: Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(widget.exerciseInLibrary.exercise.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+          child: Text(widget.exerciseInLibrary.exercise.name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 300, child: Text("Primary: ${widget.exerciseInLibrary.exercise.primary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),)),
+            SizedBox(
+                width: 300,
+                child: Text(
+                  "Primary: ${widget.exerciseInLibrary.exercise.primary.join(", ")}",
+                  style: const TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
+                )),
             const SizedBox(height: 5),
-            SizedBox(width: 300, child: Text("Secondary: ${widget.exerciseInLibrary.exercise.secondary.join(", ")}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),)),
+            SizedBox(
+                width: 300,
+                child: Text(
+                  "Secondary: ${widget.exerciseInLibrary.exercise.secondary.isNotEmpty ? widget.exerciseInLibrary.exercise.secondary.join(", ") : "None"}",
+                  style: const TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
+                )),
           ],
         ),
       ),

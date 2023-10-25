@@ -85,7 +85,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     }
     return ListView.separated(
         itemBuilder: (BuildContext context, int index) => ExrLibraryListItem(
-            exercise: _filteredExercises[index],
+            exerciseInLibrary: _filteredExercises[index],
             onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
         itemCount: _filteredExercises.length);
@@ -113,10 +113,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm),
               leading: const Icon(
                 Icons.search_rounded,
-                color: Colors.white,
+                color: Colors.white70,
               ),
               hintText: "Search exercises",
-              hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
+              hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white70)),
               textStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
               surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
               backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),

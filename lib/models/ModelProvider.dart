@@ -31,7 +31,7 @@ export 'RoutineLog.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "b008eb0e6dfd403dd029ae016269147f";
+  String version = "16e9a150e875490238b1b8a4bf614f5a";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Exercise.schema, Routine.schema, RoutineLog.schema];
   @override

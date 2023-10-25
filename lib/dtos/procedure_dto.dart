@@ -54,7 +54,7 @@ class ProcedureDto {
   factory ProcedureDto.fromJson(Map<String, dynamic> json, BuildContext context) {
     final superSetId = json["superSetId"];
     final exerciseId = json["exercise"];
-    final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId.toString());
+    final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();

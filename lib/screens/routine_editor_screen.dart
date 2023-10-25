@@ -113,16 +113,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _scrollToBottom() {
-    var scrollPosition = _scrollController.position;
-
-    if (scrollPosition.viewportDimension > scrollPosition.maxScrollExtent) {
-      var scrollPosition = _scrollController.position;
       _scrollController.animateTo(
-        scrollPosition.maxScrollExtent,
-        duration: const Duration(milliseconds: 400),
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 800),
         curve: Curves.easeOut,
       );
-    }
   }
 
   void _addProcedures({required List<Exercise> exercises}) {
@@ -659,23 +654,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 const SizedBox(height: 12),
                 _procedures.isNotEmpty
                     ? Expanded(
-                        child: ListView.separated(
-                            controller: _scrollController,
-                            itemBuilder: (BuildContext context, int index) {
-                              // Build the item widget based on the data at the specified index.
-                              final procedure = _procedures[index];
-                              return _procedureToWidget(procedure: procedure);
-                            },
-                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                            itemCount: _procedures.length),
-                      )
-                    : const Expanded(
-                        child: Center(
-                        child: Text(
-                          "You have no exercises and sets",
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                      )),
+                  child: ListView.separated(
+                      controller: _scrollController,
+                      itemBuilder: (BuildContext context, int index) {
+                        // Build the item widget based on the data at the specified index.
+                        final procedure = _procedures[index];
+                        return _procedureToWidget(procedure: procedure);
+                      },
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                      itemCount: _procedures.length),
+                ): const Expanded(
+                    child: Center(
+                      child: Text(
+                        "You have no exercises and sets",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    )),
                 const SizedBox(height: 18),
                 SizedBox(
                   width: double.infinity,
@@ -867,8 +861,15 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const ListStyleEmptyState(),
-          const ListStyleEmptyState(),
+          const Padding(
+            padding: EdgeInsets.only(left: 18.0),
+            child: ListStyleEmptyState(),
+          ),
+          const SizedBox(height: 12),
+          const Padding(
+            padding: EdgeInsets.only(left: 18.0),
+            child: ListStyleEmptyState(),
+          ),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),

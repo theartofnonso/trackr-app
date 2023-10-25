@@ -106,13 +106,15 @@ class RoutinePreviewScreen extends StatelessWidget {
                   children: [
                     Text(routineDto.name,
                         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
-                    const SizedBox(height: 8),
-                    Text(routineDto.notes,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        )),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
+                    routineDto.notes.isNotEmpty ? Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Text(routineDto.notes,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          )),
+                    ): const SizedBox.shrink(),
                     Expanded(
                       child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) => _procedureToWidget(

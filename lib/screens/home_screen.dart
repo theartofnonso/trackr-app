@@ -42,14 +42,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void _loadData() async {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
     if(mounted) {
-      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
       Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context);
+      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 }
