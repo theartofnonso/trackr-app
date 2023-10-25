@@ -145,7 +145,7 @@ class _SetTextField extends StatelessWidget {
               style: const TextStyle(color: CupertinoColors.systemGrey4, fontWeight: FontWeight.w600, fontSize: 12)),
         ),
         onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
-        decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(8))),
+        decoration: const BoxDecoration(color: tealBlueLight),
         keyboardType: TextInputType.number,
         maxLines: 1,
         style: Theme.of(context).textTheme.bodyMedium,

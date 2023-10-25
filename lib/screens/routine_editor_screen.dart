@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../app_constants.dart';
@@ -49,15 +50,25 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   DateTime _routineStartTime = DateTime.now();
 
   /// Show [CupertinoAlertDialog] for creating a workout
-  void _showAlertDialog(
-      {required String title, required String message, required List<CupertinoDialogAction> actions}) {
-    showCupertinoModalPopup<void>(
+  void _showAlertDialog({required String message, required List<Widget> actions}) {
+    showDialog(
       context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: actions,
-      ),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          icon: const Icon(Icons.info_outline),
+          backgroundColor: tealBlueLighter,
+          content: Text(
+            message,
+            style: const TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
+          contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+          actions: actions,
+          actionsAlignment: MainAxisAlignment.center,
+          actionsPadding: const EdgeInsets.only(bottom: 8),
+        );
+      },
     );
   }
 
@@ -113,11 +124,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _scrollToBottom() {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeOut,
-      );
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOut,
+    );
   }
 
   void _addProcedures({required List<Exercise> exercises}) {
@@ -163,24 +174,23 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _showReplaceProcedureAlert({required String procedureId}) {
-    final alertDialogActions = <CupertinoDialogAction>[
-      CupertinoDialogAction(
+    final alertDialogActions = <Widget>[
+      TextButton(
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Cancel', style: TextStyle(color: CupertinoColors.black)),
+        child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
-      CupertinoDialogAction(
-        isDestructiveAction: true,
+      TextButton(
         onPressed: () {
           Navigator.pop(context);
           _doReplaceProcedure(procedureId: procedureId);
         },
-        child: const Text('Replace'),
+        child: const Text('Replace', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
       )
     ];
 
-    _showAlertDialog(title: "Replace Exercise", message: "All your data will be replaced", actions: alertDialogActions);
+    _showAlertDialog(message: "All your data will be replaced", actions: alertDialogActions);
   }
 
   void _doReplaceProcedure({required String procedureId}) async {
@@ -399,20 +409,20 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _createRoutine() {
-    final alertDialogActions = <CupertinoDialogAction>[
-      CupertinoDialogAction(
-        isDefaultAction: true,
+    final alertDialogActions = <Widget>[
+      TextButton(
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
+        child: const Text('Ok',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
       ),
     ];
 
     if (_routineNameController.text.isEmpty) {
-      _showAlertDialog(title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
+      _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
     } else if (_procedures.isEmpty) {
-      _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
+      _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
       Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
           name: _routineNameController.text,
@@ -424,23 +434,21 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateRoutine() {
-    final alertDialogActions = <CupertinoDialogAction>[
-      CupertinoDialogAction(
-        isDefaultAction: true,
+    final alertDialogActions = <Widget>[
+      TextButton(
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok', style: TextStyle(color: CupertinoColors.activeBlue)),
+        child: const Text('Ok', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
     ];
 
     final previousWorkout = widget.routineDto;
     if (previousWorkout != null) {
       if (_routineNameController.text.isEmpty) {
-        _showAlertDialog(
-            title: "Alert", message: 'Please provide a name for this workout', actions: alertDialogActions);
+        _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
       } else if (_procedures.isEmpty) {
-        _showAlertDialog(title: "Alert", message: "Workout must have exercise(s)", actions: alertDialogActions);
+        _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
       } else {
         final previousRoutine = widget.routineDto;
         if (previousRoutine != null) {
@@ -512,24 +520,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         _navigateAndPop();
       }
     } else {
-      final actions = <CupertinoDialogAction>[
-        CupertinoDialogAction(
-          isDestructiveAction: true,
+      final actions = <Widget>[
+        TextButton(
           onPressed: () {
             Navigator.pop(context);
             _navigateAndPop();
           },
-          child: const Text('End'),
+          child: const Text('End', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
         ),
-        CupertinoDialogAction(
-          isDefaultAction: true,
+        TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Continue', style: TextStyle(color: CupertinoColors.activeBlue)),
+          child: const Text('Continue', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         )
       ];
-      _showAlertDialog(title: "End Workout", message: "You have not completed any sets", actions: actions);
+      _showAlertDialog(message: "You have not completed any sets", actions: actions);
     }
   }
 
@@ -560,47 +566,51 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorMode.editing
-            ? CupertinoNavigationBar(
+            ? AppBar(
                 backgroundColor: tealBlueDark,
-                trailing: GestureDetector(
-                    onTap: previousRoutine != null ? _updateRoutine : _createRoutine,
-                    child: Text(previousRoutine != null ? "Update" : "Save",
-                        style: Theme.of(context).textTheme.labelMedium)),
+                actions: [
+                  GestureDetector(
+                      onTap: previousRoutine != null ? _updateRoutine : _createRoutine,
+                      child: Text(previousRoutine != null ? "Update" : "Save",
+                          style: Theme.of(context).textTheme.labelMedium))
+                ],
               )
-            : CupertinoNavigationBar(
+            : AppBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
                   onTap: () => _minimiseRunningRoutine(),
                   child: const Icon(
                     Icons.arrow_back_ios_new_rounded,
-                    color: CupertinoColors.white,
+                    color: Colors.white,
                     size: 24,
                   ),
                 ),
-                middle: Text(
+                title: Text(
                   "${previousRoutine?.name}",
                   style: const TextStyle(color: Colors.white),
                 ),
-                trailing: GestureDetector(
-                    onTap: _showRoutineIntervalPicker,
-                    child: const Icon(
-                      CupertinoIcons.timer,
-                      color: CupertinoColors.white,
-                      size: 24,
-                    )),
+                actions: [
+                  GestureDetector(
+                      onTap: _showRoutineIntervalPicker,
+                      child: const Icon(
+                        Icons.timer,
+                        color: Colors.white,
+                        size: 24,
+                      ))
+                ],
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
                 onPressed: _logRoutine,
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(CupertinoIcons.stop_fill),
+                child: const Icon(Icons.stop),
               )
             : null,
-        body: GestureDetector(
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+        body: Padding(
+          padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+          child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -619,9 +629,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         maxLines: null,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         style: TextStyle(
-                            fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 18),
+                            fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 18),
                         placeholder: "New workout",
-                        placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 18),
+                        placeholderStyle: const TextStyle(color: Colors.grey, fontSize: 18),
                       ),
                       const SizedBox(height: 8),
                       CupertinoTextField(
@@ -637,11 +647,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         style: TextStyle(
                           height: 1.5,
-                          color: CupertinoColors.white.withOpacity(0.8),
+                          color: Colors.white.withOpacity(0.8),
                           fontSize: 14,
                         ),
                         placeholder: "New notes",
-                        placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
+                        placeholderStyle: const TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
                   )
@@ -654,30 +664,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 const SizedBox(height: 12),
                 _procedures.isNotEmpty
                     ? Expanded(
-                  child: ListView.separated(
-                      controller: _scrollController,
-                      itemBuilder: (BuildContext context, int index) {
-                        // Build the item widget based on the data at the specified index.
-                        final procedure = _procedures[index];
-                        return _procedureToWidget(procedure: procedure);
-                      },
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                      itemCount: _procedures.length),
-                ): const Expanded(
-                    child: Center(
-                      child: Text(
-                        "You have no exercises and sets",
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    )),
+                        child: ListView.separated(
+                            controller: _scrollController,
+                            itemBuilder: (BuildContext context, int index) {
+                              // Build the item widget based on the data at the specified index.
+                              final procedure = _procedures[index];
+                              return _procedureToWidget(procedure: procedure);
+                            },
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                            itemCount: _procedures.length),
+                      )
+                    : const Expanded(
+                        child: Center(
+                        child: Text(
+                          "You have no exercises and sets",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      )),
                 const SizedBox(height: 18),
                 SizedBox(
                   width: double.infinity,
-                  child: CupertinoButton(
-                      color: tealBlueLight,
-                      onPressed: _selectExercisesInLibrary,
-                      child: Text("Add exercises",
-                          textAlign: TextAlign.start, style: Theme.of(context).textTheme.labelLarge)),
+                  child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
                 ),
               ],
             ),
@@ -776,7 +783,7 @@ class _ProceduresListState extends State<_ProceduresList> {
                     return Center(
                         child: Text(
                       widget.procedures[index].exercise.name,
-                      style: const TextStyle(color: CupertinoColors.white),
+                      style: const TextStyle(color: Colors.white),
                     ));
                   }),
                 ),
@@ -875,13 +882,7 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
               width: double.infinity,
-              child: CupertinoButton(
-                  color: tealBlueLighter,
-                  onPressed: onPressed,
-                  child: Text(
-                    "Add more exercises",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  )),
+              child: CTextButton(onPressed: onPressed, label: "Add more exercises"),
             ),
           )
         ],

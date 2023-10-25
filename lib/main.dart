@@ -73,17 +73,19 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: tealBlueDark,
-        colorScheme: const ColorScheme.light(background: tealBlueLight, primary: Colors.white),
-        textTheme: const TextTheme(
-            headlineSmall: TextStyle(color: CupertinoColors.white),
-            titleSmall: TextStyle(color: CupertinoColors.white),
-            titleLarge: TextStyle(color: CupertinoColors.white),
-            titleMedium: TextStyle(color: CupertinoColors.white),
-            bodySmall: TextStyle(color: CupertinoColors.white, fontSize: 14),
-            bodyMedium: TextStyle(color: CupertinoColors.white, fontSize: 15),
-            bodyLarge: TextStyle(color: CupertinoColors.white, fontSize: 16),
-            labelLarge: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.bold),
-            labelMedium: TextStyle(color: CupertinoColors.white, fontSize: 15, fontWeight: FontWeight.w500)),
+        colorScheme: const ColorScheme(
+          brightness: Brightness.dark,
+          primary: tealBlueLighter,
+          onPrimary: Colors.white,
+          secondary: Colors.white,
+          onSecondary: Colors.white,
+          error: Colors.white,
+          onError: Colors.black,
+          background: tealBlueDark,
+          onBackground: Colors.white,
+          surface: Colors.white,
+          onSurface: Colors.white,
+        ),
         useMaterial3: true,
       ),
       home: _isLoading

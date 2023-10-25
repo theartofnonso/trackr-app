@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/routine_logs_screen.dart';
@@ -16,26 +16,38 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _currentScreenIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final screens = [const RoutineLogsScreen(), const RoutinesScreen()];
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        backgroundColor: tealBlueLight,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.list_dash, size: 22),
-            label: 'History',
+    return Scaffold(
+      body: screens[_currentScreenIndex],
+      bottomNavigationBar: NavigationBar(
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        height: 60,
+        indicatorColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.history, color: Colors.grey, size: 24),
+            selectedIcon: Icon(Icons.history, color: Colors.white, size: 24),
+            label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.add, size: 22),
-            label: 'Templates',
+          NavigationDestination(
+            icon: Icon(Icons.add, color: Colors.grey, size: 24),
+            selectedIcon: Icon(Icons.add, color: Colors.white, size: 24),
+            label: 'Home',
           ),
         ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            _currentScreenIndex = index;
+          });
+        },
+        selectedIndex: _currentScreenIndex,
       ),
-      tabBuilder: (BuildContext context, int index) {
-        return screens[index];
-      },
     );
   }
 

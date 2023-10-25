@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
@@ -56,70 +57,51 @@ class ProcedureWidget extends StatelessWidget {
   });
 
   /// Show [CupertinoActionSheet]
-  void _showProcedureActionSheet(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: Text(
-          procedureDto.exercise.name,
-          style: textStyle?.copyWith(color: tealBlueLight.withOpacity(0.6)),
-        ),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              onReOrderProcedures();
-            },
-            child: Text(
-              'Reorder Exercises',
-              style: textStyle,
-            ),
-          ),
-          procedureDto.superSetId.isNotEmpty
-              ? CupertinoActionSheetAction(
-                  isDestructiveAction: true,
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onRemoveSuperSet(procedureDto.superSetId);
-                  },
-                  child: const Text(
-                    'Remove super set',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                )
-              : CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onSuperSet();
-                  },
-                  child: Text(
-                    'Super-set with ...',
-                    style: textStyle,
-                  ),
-                ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              onReplaceProcedure();
-            },
-            child: Text(
-              'Replace with ...',
-              style: textStyle,
-            ),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              onRemoveProcedure();
-            },
-            child: const Text('Remove', style: TextStyle(fontSize: 16)),
-          ),
-        ],
+  List<Widget> _menuActionButtons(BuildContext context) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          onReOrderProcedures();
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.repeat_outlined),
+        child: const Text("Reorder"),
       ),
-    );
+      procedureDto.superSetId.isNotEmpty
+          ? MenuItemButton(
+              onPressed: () {
+                onRemoveSuperSet(procedureDto.superSetId);
+              },
+              leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+              child: const Text("Remove Super-set", style: TextStyle(color: Colors.red)),
+            )
+          : MenuItemButton(
+              onPressed: () {
+                onSuperSet();
+              },
+              leadingIcon: const Icon(Icons.add),
+              child: const Text("Super-set"),
+            ),
+      MenuItemButton(
+        onPressed: () {
+          onReplaceProcedure();
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.find_replace_rounded),
+        child: const Text("Replace"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          onRemoveProcedure();
+        },
+        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: const Text(
+          "Remove",
+          style: TextStyle(color: Colors.red),
+        ),
+      )
+    ];
   }
 
   List<Widget>? _displaySets() {
@@ -154,68 +136,72 @@ class ProcedureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.only(right: 12, bottom: 10, left: 12),
       decoration: BoxDecoration(
         color: tealBlueLight, // Set the background color
         borderRadius: BorderRadius.circular(2), // Set the border radius to make it rounded
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CupertinoListTile(
-            backgroundColorActivated: Colors.transparent,
-            onTap: () => _showProcedureActionSheet(context),
-            padding: EdgeInsets.zero,
-            title: Text(procedureDto.exercise.name,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-            subtitle: procedureDto.superSetId.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
-                        style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
-                  )
-                : const SizedBox.shrink(),
-            trailing: const Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
+          Row(
+            children: [
+              Text(procedureDto.exercise.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+              const Spacer(),
+              MenuAnchor(
+                  style: MenuStyle(
+                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                  ),
+                  builder: (BuildContext context, MenuController controller, Widget? child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
+                      tooltip: 'Show menu',
+                    );
+                  },
+                  menuChildren: _menuActionButtons(context))
+            ],
           ),
-          CupertinoTextField(
+          // procedureDto.superSetId.isNotEmpty
+          //     ? Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 0.0),
+          //   child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+          //       style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
+          // )
+          //     : const SizedBox.shrink(),
+          TextField(
             controller: TextEditingController(text: procedureDto.notes),
             onChanged: (value) => onUpdateNotes(value),
             expands: true,
-            decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(2))),
+            //decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(2))),
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              filled: true,
+              fillColor: const Color.fromRGBO(32, 32, 32, 1), // Set
+            ),
             keyboardType: TextInputType.text,
             maxLength: 150,
             maxLines: null,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: TextStyle(fontWeight: FontWeight.w600, color: CupertinoColors.white.withOpacity(0.8), fontSize: 15),
-            placeholder: "Enter notes",
-            placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 15),
+            style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
+            // placeholder: "Enter notes",
+            // placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 15),
           ),
           const SizedBox(height: 6),
-          CupertinoListTile(
-            leadingToTitle: 8,
-            backgroundColorActivated: Colors.transparent,
-            onTap: onSetRestInterval,
-            padding: EdgeInsets.zero,
-            leading: const Icon(
-              CupertinoIcons.timer,
-              color: CupertinoColors.white,
-              size: 20,
-            ),
-            title: Text("Rest Timer", style: Theme.of(context).textTheme.bodySmall),
-            trailing: Text(_displayTimer(), style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          CupertinoListTile(
-            leadingToTitle: 8,
-            backgroundColorActivated: Colors.transparent,
-            padding: EdgeInsets.zero,
-            onTap: onAddSet,
-            title: Text(
-              "Add Set",
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            leading: const Icon(CupertinoIcons.add_circled, color: CupertinoColors.white, size: 20),
-          ),
-          const SizedBox(
-            height: 4,
+          Row(
+            children: [
+              CTextButton(
+                  onPressed: onSetRestInterval, label: 'Rest timer: ${_displayTimer()}', buttonColor: tealBlueLighter),
+              const SizedBox(width: 6),
+              CTextButton(onPressed: onAddSet, label: 'Add set', buttonColor: tealBlueLighter),
+            ],
           ),
           Column(
             children: [...?_displaySets()],
