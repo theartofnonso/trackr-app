@@ -136,7 +136,7 @@ class ProcedureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(right: 12, bottom: 10, left: 12),
+      padding: const EdgeInsets.only(top: 12, right: 12, bottom: 10, left: 12),
       decoration: BoxDecoration(
         color: tealBlueLight, // Set the background color
         borderRadius: BorderRadius.circular(2), // Set the border radius to make it rounded
@@ -145,9 +145,9 @@ class ProcedureWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(procedureDto.exercise.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-              const Spacer(),
+              Expanded(child: Text(procedureDto.exercise.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
               MenuAnchor(
                   style: MenuStyle(
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),
@@ -168,31 +168,30 @@ class ProcedureWidget extends StatelessWidget {
                   menuChildren: _menuActionButtons(context))
             ],
           ),
-          // procedureDto.superSetId.isNotEmpty
-          //     ? Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 0.0),
-          //   child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
-          //       style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
-          // )
-          //     : const SizedBox.shrink(),
+          procedureDto.superSetId.isNotEmpty
+              ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0),
+            child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+                style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
+          )
+              : const SizedBox.shrink(),
+          const SizedBox(height: 10),
           TextField(
             controller: TextEditingController(text: procedureDto.notes),
             onChanged: (value) => onUpdateNotes(value),
-            expands: true,
-            //decoration: const BoxDecoration(color: tealBlueLighter, borderRadius: BorderRadius.all(Radius.circular(2))),
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
               filled: true,
-              fillColor: const Color.fromRGBO(32, 32, 32, 1), // Set
+              fillColor: tealBlueLighter,
+              hintText: "Enter notes",
+              hintStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 14),
             ),
+            cursorColor: Colors.white,
             keyboardType: TextInputType.text,
-            maxLength: 150,
-            maxLines: null,
+            textCapitalization: TextCapitalization.sentences,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
             style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
-            // placeholder: "Enter notes",
-            // placeholderStyle: const TextStyle(color: CupertinoColors.inactiveGray, fontSize: 15),
           ),
           const SizedBox(height: 6),
           Row(

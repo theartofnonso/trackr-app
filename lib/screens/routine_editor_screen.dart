@@ -617,41 +617,38 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 if (widget.mode == RoutineEditorMode.editing)
                   Column(
                     children: [
-                      CupertinoTextField(
+                      TextField(
                         controller: _routineNameController,
-                        decoration: const BoxDecoration(
-                            color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
-                        expands: true,
-                        padding: const EdgeInsets.all(10),
-                        textCapitalization: TextCapitalization.words,
-                        keyboardType: TextInputType.text,
-                        maxLength: 240,
-                        maxLines: null,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 18),
-                        placeholder: "New workout",
-                        placeholderStyle: const TextStyle(color: Colors.grey, fontSize: 18),
-                      ),
-                      const SizedBox(height: 8),
-                      CupertinoTextField(
-                        controller: _routineNotesController,
-                        decoration: const BoxDecoration(
-                            color: tealBlueLight, borderRadius: BorderRadius.all(Radius.circular(2))),
-                        expands: true,
-                        padding: const EdgeInsets.all(10),
-                        textCapitalization: TextCapitalization.sentences,
-                        keyboardType: TextInputType.text,
-                        maxLength: 240,
-                        maxLines: null,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(
-                          height: 1.5,
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 14,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                            filled: true,
+                            fillColor: tealBlueLighter,
+                            hintText: "New workout",
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)
                         ),
-                        placeholder: "New notes",
-                        placeholderStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                        cursorColor: Colors.white,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _routineNotesController,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                          filled: true,
+                          fillColor: tealBlueLighter,
+                          hintText: "Notes",
+                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)
+                        ),
+                        cursorColor: Colors.white,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(fontWeight: FontWeight.w500, color: CupertinoColors.white.withOpacity(0.8), fontSize: 14),
                       ),
                     ],
                   )

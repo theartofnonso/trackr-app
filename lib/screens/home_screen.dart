@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(
             icon: Icon(Icons.add, color: Colors.grey, size: 24),
             selectedIcon: Icon(Icons.add, color: Colors.white, size: 24),
-            label: 'Home',
+            label: 'Workouts',
           ),
         ],
         onDestinationSelected: (int index) {
