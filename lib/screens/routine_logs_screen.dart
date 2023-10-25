@@ -63,7 +63,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
     await Navigator.of(context).push(CupertinoPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
-    print("Returned to Routine Logs");
     if (context.mounted) {
       showMinimisedRoutineBanner(context);
     }
@@ -102,7 +101,7 @@ class _RoutineLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CupertinoListTile(
             title: Text(logDto.name, style: Theme.of(context).textTheme.labelLarge),
