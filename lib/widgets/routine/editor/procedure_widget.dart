@@ -170,8 +170,8 @@ class ProcedureWidget extends StatelessWidget {
             subtitle: procedureDto.superSetId.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text("Super set: ${otherSuperSetProcedureDto?.exercise.name}",
-                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                    child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+                        style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
                   )
                 : const SizedBox.shrink(),
             trailing: const Icon(CupertinoIcons.ellipsis, color: CupertinoColors.white),
