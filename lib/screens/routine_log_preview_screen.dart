@@ -42,7 +42,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
           floatingActionButton: FloatingActionButton(
             onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
             backgroundColor: tealBlueLighter,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.edit),
           ),
           backgroundColor: tealBlueDark,
@@ -64,13 +64,17 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                 children: [
                   Text(logDto.name,
                       style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
-                  const SizedBox(height: 8),
-                  Text(logDto.notes,
-                      style: TextStyle(
-                        color: CupertinoColors.white.withOpacity(0.8),
-                        fontSize: 14,
-                      )),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
+                  logDto.notes.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text(logDto.notes,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              )),
+                        )
+                      : const SizedBox.shrink(),
                   Row(
                     children: [
                       const Icon(
@@ -156,7 +160,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     child: ListView.separated(
                         itemBuilder: (BuildContext context, int index) =>
                             _procedureToWidget(procedure: logDto.procedures[index], otherProcedures: logDto.procedures),
-                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
                         itemCount: logDto.procedures.length),
                   ),
                 ],
@@ -252,7 +256,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       final widget = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("$key ${(value * 100).toInt()}%", style: const TextStyle(fontWeight: FontWeight.w400),),
+          Text(
+            "$key ${(value * 100).toInt()}%",
+            style: const TextStyle(fontWeight: FontWeight.w400),
+          ),
           const SizedBox(height: 4),
           AnimatedBuilder(
               animation: _controller,

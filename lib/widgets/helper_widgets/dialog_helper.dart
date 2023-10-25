@@ -49,7 +49,7 @@ void showMinimisedRoutineBanner(BuildContext context) {
               provider.clearCachedLog();
               ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
             },
-            child: const Text('End', style: TextStyle(color: Colors.white)),
+            child: const Text('Cancel', style: TextStyle(color: Colors.white)),
           ),
           TextButton(
             onPressed: () async {

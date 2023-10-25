@@ -57,7 +57,7 @@ class RoutinePreviewScreen extends StatelessWidget {
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
+  Widget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
     return ProcedureWidget(
       procedureDto: procedure,
       otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
@@ -121,7 +121,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                       child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) => _procedureToWidget(
                               procedure: routineDto.procedures[index], otherProcedures: routineDto.procedures),
-                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
+                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
                           itemCount: routineDto.procedures.length),
                     ),
                   ],
