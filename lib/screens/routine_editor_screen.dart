@@ -90,16 +90,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   /// Navigate to [ExerciseLibraryScreen]
   void _selectExercisesInLibrary() async {
-    final exercisesFromLibrary = await showCupertinoModalPopup(
+    final exercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
         return ExerciseLibraryScreen(preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList());
       },
     ) as List<Exercise>?;
 
-    if (exercisesFromLibrary != null) {
+    if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        _addProcedures(exercises: exercisesFromLibrary);
+        _addProcedures(exercises: exercises, shouldScroll: _procedures.isNotEmpty);
       }
     }
   }
@@ -131,7 +131,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
   }
 
-  void _addProcedures({required List<Exercise> exercises}) {
+  void _addProcedures({required List<Exercise> exercises, bool shouldScroll = true}) {
     final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
       _procedures.addAll(proceduresToAdd);
@@ -139,7 +139,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     _cacheRoutine();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    if(shouldScroll) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    }
   }
 
   void _removeProcedure({required String procedureId}) {

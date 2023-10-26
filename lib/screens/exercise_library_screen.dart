@@ -39,9 +39,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
   List<ExerciseInLibraryDto> _filteredExercises = [];
 
-  /// Holds a list of selected [ExerciseInLibraryDto]
-  final List<ExerciseInLibraryDto> _selectedExercises = [];
-
   /// Search through the list of exercises
   void _runSearch({required String searchTerm}) {
     setState(() {
@@ -53,12 +50,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Navigate to previous screen
   void _addSelectedExercises() {
-    final exercises = _selectedExercises.map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
+    final exercises = _whereSelectedExercises().map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
     Navigator.of(context).pop(exercises);
   }
 
   int _indexWhereExercise({required String exerciseId}) {
     return _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
+  }
+
+  List<ExerciseInLibraryDto> _whereSelectedExercises() {
+    return _exercisesInLibrary.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
   }
 
   /// Select up to many exercise
@@ -111,9 +112,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         backgroundColor: tealBlueDark,
         trailing: GestureDetector(
             onTap: _addSelectedExercises,
-            child: _selectedExercises.isNotEmpty
+            child: _whereSelectedExercises().isNotEmpty
                 ? Text(
-                    "Add (${_selectedExercises.length})",
+                    "Add (${_whereSelectedExercises().length})",
                     style: const TextStyle(color: Colors.white),
                   )
                 : const SizedBox.shrink()),
