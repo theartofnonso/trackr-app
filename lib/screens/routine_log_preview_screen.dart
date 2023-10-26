@@ -231,8 +231,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   List<SetDto> _calculateCompletedSets({required List<ProcedureDto> procedures}) {
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
-      final sets = procedure.sets.where((set) => set.checked).toList();
-      completedSets.addAll(sets);
+      completedSets.addAll(procedure.sets);
     }
     return completedSets;
   }
