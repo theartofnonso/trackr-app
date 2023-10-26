@@ -127,7 +127,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 800),
-      curve: Curves.easeOut,
+      curve: Curves.easeInOut,
     );
   }
 
