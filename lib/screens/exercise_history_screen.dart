@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -6,14 +5,11 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
-import '../widgets/routine/editor/procedure_widget.dart';
-import '../widgets/routine/preview/procedure_display_widget.dart';
+import '../widgets/routine/preview/routine_log_lite_widget.dart';
 
 List<SetDto> _calculateCompletedSets({required List<ProcedureDto> procedures}) {
   List<SetDto> completedSets = [];
@@ -66,15 +62,18 @@ class ExerciseHistoryScreen extends StatelessWidget {
     return maxWeightSet;
   }
 
-  List<ProcedureDto> _whereProcedureDto({required List<RoutineLogDto> logs}) {
+  List<RoutineLogDto> _whereRoutineLogDtos({required List<RoutineLogDto> logs}) {
+    return logs
+        .map((log) =>
+            log.copyWith(procedures: log.procedures.where((procedure) => procedure.exercise.id == exerciseId).toList()))
+        .toList();
+  }
+
+  List<ProcedureDto> _whereProcedureDtos({required List<RoutineLogDto> logs}) {
     List<ProcedureDto> foundProcedures = [];
 
     for (RoutineLogDto log in logs) {
-      for (ProcedureDto procedure in log.procedures) {
-        if (procedure.exercise.id == exerciseId) {
-          foundProcedures.add(procedure);
-        }
-      }
+      foundProcedures.addAll(log.procedures);
     }
     return foundProcedures;
   }
@@ -84,15 +83,15 @@ class ExerciseHistoryScreen extends StatelessWidget {
     final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId);
 
     final logs = Provider.of<RoutineLogProvider>(context, listen: false)
-        .logs
-        .where((log) => log.procedures.any((procedure) => exercise.id == exerciseId))
-        .toList();
+        .logs;
 
-    final procedures = _whereProcedureDto(logs: logs);
+    final logsForExercise = _whereRoutineLogDtos(logs: logs);
 
-    final heaviestLog = _heaviestLog(logs: logs);
+    final proceduresForExercise = _whereProcedureDtos(logs: logsForExercise);
 
-    final heaviestSet = _heaviestSet(procedures: procedures);
+    final heaviestLog = _heaviestLog(logs: logsForExercise);
+
+    final heaviestSet = _heaviestSet(procedures: proceduresForExercise);
 
     return DefaultTabController(
         length: 2,
@@ -117,7 +116,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 heaviestSet: heaviestSet,
                 heaviestLog: heaviestLog,
               ),
-              HistoryWidget(procedures: procedures,)
+              HistoryWidget(logs: logsForExercise)
             ],
           ),
         ));
@@ -171,8 +170,9 @@ class SummaryWidget extends StatelessWidget {
 }
 
 class HistoryWidget extends StatelessWidget {
-  final List<ProcedureDto> procedures;
-  const HistoryWidget({super.key, required this.procedures});
+  final List<RoutineLogDto> logs;
+
+  const HistoryWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
@@ -183,30 +183,17 @@ class HistoryWidget extends StatelessWidget {
           Expanded(
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) =>
-                    _procedureToWidget(procedure: procedures[index], otherProcedures: procedures),
+                    RoutineLogLiteWidget(
+                      routineLogDto: logs[index],
+                    ),
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
-                itemCount: procedures.length),
+                itemCount: logs.length),
           ),
         ],
       ),
     );
   }
-
-
-  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  Widget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
-    return ProcedureDisplayWidget(
-      procedureDto: procedure,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
-    );
-  }
-
-  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
-    return procedures.firstWhereOrNull((procedure) =>
-    procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
-  }
 }
-
 
 class MetricWidget extends StatelessWidget {
   const MetricWidget({

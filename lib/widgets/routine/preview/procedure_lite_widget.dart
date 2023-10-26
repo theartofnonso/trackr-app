@@ -8,14 +8,12 @@ import 'package:tracker_app/widgets/routine/preview/set_widget.dart';
 
 import '../../../dtos/set_dto.dart';
 
-class ProcedureDisplayWidget extends StatelessWidget {
+class ProcedureLiteWidget extends StatelessWidget {
   final ProcedureDto procedureDto;
-  final ProcedureDto? otherSuperSetProcedureDto;
 
-  const ProcedureDisplayWidget({
+  const ProcedureLiteWidget({
     super.key,
     required this.procedureDto,
-    required this.otherSuperSetProcedureDto,
   });
 
   List<Widget> _displaySets() {
@@ -23,7 +21,7 @@ class ProcedureDisplayWidget extends StatelessWidget {
 
     final sets = procedureDto.sets.mapIndexed(((index, setDto) {
       final widget = Padding(
-        padding: const EdgeInsets.only(bottom: 0.0),
+        padding: const EdgeInsets.only(top: 6.0),
         child: SetWidget(
           index: index,
           workingIndex: setDto.type == SetType.working ? workingSets : -1,
@@ -53,18 +51,11 @@ class ProcedureDisplayWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(
+        CupertinoListTile(
           title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              otherSuperSetProcedureDto != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
-                          style: const TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
-                    )
-                  : const SizedBox.shrink(),
               Row(children: [
                 const Icon(
                   CupertinoIcons.timer,
