@@ -209,8 +209,8 @@ class MetricWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       tileColor: tealBlueLight,
-      title: Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
-      trailing: Text(summary, style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+      title: Text(label, style: const TextStyle(fontSize: 14, color: Colors.white)),
+      trailing: Text(summary, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
     );
   }
