@@ -6,14 +6,21 @@ import 'package:tracker_app/providers/exercises_provider.dart';
 
 import '../app_constants.dart';
 import '../models/Exercise.dart';
-import '../widgets/exercise/exercise_library_list_item.dart';
-import '../widgets/exercise/selectable_exercise_library_list_item.dart';
+import '../widgets/exercise/exercise_widget.dart';
+import '../widgets/exercise/selectable_exercise_widget.dart';
 
 class ExerciseInLibraryDto {
-  bool? isSelected;
+  final bool selected;
   final Exercise exercise;
 
-  ExerciseInLibraryDto({this.isSelected = false, required this.exercise});
+  ExerciseInLibraryDto({this.selected = false, required this.exercise});
+
+  ExerciseInLibraryDto copyWith({bool? selected, Exercise? exercise}) {
+    return ExerciseInLibraryDto(
+      selected: selected ?? this.selected,
+      exercise: exercise ?? this.exercise,
+    );
+  }
 }
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -36,7 +43,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   final List<ExerciseInLibraryDto> _selectedExercises = [];
 
   /// Search through the list of exercises
-  void _whereExercises({required String searchTerm}) {
+  void _runSearch({required String searchTerm}) {
     setState(() {
       _filteredExercises = _exercisesInLibrary
           .where((exerciseItem) => exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()))
@@ -50,42 +57,48 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     Navigator.of(context).pop(exercises);
   }
 
+  int _indexWhereExercise({required String exerciseId}) {
+    return _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
+  }
+
   /// Select up to many exercise
-  void _selectCheckedExercise({required bool isSelected, required ExerciseInLibraryDto selectedExercise}) {
-    if (isSelected) {
-      selectedExercise.isSelected = true;
+  void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
+    if (selected) {
+      final exerciseIndex = _indexWhereExercise(exerciseId: exerciseInLibraryDto.exercise.id);
+      final exercise = _exercisesInLibrary[exerciseIndex];
       setState(() {
-        _selectedExercises.add(selectedExercise);
+        _exercisesInLibrary[exerciseIndex] = exercise.copyWith(selected: true);
+        _filteredExercises = _exercisesInLibrary;
       });
     } else {
-      selectedExercise.isSelected = false;
+      final exerciseIndex = _indexWhereExercise(exerciseId: exerciseInLibraryDto.exercise.id);
+      final exercise = _exercisesInLibrary[exerciseIndex];
       setState(() {
-        _selectedExercises.remove(selectedExercise);
+        _exercisesInLibrary[exerciseIndex] = exercise.copyWith(selected: false);
+        _filteredExercises = _exercisesInLibrary;
       });
     }
   }
 
   /// Select an exercise
   void _selectExercise({required ExerciseInLibraryDto selectedExercise}) {
-    setState(() {
-      _selectedExercises.add(selectedExercise);
-    });
+    Navigator.of(context).pop(selectedExercise);
   }
 
-  /// Convert [ExerciseInLibraryDto] to [SelectableExrLibraryListItem]
+  /// Convert [ExerciseInLibraryDto] to [SelectableExerciseWidget]
   Widget _exercisesToWidgets() {
     if (widget.multiSelect) {
       return ListView.separated(
-          itemBuilder: (BuildContext context, int index) => SelectableExrLibraryListItem(
-              exerciseInLibrary: _filteredExercises[index],
-              onTap: (isSelected) =>
-                  _selectCheckedExercise(isSelected: isSelected, selectedExercise: _filteredExercises[index])),
+          itemBuilder: (BuildContext context, int index) => SelectableExerciseWidget(
+              exerciseInLibraryDto: _filteredExercises[index],
+              onTap: (selected) =>
+                  _selectCheckedExercise(selected: selected, exerciseInLibraryDto: _filteredExercises[index])),
           separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
           itemCount: _filteredExercises.length);
     }
     return ListView.separated(
-        itemBuilder: (BuildContext context, int index) => ExrLibraryListItem(
-            exerciseInLibrary: _filteredExercises[index],
+        itemBuilder: (BuildContext context, int index) => ExerciseWidget(
+            exerciseInLibraryDto: _filteredExercises[index],
             onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
         itemCount: _filteredExercises.length);
@@ -110,7 +123,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         child: Column(
           children: [
             SearchBar(
-              onChanged: (searchTerm) => _whereExercises(searchTerm: searchTerm),
+              onChanged: (searchTerm) => _runSearch(searchTerm: searchTerm),
               leading: const Icon(
                 Icons.search_rounded,
                 color: Colors.white70,

@@ -2,26 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../screens/exercise_library_screen.dart';
 
-class SelectableExrLibraryListItem extends StatefulWidget {
-  final ExerciseInLibraryDto exerciseInLibrary;
-  final void Function(bool isSelected) onTap;
+class SelectableExerciseWidget extends StatelessWidget {
+  final ExerciseInLibraryDto exerciseInLibraryDto;
+  final void Function(bool selected) onTap;
 
-  const SelectableExrLibraryListItem({super.key, required this.exerciseInLibrary, required this.onTap});
+  const SelectableExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap});
 
-  @override
-  State<SelectableExrLibraryListItem> createState() => _SelectableExrLibraryListItemState();
-}
-
-class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListItem> {
-  bool _isSelected = false;
-
-  /// Select an exercise
-  void _selectExercise() {
-    final isSelected = !_isSelected;
-    setState(() {
-      _isSelected = isSelected;
-    });
-    widget.onTap(_isSelected);
+  void _onTap() {
+    final isSelected = !exerciseInLibraryDto.selected;
+    onTap(isSelected);
   }
 
   @override
@@ -31,8 +20,8 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
         splashColor: Colors.transparent,
       ),
       child: CheckboxListTile(
-        value: _isSelected,
-        onChanged: (bool? _) => _selectExercise(),
+        value: exerciseInLibraryDto.selected,
+        onChanged: (bool? _) => _onTap(),
         activeColor: Colors.white,
         checkColor: Colors.black,
         hoverColor: Colors.transparent,
@@ -40,7 +29,7 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
         dense: true,
         title: Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(widget.exerciseInLibrary.exercise.name,
+          child: Text(exerciseInLibraryDto.exercise.name,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
         ),
         subtitle: Column(
@@ -49,7 +38,7 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
             SizedBox(
                 width: 300,
                 child: Text(
-                  "Primary: ${widget.exerciseInLibrary.exercise.primary.join(", ")}",
+                  "Primary: ${exerciseInLibraryDto.exercise.primary.join(", ")}",
                   style: const TextStyle(
                       color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                 )),
@@ -57,7 +46,7 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
             SizedBox(
                 width: 300,
                 child: Text(
-                  "Secondary: ${widget.exerciseInLibrary.exercise.secondary.isNotEmpty ? widget.exerciseInLibrary.exercise.secondary.join(", ") : "None"}",
+                  "Secondary: ${exerciseInLibraryDto.exercise.secondary.isNotEmpty ? exerciseInLibraryDto.exercise.secondary.join(", ") : "None"}",
                   style: const TextStyle(
                       color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                 )),
@@ -65,11 +54,5 @@ class _SelectableExrLibraryListItemState extends State<SelectableExrLibraryListI
         ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _isSelected = widget.exerciseInLibrary.isSelected ?? false;
   }
 }

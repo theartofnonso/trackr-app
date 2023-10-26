@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../screens/exercise_library_screen.dart';
 
-class ExrLibraryListItem extends StatelessWidget {
-  final ExerciseInLibraryDto exerciseInLibrary;
+class ExerciseWidget extends StatelessWidget {
+  final ExerciseInLibraryDto exerciseInLibraryDto;
   final void Function() onTap;
 
-  const ExrLibraryListItem({super.key, required this.exerciseInLibrary, required this.onTap});
+  const ExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: Text(exerciseInLibrary.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+        title: Text(exerciseInLibraryDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
         onTap: onTap,
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,7 +19,7 @@ class ExrLibraryListItem extends StatelessWidget {
             SizedBox(
                 width: 300,
                 child: Text(
-                  "Primary: ${exerciseInLibrary.exercise.primary.join(", ")}",
+                  "Primary: ${exerciseInLibraryDto.exercise.primary.join(", ")}",
                   style: const TextStyle(
                       color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                 )),
@@ -27,7 +27,7 @@ class ExrLibraryListItem extends StatelessWidget {
             SizedBox(
                 width: 300,
                 child: Text(
-                  "Secondary: ${exerciseInLibrary.exercise.secondary.isNotEmpty ? exerciseInLibrary.exercise.secondary.join(", ") : "None"}",
+                  "Secondary: ${exerciseInLibraryDto.exercise.secondary.isNotEmpty ? exerciseInLibraryDto.exercise.secondary.join(", ") : "None"}",
                   style: const TextStyle(
                       color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                 )),
