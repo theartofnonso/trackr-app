@@ -54,7 +54,7 @@ class ProcedureWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CupertinoListTile(
+        ListTile(
           onTap: () {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));

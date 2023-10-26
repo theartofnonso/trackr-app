@@ -20,13 +20,10 @@ class ProcedureLiteWidget extends StatelessWidget {
     int workingSets = 0;
 
     final sets = procedureDto.sets.mapIndexed(((index, setDto) {
-      final widget = Padding(
-        padding: const EdgeInsets.only(top: 6.0),
-        child: SetWidget(
-          index: index,
-          workingIndex: setDto.type == SetType.working ? workingSets : -1,
-          setDto: setDto,
-        ),
+      final widget = SetWidget(
+        index: index,
+        workingIndex: setDto.type == SetType.working ? workingSets : -1,
+        setDto: setDto,
       );
 
       if (setDto.type == SetType.working) {
@@ -51,7 +48,8 @@ class ProcedureLiteWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CupertinoListTile(
+        ListTile(
+          //contentPadding: EdgeInsets.zero,
           title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

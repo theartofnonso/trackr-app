@@ -17,8 +17,9 @@ class RoutineLogLiteWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(routineLogDto.name),
-        Row(children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(routineLogDto.name, style: TextStyle(fontWeight: FontWeight.bold)), subtitle: Row(children: [
           const Icon(
             CupertinoIcons.calendar,
             color: Colors.white,
@@ -27,7 +28,7 @@ class RoutineLogLiteWidget extends StatelessWidget {
           const SizedBox(width: 1),
           Text(routineLogDto.createdAt.formattedDayAndMonthAndYear(),
               style: TextStyle(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-        ]),
+        ]),),
         ...routineLogDto.procedures.map((procedure) => ProcedureLiteWidget(procedureDto: procedure)).toList()
       ],
     );
