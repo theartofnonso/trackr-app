@@ -7,13 +7,12 @@ import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/set_widget.dart';
 
 import '../../../dtos/set_dto.dart';
-import '../../../screens/exercise_history_screen.dart';
 
-class ProcedureWidget extends StatelessWidget {
+class ProcedureDisplayWidget extends StatelessWidget {
   final ProcedureDto procedureDto;
   final ProcedureDto? otherSuperSetProcedureDto;
 
-  const ProcedureWidget({
+  const ProcedureDisplayWidget({
     super.key,
     required this.procedureDto,
     required this.otherSuperSetProcedureDto,
@@ -24,7 +23,7 @@ class ProcedureWidget extends StatelessWidget {
 
     final sets = procedureDto.sets.mapIndexed(((index, setDto) {
       final widget = Padding(
-        padding: const EdgeInsets.only(top: 6.0),
+        padding: const EdgeInsets.only(bottom: 0.0),
         child: SetWidget(
           index: index,
           workingIndex: setDto.type == SetType.working ? workingSets : -1,
@@ -54,11 +53,7 @@ class ProcedureWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CupertinoListTile(
-          onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
-          },
+        ListTile(
           title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
