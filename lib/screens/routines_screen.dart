@@ -9,6 +9,7 @@ import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
+import '../widgets/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
@@ -40,6 +41,9 @@ class RoutinesScreen extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(children: [
+                        cachedRoutineLog != null
+                            ? MinimisedRoutineBanner(provider: routineLogProvider, logDto: cachedRoutineLog)
+                            : const SizedBox.shrink(),
                         Expanded(
                           child: ListView.separated(
                               itemBuilder: (BuildContext context, int index) => _RoutineWidget(

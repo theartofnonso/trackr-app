@@ -201,7 +201,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       builder: (BuildContext context) {
         return const ExerciseLibraryScreen(multiSelect: false);
       },
-    ) as List<Exercise>?;
+    ) as List<ExerciseInLibraryDto>?;
 
     if (selectedExercises != null) {
       if (mounted) {
@@ -211,10 +211,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
         }
 
-        final exerciseInLibrary = selectedExercises.first;
+        final selectedExercise = selectedExercises.first.exercise;
         final oldProcedureIndex = _indexWhereProcedure(procedureId: procedureId);
         setState(() {
-          _procedures[oldProcedureIndex] = ProcedureDto(exercise: exerciseInLibrary);
+          _procedures[oldProcedureIndex] = ProcedureDto(exercise: selectedExercise);
         });
       }
       _cacheRoutine();

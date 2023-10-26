@@ -11,6 +11,7 @@ import '../app_constants.dart';
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
+import '../widgets/minimised_routine_banner.dart';
 
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
@@ -42,13 +43,16 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(
                     children: [
+                      cachedRoutineLog != null
+                          ? MinimisedRoutineBanner(provider: provider, logDto: cachedRoutineLog)
+                          : const SizedBox.shrink(),
                       Expanded(
                         child: ListView.separated(
                             itemBuilder: (BuildContext context, int index) =>
                                 _RoutineLogWidget(logDto: provider.logs[index]),
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                             itemCount: provider.logs.length),
-                      )
+                      ),
                     ],
                   ),
                 )
@@ -72,10 +76,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RoutineLogProvider>(context, listen: false).retrieveCachedRoutineLog(context);
-      showMinimisedRoutineBanner(context);
-    });
+    Provider.of<RoutineLogProvider>(context, listen: false).retrieveCachedRoutineLog(context);
   }
 
   @override
@@ -121,8 +122,7 @@ class _RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(_logDuration(),
-                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+              Text(_logDuration(), style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
             ]),
             trailing: MenuAnchor(
               style: MenuStyle(
