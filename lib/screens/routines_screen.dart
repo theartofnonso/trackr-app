@@ -13,7 +13,7 @@ import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
     {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-  Navigator.of(context).push(CupertinoPageRoute(
+  Navigator.of(context).push(MaterialPageRoute(
       builder: (context) =>
           RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
 }
@@ -84,7 +84,7 @@ class _RoutineWidget extends StatelessWidget {
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
     final routine = await Navigator.of(context)
-            .push(CupertinoPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)))
+            .push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)))
         as Map<String, String>?;
     if (routine != null) {
       final id = routine["id"] ?? "";

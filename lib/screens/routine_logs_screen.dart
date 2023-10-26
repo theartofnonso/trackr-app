@@ -65,7 +65,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
 
   void _navigateToRoutineEditor({required BuildContext context}) {
     final routine = RoutineDto(id: '', name: '', procedures: [], createdAt: DateTime.now(), updatedAt: DateTime.now());
-    Navigator.of(context).push(CupertinoPageRoute(
+    Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
   }
@@ -173,7 +173,7 @@ class _RoutineLogWidget extends StatelessWidget {
     return [
       MenuItemButton(
         onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute(
+          Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
         },
         // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
@@ -193,7 +193,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
     final routine = await Navigator.of(context)
-            .push(CupertinoPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)))
+            .push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)))
         as Map<String, String>?;
     if (routine != null) {
       final id = routine["id"] ?? "";

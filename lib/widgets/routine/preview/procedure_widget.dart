@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/screens/exercise_history_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/set_widget.dart';
@@ -54,6 +55,10 @@ class ProcedureWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CupertinoListTile(
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
+          },
           title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,8 +87,7 @@ class ProcedureWidget extends StatelessWidget {
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(procedureDto.notes,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
         ..._displaySets(),

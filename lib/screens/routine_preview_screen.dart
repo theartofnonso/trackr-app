@@ -40,7 +40,7 @@ class RoutinePreviewScreen extends StatelessWidget {
       {required BuildContext context,
       required RoutineDto routineDto,
       RoutineEditorMode mode = RoutineEditorMode.editing}) {
-    Navigator.of(context).push(CupertinoPageRoute(
+    Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
   }

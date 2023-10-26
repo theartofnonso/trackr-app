@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: _isLoading
-          ? const Center(child: CupertinoActivityIndicator(color: Colors.white, radius: 16))
+          ? const Center(child: CircularProgressIndicator(color: Colors.white))
           : const HomeScreen(),
     );
   }

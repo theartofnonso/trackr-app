@@ -33,7 +33,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(CupertinoPageRoute(
+            Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => RoutineEditorScreen(
                     routineDto: logDto,
                     mode: RoutineEditorMode.routine,

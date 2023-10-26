@@ -320,7 +320,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto}) async {
-    Navigator.of(context).push(CupertinoPageRoute(
+    Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
   }
