@@ -10,7 +10,7 @@ import '../dtos/routine_log_dto.dart';
 import '../models/RoutineLog.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-  final List<RoutineLogDto> _logs = [];
+  List<RoutineLogDto> _logs = [];
 
   RoutineLogDto? _cachedLogDto;
 
@@ -40,8 +40,7 @@ class RoutineLogProvider with ChangeNotifier {
   void listRoutineLogs(BuildContext context) async {
     final logs = await Amplify.DataStore.query(RoutineLog.classType,
         sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
-    final routineLogDtos = logs.map((log) => log.toRoutineLogDto(context)).toList();
-    _logs.addAll(routineLogDtos);
+    _logs = logs.map((log) => log.toRoutineLogDto(context)).toList();
     notifyListeners();
   }
 
