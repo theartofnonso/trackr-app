@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routines_screen.dart';
-
-import '../providers/exercises_provider.dart';
-import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,19 +43,5 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndex: _currentScreenIndex,
       ),
     );
-  }
-
-  void _loadData() async {
-    await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
-    if (mounted) {
-      Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context);
-      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
   }
 }

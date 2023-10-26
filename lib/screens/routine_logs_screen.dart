@@ -9,8 +9,9 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../app_constants.dart';
 import '../dtos/routine_log_dto.dart';
+import '../providers/exercises_provider.dart';
 import '../providers/routine_log_provider.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../providers/routine_provider.dart';
 import '../widgets/minimised_routine_banner.dart';
 
 class RoutineLogsScreen extends StatefulWidget {
@@ -62,13 +63,20 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
     }));
   }
 
-  void _navigateToRoutineEditor({required BuildContext context}) async {
+  void _navigateToRoutineEditor({required BuildContext context}) {
     final routine = RoutineDto(id: '', name: '', procedures: [], createdAt: DateTime.now(), updatedAt: DateTime.now());
-    await Navigator.of(context).push(CupertinoPageRoute(
+    Navigator.of(context).push(CupertinoPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
-    if (context.mounted) {
-      showMinimisedRoutineBanner(context);
+  }
+
+  void _loadData() async {
+    await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+    if (mounted) {
+      final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+      routineLogProvider.listRoutineLogs(context);
+      routineLogProvider.retrieveCachedRoutineLog(context);
+      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
     }
   }
 
@@ -76,7 +84,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Provider.of<RoutineLogProvider>(context, listen: false).retrieveCachedRoutineLog(context);
+    _loadData();
   }
 
   @override

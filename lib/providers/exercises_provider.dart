@@ -24,7 +24,6 @@ class ExerciseProvider with ChangeNotifier {
 
     if (items != null) {
       _exercises.addAll(items);
-      notifyListeners();
     }
   }
 

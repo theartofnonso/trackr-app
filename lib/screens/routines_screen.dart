@@ -8,18 +8,14 @@ import 'package:tracker_app/screens/routine_preview_screen.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
 import '../widgets/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
-    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) async {
-  await Navigator.of(context).push(CupertinoPageRoute(
+    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+  Navigator.of(context).push(CupertinoPageRoute(
       builder: (context) =>
           RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
-  if (context.mounted) {
-    showMinimisedRoutineBanner(context);
-  }
 }
 
 class RoutinesScreen extends StatelessWidget {

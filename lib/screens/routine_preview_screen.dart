@@ -10,7 +10,6 @@ import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
   final String routineId;
@@ -24,7 +23,6 @@ class RoutinePreviewScreen extends StatelessWidget {
         onPressed: () {
           _navigateToRoutineEditor(context: context, routineDto: routineDto, mode: RoutineEditorMode.editing);
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
@@ -32,7 +30,6 @@ class RoutinePreviewScreen extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).pop({"id": routineId});
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),
       )
@@ -42,13 +39,10 @@ class RoutinePreviewScreen extends StatelessWidget {
   void _navigateToRoutineEditor(
       {required BuildContext context,
       required RoutineDto routineDto,
-      RoutineEditorMode mode = RoutineEditorMode.editing}) async {
-    await Navigator.of(context).push(CupertinoPageRoute(
+      RoutineEditorMode mode = RoutineEditorMode.editing}) {
+    Navigator.of(context).push(CupertinoPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
-    if (context.mounted) {
-      showMinimisedRoutineBanner(context);
-    }
   }
 
   /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]

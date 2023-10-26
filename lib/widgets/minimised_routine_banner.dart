@@ -28,13 +28,11 @@ class MinimisedRoutineBanner extends StatelessWidget {
         TextButton(
           onPressed: () {
             provider.clearCachedLog();
-            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
           },
           child: const Text('Cancel', style: TextStyle(color: Colors.white)),
         ),
         TextButton(
           onPressed: () {
-            ScaffoldMessenger.of(context).removeCurrentMaterialBanner();
             Navigator.of(context).push(CupertinoPageRoute(
                 builder: (context) => RoutineEditorScreen(
                     routineDto: logDto,
