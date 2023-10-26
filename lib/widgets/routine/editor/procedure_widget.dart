@@ -147,13 +147,13 @@ class ProcedureWidget extends StatelessWidget {
             children: [
               Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
-                    },
-                    child: Text(procedureDto.exercise.name,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                  )),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
+                },
+                child: Text(procedureDto.exercise.name,
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              )),
               MenuAnchor(
                   style: MenuStyle(
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),
