@@ -198,7 +198,6 @@ class ProcedureWidget extends StatelessWidget {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            maxLengthEnforcement: MaxLengthEnforcement.enforced,
             style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 6),

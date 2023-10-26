@@ -10,6 +10,7 @@ import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
+import '../widgets/helper_widgets/routine_helper.dart';
 
 class RoutinePreviewScreen extends StatelessWidget {
   final String routineId;
@@ -49,15 +50,8 @@ class RoutinePreviewScreen extends StatelessWidget {
   Widget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
     return ProcedureWidget(
       procedureDto: procedure,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
+      otherSuperSetProcedureDto: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: otherProcedures),
     );
-  }
-
-  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
-    return procedures.firstWhereOrNull((procedure) =>
-        procedure.superSetId.isNotEmpty &&
-        procedure.superSetId == firstProcedure.superSetId &&
-        procedure.exercise.id != firstProcedure.exercise.id);
   }
 
   @override

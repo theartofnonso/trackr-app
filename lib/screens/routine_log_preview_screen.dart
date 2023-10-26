@@ -12,6 +12,7 @@ import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../models/BodyPart.dart';
 import '../providers/routine_log_provider.dart';
+import '../widgets/helper_widgets/routine_helper.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;
@@ -214,7 +215,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
           child: ProcedureWidget(
                 procedureDto: procedure,
                 otherSuperSetProcedureDto:
-                    _whereOtherProcedure(firstProcedure: procedure, procedures: routineLogDto.procedures),
+                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: routineLogDto.procedures),
               ),
         ))
         .toList();
@@ -325,10 +326,5 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
-  }
-
-  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
-    return procedures.firstWhereOrNull((procedure) =>
-        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
   }
 }

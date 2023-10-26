@@ -17,6 +17,7 @@ import '../dtos/set_dto.dart';
 import '../models/Exercise.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
+import '../widgets/helper_widgets/routine_helper.dart';
 import '../widgets/routine/editor/procedure_widget.dart';
 import 'exercise_library_screen.dart';
 
@@ -331,11 +332,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         .toList();
   }
 
-  ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure}) {
-    return _procedures.firstWhereOrNull((procedure) =>
-        procedure.superSetId == firstProcedure.superSetId && procedure.exercise.id != firstProcedure.exercise.id);
-  }
-
   void _showRoutineIntervalPicker() {
     showModalPopup(
         context: context,
@@ -388,7 +384,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return ProcedureWidget(
       procedureDto: procedure,
       editorType: widget.mode,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure),
+      otherSuperSetProcedureDto: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
       onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
       onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
       onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
@@ -632,8 +628,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                             hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
                         cursorColor: Colors.white,
                         keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        textCapitalization: TextCapitalization.words,
                         style:
                             TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                       ),
@@ -653,7 +648,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         cursorColor: Colors.white,
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         style:
                             TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                       ),
