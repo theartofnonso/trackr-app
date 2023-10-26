@@ -77,110 +77,101 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             ],
           ),
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  logDto.notes.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text(logDto.notes,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                        )
-                      : const SizedBox.shrink(),
-                  Row(
-                    children: [
-                      const Icon(
-                        CupertinoIcons.calendar,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(logDto.createdAt.formattedDayAndMonthAndYear(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.95),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12)),
-                      const SizedBox(width: 10),
-                      const Icon(
-                        CupertinoIcons.time,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(logDto.createdAt.formattedTime(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.95),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12)),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                        color: tealBlueLight, // Set the background color
-                      ),
-                      child: Flex(
-                        direction: Axis.horizontal,
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(completedSetsSummary,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    logDto.notes.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Text(logDto.notes,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                )),
+                          )
+                        : const SizedBox.shrink(),
+                    Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.calendar,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(logDto.createdAt.formattedDayAndMonthAndYear(),
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                        const SizedBox(width: 10),
+                        const Icon(
+                          CupertinoIcons.time,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(logDto.createdAt.formattedTime(),
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                          color: tealBlueLight, // Set the background color
+                        ),
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(completedSetsSummary,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                              ),
                             ),
-                          ),
-                          const VerticalDivider(
-                            color: tealBlueLighter,
-                            thickness: 2,
-                            indent: 12,
-                            endIndent: 12,
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(totalWeightSummary,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                            const VerticalDivider(
+                              color: tealBlueLighter,
+                              thickness: 2,
+                              indent: 12,
+                              endIndent: 12,
+                              width: 20,
                             ),
-                          ),
-                          const VerticalDivider(
-                            color: tealBlueLighter,
-                            thickness: 2,
-                            indent: 12,
-                            endIndent: 12,
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(_logDuration(logDto: logDto),
-                                  style: const TextStyle(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                            Expanded(
+                              child: Center(
+                                child: Text(totalWeightSummary,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                              ),
                             ),
-                          ),
-                        ],
+                            const VerticalDivider(
+                              color: tealBlueLighter,
+                              thickness: 2,
+                              indent: 12,
+                              endIndent: 12,
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(_logDuration(logDto: logDto),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Column(
-                    children: [..._bodyPartSplit(procedures: logDto.procedures)],
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (BuildContext context, int index) =>
-                            _procedureToWidget(procedure: logDto.procedures[index], otherProcedures: logDto.procedures),
-                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
-                        itemCount: logDto.procedures.length),
-                  ),
-                ],
+                    Column(
+                      children: [..._bodyPartSplit(procedures: logDto.procedures)],
+                    ),
+                    ..._proceduresToWidgets(routineLogDto: logDto)
+                  ],
+                ),
               ),
             ),
           ));
@@ -214,6 +205,19 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  List<Widget> _proceduresToWidgets({required RoutineLogDto routineLogDto}) {
+    return routineLogDto.procedures
+        .map((procedure) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: ProcedureWidget(
+                procedureDto: procedure,
+                otherSuperSetProcedureDto:
+                    _whereOtherProcedure(firstProcedure: procedure, procedures: routineLogDto.procedures),
+              ),
+        ))
+        .toList();
   }
 
   String _logDuration({required RoutineLogDto logDto}) {
@@ -321,14 +325,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
-  }
-
-  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  ProcedureWidget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
-    return ProcedureWidget(
-      procedureDto: procedure,
-      otherSuperSetProcedureDto: _whereOtherProcedure(firstProcedure: procedure, procedures: otherProcedures),
-    );
   }
 
   ProcedureDto? _whereOtherProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
