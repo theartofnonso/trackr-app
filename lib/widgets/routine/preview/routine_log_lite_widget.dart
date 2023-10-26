@@ -19,7 +19,7 @@ class RoutineLogLiteWidget extends StatelessWidget {
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(routineLogDto.name, style: TextStyle(fontWeight: FontWeight.bold)), subtitle: Row(children: [
+          title: Text(routineLogDto.name, style: const TextStyle(fontWeight: FontWeight.bold)), subtitle: Row(children: [
           const Icon(
             CupertinoIcons.calendar,
             color: Colors.white,

@@ -82,8 +82,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId);
 
-    final logs = Provider.of<RoutineLogProvider>(context, listen: false)
-        .logs;
+    final logs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
 
     final logsForExercise = _whereRoutineLogDtos(logs: logs);
 
@@ -184,8 +183,7 @@ class HistoryWidget extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) =>
-                    RoutineLogLiteWidget(
+                itemBuilder: (BuildContext context, int index) => RoutineLogLiteWidget(
                       routineLogDto: logs[index],
                     ),
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),

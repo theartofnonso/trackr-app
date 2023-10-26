@@ -8,6 +8,7 @@ import 'package:tracker_app/widgets/routine/preview/set_widget.dart';
 
 import '../../../dtos/set_dto.dart';
 import '../../../screens/exercise_history_screen.dart';
+import '../../helper_widgets/routine_helper.dart';
 
 class ProcedureWidget extends StatelessWidget {
   final ProcedureDto procedureDto;
@@ -18,36 +19,6 @@ class ProcedureWidget extends StatelessWidget {
     required this.procedureDto,
     required this.otherSuperSetProcedureDto,
   });
-
-  List<Widget> _displaySets() {
-    int workingSets = 0;
-
-    final sets = procedureDto.sets.mapIndexed(((index, setDto) {
-      final widget = Padding(
-        padding: const EdgeInsets.only(top: 6.0),
-        child: SetWidget(
-          index: index,
-          workingIndex: setDto.type == SetType.working ? workingSets : -1,
-          setDto: setDto,
-        ),
-      );
-
-      if (setDto.type == SetType.working) {
-        workingSets += 1;
-      }
-
-      return widget;
-    })).toList();
-
-    return sets.isNotEmpty
-        ? sets
-        : [
-            const Padding(
-              padding: EdgeInsets.only(left: 18.0, top: 10),
-              child: ListStyleEmptyState(),
-            )
-          ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +61,7 @@ class ProcedureWidget extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
-        ..._displaySets(),
+        ...setsToWidgets(sets: procedureDto.sets),
       ],
     );
   }
