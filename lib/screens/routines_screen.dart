@@ -66,7 +66,6 @@ class _RoutineWidget extends StatelessWidget {
         onPressed: () {
           _navigateToRoutineEditor(context: context, routineDto: routineDto);
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
@@ -74,7 +73,6 @@ class _RoutineWidget extends StatelessWidget {
         onPressed: () {
           Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),
       )
