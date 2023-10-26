@@ -31,31 +31,27 @@ class SetWidget extends StatelessWidget {
   final void Function(int value) onChangedWeight;
   final void Function(SetType type) onChangedType;
 
-  /// Show [CupertinoActionSheet]
-  void _showSetActionSheet({required BuildContext context}) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: tealBlueDark);
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              _showProcedureTypePicker(context: context);
-            },
-            child: Text('Change Set type', style: textStyle),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-              onRemoved();
-            },
-            child: const Text('Remove set', style: TextStyle(fontSize: 16)),
-          ),
-        ],
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons(BuildContext context) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          _showProcedureTypePicker(context: context);
+        },
+        leadingIcon: const Icon(Icons.find_replace_rounded),
+        child: const Text("Change type"),
       ),
-    );
+      MenuItemButton(
+        onPressed: () {
+          onRemoved();
+        },
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: const Text(
+          "Remove",
+          style: TextStyle(color: Colors.red),
+        ),
+      )
+    ];
   }
 
   void _showProcedureTypePicker({required BuildContext context}) {
@@ -92,12 +88,24 @@ class SetWidget extends StatelessWidget {
               : const SizedBox.shrink()
         ],
       ),
-      trailing: GestureDetector(
-          onTap: () => _showSetActionSheet(context: context),
-          child: const Icon(
-            CupertinoIcons.ellipsis,
-            color: Colors.white,
-          )),
+      trailing: MenuAnchor(
+          style: MenuStyle(
+            backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+          ),
+          builder: (BuildContext context, MenuController controller, Widget? child) {
+            return IconButton(
+              onPressed: () {
+                if (controller.isOpen) {
+                  controller.close();
+                } else {
+                  controller.open();
+                }
+              },
+              icon: const Icon(CupertinoIcons.ellipsis, color: Colors.white),
+              tooltip: 'Show menu',
+            );
+          },
+          menuChildren: _menuActionButtons(context)),
     );
   }
 }

@@ -63,7 +63,6 @@ class ProcedureWidget extends StatelessWidget {
         onPressed: () {
           onReOrderProcedures();
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.repeat_outlined),
         child: const Text("Reorder"),
       ),
@@ -86,7 +85,6 @@ class ProcedureWidget extends StatelessWidget {
         onPressed: () {
           onReplaceProcedure();
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.find_replace_rounded),
         child: const Text("Replace"),
       ),
@@ -94,7 +92,6 @@ class ProcedureWidget extends StatelessWidget {
         onPressed: () {
           onRemoveProcedure();
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text(
           "Remove",
