@@ -16,6 +16,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
     return MaterialBanner(
       padding: const EdgeInsets.only(left: 12, top: 12),
       margin: const EdgeInsets.all(12),
+      dividerColor: Colors.transparent,
       content: Text(
           '${logDto.name.isNotEmpty ? logDto.name : "Workout"} is running'),
       leading: const Icon(
