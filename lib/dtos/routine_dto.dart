@@ -87,6 +87,6 @@ class RoutineDto {
 
   @override
   String toString() {
-    return 'RoutineDto{id: $id, name: $name, notes: $notes, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineDto{id: $id, name: $name, notes: $notes, procedures: $procedures, startTime: $startTime, endTime: $endTime, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

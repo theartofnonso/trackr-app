@@ -48,6 +48,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
           backgroundColor: tealBlueDark,
           appBar: AppBar(
             backgroundColor: tealBlueDark,
+            title: Text(logDto.name,
+                style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
             actions: [
               MenuAnchor(
                 style: MenuStyle(
@@ -80,9 +82,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(logDto.name,
-                      style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
-                  const SizedBox(height: 10),
                   logDto.notes.isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),

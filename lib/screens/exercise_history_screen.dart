@@ -4,7 +4,9 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
@@ -64,14 +66,36 @@ class ExerciseHistoryScreen extends StatelessWidget {
     return totalWeight;
   }
 
+  List<ProcedureDto> _whereProcedureDto({required List<RoutineLogDto> logs}) {
+    List<ProcedureDto> foundProcedures = [];
+
+    for (RoutineLogDto log in logs) {
+      for (ProcedureDto procedure in log.procedures) {
+        if (procedure.exercise.id == exerciseId) {
+          foundProcedures.add(procedure);
+        }
+      }
+    }
+    return foundProcedures;
+  }
+
   @override
   Widget build(BuildContext context) {
     final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId);
-    final logs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
+
+    final logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.where((log) =>
+        log.procedures.any((procedure) => exercise.id == exerciseId))
+        .toList();
+
+    final procedures = _whereProcedureDto(logs: logs);
 
     final bestLog = _bestLog(logs: logs);
 
-    final bestSet = _bestSet(procedures: bestLog.procedures);
+    print(bestLog.name);
+
+    final bestSet = _bestSet(procedures: procedures);
+
+    final oneRepMax = (bestSet.weight * (1 + 0.0333 * bestSet.rep)).round();
 
     return Scaffold(
       appBar: AppBar(
@@ -83,45 +107,47 @@ class ExerciseHistoryScreen extends StatelessWidget {
           child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-            ListTile(
-              tileColor: tealBlueLight,
-              title: const Text("Heaviest weight", style: TextStyle(fontSize: 16, color: Colors.white)),
-              subtitle: Text("Since ${bestLog.createdAt.formattedDayAndMonthAndYear()}",
-                  style: const TextStyle(fontSize: 12, color: Colors.white70)),
-              trailing: Text("${bestSet.weight}kg", style: const TextStyle(fontSize: 16, color: Colors.white)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-            ),
-            const SizedBox(height: 10),
-            ListTile(
-              tileColor: tealBlueLight,
-              title: const Text("Heaviest Set", style: TextStyle(fontSize: 16, color: Colors.white)),
-              subtitle: Text("Since ${bestLog.createdAt.formattedDayAndMonthAndYear()}", style: const TextStyle(fontSize: 12, color: Colors.white70)),
-              trailing: Text("${bestSet.weight}kg x ${bestSet.rep}", style: const TextStyle(fontSize: 16, color: Colors.white)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-            ),
-            const SizedBox(height: 10),
-            ListTile(
-              tileColor: tealBlueLight,
-              title: const Text("Heaviest Session Volume", style: TextStyle(fontSize: 16, color: Colors.white)),
-              subtitle:
-                  Text("Since ${bestLog.createdAt.formattedDayAndMonthAndYear()}", style: const TextStyle(fontSize: 12, color: Colors.white70)),
-              trailing: Text("${bestSet.weight * bestSet.rep}kg", style: const TextStyle(fontSize: 16, color: Colors.white)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-            ),
-            const SizedBox(height: 10),
-            ListTile(
-              tileColor: tealBlueLight,
-              title: Text("Best 1RM", style: TextStyle(fontSize: 16, color: Colors.white)),
-              subtitle: Text("Since ${bestLog.createdAt.formattedDayAndMonthAndYear()}", style: TextStyle(fontSize: 12, color: Colors.white70)),
-              trailing: Text("${_totalWeight(procedures: bestLog.procedures)}", style: TextStyle(fontSize: 16, color: Colors.white)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                MetricWidget(label: 'Heaviest weight', summary: "${bestSet.weight}kg"),
+                const SizedBox(height: 10),
+                MetricWidget(label: 'Heaviest Set', summary: "${bestSet.weight}kg x ${bestSet.rep}"),
+                const SizedBox(height: 10),
+                MetricWidget(label: 'Heaviest Session Volume', summary: "${_totalWeight(procedures: bestLog.procedures)}kg"),
+                const SizedBox(height: 10),
+                MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
+                const SizedBox(height: 20),
+                SizedBox(width: double.infinity, child: CTextButton(onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: bestLog.id,)));
+                }, label: "See best session"))
+              ],
             )
           ],
         ),
       )),
+    );
+  }
+}
+
+class MetricWidget extends StatelessWidget {
+  const MetricWidget({
+    super.key,required this.label, required this.summary,
+  });
+
+  final String label;
+  final String summary;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      tileColor: tealBlueLight,
+      title: Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
+      trailing: Text(summary, style: const TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.w700)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
     );
   }
 }
