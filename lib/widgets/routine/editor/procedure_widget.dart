@@ -187,6 +187,7 @@ class ProcedureWidget extends StatelessWidget {
               hintText: "Enter notes",
               hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
+            maxLines: null,
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
