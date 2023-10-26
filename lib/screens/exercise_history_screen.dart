@@ -98,10 +98,11 @@ class ExerciseHistoryScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
               backgroundColor: Colors.transparent,
-              foregroundColor: Colors.white,
               title: Text(exercise.name,
                   style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
               bottom: const TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white70,
                 tabs: [
                   Tab(
                     text: "Summary",
