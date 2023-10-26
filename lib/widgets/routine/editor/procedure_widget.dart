@@ -9,6 +9,7 @@ import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../screens/exercise_history_screen.dart';
 import '../../../screens/routine_editor_screen.dart';
 
 class ProcedureWidget extends StatelessWidget {
@@ -144,7 +145,15 @@ class ProcedureWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(procedureDto.exercise.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
+              Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
+                    },
+                    child: Text(procedureDto.exercise.name,
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                  )),
               MenuAnchor(
                   style: MenuStyle(
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),
@@ -167,10 +176,10 @@ class ProcedureWidget extends StatelessWidget {
           ),
           procedureDto.superSetId.isNotEmpty
               ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0.0),
-            child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
-                style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
-          )
+                  padding: const EdgeInsets.symmetric(vertical: 0.0),
+                  child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+                      style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
+                )
               : const SizedBox.shrink(),
           const SizedBox(height: 10),
           TextField(
@@ -178,7 +187,8 @@ class ProcedureWidget extends StatelessWidget {
             onChanged: (value) => onUpdateNotes(value),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
               filled: true,
               fillColor: tealBlueLighter,
               hintText: "Enter notes",
