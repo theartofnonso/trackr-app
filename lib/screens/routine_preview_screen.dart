@@ -81,6 +81,8 @@ class RoutinePreviewScreen extends StatelessWidget {
             backgroundColor: tealBlueDark,
             appBar: AppBar(
               backgroundColor: tealBlueDark,
+              title: Text(routineDto.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
               actions: [
                 MenuAnchor(
                   style: MenuStyle(
@@ -113,9 +115,6 @@ class RoutinePreviewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(routineDto.name,
-                        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 18)),
-                    const SizedBox(height: 10),
                     routineDto.notes.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
