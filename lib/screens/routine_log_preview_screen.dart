@@ -111,7 +111,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(logDto.createdAt.formattedTime(),
+                        Text(logDto.endTime!.formattedTime(),
                             style: TextStyle(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],

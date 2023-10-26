@@ -98,6 +98,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
               backgroundColor: Colors.transparent,
+              foregroundColor: Colors.white,
               title: Text(exercise.name,
                   style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
               bottom: const TabBar(
@@ -210,7 +211,7 @@ class MetricWidget extends StatelessWidget {
     return ListTile(
       tileColor: tealBlueLight,
       title: Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
-      trailing: Text(summary, style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700)),
+      trailing: Text(summary, style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
     );
   }

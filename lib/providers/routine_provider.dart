@@ -7,15 +7,14 @@ import '../dtos/procedure_dto.dart';
 import '../dtos/routine_dto.dart';
 
 class RoutineProvider with ChangeNotifier {
-  final List<RoutineDto> _routineDtos = [];
+  List<RoutineDto> _routineDtos = [];
 
   UnmodifiableListView<RoutineDto> get routines => UnmodifiableListView(_routineDtos);
 
   void listRoutines(BuildContext context) async {
-    final routines = await Amplify.DataStore.query(Routine.classType);
+    final routines = await Amplify.DataStore.query(Routine.classType, sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: Routine.CREATEDAT.fieldName)]);
     if(routines.isNotEmpty) {
-      final routineDtos = routines.map((routine) => routine.toRoutineDto(context)).toList();
-      _routineDtos.addAll(routineDtos);
+      _routineDtos = routines.map((routine) => routine.toRoutineDto(context)).toList();
       notifyListeners();
     }
   }
