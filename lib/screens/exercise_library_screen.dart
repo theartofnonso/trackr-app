@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,10 +23,9 @@ class ExerciseInLibraryDto {
 }
 
 class ExerciseLibraryScreen extends StatefulWidget {
-  final List<Exercise> preSelectedExercises;
   final bool multiSelect;
 
-  const ExerciseLibraryScreen({super.key, required this.preSelectedExercises, this.multiSelect = true});
+  const ExerciseLibraryScreen({super.key, this.multiSelect = true});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -156,8 +154,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     _exercisesInLibrary.addAll(exercises);
 
-    _filteredExercises = _exercisesInLibrary
-        .whereNot((exerciseInLibrary) => widget.preSelectedExercises.contains(exerciseInLibrary.exercise))
-        .toList();
+    _filteredExercises = _exercisesInLibrary;
   }
 }

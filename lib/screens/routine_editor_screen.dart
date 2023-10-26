@@ -93,7 +93,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final exercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ExerciseLibraryScreen(preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList());
+        return const ExerciseLibraryScreen();
       },
     ) as List<Exercise>?;
 
@@ -139,7 +139,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     _cacheRoutine();
 
-    if(shouldScroll) {
+    if (shouldScroll) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     }
   }
@@ -199,8 +199,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final selectedExercises = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ExerciseLibraryScreen(
-            preSelectedExercises: _procedures.map((procedure) => procedure.exercise).toList(), multiSelect: false);
+        return const ExerciseLibraryScreen(multiSelect: false);
       },
     ) as List<Exercise>?;
 
@@ -623,35 +622,39 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         controller: _routineNameController,
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(2),
+                                borderSide: const BorderSide(color: tealBlueLighter)),
                             filled: true,
                             fillColor: tealBlueLighter,
                             hintText: "New workout",
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)
-                        ),
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
                         cursorColor: Colors.white,
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        style:
+                            TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                       ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: _routineNotesController,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
-                          filled: true,
-                          fillColor: tealBlueLighter,
-                          hintText: "Notes",
-                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)
-                        ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(2),
+                                borderSide: const BorderSide(color: tealBlueLighter)),
+                            filled: true,
+                            fillColor: tealBlueLighter,
+                            hintText: "Notes",
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
                         maxLines: null,
                         cursorColor: Colors.white,
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        style:
+                            TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                       ),
                     ],
                   )
