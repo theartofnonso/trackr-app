@@ -5,6 +5,7 @@ import 'package:tracker_app/providers/exercises_provider.dart';
 
 import '../app_constants.dart';
 import '../models/Exercise.dart';
+import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/exercise/exercise_widget.dart';
 import '../widgets/exercise/selectable_exercise_widget.dart';
 
@@ -106,16 +107,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CupertinoNavigationBar(
+      appBar: AppBar(
         backgroundColor: tealBlueDark,
-        trailing: GestureDetector(
-            onTap: _addSelectedExercises,
-            child: _whereSelectedExercises().isNotEmpty
-                ? Text(
-                    "Add (${_whereSelectedExercises().length})",
-                    style: const TextStyle(color: Colors.white),
-                  )
-                : const SizedBox.shrink()),
+        actions: [
+          _whereSelectedExercises().isNotEmpty
+              ? CTextButton(
+                  onPressed: _addSelectedExercises,
+                  label: "Add (${_whereSelectedExercises().length})",
+                  buttonColor: Colors.transparent,
+                )
+              : const SizedBox.shrink()
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),

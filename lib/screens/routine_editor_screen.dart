@@ -570,10 +570,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             ? AppBar(
                 backgroundColor: tealBlueDark,
                 actions: [
-                  GestureDetector(
-                      onTap: previousRoutine != null ? _updateRoutine : _createRoutine,
-                      child: Text(previousRoutine != null ? "Update" : "Save",
-                          style: Theme.of(context).textTheme.labelMedium))
+                  CTextButton(
+                    onPressed: previousRoutine != null ? _updateRoutine : _createRoutine,
+                    label: previousRoutine != null ? "Update" : "Save",
+                    buttonColor: Colors.transparent,
+                  )
                 ],
               )
             : AppBar(

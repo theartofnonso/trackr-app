@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../screens/exercise_history_screen.dart';
 import '../../screens/exercise_library_screen.dart';
 
 class SelectableExerciseWidget extends StatelessWidget {
@@ -27,11 +28,8 @@ class SelectableExerciseWidget extends StatelessWidget {
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         dense: true,
-        title: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(exerciseInLibraryDto.exercise.name,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
-        ),
+        title: Text(exerciseInLibraryDto.exercise.name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,6 +49,16 @@ class SelectableExerciseWidget extends StatelessWidget {
                       color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                 )),
           ],
+        ),
+        secondary: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
+          },
+          icon: const Icon(
+            Icons.data_exploration,
+            color: Colors.white,
+          ),
         ),
       ),
     );
