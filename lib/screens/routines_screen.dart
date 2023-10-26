@@ -11,8 +11,7 @@ import '../providers/routine_provider.dart';
 import '../widgets/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
-void _navigateToRoutineEditor(
-    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+void _navigateToRoutineEditor({required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
   Navigator.of(context).push(MaterialPageRoute(
       builder: (context) =>
           RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
@@ -167,10 +166,10 @@ class _RoutineWidget extends StatelessWidget {
         .take(3)
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
-              child: CupertinoListTile(
+              child: ListTile(
                   onTap: () => _navigateToRoutinePreview(context: context),
-                  backgroundColor: tealBlueLight,
-                  backgroundColorActivated: tealBlueLight,
+                  tileColor: tealBlueLight,
+                  selectedTileColor: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),

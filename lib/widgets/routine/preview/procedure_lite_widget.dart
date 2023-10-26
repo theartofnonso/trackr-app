@@ -49,7 +49,6 @@ class ProcedureLiteWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          //contentPadding: EdgeInsets.zero,
           title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

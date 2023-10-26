@@ -226,10 +226,10 @@ class _RoutineLogWidget extends StatelessWidget {
         .take(3)
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
-              child: CupertinoListTile(
+              child: ListTile(
                   onTap: () => _navigateToRoutineLogPreview(context: context),
-                  backgroundColor: tealBlueLight,
-                  backgroundColorActivated: tealBlueLight,
+                  tileColor: tealBlueLight,
+                  selectedTileColor: tealBlueLight,
                   title: Text(procedure.exercise.name,
                       style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
