@@ -5,9 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
@@ -50,6 +48,35 @@ SetDto _heaviestSetVolume({required List<RoutineLogDto> logs}) {
   return heaviestSet;
 }
 
+RoutineLogDto _heaviestLog({required List<RoutineLogDto> logs}) {
+  RoutineLogDto heaviestLog = logs[0];
+
+  int heaviestVolume = 0;
+
+  for (var log in logs) {
+    final totalVolume = _totalVolume(log: log);
+    if (totalVolume > heaviestVolume) {
+      heaviestVolume = totalVolume;
+      heaviestLog = log;
+    }
+  }
+
+  return heaviestLog;
+}
+
+int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
+  int heaviestVolume = 0;
+
+  for (var log in logs) {
+    final totalVolume = _totalVolume(log: log);
+    if (totalVolume > heaviestVolume) {
+      heaviestVolume = totalVolume;
+    }
+  }
+
+  return heaviestVolume;
+}
+
 int _heaviestWeight({required List<RoutineLogDto> logs}) {
   int heaviestWeight = 0;
 
@@ -70,36 +97,11 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   const ExerciseHistoryScreen({super.key, required this.exerciseId});
 
-  RoutineLogDto _heaviestLogVolume({required List<RoutineLogDto> logs}) {
-    RoutineLogDto heaviestLog = logs[0];
-
-    int heaviestVolume = 0;
-
-    for (var log in logs) {
-      final totalVolume = _totalVolume(log: log);
-      if (totalVolume > heaviestVolume) {
-        heaviestVolume = totalVolume;
-        heaviestLog = log;
-      }
-    }
-
-    return heaviestLog;
-  }
-
   List<RoutineLogDto> _whereRoutineLogDto({required List<RoutineLogDto> logs}) {
     return logs
         .map((log) =>
             log.copyWith(procedures: log.procedures.where((procedure) => procedure.exercise.id == exerciseId).toList()))
         .toList();
-  }
-
-  List<ProcedureDto> _whereProcedureDtos({required List<RoutineLogDto> logs}) {
-    List<ProcedureDto> foundProcedures = [];
-
-    for (RoutineLogDto log in logs) {
-      foundProcedures.addAll(log.procedures);
-    }
-    return foundProcedures;
   }
 
   @override
@@ -110,7 +112,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final routineLogsForExercise = _whereRoutineLogDto(logs: routineLogs);
 
-    final heaviestRoutineLog = _heaviestLogVolume(logs: routineLogsForExercise);
+    final heaviestRoutineLog = _heaviestLog(logs: routineLogsForExercise);
+
+    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogs);
 
     final heaviestSet = _heaviestSetVolume(logs: routineLogsForExercise);
 
@@ -139,6 +143,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
             children: [
               SummaryWidget(
                 heaviestWeight: heaviestWeight,
+                heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                 heaviestSet: heaviestSet,
                 heaviestLog: heaviestRoutineLog,
                 routineLogDtos: routineLogsForExercise,
@@ -154,9 +159,10 @@ class SummaryWidget extends StatelessWidget {
   final int heaviestWeight;
   final SetDto heaviestSet;
   final RoutineLogDto heaviestLog;
+  final int heaviestRoutineLogVolume;
   final List<RoutineLogDto> routineLogDtos;
 
-  const SummaryWidget({super.key, required this.heaviestWeight, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos});
+  const SummaryWidget({super.key, required this.heaviestWeight, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos, required this.heaviestRoutineLogVolume});
 
   @override
   Widget build(BuildContext context) {
@@ -184,16 +190,14 @@ class SummaryWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20.0, right: 30),
+            padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
             child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
           ),
-          const SizedBox(height: 20),
           MetricWidget(label: 'Heaviest weight', summary: "${heaviestWeight}kg"),
           const SizedBox(height: 10),
           MetricWidget(label: 'Heaviest Set', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}"),
           const SizedBox(height: 10),
-          MetricWidget(
-              label: 'Heaviest Session Volume', summary: "${_totalVolume(log: heaviestLog)}kg"),
+          MetricWidget(label: 'Heaviest Session Volume', summary: "${heaviestRoutineLogVolume}kg"),
           const SizedBox(height: 10),
           MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
         ],
