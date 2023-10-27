@@ -15,7 +15,7 @@ import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/routine/preview/routine_log_lite_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
 
-List<SetDto> _totalSets({required List<ProcedureDto> procedures}) {
+List<SetDto> _allSets({required List<ProcedureDto> procedures}) {
   List<SetDto> completedSets = [];
   for (var procedure in procedures) {
     completedSets.addAll(procedure.sets);
@@ -23,10 +23,80 @@ List<SetDto> _totalSets({required List<ProcedureDto> procedures}) {
   return completedSets;
 }
 
-int _totalVolume({required RoutineLogDto log}) {
+int _weightPerSet({required RoutineLogDto log}) {
+  int totalWeight = 0;
+
+  final sets = _allSets(procedures: log.procedures);
+
+  for (var set in sets) {
+    final weight = set.weight;
+    totalWeight += weight;
+  }
+  return totalWeight;
+}
+
+int _heaviestWeightPerSet({required RoutineLogDto log}) {
+  int heaviestWeight = 0;
+
+  final sets = _allSets(procedures: log.procedures);
+
+  for (var set in sets) {
+    final weight = set.weight;
+    if(weight > heaviestWeight) {
+      heaviestWeight = weight;
+    }
+  }
+  return heaviestWeight;
+}
+
+int _repsPerSet({required RoutineLogDto log}) {
+  int totalReps = 0;
+
+  final sets = _allSets(procedures: log.procedures);
+
+  for (var set in sets) {
+    final weight = set.rep;
+    totalReps += weight;
+  }
+  return totalReps;
+}
+
+int _heaviestVolumePerSet({required RoutineLogDto log}) {
+  int heaviestVolume = 0;
+
+  final sets = _allSets(procedures: log.procedures);
+
+  for (var set in sets) {
+    final volume = set.rep * set.weight;
+    if(volume > heaviestVolume) {
+      heaviestVolume = volume;
+    }
+  }
+  return heaviestVolume;
+}
+
+double _1RMPerSet({required RoutineLogDto log}) {
+  SetDto heaviestSet = SetDto();
+  int heaviestVolume = 0;
+
+  final sets = _allSets(procedures: log.procedures);
+
+  for (var set in sets) {
+    final volume = set.rep * set.weight;
+    if(volume > heaviestVolume) {
+      heaviestVolume = volume;
+      set = set;
+    }
+  }
+
+  return (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
+}
+
+
+int _totalSetsVolume({required RoutineLogDto log}) {
   int totalVolume = 0;
 
-  final sets = _totalSets(procedures: log.procedures);
+  final sets = _allSets(procedures: log.procedures);
 
   for (var set in sets) {
     final volume = set.rep * set.weight;
@@ -39,7 +109,7 @@ SetDto _heaviestSet({required List<RoutineLogDto> logs}) {
   SetDto heaviestSet = SetDto();
 
   for (var log in logs) {
-    final sets = _totalSets(procedures: log.procedures);
+    final sets = _allSets(procedures: log.procedures);
     for (var set in sets) {
       final volume = set.rep * set.weight;
       if (volume > (heaviestSet.rep * heaviestSet.weight)) {
@@ -56,7 +126,7 @@ RoutineLogDto _heaviestLog({required List<RoutineLogDto> logs}) {
   int heaviestVolume = 0;
 
   for (var log in logs) {
-    final totalVolume = _totalVolume(log: log);
+    final totalVolume = _totalSetsVolume(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
       heaviestLog = log;
@@ -70,7 +140,7 @@ int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
   int heaviestVolume = 0;
 
   for (var log in logs) {
-    final totalVolume = _totalVolume(log: log);
+    final totalVolume = _totalSetsVolume(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
     }
@@ -79,11 +149,11 @@ int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
   return heaviestVolume;
 }
 
-int _heaviestWeight({required List<RoutineLogDto> logs}) {
+int _heaviestWeights({required List<RoutineLogDto> logs}) {
   int heaviestWeight = 0;
 
   for (var log in logs) {
-    final sets = _totalSets(procedures: log.procedures);
+    final sets = _allSets(procedures: log.procedures);
     for (var set in sets) {
       final weight = set.weight;
       if (weight > heaviestWeight) {
@@ -121,7 +191,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final heaviestSet = _heaviestSet(logs: routineLogsForExercise);
 
-    final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
+    final heaviestWeight = _heaviestWeights(logs: routineLogsForExercise);
 
     return DefaultTabController(
         length: 2,
@@ -180,20 +250,27 @@ class SummaryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
 
-    final logsWithHighestWeight = _findLogsWithHighestWeight(routineLogDtos).reversed.toList();
+    //final logsWithHighestWeight = _findLogsWithHighestWeight(routineLogDtos).reversed.toList();
 
-    print(logsWithHighestWeight[0]);
+    final allWeights = routineLogDtos.map((log) => _weightPerSet(log: log)).toList();
 
-    final sets = _whereSetDtos(logs: logsWithHighestWeight);
+    final heaviestWeightPerLog = routineLogDtos.map((log) => _heaviestWeightPerSet(log: log)).toList().reversed;
 
-    final weightPoints = sets
-        .map((set) => set.weight)
+    final heaviestVolumePerLog = routineLogDtos.map((log) => _heaviestVolumePerSet(log: log)).toList().reversed;
+
+    final repsPerLog = routineLogDtos.map((log) => _repsPerSet(log: log)).toList().reversed;
+
+    final oneRepMaxPerLog = routineLogDtos.map((log) => _1RMPerSet(log: log)).toList().reversed;
+
+    print(heaviestVolumePerLog);
+
+    final weightPoints = repsPerLog
         .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
         .toList();
 
-    final dates = logsWithHighestWeight.map((log) => log.endTime!.formattedDayAndMonth()).toList();
+    final dates = <String>[];//logsWithHighestWeight.map((log) => log.endTime!.formattedDayAndMonth()).toList();
 
-    final weights = sets.map((set) => set.weight).toList();
+    final weights = <String>[];//sets.map((set) => set.weight).toList();
 
     return SingleChildScrollView(
         child: Padding(
@@ -201,20 +278,20 @@ class SummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 10),
-          Text(
-            "Primary Target: ${exercise.primary.join(", ")}",
-            style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
-            style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-          ),
+          // const SizedBox(height: 10),
+          // Text(
+          //   "Primary Target: ${exercise.primary.join(", ")}",
+          //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+          // ),
+          // const SizedBox(height: 5),
+          // Text(
+          //   "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
+          //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+          // ),
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
-            child: LineChartWidget(chartPoints: weightPoints, dates: dates, weights: weights),
+            child: LineChartWidget(chartPoints: weightPoints, dates: dates, weights: allWeights),
           ),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
