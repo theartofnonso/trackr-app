@@ -10,6 +10,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
+import '../models/Exercise.dart';
 import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/routine/preview/routine_log_lite_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
@@ -149,6 +150,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                 heaviestLog: heaviestRoutineLog,
                 routineLogDtos: routineLogsForExercise,
+                exercise: exercise,
               ),
               HistoryWidget(logs: routineLogsForExercise)
             ],
@@ -163,6 +165,7 @@ class SummaryWidget extends StatelessWidget {
   final RoutineLogDto heaviestLog;
   final int heaviestRoutineLogVolume;
   final List<RoutineLogDto> routineLogDtos;
+  final Exercise exercise;
 
   const SummaryWidget(
       {super.key,
@@ -170,13 +173,16 @@ class SummaryWidget extends StatelessWidget {
       required this.heaviestSet,
       required this.heaviestLog,
       required this.routineLogDtos,
-      required this.heaviestRoutineLogVolume});
+      required this.heaviestRoutineLogVolume,
+      required this.exercise});
 
   @override
   Widget build(BuildContext context) {
     final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
 
     final logsWithHighestWeight = _findLogsWithHighestWeight(routineLogDtos).reversed.toList();
+
+    print(logsWithHighestWeight[0]);
 
     final sets = _whereSetDtos(logs: logsWithHighestWeight);
 
@@ -195,32 +201,36 @@ class SummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "Primary Target: Abs",
-              style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500),
-            ),
+          const SizedBox(height: 10),
+          Text(
+            "Primary Target: ${exercise.primary.join(", ")}",
+            style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
+          const SizedBox(height: 5),
+          Text(
+            "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
+            style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+          ),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
             child: LineChartWidget(chartPoints: volume, dates: dates, weights: weights),
           ),
           SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.horizontal,
               child: Row(
-            children: [
-              CTextButton(onPressed: () {}, label: "Heaviest Weight"),
-              const SizedBox(width: 5),
-              CTextButton(onPressed: () {}, label: "Heaviest Set Volume"),
-              const SizedBox(width: 5),
-              CTextButton(onPressed: () {}, label: "Session Volume"),
-              const SizedBox(width: 5),
-              CTextButton(onPressed: () {}, label: "Total Reps"),
-              const SizedBox(width: 5),
-              CTextButton(onPressed: () {}, label: "1RM")
-            ],
-          )),
+                children: [
+                  CTextButton(onPressed: () {}, label: "Heaviest Weight"),
+                  const SizedBox(width: 5),
+                  CTextButton(onPressed: () {}, label: "Heaviest Set Volume"),
+                  const SizedBox(width: 5),
+                  CTextButton(onPressed: () {}, label: "Session Volume"),
+                  const SizedBox(width: 5),
+                  CTextButton(onPressed: () {}, label: "Total Reps"),
+                  const SizedBox(width: 5),
+                  CTextButton(onPressed: () {}, label: "1RM")
+                ],
+              )),
           const SizedBox(height: 10),
           MetricWidget(
               title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),
@@ -317,7 +327,7 @@ class MetricWidget extends StatelessWidget {
     return ListTile(
       tileColor: tealBlueLight,
       title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white)),
-      subtitle: Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+      subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
       trailing: Text(summary, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
     );
