@@ -6,6 +6,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
@@ -194,10 +195,34 @@ class SummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+                child: Text(
+              "Primary Target: Abs",
+              style: TextStyle(color: Colors.white70),
+            )),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
             child: LineChartWidget(chartPoints: volume, dates: dates, weights: weights),
           ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+              child: Row(
+            children: [
+              CTextButton(onPressed: () {}, label: "Heaviest Weight"),
+              const SizedBox(width: 5),
+              CTextButton(onPressed: () {}, label: "Heaviest Set Volume"),
+              const SizedBox(width: 5),
+              CTextButton(onPressed: () {}, label: "Session Volume"),
+              const SizedBox(width: 5),
+              CTextButton(onPressed: () {}, label: "Total Reps"),
+              const SizedBox(width: 5),
+              CTextButton(onPressed: () {}, label: "1RM")
+            ],
+          )),
+          const SizedBox(height: 10),
           MetricWidget(
               title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),
           const SizedBox(height: 10),
