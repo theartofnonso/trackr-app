@@ -163,7 +163,7 @@ class SummaryWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20.0, right: 20),
+            padding: const EdgeInsets.only(top: 20.0, right: 30),
             child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
           ),
           const SizedBox(height: 20),
