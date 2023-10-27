@@ -114,7 +114,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final heaviestRoutineLog = _heaviestLog(logs: routineLogsForExercise);
 
-    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogs);
+    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogsForExercise);
 
     final heaviestSet = _heaviestSetVolume(logs: routineLogsForExercise);
 
@@ -193,13 +193,13 @@ class SummaryWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
             child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
           ),
-          MetricWidget(label: 'Heaviest weight', summary: "${heaviestWeight}kg"),
+          MetricWidget(title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),
           const SizedBox(height: 10),
-          MetricWidget(label: 'Heaviest Set', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}"),
+          MetricWidget(title: 'Heaviest Set Volume', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}", subtitle: 'Heaviest volume lifted for a set',),
           const SizedBox(height: 10),
-          MetricWidget(label: 'Heaviest Session Volume', summary: "${heaviestRoutineLogVolume}kg"),
+          MetricWidget(title: 'Heaviest Session Volume', summary: "${heaviestRoutineLogVolume}kg", subtitle: 'Heaviest volume lifted for a session',),
           const SizedBox(height: 10),
-          MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
+          MetricWidget(title: '1 Rep Max', summary: '${oneRepMax}kg', subtitle: 'Heaviest weight you can lift for one rep',),
         ],
       ),
     ));
@@ -261,18 +261,21 @@ class HistoryWidget extends StatelessWidget {
 class MetricWidget extends StatelessWidget {
   const MetricWidget({
     super.key,
-    required this.label,
+    required this.title,
+    required this.subtitle,
     required this.summary,
   });
 
-  final String label;
+  final String title;
+  final String subtitle;
   final String summary;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       tileColor: tealBlueLight,
-      title: Text(label, style: const TextStyle(fontSize: 14, color: Colors.white)),
+      title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white)),
+      subtitle: Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.white70)),
       trailing: Text(summary, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
     );
