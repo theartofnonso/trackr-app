@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -9,7 +10,9 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
+import '../widgets/line_chart_widget.dart';
 import '../widgets/routine/preview/routine_log_lite_widget.dart';
+import '../widgets/weightPoint.dart';
 
 List<SetDto> _calculateCompletedSets({required List<ProcedureDto> procedures}) {
   List<SetDto> completedSets = [];
@@ -54,7 +57,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     for (var procedure in procedures) {
       for (var set in procedure.sets) {
-        if (set.weight > maxWeightSet.weight) {
+        final volume = set.weight * set.rep;
+        if (volume > (maxWeightSet.weight * maxWeightSet.rep)) {
           maxWeightSet = set;
         }
       }
@@ -115,7 +119,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
             children: [
               SummaryWidget(
                 heaviestSet: heaviestSet,
-                heaviestLog: heaviestLog,
+                heaviestLog: heaviestLog, routineLogDtos: logsForExercise,
               ),
               HistoryWidget(logs: logsForExercise)
             ],
@@ -127,46 +131,78 @@ class ExerciseHistoryScreen extends StatelessWidget {
 class SummaryWidget extends StatelessWidget {
   final SetDto heaviestSet;
   final RoutineLogDto heaviestLog;
+  final List<RoutineLogDto> routineLogDtos;
 
-  const SummaryWidget({super.key, required this.heaviestSet, required this.heaviestLog});
+  const SummaryWidget({super.key, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos});
+
 
   @override
   Widget build(BuildContext context) {
     final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep)).round();
 
+    final logsWithHighestWeight = _findLogsWithHighestWeight(routineLogDtos).reversed.toList();
+
+    final sets = _whereSetDtos(logs: logsWithHighestWeight);
+
+      final data = sets.map((set) => set.weight * set.rep).mapIndexed((index, value) => WeightPoint(index.toDouble(), value.toDouble())).toList();
+
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              MetricWidget(label: 'Heaviest weight', summary: "${heaviestSet.weight}kg"),
-              const SizedBox(height: 10),
-              MetricWidget(label: 'Heaviest Set', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}"),
-              const SizedBox(height: 10),
-              MetricWidget(
-                  label: 'Heaviest Session Volume', summary: "${_totalWeight(procedures: heaviestLog.procedures)}kg"),
-              const SizedBox(height: 10),
-              MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
-              const SizedBox(height: 20),
-              SizedBox(
-                  width: double.infinity,
-                  child: CTextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => RoutineLogPreviewScreen(
-                                  routineLogId: heaviestLog.id,
-                                )));
-                      },
-                      label: "See best session"))
-            ],
-          )
+          LineChartWidget(points: data),
+          const SizedBox(height: 20),
+          MetricWidget(label: 'Heaviest weight', summary: "${heaviestSet.weight}kg"),
+          const SizedBox(height: 10),
+          MetricWidget(label: 'Heaviest Set', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}"),
+          const SizedBox(height: 10),
+          MetricWidget(
+              label: 'Heaviest Session Volume', summary: "${_totalWeight(procedures: heaviestLog.procedures)}kg"),
+          const SizedBox(height: 10),
+          MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
+          const SizedBox(height: 20),
+          SizedBox(
+              width: double.infinity,
+              child: CTextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => RoutineLogPreviewScreen(
+                          routineLogId: heaviestLog.id,
+                        )));
+                  },
+                  label: "See best session"))
         ],
       ),
     ));
+  }
+
+  List<RoutineLogDto> _findLogsWithHighestWeight(List<RoutineLogDto> logs) {
+    return logs.map((log) {
+      final logWithHighestWeight = log.copyWith(
+        procedures: log.procedures.map((procedure) {
+          final maxVolumeSet = procedure.sets.reduce((a, b) {
+            final volumeA = a.weight * a.rep;
+            final volumeB = b.weight * b.rep;
+            return volumeA > volumeB ? a : b;
+          });
+          return procedure.copyWith(sets: [maxVolumeSet]);
+        }).toList(),
+      );
+      return logWithHighestWeight;
+    }).toList();
+  }
+
+  List<SetDto> _whereSetDtos({required List<RoutineLogDto> logs}) {
+    List<SetDto> foundSets = [];
+
+    for (RoutineLogDto log in logs) {
+      for (ProcedureDto procedure in log.procedures) {
+        foundSets.add(procedure.sets.first);
+      }
+    }
+    return foundSets;
   }
 }
 

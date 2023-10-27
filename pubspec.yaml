@@ -41,13 +41,13 @@ dependencies:
   amplify_datastore: ^1.4.2
 
   # FL Chart is a highly customizable Flutter chart library
-  syncfusion_flutter_charts: ^23.1.39
   provider: ^6.0.5
   intl: ^0.18.1
   google_fonts: ^6.1.0
   shared_preferences: ^2.2.1
   collection: ^1.17.2
   excel: ^2.1.0
+  fl_chart: ^0.64.0
 
 dev_dependencies:
   flutter_test:
