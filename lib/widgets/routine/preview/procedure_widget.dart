@@ -1,12 +1,7 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
-import 'package:tracker_app/widgets/routine/preview/set_widget.dart';
-
-import '../../../dtos/set_dto.dart';
 import '../../../screens/exercise_history_screen.dart';
 import '../../helper_widgets/routine_helper.dart';
 
