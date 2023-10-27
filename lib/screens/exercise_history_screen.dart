@@ -23,16 +23,46 @@ List<SetDto> _totalSets({required List<ProcedureDto> procedures}) {
   return completedSets;
 }
 
-int _totalVolume({required List<ProcedureDto> procedures}) {
+int _totalVolume({required RoutineLogDto log}) {
   int totalVolume = 0;
 
-  final sets = _totalSets(procedures: procedures);
+  final sets = _totalSets(procedures: log.procedures);
 
   for (var set in sets) {
     final volume = set.rep * set.weight;
     totalVolume += volume;
   }
   return totalVolume;
+}
+
+SetDto _heaviestSetVolume({required List<RoutineLogDto> logs}) {
+  SetDto heaviestSet = SetDto();
+
+  for (var log in logs) {
+    final sets = _totalSets(procedures: log.procedures);
+    for (var set in sets) {
+      final volume = set.rep * set.weight;
+      if (volume > (heaviestSet.rep * heaviestSet.weight)) {
+        heaviestSet = set;
+      }
+    }
+  }
+  return heaviestSet;
+}
+
+int _heaviestWeight({required List<RoutineLogDto> logs}) {
+  int heaviestWeight = 0;
+
+  for (var log in logs) {
+    final sets = _totalSets(procedures: log.procedures);
+    for (var set in sets) {
+      final weight = set.weight;
+      if (weight > heaviestWeight) {
+        heaviestWeight = weight;
+      }
+    }
+  }
+  return heaviestWeight;
 }
 
 class ExerciseHistoryScreen extends StatelessWidget {
@@ -46,7 +76,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
     int heaviestVolume = 0;
 
     for (var log in logs) {
-      final totalVolume = _totalVolume(procedures: log.procedures);
+      final totalVolume = _totalVolume(log: log);
       if (totalVolume > heaviestVolume) {
         heaviestVolume = totalVolume;
         heaviestLog = log;
@@ -56,27 +86,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
     return heaviestLog;
   }
 
-  SetDto _heaviestSetVolume({required List<ProcedureDto> procedures}) {
-    SetDto heaviestSet = SetDto();
-
-    for (var procedure in procedures) {
-      final totalVolume = _totalVolume(procedures: procedures);
-
-      if (totalVolume > (heaviestSet.weight * heaviestSet.rep)) {
-        heaviestSet = set;
-      }
-
-      for (var set in procedure.sets) {
-        final volume = set.weight * set.rep;
-        if (volume > (heaviestSet.weight * heaviestSet.rep)) {
-          heaviestSet = set;
-        }
-      }
-    }
-    return heaviestSet;
-  }
-
-  List<RoutineLogDto> _whereRoutineLogDtos({required List<RoutineLogDto> logs}) {
+  List<RoutineLogDto> _whereRoutineLogDto({required List<RoutineLogDto> logs}) {
     return logs
         .map((log) =>
             log.copyWith(procedures: log.procedures.where((procedure) => procedure.exercise.id == exerciseId).toList()))
@@ -96,15 +106,15 @@ class ExerciseHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId);
 
-    final logs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
+    final routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
 
-    final logsForExercise = _whereRoutineLogDtos(logs: logs);
+    final routineLogsForExercise = _whereRoutineLogDto(logs: routineLogs);
 
-    final proceduresForExercise = _whereProcedureDtos(logs: logsForExercise);
+    final heaviestRoutineLog = _heaviestLogVolume(logs: routineLogsForExercise);
 
-    final heaviestLog = _heaviestLogVolume(logs: logsForExercise);
+    final heaviestSet = _heaviestSetVolume(logs: routineLogsForExercise);
 
-    final heaviestSet = _heaviestSetVolume(procedures: proceduresForExercise);
+    final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
 
     return DefaultTabController(
         length: 2,
@@ -128,11 +138,12 @@ class ExerciseHistoryScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               SummaryWidget(
+                heaviestWeight: heaviestWeight,
                 heaviestSet: heaviestSet,
-                heaviestLog: heaviestLog,
-                routineLogDtos: logsForExercise,
+                heaviestLog: heaviestRoutineLog,
+                routineLogDtos: routineLogsForExercise,
               ),
-              HistoryWidget(logs: logsForExercise)
+              HistoryWidget(logs: routineLogsForExercise)
             ],
           ),
         ));
@@ -140,11 +151,12 @@ class ExerciseHistoryScreen extends StatelessWidget {
 }
 
 class SummaryWidget extends StatelessWidget {
+  final int heaviestWeight;
   final SetDto heaviestSet;
   final RoutineLogDto heaviestLog;
   final List<RoutineLogDto> routineLogDtos;
 
-  const SummaryWidget({super.key, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos});
+  const SummaryWidget({super.key, required this.heaviestWeight, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos});
 
   @override
   Widget build(BuildContext context) {
@@ -176,12 +188,12 @@ class SummaryWidget extends StatelessWidget {
             child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
           ),
           const SizedBox(height: 20),
-          MetricWidget(label: 'Heaviest weight', summary: "${heaviestSet.weight}kg"),
+          MetricWidget(label: 'Heaviest weight', summary: "${heaviestWeight}kg"),
           const SizedBox(height: 10),
           MetricWidget(label: 'Heaviest Set', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}"),
           const SizedBox(height: 10),
           MetricWidget(
-              label: 'Heaviest Session Volume', summary: "${_totalVolume(procedures: heaviestLog.procedures)}kg"),
+              label: 'Heaviest Session Volume', summary: "${_totalVolume(log: heaviestLog)}kg"),
           const SizedBox(height: 10),
           MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
           const SizedBox(height: 20),
