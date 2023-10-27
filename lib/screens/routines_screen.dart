@@ -8,7 +8,7 @@ import 'package:tracker_app/screens/routine_preview_screen.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../widgets/minimised_routine_banner.dart';
+import '../widgets/routine/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor({required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {

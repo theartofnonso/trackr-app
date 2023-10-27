@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/widgets/weightPoint.dart';
+import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
 class LineChartWidget extends StatelessWidget {
-  final List<WeightPoint> volumePoints;
+  final List<ChartPointDto> volumePoints;
   final List<String> dates;
   final List<int> weights;
 
@@ -72,7 +72,6 @@ class LineChartWidget extends StatelessWidget {
       fontWeight: FontWeight.w600,
       fontSize: 10,
     );
-    print(value.toInt());
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text("${weights[value.toInt()]}", style: style),

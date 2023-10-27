@@ -12,7 +12,7 @@ import '../dtos/routine_log_dto.dart';
 import '../providers/exercises_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../widgets/minimised_routine_banner.dart';
+import '../widgets/routine/minimised_routine_banner.dart';
 
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
