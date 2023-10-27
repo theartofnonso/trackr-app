@@ -186,7 +186,7 @@ class SummaryWidget extends StatelessWidget {
 
     final sets = _whereSetDtos(logs: logsWithHighestWeight);
 
-    final volume = sets
+    final weightPoints = sets
         .map((set) => set.weight)
         .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
         .toList();
@@ -214,7 +214,7 @@ class SummaryWidget extends StatelessWidget {
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
-            child: LineChartWidget(chartPoints: volume, dates: dates, weights: weights),
+            child: LineChartWidget(chartPoints: weightPoints, dates: dates, weights: weights),
           ),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -226,9 +226,9 @@ class SummaryWidget extends StatelessWidget {
                   const SizedBox(width: 5),
                   CTextButton(onPressed: () {}, label: "Session Volume"),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: () {}, label: "Total Reps"),
+                  CTextButton(onPressed: () {}, label: "1RM"),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: () {}, label: "1RM")
+                  CTextButton(onPressed: () {}, label: "Total Reps"),
                 ],
               )),
           const SizedBox(height: 10),
