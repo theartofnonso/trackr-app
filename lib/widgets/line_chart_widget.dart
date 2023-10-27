@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/weightPoint.dart';
 
 class LineChartWidget extends StatelessWidget {
-  final List<WeightPoint> points;
+  final List<WeightPoint> volumePoints;
+  final List<String> dates;
+  final List<int> weights;
 
-  const LineChartWidget({super.key, required this.points});
+  const LineChartWidget({super.key, required this.volumePoints, required this.dates, required this.weights});
 
   static const List<Color> gradientColors = [
     Colors.blue,
@@ -18,77 +20,73 @@ class LineChartWidget extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 2,
         child: LineChart(LineChartData(
-            titlesData: const FlTitlesData(
+            titlesData: FlTitlesData(
               show: true,
-              rightTitles: AxisTitles(
+              rightTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
-              topTitles: AxisTitles(
+              topTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
-              // bottomTitles: AxisTitles(
-              //   sideTitles: SideTitles(
-              //     showTitles: true,
-              //     reservedSize: 30,
-              //     interval: 1,
-              //     getTitlesWidget: bottomTitleWidgets,
-              //   ),
-              // ),
               // leftTitles: AxisTitles(
               //   sideTitles: SideTitles(
               //     showTitles: true,
               //     interval: 1,
               //     getTitlesWidget: leftTitleWidgets,
-              //     reservedSize: 42,
+              //     reservedSize: 4
               //   ),
               // ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: 1,
+                  getTitlesWidget: bottomTitleWidgets,
+                ),
+              ),
             ),
             borderData: FlBorderData(
               show: false,
             ),
+            // minY: 0,
+            // maxY: 10,
             lineBarsData: [
-          LineChartBarData(
-            spots: points.map((point) => FlSpot(point.x, point.y)).toList(),
-            gradient: const LinearGradient(
-              colors: gradientColors,
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
-              ),
-            ),
-            isCurved: true
-          )
-        ])),
+              LineChartBarData(
+                  spots: volumePoints.map((point) => FlSpot(point.x, point.y)).toList(),
+                  gradient: const LinearGradient(
+                    colors: gradientColors,
+                  ),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    gradient: LinearGradient(
+                      colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                    ),
+                  ),
+                  isCurved: true)
+            ])),
       ),
+    );
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 10,
+    );
+    print(value.toInt());
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text("${weights[value.toInt()]}", style: style),
     );
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      fontSize: 10,
     );
-    Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('MAR', style: style);
-        break;
-      case 5:
-        text = const Text('JUN', style: style);
-        break;
-      case 8:
-        text = const Text('SEP', style: style);
-        break;
-      default:
-        text = const Text('', style: style);
-        break;
-    }
-
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: text,
+      child: Text(dates[value.toInt()], style: style),
     );
   }
 }

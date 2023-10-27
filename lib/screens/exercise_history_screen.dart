@@ -6,6 +6,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
@@ -119,7 +120,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
             children: [
               SummaryWidget(
                 heaviestSet: heaviestSet,
-                heaviestLog: heaviestLog, routineLogDtos: logsForExercise,
+                heaviestLog: heaviestLog,
+                routineLogDtos: logsForExercise,
               ),
               HistoryWidget(logs: logsForExercise)
             ],
@@ -135,7 +137,6 @@ class SummaryWidget extends StatelessWidget {
 
   const SummaryWidget({super.key, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos});
 
-
   @override
   Widget build(BuildContext context) {
     final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep)).round();
@@ -144,7 +145,16 @@ class SummaryWidget extends StatelessWidget {
 
     final sets = _whereSetDtos(logs: logsWithHighestWeight);
 
-      final data = sets.map((set) => set.weight * set.rep).mapIndexed((index, value) => WeightPoint(index.toDouble(), value.toDouble())).toList();
+    final volume = sets
+        .map((set) => set.weight)
+        .mapIndexed((index, value) => WeightPoint(index.toDouble(), value.toDouble()))
+        .toList();
+
+    final dates = logsWithHighestWeight.map((log) => log.endTime!.formattedDayAndMonth()).toList();
+
+    final weights = sets
+        .map((set) => set.weight)
+        .toList();
 
     return SingleChildScrollView(
         child: Padding(
@@ -152,7 +162,10 @@ class SummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LineChartWidget(points: data),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0, right: 20),
+            child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
+          ),
           const SizedBox(height: 20),
           MetricWidget(label: 'Heaviest weight', summary: "${heaviestSet.weight}kg"),
           const SizedBox(height: 10),
@@ -169,8 +182,8 @@ class SummaryWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => RoutineLogPreviewScreen(
-                          routineLogId: heaviestLog.id,
-                        )));
+                              routineLogId: heaviestLog.id,
+                            )));
                   },
                   label: "See best session"))
         ],
@@ -183,8 +196,8 @@ class SummaryWidget extends StatelessWidget {
       final logWithHighestWeight = log.copyWith(
         procedures: log.procedures.map((procedure) {
           final maxVolumeSet = procedure.sets.reduce((a, b) {
-            final volumeA = a.weight * a.rep;
-            final volumeB = b.weight * b.rep;
+            final volumeA = a.weight;
+            final volumeB = b.weight;
             return volumeA > volumeB ? a : b;
           });
           return procedure.copyWith(sets: [maxVolumeSet]);
