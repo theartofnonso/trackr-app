@@ -97,8 +97,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   const ExerciseHistoryScreen({super.key, required this.exerciseId});
 
-  List<RoutineLogDto> _whereRoutineLogDto({required List<RoutineLogDto> logs}) {
+  List<RoutineLogDto> _whereLogsForExercise({required List<RoutineLogDto> logs}) {
     return logs
+        .where((log) => log.procedures.any((procedure) => procedure.exercise.id == exerciseId))
         .map((log) =>
             log.copyWith(procedures: log.procedures.where((procedure) => procedure.exercise.id == exerciseId).toList()))
         .toList();
@@ -110,7 +111,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
 
-    final routineLogsForExercise = _whereRoutineLogDto(logs: routineLogs);
+    final routineLogsForExercise = _whereLogsForExercise(logs: routineLogs);
 
     final heaviestRoutineLog = _heaviestLog(logs: routineLogsForExercise);
 
@@ -162,7 +163,13 @@ class SummaryWidget extends StatelessWidget {
   final int heaviestRoutineLogVolume;
   final List<RoutineLogDto> routineLogDtos;
 
-  const SummaryWidget({super.key, required this.heaviestWeight, required this.heaviestSet, required this.heaviestLog, required this.routineLogDtos, required this.heaviestRoutineLogVolume});
+  const SummaryWidget(
+      {super.key,
+      required this.heaviestWeight,
+      required this.heaviestSet,
+      required this.heaviestLog,
+      required this.routineLogDtos,
+      required this.heaviestRoutineLogVolume});
 
   @override
   Widget build(BuildContext context) {
@@ -179,9 +186,7 @@ class SummaryWidget extends StatelessWidget {
 
     final dates = logsWithHighestWeight.map((log) => log.endTime!.formattedDayAndMonth()).toList();
 
-    final weights = sets
-        .map((set) => set.weight)
-        .toList();
+    final weights = sets.map((set) => set.weight).toList();
 
     return SingleChildScrollView(
         child: Padding(
@@ -193,13 +198,26 @@ class SummaryWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
             child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
           ),
-          MetricWidget(title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),
+          MetricWidget(
+              title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),
           const SizedBox(height: 10),
-          MetricWidget(title: 'Heaviest Set Volume', summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}", subtitle: 'Heaviest volume lifted for a set',),
+          MetricWidget(
+            title: 'Heaviest Set Volume',
+            summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}",
+            subtitle: 'Heaviest volume lifted for a set',
+          ),
           const SizedBox(height: 10),
-          MetricWidget(title: 'Heaviest Session Volume', summary: "${heaviestRoutineLogVolume}kg", subtitle: 'Heaviest volume lifted for a session',),
+          MetricWidget(
+            title: 'Heaviest Session Volume',
+            summary: "${heaviestRoutineLogVolume}kg",
+            subtitle: 'Heaviest volume lifted for a session',
+          ),
           const SizedBox(height: 10),
-          MetricWidget(title: '1 Rep Max', summary: '${oneRepMax}kg', subtitle: 'Heaviest weight you can lift for one rep',),
+          MetricWidget(
+            title: '1 Rep Max',
+            summary: '${oneRepMax}kg',
+            subtitle: 'Heaviest weight you can lift for one rep',
+          ),
         ],
       ),
     ));
