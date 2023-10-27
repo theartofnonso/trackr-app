@@ -196,7 +196,7 @@ class SummaryWidget extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
-            child: LineChartWidget(volumePoints: volume, dates: dates, weights: weights),
+            child: LineChartWidget(chartPoints: volume, dates: dates, weights: weights),
           ),
           MetricWidget(
               title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),

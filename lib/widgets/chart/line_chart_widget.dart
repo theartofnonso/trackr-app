@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
 class LineChartWidget extends StatelessWidget {
-  final List<ChartPointDto> volumePoints;
+  final List<ChartPointDto> chartPoints;
   final List<String> dates;
   final List<int> weights;
 
-  const LineChartWidget({super.key, required this.volumePoints, required this.dates, required this.weights});
+  const LineChartWidget({super.key, required this.chartPoints, required this.dates, required this.weights});
 
   static const List<Color> gradientColors = [
     Colors.blue,
@@ -51,7 +51,7 @@ class LineChartWidget extends StatelessWidget {
             // maxY: 10,
             lineBarsData: [
               LineChartBarData(
-                  spots: volumePoints.map((point) => FlSpot(point.x, point.y)).toList(),
+                  spots: chartPoints.map((point) => FlSpot(point.x, point.y)).toList(),
                   gradient: const LinearGradient(
                     colors: gradientColors,
                   ),

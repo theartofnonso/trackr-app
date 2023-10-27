@@ -192,7 +192,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     // Create a tween for the color animation
     _colorAnimation = ColorTween(
       begin: tealBlueLight,
-      end: Colors.white,
+      end: Colors.blueAccent,
     ).animate(_controller);
 
     // Start the animation
