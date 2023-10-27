@@ -195,13 +195,12 @@ class SummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+           Padding(
             padding: EdgeInsets.all(8.0),
-            child: Center(
-                child: Text(
+            child: Text(
               "Primary Target: Abs",
-              style: TextStyle(color: Colors.white70),
-            )),
+              style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
