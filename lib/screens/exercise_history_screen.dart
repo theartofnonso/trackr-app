@@ -196,17 +196,6 @@ class SummaryWidget extends StatelessWidget {
               label: 'Heaviest Session Volume', summary: "${_totalVolume(log: heaviestLog)}kg"),
           const SizedBox(height: 10),
           MetricWidget(label: '1RM', summary: '${oneRepMax}kg'),
-          const SizedBox(height: 20),
-          SizedBox(
-              width: double.infinity,
-              child: CTextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => RoutineLogPreviewScreen(
-                              routineLogId: heaviestLog.id,
-                            )));
-                  },
-                  label: "See best session"))
         ],
       ),
     ));
