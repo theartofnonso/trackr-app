@@ -33,7 +33,7 @@ int _totalVolume({required RoutineLogDto log}) {
   return totalVolume;
 }
 
-SetDto _heaviestSetVolume({required List<RoutineLogDto> logs}) {
+SetDto _heaviestSet({required List<RoutineLogDto> logs}) {
   SetDto heaviestSet = SetDto();
 
   for (var log in logs) {
@@ -117,7 +117,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogsForExercise);
 
-    final heaviestSet = _heaviestSetVolume(logs: routineLogsForExercise);
+    final heaviestSet = _heaviestSet(logs: routineLogsForExercise);
 
     final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
 
@@ -144,8 +144,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
             children: [
               SummaryWidget(
                 heaviestWeight: heaviestWeight,
-                heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                 heaviestSet: heaviestSet,
+                heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                 heaviestLog: heaviestRoutineLog,
                 routineLogDtos: routineLogsForExercise,
               ),
@@ -173,7 +173,7 @@ class SummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep)).round();
+    final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
 
     final logsWithHighestWeight = _findLogsWithHighestWeight(routineLogDtos).reversed.toList();
 
