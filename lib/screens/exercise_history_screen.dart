@@ -16,6 +16,8 @@ import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/routine/preview/routine_log_lite_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
 
+const exerciseRouteName = "/exercise-history-screen";
+
 List<SetDto> _allSets({required List<ProcedureDto> procedures}) {
   List<SetDto> completedSets = [];
   for (var procedure in procedures) {
@@ -300,7 +302,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   void _navigateTo({required String routineLogId}) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            RoutineLogPreviewScreen(routineLogId: routineLogId)));
+            RoutineLogPreviewScreen(routineLogId: routineLogId, previousRouteName: exerciseRouteName)));
   }
 
   @override
@@ -425,13 +427,18 @@ class MetricWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: onTap,
-      tileColor: tealBlueLight,
-      title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white)),
-      subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-      trailing: Text(summary, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+    return Theme(
+      data: ThemeData(
+        splashColor: tealBlueLight
+      ),
+      child: ListTile(
+        onTap: onTap,
+        tileColor: tealBlueLight,
+        title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white)),
+        subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+        trailing: Text(summary, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      ),
     );
   }
 }

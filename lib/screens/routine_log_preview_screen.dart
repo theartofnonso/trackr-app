@@ -12,11 +12,13 @@ import '../dtos/set_dto.dart';
 import '../models/BodyPart.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
+import 'exercise_history_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;
+  final String previousRouteName;
 
-  const RoutineLogPreviewScreen({super.key, required this.routineLogId});
+  const RoutineLogPreviewScreen({super.key, required this.routineLogId, this.previousRouteName = ""});
 
   @override
   State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
@@ -215,6 +217,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                 procedureDto: procedure,
                 otherSuperSetProcedureDto:
                     whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: routineLogDto.procedures),
+            readOnly: widget.previousRouteName == exerciseRouteName,
               ),
         ))
         .toList();
