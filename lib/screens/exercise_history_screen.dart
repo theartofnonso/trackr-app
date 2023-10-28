@@ -5,6 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
@@ -116,47 +117,50 @@ int _totalVolumePerLog({required RoutineLogDto log}) {
 
 /// Highest value across all [RoutineLogDto]
 
-SetDto _heaviestSet({required List<RoutineLogDto> logs}) {
+(String, SetDto) _heaviestSet({required List<RoutineLogDto> logs}) {
   SetDto heaviestSet = SetDto();
-
+  String logId = "";
   for (var log in logs) {
     final sets = _allSets(procedures: log.procedures);
     for (var set in sets) {
       final volume = set.rep * set.weight;
       if (volume > (heaviestSet.rep * heaviestSet.weight)) {
         heaviestSet = set;
+        logId = log.id;
       }
     }
   }
-  return heaviestSet;
+  return (logId, heaviestSet);
 }
 
-int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
+(String, int) _heaviestLogVolume({required List<RoutineLogDto> logs}) {
   int heaviestVolume = 0;
-
+  String logId = "";
   for (var log in logs) {
     final totalVolume = _totalVolumePerLog(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
+      logId = log.id;
     }
   }
 
-  return heaviestVolume;
+  return (logId, heaviestVolume);
 }
 
-int _heaviestWeight({required List<RoutineLogDto> logs}) {
+(String, int) _heaviestWeight({required List<RoutineLogDto> logs}) {
   int heaviestWeight = 0;
-
+  String logId = "";
   for (var log in logs) {
     final sets = _allSets(procedures: log.procedures);
     for (var set in sets) {
       final weight = set.weight;
       if (weight > heaviestWeight) {
         heaviestWeight = weight;
+        logId = log.id;
       }
     }
   }
-  return heaviestWeight;
+  return (logId, heaviestWeight);
 }
 
 class ExerciseHistoryScreen extends StatelessWidget {
@@ -222,9 +226,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
 }
 
 class SummaryWidget extends StatefulWidget {
-  final int heaviestWeight;
-  final SetDto heaviestSet;
-  final int heaviestRoutineLogVolume;
+  final (String, int) heaviestWeight;
+  final (String, SetDto) heaviestSet;
+  final (String, int) heaviestRoutineLogVolume;
   final List<RoutineLogDto> routineLogDtos;
   final Exercise exercise;
 
@@ -293,6 +297,12 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     return _summaryType == type ? Colors.blueAccent : null;
   }
 
+  void _navigateTo({required String routineLogId}) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            RoutineLogPreviewScreen(routineLogId: routineLogId)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final oneRepMax = widget.routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().max;
@@ -339,25 +349,25 @@ class _SummaryWidgetState extends State<SummaryWidget> {
           const SizedBox(height: 10),
           MetricWidget(
               title: 'Heaviest weight',
-              summary: "${widget.heaviestWeight}kg",
-              subtitle: 'Heaviest weight lifted for a set'),
+              summary: "${widget.heaviestWeight.$2}kg",
+              subtitle: 'Heaviest weight lifted for a set', onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),),
           const SizedBox(height: 10),
           MetricWidget(
             title: 'Heaviest Set Volume',
-            summary: "${widget.heaviestSet.weight}kg x ${widget.heaviestSet.rep}",
-            subtitle: 'Heaviest volume lifted for a set',
+            summary: "${widget.heaviestSet.$2.weight}kg x ${widget.heaviestSet.$2.rep}",
+            subtitle: 'Heaviest volume lifted for a set', onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
           ),
           const SizedBox(height: 10),
           MetricWidget(
             title: 'Heaviest Session Volume',
-            summary: "${widget.heaviestRoutineLogVolume}kg",
-            subtitle: 'Heaviest volume lifted for a session',
+            summary: "${widget.heaviestRoutineLogVolume.$2}kg",
+            subtitle: 'Heaviest volume lifted for a session', onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
           ),
           const SizedBox(height: 10),
           MetricWidget(
             title: '1 Rep Max',
             summary: '${oneRepMax}kg',
-            subtitle: 'Heaviest weight you can lift for one rep',
+            subtitle: 'Heaviest weight you can lift for one rep', onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
           ),
         ],
       ),
@@ -405,16 +415,18 @@ class MetricWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.summary,
+    required this.summary, required this.onTap,
   });
 
   final String title;
   final String subtitle;
   final String summary;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       tileColor: tealBlueLight,
       title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white)),
       subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
