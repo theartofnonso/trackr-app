@@ -6,6 +6,7 @@ import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../app_constants.dart';
 import '../dtos/routine_log_dto.dart';
@@ -57,7 +58,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                     ],
                   ),
                 )
-              : const Center(child: _RoutineLogsEmptyState()),
+              : const Center(child: ScreenEmptyState(message: "Start tracking your performance")),
         ),
       );
     }));
@@ -237,23 +238,5 @@ class _RoutineLogWidget extends StatelessWidget {
               ),
             ))
         .toList();
-  }
-}
-
-class _RoutineLogsEmptyState extends StatelessWidget {
-  const _RoutineLogsEmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Start tracking your performance", style: Theme.of(context).textTheme.titleMedium),
-        ],
-      ),
-    );
   }
 }

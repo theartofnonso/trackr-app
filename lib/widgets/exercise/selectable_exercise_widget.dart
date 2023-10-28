@@ -56,7 +56,7 @@ class SelectableExerciseWidget extends StatelessWidget {
                 builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
           },
           icon: const Icon(
-            Icons.data_exploration,
+            Icons.timeline_rounded,
             color: Colors.white,
           ),
         ),

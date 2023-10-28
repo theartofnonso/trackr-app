@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 
+import '../../screens/exercise_history_screen.dart';
 import '../../screens/exercise_library_screen.dart';
 
 class ExerciseWidget extends StatelessWidget {
@@ -16,6 +17,16 @@ class ExerciseWidget extends StatelessWidget {
         splashColor: tealBlueLight
       ),
       child: ListTile(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
+          },
+          icon: const Icon(
+            Icons.timeline_rounded,
+            color: Colors.white,
+          ),
+        ),
           title: Text(exerciseInLibraryDto.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
           onTap: onTap,
           subtitle: Column(

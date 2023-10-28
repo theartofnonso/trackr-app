@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
+import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../providers/routine_log_provider.dart';
@@ -48,7 +49,7 @@ class RoutinesScreen extends StatelessWidget {
                               itemCount: routineProvider.routines.length),
                         )
                       ]))
-                  : const Center(child: _RoutinesEmptyState())));
+                  : const Center(child: ScreenEmptyState(message: "Create workouts ahead of gym time"))));
     });
   }
 }
@@ -175,23 +176,5 @@ class _RoutineWidget extends StatelessWidget {
               ),
             ))
         .toList();
-  }
-}
-
-class _RoutinesEmptyState extends StatelessWidget {
-  const _RoutinesEmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Create workouts ahead of gym time", style: Theme.of(context).textTheme.titleMedium),
-        ],
-      ),
-    );
   }
 }

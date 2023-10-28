@@ -589,10 +589,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 actions: [
                   GestureDetector(
                       onTap: _showRoutineIntervalPicker,
-                      child: const Icon(
-                        Icons.timer,
-                        color: Colors.white,
-                        size: 24,
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 14.0),
+                        child: Icon(
+                          Icons.timer,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                       ))
                 ],
               ),

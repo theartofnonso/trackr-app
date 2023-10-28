@@ -8,6 +8,7 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
@@ -307,73 +308,76 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final oneRepMax = widget.routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().max;
 
-    return SingleChildScrollView(
-        child: Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // const SizedBox(height: 10),
-          // Text(
-          //   "Primary Target: ${exercise.primary.join(", ")}",
-          //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-          // ),
-          // const SizedBox(height: 5),
-          // Text(
-          //   "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
-          //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-          // ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
-            child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
-          ),
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  CTextButton(
-                      onPressed: _heaviestWeights,
-                      label: "Heaviest Weight",
-                      buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
-                  const SizedBox(width: 5),
-                  CTextButton(onPressed: _heaviestSetVolumes, label: "Heaviest Set Volume", buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
-                  const SizedBox(width: 5),
-                  CTextButton(onPressed: _logVolumes, label: "Session Volume", buttonColor: _buttonColor(type: SummaryType.logVolumes)),
-                  const SizedBox(width: 5),
-                  CTextButton(onPressed: _oneRepMaxes, label: "1RM", buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
-                  const SizedBox(width: 5),
-                  CTextButton(onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
-                ],
-              )),
-          const SizedBox(height: 10),
-          MetricWidget(
-              title: 'Heaviest weight',
-              summary: "${widget.heaviestWeight.$2}kg",
-              subtitle: 'Heaviest weight lifted for a set', onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),),
-          const SizedBox(height: 10),
-          MetricWidget(
-            title: 'Heaviest Set Volume',
-            summary: "${widget.heaviestSet.$2.weight}kg x ${widget.heaviestSet.$2.rep}",
-            subtitle: 'Heaviest volume lifted for a set', onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-          ),
-          const SizedBox(height: 10),
-          MetricWidget(
-            title: 'Heaviest Session Volume',
-            summary: "${widget.heaviestRoutineLogVolume.$2}kg",
-            subtitle: 'Heaviest volume lifted for a session', onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
-          ),
-          const SizedBox(height: 10),
-          MetricWidget(
-            title: '1 Rep Max',
-            summary: '${oneRepMax}kg',
-            subtitle: 'Heaviest weight you can lift for one rep', onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-          ),
-        ],
-      ),
-    ));
+    if(widget.routineLogDtos.isNotEmpty) {
+      final oneRepMax = widget.routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().max;
+      return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // const SizedBox(height: 10),
+                // Text(
+                //   "Primary Target: ${exercise.primary.join(", ")}",
+                //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+                // ),
+                // const SizedBox(height: 5),
+                // Text(
+                //   "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
+                //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+                // ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
+                  child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
+                ),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        CTextButton(
+                            onPressed: _heaviestWeights,
+                            label: "Heaviest Weight",
+                            buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
+                        const SizedBox(width: 5),
+                        CTextButton(onPressed: _heaviestSetVolumes, label: "Heaviest Set Volume", buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
+                        const SizedBox(width: 5),
+                        CTextButton(onPressed: _logVolumes, label: "Session Volume", buttonColor: _buttonColor(type: SummaryType.logVolumes)),
+                        const SizedBox(width: 5),
+                        CTextButton(onPressed: _oneRepMaxes, label: "1RM", buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
+                        const SizedBox(width: 5),
+                        CTextButton(onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
+                      ],
+                    )),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: 'Heaviest weight',
+                  summary: "${widget.heaviestWeight.$2}kg",
+                  subtitle: 'Heaviest weight lifted for a set', onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: 'Heaviest Set Volume',
+                  summary: "${widget.heaviestSet.$2.weight}kg x ${widget.heaviestSet.$2.rep}",
+                  subtitle: 'Heaviest volume lifted for a set', onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
+                ),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: 'Heaviest Session Volume',
+                  summary: "${widget.heaviestRoutineLogVolume.$2}kg",
+                  subtitle: 'Heaviest volume lifted for a session', onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
+                ),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: '1 Rep Max',
+                  summary: '${oneRepMax}kg',
+                  subtitle: 'Heaviest weight you can lift for one rep', onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                ),
+              ],
+            ),
+          ));
+    }
+    return const Center(child: ScreenEmptyState(message: "Start logging workouts to generate data"));
   }
 
   @override
@@ -394,7 +398,7 @@ class HistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return logs.isNotEmpty ? Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
@@ -408,7 +412,7 @@ class HistoryWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ) : const Center(child: ScreenEmptyState(message: "Start logging workouts to generate data"));
   }
 }
 
