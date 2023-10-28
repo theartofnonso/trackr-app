@@ -65,6 +65,6 @@ class ProcedureDto {
 
   @override
   String toString() {
-    return 'ProcedureDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}';
+    return 'ProcedureDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}, restInterval: $restInterval';
   }
 }

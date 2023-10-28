@@ -49,6 +49,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   DateTime _routineStartTime = DateTime.now();
 
+  Duration? _restIntervalDuration;
+
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog({required String message, required List<Widget> actions}) {
     showDialog(
@@ -263,6 +265,21 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
       _calculateCompletedSets();
+      _showRestInterval(setDto: sets[setIndex], duration: procedure.restInterval);
+    });
+  }
+
+  void _showRestInterval({required SetDto setDto, required Duration duration}) {
+    if (setDto.checked) {
+      if (duration != Duration.zero) {
+        _restIntervalDuration = duration;
+      }
+    }
+  }
+
+  void _hideRestInterval() {
+    setState(() {
+      _restIntervalDuration = null;
     });
   }
 
@@ -579,6 +596,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   Widget build(BuildContext context) {
     final previousRoutine = widget.routineDto;
 
+    final restIntervalDuration = _restIntervalDuration;
+
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorMode.editing
@@ -681,6 +700,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     weight: _totalWeight(),
                     timer: _TimerWidget(DateTime.now().difference(_routineStartTime)),
                   ),
+                restIntervalDuration != null
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: _IntervalTimer(duration: restIntervalDuration, onElapsed: () => _hideRestInterval()),
+                      )
+                    : const SizedBox.shrink(),
                 const SizedBox(height: 12),
                 _procedures.isNotEmpty
                     ? Expanded(
@@ -921,7 +946,7 @@ class _TimerWidget extends StatefulWidget {
 }
 
 class _TimerWidgetState extends State<_TimerWidget> {
-  Timer? _timer;
+  late Timer _timer;
   int _elapsedTime = 0;
 
   @override
@@ -945,7 +970,7 @@ class _TimerWidgetState extends State<_TimerWidget> {
   @override
   void dispose() {
     super.dispose();
-    _timer?.cancel();
+    _timer.cancel();
   }
 }
 
@@ -969,7 +994,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(sets.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
+              Text(sets.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
             ],
           ),
           const SizedBox(width: 25),
@@ -979,7 +1004,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(weight.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
+              Text(weight.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
             ],
           ),
           const Spacer(),
@@ -987,5 +1012,83 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _IntervalTimer extends StatefulWidget {
+  final Duration duration;
+  final void Function() onElapsed;
+
+  const _IntervalTimer({required this.duration, required this.onElapsed});
+
+  @override
+  State<_IntervalTimer> createState() => _IntervalTimerState();
+}
+
+class _IntervalTimerState extends State<_IntervalTimer> {
+  late Timer _timer;
+  int _duration = 0;
+
+  void _addSeconds() {
+    setState(() {
+      _duration += 5;
+    });
+  }
+
+  void _subtractSeconds() {
+    setState(() {
+      _duration -= 5;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CTextButton(
+          onPressed: _subtractSeconds,
+          label: "-5",
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        const SizedBox(width: 5),
+        CTextButton(
+          onPressed: _addSeconds,
+          label: "+5",
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        const SizedBox(width: 10),
+        Text(Duration(seconds: _duration).secondsOrMinutesOrHours(),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+        const Spacer(),
+        CTextButton(
+          onPressed: widget.onElapsed,
+          label: "Skip",
+          buttonColor: Colors.red,
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _duration = widget.duration.inSeconds;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_duration > 0) {
+          _duration--;
+        } else {
+          _timer.cancel();
+          widget.onElapsed();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 }
