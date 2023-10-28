@@ -1044,30 +1044,37 @@ class _IntervalTimerState extends State<_IntervalTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CTextButton(
-          onPressed: _subtractSeconds,
-          label: "-5",
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        const SizedBox(width: 5),
-        CTextButton(
-          onPressed: _addSeconds,
-          label: "+5",
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        const SizedBox(width: 10),
-        Text(Duration(seconds: _duration).secondsOrMinutesOrHours(),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-        const Spacer(),
-        CTextButton(
-          onPressed: widget.onElapsed,
-          label: "Skip",
-          buttonColor: Colors.red,
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
+      decoration: BoxDecoration(
+        color: tealBlueLighter, // Set the background color
+        borderRadius: BorderRadius.circular(2), // Set the border radius to make it rounded
+      ),
+      child: Row(
+        children: [
+          CTextButton(
+            onPressed: _subtractSeconds,
+            label: "-5",
+            textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          const SizedBox(width: 5),
+          CTextButton(
+            onPressed: _addSeconds,
+            label: "+5",
+            textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          const SizedBox(width: 10),
+          Text(Duration(seconds: _duration).secondsOrMinutesOrHours(),
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+          const Spacer(),
+          CTextButton(
+            onPressed: widget.onElapsed,
+            label: "Skip",
+            buttonColor: Colors.red,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 
