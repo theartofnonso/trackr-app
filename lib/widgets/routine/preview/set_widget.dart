@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
@@ -18,8 +17,9 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile(
-        backgroundColor: tealBlueLight,
+    return ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+        tileColor: tealBlueLight,
         leading: _SetIcon(type: setDto.type, label: workingIndex),
         title: Row(children: [
           SetText(label: "REPS", value: setDto.rep),

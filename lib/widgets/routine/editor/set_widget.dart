@@ -65,24 +65,33 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile(
-      padding: EdgeInsets.zero,
-      leading: _SetIcon(type: setDto.type, label: workingIndex),
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      horizontalTitleGap: 20,
+      leading: SizedBox(width: 30, child: _SetIcon(type: setDto.type, label: workingIndex)),
       title: Row(
         children: [
-          _SetTextField(label: 'Reps', initialValue: setDto.rep, onChanged: (value) => onChangedRep(value)),
-          const SizedBox(
-            width: 15,
+          _SetTextField(
+            initialValue: setDto.rep,
+            onChanged: (value) => onChangedRep(value),
+            width: 50,
           ),
-          _SetTextField(label: 'kg', initialValue: setDto.weight, onChanged: (value) => onChangedWeight(value)),
+          const SizedBox(
+            width: 20,
+          ),
+          _SetTextField(
+            initialValue: setDto.weight,
+            onChanged: (value) => onChangedWeight(value),
+            width: 85,
+          ),
           editorType == RoutineEditorMode.routine
               ? GestureDetector(
                   onTap: onTapCheck,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: setDto.checked
-                        ? const Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.green)
-                        : const Icon(CupertinoIcons.check_mark_circled, color: Colors.grey),
+                        ? const Icon(Icons.check_box_rounded, color: Colors.green)
+                        : const Icon(Icons.check_box_rounded, color: Colors.grey),
                   ),
                 )
               : const SizedBox.shrink()
@@ -101,7 +110,7 @@ class SetWidget extends StatelessWidget {
                   controller.open();
                 }
               },
-              icon: const Icon(CupertinoIcons.ellipsis, color: Colors.white),
+              icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
               tooltip: 'Show menu',
             );
           },
@@ -132,11 +141,11 @@ class _SetIcon extends StatelessWidget {
 }
 
 class _SetTextField extends StatelessWidget {
-  final String label;
   final int initialValue;
+  final double width;
   final void Function(int) onChanged;
 
-  const _SetTextField({required this.label, required this.onChanged, required this.initialValue});
+  const _SetTextField({required this.onChanged, required this.initialValue, required this.width});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -146,19 +155,18 @@ class _SetTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 85,
-      child: CupertinoTextField(
-        prefix: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Text(label,
-              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 12)),
-        ),
+      child: TextField(
         onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
-        decoration: const BoxDecoration(color: tealBlueLight),
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.zero,
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+            hintText: initialValue.toString(),
+            hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
         keyboardType: TextInputType.number,
         maxLines: 1,
-        style: Theme.of(context).textTheme.bodyMedium,
-        placeholder: initialValue.toString(),
-        placeholderStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
       ),
     );
   }

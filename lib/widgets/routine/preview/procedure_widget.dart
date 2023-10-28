@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
@@ -46,7 +45,7 @@ class ProcedureWidget extends StatelessWidget {
                     : const SizedBox.shrink(),
                 Row(children: [
                   const Icon(
-                    CupertinoIcons.timer,
+                    Icons.timer,
                     color: Colors.white,
                     size: 12,
                   ),

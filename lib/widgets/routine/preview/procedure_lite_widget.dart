@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -20,7 +19,7 @@ class ProcedureLiteWidget extends StatelessWidget {
       children: [
         Row(children: [
           const Icon(
-            CupertinoIcons.timer,
+            Icons.timer,
             color: Colors.white,
             size: 12,
           ),

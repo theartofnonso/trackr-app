@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
@@ -32,11 +33,11 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
 
   List<Widget> _proceduresToWidgets() {
     return _procedures
-        .mapIndexed((index, procedure) => CupertinoListTile(
+        .mapIndexed((index, procedure) => ListTile(
               key: Key("$index"),
               title: Text(procedure.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
               trailing: const Icon(
-                CupertinoIcons.bars,
+                Icons.list,
                 color: Colors.white,
               ),
             ))
@@ -50,23 +51,16 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: tealBlueDark,
-        middle: const Text(
+        title: const Text(
           "Reorder",
           style: TextStyle(color: Colors.white),
         ),
-        trailing: GestureDetector(
-            onTap: _saveReOrdering,
-            child: _hasReOrdered
-                ? const Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white),
-                  )
-                : const SizedBox.shrink()),
+        actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save") : const SizedBox.shrink()],
       ),
-      child: ReorderableListView(
+      body: ReorderableListView(
           children: _proceduresToWidgets(),
           onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
     );

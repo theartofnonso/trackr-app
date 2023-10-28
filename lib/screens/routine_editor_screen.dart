@@ -36,7 +36,6 @@ class RoutineEditorScreen extends StatefulWidget {
 }
 
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
-  final _scrollController = ScrollController();
 
   List<ProcedureDto> _procedures = [];
 
@@ -101,7 +100,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        _addProcedures(exercises: exercises, shouldScroll: _procedures.isNotEmpty);
+        _addProcedures(exercises: exercises);
       }
     }
   }
@@ -125,15 +124,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 800),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void _addProcedures({required List<Exercise> exercises, bool shouldScroll = true}) {
+  void _addProcedures({required List<Exercise> exercises}) {
     final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
       _procedures.addAll(proceduresToAdd);
@@ -141,9 +132,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     _cacheRoutine();
 
-    if (shouldScroll) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-    }
   }
 
   void _removeProcedure({required String procedureId}) {
@@ -395,30 +383,38 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  /// Convert list of [ExerciseInWorkout] to [ProcedureWidget]
-  Widget _procedureToWidget({required ProcedureDto procedure}) {
-    return ProcedureWidget(
-      procedureDto: procedure,
-      editorType: widget.mode,
-      otherSuperSetProcedureDto: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
-      onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
-      onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-      onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-      onChangedSetRep: (int setIndex, int value) =>
-          _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
-      onChangedSetWeight: (int setIndex, int value) =>
-          _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
-      onChangedSetType: (int setIndex, SetType type) =>
-          _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
-      onAddSet: () => _addSet(procedureId: procedure.exercise.id),
-      onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
-      onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
-      onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
-      onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
-      onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
-      onReOrderProcedures: () => _reOrderProcedures(),
-      onCheckSet: (int setIndex) => _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex),
-    );
+  List<Widget> _proceduresToWidgets() {
+    return _procedures
+        .map((procedure) => Column(
+              children: [
+                ProcedureWidget(
+                  procedureDto: procedure,
+                  editorType: widget.mode,
+                  otherSuperSetProcedureDto:
+                      whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                  onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
+                  onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+                  onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                  onChangedSetRep: (int setIndex, int value) =>
+                      _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+                  onChangedSetWeight: (int setIndex, int value) =>
+                      _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+                  onChangedSetType: (int setIndex, SetType type) =>
+                      _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
+                  onAddSet: () => _addSet(procedureId: procedure.exercise.id),
+                  onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+                  onUpdateNotes: (String value) =>
+                      _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
+                  onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
+                  onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
+                  onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
+                  onReOrderProcedures: () => _reOrderProcedures(),
+                  onCheckSet: (int setIndex) => _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+                ),
+                const SizedBox(height: 18)
+              ],
+            ))
+        .toList();
   }
 
   void _createRoutine() {
@@ -651,88 +647,71 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.mode == RoutineEditorMode.editing)
-                  Column(
-                    children: [
-                      TextField(
-                        controller: _routineNameController,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
-                                borderSide: const BorderSide(color: tealBlueLighter)),
-                            filled: true,
-                            fillColor: tealBlueLighter,
-                            hintText: "New workout",
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        style:
-                            TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _routineNotesController,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
-                                borderSide: const BorderSide(color: tealBlueLighter)),
-                            filled: true,
-                            fillColor: tealBlueLighter,
-                            hintText: "Notes",
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
-                        maxLines: null,
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                        style:
-                            TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                      ),
-                    ],
-                  )
-                else
-                  RunningRoutineSummaryWidget(
-                    sets: _totalCompletedSets.length,
-                    weight: _totalWeight(),
-                    timer: _TimerWidget(DateTime.now().difference(_routineStartTime)),
-                  ),
-                restIntervalDuration != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: _IntervalTimer(duration: restIntervalDuration, onElapsed: () => _hideRestInterval()),
-                      )
-                    : const SizedBox.shrink(),
-                const SizedBox(height: 12),
-                _procedures.isNotEmpty
-                    ? Expanded(
-                        child: ListView.separated(
-                            controller: _scrollController,
-                            itemBuilder: (BuildContext context, int index) {
-                              // Build the item widget based on the data at the specified index.
-                              final procedure = _procedures[index];
-                              return _procedureToWidget(procedure: procedure);
-                            },
-                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
-                            itemCount: _procedures.length),
-                      )
-                    : const Expanded(
-                        child: Center(
-                        child: Text(
-                          "You have no exercises and sets",
-                          style: TextStyle(color: Colors.white70),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.mode == RoutineEditorMode.editing)
+                    Column(
+                      children: [
+                        TextField(
+                          controller: _routineNameController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "New workout",
+                              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                         ),
-                      )),
-                const SizedBox(height: 18),
-                SizedBox(
-                  width: double.infinity,
-                  child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
-                ),
-              ],
+                        const SizedBox(height: 10),
+                        TextField(
+                          controller: _routineNotesController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "Notes",
+                              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
+                          maxLines: null,
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                      ],
+                    )
+                  else
+                    RunningRoutineSummaryWidget(
+                      sets: _totalCompletedSets.length,
+                      weight: _totalWeight(),
+                      timer: _TimerWidget(DateTime.now().difference(_routineStartTime)),
+                    ),
+                  restIntervalDuration != null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: _IntervalTimer(duration: restIntervalDuration, onElapsed: () => _hideRestInterval()),
+                        )
+                      : const SizedBox.shrink(),
+                  const SizedBox(height: 12),
+                  ..._proceduresToWidgets(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
@@ -773,7 +752,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _routineNameController.dispose();
       _routineNotesController.dispose();
     }
-    _scrollController.dispose();
   }
 }
 
@@ -995,7 +973,8 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(sets.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
+              Text(sets.toString(),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
             ],
           ),
           const SizedBox(width: 25),
@@ -1005,7 +984,8 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(weight.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
+              Text(weight.toString(),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
             ],
           ),
           const Spacer(),

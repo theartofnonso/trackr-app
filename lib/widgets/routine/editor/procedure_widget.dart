@@ -208,8 +208,30 @@ class ProcedureWidget extends StatelessWidget {
               CTextButton(onPressed: onAddSet, label: 'Add set', buttonColor: tealBlueLighter),
             ],
           ),
+          const SizedBox(height: 10),
           Column(
-            children: [...?_displaySets()],
+            children: [
+              const Row(
+                children: [
+                  SizedBox(
+                      width: 30,
+                      child: Text("SET", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center)),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  SizedBox(
+                      width: 85,
+                      child: Text("REPS",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center)),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  SizedBox(
+                      width: 85,
+                      child: Text("KG", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center))
+                ],
+              ),
+              ...?_displaySets()
+            ],
           )
         ],
       ),

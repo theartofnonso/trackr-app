@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
@@ -26,7 +25,7 @@ class RoutineLogLiteWidget extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             title: Text(routineLogDto.name, style: const TextStyle(fontWeight: FontWeight.bold)), subtitle: Row(children: [
             const Icon(
-              CupertinoIcons.calendar,
+              Icons.date_range_rounded,
               color: Colors.white,
               size: 12,
             ),

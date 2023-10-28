@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -68,8 +67,8 @@ class _RoutineWidget extends StatelessWidget {
         onPressed: () {
           _navigateToRoutineEditor(context: context, routineDto: routineDto);
         },
-        leadingIcon: const Icon(Icons.edit),
-        child: const Text("Edit"),
+        leadingIcon: const Icon(Icons.edit, color: Colors.white,),
+        child: const Text("Edit", style: TextStyle(color: Colors.white)),
       ),
       MenuItemButton(
         onPressed: () {
@@ -100,49 +99,51 @@ class _RoutineWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CupertinoListTile(
-            backgroundColorActivated: tealBlueLight,
-            leading: canStartRoutine
-                ? GestureDetector(
-                    onTap: () {
-                      _navigateToRoutineEditor(
-                          context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+        Theme(
+          data: ThemeData(splashColor: tealBlueLight),
+          child: ListTile(
+              leading: canStartRoutine
+                  ? GestureDetector(
+                      onTap: () {
+                        _navigateToRoutineEditor(
+                            context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+                      },
+                      child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 35,))
+                  : null,
+              title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
+              subtitle: Row(children: [
+                const Icon(
+                  Icons.numbers,
+                  color: Colors.white,
+                  size: 12,
+                ),
+                Text("${routineDto.procedures.length} exercises",
+                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+              ]),
+              trailing: MenuAnchor(
+                style: MenuStyle(
+                  backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                ),
+                builder: (BuildContext context, MenuController controller, Widget? child) {
+                  return IconButton(
+                    onPressed: () {
+                      if (controller.isOpen) {
+                        controller.close();
+                      } else {
+                        controller.open();
+                      }
                     },
-                    child: const Icon(Icons.play_arrow, color: Colors.white))
-                : null,
-            title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
-            subtitle: Row(children: [
-              const Icon(
-                Icons.numbers,
-                color: Colors.white,
-                size: 12,
-              ),
-              Text("${routineDto.procedures.length} exercises",
-                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-            ]),
-            trailing: MenuAnchor(
-              style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-              ),
-              builder: (BuildContext context, MenuController controller, Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.more_horiz_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  tooltip: 'Show menu',
-                );
-              },
-              menuChildren: _menuActionButtons(context: context, routineDto: routineDto),
-            )),
+                    icon: const Icon(
+                      Icons.more_horiz_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    tooltip: 'Show menu',
+                  );
+                },
+                menuChildren: _menuActionButtons(context: context, routineDto: routineDto),
+              )),
+        ),
         const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
         routineDto.procedures.length > 3
