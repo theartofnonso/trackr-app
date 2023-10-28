@@ -22,7 +22,7 @@ import '../dtos/graph/chart_point_dto.dart';
 const exerciseRouteName = "/exercise-history-screen";
 
 List<SetDto> _allSets({required BuildContext context, required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
   List<SetDto> completedSets = [];
   for (var procedure in procedures) {
     completedSets.addAll(procedure.sets);
@@ -178,11 +178,11 @@ class ExerciseHistoryScreen extends StatelessWidget {
   List<RoutineLog> _whereLogsForExercise({required BuildContext context, required List<RoutineLog> logs}) {
     return logs
         .where((log) => log.procedures
-            .map((json) => ProcedureDto.fromJson(jsonDecode(json), context))
-            .any((procedure) => procedure.exercise.id == exerciseId))
+            .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+            .any((procedure) => procedure.exerciseId == exerciseId))
         .map((log) => log.copyWith(
             procedures: log.procedures
-                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure), context).exercise.id == exerciseId)
+                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exerciseId == exerciseId)
                 .toList()))
         .toList();
   }

@@ -56,7 +56,7 @@ class RoutinePreviewScreen extends StatelessWidget {
     final routine = Provider.of<RoutineProvider>(context, listen: true).whereRoutineDto(id: routineId);
 
     if (routine != null) {
-      final procedures = routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+      final procedures = routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
 
       final cachedRoutineLogDto = Provider.of<RoutineLogProvider>(context, listen: true).cachedLog;
 
@@ -125,7 +125,7 @@ class RoutinePreviewScreen extends StatelessWidget {
                   Expanded(
                     child: ListView.separated(
                         itemBuilder: (BuildContext context, int index) => _procedureToWidget(
-                            procedure: ProcedureDto.fromJson(jsonDecode(routine.procedures[index]), context),
+                            procedure: ProcedureDto.fromJson(jsonDecode(routine.procedures[index])),
                             otherProcedures: procedures),
                         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
                         itemCount: routine.procedures.length),

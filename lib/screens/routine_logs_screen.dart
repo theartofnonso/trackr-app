@@ -229,7 +229,8 @@ class _RoutineLogWidget extends StatelessWidget {
   }
 
   List<Widget> _proceduresToWidgets({required BuildContext context, required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     return procedures
         .take(3)
         .map((procedure) => Padding(
@@ -242,7 +243,7 @@ class _RoutineLogWidget extends StatelessWidget {
                     ),
                     onTap: () => _navigateToRoutineLogPreview(context: context),
                     tileColor: tealBlueLight,
-                    title: Text(procedure.exercise.name,
+                    title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name,
                         style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                     trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
               ),

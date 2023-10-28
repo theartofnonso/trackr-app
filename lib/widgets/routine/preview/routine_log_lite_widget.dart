@@ -38,7 +38,7 @@ class RoutineLogLiteWidget extends StatelessWidget {
                 style: TextStyle(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ]),),
         ),
-        ...routineLog.procedures.map((procedure) => ProcedureLiteWidget(procedureDto: ProcedureDto.fromJson(jsonDecode(procedure), context))).toList()
+        ...routineLog.procedures.map((procedure) => ProcedureLiteWidget(procedureDto: ProcedureDto.fromJson(jsonDecode(procedure)))).toList()
       ],
     );
   }

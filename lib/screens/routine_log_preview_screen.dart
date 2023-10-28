@@ -10,6 +10,7 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
+import '../providers/exercises_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
 import 'exercise_history_screen.dart';
@@ -211,14 +212,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   List<Widget> _proceduresToWidgets({required RoutineLog routineLog}) {
-    final procedures = routineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+    final procedures = routineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     return routineLog.procedures
         .map((procedure) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: ProcedureWidget(
-                procedureDto: ProcedureDto.fromJson(jsonDecode(procedure), context),
+                procedureDto: ProcedureDto.fromJson(jsonDecode(procedure)),
                 otherSuperSetProcedureDto: whereOtherSuperSetProcedure(
-                    firstProcedure: ProcedureDto.fromJson(jsonDecode(procedure), context), procedures: procedures),
+                    firstProcedure: ProcedureDto.fromJson(jsonDecode(procedure)), procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))
@@ -235,7 +236,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   List<SetDto> _calculateCompletedSets({required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
       completedSets.addAll(procedure.sets);
@@ -273,8 +274,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   List<Widget> _bodyPartSplit({required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
-    final parts = procedures.map((procedure) => procedure.exercise.bodyPart).toList();
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+    final parts = procedures.map((procedure) => exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart).toList();
     final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {

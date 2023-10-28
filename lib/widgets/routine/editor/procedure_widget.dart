@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -7,6 +8,7 @@ import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../providers/exercises_provider.dart';
 import '../../../screens/exercise_history_screen.dart';
 import '../../../screens/routine_editor_screen.dart';
 
@@ -131,6 +133,11 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+
+    final otherProcedureDto = otherSuperSetProcedureDto;
+
     return Container(
       padding: const EdgeInsets.only(top: 12, right: 12, bottom: 10, left: 12),
       decoration: BoxDecoration(
@@ -147,9 +154,9 @@ class ProcedureWidget extends StatelessWidget {
                   child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
+                      builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exerciseId)));
                 },
-                child: Text(procedureDto.exercise.name,
+                child: Text(exerciseProvider.whereExercise(exerciseId: procedureDto.exerciseId).name,
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
               )),
               MenuAnchor(
@@ -172,10 +179,10 @@ class ProcedureWidget extends StatelessWidget {
                   menuChildren: _menuActionButtons())
             ],
           ),
-          procedureDto.superSetId.isNotEmpty
+          otherProcedureDto != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+                  child: Text("with ${exerciseProvider.whereExercise(exerciseId: otherProcedureDto.exerciseId).name}",
                       style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
                 )
               : const SizedBox.shrink(),

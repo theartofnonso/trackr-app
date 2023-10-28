@@ -11,7 +11,7 @@ ProcedureDto? whereOtherSuperSetProcedure({required ProcedureDto firstProcedure,
   return procedures.firstWhereOrNull((procedure) =>
   procedure.superSetId.isNotEmpty &&
       procedure.superSetId == firstProcedure.superSetId &&
-      procedure.exercise.id != firstProcedure.exercise.id);
+      procedure.exerciseId != firstProcedure.exerciseId);
 }
 
 List<Widget> setsToWidgets({required List<SetDto> sets}) {

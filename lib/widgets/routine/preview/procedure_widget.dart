@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import '../../../providers/exercises_provider.dart';
 import '../../../screens/exercise_history_screen.dart';
 import '../../helper_widgets/routine_helper.dart';
 
@@ -18,6 +20,10 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+
+    final otherProcedureDto = otherSuperSetProcedureDto;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,17 +36,17 @@ class ProcedureWidget extends StatelessWidget {
             onTap: () {
               if(!readOnly) {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exercise.id)));
+                    MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exerciseId)));
               }
             },
-            title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
+            title: Text(exerciseProvider.whereExercise(exerciseId: procedureDto.exerciseId).name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                otherSuperSetProcedureDto != null
+                otherProcedureDto != null
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text("with ${otherSuperSetProcedureDto?.exercise.name}",
+                        child: Text("with ${exerciseProvider.whereExercise(exerciseId: otherProcedureDto.exerciseId).name}",
                             style: const TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
                       )
                     : const SizedBox.shrink(),

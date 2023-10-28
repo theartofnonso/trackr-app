@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
@@ -13,8 +14,7 @@ import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
-void _navigateToRoutineEditor(
-    {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+void _navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
   Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => RoutineEditorScreen(routine: routine, mode: mode, type: RoutineEditingType.template)));
 }
@@ -171,7 +171,8 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   List<Widget> _proceduresToWidgets({required BuildContext context, required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     return procedures
         .take(3)
         .map((procedure) => Padding(
@@ -184,7 +185,7 @@ class _RoutineWidget extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
                     ),
-                    title: Text(procedure.exercise.name,
+                    title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name,
                         style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                     trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
               ),
