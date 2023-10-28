@@ -1,19 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../app_constants.dart';
-import '../dtos/routine_dto.dart';
 import '../dtos/set_dto.dart';
-import '../models/Exercise.dart';
 import '../providers/routine_log_provider.dart';
 import '../shared_prefs.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
@@ -26,11 +27,13 @@ enum RoutineEditorMode { editing, routine }
 enum RoutineEditingType { template, log }
 
 class RoutineEditorScreen extends StatefulWidget {
-  final RoutineDto? routineDto;
+  final Routine? routine;
+  final RoutineLog? routineLog;
   final RoutineEditorMode mode;
   final RoutineEditingType type;
 
-  const RoutineEditorScreen({super.key, this.routineDto, this.mode = RoutineEditorMode.editing, required this.type});
+  const RoutineEditorScreen(
+      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorMode.editing, required this.type});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -267,6 +270,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _hideRestInterval() {
+    _clearCachedElapsedRestInterval();
     setState(() {
       _currentRestIntervalDuration = null;
     });
@@ -443,7 +447,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _updateRoutine() {
+  void _updateRoutine({required Routine routine}) {
     final alertDialogActions = <Widget>[
       TextButton(
         onPressed: () {
@@ -452,29 +456,59 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         child: const Text('Ok', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
     ];
+    if (_routineNameController.text.isEmpty) {
+      _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
+    } else if (_procedures.isEmpty) {
+      _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
+    } else {
+      final updatedRoutine = routine.copyWith(
+          name: _routineNameController.text,
+          notes: _routineNotesController.text,
+          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+          updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
 
-    final previousWorkout = widget.routineDto;
-    if (previousWorkout != null) {
-      if (_routineNameController.text.isEmpty) {
-        _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
-      } else if (_procedures.isEmpty) {
-        _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
-      } else {
-        final previousRoutine = widget.routineDto;
-        if (previousRoutine != null) {
-          final routineDto = previousRoutine.copyWith(
-              name: _routineNameController.text,
-              notes: _routineNotesController.text,
-              procedures: _procedures,
-              updatedAt: DateTime.now());
-          if (widget.type == RoutineEditingType.template) {
-            Provider.of<RoutineProvider>(context, listen: false).updateRoutine(dto: routineDto);
-          } else {
-            Provider.of<RoutineLogProvider>(context, listen: false).updateLog(dto: routineDto.toRoutineLog());
-          }
-        }
+      Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
 
+      _navigateAndPop();
+    }
+  }
+
+  void _updateRoutineLog({required RoutineLog routineLog}) {
+    final alertDialogActions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Ok', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+    ];
+    if (_routineNameController.text.isEmpty) {
+      _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
+    } else if (_procedures.isEmpty) {
+      _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
+    } else {
+      final previousRoutineLog = widget.routineLog;
+      if (previousRoutineLog != null) {
+        final updatedRoutineLog = routineLog.copyWith(
+            name: _routineNameController.text,
+            notes: _routineNotesController.text,
+            procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+            updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+        Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
         _navigateAndPop();
+      }
+    }
+  }
+
+  void _doUpdate() {
+    final previousRoutine = widget.routine;
+    final previousRoutineLog = widget.routineLog;
+
+    if (previousRoutine != null) {
+      _updateRoutine(routine: previousRoutine);
+    } else {
+      if (previousRoutineLog != null) {
+        _updateRoutineLog(routineLog: previousRoutineLog);
       }
     }
   }
@@ -527,7 +561,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       TextButton(
         onPressed: () {
           Navigator.pop(context);
-          final routine = widget.routineDto;
+          final routine = widget.routine;
           if (routine != null) {
             final completedProcedures = _totalCompletedProceduresAndSets();
             Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(
@@ -535,7 +569,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
                 notes: routine.notes,
                 procedures: completedProcedures,
-                startTime: _routineStartTime);
+                startTime: _routineStartTime,
+                routine: widget.routine!);
             _navigateAndPop();
           }
         },
@@ -569,6 +604,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  void _clearCachedElapsedRestInterval() {
+    SharedPrefs().cachedRoutineRestInterval = 0;
+  }
+
   void _cacheElapsedRestInterval({required int elapsedTime}) {
     if (widget.mode == RoutineEditorMode.routine) {
       _elapsedRestIntervalDuration = elapsedTime;
@@ -589,10 +628,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _cacheRoutine() {
     if (widget.mode == RoutineEditorMode.routine) {
-      final routine = widget.routineDto;
+      final routine = widget.routine;
       if (routine != null) {
-        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutine(
-            name: routine.name, notes: routine.notes, procedures: _procedures, startTime: _routineStartTime);
+        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
+            name: routine.name,
+            notes: routine.notes,
+            procedures: _procedures,
+            startTime: _routineStartTime,
+            routine: widget.routine!);
       }
     }
   }
@@ -607,9 +650,20 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     Navigator.of(context).pop();
   }
 
+  bool _isUpdating() {
+    final previousRoutine = widget.routine;
+    final previousRoutineLog = widget.routineLog;
+    return previousRoutine != null || previousRoutineLog != null;
+  }
+
+  String _editorActionLabel() {
+    return _isUpdating() ? "Update" : "Save";
+  }
+
   @override
   Widget build(BuildContext context) {
-    final previousRoutine = widget.routineDto;
+
+    final previousRoutineLog = widget.routineLog;
 
     final restIntervalDuration = _currentRestIntervalDuration;
 
@@ -620,8 +674,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 backgroundColor: tealBlueDark,
                 actions: [
                   CTextButton(
-                    onPressed: previousRoutine != null ? _updateRoutine : _createRoutine,
-                    label: previousRoutine != null ? "Update" : "Save",
+                    onPressed: _isUpdating() ? _doUpdate : _createRoutine,
+                    label: _editorActionLabel(),
                     buttonColor: Colors.transparent,
                   )
                 ],
@@ -637,7 +691,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   ),
                 ),
                 title: Text(
-                  "${previousRoutine?.name}",
+                  "${previousRoutineLog?.name}",
                   style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 actions: [
@@ -750,19 +804,30 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
-    final previousRoutine = widget.routineDto;
+    final previousRoutine = widget.routine;
+    final previousRoutineLog = widget.routineLog;
     if (previousRoutine != null) {
-      _procedures.addAll([...previousRoutine.procedures]);
-
-      if (widget.mode == RoutineEditorMode.routine) {
-        /// If [RoutineDto] was instantiated from a [RoutineLogDto]
-        _routineStartTime = previousRoutine.startTime ?? _routineStartTime;
+      _procedures.addAll(
+          [...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList()]);
+    } else {
+      if (previousRoutineLog != null) {
+        _procedures.addAll([
+          ...previousRoutineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList()
+        ]);
+        _routineStartTime = previousRoutineLog.startTime.getDateTimeInUtc();
       }
     }
 
     if (widget.mode == RoutineEditorMode.editing) {
-      _routineNameController = TextEditingController(text: previousRoutine?.name);
-      _routineNotesController = TextEditingController(text: previousRoutine?.notes);
+      if (previousRoutine != null) {
+        _routineNameController = TextEditingController(text: previousRoutine.name);
+        _routineNotesController = TextEditingController(text: previousRoutine.notes);
+      } else {
+        if (previousRoutineLog != null) {
+          _routineNameController = TextEditingController(text: previousRoutineLog.name);
+          _routineNotesController = TextEditingController(text: previousRoutineLog.notes);
+        }
+      }
     }
 
     if (widget.mode == RoutineEditorMode.routine) {

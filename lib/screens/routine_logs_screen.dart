@@ -1,14 +1,17 @@
+import 'dart:convert';
+
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../app_constants.dart';
-import '../dtos/routine_log_dto.dart';
+import '../models/Routine.dart';
+import '../models/RoutineLog.dart';
 import '../providers/exercises_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
@@ -25,7 +28,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
-      final cachedRoutineLog = provider.cachedLogDto;
+      final cachedRoutineLog = provider.cachedLog;
 
       return Scaffold(
         floatingActionButton: cachedRoutineLog == null
@@ -46,12 +49,12 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                   child: Column(
                     children: [
                       cachedRoutineLog != null
-                          ? MinimisedRoutineBanner(provider: provider, logDto: cachedRoutineLog)
+                          ? MinimisedRoutineBanner(provider: provider, log: cachedRoutineLog)
                           : const SizedBox.shrink(),
                       Expanded(
                         child: ListView.separated(
                             itemBuilder: (BuildContext context, int index) =>
-                                _RoutineLogWidget(logDto: provider.logs[index]),
+                                _RoutineLogWidget(log: provider.logs[index]),
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                             itemCount: provider.logs.length),
                       ),
@@ -65,10 +68,16 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   }
 
   void _navigateToRoutineEditor({required BuildContext context}) {
-    final routine = RoutineDto(id: '', name: '', procedures: [], createdAt: DateTime.now(), updatedAt: DateTime.now());
+    final routine = Routine(
+        id: '',
+        name: '',
+        notes: '',
+        procedures: [],
+        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
+        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            RoutineEditorScreen(routineDto: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+            RoutineEditorScreen(routine: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
   }
 
   void _loadData() async {
@@ -104,9 +113,9 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
 }
 
 class _RoutineLogWidget extends StatelessWidget {
-  final RoutineLogDto logDto;
+  final RoutineLog log;
 
-  const _RoutineLogWidget({required this.logDto});
+  const _RoutineLogWidget({required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +124,7 @@ class _RoutineLogWidget extends StatelessWidget {
       children: [
         ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(logDto.name, style: Theme.of(context).textTheme.labelLarge),
+            title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [
               const Icon(
                 Icons.date_range_rounded,
@@ -123,7 +132,7 @@ class _RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(logDto.createdAt.durationSinceOrDate(),
+              Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
                   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
               const Icon(
@@ -158,8 +167,8 @@ class _RoutineLogWidget extends StatelessWidget {
               menuChildren: _menuActionButtons(context: context),
             )),
         const SizedBox(height: 8),
-        ..._proceduresToWidgets(context: context, procedures: logDto.procedures),
-        logDto.procedures.length > 3
+        ..._proceduresToWidgets(context: context, procedureJsons: log.procedures),
+        log.procedures.length > 3
             ? Text(_footerLabel(),
                 style: Theme.of(context)
                     .textTheme
@@ -176,17 +185,15 @@ class _RoutineLogWidget extends StatelessWidget {
       MenuItemButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => RoutineEditorScreen(routineDto: logDto, type: RoutineEditingType.log)));
+              builder: (context) => RoutineEditorScreen(routineLog: log, type: RoutineEditingType.log)));
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
       MenuItemButton(
         onPressed: () {
-          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: logDto.id);
+          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: log.id);
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),
       )
@@ -195,7 +202,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
     final routine = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logDto.id)))
+            .push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: log.id)))
         as Map<String, String>?;
     if (routine != null) {
       final id = routine["id"] ?? "";
@@ -208,22 +215,21 @@ class _RoutineLogWidget extends StatelessWidget {
   }
 
   String _footerLabel() {
-    final exercisesPlural = logDto.procedures.length - 3 > 1 ? "exercises" : "exercise";
-    return "Plus ${logDto.procedures.length - 3} more $exercisesPlural";
+    final exercisesPlural = log.procedures.length - 3 > 1 ? "exercises" : "exercise";
+    return "Plus ${log.procedures.length - 3} more $exercisesPlural";
   }
 
   String _logDuration() {
     String interval = "";
-    final startTime = logDto.startTime;
-    final endTime = logDto.endTime;
-    if (startTime != null && endTime != null) {
-      final difference = endTime.difference(startTime);
-      interval = difference.secondsOrMinutesOrHours();
-    }
+    final startTime = log.startTime.getDateTimeInUtc();
+    final endTime = log.endTime.getDateTimeInUtc();
+    final difference = endTime.difference(startTime);
+    interval = difference.secondsOrMinutesOrHours();
     return interval;
   }
 
-  List<Widget> _proceduresToWidgets({required BuildContext context, required List<ProcedureDto> procedures}) {
+  List<Widget> _proceduresToWidgets({required BuildContext context, required List<String> procedureJsons}) {
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
     return procedures
         .take(3)
         .map((procedure) => Padding(

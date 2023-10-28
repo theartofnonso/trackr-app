@@ -1,21 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/dtos/routine_dto.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/procedure_dto.dart';
+import '../models/Routine.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
-    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+    {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
   Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) =>
-          RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
+      builder: (context) => RoutineEditorScreen(routine: routine, mode: mode, type: RoutineEditingType.template)));
 }
 
 class RoutinesScreen extends StatelessWidget {
@@ -24,7 +25,7 @@ class RoutinesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
-      final cachedRoutineLog = routineLogProvider.cachedLogDto;
+      final cachedRoutineLog = routineLogProvider.cachedLog;
       return Scaffold(
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
@@ -39,13 +40,12 @@ class RoutinesScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(10.0),
                       child: Column(children: [
                         cachedRoutineLog != null
-                            ? MinimisedRoutineBanner(provider: routineLogProvider, logDto: cachedRoutineLog)
+                            ? MinimisedRoutineBanner(provider: routineLogProvider, log: cachedRoutineLog)
                             : const SizedBox.shrink(),
                         Expanded(
                           child: ListView.separated(
                               itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                  routineDto: routineProvider.routines[index],
-                                  canStartRoutine: cachedRoutineLog == null),
+                                  routine: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
                               separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                               itemCount: routineProvider.routines.length),
                         )
@@ -56,17 +56,17 @@ class RoutinesScreen extends StatelessWidget {
 }
 
 class _RoutineWidget extends StatelessWidget {
-  final RoutineDto routineDto;
+  final Routine routine;
   final bool canStartRoutine;
 
-  const _RoutineWidget({required this.routineDto, required this.canStartRoutine});
+  const _RoutineWidget({required this.routine, required this.canStartRoutine});
 
   /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context, required RoutineDto routineDto}) {
+  List<Widget> _menuActionButtons({required BuildContext context, required Routine routine}) {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, routineDto: routineDto);
+          _navigateToRoutineEditor(context: context, routine: routine);
         },
         leadingIcon: const Icon(
           Icons.edit,
@@ -76,7 +76,7 @@ class _RoutineWidget extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routineDto.id);
+          Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),
@@ -85,11 +85,11 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
-    final routine = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineDto.id)))
+    final routineToBeRemoved = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)))
         as Map<String, String>?;
-    if (routine != null) {
-      final id = routine["id"] ?? "";
+    if (routineToBeRemoved != null) {
+      final id = routineToBeRemoved["id"] ?? "";
       if (id.isNotEmpty) {
         if (context.mounted) {
           Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: id);
@@ -110,8 +110,7 @@ class _RoutineWidget extends StatelessWidget {
               leading: canStartRoutine
                   ? GestureDetector(
                       onTap: () {
-                        _navigateToRoutineEditor(
-                            context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
+                        _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.routine);
                       },
                       child: const Icon(
                         Icons.play_arrow_rounded,
@@ -119,14 +118,14 @@ class _RoutineWidget extends StatelessWidget {
                         size: 35,
                       ))
                   : null,
-              title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
+              title: Text(routine.name, style: Theme.of(context).textTheme.labelLarge),
               subtitle: Row(children: [
                 const Icon(
                   Icons.numbers,
                   color: Colors.white,
                   size: 12,
                 ),
-                Text("${routineDto.procedures.length} exercises",
+                Text("${routine.procedures.length} exercises",
                     style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               ]),
               trailing: MenuAnchor(
@@ -150,12 +149,12 @@ class _RoutineWidget extends StatelessWidget {
                     tooltip: 'Show menu',
                   );
                 },
-                menuChildren: _menuActionButtons(context: context, routineDto: routineDto),
+                menuChildren: _menuActionButtons(context: context, routine: routine),
               ),
             )),
         const SizedBox(height: 8),
-        ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
-        routineDto.procedures.length > 3
+        ..._proceduresToWidgets(context: context, procedureJsons: routine.procedures),
+        routine.procedures.length > 3
             ? Text(_footerLabel(),
                 style: Theme.of(context)
                     .textTheme
@@ -167,11 +166,12 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   String _footerLabel() {
-    final exercisesPlural = routineDto.procedures.length - 3 > 1 ? "exercises" : "exercise";
-    return "Plus ${routineDto.procedures.length - 3} more $exercisesPlural";
+    final exercisesPlural = routine.procedures.length - 3 > 1 ? "exercises" : "exercise";
+    return "Plus ${routine.procedures.length - 3} more $exercisesPlural";
   }
 
-  List<Widget> _proceduresToWidgets({required BuildContext context, required List<ProcedureDto> procedures}) {
+  List<Widget> _proceduresToWidgets({required BuildContext context, required List<String> procedureJsons}) {
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
     return procedures
         .take(3)
         .map((procedure) => Padding(

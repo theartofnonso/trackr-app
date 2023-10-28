@@ -3,51 +3,49 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/models/Routine.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/procedure_dto.dart';
-import '../dtos/routine_log_dto.dart';
 import '../models/RoutineLog.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-  List<RoutineLogDto> _logs = [];
+  List<RoutineLog> _logs = [];
 
-  RoutineLogDto? _cachedLogDto;
+  RoutineLog? _cachedLog;
 
-  UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
+  UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
-  RoutineLogDto? get cachedLogDto => _cachedLogDto;
+  RoutineLog? get cachedLog => _cachedLog;
 
-  set cachedLogDto(RoutineLogDto? value) {
-    _cachedLogDto = value;
+  set cachedLog(RoutineLog? value) {
+    _cachedLog = value;
     notifyListeners();
   }
 
   void notifyAllListeners() {
-    if (_cachedLogDto != null) {
+    if (_cachedLog != null) {
       notifyListeners();
     }
   }
 
   void clearCachedLog() {
-    if (_cachedLogDto != null) {
-      _cachedLogDto = null;
+    if (_cachedLog != null) {
+      _cachedLog = null;
       SharedPrefs().cachedRoutineLog = "";
       notifyListeners();
     }
   }
 
   void listRoutineLogs(BuildContext context) async {
-    final logs = await Amplify.DataStore.query(RoutineLog.classType,
-        sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
-    _logs = logs.map((log) => log.toRoutineLogDto(context)).toList();
+    _logs = await Amplify.DataStore.query(RoutineLog.classType, sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
     notifyListeners();
   }
 
   void retrieveCachedRoutineLog(BuildContext context) {
     final cache = SharedPrefs().cachedRoutineLog;
     if (cache.isNotEmpty) {
-      _cachedLogDto = RoutineLogDto.fromJson(jsonDecode(cache), context);
+      _cachedLog = RoutineLog.fromJson(jsonDecode(cache));
     }
   }
 
@@ -56,7 +54,7 @@ class RoutineLogProvider with ChangeNotifier {
       required String name,
       required String notes,
       required List<ProcedureDto> procedures,
-      required DateTime startTime}) async {
+      required DateTime startTime, required Routine routine}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
     final logToSave = RoutineLog(
@@ -66,47 +64,47 @@ class RoutineLogProvider with ChangeNotifier {
         startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
         endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
         createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now());
+        updatedAt: TemporalDateTime.now(), routine: routine);
     await Amplify.DataStore.save<RoutineLog>(logToSave);
     if (context.mounted) {
-      _logs.insert(0, logToSave.toRoutineLogDto(context));
+      _logs.insert(0, logToSave);
     }
     clearCachedLog();
     notifyListeners();
   }
 
-  void cacheRoutine(
+  void cacheRoutineLog(
       {required String name,
       required String notes,
       required List<ProcedureDto> procedures,
-      required DateTime startTime}) {
-    _cachedLogDto = RoutineLogDto(
+      required DateTime startTime, required Routine routine}) {
+    _cachedLog = RoutineLog(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
         name: name,
         notes: notes,
-        procedures: procedures,
-        startTime: startTime,
-        endTime: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
-    final cachedLogDto = _cachedLogDto;
+        routine: routine,
+        procedures: procedures.map((procedure) => procedure.toJson()).toList(),
+        startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
+        endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
+        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
+        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+    final cachedLogDto = _cachedLog;
     if (cachedLogDto != null) {
-      SharedPrefs().cachedRoutineLog = cachedLogDto.toJson();
+      SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
     }
   }
 
-  void updateLog({required RoutineLogDto dto}) async {
-    final routineLog = dto.toRoutineLog();
-    await Amplify.DataStore.save<RoutineLog>(routineLog);
-    final index = _indexWhereRoutineLog(id: dto.id);
-    _logs[index] = dto;
+  void updateLog({required RoutineLog log}) async {
+    await Amplify.DataStore.save<RoutineLog>(log);
+    final index = _indexWhereRoutineLog(id: log.id);
+    _logs[index] = log;
     notifyListeners();
   }
 
   void removeLog({required String id}) async {
     final index = _indexWhereRoutineLog(id: id);
     final logToBeRemoved = _logs.removeAt(index);
-    await Amplify.DataStore.delete<RoutineLog>(logToBeRemoved.toRoutineLog());
+    await Amplify.DataStore.delete<RoutineLog>(logToBeRemoved);
     notifyListeners();
   }
 
@@ -114,7 +112,7 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.indexWhere((log) => log.id == id);
   }
 
-  RoutineLogDto? whereRoutineLog({required String id}) {
+  RoutineLog? whereRoutineLog({required String id}) {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 }

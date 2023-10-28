@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/routine_log_dto.dart';
 
 import '../../app_constants.dart';
+import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../screens/routine_editor_screen.dart';
 
 class MinimisedRoutineBanner extends StatelessWidget {
   final RoutineLogProvider provider;
-  final RoutineLogDto logDto;
-  const MinimisedRoutineBanner({super.key, required this.provider, required this.logDto});
+  final RoutineLog log;
+  const MinimisedRoutineBanner({super.key, required this.provider, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
       margin: const EdgeInsets.all(12),
       dividerColor: Colors.transparent,
       content: Text(
-          '${logDto.name.isNotEmpty ? logDto.name : "Workout"} is running'),
+          '${log.name.isNotEmpty ? log.name : "Workout"} is running'),
       leading: const Icon(
         Icons.info_outline,
         color: Colors.white,
@@ -34,7 +34,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => RoutineEditorScreen(
-                    routineDto: logDto,
+                    routineLog: log,
                     mode: RoutineEditorMode.routine,
                     type: RoutineEditingType.log)));
           },

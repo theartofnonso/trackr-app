@@ -26,6 +26,7 @@ class ProcedureWidget extends StatelessWidget {
             splashColor: tealBlueLight
           ),
           child: ListTile(
+            contentPadding: EdgeInsets.zero,
             onTap: () {
               if(!readOnly) {
                 Navigator.of(context).push(

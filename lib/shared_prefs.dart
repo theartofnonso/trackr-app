@@ -1,5 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tracker_app/dtos/routine_log_dto.dart';
 
 const String lastActivityStartDatetimeKey = "last_activity_start_datetime_key";
 const String lastActivityIdKey = "last_activity_id_key";

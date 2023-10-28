@@ -1,14 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
-import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
-import '../models/BodyPart.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
 import 'exercise_history_screen.dart';
@@ -29,10 +30,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    final logDto = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
+    final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
-    if (logDto != null) {
-      final completedSets = _calculateCompletedSets(procedures: logDto.procedures);
+    if (log != null) {
+      final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
       final completedSetsSummary =
           completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
@@ -42,7 +43,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       return Scaffold(
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routine_log_preview_screen",
-            onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
+            onPressed: () => _navigateToRoutineEditor(context: context, log: log),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.edit),
@@ -50,8 +51,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
           backgroundColor: tealBlueDark,
           appBar: AppBar(
             backgroundColor: tealBlueDark,
-            title: Text(logDto.name,
-                style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            title:
+                Text(log.name, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
             actions: [
               MenuAnchor(
                 style: MenuStyle(
@@ -74,7 +75,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     tooltip: 'Show menu',
                   );
                 },
-                menuChildren: _menuActionButtons(context: context, logDto: logDto),
+                menuChildren: _menuActionButtons(context: context, logDto: log),
               )
             ],
           ),
@@ -85,10 +86,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    logDto.notes.isNotEmpty
+                    log.notes.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(logDto.notes,
+                            child: Text(log.notes,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -103,7 +104,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(logDto.createdAt.formattedDayAndMonthAndYear(),
+                        Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
                             style: TextStyle(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
@@ -113,7 +114,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(logDto.endTime!.formattedTime(),
+                        Text(log.endTime.getDateTimeInUtc().formattedTime(),
                             style: TextStyle(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
@@ -159,7 +160,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             ),
                             Expanded(
                               child: Center(
-                                child: Text(_logDuration(logDto: logDto),
+                                child: Text(_logDuration(log: log),
                                     style: const TextStyle(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                               ),
@@ -169,9 +170,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ),
                     ),
                     Column(
-                      children: [..._bodyPartSplit(procedures: logDto.procedures)],
+                      children: [..._bodyPartSplit(procedureJsons: log.procedures)],
                     ),
-                    ..._proceduresToWidgets(routineLogDto: logDto)
+                    ..._proceduresToWidgets(routineLog: log)
                   ],
                 ),
               ),
@@ -209,32 +210,32 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     super.dispose();
   }
 
-  List<Widget> _proceduresToWidgets({required RoutineLogDto routineLogDto}) {
-    return routineLogDto.procedures
+  List<Widget> _proceduresToWidgets({required RoutineLog routineLog}) {
+    final procedures = routineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
+    return routineLog.procedures
         .map((procedure) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: ProcedureWidget(
-                procedureDto: procedure,
-                otherSuperSetProcedureDto:
-                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: routineLogDto.procedures),
-            readOnly: widget.previousRouteName == exerciseRouteName,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: ProcedureWidget(
+                procedureDto: ProcedureDto.fromJson(jsonDecode(procedure), context),
+                otherSuperSetProcedureDto: whereOtherSuperSetProcedure(
+                    firstProcedure: ProcedureDto.fromJson(jsonDecode(procedure), context), procedures: procedures),
+                readOnly: widget.previousRouteName == exerciseRouteName,
               ),
-        ))
+            ))
         .toList();
   }
 
-  String _logDuration({required RoutineLogDto logDto}) {
+  String _logDuration({required RoutineLog log}) {
     String interval = "";
-    final startTime = logDto.startTime;
-    final endTime = logDto.endTime;
-    if (startTime != null && endTime != null) {
-      final difference = endTime.difference(startTime);
-      interval = difference.secondsOrMinutesOrHours();
-    }
+    final startTime = log.startTime.getDateTimeInUtc();
+    final endTime = log.endTime.getDateTimeInUtc();
+    final difference = endTime.difference(startTime);
+    interval = difference.secondsOrMinutesOrHours();
     return interval;
   }
 
-  List<SetDto> _calculateCompletedSets({required List<ProcedureDto> procedures}) {
+  List<SetDto> _calculateCompletedSets({required List<String> procedureJsons}) {
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
       completedSets.addAll(procedure.sets);
@@ -271,7 +272,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return percentageMap;
   }
 
-  List<Widget> _bodyPartSplit({required List<ProcedureDto> procedures}) {
+  List<Widget> _bodyPartSplit({required List<String> procedureJsons}) {
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json), context)).toList();
     final parts = procedures.map((procedure) => procedure.exercise.bodyPart).toList();
     final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];
@@ -303,13 +305,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context, required RoutineLogDto logDto}) {
+  List<Widget> _menuActionButtons({required BuildContext context, required RoutineLog logDto}) {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, logDto: logDto);
+          _navigateToRoutineEditor(context: context, log: logDto);
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
@@ -317,16 +318,15 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         onPressed: () {
           Navigator.of(context).pop({"id": widget.routineLogId});
         },
-        // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(tealBlueLight),),
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),
       )
     ];
   }
 
-  void _navigateToRoutineEditor({required BuildContext context, required RoutineLogDto logDto}) async {
+  void _navigateToRoutineEditor({required BuildContext context, required RoutineLog log}) async {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            RoutineEditorScreen(routineDto: logDto, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
+            RoutineEditorScreen(routineLog: log, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
   }
 }
