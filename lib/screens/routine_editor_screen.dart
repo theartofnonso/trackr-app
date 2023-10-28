@@ -640,6 +640,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
+                heroTag: "fab_routine_editor_screen",
                 onPressed: _endRoutine,
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
