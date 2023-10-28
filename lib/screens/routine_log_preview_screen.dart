@@ -42,6 +42,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
       return Scaffold(
           floatingActionButton: FloatingActionButton(
+            heroTag: "fab_routine_log_preview_screen",
             onPressed: () => _navigateToRoutineEditor(context: context, logDto: logDto),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

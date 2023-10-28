@@ -31,6 +31,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       return Scaffold(
         floatingActionButton: cachedRoutineLog == null
             ? FloatingActionButton(
+                heroTag: "fab_routine_logs_screen",
                 onPressed: () {
                   _navigateToRoutineEditor(context: context);
                 },

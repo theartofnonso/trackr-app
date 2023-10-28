@@ -27,6 +27,7 @@ class RoutinesScreen extends StatelessWidget {
       final cachedRoutineLog = routineLogProvider.cachedLogDto;
       return Scaffold(
           floatingActionButton: FloatingActionButton(
+            heroTag: "fab_routines_screen",
             onPressed: () => _navigateToRoutineEditor(context: context),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

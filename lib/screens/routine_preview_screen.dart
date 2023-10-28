@@ -62,6 +62,7 @@ class RoutinePreviewScreen extends StatelessWidget {
         ? Scaffold(
             floatingActionButton: cachedRoutineLogDto == null
                 ? FloatingActionButton(
+                    heroTag: "fab_routine_preview_screen",
                     onPressed: () {
                       _navigateToRoutineEditor(
                           context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
