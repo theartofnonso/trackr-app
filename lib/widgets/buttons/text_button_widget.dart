@@ -5,7 +5,7 @@ import '../../app_constants.dart';
 class CTextButton extends StatelessWidget {
   final void Function() onPressed;
   final String label;
-  final Color buttonColor;
+  final Color? buttonColor;
 
   const CTextButton({super.key, required this.onPressed, required this.label, this.buttonColor = tealBlueLight});
 

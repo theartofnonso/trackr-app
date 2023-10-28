@@ -261,15 +261,20 @@ class SummaryWidget extends StatefulWidget {
   State<SummaryWidget> createState() => _SummaryWidgetState();
 }
 
+enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps }
+
 class _SummaryWidgetState extends State<SummaryWidget> {
   List<String> _dateTimes = [];
 
   List<ChartPointDto> _chartPoints = [];
 
+  SummaryType _summaryType = SummaryType.heaviestWeights;
+
   void _heaviestWeights() {
     final values = widget.routineLogDtos.map((log) => _heaviestWeightPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.heaviestWeights;
     });
   }
 
@@ -277,6 +282,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     final values = widget.routineLogDtos.map((log) => _heaviestSetVolumePerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.heaviestSetVolumes;
     });
   }
 
@@ -284,6 +290,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     final values = widget.routineLogDtos.map((log) => _volumePerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.logVolumes;
     });
   }
 
@@ -291,6 +298,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     final values = widget.routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.oneRepMaxes;
     });
   }
 
@@ -298,7 +306,12 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     final values = widget.routineLogDtos.map((log) => _repsPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.reps;
     });
+  }
+
+  Color? _buttonColor({required SummaryType type}) {
+    return _summaryType == type ? Colors.blueAccent : null;
   }
 
   @override
@@ -330,15 +343,18 @@ class _SummaryWidgetState extends State<SummaryWidget> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  CTextButton(onPressed: _heaviestWeights, label: "Heaviest Weight"),
+                  CTextButton(
+                      onPressed: _heaviestWeights,
+                      label: "Heaviest Weight",
+                      buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: _heaviestSetVolumes, label: "Heaviest Set Volume"),
+                  CTextButton(onPressed: _heaviestSetVolumes, label: "Heaviest Set Volume", buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: _logVolumes, label: "Session Volume"),
+                  CTextButton(onPressed: _logVolumes, label: "Session Volume", buttonColor: _buttonColor(type: SummaryType.logVolumes)),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: _oneRepMaxes, label: "1RM"),
+                  CTextButton(onPressed: _oneRepMaxes, label: "1RM", buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: _reps, label: "Total Reps"),
+                  CTextButton(onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
                 ],
               )),
           const SizedBox(height: 10),
@@ -376,8 +392,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     _dateTimes =
-    widget.routineLogDtos.map((log) => _dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
-
+        widget.routineLogDtos.map((log) => _dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
   }
 }
 
