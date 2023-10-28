@@ -74,7 +74,6 @@ class SetWidget extends StatelessWidget {
           _SetTextField(
             initialValue: setDto.rep,
             onChanged: (value) => onChangedRep(value),
-            width: 50,
           ),
           const SizedBox(
             width: 20,
@@ -82,13 +81,12 @@ class SetWidget extends StatelessWidget {
           _SetTextField(
             initialValue: setDto.weight,
             onChanged: (value) => onChangedWeight(value),
-            width: 85,
           ),
           editorType == RoutineEditorMode.routine
               ? GestureDetector(
                   onTap: onTapCheck,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
+                    padding: const EdgeInsets.only(left: 45.0),
                     child: setDto.checked
                         ? const Icon(Icons.check_box_rounded, color: Colors.green)
                         : const Icon(Icons.check_box_rounded, color: Colors.grey),
@@ -145,10 +143,9 @@ class _SetIcon extends StatelessWidget {
 
 class _SetTextField extends StatelessWidget {
   final int initialValue;
-  final double width;
   final void Function(int) onChanged;
 
-  const _SetTextField({required this.onChanged, required this.initialValue, required this.width});
+  const _SetTextField({required this.onChanged, required this.initialValue});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -157,7 +154,7 @@ class _SetTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 85,
+      width: 60,
       child: TextField(
         onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
         decoration: InputDecoration(

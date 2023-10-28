@@ -219,13 +219,13 @@ class ProcedureWidget extends StatelessWidget {
                     width: 20,
                   ),
                   SizedBox(
-                      width: 85,
+                      width: 60,
                       child: Text("REPS",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center)),
                   SizedBox(
                     width: 20,
                   ),
                   SizedBox(
-                      width: 85,
+                      width: 60,
                       child: Text("KG", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center))
                 ],
               ),
