@@ -4,10 +4,9 @@ import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
-  final List<int> weights;
-  final List<String> dates;
+  final List<String> dateTimes;
 
-  const LineChartWidget({super.key, required this.chartPoints, required this.dates, required this.weights});
+  const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes});
 
   static const List<Color> gradientColors = [
     Colors.blue,
@@ -28,21 +27,13 @@ class LineChartWidget extends StatelessWidget {
               topTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
-              // leftTitles: AxisTitles(
-              //   sideTitles: SideTitles(
-              //     showTitles: true,
-              //     interval: 1,
-              //     getTitlesWidget: leftTitleWidgets,
-              //     reservedSize: 4
-              //   ),
-              // ),
-              // bottomTitles: AxisTitles(
-              //   sideTitles: SideTitles(
-              //     showTitles: true,
-              //     interval: 1,
-              //     getTitlesWidget: bottomTitleWidgets,
-              //   ),
-              // ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: 1,
+                  getTitlesWidget: bottomTitleWidgets,
+                ),
+              ),
             ),
             borderData: FlBorderData(
               show: false,
@@ -67,25 +58,14 @@ class LineChartWidget extends StatelessWidget {
     );
   }
 
-  // Widget leftTitleWidgets(double value, TitleMeta meta) {
-  //   const style = TextStyle(
-  //     fontWeight: FontWeight.w600,
-  //     fontSize: 10,
-  //   );
-  //   return SideTitleWidget(
-  //     axisSide: meta.axisSide,
-  //     child: Text("${weights[value.toInt()]}", style: style),
-  //   );
-  // }
-  //
-  // Widget bottomTitleWidgets(double value, TitleMeta meta) {
-  //   const style = TextStyle(
-  //     fontWeight: FontWeight.w600,
-  //     fontSize: 10,
-  //   );
-  //   return SideTitleWidget(
-  //     axisSide: meta.axisSide,
-  //     child: Text(dates[value.toInt()], style: style),
-  //   );
-  // }
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 10,
+    );
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(dateTimes[value.toInt()], style: style),
+    );
+  }
 }

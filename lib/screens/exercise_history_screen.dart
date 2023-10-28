@@ -23,19 +23,9 @@ List<SetDto> _allSets({required List<ProcedureDto> procedures}) {
   return completedSets;
 }
 
-int _weightPerSet({required RoutineLogDto log}) {
-  int totalWeight = 0;
+/// Highest value per [RoutineLogDto]
 
-  final sets = _allSets(procedures: log.procedures);
-
-  for (var set in sets) {
-    final weight = set.weight;
-    totalWeight += weight;
-  }
-  return totalWeight;
-}
-
-int _heaviestWeightPerSet({required RoutineLogDto log}) {
+int _heaviestWeightPerLog({required RoutineLogDto log}) {
   int heaviestWeight = 0;
 
   final sets = _allSets(procedures: log.procedures);
@@ -49,7 +39,7 @@ int _heaviestWeightPerSet({required RoutineLogDto log}) {
   return heaviestWeight;
 }
 
-int _repsPerSet({required RoutineLogDto log}) {
+int _repsPerLog({required RoutineLogDto log}) {
   int totalReps = 0;
 
   final sets = _allSets(procedures: log.procedures);
@@ -61,7 +51,7 @@ int _repsPerSet({required RoutineLogDto log}) {
   return totalReps;
 }
 
-int _heaviestVolumePerSet({required RoutineLogDto log}) {
+int _heaviestVolumePerLog({required RoutineLogDto log}) {
   int heaviestVolume = 0;
 
   final sets = _allSets(procedures: log.procedures);
@@ -75,7 +65,7 @@ int _heaviestVolumePerSet({required RoutineLogDto log}) {
   return heaviestVolume;
 }
 
-double _1RMPerSet({required RoutineLogDto log}) {
+double _oneRepMaxPerLog({required RoutineLogDto log}) {
   SetDto heaviestSet = SetDto();
   int heaviestVolume = 0;
 
@@ -92,8 +82,11 @@ double _1RMPerSet({required RoutineLogDto log}) {
   return (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
 }
 
+DateTime _dateTimePerLog({required RoutineLogDto log}) {
+  return log.endTime!;
+}
 
-int _totalSetsVolume({required RoutineLogDto log}) {
+int _totalVolumePerLog({required RoutineLogDto log}) {
   int totalVolume = 0;
 
   final sets = _allSets(procedures: log.procedures);
@@ -104,6 +97,8 @@ int _totalSetsVolume({required RoutineLogDto log}) {
   }
   return totalVolume;
 }
+
+/// Highest value across all [RoutineLogDto]
 
 SetDto _heaviestSet({required List<RoutineLogDto> logs}) {
   SetDto heaviestSet = SetDto();
@@ -126,7 +121,7 @@ RoutineLogDto _heaviestLog({required List<RoutineLogDto> logs}) {
   int heaviestVolume = 0;
 
   for (var log in logs) {
-    final totalVolume = _totalSetsVolume(log: log);
+    final totalVolume = _totalVolumePerLog(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
       heaviestLog = log;
@@ -140,7 +135,7 @@ int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
   int heaviestVolume = 0;
 
   for (var log in logs) {
-    final totalVolume = _totalSetsVolume(log: log);
+    final totalVolume = _totalVolumePerLog(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
     }
@@ -149,7 +144,7 @@ int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
   return heaviestVolume;
 }
 
-int _heaviestWeights({required List<RoutineLogDto> logs}) {
+int _heaviestWeight({required List<RoutineLogDto> logs}) {
   int heaviestWeight = 0;
 
   for (var log in logs) {
@@ -191,7 +186,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final heaviestSet = _heaviestSet(logs: routineLogsForExercise);
 
-    final heaviestWeight = _heaviestWeights(logs: routineLogsForExercise);
+    final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
 
     return DefaultTabController(
         length: 2,
@@ -250,27 +245,19 @@ class SummaryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
 
-    //final logsWithHighestWeight = _findLogsWithHighestWeight(routineLogDtos).reversed.toList();
+    final heaviestWeightPerLog = routineLogDtos.map((log) => _heaviestWeightPerLog(log: log)).toList().reversed;
 
-    final allWeights = routineLogDtos.map((log) => _weightPerSet(log: log)).toList();
+    final heaviestVolumePerLog = routineLogDtos.map((log) => _heaviestVolumePerLog(log: log)).toList().reversed;
 
-    final heaviestWeightPerLog = routineLogDtos.map((log) => _heaviestWeightPerSet(log: log)).toList().reversed;
+    final repsPerLog = routineLogDtos.map((log) => _repsPerLog(log: log)).toList().reversed;
 
-    final heaviestVolumePerLog = routineLogDtos.map((log) => _heaviestVolumePerSet(log: log)).toList().reversed;
+    final oneRepMaxPerLog = routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().reversed;
 
-    final repsPerLog = routineLogDtos.map((log) => _repsPerSet(log: log)).toList().reversed;
-
-    final oneRepMaxPerLog = routineLogDtos.map((log) => _1RMPerSet(log: log)).toList().reversed;
-
-    print(heaviestVolumePerLog);
+    final dateTimes = routineLogDtos.map((log) => _dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
 
     final weightPoints = repsPerLog
         .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
         .toList();
-
-    final dates = <String>[];//logsWithHighestWeight.map((log) => log.endTime!.formattedDayAndMonth()).toList();
-
-    final weights = <String>[];//sets.map((set) => set.weight).toList();
 
     return SingleChildScrollView(
         child: Padding(
@@ -291,7 +278,7 @@ class SummaryWidget extends StatelessWidget {
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
-            child: LineChartWidget(chartPoints: weightPoints, dates: dates, weights: allWeights),
+            child: LineChartWidget(chartPoints: weightPoints, dateTimes: dateTimes),
           ),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -332,33 +319,6 @@ class SummaryWidget extends StatelessWidget {
         ],
       ),
     ));
-  }
-
-  List<RoutineLogDto> _findLogsWithHighestWeight(List<RoutineLogDto> logs) {
-    return logs.map((log) {
-      final logWithHighestWeight = log.copyWith(
-        procedures: log.procedures.map((procedure) {
-          final maxVolumeSet = procedure.sets.reduce((a, b) {
-            final volumeA = a.weight;
-            final volumeB = b.weight;
-            return volumeA > volumeB ? a : b;
-          });
-          return procedure.copyWith(sets: [maxVolumeSet]);
-        }).toList(),
-      );
-      return logWithHighestWeight;
-    }).toList();
-  }
-
-  List<SetDto> _whereSetDtos({required List<RoutineLogDto> logs}) {
-    List<SetDto> foundSets = [];
-
-    for (RoutineLogDto log in logs) {
-      for (ProcedureDto procedure in log.procedures) {
-        foundSets.add(procedure.sets.first);
-      }
-    }
-    return foundSets;
   }
 }
 
