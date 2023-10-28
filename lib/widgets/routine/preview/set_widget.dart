@@ -18,14 +18,14 @@ class SetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         tileColor: tealBlueLight,
         leading: _SetIcon(type: setDto.type, label: workingIndex),
         title: Row(children: [
           SetText(label: "REPS", value: setDto.rep),
           const SizedBox(width: 10),
           SetText(label: "KG", value: setDto.weight)
-        ],));
+        ], ));
   }
 }
 

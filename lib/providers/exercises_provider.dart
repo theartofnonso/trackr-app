@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../models/BodyPart.dart';
 import '../models/Exercise.dart';

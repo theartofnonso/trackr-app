@@ -115,6 +115,9 @@ class SetWidget extends StatelessWidget {
             );
           },
           menuChildren: _menuActionButtons(context)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
+      ),
     );
   }
 }

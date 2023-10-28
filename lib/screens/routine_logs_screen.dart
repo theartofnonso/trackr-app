@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
@@ -37,7 +36,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(CupertinoIcons.play_arrow_solid),
+                child: const Icon(Icons.play_arrow_rounded),
               )
             : null,
         body: SafeArea(
@@ -114,11 +113,12 @@ class _RoutineLogWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CupertinoListTile(
+        ListTile(
+            contentPadding: EdgeInsets.zero,
             title: Text(logDto.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [
               const Icon(
-                CupertinoIcons.calendar,
+                Icons.date_range_rounded,
                 color: Colors.white,
                 size: 12,
               ),
@@ -127,7 +127,7 @@ class _RoutineLogWidget extends StatelessWidget {
                   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               const SizedBox(width: 10),
               const Icon(
-                CupertinoIcons.timer,
+                Icons.timer,
                 color: Colors.white,
                 size: 12,
               ),
@@ -231,6 +231,9 @@ class _RoutineLogWidget extends StatelessWidget {
               child: Theme(
                 data: ThemeData(splashColor: tealBlueLight),
                 child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
+                    ),
                     onTap: () => _navigateToRoutineLogPreview(context: context),
                     tileColor: tealBlueLight,
                     title: Text(procedure.exercise.name,

@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -166,7 +165,7 @@ class ProcedureWidget extends StatelessWidget {
                           controller.open();
                         }
                       },
-                      icon: const Icon(CupertinoIcons.ellipsis, color: Colors.white),
+                      icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
                       tooltip: 'Show menu',
                     );
                   },

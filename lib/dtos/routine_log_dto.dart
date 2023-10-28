@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 import 'package:amplify_datastore/amplify_datastore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/routine_dto.dart';
 

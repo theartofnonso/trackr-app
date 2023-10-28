@@ -11,7 +11,8 @@ import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
 import 'routine_editor_screen.dart';
 
-void _navigateToRoutineEditor({required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+void _navigateToRoutineEditor(
+    {required BuildContext context, RoutineDto? routineDto, RoutineEditorMode mode = RoutineEditorMode.editing}) {
   Navigator.of(context).push(MaterialPageRoute(
       builder: (context) =>
           RoutineEditorScreen(routineDto: routineDto, mode: mode, type: RoutineEditingType.template)));
@@ -67,7 +68,10 @@ class _RoutineWidget extends StatelessWidget {
         onPressed: () {
           _navigateToRoutineEditor(context: context, routineDto: routineDto);
         },
-        leadingIcon: const Icon(Icons.edit, color: Colors.white,),
+        leadingIcon: const Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
         child: const Text("Edit", style: TextStyle(color: Colors.white)),
       ),
       MenuItemButton(
@@ -100,15 +104,20 @@ class _RoutineWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Theme(
-          data: ThemeData(splashColor: tealBlueLight),
-          child: ListTile(
+            data: ThemeData(splashColor: tealBlueLight),
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
               leading: canStartRoutine
                   ? GestureDetector(
                       onTap: () {
                         _navigateToRoutineEditor(
                             context: context, routineDto: routineDto, mode: RoutineEditorMode.routine);
                       },
-                      child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 35,))
+                      child: const Icon(
+                        Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 35,
+                      ))
                   : null,
               title: Text(routineDto.name, style: Theme.of(context).textTheme.labelLarge),
               subtitle: Row(children: [
@@ -142,8 +151,8 @@ class _RoutineWidget extends StatelessWidget {
                   );
                 },
                 menuChildren: _menuActionButtons(context: context, routineDto: routineDto),
-              )),
-        ),
+              ),
+            )),
         const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedures: routineDto.procedures),
         routineDto.procedures.length > 3
@@ -172,6 +181,9 @@ class _RoutineWidget extends StatelessWidget {
                 child: ListTile(
                     onTap: () => _navigateToRoutinePreview(context: context),
                     tileColor: tealBlueLight,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
+                    ),
                     title: Text(procedure.exercise.name,
                         style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                     trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
