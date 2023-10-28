@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
@@ -99,7 +98,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     Row(
                       children: [
                         const Icon(
-                          CupertinoIcons.calendar,
+                          Icons.date_range_rounded,
                           color: Colors.white,
                           size: 12,
                         ),
@@ -109,7 +108,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
                         const Icon(
-                          CupertinoIcons.time,
+                          Icons.access_time_rounded,
                           color: Colors.white,
                           size: 12,
                         ),
