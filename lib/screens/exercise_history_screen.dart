@@ -131,22 +131,6 @@ SetDto _heaviestSet({required List<RoutineLogDto> logs}) {
   return heaviestSet;
 }
 
-RoutineLogDto _heaviestLog({required List<RoutineLogDto> logs}) {
-  RoutineLogDto heaviestLog = logs[0];
-
-  int heaviestVolume = 0;
-
-  for (var log in logs) {
-    final totalVolume = _totalVolumePerLog(log: log);
-    if (totalVolume > heaviestVolume) {
-      heaviestVolume = totalVolume;
-      heaviestLog = log;
-    }
-  }
-
-  return heaviestLog;
-}
-
 int _heaviestLogVolume({required List<RoutineLogDto> logs}) {
   int heaviestVolume = 0;
 
@@ -196,8 +180,6 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final routineLogsForExercise = _whereLogsForExercise(logs: routineLogs);
 
-    final heaviestRoutineLog = _heaviestLog(logs: routineLogsForExercise);
-
     final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogsForExercise);
 
     final heaviestSet = _heaviestSet(logs: routineLogsForExercise);
@@ -227,9 +209,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
             children: [
               SummaryWidget(
                 heaviestWeight: heaviestWeight,
-                heaviestSetVolume: heaviestSet,
+                heaviestSet: heaviestSet,
                 heaviestRoutineLogVolume: heaviestRoutineLogVolume,
-                heaviestLogVolume: heaviestRoutineLog,
                 routineLogDtos: routineLogsForExercise,
                 exercise: exercise,
               ),
@@ -242,8 +223,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
 class SummaryWidget extends StatefulWidget {
   final int heaviestWeight;
-  final SetDto heaviestSetVolume;
-  final RoutineLogDto heaviestLogVolume;
+  final SetDto heaviestSet;
   final int heaviestRoutineLogVolume;
   final List<RoutineLogDto> routineLogDtos;
   final Exercise exercise;
@@ -251,8 +231,7 @@ class SummaryWidget extends StatefulWidget {
   const SummaryWidget(
       {super.key,
       required this.heaviestWeight,
-      required this.heaviestSetVolume,
-      required this.heaviestLogVolume,
+      required this.heaviestSet,
       required this.routineLogDtos,
       required this.heaviestRoutineLogVolume,
       required this.exercise});
@@ -365,7 +344,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
           const SizedBox(height: 10),
           MetricWidget(
             title: 'Heaviest Set Volume',
-            summary: "${widget.heaviestSetVolume.weight}kg x ${widget.heaviestSetVolume.rep}",
+            summary: "${widget.heaviestSet.weight}kg x ${widget.heaviestSet.rep}",
             subtitle: 'Heaviest volume lifted for a set',
           ),
           const SizedBox(height: 10),
