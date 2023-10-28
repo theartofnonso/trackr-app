@@ -25,6 +25,21 @@ List<SetDto> _allSets({required List<ProcedureDto> procedures}) {
 
 /// Highest value per [RoutineLogDto]
 
+SetDto _heaviestWeightInSetPerLog({required RoutineLogDto log}) {
+  int heaviestWeight = 0;
+  SetDto setWithHeaviestWeight = SetDto();
+
+  final sets = _allSets(procedures: log.procedures);
+  for (var set in sets) {
+    final weight = set.weight;
+    if (weight > heaviestWeight) {
+      heaviestWeight = weight;
+      setWithHeaviestWeight = set;
+    }
+  }
+  return setWithHeaviestWeight;
+}
+
 int _heaviestWeightPerLog({required RoutineLogDto log}) {
   int heaviestWeight = 0;
 
@@ -32,7 +47,7 @@ int _heaviestWeightPerLog({required RoutineLogDto log}) {
 
   for (var set in sets) {
     final weight = set.weight;
-    if(weight > heaviestWeight) {
+    if (weight > heaviestWeight) {
       heaviestWeight = weight;
     }
   }
@@ -51,35 +66,36 @@ int _repsPerLog({required RoutineLogDto log}) {
   return totalReps;
 }
 
-int _heaviestVolumePerLog({required RoutineLogDto log}) {
+int _heaviestSetVolumePerLog({required RoutineLogDto log}) {
   int heaviestVolume = 0;
 
   final sets = _allSets(procedures: log.procedures);
 
   for (var set in sets) {
     final volume = set.rep * set.weight;
-    if(volume > heaviestVolume) {
+    if (volume > heaviestVolume) {
       heaviestVolume = volume;
     }
   }
   return heaviestVolume;
 }
 
-double _oneRepMaxPerLog({required RoutineLogDto log}) {
-  SetDto heaviestSet = SetDto();
-  int heaviestVolume = 0;
+int _volumePerLog({required RoutineLogDto log}) {
+  int totalVolume = 0;
 
   final sets = _allSets(procedures: log.procedures);
 
   for (var set in sets) {
     final volume = set.rep * set.weight;
-    if(volume > heaviestVolume) {
-      heaviestVolume = volume;
-      set = set;
-    }
+    totalVolume += volume;
   }
+  return totalVolume;
+}
 
-  return (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
+double _oneRepMaxPerLog({required RoutineLogDto log}) {
+  final heaviestWeightInSet = _heaviestWeightInSetPerLog(log: log);
+
+  return (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.rep));
 }
 
 DateTime _dateTimePerLog({required RoutineLogDto log}) {
@@ -211,9 +227,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
             children: [
               SummaryWidget(
                 heaviestWeight: heaviestWeight,
-                heaviestSet: heaviestSet,
+                heaviestSetVolume: heaviestSet,
                 heaviestRoutineLogVolume: heaviestRoutineLogVolume,
-                heaviestLog: heaviestRoutineLog,
+                heaviestLogVolume: heaviestRoutineLog,
                 routineLogDtos: routineLogsForExercise,
                 exercise: exercise,
               ),
@@ -224,10 +240,10 @@ class ExerciseHistoryScreen extends StatelessWidget {
   }
 }
 
-class SummaryWidget extends StatelessWidget {
+class SummaryWidget extends StatefulWidget {
   final int heaviestWeight;
-  final SetDto heaviestSet;
-  final RoutineLogDto heaviestLog;
+  final SetDto heaviestSetVolume;
+  final RoutineLogDto heaviestLogVolume;
   final int heaviestRoutineLogVolume;
   final List<RoutineLogDto> routineLogDtos;
   final Exercise exercise;
@@ -235,29 +251,59 @@ class SummaryWidget extends StatelessWidget {
   const SummaryWidget(
       {super.key,
       required this.heaviestWeight,
-      required this.heaviestSet,
-      required this.heaviestLog,
+      required this.heaviestSetVolume,
+      required this.heaviestLogVolume,
       required this.routineLogDtos,
       required this.heaviestRoutineLogVolume,
       required this.exercise});
 
   @override
+  State<SummaryWidget> createState() => _SummaryWidgetState();
+}
+
+class _SummaryWidgetState extends State<SummaryWidget> {
+  List<String> _dateTimes = [];
+
+  List<ChartPointDto> _chartPoints = [];
+
+  void _heaviestWeights() {
+    final values = widget.routineLogDtos.map((log) => _heaviestWeightPerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    });
+  }
+
+  void _heaviestSetVolumes() {
+    final values = widget.routineLogDtos.map((log) => _heaviestSetVolumePerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    });
+  }
+
+  void _logVolumes() {
+    final values = widget.routineLogDtos.map((log) => _volumePerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    });
+  }
+
+  void _oneRepMaxes() {
+    final values = widget.routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    });
+  }
+
+  void _reps() {
+    final values = widget.routineLogDtos.map((log) => _repsPerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final oneRepMax = (heaviestSet.weight * (1 + 0.0333 * heaviestSet.rep));
-
-    final heaviestWeightPerLog = routineLogDtos.map((log) => _heaviestWeightPerLog(log: log)).toList().reversed;
-
-    final heaviestVolumePerLog = routineLogDtos.map((log) => _heaviestVolumePerLog(log: log)).toList().reversed;
-
-    final repsPerLog = routineLogDtos.map((log) => _repsPerLog(log: log)).toList().reversed;
-
-    final oneRepMaxPerLog = routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().reversed;
-
-    final dateTimes = routineLogDtos.map((log) => _dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
-
-    final weightPoints = repsPerLog
-        .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
-        .toList();
+    final oneRepMax = widget.routineLogDtos.map((log) => _oneRepMaxPerLog(log: log)).toList().max;
 
     return SingleChildScrollView(
         child: Padding(
@@ -278,36 +324,38 @@ class SummaryWidget extends StatelessWidget {
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 20),
-            child: LineChartWidget(chartPoints: weightPoints, dateTimes: dateTimes),
+            child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
           ),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  CTextButton(onPressed: () {}, label: "Heaviest Weight"),
+                  CTextButton(onPressed: _heaviestWeights, label: "Heaviest Weight"),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: () {}, label: "Heaviest Set Volume"),
+                  CTextButton(onPressed: _heaviestSetVolumes, label: "Heaviest Set Volume"),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: () {}, label: "Session Volume"),
+                  CTextButton(onPressed: _logVolumes, label: "Session Volume"),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: () {}, label: "1RM"),
+                  CTextButton(onPressed: _oneRepMaxes, label: "1RM"),
                   const SizedBox(width: 5),
-                  CTextButton(onPressed: () {}, label: "Total Reps"),
+                  CTextButton(onPressed: _reps, label: "Total Reps"),
                 ],
               )),
           const SizedBox(height: 10),
           MetricWidget(
-              title: 'Heaviest weight', summary: "${heaviestWeight}kg", subtitle: 'Heaviest weight lifted for a set'),
+              title: 'Heaviest weight',
+              summary: "${widget.heaviestWeight}kg",
+              subtitle: 'Heaviest weight lifted for a set'),
           const SizedBox(height: 10),
           MetricWidget(
             title: 'Heaviest Set Volume',
-            summary: "${heaviestSet.weight}kg x ${heaviestSet.rep}",
+            summary: "${widget.heaviestSetVolume.weight}kg x ${widget.heaviestSetVolume.rep}",
             subtitle: 'Heaviest volume lifted for a set',
           ),
           const SizedBox(height: 10),
           MetricWidget(
             title: 'Heaviest Session Volume',
-            summary: "${heaviestRoutineLogVolume}kg",
+            summary: "${widget.heaviestRoutineLogVolume}kg",
             subtitle: 'Heaviest volume lifted for a session',
           ),
           const SizedBox(height: 10),
@@ -319,6 +367,17 @@ class SummaryWidget extends StatelessWidget {
         ],
       ),
     ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final values = widget.routineLogDtos.map((log) => _heaviestWeightPerLog(log: log)).toList().reversed.toList();
+    _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+
+    _dateTimes =
+    widget.routineLogDtos.map((log) => _dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
+
   }
 }
 
