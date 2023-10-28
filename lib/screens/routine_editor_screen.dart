@@ -15,6 +15,7 @@ import '../dtos/routine_dto.dart';
 import '../dtos/set_dto.dart';
 import '../models/Exercise.dart';
 import '../providers/routine_log_provider.dart';
+import '../shared_prefs.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
 import '../widgets/routine/editor/procedure_widget.dart';
@@ -47,7 +48,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   DateTime _routineStartTime = DateTime.now();
 
-  Duration? _restIntervalDuration;
+  Duration? _currentRestIntervalDuration;
+
+  int _elapsedRestIntervalDuration = 0;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog({required String message, required List<Widget> actions}) {
@@ -258,14 +261,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _showRestInterval({required SetDto setDto, required Duration duration}) {
     if (setDto.checked) {
       if (duration != Duration.zero) {
-        _restIntervalDuration = duration;
+        _currentRestIntervalDuration = duration;
       }
     }
   }
 
   void _hideRestInterval() {
     setState(() {
-      _restIntervalDuration = null;
+      _currentRestIntervalDuration = null;
     });
   }
 
@@ -566,6 +569,24 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  void _cacheElapsedRestInterval({required int elapsedTime}) {
+    if (widget.mode == RoutineEditorMode.routine) {
+      _elapsedRestIntervalDuration = elapsedTime;
+      SharedPrefs().cachedRoutineRestInterval = elapsedTime;
+    }
+  }
+
+  void _cachedElapsedRestInterval() {
+    if (widget.mode == RoutineEditorMode.routine) {
+      final elapsedRestIntervalDuration = SharedPrefs().cachedRoutineRestInterval;
+      if (elapsedRestIntervalDuration > 0) {
+        setState(() {
+          _currentRestIntervalDuration = Duration(seconds: elapsedRestIntervalDuration);
+        });
+      }
+    }
+  }
+
   void _cacheRoutine() {
     if (widget.mode == RoutineEditorMode.routine) {
       final routine = widget.routineDto;
@@ -590,9 +611,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   Widget build(BuildContext context) {
     final previousRoutine = widget.routineDto;
 
-    final restIntervalDuration = _restIntervalDuration;
-
-    print(restIntervalDuration);
+    final restIntervalDuration = _currentRestIntervalDuration;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -658,7 +677,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 restIntervalDuration != null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: _IntervalTimer(duration: restIntervalDuration, onElapsed: () => _hideRestInterval()),
+                        child: _IntervalTimer(
+                          duration: restIntervalDuration,
+                          onElapsed: () => _hideRestInterval(),
+                          onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
+                        ),
                       )
                     : const SizedBox.shrink(),
                 Expanded(
@@ -744,7 +767,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (widget.mode == RoutineEditorMode.routine) {
       /// Show progress of resumed routine
-      WidgetsBinding.instance.addPostFrameCallback((_) => _calculateCompletedSets());
+      /// Show any previous running timers
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _calculateCompletedSets();
+        _cachedElapsedRestInterval();
+      });
 
       /// Cache initial state of running routine
       _cacheRoutine();
@@ -1004,9 +1031,10 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
 
 class _IntervalTimer extends StatefulWidget {
   final Duration duration;
+  final void Function(int seconds) onTick;
   final void Function() onElapsed;
 
-  const _IntervalTimer({required this.duration, required this.onElapsed});
+  const _IntervalTimer({required this.duration, required this.onTick, required this.onElapsed});
 
   @override
   State<_IntervalTimer> createState() => _IntervalTimerState();
@@ -1072,6 +1100,7 @@ class _IntervalTimerState extends State<_IntervalTimer> {
       setState(() {
         if (_duration > 0) {
           _duration--;
+          widget.onTick(_duration);
         } else {
           _timer.cancel();
           widget.onElapsed();

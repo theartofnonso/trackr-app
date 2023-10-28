@@ -1,9 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 
 const String lastActivityStartDatetimeKey = "last_activity_start_datetime_key";
 const String lastActivityIdKey = "last_activity_id_key";
 const String lastActivityKey = "last_activity_key";
 const String cachedRoutineLogKey = "cached_routine_log_key";
+const String cachedRoutineRestIntervalKey = "cached_routine_rest_interval_key";
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;
@@ -50,9 +52,17 @@ class SharedPrefs {
     _sharedPrefs?.remove(lastActivityStartDatetimeKey);
   }
 
+  /// Cached [RoutineLogDto]
   set cachedRoutineLog(String value) {
     _sharedPrefs?.setString(cachedRoutineLogKey, value);
   }
 
   String get cachedRoutineLog => _sharedPrefs?.getString(cachedRoutineLogKey) ?? "";
+
+  /// Cached Rest timer interval during routine
+  set cachedRoutineRestInterval(int value) {
+    _sharedPrefs?.setInt(cachedRoutineRestIntervalKey, value);
+  }
+
+  int get cachedRoutineRestInterval => _sharedPrefs?.getInt(cachedRoutineRestIntervalKey) ?? 0;
 }
