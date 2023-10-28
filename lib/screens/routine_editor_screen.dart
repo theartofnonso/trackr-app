@@ -502,19 +502,39 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _logRoutine() {
+    final actions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+          _navigateAndPop();
+        },
+        child: const Text('Discard workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+          final routine = widget.routineDto;
+          if (routine != null) {
+            final completedProcedures = _totalCompletedProceduresAndSets();
+            Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(
+                context: context,
+                name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
+                notes: routine.notes,
+                procedures: completedProcedures,
+                startTime: _routineStartTime);
+            _navigateAndPop();
+          }
+        },
+        child: const Text('Finish', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      )
+    ];
+    _showAlertDialog(message: "Finish workout?", actions: actions);
+  }
+
+  void _endRoutine() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      final routine = widget.routineDto;
-      if (routine != null) {
-        final completedProcedures = _totalCompletedProceduresAndSets();
-        Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(
-            context: context,
-            name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
-            notes: routine.notes,
-            procedures: completedProcedures,
-            startTime: _routineStartTime);
-        _navigateAndPop();
-      }
+      _logRoutine();
     } else {
       final actions = <Widget>[
         TextButton(
@@ -601,7 +621,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
-                onPressed: _logRoutine,
+                onPressed: _endRoutine,
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(Icons.stop),
