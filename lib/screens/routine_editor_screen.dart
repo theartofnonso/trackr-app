@@ -584,7 +584,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ),
                 title: Text(
                   "${previousRoutine?.name}",
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 actions: [
                   GestureDetector(
