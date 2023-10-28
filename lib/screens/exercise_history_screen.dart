@@ -62,14 +62,14 @@ int _heaviestWeightPerLog({required BuildContext context, required RoutineLog lo
   return heaviestWeight;
 }
 
-int _repsPerLog({required BuildContext context, required RoutineLog log}) {
+int repsPerLog({required BuildContext context, required RoutineLog log}) {
   int totalReps = 0;
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = set.rep;
-    totalReps += weight;
+    final rep = set.rep;
+    totalReps += rep;
   }
   return totalReps;
 }
@@ -88,7 +88,7 @@ int _heaviestSetVolumePerLog({required BuildContext context, required RoutineLog
   return heaviestVolume;
 }
 
-int _volumePerLog({required BuildContext context, required RoutineLog log}) {
+int volumePerLog({required BuildContext context, required RoutineLog log}) {
   int totalVolume = 0;
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
@@ -106,8 +106,15 @@ double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}
   return (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.rep));
 }
 
-DateTime _dateTimePerLog({required RoutineLog log}) {
+DateTime dateTimePerLog({required RoutineLog log}) {
   return log.endTime.getDateTimeInUtc();
+}
+
+Duration durationPerLog({required RoutineLog log}) {
+  final startTime = log.startTime.getDateTimeInUtc();
+  final endTime = log.endTime.getDateTimeInUtc();
+  final difference = endTime.difference(startTime);
+  return difference;
 }
 
 int _totalVolumePerLog({required BuildContext context, required RoutineLog log}) {
@@ -287,7 +294,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   void _logVolumes() {
     final values =
-        widget.routineLogs.map((log) => _volumePerLog(context: context, log: log)).toList().reversed.toList();
+        widget.routineLogs.map((log) => volumePerLog(context: context, log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.logVolumes;
@@ -304,7 +311,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _reps() {
-    final values = widget.routineLogs.map((log) => _repsPerLog(context: context, log: log)).toList().reversed.toList();
+    final values = widget.routineLogs.map((log) => repsPerLog(context: context, log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.reps;
@@ -417,7 +424,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     _dateTimes =
-        widget.routineLogs.map((log) => _dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
+        widget.routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
   }
 }
 

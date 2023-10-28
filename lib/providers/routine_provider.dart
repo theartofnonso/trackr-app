@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/Routine.dart';
 import '../dtos/procedure_dto.dart';
+import '../models/RoutineLog.dart';
 
 class RoutineProvider with ChangeNotifier {
   List<Routine> _routines = [];
@@ -57,5 +58,13 @@ class RoutineProvider with ChangeNotifier {
 
   Routine? whereRoutineDto({required String id}) {
     return _routines.firstWhereOrNull((dto) => dto.id == id);
+  }
+
+  Future<List<RoutineLog>> whereLogsForRoutine({required String id}) async {
+    final logs = await Amplify.DataStore.query(
+      RoutineLog.classType,
+      where: RoutineLog.ROUTINE.eq(id),
+    );
+    return logs;
   }
 }
