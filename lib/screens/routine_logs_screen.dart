@@ -144,7 +144,7 @@ class _RoutineLogWidget extends StatelessWidget {
               ),
               const SizedBox(width: 1),
               Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
               const SizedBox(width: 10),
               const Icon(
                 Icons.timer,
@@ -152,7 +152,7 @@ class _RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(_logDuration(), style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+              Text(_logDuration(), style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
             ]),
             trailing: MenuAnchor(
               style: MenuStyle(
