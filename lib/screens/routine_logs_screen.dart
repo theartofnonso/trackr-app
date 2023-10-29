@@ -18,6 +18,7 @@ import '../providers/exercises_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
+import 'calender_screen.dart';
 
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
@@ -27,12 +28,30 @@ class RoutineLogsScreen extends StatefulWidget {
 }
 
 class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindingObserver {
+
+  void _navigateToCalendarScreen() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const CalendarScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
       final cachedRoutineLog = provider.cachedLog;
 
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: tealBlueDark,
+          actions: [
+            GestureDetector(
+              onTap: _navigateToCalendarScreen,
+              child: const Padding(
+                padding: EdgeInsets.only(right: 14.0),
+                child: Icon(Icons.calendar_month_rounded),
+              ),
+            )
+          ],
+        ),
         floatingActionButton: cachedRoutineLog == null
             ? FloatingActionButton(
                 heroTag: "fab_routine_logs_screen",

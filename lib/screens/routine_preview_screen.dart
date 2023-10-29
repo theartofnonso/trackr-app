@@ -248,7 +248,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     super.initState();
 
     _chartUnit = weightUnit();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadLogsForRoutine());
   }
 }

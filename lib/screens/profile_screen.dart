@@ -20,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: tealBlueDark,
         actions: [
           GestureDetector(
-            onTap: ()=> _navigateTo(context),
+            onTap: () => _navigateTo(context),
             child: const Padding(
               padding: EdgeInsets.only(right: 14.0),
               child: Icon(Icons.settings),
