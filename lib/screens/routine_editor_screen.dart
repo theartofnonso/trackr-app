@@ -34,7 +34,11 @@ class RoutineEditorScreen extends StatefulWidget {
   final RoutineEditingType type;
 
   const RoutineEditorScreen(
-      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorMode.editing, this.type = RoutineEditingType.template});
+      {super.key,
+      this.routine,
+      this.routineLog,
+      this.mode = RoutineEditorMode.editing,
+      this.type = RoutineEditingType.template});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -124,7 +128,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           _procedures = reOrderedList;
         });
       }
-      _cacheRoutine();
+      _cacheRoutineLog();
     }
   }
 
@@ -134,7 +138,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _procedures.addAll(proceduresToAdd);
     });
 
-    _cacheRoutine();
+    _cacheRoutineLog();
   }
 
   void _removeProcedure({required String procedureId}) {
@@ -144,18 +148,18 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
     }
 
-    _cacheRoutine();
-
     setState(() {
       _procedures.removeAt(procedureIndex);
     });
+
+    _cacheRoutineLog();
   }
 
   void _updateProcedureNotes({required String procedureId, required String value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     _procedures[procedureIndex] = procedure.copyWith(notes: value);
-    _cacheRoutine();
+    _cacheRoutineLog();
   }
 
   void _replaceProcedure({required String procedureId}) {
@@ -210,7 +214,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           _procedures[oldProcedureIndex] = ProcedureDto(exerciseId: selectedExercise.id);
         });
       }
-      _cacheRoutine();
+      _cacheRoutineLog();
     }
   }
 
@@ -224,11 +228,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final previousSet = procedure.sets.lastOrNull;
     final sets = [...procedure.sets, SetDto(rep: previousSet?.rep ?? 0, weight: previousSet?.weight ?? 0)];
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
+
+    _cacheRoutineLog();
   }
 
   void _removeSet({required String procedureId, required int setIndex}) {
@@ -237,11 +241,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets.removeAt(setIndex);
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
+
+    _cacheRoutineLog();
   }
 
   void _checkSet({required String procedureId, required int setIndex}) {
@@ -251,13 +255,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final set = sets[setIndex];
     sets[setIndex] = sets[setIndex].copyWith(checked: !set.checked);
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
       _calculateCompletedSets();
       _showProcedureRestInterval(setDto: sets[setIndex], duration: procedure.restInterval);
     });
+
+    _cacheRoutineLog();
   }
 
   void _showProcedureRestInterval({required SetDto setDto, required Duration duration}) {
@@ -281,10 +285,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(rep: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-    _cacheRoutine();
-    if(widget.mode == RoutineEditorMode.routine) {
+
+    if (widget.mode == RoutineEditorMode.routine) {
       _calculateCompletedSets();
     }
+
+    _cacheRoutineLog();
   }
 
   void _updateWeight({required String procedureId, required int setIndex, required int value}) {
@@ -293,10 +299,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-    _cacheRoutine();
-    if(widget.mode == RoutineEditorMode.routine) {
+
+    if (widget.mode == RoutineEditorMode.routine) {
       _calculateCompletedSets();
     }
+
+    _cacheRoutineLog();
   }
 
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
@@ -305,11 +313,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(type: type);
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     });
+
+    _cacheRoutineLog();
   }
 
   void _addSuperSet({required String firstProcedureId, required String secondProcedureId}) {
@@ -320,12 +328,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
     final secondProcedure = _procedures[secondProcedureIndex];
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[firstProcedureIndex] = firstProcedure.copyWith(superSetId: id);
       _procedures[secondProcedureIndex] = secondProcedure.copyWith(superSetId: id);
     });
+
+    _cacheRoutineLog();
   }
 
   void _removeSuperSet({required String superSetId}) {
@@ -337,7 +345,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         });
       }
     }
-    _cacheRoutine();
+    _cacheRoutineLog();
   }
 
   List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
@@ -375,22 +383,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(restInterval: duration);
     });
+
+    _cacheRoutineLog();
   }
 
   void _removeRestInterval({required String procedureId}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
 
-    _cacheRoutine();
-
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(restInterval: Duration.zero);
     });
+
+    _cacheRoutineLog();
   }
 
   List<Widget> _proceduresToWidgets() {
@@ -464,12 +472,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       TextButton(
         onPressed: () {
           Navigator.pop(context);
-          final routineLog = widget.routineLog;
-          if (routineLog != null) {
+          final routine = widget.routine;
+          if (routine != null) {
             final completedProcedures = _totalCompletedProceduresAndSets();
             Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-                name: routineLog.name.isNotEmpty ? routineLog.name : "${DateTime.now().timeOfDay()} Workout",
-                notes: routineLog.notes,
+                name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
+                notes: routine.notes,
                 procedures: completedProcedures,
                 startTime: _routineStartTime,
                 routine: widget.routine!);
@@ -629,7 +637,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _cacheRoutine() {
+  void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorMode.routine) {
       final routine = widget.routine;
       if (routine != null) {
@@ -663,9 +671,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return _isUpdating() ? "Update" : "Save";
   }
 
+  String? _editorTitle() {
+    final previousRoutine = widget.routine;
+    final previousRoutineLog = widget.routineLog;
+    return previousRoutine != null ? previousRoutine.name : previousRoutineLog?.name;
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final elapsedRestInterval = _elapsedProcedureRestInterval;
 
     return Scaffold(
@@ -692,7 +705,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   ),
                 ),
                 title: Text(
-                  widget.routineLog?.name ?? "",
+                  "${_editorTitle()}",
                   style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 actions: [
@@ -807,14 +820,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     final previousRoutine = widget.routine;
     final previousRoutineLog = widget.routineLog;
-    if (previousRoutine != null) {
-      _procedures
-          .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+
+    /// In [RoutineEditorMode.editing] mode
+    if (widget.mode == RoutineEditorMode.editing) {
+      if (previousRoutine != null) {
+        _procedures
+            .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+      } else {
+        if (previousRoutineLog != null) {
+          _procedures.addAll(
+              [...previousRoutineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+        }
+      }
     } else {
+      /// In [RoutineEditorMode.routine] mode
       if (previousRoutineLog != null) {
         _procedures
             .addAll([...previousRoutineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
         _routineStartTime = previousRoutineLog.startTime.getDateTimeInUtc();
+      } else if (previousRoutine != null) {
+        _procedures
+            .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
       }
     }
 
@@ -837,7 +863,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       });
 
       /// Cache initial state of running routine
-      _cacheRoutine();
+      _cacheRoutineLog();
     }
   }
 

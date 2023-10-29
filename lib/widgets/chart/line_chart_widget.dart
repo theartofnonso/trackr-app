@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
-enum ChartUnitType { kg, lbs, reps, min, hrs }
+enum ChartUnitType {
+  kg, lbs, reps, min, hrs
+}
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
@@ -73,19 +75,21 @@ class LineChartWidget extends StatelessWidget {
     final min = points.min;
     final max = points.max;
     double interval = max - min;
-    if (interval >= 1000) {
+    if(interval >= 1000) {
       interval = 1000;
-    } else if (interval >= 500) {
+    } else if(interval >= 500) {
       interval = 500;
-    } else if (interval >= 100) {
+    } else if(interval >= 100) {
       interval = 100;
-    } else if (interval >= 50) {
+    } else if(interval >= 50) {
       interval = 50;
-    } else if (interval >= 10) {
+    } else {
       interval = 10;
     }
+    print(interval);
     return interval;
   }
+
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(

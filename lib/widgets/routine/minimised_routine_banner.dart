@@ -35,6 +35,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => RoutineEditorScreen(
                     routineLog: log,
+                    routine: log.routine,
                     mode: RoutineEditorMode.routine,
                     type: RoutineEditingType.log)));
           },

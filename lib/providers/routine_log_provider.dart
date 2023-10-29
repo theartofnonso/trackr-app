@@ -63,7 +63,7 @@ class RoutineLogProvider with ChangeNotifier {
         name: name,
         notes: notes,
         procedures: proceduresJson,
-        startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
+        startTime: TemporalDateTime.fromString("${startTime.toLocal().toIso8601String()}Z"),
         endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
         createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
@@ -89,7 +89,7 @@ class RoutineLogProvider with ChangeNotifier {
         notes: notes,
         routine: routine,
         procedures: procedures.map((procedure) => procedure.toJson()).toList(),
-        startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
+        startTime: TemporalDateTime.fromString("${startTime.toLocal().toIso8601String()}Z"),
         endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
         createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
         updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));

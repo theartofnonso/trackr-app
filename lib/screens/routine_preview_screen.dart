@@ -106,7 +106,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         _logs = logs;
         final values = logs.map((log) => volumePerLog(context: context, log: log)).toList();
         _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-        print(_chartPoints);
         _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
       });
     });
