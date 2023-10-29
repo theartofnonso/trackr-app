@@ -49,7 +49,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  void logRoutine(
+  void saveRoutineLog(
       {required BuildContext context,
       required String name,
       required String notes,

@@ -54,8 +54,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _currentRestIntervalDuration;
 
-  int _elapsedRestIntervalDuration = 0;
-
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog({required String message, required List<Widget> actions}) {
     showDialog(
@@ -550,7 +548,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return completedProcedures;
   }
 
-  void _logRoutine() {
+  void _createRoutineLog() {
     final actions = <Widget>[
       TextButton(
         onPressed: () {
@@ -565,7 +563,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           final routine = widget.routine;
           if (routine != null) {
             final completedProcedures = _totalCompletedProceduresAndSets();
-            Provider.of<RoutineLogProvider>(context, listen: false).logRoutine(
+            Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
                 context: context,
                 name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
                 notes: routine.notes,
@@ -581,10 +579,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _showAlertDialog(message: "Finish workout?", actions: actions);
   }
 
-  void _endRoutine() {
+  void _endRoutineLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _logRoutine();
+      _createRoutineLog();
     } else {
       final actions = <Widget>[
         TextButton(
@@ -611,7 +609,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _cacheElapsedRestInterval({required int elapsedTime}) {
     if (widget.mode == RoutineEditorMode.routine) {
-      _elapsedRestIntervalDuration = elapsedTime;
       SharedPrefs().cachedRoutineRestInterval = elapsedTime;
     }
   }
@@ -663,7 +660,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final previousRoutine = widget.routine;
 
     final restIntervalDuration = _currentRestIntervalDuration;
 
@@ -691,7 +687,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   ),
                 ),
                 title: Text(
-                  "${previousRoutine?.name}",
+                  "${widget.routineLog?.name}",
                   style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 actions: [
@@ -710,7 +706,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? FloatingActionButton(
                 heroTag: "fab_routine_editor_screen",
-                onPressed: _endRoutine,
+                onPressed: _endRoutineLog,
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(Icons.stop),
