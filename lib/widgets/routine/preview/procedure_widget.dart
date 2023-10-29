@@ -56,7 +56,7 @@ class ProcedureWidget extends StatelessWidget {
                     color: Colors.white,
                     size: 12,
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 5),
                   Text("${procedureDto.restInterval.secondsOrMinutesOrHours()} rest interval",
                       style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
                 ]),
