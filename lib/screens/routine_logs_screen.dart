@@ -4,6 +4,7 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -102,6 +103,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       routineLogProvider.listRoutineLogs(context);
       routineLogProvider.retrieveCachedRoutineLog(context);
       Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
+      Provider.of<WeightUnitProvider>(context, listen: false).toggleUnit();
     }
   }
 
