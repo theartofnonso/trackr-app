@@ -3,7 +3,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../shared_prefs.dart';
-import '../utils/general.dart';
+import '../utils/general_utils.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

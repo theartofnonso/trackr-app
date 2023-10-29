@@ -12,6 +12,7 @@ import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
 import '../providers/exercises_provider.dart';
 import '../providers/routine_log_provider.dart';
+import '../providers/weight_unit_provider.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
 import 'exercise_history_screen.dart';
 
@@ -31,15 +32,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
+    final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if (log != null) {
       final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
-      final completedSetsSummary =
-          completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
+      final completedSetsSummary = completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
       final totalWeight = _totalWeight(sets: completedSets);
-      final totalWeightSummary = "$totalWeight kg";
+      final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalWeight) : totalWeight;
+      final totalWeightSummary = "$conversion kg";
 
       return Scaffold(
           floatingActionButton: FloatingActionButton(

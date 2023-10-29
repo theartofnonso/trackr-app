@@ -12,7 +12,7 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/utils/general.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';

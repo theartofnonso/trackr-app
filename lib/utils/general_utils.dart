@@ -6,7 +6,3 @@ String weightLabel() {
   final unitType = SharedPrefs().weightUnit == WeightUnit.kg.name ? WeightUnit.kg : WeightUnit.lbs;
   return unitType.name;
 }
-
-WeightUnit weightType() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? WeightUnit.kg : WeightUnit.lbs;
-}

@@ -15,6 +15,8 @@ import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
+import '../providers/weight_unit_provider.dart';
+import '../utils/general_utils.dart';
 import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/routine/preview/routine_log_lite_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
@@ -59,7 +61,11 @@ double _heaviestWeightPerLog({required BuildContext context, required RoutineLog
       heaviestWeight = weight;
     }
   }
-  return heaviestWeight;
+
+  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final conversion = weightProvider.isLbs ? weightProvider.toLbs(heaviestWeight) : heaviestWeight;
+
+  return conversion;
 }
 
 int repsPerLog({required BuildContext context, required RoutineLog log}) {
@@ -85,7 +91,11 @@ double _heaviestSetVolumePerLog({required BuildContext context, required Routine
       heaviestVolume = volume;
     }
   }
-  return heaviestVolume;
+
+  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final conversion = weightProvider.isLbs ? weightProvider.toLbs(heaviestVolume) : heaviestVolume;
+
+  return conversion;
 }
 
 double volumePerLog({required BuildContext context, required RoutineLog log}) {
@@ -97,13 +107,22 @@ double volumePerLog({required BuildContext context, required RoutineLog log}) {
     final volume = set.reps * set.weight;
     totalVolume += volume;
   }
-  return totalVolume;
+
+  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalVolume) : totalVolume;
+
+  return conversion;
 }
 
 double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}) {
   final heaviestWeightInSet = _heaviestWeightInSetPerLog(context: context, log: log);
 
-  return (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
+  final max = (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
+
+  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final conversion = weightProvider.isLbs ? weightProvider.toLbs(max) : max;
+
+  return conversion;
 }
 
 DateTime dateTimePerLog({required RoutineLog log}) {
@@ -126,7 +145,11 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
     final volume = set.reps * set.weight;
     totalVolume += volume;
   }
-  return totalVolume;
+
+  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalVolume) : totalVolume;
+
+  return conversion;
 }
 
 /// Highest value across all [RoutineLogDto]
@@ -144,7 +167,11 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
       }
     }
   }
-  return (logId, heaviestSet);
+
+  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final conversion = weightProvider.isLbs ? weightProvider.toLbs(heaviestSet.weight) : heaviestSet.weight;
+
+  return (logId, heaviestSet.copyWith(weight: conversion));
 }
 
 (String, double) _heaviestLogVolume({required BuildContext context, required List<RoutineLog> logs}) {
@@ -165,13 +192,10 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
   double heaviestWeight = 0;
   String logId = "";
   for (var log in logs) {
-    final sets = _allSets(context: context, procedureJsons: log.procedures);
-    for (var set in sets) {
-      final weight = set.weight;
-      if (weight > heaviestWeight) {
-        heaviestWeight = weight;
-        logId = log.id;
-      }
+    final weight = _heaviestWeightPerLog(context: context, log: log);
+    if (weight > heaviestWeight) {
+      heaviestWeight = weight;
+      logId = log.id;
     }
   }
   return (logId, heaviestWeight);
@@ -297,8 +321,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _logVolumes() {
-    final values =
-        widget.routineLogs.map((log) => volumePerLog(context: context, log: log)).toList().reversed.toList();
+    final values = widget.routineLogs.map((log) => volumePerLog(context: context, log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.logVolumes;
@@ -338,6 +361,9 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.routineLogs.isNotEmpty) {
+
+      final weightUnitLabel = weightLabel();
+
       final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList().max;
       return SingleChildScrollView(
           child: Padding(
@@ -358,7 +384,11 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
-              child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnitType,),
+              child: LineChartWidget(
+                chartPoints: _chartPoints,
+                dateTimes: _dateTimes,
+                unit: _chartUnitType,
+              ),
             ),
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -391,29 +421,29 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             const SizedBox(height: 10),
             MetricWidget(
               title: 'Heaviest weight',
-              summary: "${widget.heaviestWeight.$2}kg",
+              summary: "${widget.heaviestWeight.$2}$weightUnitLabel",
               subtitle: 'Heaviest weight lifted for a set',
               onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
             ),
             const SizedBox(height: 10),
             MetricWidget(
               title: 'Heaviest Set Volume',
-              summary: "${widget.heaviestSet.$2.weight}kg x ${widget.heaviestSet.$2.reps}",
+              summary: "${widget.heaviestSet.$2.weight}$weightUnitLabel x ${widget.heaviestSet.$2.reps}",
               subtitle: 'Heaviest volume lifted for a set',
               onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
             ),
             const SizedBox(height: 10),
             MetricWidget(
               title: 'Heaviest Session Volume',
-              summary: "${widget.heaviestRoutineLogVolume.$2}kg",
+              summary: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
               subtitle: 'Heaviest volume lifted for a session',
               onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
             ),
             const SizedBox(height: 10),
             MetricWidget(
               title: '1 Rep Max',
-              summary: '${oneRepMax}kg',
-              subtitle: 'Heaviest weight you can lift for one rep',
+              summary: '$oneRepMax$weightUnitLabel',
+              subtitle: 'Heaviest weight for one rep',
               onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
             ),
           ],
