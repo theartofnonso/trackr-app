@@ -17,7 +17,7 @@ class LineChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: AspectRatio(
-        aspectRatio: 2,
+        aspectRatio: 1.5,
         child: LineChart(LineChartData(
             titlesData: FlTitlesData(
               show: true,
