@@ -189,26 +189,26 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                           child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
                         )
                       : const SizedBox.shrink(),
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          CTextButton(
-                              onPressed: _volume,
-                              label: "Volume",
-                              buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
-                          const SizedBox(width: 5),
-                          CTextButton(
-                              onPressed: _totalReps,
-                              label: "Reps",
-                              buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
-                          const SizedBox(width: 5),
-                          CTextButton(
-                              onPressed: _totalDuration,
-                              label: "Duration",
-                              buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
-                        ],
-                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CTextButton(
+                          onPressed: _volume,
+                          label: "Volume",
+                          buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
+                      const SizedBox(width: 5),
+                      CTextButton(
+                          onPressed: _totalReps,
+                          label: "Reps",
+                          buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
+                      const SizedBox(width: 5),
+                      CTextButton(
+                          onPressed: _totalDuration,
+                          label: "Duration",
+                          buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: ListView.separated(
                         itemBuilder: (BuildContext context, int index) => _procedureToWidget(

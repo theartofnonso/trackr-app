@@ -66,9 +66,9 @@ class ProcedureWidget extends StatelessWidget {
         ),
         procedureDto.notes.isNotEmpty
             ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(procedureDto.notes,
-                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
         ...setsToWidgets(sets: procedureDto.sets),
