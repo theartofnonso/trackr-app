@@ -37,6 +37,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
   List<ChartPointDto> _chartPoints = [];
 
+  ChartUnitType _chartUnitType = ChartUnitType.kg;
+
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
   void _volume() {
@@ -44,6 +46,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.volume;
+      _chartUnitType = ChartUnitType.kg;
     });
   }
 
@@ -52,6 +55,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;
+      _chartUnitType = ChartUnitType.reps;
     });
   }
 
@@ -61,6 +65,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = RoutineSummaryType.duration;
+      _chartUnitType = ChartUnitType.min;
     });
   }
 
@@ -101,6 +106,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         _logs = logs;
         final values = logs.map((log) => volumePerLog(context: context, log: log)).toList();
         _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        print(_chartPoints);
         _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
       });
     });
@@ -182,8 +188,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                         : const SizedBox.shrink(),
                     chartPoints.isNotEmpty
                         ? Padding(
-                            padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
-                            child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
+                            padding: const EdgeInsets.only(top: 20.0, right: 10, bottom: 10),
+                            child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnitType,),
                           )
                         : const SizedBox.shrink(),
                     Row(

@@ -269,6 +269,8 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   List<ChartPointDto> _chartPoints = [];
 
+  ChartUnitType _chartUnitType = ChartUnitType.kg;
+
   SummaryType _summaryType = SummaryType.heaviestWeights;
 
   void _heaviestWeights() {
@@ -277,6 +279,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestWeights;
+      _chartUnitType = ChartUnitType.kg;
     });
   }
 
@@ -289,6 +292,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestSetVolumes;
+      _chartUnitType = ChartUnitType.kg;
     });
   }
 
@@ -298,6 +302,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.logVolumes;
+      _chartUnitType = ChartUnitType.kg;
     });
   }
 
@@ -307,6 +312,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
+      _chartUnitType = ChartUnitType.kg;
     });
   }
 
@@ -315,6 +321,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.reps;
+      _chartUnitType = ChartUnitType.reps;
     });
   }
 
@@ -350,8 +357,8 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             // ),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
-              child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
+              padding: const EdgeInsets.only(top: 20.0, right: 10, bottom: 20),
+              child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnitType,),
             ),
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
