@@ -208,7 +208,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                           buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Expanded(
                     child: ListView.separated(
                         itemBuilder: (BuildContext context, int index) => _procedureToWidget(
