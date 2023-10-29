@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
+import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
@@ -14,6 +15,7 @@ import '../dtos/procedure_dto.dart';
 import '../models/Routine.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
+import '../shared_prefs.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
@@ -37,7 +39,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  ChartUnitType _chartUnitType = ChartUnitType.kg;
+  late ChartUnit _chartUnit;
 
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
@@ -46,7 +48,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.volume;
-      _chartUnitType = ChartUnitType.kg;
+      _chartUnit = weightUnit();
     });
   }
 
@@ -55,7 +57,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;
-      _chartUnitType = ChartUnitType.reps;
+      _chartUnit = ChartUnit.reps;
     });
   }
 
@@ -65,7 +67,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = RoutineSummaryType.duration;
-      _chartUnitType = ChartUnitType.min;
+      _chartUnit = ChartUnit.min;
     });
   }
 
@@ -112,7 +114,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   Color? _buttonColor({required RoutineSummaryType type}) {
-    return _summaryType == type ? Colors.blueAccent : null;
+    return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
   @override
@@ -186,30 +188,34 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                           )
                         : const SizedBox.shrink(),
                     chartPoints.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
-                            child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnitType,),
-                          )
+                        ? Column(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
+                                child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnit,),
+                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                CTextButton(
+                                    onPressed: _volume,
+                                    label: "Volume",
+                                    buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
+                                const SizedBox(width: 5),
+                                CTextButton(
+                                    onPressed: _totalReps,
+                                    label: "Reps",
+                                    buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
+                                const SizedBox(width: 5),
+                                CTextButton(
+                                    onPressed: _totalDuration,
+                                    label: "Duration",
+                                    buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
+                              ],
+                            ),
+                          ],
+                        )
                         : const SizedBox.shrink(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CTextButton(
-                            onPressed: _volume,
-                            label: "Volume",
-                            buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
-                        const SizedBox(width: 5),
-                        CTextButton(
-                            onPressed: _totalReps,
-                            label: "Reps",
-                            buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
-                        const SizedBox(width: 5),
-                        CTextButton(
-                            onPressed: _totalDuration,
-                            label: "Duration",
-                            buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
-                      ],
-                    ),
                     const SizedBox(height: 5),
                     ..._proceduresToWidgets(procedures: procedures)
                   ],
@@ -240,6 +246,9 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   @override
   void initState() {
     super.initState();
+
+    _chartUnit = weightUnit();
+    
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadLogsForRoutine());
   }
 }

@@ -1,17 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
-enum ChartUnitType {
+enum ChartUnit {
   kg, lbs, reps, min, hrs
 }
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> dateTimes;
-  final ChartUnitType unit;
+  final ChartUnit unit;
 
   const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit});
 
@@ -86,7 +85,6 @@ class LineChartWidget extends StatelessWidget {
     } else {
       interval = 10;
     }
-    print(interval);
     return interval;
   }
 

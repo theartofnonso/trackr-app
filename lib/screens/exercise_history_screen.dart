@@ -7,6 +7,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
+import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
@@ -16,12 +17,17 @@ import '../dtos/set_dto.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
 import '../providers/weight_unit_provider.dart';
+import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
 import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/routine/preview/routine_log_lite_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
+
+ChartUnit weightUnit() {
+  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
+}
 
 List<SetDto> _allSets({required BuildContext context, required List<String> procedureJsons}) {
   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
@@ -293,7 +299,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  ChartUnitType _chartUnitType = ChartUnitType.kg;
+  late ChartUnit _chartUnit;
 
   SummaryType _summaryType = SummaryType.heaviestWeights;
 
@@ -303,7 +309,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestWeights;
-      _chartUnitType = ChartUnitType.kg;
+      _chartUnit = weightUnit();
     });
   }
 
@@ -316,7 +322,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestSetVolumes;
-      _chartUnitType = ChartUnitType.kg;
+      _chartUnit = weightUnit();
     });
   }
 
@@ -325,7 +331,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.logVolumes;
-      _chartUnitType = ChartUnitType.kg;
+      _chartUnit = weightUnit();
     });
   }
 
@@ -335,7 +341,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
-      _chartUnitType = ChartUnitType.kg;
+      _chartUnit = weightUnit();
     });
   }
 
@@ -344,12 +350,12 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.reps;
-      _chartUnitType = ChartUnitType.reps;
+      _chartUnit = ChartUnit.reps;
     });
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? Colors.blueAccent : null;
+    return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
   void _navigateTo({required String routineLogId}) {
@@ -387,7 +393,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
               child: LineChartWidget(
                 chartPoints: _chartPoints,
                 dateTimes: _dateTimes,
-                unit: _chartUnitType,
+                unit: _chartUnit,
               ),
             ),
             SingleChildScrollView(
@@ -456,6 +462,9 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   @override
   void initState() {
     super.initState();
+
+    _chartUnit = weightUnit();
+
     final values =
         widget.routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList().reversed.toList();
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
