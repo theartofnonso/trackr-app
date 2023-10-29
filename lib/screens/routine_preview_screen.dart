@@ -102,7 +102,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     }
   }
 
-  void _loadLogsForRoutine() {
+  void _loadChart() {
     Provider.of<RoutineProvider>(context, listen: false).whereLogsForRoutine(id: widget.routineId).then((logs) {
       setState(() {
         _logs = logs;
@@ -249,6 +249,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
     _chartUnit = weightUnit();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadLogsForRoutine());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadChart());
   }
 }
