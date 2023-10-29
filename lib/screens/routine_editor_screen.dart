@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
+import 'package:tracker_app/providers/weight_unit_provider.dart';
+import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -244,6 +246,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+      _calculateCompletedSets();
     });
 
     _cacheRoutineLog();
@@ -300,7 +303,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-
     if (widget.mode == RoutineEditorMode.routine) {
       _calculateCompletedSets();
     }
@@ -1097,19 +1099,24 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(sets.toString(),
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
+              Text("$sets", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
             ],
           ),
           const SizedBox(width: 25),
           Row(
             children: [
-              Text(weightLabel(), style: const TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              Text(weightLabel(),
+                  style: const TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
               const SizedBox(
                 width: 4,
               ),
-              Text(weight.toString(),
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
+              Consumer<WeightUnitProvider>(
+                builder: (_, provider, __) {
+                  final value = provider.isLbs ? provider.toLbs(weight) : weight;
+                  return Text("$value",
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
+                },
+              )
             ],
           ),
           const Spacer(),

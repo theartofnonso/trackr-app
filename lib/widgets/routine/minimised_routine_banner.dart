@@ -14,7 +14,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialBanner(
       padding: const EdgeInsets.only(left: 12, top: 12),
-      margin: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 12),
       dividerColor: Colors.transparent,
       content: Text(
           '${log.name.isNotEmpty ? log.name : "Workout"} is running'),

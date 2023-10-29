@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-enum WeightUnitType { kg, lbs }
+import '../providers/weight_unit_provider.dart';
+
+enum WeightUnit { kg, lbs }
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,7 +15,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  WeightUnitType _weightUnitType = WeightUnitType.kg;
+  WeightUnit _unit = WeightUnit.kg;
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +57,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 segments: [
-                  ButtonSegment<WeightUnitType>(value: WeightUnitType.kg, label: Text(WeightUnitType.kg.name)),
-                  ButtonSegment<WeightUnitType>(value: WeightUnitType.lbs, label: Text(WeightUnitType.lbs.name)),
+                  ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                  ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
                 ],
-                selected: <WeightUnitType>{_weightUnitType},
-                onSelectionChanged: (Set<WeightUnitType> unitType) {
+                selected: <WeightUnit>{_unit},
+                onSelectionChanged: (Set<WeightUnit> unitType) {
                   setState(() {
-                    SharedPrefs().weightUnitType = unitType.first.name;
-                    _weightUnitType = unitType.first;
+                    SharedPrefs().weightUnit = unitType.first.name;
+                    _unit = unitType.first;
                   });
+                  Provider.of<WeightUnitProvider>(context, listen: false).toggleUnit();
                 },
               ),
             ),
@@ -72,14 +76,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  WeightUnitType _unitType(String unitType) {
-    return unitType == WeightUnitType.kg.name ? WeightUnitType.kg : WeightUnitType.lbs;
+  WeightUnit _weightUnit(String unit) {
+    return unit == WeightUnit.kg.name ? WeightUnit.kg : WeightUnit.lbs;
   }
 
   @override
   void initState() {
     super.initState();
-    final previousValue = SharedPrefs().weightUnitType;
-    _weightUnitType = SharedPrefs().weightUnitType.isNotEmpty ? _unitType(previousValue) : WeightUnitType.kg;
+    final previousValue = SharedPrefs().weightUnit;
+    _unit = SharedPrefs().weightUnit.isNotEmpty ? _weightUnit(previousValue) : WeightUnit.kg;
   }
 }

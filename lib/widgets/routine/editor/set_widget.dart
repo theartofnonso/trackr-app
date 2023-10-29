@@ -1,8 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/providers/weight_unit_provider.dart';
 
 import '../../../screens/routine_editor_screen.dart';
 import '../../helper_widgets/dialog_helper.dart';
@@ -145,7 +147,10 @@ class _RepsTextField extends StatelessWidget {
   final int initialValue;
   final void Function(int) onChangedReps;
 
-  const _RepsTextField({required this.initialValue, required this.onChangedReps,});
+  const _RepsTextField({
+    required this.initialValue,
+    required this.onChangedReps,
+  });
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -178,27 +183,31 @@ class _WeightTextField extends StatelessWidget {
 
   const _WeightTextField({required this.initialValue, required this.onChangedWeight});
 
-  double _parseDoubleOrDefault({required String value}) {
-    return double.tryParse(value) ?? 0;
+  double _parseDoubleOrDefault({required WeightUnitProvider provider, required String value}) {
+    final doubleValue = double.tryParse(value) ?? 0;
+    return provider.isLbs ? provider.toKg(doubleValue) : doubleValue;
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 60,
-      child: TextField(
-        onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(value: value)),
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.zero,
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
-            hintText: initialValue.toString(),
-            hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
-        keyboardType: TextInputType.number,
-        maxLines: 1,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-      ),
+      child: Consumer<WeightUnitProvider>(builder: (_, provider, __) {
+        final value = provider.isLbs ? provider.toLbs(initialValue) : initialValue;
+        return TextField(
+          onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+              hintText: value.toString(),
+              hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+          keyboardType: TextInputType.number,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+        );
+      }),
     );
   }
 }

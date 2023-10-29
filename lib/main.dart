@@ -9,6 +9,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercises_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
+import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -23,6 +24,9 @@ void main() async {
   await initializeDateFormatting();
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<WeightUnitProvider>(
+      create: (BuildContext context) => WeightUnitProvider(),
+    ),
     ChangeNotifierProvider<ExerciseProvider>(
       create: (BuildContext context) => ExerciseProvider(),
     ),
