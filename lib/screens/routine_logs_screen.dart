@@ -17,8 +17,6 @@ import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
 
-const emptyRoutineName = "empty_routine";
-
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
 
@@ -71,13 +69,13 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
 
   void _navigateToRoutineEditor({required BuildContext context}) {
     final emptyRoutine = Routine(
-        name: emptyRoutineName,
+        id: '',
+        name: '',
         procedures: [],
         notes: '',
         createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
         updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
     final routineLog = RoutineLog(
-        id: '',
         name: '',
         notes: '',
         procedures: [],
@@ -88,7 +86,10 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
         endTime: emptyRoutine.createdAt);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => RoutineEditorScreen(
-            routine: emptyRoutine, routineLog: routineLog, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+            routine: emptyRoutine,
+            routineLog: routineLog,
+            mode: RoutineEditorMode.routine,
+            type: RoutineEditingType.log)));
   }
 
   void _loadData() async {
@@ -152,7 +153,8 @@ class _RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(_logDuration(), style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+              Text(_logDuration(),
+                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
             ]),
             trailing: MenuAnchor(
               style: MenuStyle(

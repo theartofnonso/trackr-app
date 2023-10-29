@@ -8,7 +8,6 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
-import '../screens/routine_logs_screen.dart';
 
 class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> _logs = [];
@@ -68,7 +67,7 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         routine: routine);
-    if(routine.name == emptyRoutineName) {
+    if (routine.name.isEmpty) {
       await Amplify.DataStore.save<Routine>(routine);
     }
     await Amplify.DataStore.save<RoutineLog>(logToSave);
