@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/utils/general.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
@@ -33,7 +34,7 @@ class ProcedureWidget extends StatelessWidget {
   final void Function(int setIndex) onRemoveSet;
   final void Function(int setIndex) onCheckSet;
   final void Function(int setIndex, int value) onChangedSetRep;
-  final void Function(int setIndex, int value) onChangedSetWeight;
+  final void Function(int setIndex, double value) onChangedSetWeight;
   final void Function(int setIndex, SetType type) onChangedSetType;
 
   const ProcedureWidget({
@@ -112,8 +113,8 @@ class ProcedureWidget extends StatelessWidget {
         workingIndex: setDto.type == SetType.working ? workingSets : -1,
         setDto: setDto,
         editorType: editorType,
-        onChangedRep: (int value) => onChangedSetRep(index, value),
-        onChangedWeight: (int value) => onChangedSetWeight(index, value),
+        onChangedReps: (int value) => onChangedSetRep(index, value),
+        onChangedWeight: (double value) => onChangedSetWeight(index, value),
         onChangedType: (SetType type) => onChangedSetType(index, type),
         onTapCheck: () => onCheckSet(index),
       );
@@ -133,7 +134,6 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
 
     final otherProcedureDto = otherSuperSetProcedureDto;
@@ -217,23 +217,29 @@ class ProcedureWidget extends StatelessWidget {
           const SizedBox(height: 10),
           Column(
             children: [
-              const Row(
+              Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                       width: 30,
-                      child: Text("SET", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center)),
-                  SizedBox(
+                      child: Text("SET",
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                          textAlign: TextAlign.center)),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const SizedBox(
+                      width: 60,
+                      child: Text("REPS",
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                          textAlign: TextAlign.center)),
+                  const SizedBox(
                     width: 20,
                   ),
                   SizedBox(
                       width: 60,
-                      child: Text("REPS",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center)),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  SizedBox(
-                      width: 60,
-                      child: Text("KG", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70), textAlign: TextAlign.center))
+                      child: Text(weightLabel().toUpperCase(),
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                          textAlign: TextAlign.center))
                 ],
               ),
               ...?_displaySets()

@@ -244,10 +244,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return completedSets;
   }
 
-  int _totalWeight({required List<SetDto> sets}) {
-    int totalWeight = 0;
+  double _totalWeight({required List<SetDto> sets}) {
+    double totalWeight = 0;
     for (var set in sets) {
-      final weightPerSet = set.rep * set.weight;
+      final weightPerSet = set.reps * set.weight;
       totalWeight += weightPerSet;
     }
     return totalWeight;

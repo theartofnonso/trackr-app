@@ -10,6 +10,7 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/utils/general.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
@@ -226,7 +227,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final previousSet = procedure.sets.lastOrNull;
-    final sets = [...procedure.sets, SetDto(rep: previousSet?.rep ?? 0, weight: previousSet?.weight ?? 0)];
+    final sets = [...procedure.sets, SetDto(reps: previousSet?.reps ?? 0, weight: previousSet?.weight ?? 0)];
 
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
@@ -283,7 +284,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = sets[setIndex].copyWith(rep: value);
+    sets[setIndex] = sets[setIndex].copyWith(reps: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
     if (widget.mode == RoutineEditorMode.routine) {
@@ -293,7 +294,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _updateWeight({required String procedureId, required int setIndex, required int value}) {
+  void _updateWeight({required String procedureId, required int setIndex, required double value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
@@ -415,7 +416,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                   onChangedSetRep: (int setIndex, int value) =>
                       _updateSetRep(procedureId: procedure.exerciseId, setIndex: setIndex, value: value),
-                  onChangedSetWeight: (int setIndex, int value) =>
+                  onChangedSetWeight: (int setIndex, double value) =>
                       _updateWeight(procedureId: procedure.exerciseId, setIndex: setIndex, value: value),
                   onChangedSetType: (int setIndex, SetType type) =>
                       _updateSetType(procedureId: procedure.exerciseId, setIndex: setIndex, type: type),
@@ -567,10 +568,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  int _totalWeight() {
-    int totalWeight = 0;
+  double _totalWeight() {
+    double totalWeight = 0;
     for (var set in _totalCompletedSets) {
-      final weightPerSet = set.rep * set.weight;
+      final weightPerSet = set.reps * set.weight;
       totalWeight += weightPerSet;
     }
     return totalWeight;
@@ -1078,7 +1079,7 @@ class _TimerWidgetState extends State<_TimerWidget> {
 
 class RunningRoutineSummaryWidget extends StatelessWidget {
   final int sets;
-  final int weight;
+  final double weight;
   final Widget timer;
 
   const RunningRoutineSummaryWidget({super.key, required this.sets, required this.weight, required this.timer});
@@ -1103,7 +1104,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
           const SizedBox(width: 25),
           Row(
             children: [
-              const Text("Kg", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              Text(weightLabel(), style: const TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
               const SizedBox(
                 width: 4,
               ),

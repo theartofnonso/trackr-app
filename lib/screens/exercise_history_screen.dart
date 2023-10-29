@@ -33,7 +33,7 @@ List<SetDto> _allSets({required BuildContext context, required List<String> proc
 /// Highest value per [RoutineLogDto]
 
 SetDto _heaviestWeightInSetPerLog({required BuildContext context, required RoutineLog log}) {
-  int heaviestWeight = 0;
+  double heaviestWeight = 0;
   SetDto setWithHeaviestWeight = SetDto();
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
@@ -48,8 +48,8 @@ SetDto _heaviestWeightInSetPerLog({required BuildContext context, required Routi
   return setWithHeaviestWeight;
 }
 
-int _heaviestWeightPerLog({required BuildContext context, required RoutineLog log}) {
-  int heaviestWeight = 0;
+double _heaviestWeightPerLog({required BuildContext context, required RoutineLog log}) {
+  double heaviestWeight = 0;
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
 
@@ -68,19 +68,19 @@ int repsPerLog({required BuildContext context, required RoutineLog log}) {
   final sets = _allSets(context: context, procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final rep = set.rep;
-    totalReps += rep;
+    final reps = set.reps;
+    totalReps += reps;
   }
   return totalReps;
 }
 
-int _heaviestSetVolumePerLog({required BuildContext context, required RoutineLog log}) {
-  int heaviestVolume = 0;
+double _heaviestSetVolumePerLog({required BuildContext context, required RoutineLog log}) {
+  double heaviestVolume = 0;
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = set.rep * set.weight;
+    final volume = set.reps * set.weight;
     if (volume > heaviestVolume) {
       heaviestVolume = volume;
     }
@@ -88,13 +88,13 @@ int _heaviestSetVolumePerLog({required BuildContext context, required RoutineLog
   return heaviestVolume;
 }
 
-int volumePerLog({required BuildContext context, required RoutineLog log}) {
-  int totalVolume = 0;
+double volumePerLog({required BuildContext context, required RoutineLog log}) {
+  double totalVolume = 0;
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = set.rep * set.weight;
+    final volume = set.reps * set.weight;
     totalVolume += volume;
   }
   return totalVolume;
@@ -103,7 +103,7 @@ int volumePerLog({required BuildContext context, required RoutineLog log}) {
 double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}) {
   final heaviestWeightInSet = _heaviestWeightInSetPerLog(context: context, log: log);
 
-  return (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.rep));
+  return (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
 }
 
 DateTime dateTimePerLog({required RoutineLog log}) {
@@ -117,13 +117,13 @@ Duration durationPerLog({required RoutineLog log}) {
   return difference;
 }
 
-int _totalVolumePerLog({required BuildContext context, required RoutineLog log}) {
-  int totalVolume = 0;
+double _totalVolumePerLog({required BuildContext context, required RoutineLog log}) {
+  double totalVolume = 0;
 
   final sets = _allSets(context: context, procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = set.rep * set.weight;
+    final volume = set.reps * set.weight;
     totalVolume += volume;
   }
   return totalVolume;
@@ -137,8 +137,8 @@ int _totalVolumePerLog({required BuildContext context, required RoutineLog log})
   for (var log in logs) {
     final sets = _allSets(context: context, procedureJsons: log.procedures);
     for (var set in sets) {
-      final volume = set.rep * set.weight;
-      if (volume > (heaviestSet.rep * heaviestSet.weight)) {
+      final volume = set.reps * set.weight;
+      if (volume > (heaviestSet.reps * heaviestSet.weight)) {
         heaviestSet = set;
         logId = log.id;
       }
@@ -147,8 +147,8 @@ int _totalVolumePerLog({required BuildContext context, required RoutineLog log})
   return (logId, heaviestSet);
 }
 
-(String, int) _heaviestLogVolume({required BuildContext context, required List<RoutineLog> logs}) {
-  int heaviestVolume = 0;
+(String, double) _heaviestLogVolume({required BuildContext context, required List<RoutineLog> logs}) {
+  double heaviestVolume = 0;
   String logId = "";
   for (var log in logs) {
     final totalVolume = _totalVolumePerLog(context: context, log: log);
@@ -161,8 +161,8 @@ int _totalVolumePerLog({required BuildContext context, required RoutineLog log})
   return (logId, heaviestVolume);
 }
 
-(String, int) _heaviestWeight({required BuildContext context, required List<RoutineLog> logs}) {
-  int heaviestWeight = 0;
+(String, double) _heaviestWeight({required BuildContext context, required List<RoutineLog> logs}) {
+  double heaviestWeight = 0;
   String logId = "";
   for (var log in logs) {
     final sets = _allSets(context: context, procedureJsons: log.procedures);
@@ -244,9 +244,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
 }
 
 class SummaryWidget extends StatefulWidget {
-  final (String, int) heaviestWeight;
+  final (String, double) heaviestWeight;
   final (String, SetDto) heaviestSet;
-  final (String, int) heaviestRoutineLogVolume;
+  final (String, double) heaviestRoutineLogVolume;
   final List<RoutineLog> routineLogs;
   final Exercise exercise;
 
@@ -398,7 +398,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             const SizedBox(height: 10),
             MetricWidget(
               title: 'Heaviest Set Volume',
-              summary: "${widget.heaviestSet.$2.weight}kg x ${widget.heaviestSet.$2.rep}",
+              summary: "${widget.heaviestSet.$2.weight}kg x ${widget.heaviestSet.$2.reps}",
               subtitle: 'Heaviest volume lifted for a set',
               onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
             ),

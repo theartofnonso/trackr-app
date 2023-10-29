@@ -46,7 +46,11 @@ class RoutineLogProvider with ChangeNotifier {
   void retrieveCachedRoutineLog(BuildContext context) {
     final cache = SharedPrefs().cachedRoutineLog;
     if (cache.isNotEmpty) {
-      _cachedLog = RoutineLog.fromJson(jsonDecode(cache));
+      final temp = jsonDecode(cache) as Map<String, dynamic>;
+      temp.update("routine", (value) {
+        return {"serializedData": value};
+      });
+      _cachedLog = RoutineLog.fromJson(temp);
     }
   }
 

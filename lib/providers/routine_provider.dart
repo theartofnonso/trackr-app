@@ -5,6 +5,8 @@ import 'package:tracker_app/models/Routine.dart';
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
 
+const emptyRoutineId = "empty_routine_id";
+
 class RoutineProvider with ChangeNotifier {
   List<Routine> _routines = [];
 
@@ -17,6 +19,13 @@ class RoutineProvider with ChangeNotifier {
       _routines = routines.map((routine) => routine).where((routine) => routine.name.isNotEmpty).toList();
       notifyListeners();
     }
+  }
+
+  Future<Routine> createEmptyRoutine() async {
+    final routineToSave = Routine(
+        name: "", procedures: [], notes: "", createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
+    await Amplify.DataStore.save<Routine>(routineToSave);
+    return routineToSave;
   }
 
   void saveRoutine(

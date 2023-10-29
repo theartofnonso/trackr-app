@@ -16,16 +16,16 @@ enum SetType {
 }
 
 class SetDto {
-  final int rep;
-  final int weight;
+  final int reps;
+  final double weight;
   final SetType type;
   final bool checked;
 
-  SetDto({this.rep = 0, this.weight = 0, this.type = SetType.working, this.checked = false});
+  SetDto({this.reps = 0, this.weight = 0, this.type = SetType.working, this.checked = false});
 
-  SetDto copyWith({int? rep, int? weight, SetType? type, bool? checked}) {
+  SetDto copyWith({int? reps, double? weight, SetType? type, bool? checked}) {
     return SetDto(
-      rep: rep ?? this.rep,
+      reps: reps ?? this.reps,
       weight: weight ?? this.weight,
       type: type ?? this.type,
       checked: checked ?? this.checked,
@@ -34,7 +34,7 @@ class SetDto {
 
   String toJson() {
     return jsonEncode({
-      "rep" : rep,
+      "reps" : reps,
       "weight" : weight,
       "type" : type.label,
       "checked" : checked
@@ -42,16 +42,16 @@ class SetDto {
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {
-    final rep = json["rep"];
+    final reps = json["reps"];
     final weight = json["weight"];
     final typeLabel = json["type"];
     final type = SetType.values.firstWhere((type) => type.label == typeLabel);
     final checked = json["checked"];
-    return SetDto(rep: rep, weight: weight, type: type, checked: checked);
+    return SetDto(reps: reps, weight: weight, type: type, checked: checked);
   }
 
   @override
   String toString() {
-    return 'SetDto{rep: $rep, weight: $weight}';
+    return 'SetDto{reps: $reps, weight: $weight}';
   }
 }

@@ -16,7 +16,7 @@ class SetWidget extends StatelessWidget {
     this.editorType = RoutineEditorMode.editing,
     required this.onTapCheck,
     required this.onRemoved,
-    required this.onChangedRep,
+    required this.onChangedReps,
     required this.onChangedWeight,
     required this.onChangedType,
   });
@@ -27,8 +27,8 @@ class SetWidget extends StatelessWidget {
   final RoutineEditorMode editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
-  final void Function(int value) onChangedRep;
-  final void Function(int value) onChangedWeight;
+  final void Function(int value) onChangedReps;
+  final void Function(double value) onChangedWeight;
   final void Function(SetType type) onChangedType;
 
   /// [MenuItemButton]
@@ -71,16 +71,16 @@ class SetWidget extends StatelessWidget {
       leading: SizedBox(width: 30, child: _SetIcon(type: setDto.type, label: workingIndex)),
       title: Row(
         children: [
-          _SetTextField(
-            initialValue: setDto.rep,
-            onChanged: (value) => onChangedRep(value),
+          _RepsTextField(
+            initialValue: setDto.reps,
+            onChangedReps: (value) => onChangedReps(value),
           ),
           const SizedBox(
             width: 20,
           ),
-          _SetTextField(
+          _WeightTextField(
             initialValue: setDto.weight,
-            onChanged: (value) => onChangedWeight(value),
+            onChangedWeight: (value) => onChangedWeight(value),
           ),
           editorType == RoutineEditorMode.routine
               ? GestureDetector(
@@ -141,11 +141,11 @@ class _SetIcon extends StatelessWidget {
   }
 }
 
-class _SetTextField extends StatelessWidget {
+class _RepsTextField extends StatelessWidget {
   final int initialValue;
-  final void Function(int) onChanged;
+  final void Function(int) onChangedReps;
 
-  const _SetTextField({required this.onChanged, required this.initialValue});
+  const _RepsTextField({required this.initialValue, required this.onChangedReps,});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -156,7 +156,38 @@ class _SetTextField extends StatelessWidget {
     return SizedBox(
       width: 60,
       child: TextField(
-        onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
+        onChanged: (value) => onChangedReps(_parseIntOrDefault(value: value)),
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.zero,
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+            hintText: initialValue.toString(),
+            hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+        keyboardType: TextInputType.number,
+        maxLines: 1,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+      ),
+    );
+  }
+}
+
+class _WeightTextField extends StatelessWidget {
+  final double initialValue;
+  final void Function(double) onChangedWeight;
+
+  const _WeightTextField({required this.initialValue, required this.onChangedWeight});
+
+  double _parseDoubleOrDefault({required String value}) {
+    return double.tryParse(value) ?? 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 60,
+      child: TextField(
+        onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(value: value)),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
             enabledBorder: OutlineInputBorder(

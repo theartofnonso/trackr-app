@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../../../app_constants.dart';
+import '../../../utils/general.dart';
 
 class SetWidget extends StatelessWidget {
   const SetWidget({
@@ -22,9 +23,9 @@ class SetWidget extends StatelessWidget {
         tileColor: tealBlueLight,
         leading: _SetIcon(type: setDto.type, label: workingIndex),
         title: Row(children: [
-          SetText(label: "REPS", value: setDto.rep),
+          SetText(label: "REPS", value: setDto.reps.toDouble()),
           const SizedBox(width: 10),
-          SetText(label: "KG", value: setDto.weight)
+          SetText(label: weightLabel().toUpperCase(), value: setDto.weight)
         ], ));
   }
 }
@@ -32,7 +33,7 @@ class SetWidget extends StatelessWidget {
 class SetText extends StatelessWidget {
 
   final String label;
-  final int value;
+  final double value;
 
   const SetText({super.key, required this.label, required this.value});
 

@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/screens/routine_log_preview_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../app_constants.dart';
@@ -43,53 +44,55 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
               )
             : null,
         body: SafeArea(
-          child: provider.logs.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Column(
-                    children: [
-                      cachedRoutineLog != null
-                          ? MinimisedRoutineBanner(provider: provider, log: cachedRoutineLog)
-                          : const SizedBox.shrink(),
-                      Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              children: [
+                cachedRoutineLog != null
+                    ? MinimisedRoutineBanner(provider: provider, log: cachedRoutineLog)
+                    : const SizedBox.shrink(),
+                provider.logs.isNotEmpty
+                    ? Expanded(
                         child: ListView.separated(
                             itemBuilder: (BuildContext context, int index) =>
                                 _RoutineLogWidget(log: provider.logs[index]),
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                             itemCount: provider.logs.length),
-                      ),
-                    ],
-                  ),
-                )
-              : const Center(child: ScreenEmptyState(message: "Start tracking your performance")),
+                      )
+                    : const Expanded(
+                        child: Center(child: ScreenEmptyState(message: "Start tracking your performance"))),
+              ],
+            ),
+          ),
         ),
       );
     }));
   }
 
-  void _navigateToRoutineEditor({required BuildContext context}) {
-    final emptyRoutine = Routine(
-        id: '',
-        name: '',
-        procedures: [],
-        notes: '',
-        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
-    final routineLog = RoutineLog(
-        name: '',
-        notes: '',
-        procedures: [],
-        createdAt: emptyRoutine.createdAt,
-        updatedAt: emptyRoutine.createdAt,
-        routine: emptyRoutine,
-        startTime: emptyRoutine.createdAt,
-        endTime: emptyRoutine.createdAt);
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => RoutineEditorScreen(
-            routine: emptyRoutine,
-            routineLog: routineLog,
-            mode: RoutineEditorMode.routine,
-            type: RoutineEditingType.log)));
+  void _navigateToRoutineEditor({required BuildContext context}) async {
+    try {
+      final emptyRoutine = Routine(
+          name: '',
+          procedures: [],
+          notes: '',
+          createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
+          updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+      if (context.mounted) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => RoutineEditorScreen(
+                routine: emptyRoutine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showSnackbar(
+            context: context,
+            icon: const Icon(
+              Icons.info_outline,
+              color: Colors.white,
+            ),
+            message: "Unable to start new workout");
+      }
+    }
   }
 
   void _loadData() async {
