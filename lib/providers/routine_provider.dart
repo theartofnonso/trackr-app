@@ -2,6 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/Routine.dart';
+import 'package:tracker_app/screens/routine_logs_screen.dart';
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
 
@@ -14,7 +15,7 @@ class RoutineProvider with ChangeNotifier {
     final routines = await Amplify.DataStore.query(Routine.classType,
         sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: Routine.CREATEDAT.fieldName)]);
     if (routines.isNotEmpty) {
-      _routines = routines.map((routine) => routine).toList();
+      _routines = routines.map((routine) => routine).where((routine) => routine.name != emptyRoutineName).toList();
       notifyListeners();
     }
   }

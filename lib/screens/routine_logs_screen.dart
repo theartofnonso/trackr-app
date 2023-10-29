@@ -17,6 +17,8 @@ import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
 
+const emptyRoutineName = "empty_routine";
+
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
 
@@ -68,16 +70,25 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   }
 
   void _navigateToRoutineEditor({required BuildContext context}) {
-    final routine = Routine(
+    final emptyRoutine = Routine(
+        name: emptyRoutineName,
+        procedures: [],
+        notes: '',
+        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
+        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+    final routineLog = RoutineLog(
         id: '',
         name: '',
         notes: '',
         procedures: [],
-        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+        createdAt: emptyRoutine.createdAt,
+        updatedAt: emptyRoutine.createdAt,
+        routine: emptyRoutine,
+        startTime: emptyRoutine.createdAt,
+        endTime: emptyRoutine.createdAt);
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            RoutineEditorScreen(routine: routine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
+        builder: (context) => RoutineEditorScreen(
+            routine: emptyRoutine, routineLog: routineLog, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
   }
 
   void _loadData() async {

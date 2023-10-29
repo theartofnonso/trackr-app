@@ -8,6 +8,7 @@ import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
+import '../screens/routine_logs_screen.dart';
 
 class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> _logs = [];
@@ -38,7 +39,8 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void listRoutineLogs(BuildContext context) async {
-    _logs = await Amplify.DataStore.query(RoutineLog.classType, sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
+    _logs = await Amplify.DataStore.query(RoutineLog.classType,
+        sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
     notifyListeners();
   }
 
@@ -50,11 +52,11 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void saveRoutineLog(
-      {required BuildContext context,
-      required String name,
+      {required String name,
       required String notes,
       required List<ProcedureDto> procedures,
-      required DateTime startTime, required Routine routine}) async {
+      required DateTime startTime,
+      required Routine routine}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
     final logToSave = RoutineLog(
@@ -64,11 +66,13 @@ class RoutineLogProvider with ChangeNotifier {
         startTime: TemporalDateTime.fromString("${startTime.toIso8601String()}Z"),
         endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
         createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(), routine: routine);
-    await Amplify.DataStore.save<RoutineLog>(logToSave);
-    if (context.mounted) {
-      _logs.insert(0, logToSave);
+        updatedAt: TemporalDateTime.now(),
+        routine: routine);
+    if(routine.name == emptyRoutineName) {
+      await Amplify.DataStore.save<Routine>(routine);
     }
+    await Amplify.DataStore.save<RoutineLog>(logToSave);
+    _logs.insert(0, logToSave);
     clearCachedLog();
     notifyListeners();
   }
@@ -77,7 +81,8 @@ class RoutineLogProvider with ChangeNotifier {
       {required String name,
       required String notes,
       required List<ProcedureDto> procedures,
-      required DateTime startTime, required Routine routine}) {
+      required DateTime startTime,
+      required Routine routine}) {
     _cachedLog = RoutineLog(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
         name: name,

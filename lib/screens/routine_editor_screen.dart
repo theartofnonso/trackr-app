@@ -34,7 +34,7 @@ class RoutineEditorScreen extends StatefulWidget {
   final RoutineEditingType type;
 
   const RoutineEditorScreen(
-      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorMode.editing, required this.type});
+      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorMode.editing, this.type = RoutineEditingType.template});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -52,7 +52,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   DateTime _routineStartTime = DateTime.now();
 
-  Duration? _currentRestIntervalDuration;
+  Duration? _elapsedProcedureRestInterval;
 
   /// Show [CupertinoAlertDialog] for creating a workout
   void _showAlertDialog({required String message, required List<Widget> actions}) {
@@ -256,22 +256,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
       _calculateCompletedSets();
-      _showRestInterval(setDto: sets[setIndex], duration: procedure.restInterval);
+      _showProcedureRestInterval(setDto: sets[setIndex], duration: procedure.restInterval);
     });
   }
 
-  void _showRestInterval({required SetDto setDto, required Duration duration}) {
+  void _showProcedureRestInterval({required SetDto setDto, required Duration duration}) {
     if (setDto.checked) {
       if (duration != Duration.zero) {
-        _currentRestIntervalDuration = duration;
+        _elapsedProcedureRestInterval = duration;
       }
     }
   }
 
-  void _hideRestInterval() {
+  void _hideProcedureRestInterval() {
     _clearCachedElapsedRestInterval();
     setState(() {
-      _currentRestIntervalDuration = null;
+      _elapsedProcedureRestInterval = null;
     });
   }
 
@@ -446,6 +446,36 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  void _createRoutineLog() {
+    final actions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+          _navigateAndPop();
+        },
+        child: const Text('Discard workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+          final routineLog = widget.routineLog;
+          if (routineLog != null) {
+            final completedProcedures = _totalCompletedProceduresAndSets();
+            Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+                name: routineLog.name.isNotEmpty ? routineLog.name : "${DateTime.now().timeOfDay()} Workout",
+                notes: routineLog.notes,
+                procedures: completedProcedures,
+                startTime: _routineStartTime,
+                routine: widget.routine!);
+            _navigateAndPop();
+          }
+        },
+        child: const Text('Finish', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      )
+    ];
+    _showAlertDialog(message: "Finish workout?", actions: actions);
+  }
+
   void _updateRoutine({required Routine routine}) {
     final alertDialogActions = <Widget>[
       TextButton(
@@ -548,37 +578,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return completedProcedures;
   }
 
-  void _createRoutineLog() {
-    final actions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-          _navigateAndPop();
-        },
-        child: const Text('Discard workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-          final routine = widget.routine;
-          if (routine != null) {
-            final completedProcedures = _totalCompletedProceduresAndSets();
-            Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-                context: context,
-                name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
-                notes: routine.notes,
-                procedures: completedProcedures,
-                startTime: _routineStartTime,
-                routine: widget.routine!);
-            _navigateAndPop();
-          }
-        },
-        child: const Text('Finish', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-      )
-    ];
-    _showAlertDialog(message: "Finish workout?", actions: actions);
-  }
-
   void _endRoutineLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
@@ -618,7 +617,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       final elapsedRestIntervalDuration = SharedPrefs().cachedRoutineRestInterval;
       if (elapsedRestIntervalDuration > 0) {
         setState(() {
-          _currentRestIntervalDuration = Duration(seconds: elapsedRestIntervalDuration);
+          _elapsedProcedureRestInterval = Duration(seconds: elapsedRestIntervalDuration);
         });
       }
     }
@@ -661,7 +660,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final restIntervalDuration = _currentRestIntervalDuration;
+    final elapsedRestInterval = _elapsedProcedureRestInterval;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -687,7 +686,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   ),
                 ),
                 title: Text(
-                  "${widget.routineLog?.name}",
+                  widget.routineLog?.name ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 actions: [
@@ -722,14 +721,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   RunningRoutineSummaryWidget(
                     sets: _totalCompletedSets.length,
                     weight: _totalWeight(),
-                    timer: _TimerWidget(DateTime.now().difference(_routineStartTime)),
+                    timer: _TimerWidget(DateTime.now().difference(_routineStartTime.toLocal())),
                   ),
-                restIntervalDuration != null
+                elapsedRestInterval != null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: _IntervalTimer(
-                          duration: restIntervalDuration,
-                          onElapsed: () => _hideRestInterval(),
+                          duration: elapsedRestInterval,
+                          onElapsed: () => _hideProcedureRestInterval(),
                           onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
                         ),
                       )

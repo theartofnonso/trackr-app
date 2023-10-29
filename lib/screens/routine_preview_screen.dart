@@ -85,9 +85,14 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _navigateToRoutineEditor(
-      {required BuildContext context, required Routine routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => RoutineEditorScreen(routine: routine, mode: mode, type: RoutineEditingType.template)));
+      {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
+    if(mode == RoutineEditorMode.editing) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => RoutineEditorScreen(routine: routine, mode: mode, type: RoutineEditingType.template)));
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
+    }
   }
 
   void _loadLogsForRoutine() {
