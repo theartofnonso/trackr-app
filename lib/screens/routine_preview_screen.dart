@@ -31,7 +31,6 @@ class RoutinePreviewScreen extends StatefulWidget {
 }
 
 class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
-
   List<RoutineLog> _logs = [];
 
   List<String> _dateTimes = [];
@@ -89,14 +88,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       {required BuildContext context, required Routine routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => RoutineEditorScreen(routine: routine, mode: mode, type: RoutineEditingType.template)));
-  }
-
-  /// Convert list of [ExerciseInWorkout] to [ExerciseInWorkoutEditor]
-  Widget _procedureToWidget({required ProcedureDto procedure, required List<ProcedureDto> otherProcedures}) {
-    return ProcedureWidget(
-      procedureDto: procedure,
-      otherSuperSetProcedureDto: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: otherProcedures),
-    );
   }
 
   void _loadLogsForRoutine() {
@@ -170,60 +161,70 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  routine.notes.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text(routine.notes,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                        )
-                      : const SizedBox.shrink(),
-                  chartPoints.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 10),
-                          child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
-                        )
-                      : const SizedBox.shrink(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CTextButton(
-                          onPressed: _volume,
-                          label: "Volume",
-                          buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
-                      const SizedBox(width: 5),
-                      CTextButton(
-                          onPressed: _totalReps,
-                          label: "Reps",
-                          buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
-                      const SizedBox(width: 5),
-                      CTextButton(
-                          onPressed: _totalDuration,
-                          label: "Duration",
-                          buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (BuildContext context, int index) => _procedureToWidget(
-                            procedure: ProcedureDto.fromJson(jsonDecode(routine.procedures[index])),
-                            otherProcedures: procedures),
-                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
-                        itemCount: routine.procedures.length),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    routine.notes.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Text(routine.notes,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                )),
+                          )
+                        : const SizedBox.shrink(),
+                    chartPoints.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 20.0, right: 30, bottom: 10),
+                            child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes),
+                          )
+                        : const SizedBox.shrink(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CTextButton(
+                            onPressed: _volume,
+                            label: "Volume",
+                            buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
+                        const SizedBox(width: 5),
+                        CTextButton(
+                            onPressed: _totalReps,
+                            label: "Reps",
+                            buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
+                        const SizedBox(width: 5),
+                        CTextButton(
+                            onPressed: _totalDuration,
+                            label: "Duration",
+                            buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    ..._proceduresToWidgets(procedures: procedures)
+                  ],
+                ),
               ),
             ),
           ));
     }
 
     return const SizedBox.shrink();
+  }
+
+  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+    return procedures
+        .map((procedure) => Column(
+              children: [
+                ProcedureWidget(
+                  procedureDto: procedure,
+                  otherSuperSetProcedureDto:
+                      whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                ),
+                const SizedBox(height: 18)
+              ],
+            ))
+        .toList();
   }
 
   @override
