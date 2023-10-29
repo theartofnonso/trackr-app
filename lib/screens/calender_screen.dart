@@ -41,43 +41,36 @@ class _CalendarScreenState extends State<CalendarScreen> {
       appBar: AppBar(
         backgroundColor: tealBlueDark,
       ),
-      body: Container(
-        padding: const EdgeInsets.only(top: 20, right: 10, bottom: 20, left: 10),
-        decoration: BoxDecoration(
-          color: const Color.fromRGBO(12, 14, 18, 1),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
-                const Spacer(),
-                Text(_currentDate.formattedMonthAndYear(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    )),
-                const Spacer(),
-                CTextButton(onPressed: _goToNextMonth, label: "Next"),
-                const SizedBox(
-                  width: 20,
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CalendarHeader(),
-            _CalendarDatesWidgets(
-              currentDate: _currentDate,
-            ),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const SizedBox(
+                width: 20,
+              ),
+              CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
+              const Spacer(),
+              Text(_currentDate.formattedMonthAndYear(),
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  )),
+              const Spacer(),
+              CTextButton(onPressed: _goToNextMonth, label: "Next"),
+              const SizedBox(
+                width: 20,
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          CalendarHeader(),
+          _CalendarDatesWidgets(
+            currentDate: _currentDate,
+          ),
+        ],
       ),
     );
   }
