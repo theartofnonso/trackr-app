@@ -5,6 +5,7 @@ const String lastActivityIdKey = "last_activity_id_key";
 const String lastActivityKey = "last_activity_key";
 const String cachedRoutineLogKey = "cached_routine_log_key";
 const String cachedRoutineRestIntervalKey = "cached_routine_rest_interval_key";
+const String weightUnitTypeKey = "weight_Unit_type_key";
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;
@@ -64,4 +65,11 @@ class SharedPrefs {
   }
 
   int get cachedRoutineRestInterval => _sharedPrefs?.getInt(cachedRoutineRestIntervalKey) ?? 0;
+
+  /// Weight Unit Type
+  set weightUnitType(String value) {
+    _sharedPrefs?.setString(weightUnitTypeKey, value);
+  }
+
+  String get weightUnitType => _sharedPrefs?.getString(weightUnitTypeKey) ?? "";
 }
