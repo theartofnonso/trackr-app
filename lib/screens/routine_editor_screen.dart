@@ -282,6 +282,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     sets[setIndex] = sets[setIndex].copyWith(rep: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     _cacheRoutine();
+    if(widget.mode == RoutineEditorMode.routine) {
+      _calculateCompletedSets();
+    }
   }
 
   void _updateWeight({required String procedureId, required int setIndex, required int value}) {
@@ -291,6 +294,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     sets[setIndex] = sets[setIndex].copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     _cacheRoutine();
+    if(widget.mode == RoutineEditorMode.routine) {
+      _calculateCompletedSets();
+    }
   }
 
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
