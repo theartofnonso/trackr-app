@@ -357,7 +357,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             // ),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 10, bottom: 20),
+              padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
               child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnitType,),
             ),
             SingleChildScrollView(

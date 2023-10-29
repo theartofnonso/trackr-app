@@ -188,7 +188,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                         : const SizedBox.shrink(),
                     chartPoints.isNotEmpty
                         ? Padding(
-                            padding: const EdgeInsets.only(top: 20.0, right: 10, bottom: 10),
+                            padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
                             child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnitType,),
                           )
                         : const SizedBox.shrink(),

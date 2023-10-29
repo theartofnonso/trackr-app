@@ -1,10 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
-enum ChartUnitType {
-  kg, lbs, reps, min, hrs
-}
+enum ChartUnitType { kg, lbs, reps, min, hrs }
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
@@ -35,8 +35,7 @@ class LineChartWidget extends StatelessWidget {
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  interval: 500,
-                  getTitlesWidget: leftTitleWidgets,
+                  getTitlesWidget: _leftTitleWidgets,
                   reservedSize: 50,
                 ),
               ),
@@ -44,15 +43,13 @@ class LineChartWidget extends StatelessWidget {
                 sideTitles: SideTitles(
                   showTitles: true,
                   interval: 1,
-                  getTitlesWidget: bottomTitleWidgets,
+                  getTitlesWidget: _bottomTitleWidgets,
                 ),
               ),
             ),
             borderData: FlBorderData(
               show: false,
             ),
-            // minY: 0,
-            // maxY: 3.0,
             lineBarsData: [
               LineChartBarData(
                   spots: chartPoints.map((point) => FlSpot(point.x, point.y)).toList(),
@@ -71,20 +68,37 @@ class LineChartWidget extends StatelessWidget {
     );
   }
 
+  double _interval() {
+    final points = chartPoints.map((point) => point.y).toList();
+    final min = points.min;
+    final max = points.max;
+    double interval = max - min;
+    if (interval >= 1000) {
+      interval = 1000;
+    } else if (interval >= 500) {
+      interval = 500;
+    } else if (interval >= 100) {
+      interval = 100;
+    } else if (interval >= 50) {
+      interval = 50;
+    } else if (interval >= 10) {
+      interval = 10;
+    }
+    return interval;
+  }
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
+  Widget _leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.w600,
-      fontSize: 10,
+      fontSize: 9,
     );
-   // print(value);
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: Text("$value ${unit.name}", style: style),
+      child: Text("${value.toInt()} ${unit.name}", style: style),
     );
   }
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+  Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.w600,
       fontSize: 10,
