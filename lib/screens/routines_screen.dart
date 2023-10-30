@@ -42,7 +42,7 @@ class RoutinesScreen extends StatelessWidget {
           body: SafeArea(
               child: routineProvider.routines.isNotEmpty
                   ? Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(children: [
                         cachedRoutineLog != null
                             ? MinimisedRoutineBanner(provider: routineLogProvider, log: cachedRoutineLog)
