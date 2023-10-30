@@ -117,7 +117,7 @@ class CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-                    width: 40,
+                    width: 45,
                     child: Center(
                       child: Text(day,
                           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -130,21 +130,36 @@ class CalendarHeader extends StatelessWidget {
   }
 }
 
-class _ListOfDatesWidgets extends StatelessWidget {
+class _ListOfDatesWidgets extends StatefulWidget {
   final DateTime currentDate;
   final List<RoutineLog> logs;
   final void Function(DateTime dateTime) onDateSelected;
 
   const _ListOfDatesWidgets({required this.currentDate, required this.logs, required this.onDateSelected});
 
+  @override
+  State<_ListOfDatesWidgets> createState() => _ListOfDatesWidgetsState();
+}
+
+class _ListOfDatesWidgetsState extends State<_ListOfDatesWidgets> {
+  
+  DateTime? _selectedDate;
+  
+  void _selectDate(DateTime dateTime) {
+    widget.onDateSelected(dateTime);
+    setState(() {
+      _selectedDate = dateTime;
+    });
+  }
+  
   bool _hasLog(DateTime dateTime) {
-    final log = logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
+    final log = widget.logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
     return log != null;
   }
 
   List<Widget> _datesToColumns({required DateTime selectedDate}) {
-    int year = currentDate.year;
-    int month = currentDate.month;
+    int year = widget.currentDate.year;
+    int month = widget.currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
 
     DateTime firstDayOfMonth = DateTime(year, month, 1);
@@ -156,7 +171,7 @@ class _ListOfDatesWidgets extends StatelessWidget {
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 40, height: 40));
+      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 45, height: 45));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -164,14 +179,18 @@ class _ListOfDatesWidgets extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       datesInMonths.add(_DateWidget(
-          label: date.day.toString(), dateTime: date, onTap: (DateTime dateTime) => onDateSelected(dateTime), hasLog: _hasLog(date)));
+        dateTime: date,
+        onTap: (DateTime dateTime) => _selectDate(dateTime),
+        hasLog: _hasLog(date),
+        selectedDateTime: _selectedDate,
+      ));
     }
 
     // Add padding to end of month
     final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
     if (isLastDayNotSunday) {
       final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
+      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 45, height: 45));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -215,12 +234,12 @@ class _ListOfDatesWidgets extends StatelessWidget {
 }
 
 class _DateWidget extends StatelessWidget {
-  final String label;
   final DateTime dateTime;
+  final DateTime? selectedDateTime;
   final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget({required this.label, required this.hasLog, required this.dateTime, required this.onTap});
+  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.hasLog, required this.onTap});
 
   Color _getBackgroundColor() {
     if (hasLog) {
@@ -230,8 +249,11 @@ class _DateWidget extends StatelessWidget {
   }
 
   Border? _getBorder() {
-    if (hasLog) {
-      return Border.all(color: Colors.grey, width: 1.0);
+    final selectedDate = selectedDateTime;
+    if (selectedDate != null) {
+      if(selectedDate.isAtSameMomentAs(dateTime)) {
+        return Border.all(color: Colors.white, width: 1.0);
+      }
     }
     return null;
   }
@@ -240,7 +262,17 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return Colors.black;
     }
-    return Colors.white;
+    if (dateTime.isSameDateAs(other: DateTime.now())) {
+      return Colors.white;
+    }
+    return Colors.white70;
+  }
+
+  FontWeight? _getFontWeight() {
+    if (dateTime.isSameDateAs(other: DateTime.now())) {
+      return FontWeight.bold;
+    }
+    return FontWeight.w500;
   }
 
   @override
@@ -248,16 +280,16 @@ class _DateWidget extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(dateTime),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         decoration: BoxDecoration(
           color: _getBackgroundColor(),
           border: _getBorder(),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(3),
         ),
         child: Center(
-          child: Text(label,
-              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: _getTextColor())),
+          child: Text("${dateTime.day}",
+              style: GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor())),
         ),
       ),
     );
