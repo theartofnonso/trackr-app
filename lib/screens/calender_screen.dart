@@ -130,33 +130,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 }
 
-class CalendarHeader extends StatelessWidget {
-  CalendarHeader({super.key});
-
-  final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: tealBlueDark,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ...daysOfWeek
-              .map((day) => SizedBox(
-                    width: 45,
-                    child: Center(
-                      child: Text(day,
-                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                    ),
-                  ))
-              .toList()
-        ],
-      ),
-    );
-  }
-}
-
 class _ListOfDatesWidgets extends StatefulWidget {
   final DateTime currentDate;
   final List<RoutineLog> logs;
@@ -259,14 +232,40 @@ class _ListOfDatesWidgetsState extends State<_ListOfDatesWidgets> {
   }
 }
 
+class CalendarHeader extends StatelessWidget {
+  CalendarHeader({super.key});
+
+  final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: tealBlueDark,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ...daysOfWeek
+              .map((day) => SizedBox(
+            width: 45,
+            child: Center(
+              child: Text(day,
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+            ),
+          ))
+              .toList()
+        ],
+      ),
+    );
+  }
+}
+
 class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
   final DateTime? selectedDateTime;
   final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget(
-      {required this.dateTime, required this.selectedDateTime, required this.hasLog, required this.onTap});
+  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.hasLog, required this.onTap});
 
   Color _getBackgroundColor() {
     if (hasLog) {
@@ -315,8 +314,7 @@ class _DateWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(3),
         ),
         child: Center(
-          child: Text("${dateTime.day}",
-              style: GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor())),
+          child: Text("${dateTime.day}", style: GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor())),
         ),
       ),
     );
