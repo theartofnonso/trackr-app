@@ -11,7 +11,7 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
-import '../providers/exercises_provider.dart';
+import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/weight_unit_provider.dart';
 import '../widgets/helper_widgets/routine_helper.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/exercises_provider.dart';
+import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/routine_preview_screen.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 

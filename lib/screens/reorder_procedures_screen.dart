@@ -6,7 +6,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
-import '../providers/exercises_provider.dart';
+import '../providers/exercise_provider.dart';
 
 class ReOrderProceduresScreen extends StatefulWidget {
   final List<ProcedureDto> procedures;

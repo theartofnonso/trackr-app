@@ -7,7 +7,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
 import '../../../models/RoutineLog.dart';
-import '../../../providers/exercises_provider.dart';
+import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../screens/routine_editor_screen.dart';
 import '../../../screens/routine_log_preview_screen.dart';

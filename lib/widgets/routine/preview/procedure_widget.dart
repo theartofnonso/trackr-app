@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import '../../../providers/exercises_provider.dart';
+import '../../../providers/exercise_provider.dart';
 import '../../../screens/exercise_history_screen.dart';
 import '../../helper_widgets/routine_helper.dart';
 

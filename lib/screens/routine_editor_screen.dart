@@ -17,7 +17,7 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../app_constants.dart';
 import '../dtos/set_dto.dart';
-import '../providers/exercises_provider.dart';
+import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../shared_prefs.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
@@ -682,6 +682,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return previousRoutine != null ? previousRoutine.name : previousRoutineLog?.name;
   }
 
+  void _dismissKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     final elapsedRestInterval = _elapsedProcedureRestInterval;
@@ -735,85 +739,93 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 child: const Icon(Icons.stop),
               )
             : null,
-        body: Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-          child: GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Column(
-              children: [
-                if (widget.mode == RoutineEditorMode.routine)
-                  RunningRoutineSummaryWidget(
-                    sets: _totalCompletedSets.length,
-                    weight: _totalWeight(),
-                    timer: _TimerWidget(DateTime.now().difference(_routineStartTime.toLocal())),
-                  ),
-                elapsedRestInterval != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: _IntervalTimer(
-                          duration: elapsedRestInterval,
-                          onElapsed: () => _hideProcedureRestInterval(),
-                          onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (widget.mode == RoutineEditorMode.editing)
-                          Column(
-                            children: [
-                              TextField(
-                                controller: _routineNameController,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(2),
-                                        borderSide: const BorderSide(color: tealBlueLighter)),
-                                    filled: true,
-                                    fillColor: tealBlueLighter,
-                                    hintText: "New workout",
-                                    hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
-                                cursorColor: Colors.white,
-                                keyboardType: TextInputType.text,
-                                textCapitalization: TextCapitalization.words,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                              ),
-                              const SizedBox(height: 10),
-                              TextField(
-                                controller: _routineNotesController,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(2),
-                                        borderSide: const BorderSide(color: tealBlueLighter)),
-                                    filled: true,
-                                    fillColor: tealBlueLighter,
-                                    hintText: "Notes",
-                                    hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
-                                maxLines: null,
-                                cursorColor: Colors.white,
-                                keyboardType: TextInputType.text,
-                                textCapitalization: TextCapitalization.sentences,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                              ),
-                            ],
+        body: NotificationListener(
+          onNotification: (scrollNotification) {
+            if (scrollNotification is ScrollStartNotification) {
+              _dismissKeyboard(context);
+            }
+            return false;
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+            child: GestureDetector(
+              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              child: Column(
+                children: [
+                  if (widget.mode == RoutineEditorMode.routine)
+                    RunningRoutineSummaryWidget(
+                      sets: _totalCompletedSets.length,
+                      weight: _totalWeight(),
+                      timer: _TimerWidget(DateTime.now().difference(_routineStartTime.toLocal())),
+                    ),
+                  elapsedRestInterval != null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: _IntervalTimer(
+                            duration: elapsedRestInterval,
+                            onElapsed: () => _hideProcedureRestInterval(),
+                            onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
                           ),
-                        const SizedBox(height: 12),
-                        ..._proceduresToWidgets(),
-                        SizedBox(
-                          width: double.infinity,
-                          child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
-                        ),
-                      ],
+                        )
+                      : const SizedBox.shrink(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (widget.mode == RoutineEditorMode.editing)
+                            Column(
+                              children: [
+                                TextField(
+                                  controller: _routineNameController,
+                                  decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(2),
+                                          borderSide: const BorderSide(color: tealBlueLighter)),
+                                      filled: true,
+                                      fillColor: tealBlueLighter,
+                                      hintText: "New workout",
+                                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                  cursorColor: Colors.white,
+                                  keyboardType: TextInputType.text,
+                                  textCapitalization: TextCapitalization.words,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                                ),
+                                const SizedBox(height: 10),
+                                TextField(
+                                  controller: _routineNotesController,
+                                  decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(2),
+                                          borderSide: const BorderSide(color: tealBlueLighter)),
+                                      filled: true,
+                                      fillColor: tealBlueLighter,
+                                      hintText: "Notes",
+                                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                  maxLines: null,
+                                  cursorColor: Colors.white,
+                                  keyboardType: TextInputType.text,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 12),
+                          ..._proceduresToWidgets(),
+                          SizedBox(
+                            width: double.infinity,
+                            child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ));

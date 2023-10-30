@@ -8,7 +8,7 @@ import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../app_constants.dart';
 import '../models/Routine.dart';
-import '../providers/exercises_provider.dart';
+import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
 import '../widgets/routine/minimised_routine_banner.dart';
