@@ -41,36 +41,33 @@ class _CalendarScreenState extends State<CalendarScreen> {
       appBar: AppBar(
         backgroundColor: tealBlueDark,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const SizedBox(
-                width: 20,
-              ),
-              CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
-              const Spacer(),
-              Text(_currentDate.formattedMonthAndYear(),
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  )),
-              const Spacer(),
-              CTextButton(onPressed: _goToNextMonth, label: "Next"),
-              const SizedBox(
-                width: 20,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          CalendarHeader(),
-          _ListOfDatesWidgets(
-            currentDate: _currentDate,
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
+                const Spacer(),
+                Text(_currentDate.formattedMonthAndYear(),
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    )),
+                const Spacer(),
+                CTextButton(onPressed: _goToNextMonth, label: "Next"),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CalendarHeader(),
+            _ListOfDatesWidgets(
+              currentDate: _currentDate,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -84,7 +81,7 @@ class CalendarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ...daysOfWeek
             .map((day) => SizedBox(
@@ -164,7 +161,7 @@ class _ListOfDatesWidgets extends StatelessWidget {
       widgets.add(Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [...dates.sublist(startIndex, endIndex)],
         ),
       ));
