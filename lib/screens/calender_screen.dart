@@ -67,7 +67,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             height: 20,
           ),
           CalendarHeader(),
-          _CalendarDatesWidgets(
+          _ListOfDatesWidgets(
             currentDate: _currentDate,
           ),
         ],
@@ -88,7 +88,7 @@ class CalendarHeader extends StatelessWidget {
       children: [
         ...daysOfWeek
             .map((day) => SizedBox(
-                  width: 40,
+                  width: 30,
                   child: Center(
                     child: Text(day,
                         style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -100,10 +100,10 @@ class CalendarHeader extends StatelessWidget {
   }
 }
 
-class _CalendarDatesWidgets extends StatelessWidget {
+class _ListOfDatesWidgets extends StatelessWidget {
   final DateTime currentDate;
 
-  const _CalendarDatesWidgets({required this.currentDate});
+  const _ListOfDatesWidgets({required this.currentDate});
 
   List<Widget> _datesToColumns({required List<DateTimeEntry> dateTimeEntries, required DateTime selectedDate}) {
     int year = currentDate.year;
@@ -212,8 +212,8 @@ class _DateWidget extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Container(
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
           color: _getBackgroundColor(),
           border: _getBorder(),
