@@ -10,7 +10,6 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -35,13 +34,14 @@ class RoutineEditorScreen extends StatefulWidget {
   final RoutineLog? routineLog;
   final RoutineEditorMode mode;
   final RoutineEditingType type;
+  final TemporalDateTime? createdAt;
 
   const RoutineEditorScreen(
       {super.key,
       this.routine,
       this.routineLog,
       this.mode = RoutineEditorMode.editing,
-      this.type = RoutineEditingType.template});
+      this.type = RoutineEditingType.template, this.createdAt});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -483,6 +483,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 notes: routine.notes,
                 procedures: completedProcedures,
                 startTime: _routineStartTime,
+                createdAt: widget.createdAt,
                 routine: widget.routine!);
             _navigateAndPop();
           }
@@ -649,6 +650,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             notes: routine.notes,
             procedures: _procedures,
             startTime: _routineStartTime,
+            createdAt: widget.createdAt,
             routine: widget.routine!);
       }
     }

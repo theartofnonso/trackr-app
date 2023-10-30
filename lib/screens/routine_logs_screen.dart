@@ -15,6 +15,29 @@ import '../widgets/routine/minimised_routine_banner.dart';
 import '../widgets/routine/preview/routine_log_widget.dart';
 import 'calender_screen.dart';
 
+void navigateToRoutineEditor({required BuildContext context, TemporalDateTime? createdAt}) async {
+  try {
+    final emptyRoutine = Routine(
+        name: '',
+        procedures: [],
+        notes: '',
+        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
+        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            RoutineEditorScreen(routine: emptyRoutine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log, createdAt: createdAt)));
+  } catch (e) {
+    showSnackbar(
+        context: context,
+        icon: const Icon(
+          Icons.info_outline,
+          color: Colors.white,
+        ),
+        message: "Unable to start new workout");
+  }
+}
+
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
 
@@ -23,10 +46,8 @@ class RoutineLogsScreen extends StatefulWidget {
 }
 
 class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindingObserver {
-
   void _navigateToCalendarScreen() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const CalendarScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CalendarScreen()));
   }
 
   @override
@@ -53,7 +74,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
             ? FloatingActionButton(
                 heroTag: "fab_routine_logs_screen",
                 onPressed: () {
-                  _navigateToRoutineEditor(context: context);
+                  navigateToRoutineEditor(context: context);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -65,9 +86,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               children: [
-                cachedRoutineLog != null
-                    ? MinimisedRoutineBanner(log: cachedRoutineLog)
-                    : const SizedBox.shrink(),
+                cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                 provider.logs.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(
@@ -84,32 +103,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
         ),
       );
     }));
-  }
-
-  void _navigateToRoutineEditor({required BuildContext context}) async {
-    try {
-      final emptyRoutine = Routine(
-          name: '',
-          procedures: [],
-          notes: '',
-          createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-          updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
-      if (context.mounted) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => RoutineEditorScreen(
-                routine: emptyRoutine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log)));
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showSnackbar(
-            context: context,
-            icon: const Icon(
-              Icons.info_outline,
-              color: Colors.white,
-            ),
-            message: "Unable to start new workout");
-      }
-    }
   }
 
   void _loadData() async {

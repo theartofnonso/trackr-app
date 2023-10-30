@@ -60,6 +60,7 @@ class RoutineLogProvider with ChangeNotifier {
       required String notes,
       required List<ProcedureDto> procedures,
       required DateTime startTime,
+      TemporalDateTime? createdAt,
       required Routine routine}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
@@ -68,10 +69,12 @@ class RoutineLogProvider with ChangeNotifier {
         notes: notes,
         procedures: proceduresJson,
         startTime: TemporalDateTime.fromString("${startTime.toLocal().toIso8601String()}Z"),
-        endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        createdAt: TemporalDateTime.now(),
+        endTime: TemporalDateTime.now(),
+        createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         routine: routine);
+    /// [RoutineLog] requires and instance of [Routine]
+    /// If [RoutineLog] is from a non-existing [Routine], persist new one
     if (routine.name.isEmpty) {
       await Amplify.DataStore.save<Routine>(routine);
     }
@@ -86,6 +89,7 @@ class RoutineLogProvider with ChangeNotifier {
       required String notes,
       required List<ProcedureDto> procedures,
       required DateTime startTime,
+      TemporalDateTime? createdAt,
       required Routine routine}) {
     _cachedLog = RoutineLog(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
@@ -94,9 +98,9 @@ class RoutineLogProvider with ChangeNotifier {
         routine: routine,
         procedures: procedures.map((procedure) => procedure.toJson()).toList(),
         startTime: TemporalDateTime.fromString("${startTime.toLocal().toIso8601String()}Z"),
-        endTime: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+        endTime: TemporalDateTime.now(),
+        createdAt: createdAt ?? TemporalDateTime.now(),
+        updatedAt: TemporalDateTime.now());
     final cachedLogDto = _cachedLog;
     if (cachedLogDto != null) {
       SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);

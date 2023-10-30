@@ -1,9 +1,11 @@
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/screens/routine_logs_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
@@ -18,11 +20,22 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+
+  late DateTime _earliestLogDate;
+
   DateTime _currentDate = DateTime(DateTime.now().year, DateTime.now().month);
+  
+  bool _hasEarlierDate() {
+    return _earliestLogDate.isBefore(_currentDate);
+  }
+
+  bool _hasLaterDate() {
+    final now = DateTime(DateTime.now().year, DateTime.now().month);
+    return _currentDate.isBefore(now);
+  }
 
   void _goToPreviousMonth() {
-    final initialDateTime = DateTime(2023, 9);
-    if (initialDateTime.isBefore(_currentDate)) {
+    if (_hasEarlierDate()) {
       setState(() {
         _currentDate = DateTime(_currentDate.year, _currentDate.month - 1);
       });
@@ -30,8 +43,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _goToNextMonth() {
-    final now = DateTime(DateTime.now().year, DateTime.now().month);
-    if (_currentDate.isBefore(now)) {
+    if (_hasLaterDate()) {
       setState(() {
         _currentDate = DateTime(_currentDate.year, _currentDate.month + 1);
       });
@@ -62,15 +74,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
               color: tealBlueDark,
               child: Row(
                 children: [
-                  CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
-                  const Spacer(),
-                  Text(_currentDate.formattedMonthAndYear(),
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  const Spacer(),
-                  CTextButton(onPressed: _goToNextMonth, label: "Next"),
+                  _hasEarlierDate() ? CTextButton(onPressed: _goToPreviousMonth, label: "Prev") : const SizedBox.shrink(),
+                  Expanded(
+                    child: Text(_currentDate.formattedMonthAndYear(),
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                  _hasLaterDate() ? CTextButton(onPressed: _goToNextMonth, label: "Next") : const SizedBox.shrink(),
                 ],
               ),
             ),
@@ -95,11 +108,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                         itemCount: logs.length),
                   )
-                : Expanded(child: Center(child: CTextButton(onPressed: () {}, label: " Start tracking performance ")))
+                : Expanded(
+                    child: Center(
+                        child: CTextButton(
+                            onPressed: () =>
+                                navigateToRoutineEditor(context: context, createdAt: TemporalDateTime.now()),
+                            label: " Start tracking performance ")))
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final earliestRoutineLog = Provider.of<RoutineLogProvider>(context, listen: false).logs.lastOrNull;
+    final earliestDateTime =
+        earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
+    _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
   }
 }
 
@@ -142,16 +169,15 @@ class _ListOfDatesWidgets extends StatefulWidget {
 }
 
 class _ListOfDatesWidgetsState extends State<_ListOfDatesWidgets> {
-  
   DateTime? _selectedDate;
-  
+
   void _selectDate(DateTime dateTime) {
     widget.onDateSelected(dateTime);
     setState(() {
       _selectedDate = dateTime;
     });
   }
-  
+
   bool _hasLog(DateTime dateTime) {
     final log = widget.logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
     return log != null;
@@ -239,7 +265,8 @@ class _DateWidget extends StatelessWidget {
   final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.hasLog, required this.onTap});
+  const _DateWidget(
+      {required this.dateTime, required this.selectedDateTime, required this.hasLog, required this.onTap});
 
   Color _getBackgroundColor() {
     if (hasLog) {
@@ -251,7 +278,7 @@ class _DateWidget extends StatelessWidget {
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
     if (selectedDate != null) {
-      if(selectedDate.isAtSameMomentAs(dateTime)) {
+      if (selectedDate.isAtSameMomentAs(dateTime)) {
         return Border.all(color: Colors.white, width: 1.0);
       }
     }

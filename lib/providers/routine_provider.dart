@@ -41,9 +41,7 @@ class RoutineProvider with ChangeNotifier {
         createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now());
     await Amplify.DataStore.save<Routine>(routineToSave);
-    if (context.mounted) {
-      _routines.add(routineToSave);
-    }
+    _routines.insert(0, routineToSave);
     notifyListeners();
   }
 
