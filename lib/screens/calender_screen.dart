@@ -74,7 +74,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             Container(
               color: tealBlueDark,
-              height: 20,
+              height: 15,
             ),
             CalendarHeader(),
             _ListOfDatesWidgets(
