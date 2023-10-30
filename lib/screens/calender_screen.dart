@@ -107,7 +107,7 @@ class CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-                    width: 30,
+                    width: 40,
                     child: Center(
                       child: Text(day,
                           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -235,8 +235,8 @@ class _DateWidget extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Container(
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: _getBackgroundColor(),
           border: _getBorder(),
