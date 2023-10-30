@@ -27,6 +27,11 @@ class RoutinesScreen extends StatelessWidget {
     return Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
       final cachedRoutineLog = routineLogProvider.cachedLog;
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: tealBlueDark,
+          title: const Text("Workouts", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          centerTitle: false,
+        ),
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => _navigateToRoutineEditor(context: context),

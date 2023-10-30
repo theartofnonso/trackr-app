@@ -40,6 +40,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
+        title: const Text("Profile", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        centerTitle: false,
         actions: [
           GestureDetector(
             onTap: () => _navigateTo(context),

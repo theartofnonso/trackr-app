@@ -42,6 +42,8 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       return Scaffold(
         appBar: AppBar(
           backgroundColor: tealBlueDark,
+          title: const Text("Home", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          centerTitle: false,
           actions: [
             GestureDetector(
               onTap: _navigateToCalendarScreen,
