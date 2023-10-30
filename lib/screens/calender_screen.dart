@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,8 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../widgets/routine/preview/routine_log_widget.dart';
+import '../models/RoutineLog.dart';
+import '../widgets/calendar/routine_log_widget.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -52,7 +54,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         backgroundColor: tealBlueDark,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -78,7 +80,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             CalendarHeader(),
             _ListOfDatesWidgets(
-              currentDate: _currentDate, onDateSelected: (DateTime dateTime) => _selectDate(dateTime),
+              currentDate: _currentDate,
+              logs: routineLogProvider.logs,
+              onDateSelected: (DateTime dateTime) => _selectDate(dateTime),
+            ),
+            Container(
+              color: tealBlueDark,
+              height: 10,
             ),
             logs.isNotEmpty
                 ? Expanded(
@@ -124,9 +132,15 @@ class CalendarHeader extends StatelessWidget {
 
 class _ListOfDatesWidgets extends StatelessWidget {
   final DateTime currentDate;
+  final List<RoutineLog> logs;
   final void Function(DateTime dateTime) onDateSelected;
 
-  const _ListOfDatesWidgets({required this.currentDate, required this.onDateSelected});
+  const _ListOfDatesWidgets({required this.currentDate, required this.logs, required this.onDateSelected});
+
+  bool _hasLog(DateTime dateTime) {
+    final log = logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
+    return log != null;
+  }
 
   List<Widget> _datesToColumns({required DateTime selectedDate}) {
     int year = currentDate.year;
@@ -149,7 +163,8 @@ class _ListOfDatesWidgets extends StatelessWidget {
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      datesInMonths.add(_DateWidget(label: date.day.toString(), dateTime: date, onTap: (DateTime dateTime)=> onDateSelected(dateTime)));
+      datesInMonths.add(_DateWidget(
+          label: date.day.toString(), dateTime: date, onTap: (DateTime dateTime) => onDateSelected(dateTime), hasLog: _hasLog(date)));
     }
 
     // Add padding to end of month
@@ -204,8 +219,8 @@ class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
   final bool hasLog;
   final void Function(DateTime dateTime) onTap;
-  
-  const _DateWidget({required this.label, this.hasLog = false, required this.dateTime, required this.onTap});
+
+  const _DateWidget({required this.label, required this.hasLog, required this.dateTime, required this.onTap});
 
   Color _getBackgroundColor() {
     if (hasLog) {
