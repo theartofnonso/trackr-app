@@ -56,6 +56,76 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
+  bool _hasLog({required DateTime dateTime, required List<RoutineLog> logs}) {
+    final log = logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
+    return log != null;
+  }
+
+  List<Widget> _datesToColumns({required List<RoutineLog> logs}) {
+    int year = _currentDate.year;
+    int month = _currentDate.month;
+    int daysInMonth = DateTime(year, month + 1, 0).day;
+
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+
+    List<Widget> datesInMonths = [];
+
+    // Add padding to start of month
+    final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
+    if (isFirstDayNotMonday) {
+      final precedingDays = firstDayOfMonth.weekday - 1;
+      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 45, height: 45));
+      datesInMonths.addAll(emptyWidgets);
+    }
+
+    // Add remainder dates
+    for (int day = 1; day <= daysInMonth; day++) {
+      final date = DateTime(year, month, day);
+      datesInMonths.add(_DateWidget(
+        dateTime: date,
+        onTap: (DateTime dateTime) => _selectDate(dateTime),
+        hasLog: _hasLog(dateTime: date, logs: logs),
+        selectedDateTime: _currentDate,
+      ));
+    }
+
+    // Add padding to end of month
+    final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
+    if (isLastDayNotSunday) {
+      final succeedingDays = 7 - lastDayOfMonth.weekday;
+      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 45, height: 45));
+      datesInMonths.addAll(emptyWidgets);
+    }
+
+    return datesInMonths;
+  }
+
+  List<Widget> _dateToRows({required List<RoutineLog> logs}) {
+    List<Widget> widgets = [];
+    final dates = _datesToColumns(logs: logs);
+    int iterationCount = 6;
+    int numbersPerIteration = 7;
+
+    for (int i = 0; i < iterationCount; i++) {
+      int startIndex = i * numbersPerIteration;
+      int endIndex = (i + 1) * numbersPerIteration;
+
+      if (endIndex > dates.length) {
+        endIndex = dates.length;
+      }
+
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [...dates.sublist(startIndex, endIndex)],
+        ),
+      ));
+    }
+    return widgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
@@ -92,10 +162,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
               height: 15,
             ),
             CalendarHeader(),
-            _ListOfDatesWidgets(
-              currentDate: _currentDate,
-              logs: routineLogProvider.logs,
-              onDateSelected: (DateTime dateTime) => _selectDate(dateTime),
+            Container(
+              color: tealBlueDark,
+              child: Column(
+                children: [..._dateToRows(logs: logs)],
+              ),
             ),
             Container(
               color: tealBlueDark,
@@ -127,108 +198,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final earliestDateTime =
         earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
     _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
-  }
-}
-
-class _ListOfDatesWidgets extends StatefulWidget {
-  final DateTime currentDate;
-  final List<RoutineLog> logs;
-  final void Function(DateTime dateTime) onDateSelected;
-
-  const _ListOfDatesWidgets({required this.currentDate, required this.logs, required this.onDateSelected});
-
-  @override
-  State<_ListOfDatesWidgets> createState() => _ListOfDatesWidgetsState();
-}
-
-class _ListOfDatesWidgetsState extends State<_ListOfDatesWidgets> {
-  DateTime? _selectedDate;
-
-  void _selectDate(DateTime dateTime) {
-    widget.onDateSelected(dateTime);
-    setState(() {
-      _selectedDate = dateTime;
-    });
-  }
-
-  bool _hasLog(DateTime dateTime) {
-    final log = widget.logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
-    return log != null;
-  }
-
-  List<Widget> _datesToColumns({required DateTime selectedDate}) {
-    int year = widget.currentDate.year;
-    int month = widget.currentDate.month;
-    int daysInMonth = DateTime(year, month + 1, 0).day;
-
-    DateTime firstDayOfMonth = DateTime(year, month, 1);
-    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
-
-    List<Widget> datesInMonths = [];
-
-    // Add padding to start of month
-    final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
-    if (isFirstDayNotMonday) {
-      final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 45, height: 45));
-      datesInMonths.addAll(emptyWidgets);
-    }
-
-    // Add remainder dates
-    for (int day = 1; day <= daysInMonth; day++) {
-      final date = DateTime(year, month, day);
-      datesInMonths.add(_DateWidget(
-        dateTime: date,
-        onTap: (DateTime dateTime) => _selectDate(dateTime),
-        hasLog: _hasLog(date),
-        selectedDateTime: _selectedDate,
-      ));
-    }
-
-    // Add padding to end of month
-    final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
-    if (isLastDayNotSunday) {
-      final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 45, height: 45));
-      datesInMonths.addAll(emptyWidgets);
-    }
-
-    return datesInMonths;
-  }
-
-  List<Widget> _dateToRows({required DateTime selectedDate}) {
-    List<Widget> widgets = [];
-    final dates = _datesToColumns(selectedDate: selectedDate);
-    int iterationCount = 6;
-    int numbersPerIteration = 7;
-
-    for (int i = 0; i < iterationCount; i++) {
-      int startIndex = i * numbersPerIteration;
-      int endIndex = (i + 1) * numbersPerIteration;
-
-      if (endIndex > dates.length) {
-        endIndex = dates.length;
-      }
-
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [...dates.sublist(startIndex, endIndex)],
-        ),
-      ));
-    }
-    return widgets;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: tealBlueDark,
-      child: Column(
-        children: [..._dateToRows(selectedDate: DateTime.now())],
-      ),
-    );
   }
 }
 
