@@ -106,6 +106,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         itemCount: _filteredExercises.length);
   }
 
+  void _dismissKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,29 +125,37 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               : const SizedBox.shrink()
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-        child: Column(
-          children: [
-            SearchBar(
-              onChanged: (searchTerm) => _runSearch(searchTerm: searchTerm),
-              leading: const Icon(
-                Icons.search_rounded,
-                color: Colors.white70,
+      body: NotificationListener(
+        onNotification: (scrollNotification) {
+          if (scrollNotification is ScrollStartNotification) {
+            _dismissKeyboard(context);
+          }
+          return false;
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+          child: Column(
+            children: [
+              SearchBar(
+                onChanged: (searchTerm) => _runSearch(searchTerm: searchTerm),
+                leading: const Icon(
+                  Icons.search_rounded,
+                  color: Colors.white70,
+                ),
+                hintText: "Search exercises",
+                hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white70)),
+                textStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
+                surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
+                backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
+                shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                )),
+                constraints: const BoxConstraints(minHeight: 50),
               ),
-              hintText: "Search exercises",
-              hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white70)),
-              textStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
-              surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
-              backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
-              shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-              )),
-              constraints: const BoxConstraints(minHeight: 50),
-            ),
-            const SizedBox(height: 12),
-            Expanded(child: _exercisesToWidgets())
-          ],
+              const SizedBox(height: 12),
+              Expanded(child: _exercisesToWidgets())
+            ],
+          ),
         ),
       ),
     );

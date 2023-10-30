@@ -198,6 +198,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final earliestDateTime =
         earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
     _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
+    print(_earliestLogDate);
   }
 }
 
