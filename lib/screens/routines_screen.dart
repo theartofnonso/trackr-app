@@ -45,7 +45,7 @@ class RoutinesScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(children: [
                         cachedRoutineLog != null
-                            ? MinimisedRoutineBanner(provider: routineLogProvider, log: cachedRoutineLog)
+                            ? MinimisedRoutineBanner(log: cachedRoutineLog)
                             : const SizedBox.shrink(),
                         Expanded(
                           child: ListView.separated(

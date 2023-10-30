@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/Routine.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
@@ -122,5 +123,9 @@ class RoutineLogProvider with ChangeNotifier {
 
   RoutineLog? whereRoutineLog({required String id}) {
     return _logs.firstWhereOrNull((log) => log.id == id);
+  }
+
+  List<RoutineLog> whereRoutineLogsForDate({required DateTime dateTime}) {
+    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime)).toList();
   }
 }

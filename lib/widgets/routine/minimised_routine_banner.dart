@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../../app_constants.dart';
 import '../../models/RoutineLog.dart';
-import '../../providers/routine_log_provider.dart';
 import '../../screens/routine_editor_screen.dart';
 
 class MinimisedRoutineBanner extends StatelessWidget {
-  final RoutineLogProvider provider;
   final RoutineLog log;
-  const MinimisedRoutineBanner({super.key, required this.provider, required this.log});
+  const MinimisedRoutineBanner({super.key, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            provider.clearCachedLog();
+            Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
           },
           child: const Text('Cancel', style: TextStyle(color: Colors.white)),
         ),

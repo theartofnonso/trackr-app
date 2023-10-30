@@ -1,11 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/models/DateTimeEntry.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+
+import '../widgets/empty_states/screen_empty_state.dart';
+import '../widgets/routine/preview/routine_log_widget.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -37,6 +42,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
+    final logs = routineLogProvider.whereRoutineLogsForDate(dateTime: DateTime.now());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
@@ -46,26 +54,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
-                const Spacer(),
-                Text(_currentDate.formattedMonthAndYear(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    )),
-                const Spacer(),
-                CTextButton(onPressed: _goToNextMonth, label: "Next"),
-              ],
+            Container(
+              color: tealBlueDark,
+              child: Row(
+                children: [
+                  CTextButton(onPressed: _goToPreviousMonth, label: "Prev"),
+                  const Spacer(),
+                  Text(_currentDate.formattedMonthAndYear(),
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const Spacer(),
+                  CTextButton(onPressed: _goToNextMonth, label: "Next"),
+                ],
+              ),
             ),
-            const SizedBox(
+            Container(
+              color: tealBlueDark,
               height: 20,
             ),
             CalendarHeader(),
             _ListOfDatesWidgets(
               currentDate: _currentDate,
             ),
+            logs.isNotEmpty
+                ? Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: logs[index]),
+                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+                        itemCount: logs.length),
+                  )
+                : Expanded(child: Center(child: CTextButton(onPressed: () {}, label: " Start tracking performance ")))
           ],
         ),
       ),
@@ -80,19 +100,22 @@ class CalendarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ...daysOfWeek
-            .map((day) => SizedBox(
-                  width: 30,
-                  child: Center(
-                    child: Text(day,
-                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                ))
-            .toList()
-      ],
+    return Container(
+      color: tealBlueDark,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ...daysOfWeek
+              .map((day) => SizedBox(
+                    width: 30,
+                    child: Center(
+                      child: Text(day,
+                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                    ),
+                  ))
+              .toList()
+        ],
+      ),
     );
   }
 }
@@ -171,8 +194,11 @@ class _ListOfDatesWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [..._dateToRows(selectedDate: DateTime.now(), dateTimeEntries: [])],
+    return Container(
+      color: tealBlueDark,
+      child: Column(
+        children: [..._dateToRows(selectedDate: DateTime.now(), dateTimeEntries: [])],
+      ),
     );
   }
 }
