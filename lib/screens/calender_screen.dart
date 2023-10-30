@@ -1,15 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/models/DateTimeEntry.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../widgets/empty_states/screen_empty_state.dart';
 import '../widgets/routine/preview/routine_log_widget.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -40,10 +36,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
   }
 
+  void _selectDate(DateTime dateTime) {
+    setState(() {
+      _currentDate = dateTime;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
-    final logs = routineLogProvider.whereRoutineLogsForDate(dateTime: DateTime.now());
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    final logs = routineLogProvider.whereRoutineLogsForDate(dateTime: _currentDate);
 
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +78,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             CalendarHeader(),
             _ListOfDatesWidgets(
-              currentDate: _currentDate,
+              currentDate: _currentDate, onDateSelected: (DateTime dateTime) => _selectDate(dateTime),
             ),
             logs.isNotEmpty
                 ? Expanded(
@@ -107,7 +109,7 @@ class CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-                    width: 35,
+                    width: 30,
                     child: Center(
                       child: Text(day,
                           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -122,10 +124,11 @@ class CalendarHeader extends StatelessWidget {
 
 class _ListOfDatesWidgets extends StatelessWidget {
   final DateTime currentDate;
+  final void Function(DateTime dateTime) onDateSelected;
 
-  const _ListOfDatesWidgets({required this.currentDate});
+  const _ListOfDatesWidgets({required this.currentDate, required this.onDateSelected});
 
-  List<Widget> _datesToColumns({required List<DateTimeEntry> dateTimeEntries, required DateTime selectedDate}) {
+  List<Widget> _datesToColumns({required DateTime selectedDate}) {
     int year = currentDate.year;
     int month = currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -139,37 +142,30 @@ class _ListOfDatesWidgets extends StatelessWidget {
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 35, height: 35));
+      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 30, height: 30));
       datesInMonths.addAll(emptyWidgets);
     }
 
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      final dateTimeEntry = dateTimeEntries.firstWhereOrNull((dateTimeEntry) {
-        final dateTime = dateTimeEntry.createdAt;
-        if (dateTime != null) {
-          return dateTime.getDateTimeInUtc().isSameDateAs(other: date);
-        }
-        return false;
-      });
-      datesInMonths.add(_DateWidget(label: date.day.toString()));
+      datesInMonths.add(_DateWidget(label: date.day.toString(), dateTime: date, onTap: (DateTime dateTime)=> onDateSelected(dateTime)));
     }
 
     // Add padding to end of month
     final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
     if (isLastDayNotSunday) {
       final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 35, height: 35));
+      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 30, height: 30));
       datesInMonths.addAll(emptyWidgets);
     }
 
     return datesInMonths;
   }
 
-  List<Widget> _dateToRows({required DateTime selectedDate, required List<DateTimeEntry> dateTimeEntries}) {
+  List<Widget> _dateToRows({required DateTime selectedDate}) {
     List<Widget> widgets = [];
-    final dates = _datesToColumns(selectedDate: selectedDate, dateTimeEntries: dateTimeEntries);
+    final dates = _datesToColumns(selectedDate: selectedDate);
     int iterationCount = 6;
     int numbersPerIteration = 7;
 
@@ -197,7 +193,7 @@ class _ListOfDatesWidgets extends StatelessWidget {
     return Container(
       color: tealBlueDark,
       child: Column(
-        children: [..._dateToRows(selectedDate: DateTime.now(), dateTimeEntries: [])],
+        children: [..._dateToRows(selectedDate: DateTime.now())],
       ),
     );
   }
@@ -205,26 +201,28 @@ class _ListOfDatesWidgets extends StatelessWidget {
 
 class _DateWidget extends StatelessWidget {
   final String label;
-  final RoutineLog? routineLog;
-
-  const _DateWidget({required this.label, this.routineLog});
+  final DateTime dateTime;
+  final bool hasLog;
+  final void Function(DateTime dateTime) onTap;
+  
+  const _DateWidget({required this.label, this.hasLog = false, required this.dateTime, required this.onTap});
 
   Color _getBackgroundColor() {
-    if (routineLog != null) {
+    if (hasLog) {
       return Colors.white;
     }
     return Colors.transparent;
   }
 
   Border? _getBorder() {
-    if (routineLog != null) {
+    if (hasLog) {
       return Border.all(color: Colors.grey, width: 1.0);
     }
     return null;
   }
 
   Color _getTextColor() {
-    if (routineLog != null) {
+    if (hasLog) {
       return Colors.black;
     }
     return Colors.white;
@@ -233,10 +231,10 @@ class _DateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () => onTap(dateTime),
       child: Container(
-        width: 35,
-        height: 35,
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
           color: _getBackgroundColor(),
           border: _getBorder(),
@@ -244,7 +242,7 @@ class _DateWidget extends StatelessWidget {
         ),
         child: Center(
           child: Text(label,
-              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w400, color: _getTextColor())),
+              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: _getTextColor())),
         ),
       ),
     );

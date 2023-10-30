@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
@@ -41,7 +42,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
       final totalWeight = _totalWeight(sets: completedSets);
       final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalWeight) : totalWeight;
-      final totalWeightSummary = "$conversion kg";
+      final totalWeightSummary = "$conversion ${weightLabel()}";
 
       return Scaffold(
           floatingActionButton: FloatingActionButton(
