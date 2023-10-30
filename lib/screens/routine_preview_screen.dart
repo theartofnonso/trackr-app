@@ -5,17 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../app_constants.dart';
 import '../dtos/graph/chart_point_dto.dart';
 import '../dtos/procedure_dto.dart';
-import '../models/Routine.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../shared_prefs.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/chart/line_chart_widget.dart';
 import '../widgets/helper_widgets/routine_helper.dart';
