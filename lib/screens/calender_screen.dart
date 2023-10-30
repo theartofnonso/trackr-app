@@ -117,7 +117,7 @@ class CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-                    width: 30,
+                    width: 40,
                     child: Center(
                       child: Text(day,
                           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -156,7 +156,7 @@ class _ListOfDatesWidgets extends StatelessWidget {
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 30, height: 30));
+      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -171,7 +171,7 @@ class _ListOfDatesWidgets extends StatelessWidget {
     final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
     if (isLastDayNotSunday) {
       final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 30, height: 30));
+      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -248,8 +248,8 @@ class _DateWidget extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(dateTime),
       child: Container(
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: _getBackgroundColor(),
           border: _getBorder(),
