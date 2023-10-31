@@ -154,7 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.whereRoutineLogsForDate(dateTime: _currentDate);
 
     return Scaffold(
@@ -209,7 +209,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     child: Center(
                         child: CTextButton(
                             onPressed: () =>
-                                navigateToRoutineEditor(context: context, createdAt: TemporalDateTime.now()),
+                                navigateToRoutineEditor(context: context, createdAt: TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z")),
                             label: " Start tracking performance ")))
           ],
         ),
@@ -256,7 +256,7 @@ class CalendarHeader extends StatelessWidget {
 
 class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
-  final DateTime? selectedDateTime;
+  final DateTime selectedDateTime;
   final void Function(DateTime dateTime) onTap;
 
   const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap});
@@ -270,14 +270,11 @@ class _DateWidget extends StatelessWidget {
 
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
-    if (selectedDate != null) {
-      if (selectedDate.isAtSameMomentAs(dateTime)) {
-        print(selectedDate);
-        print(dateTime);
-        return Border.all(color: Colors.white, width: 1.0);
-      }
+    if (selectedDate.isAtSameMomentAs(dateTime)) {
+      return Border.all(color: Colors.white, width: 1.0);
+    } else {
+      return null;
     }
-    return null;
   }
 
   Color _getTextColor(bool hasLog) {
@@ -302,14 +299,17 @@ class _DateWidget extends StatelessWidget {
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLogForDate(dateTime: dateTime);
     return InkWell(
       onTap: () => onTap(dateTime),
-      child: SizedBox(
+      child: Container(
         width: 40,
         height: 40,
+        decoration: BoxDecoration(
+          border: _getBorder(),
+          borderRadius: BorderRadius.circular(3),
+        ),
         child: Container(
           margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: _getBackgroundColor(log != null),
-            border: _getBorder(),
             borderRadius: BorderRadius.circular(3),
           ),
           child: Center(
