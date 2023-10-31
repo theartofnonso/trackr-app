@@ -21,7 +21,7 @@ class SetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-    final value = weightProvider.isLbs ? weightProvider.toLbs(setDto.weight) : setDto.weight;
+    final value = weightProvider.isLbs ? toLbs(setDto.weight) : setDto.weight;
 
     return ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),

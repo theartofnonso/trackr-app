@@ -162,7 +162,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
-    final logs = routineLogProvider.whereRoutineLogsForDate(dateTime: _currentDate);
+    final logs = routineLogProvider.routineLogsWhereDate(dateTime: _currentDate);
 
     return Scaffold(
       appBar: AppBar(
@@ -313,7 +313,7 @@ class _DateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLogForDate(dateTime: dateTime);
+    final log = Provider.of<RoutineLogProvider>(context, listen: true).routineLogWhereDate(dateTime: dateTime);
     return InkWell(
       onTap: () => onTap(dateTime),
       child: Container(

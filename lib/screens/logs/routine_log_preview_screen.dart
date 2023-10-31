@@ -41,7 +41,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       final completedSetsSummary = completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
       final totalWeight = _totalWeight(sets: completedSets);
-      final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalWeight) : totalWeight;
+      final conversion = weightProvider.isLbs ? toLbs(totalWeight) : totalWeight;
       final totalWeightSummary = "$conversion ${weightLabel()}";
 
       return Scaffold(

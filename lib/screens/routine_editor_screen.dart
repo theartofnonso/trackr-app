@@ -1126,7 +1126,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
               ),
               Consumer<WeightUnitProvider>(
                 builder: (_, provider, __) {
-                  final value = provider.isLbs ? provider.toLbs(weight) : weight;
+                  final value = provider.isLbs ? toLbs(weight) : weight;
                   return Text("$value",
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
                 },

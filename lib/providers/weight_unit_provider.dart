@@ -12,14 +12,4 @@ class WeightUnitProvider with ChangeNotifier {
     _isLbs = SharedPrefs().weightUnit == WeightUnit.lbs.name;
     notifyListeners();
   }
-
-  double toKg(double value) {
-    final conversion = value / 2.205;
-    return double.parse(conversion.toStringAsFixed(2));
-  }
-
-  double toLbs(double value) {
-    final conversion = value * 2.205;
-    return double.parse(conversion.toStringAsFixed(2));
-  }
 }

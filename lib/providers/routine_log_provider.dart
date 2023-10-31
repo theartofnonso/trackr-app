@@ -73,6 +73,7 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         routine: routine);
+
     /// [RoutineLog] requires and instance of [Routine]
     /// If [RoutineLog] is from a non-existing [Routine], persist new one
     if (routine.name.isEmpty) {
@@ -129,11 +130,26 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<RoutineLog> whereRoutineLogsForDate({required DateTime dateTime}) {
+  List<ProcedureDto> routineLogsWhereProcedure({required ProcedureDto procedureDto}) {
+    List<ProcedureDto> procedures = [];
+    for (RoutineLog log in _logs) {
+      final foundProcedures = log.procedures
+          .where(
+              (procedureJson) => ProcedureDto.fromJson(jsonDecode(procedureJson)).exerciseId == procedureDto.exerciseId)
+          .toList();
+      if (foundProcedures.isNotEmpty) {
+        final procedureDtos = foundProcedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+        procedures.addAll(procedureDtos);
+      }
+    }
+    return procedures;
+  }
+
+  List<RoutineLog> routineLogsWhereDate({required DateTime dateTime}) {
     return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime)).toList();
   }
 
-  RoutineLog? whereRoutineLogForDate({required DateTime dateTime}) {
+  RoutineLog? routineLogWhereDate({required DateTime dateTime}) {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
   }
 }

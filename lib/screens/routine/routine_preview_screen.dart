@@ -100,7 +100,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _loadChart() {
-    Provider.of<RoutineProvider>(context, listen: false).whereLogsForRoutine(id: widget.routineId).then((logs) {
+    Provider.of<RoutineProvider>(context, listen: false).routinesWhere(id: widget.routineId).then((logs) {
       setState(() {
         _logs = logs;
         final values = logs.map((log) => volumePerLog(context: context, log: log)).toList();
@@ -116,7 +116,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routine = Provider.of<RoutineProvider>(context, listen: true).whereRoutineDto(id: widget.routineId);
+    final routine = Provider.of<RoutineProvider>(context, listen: true).routineWhere(id: widget.routineId);
 
     if (routine != null) {
       final procedures = routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();

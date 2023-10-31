@@ -63,11 +63,11 @@ class RoutineProvider with ChangeNotifier {
     return _routines.indexWhere((routine) => routine.id == id);
   }
 
-  Routine? whereRoutineDto({required String id}) {
+  Routine? routineWhere({required String id}) {
     return _routines.firstWhereOrNull((dto) => dto.id == id);
   }
 
-  Future<List<RoutineLog>> whereLogsForRoutine({required String id}) async {
+  Future<List<RoutineLog>> routinesWhere({required String id}) async {
     final logs = await Amplify.DataStore.query(
       RoutineLog.classType,
       where: RoutineLog.ROUTINE.eq(id),

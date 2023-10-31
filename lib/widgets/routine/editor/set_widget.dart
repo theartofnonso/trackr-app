@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
 
 import '../../../screens/routine_editor_screen.dart';
+import '../../../utils/general_utils.dart';
 import '../../helper_widgets/dialog_helper.dart';
 
 class SetWidget extends StatelessWidget {
@@ -15,6 +16,7 @@ class SetWidget extends StatelessWidget {
     required this.index,
     required this.workingIndex,
     required this.setDto,
+    required this.pastSetDto,
     this.editorType = RoutineEditorMode.editing,
     required this.onTapCheck,
     required this.onRemoved,
@@ -26,6 +28,7 @@ class SetWidget extends StatelessWidget {
   final int index;
   final int workingIndex;
   final SetDto setDto;
+  final SetDto? pastSetDto;
   final RoutineEditorMode editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -67,57 +70,73 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      horizontalTitleGap: 20,
-      leading: SizedBox(width: 30, child: _SetIcon(type: setDto.type, label: workingIndex)),
-      title: Row(
-        children: [
-          _RepsTextField(
-            initialValue: setDto.reps,
-            onChangedReps: (value) => onChangedReps(value),
+
+    final previousSetDto = pastSetDto;
+
+    double prevWeightValue = 0;
+
+    if(previousSetDto != null) {
+      final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+      prevWeightValue = weightProvider.isLbs ? toLbs(previousSetDto.weight) : previousSetDto.weight;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          horizontalTitleGap: 20,
+          leading: SizedBox(width: 30, child: _SetIcon(type: setDto.type, label: workingIndex)),
+          title: Row(
+            children: [
+              _RepsTextField(
+                initialValue: setDto.reps,
+                onChangedReps: (value) => onChangedReps(value),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              _WeightTextField(
+                initialValue: setDto.weight,
+                onChangedWeight: (value) => onChangedWeight(value),
+              ),
+              editorType == RoutineEditorMode.routine
+                  ? GestureDetector(
+                      onTap: onTapCheck,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: setDto.checked
+                            ? const Icon(Icons.check_box_rounded, color: Colors.green)
+                            : const Icon(Icons.check_box_rounded, color: Colors.grey),
+                      ),
+                    )
+                  : const SizedBox.shrink()
+            ],
           ),
-          const SizedBox(
-            width: 20,
-          ),
-          _WeightTextField(
-            initialValue: setDto.weight,
-            onChangedWeight: (value) => onChangedWeight(value),
-          ),
-          editorType == RoutineEditorMode.routine
-              ? GestureDetector(
-                  onTap: onTapCheck,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 45.0),
-                    child: setDto.checked
-                        ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                        : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                  ),
-                )
-              : const SizedBox.shrink()
-        ],
-      ),
-      trailing: MenuAnchor(
-          style: MenuStyle(
-            backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-          ),
-          builder: (BuildContext context, MenuController controller, Widget? child) {
-            return IconButton(
-              onPressed: () {
-                if (controller.isOpen) {
-                  controller.close();
-                } else {
-                  controller.open();
-                }
+          trailing: MenuAnchor(
+              style: MenuStyle(
+                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+              ),
+              builder: (BuildContext context, MenuController controller, Widget? child) {
+                return IconButton(
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                  tooltip: 'Show menu',
+                );
               },
-              icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
-              tooltip: 'Show menu',
-            );
-          },
-          menuChildren: _menuActionButtons(context)),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
-      ),
+              menuChildren: _menuActionButtons(context)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
+          ),
+        ),
+        previousSetDto != null ? Text("Past: $prevWeightValue${weightLabel()} x ${previousSetDto.reps}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600)) : const SizedBox.shrink()
+      ],
     );
   }
 }
@@ -185,7 +204,7 @@ class _WeightTextField extends StatelessWidget {
 
   double _parseDoubleOrDefault({required WeightUnitProvider provider, required String value}) {
     final doubleValue = double.tryParse(value) ?? 0;
-    return provider.isLbs ? provider.toKg(doubleValue) : doubleValue;
+    return provider.isLbs ? toKg(doubleValue) : doubleValue;
   }
 
   @override
@@ -193,7 +212,7 @@ class _WeightTextField extends StatelessWidget {
     return SizedBox(
       width: 60,
       child: Consumer<WeightUnitProvider>(builder: (_, provider, __) {
-        final value = provider.isLbs ? provider.toLbs(initialValue) : initialValue;
+        final value = provider.isLbs ? toLbs(initialValue) : initialValue;
         return TextField(
           onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),
           decoration: InputDecoration(

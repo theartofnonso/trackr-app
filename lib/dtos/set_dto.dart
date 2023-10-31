@@ -52,6 +52,6 @@ class SetDto {
 
   @override
   String toString() {
-    return 'SetDto{reps: $reps, weight: $weight}';
+    return 'SetDto{reps: $reps, weight: $weight, type: $type, checked: $checked}';
   }
 }

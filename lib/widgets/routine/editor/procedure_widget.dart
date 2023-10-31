@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -103,15 +104,38 @@ class ProcedureWidget extends StatelessWidget {
     ];
   }
 
-  List<Widget>? _displaySets() {
+  List<Widget>? _displaySets(BuildContext context) {
     int workingSets = 0;
 
+    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereProcedure(procedureDto: procedureDto);
+
     return procedureDto.sets.mapIndexed(((index, setDto) {
+
+      SetDto? pastSet;
+
+      for (ProcedureDto procedure in pastProcedures) {
+        final pastSets = procedure.sets;
+        if(pastSets.isNotEmpty) {
+          if(setDto.type == SetType.working) {
+            final sets = pastSets.where((set) => set.type == SetType.working).toList();
+            if(sets.length > workingSets) {
+              final set = sets[workingSets];
+              final volume = set.reps * set.weight;
+              if(volume > 0) {
+                pastSet = set;
+                break;
+              }
+            }
+          }
+        }
+      }
+
       final widget = SetWidget(
         index: index,
         onRemoved: () => onRemoveSet(index),
         workingIndex: setDto.type == SetType.working ? workingSets : -1,
         setDto: setDto,
+        pastSetDto: pastSet,
         editorType: editorType,
         onChangedReps: (int value) => onChangedSetRep(index, value),
         onChangedWeight: (double value) => onChangedSetWeight(index, value),
@@ -242,7 +266,7 @@ class ProcedureWidget extends StatelessWidget {
                           textAlign: TextAlign.center))
                 ],
               ),
-              ...?_displaySets()
+              ...?_displaySets(context)
             ],
           )
         ],

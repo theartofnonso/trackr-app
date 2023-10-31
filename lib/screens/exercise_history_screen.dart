@@ -69,7 +69,7 @@ double _heaviestWeightPerLog({required BuildContext context, required RoutineLog
   }
 
   final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? weightProvider.toLbs(heaviestWeight) : heaviestWeight;
+  final conversion = weightProvider.isLbs ? toLbs(heaviestWeight) : heaviestWeight;
 
   return conversion;
 }
@@ -99,7 +99,7 @@ double _heaviestSetVolumePerLog({required BuildContext context, required Routine
   }
 
   final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? weightProvider.toLbs(heaviestVolume) : heaviestVolume;
+  final conversion = weightProvider.isLbs ? toLbs(heaviestVolume) : heaviestVolume;
 
   return conversion;
 }
@@ -115,7 +115,7 @@ double volumePerLog({required BuildContext context, required RoutineLog log}) {
   }
 
   final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalVolume) : totalVolume;
+  final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
 
   return conversion;
 }
@@ -126,7 +126,7 @@ double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}
   final max = (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
 
   final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? weightProvider.toLbs(max) : max;
+  final conversion = weightProvider.isLbs ? toLbs(max) : max;
 
   return conversion;
 }
@@ -153,7 +153,7 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
   }
 
   final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? weightProvider.toLbs(totalVolume) : totalVolume;
+  final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
 
   return conversion;
 }
@@ -175,7 +175,7 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
   }
 
   final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? weightProvider.toLbs(heaviestSet.weight) : heaviestSet.weight;
+  final conversion = weightProvider.isLbs ? toLbs(heaviestSet.weight) : heaviestSet.weight;
 
   return (logId, heaviestSet.copyWith(weight: conversion));
 }
