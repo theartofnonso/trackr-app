@@ -160,6 +160,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
+        actions: [
+          GestureDetector(
+            onTap: () => navigateToRoutineEditor(context: context, createdAt: TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z")),
+            child: const Padding(
+              padding: EdgeInsets.only(right: 14.0),
+              child: Icon(Icons.add),
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
