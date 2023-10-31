@@ -448,7 +448,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             const SizedBox(height: 10),
             MetricWidget(
               title: '1 Rep Max',
-              summary: '$oneRepMax$weightUnitLabel',
+              summary: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
               subtitle: 'Heaviest weight for one rep',
               onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
             ),
