@@ -88,6 +88,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
+  void _logRoutine() {
+    final createdAt = _currentDate.isSameDateAs(other: DateTime.now())
+        ? TemporalDateTime.now()
+        : TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z");
+    navigateToRoutineEditor(context: context, createdAt: createdAt);
+  }
+
   List<Widget> _generateDates() {
     int year = _currentDate.year;
     int month = _currentDate.month;
@@ -161,13 +168,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
       appBar: AppBar(
         backgroundColor: tealBlueDark,
         actions: [
-          GestureDetector(
-            onTap: () => navigateToRoutineEditor(context: context, createdAt: TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z")),
-            child: const Padding(
-              padding: EdgeInsets.only(right: 14.0),
-              child: Icon(Icons.add),
-            ),
-          )
+          routineLogProvider.cachedLog == null
+              ? GestureDetector(
+                  onTap: _logRoutine,
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 14.0),
+                    child: Icon(Icons.add),
+                  ),
+                )
+              : const SizedBox.shrink()
         ],
       ),
       body: Padding(
@@ -214,12 +223,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                         itemCount: logs.length),
                   )
-                : Expanded(
-                    child: Center(
-                        child: CTextButton(
-                            onPressed: () =>
-                                navigateToRoutineEditor(context: context, createdAt: TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z")),
-                            label: " Start tracking performance ")))
+                : routineLogProvider.cachedLog == null
+                    ? Expanded(
+                        child:
+                            Center(child: CTextButton(onPressed: _logRoutine, label: " Start tracking performance ")))
+                    : const SizedBox.shrink()
           ],
         ),
       ),
