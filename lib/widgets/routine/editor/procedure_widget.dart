@@ -107,21 +107,21 @@ class ProcedureWidget extends StatelessWidget {
   List<Widget>? _displaySets(BuildContext context) {
     int workingSets = 0;
 
-    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereProcedure(procedureDto: procedureDto);
+    final pastProcedures =
+        Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereProcedure(procedureDto: procedureDto);
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
-
       SetDto? pastSet;
 
       for (ProcedureDto procedure in pastProcedures) {
         final pastSets = procedure.sets;
-        if(pastSets.isNotEmpty) {
-          if(setDto.type == SetType.working) {
+        if (pastSets.isNotEmpty) {
+          if (setDto.type == SetType.working) {
             final sets = pastSets.where((set) => set.type == SetType.working).toList();
-            if(sets.length > workingSets) {
+            if (sets.length > workingSets) {
               final set = sets[workingSets];
               final volume = set.reps * set.weight;
-              if(volume > 0) {
+              if (volume > 0) {
                 pastSet = set;
                 break;
               }
@@ -239,36 +239,35 @@ class ProcedureWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          Column(
-            children: [
-              Row(
+          Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(),
+              1: FixedColumnWidth(120),
+              2: FixedColumnWidth(85),
+              3: FixedColumnWidth(55),
+              4: FlexColumnWidth(),
+            },
+            children: const <TableRow>[
+              TableRow(
                 children: [
-                  const SizedBox(
-                      width: 30,
-                      child: Text("SET",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
-                          textAlign: TextAlign.center)),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  const SizedBox(
-                      width: 60,
-                      child: Text("REPS",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
-                          textAlign: TextAlign.center)),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  SizedBox(
-                      width: 60,
-                      child: Text(weightLabel().toUpperCase(),
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
-                          textAlign: TextAlign.center))
-                ],
+                  Text("SET",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      textAlign: TextAlign.center),
+                  Text("Past",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      textAlign: TextAlign.center),
+                  Text("KG",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      textAlign: TextAlign.center),
+                  Text("REPS",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      textAlign: TextAlign.center),
+                  SizedBox()
+                ]
               ),
-              ...?_displaySets(context)
             ],
-          )
+          ),
+          ...?_displaySets(context)
         ],
       ),
     );

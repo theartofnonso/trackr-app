@@ -70,72 +70,66 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final previousSetDto = pastSetDto;
 
     double prevWeightValue = 0;
 
-    if(previousSetDto != null) {
+    if (previousSetDto != null) {
       final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
       prevWeightValue = weightProvider.isLbs ? toLbs(previousSetDto.weight) : previousSetDto.weight;
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Table(
+      columnWidths: const <int, TableColumnWidth>{
+        0: FlexColumnWidth(),
+        1: FixedColumnWidth(120),
+        2: FixedColumnWidth(85),
+        3: FixedColumnWidth(55),
+        4: FlexColumnWidth(),
+      },
       children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          horizontalTitleGap: 20,
-          leading: SizedBox(width: 30, child: _SetIcon(type: setDto.type, label: workingIndex)),
-          title: Row(
-            children: [
-              _RepsTextField(
-                initialValue: setDto.reps,
-                onChangedReps: (value) => onChangedReps(value),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              _WeightTextField(
-                initialValue: setDto.weight,
-                onChangedWeight: (value) => onChangedWeight(value),
-              ),
-              editorType == RoutineEditorMode.routine
-                  ? GestureDetector(
-                      onTap: onTapCheck,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: setDto.checked
-                            ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                            : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                      ),
-                    )
-                  : const SizedBox.shrink()
-            ],
+        TableRow(children: [
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: _SetIcon(type: setDto.type, label: workingIndex)),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: previousSetDto != null
+                ? Text(
+                    "$prevWeightValue${weightLabel()} x ${previousSetDto.reps}",
+                    style: const TextStyle(
+                      color: Colors.white70,
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                : const Text("-", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70)),
           ),
-          trailing: MenuAnchor(
-              style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-              ),
-              builder: (BuildContext context, MenuController controller, Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
-                  tooltip: 'Show menu',
-                );
-              },
-              menuChildren: _menuActionButtons(context)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: _WeightTextField(
+              initialValue: setDto.weight,
+              onChangedWeight: (value) => onChangedWeight(value),
+            ),
           ),
-        ),
-        previousSetDto != null ? Text("Past: $prevWeightValue${weightLabel()} x ${previousSetDto.reps}", style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600)) : const SizedBox.shrink()
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: _RepsTextField(
+              initialValue: setDto.reps,
+              onChangedReps: (value) => onChangedReps(value),
+            ),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: editorType == RoutineEditorMode.routine
+                ? GestureDetector(
+                    onTap: onTapCheck,
+                    child: setDto.checked
+                        ? const Icon(Icons.check_box_rounded, color: Colors.green)
+                        : const Icon(Icons.check_box_rounded, color: Colors.grey),
+                  )
+                : const SizedBox.shrink(),
+          )
+        ])
       ],
     );
   }
@@ -178,7 +172,7 @@ class _RepsTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 60,
+      width: 0,
       child: TextField(
         onChanged: (value) => onChangedReps(_parseIntOrDefault(value: value)),
         decoration: InputDecoration(
@@ -210,7 +204,7 @@ class _WeightTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 60,
+      width: 0,
       child: Consumer<WeightUnitProvider>(builder: (_, provider, __) {
         final value = provider.isLbs ? toLbs(initialValue) : initialValue;
         return TextField(
