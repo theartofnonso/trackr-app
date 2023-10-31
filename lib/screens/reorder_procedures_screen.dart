@@ -40,7 +40,7 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
               key: Key("$index"),
               title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name, style: Theme.of(context).textTheme.bodyLarge),
               trailing: const Icon(
-                Icons.list,
+                Icons.reorder_rounded,
                 color: Colors.white,
               ),
             ))
