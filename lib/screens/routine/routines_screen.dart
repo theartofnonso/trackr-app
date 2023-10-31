@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
-import 'package:tracker_app/screens/routine_preview_screen.dart';
+import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
-import '../dtos/procedure_dto.dart';
-import '../models/Routine.dart';
-import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
-import '../widgets/routine/minimised_routine_banner.dart';
-import 'routine_editor_screen.dart';
+import '../../dtos/procedure_dto.dart';
+import '../../models/Routine.dart';
+import '../../providers/routine_log_provider.dart';
+import '../../providers/routine_provider.dart';
+import '../../widgets/routine/minimised_routine_banner.dart';
+import '../routine_editor_screen.dart';
 
 void _navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
   Navigator.of(context).push(MaterialPageRoute(

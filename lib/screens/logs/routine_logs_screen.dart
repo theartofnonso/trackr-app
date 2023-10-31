@@ -6,14 +6,14 @@ import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
-import '../app_constants.dart';
-import '../models/Routine.dart';
-import '../providers/exercise_provider.dart';
-import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
-import '../widgets/routine/minimised_routine_banner.dart';
-import '../widgets/routine/preview/routine_log_widget.dart';
-import 'calender_screen.dart';
+import '../../app_constants.dart';
+import '../../models/Routine.dart';
+import '../../providers/exercise_provider.dart';
+import '../../providers/routine_log_provider.dart';
+import '../../providers/routine_provider.dart';
+import '../../widgets/routine/minimised_routine_banner.dart';
+import '../../widgets/routine/preview/routine_log_widget.dart';
+import '../calender_screen.dart';
 
 void navigateToRoutineEditor({required BuildContext context, TemporalDateTime? createdAt}) async {
   try {
