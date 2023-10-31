@@ -226,9 +226,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exercise = Provider.of<ExerciseProvider>(context, listen: false).whereExercise(exerciseId: exerciseId);
+    final exercise = Provider.of<ExerciseProvider>(context, listen: true).whereExercise(exerciseId: exerciseId);
 
-    final routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
+    final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
     final routineLogsForExercise = _whereLogsForExercise(context: context, logs: routineLogs);
 

@@ -33,7 +33,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+    final weightProvider = Provider.of<WeightUnitProvider>(context, listen: true);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if (log != null) {
