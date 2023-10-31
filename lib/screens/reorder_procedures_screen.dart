@@ -61,7 +61,7 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
           "Reorder",
           style: TextStyle(color: Colors.white),
         ),
-        actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save") : const SizedBox.shrink()],
+        actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save", buttonColor: Colors.transparent,) : const SizedBox.shrink()],
       ),
       body: ReorderableListView(
           children: _proceduresToWidgets(),
