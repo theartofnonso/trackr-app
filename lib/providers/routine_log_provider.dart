@@ -132,4 +132,8 @@ class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> whereRoutineLogsForDate({required DateTime dateTime}) {
     return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime)).toList();
   }
+
+  RoutineLog? whereRoutineLogForDate({required DateTime dateTime}) {
+    return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
+  }
 }

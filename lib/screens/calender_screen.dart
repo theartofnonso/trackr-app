@@ -9,7 +9,6 @@ import 'package:tracker_app/screens/routine_logs_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../models/RoutineLog.dart';
 import '../widgets/calendar/routine_log_widget.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -20,32 +19,65 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-
   late DateTime _earliestLogDate;
 
-  DateTime _currentDate = DateTime(DateTime.now().year, DateTime.now().month);
-  
+  DateTime _currentDate = DateTime.now();
+
   bool _hasEarlierDate() {
-    return _earliestLogDate.isBefore(_currentDate);
+    int earliestMonth = _earliestLogDate.month;
+    int earliestYear = _earliestLogDate.year;
+    if (earliestYear == _currentDate.year) {
+      return earliestMonth < _currentDate.month;
+    } else if (earliestYear < _currentDate.year) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   bool _hasLaterDate() {
-    final now = DateTime(DateTime.now().year, DateTime.now().month);
-    return _currentDate.isBefore(now);
+    final laterDate = DateTime.now();
+    int laterMonth = laterDate.month;
+    int laterYear = laterDate.year;
+    if (laterYear == _currentDate.year) {
+      return laterMonth > _currentDate.month;
+    } else if (laterYear > _currentDate.year) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  void _goToPreviousMonth() {
+  void _decrementDate() {
     if (_hasEarlierDate()) {
+      int month = _currentDate.month - 1;
+      int year = _currentDate.year;
+
+      /// We need to go to previous year
+      if (month == 0) {
+        month = 12;
+        year = year - 1;
+      }
+
       setState(() {
-        _currentDate = DateTime(_currentDate.year, _currentDate.month - 1);
+        _currentDate = DateTime(year, month);
       });
     }
   }
 
-  void _goToNextMonth() {
+  void _incrementDate() {
     if (_hasLaterDate()) {
+      int month = _currentDate.month + 1;
+      int year = _currentDate.year;
+
+      /// We need to go to next year
+      if (month == 12) {
+        month = 0;
+        year = year + 1;
+      }
+
       setState(() {
-        _currentDate = DateTime(_currentDate.year, _currentDate.month + 1);
+        _currentDate = DateTime(year, month);
       });
     }
   }
@@ -56,12 +88,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  bool _hasLog({required DateTime dateTime, required List<RoutineLog> logs}) {
-    final log = logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
-    return log != null;
-  }
-
-  List<Widget> _datesToColumns({required List<RoutineLog> logs}) {
+  List<Widget> _generateDates() {
     int year = _currentDate.year;
     int month = _currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -75,7 +102,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 45, height: 45));
+      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
@@ -85,7 +112,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       datesInMonths.add(_DateWidget(
         dateTime: date,
         onTap: (DateTime dateTime) => _selectDate(dateTime),
-        hasLog: _hasLog(dateTime: date, logs: logs),
         selectedDateTime: _currentDate,
       ));
     }
@@ -94,16 +120,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
     if (isLastDayNotSunday) {
       final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 45, height: 45));
+      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
       datesInMonths.addAll(emptyWidgets);
     }
 
     return datesInMonths;
   }
 
-  List<Widget> _dateToRows({required List<RoutineLog> logs}) {
+  List<Widget> _dateToRows() {
     List<Widget> widgets = [];
-    final dates = _datesToColumns(logs: logs);
+    final dates = _generateDates();
     int iterationCount = 6;
     int numbersPerIteration = 7;
 
@@ -144,7 +170,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               color: tealBlueDark,
               child: Row(
                 children: [
-                  _hasEarlierDate() ? CTextButton(onPressed: _goToPreviousMonth, label: "Prev") : const SizedBox.shrink(),
+                  _hasEarlierDate() ? CTextButton(onPressed: _decrementDate, label: "Prev") : const SizedBox.shrink(),
                   Expanded(
                     child: Text(_currentDate.formattedMonthAndYear(),
                         textAlign: TextAlign.center,
@@ -153,7 +179,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           fontWeight: FontWeight.bold,
                         )),
                   ),
-                  _hasLaterDate() ? CTextButton(onPressed: _goToNextMonth, label: "Next") : const SizedBox.shrink(),
+                  _hasLaterDate() ? CTextButton(onPressed: _incrementDate, label: "Next") : const SizedBox.shrink(),
                 ],
               ),
             ),
@@ -165,7 +191,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             Container(
               color: tealBlueDark,
               child: Column(
-                children: [..._dateToRows(logs: logs)],
+                children: [..._dateToRows()],
               ),
             ),
             Container(
@@ -198,7 +224,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final earliestDateTime =
         earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
     _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
-    print(_earliestLogDate);
   }
 }
 
@@ -216,12 +241,12 @@ class CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-            width: 45,
-            child: Center(
-              child: Text(day,
-                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-            ),
-          ))
+                    width: 40,
+                    child: Center(
+                      child: Text(day,
+                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                    ),
+                  ))
               .toList()
         ],
       ),
@@ -232,12 +257,11 @@ class CalendarHeader extends StatelessWidget {
 class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
   final DateTime? selectedDateTime;
-  final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.hasLog, required this.onTap});
+  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap});
 
-  Color _getBackgroundColor() {
+  Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
       return Colors.white;
     }
@@ -248,13 +272,15 @@ class _DateWidget extends StatelessWidget {
     final selectedDate = selectedDateTime;
     if (selectedDate != null) {
       if (selectedDate.isAtSameMomentAs(dateTime)) {
+        print(selectedDate);
+        print(dateTime);
         return Border.all(color: Colors.white, width: 1.0);
       }
     }
     return null;
   }
 
-  Color _getTextColor() {
+  Color _getTextColor(bool hasLog) {
     if (hasLog) {
       return Colors.black;
     }
@@ -273,18 +299,24 @@ class _DateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLogForDate(dateTime: dateTime);
     return InkWell(
       onTap: () => onTap(dateTime),
-      child: Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          color: _getBackgroundColor(),
-          border: _getBorder(),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Center(
-          child: Text("${dateTime.day}", style: GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor())),
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: Container(
+          margin: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: _getBackgroundColor(log != null),
+            border: _getBorder(),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Center(
+            child: Text("${dateTime.day}",
+                style:
+                    GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+          ),
         ),
       ),
     );
