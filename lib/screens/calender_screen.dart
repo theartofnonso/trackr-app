@@ -287,7 +287,7 @@ class _DateWidget extends StatelessWidget {
 
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
-    if (selectedDate.isAtSameMomentAs(dateTime)) {
+    if (selectedDate.isSameDateAs(other: dateTime)) {
       return Border.all(color: Colors.white, width: 1.0);
     } else {
       return null;
