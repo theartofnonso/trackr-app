@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/profile_screen.dart';
-import 'package:tracker_app/screens/routine_logs_screen.dart';
-import 'package:tracker_app/screens/routines_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/routine/routines_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

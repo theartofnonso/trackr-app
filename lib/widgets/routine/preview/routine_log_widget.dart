@@ -10,7 +10,7 @@ import '../../../models/RoutineLog.dart';
 import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../screens/routine_editor_screen.dart';
-import '../../../screens/routine_log_preview_screen.dart';
+import '../../../screens/logs/routine_log_preview_screen.dart';
 
 class RoutineLogWidget extends StatelessWidget {
   final RoutineLog log;
