@@ -75,8 +75,8 @@ class RoutineLogWidget extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => RoutineEditorScreen(routineLog: log, type: RoutineEditingType.log)));
         },
-        leadingIcon: const Icon(Icons.edit),
-        child: const Text("Edit", style: TextStyle(color: Colors.white),),
+        leadingIcon: const Icon(Icons.edit, color: Colors.white),
+        child: const Text("Edit", style: TextStyle(color: Colors.white)),
       ),
       MenuItemButton(
         onPressed: () {

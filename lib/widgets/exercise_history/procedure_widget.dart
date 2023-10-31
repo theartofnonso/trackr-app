@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
-import '../../helper_widgets/routine_helper.dart';
+import '../helper_widgets/routine_helper.dart';
 
-class ProcedureLiteWidget extends StatelessWidget {
+class ProcedureWidget extends StatelessWidget {
   final ProcedureDto procedureDto;
 
-  const ProcedureLiteWidget({
+  const ProcedureWidget({
     super.key,
     required this.procedureDto,
   });

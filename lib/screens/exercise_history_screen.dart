@@ -20,7 +20,7 @@ import '../providers/weight_unit_provider.dart';
 import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
 import '../widgets/chart/line_chart_widget.dart';
-import '../widgets/routine/preview/routine_log_lite_widget.dart';
+import '../widgets/exercise_history/routine_log_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
@@ -488,7 +488,7 @@ class HistoryWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) => RoutineLogLiteWidget(
+                      itemBuilder: (BuildContext context, int index) => RoutineLogWidget(
                             routineLog: logs[index],
                           ),
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
