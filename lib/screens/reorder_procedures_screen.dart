@@ -57,6 +57,10 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_outlined),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text(
           "Reorder",
           style: TextStyle(color: Colors.white),

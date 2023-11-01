@@ -167,6 +167,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_outlined),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: [
           routineLogProvider.cachedLog == null
               ? GestureDetector(

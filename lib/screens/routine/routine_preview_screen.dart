@@ -139,6 +139,10 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
           backgroundColor: tealBlueDark,
           appBar: AppBar(
             backgroundColor: tealBlueDark,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_outlined),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
             title: Text(routine.name,
                 style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
             actions: [
