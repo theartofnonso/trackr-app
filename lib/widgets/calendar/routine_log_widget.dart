@@ -5,7 +5,6 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
 import '../../../providers/routine_log_provider.dart';
-import '../../../screens/routine_editor_screen.dart';
 import '../../screens/logs/routine_log_preview_screen.dart';
 
 class RoutineLogWidget extends StatelessWidget {
@@ -40,52 +39,8 @@ class RoutineLogWidget extends StatelessWidget {
             const SizedBox(width: 1),
             Text(_logDuration(),
                 style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
-          ]),
-          trailing: MenuAnchor(
-            style: MenuStyle(
-              backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-            ),
-            builder: (BuildContext context, MenuController controller, Widget? child) {
-              return IconButton(
-                onPressed: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  } else {
-                    controller.open();
-                  }
-                },
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                tooltip: 'Show menu',
-              );
-            },
-            menuChildren: _menuActionButtons(context: context),
-          )),
+          ])),
     );
-  }
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context}) {
-    return [
-      MenuItemButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => RoutineEditorScreen(routineLog: log, type: RoutineEditingType.log)));
-        },
-        leadingIcon: const Icon(Icons.edit, color: Colors.white),
-        child: const Text("Edit", style: TextStyle(color: Colors.white)),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: log.id);
-        },
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-        child: const Text("Delete", style: TextStyle(color: Colors.red)),
-      )
-    ];
   }
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
