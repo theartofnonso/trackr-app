@@ -131,18 +131,17 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<ProcedureDto> routineLogsWhereProcedure({required ProcedureDto procedureDto}) {
-    List<ProcedureDto> procedures = [];
-    for (RoutineLog log in _logs) {
-      final foundProcedures = log.procedures
-          .where(
-              (procedureJson) => ProcedureDto.fromJson(jsonDecode(procedureJson)).exerciseId == procedureDto.exerciseId)
-          .toList();
-      if (foundProcedures.isNotEmpty) {
-        final procedureDtos = foundProcedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-        procedures.addAll(procedureDtos);
-      }
-    }
-    return procedures;
+    return logs
+        .where((log) => log.procedures
+            .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+            .any((procedure) => procedure.exerciseId == procedureDto.exerciseId))
+        .map((log) => log.copyWith(
+            procedures: log.procedures
+                .where(
+                    (procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exerciseId == procedureDto.exerciseId)
+                .toList()))
+        .expand((log) => log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))))
+        .toList();
   }
 
   List<RoutineLog> routineLogsWhereDate({required DateTime dateTime}) {

@@ -50,7 +50,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _totalReps() {
-    final values = _logs.map((log) => repsPerLog(context: context, log: log)).toList();
+    final values = _logs.map((log) => repsPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;

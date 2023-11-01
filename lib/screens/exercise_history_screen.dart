@@ -29,7 +29,7 @@ ChartUnit weightUnit() {
   return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
 }
 
-List<SetDto> _allSets({required BuildContext context, required List<String> procedureJsons}) {
+List<SetDto> _allSets({required List<String> procedureJsons}) {
   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
   List<SetDto> completedSets = [];
   for (var procedure in procedures) {
@@ -40,11 +40,11 @@ List<SetDto> _allSets({required BuildContext context, required List<String> proc
 
 /// Highest value per [RoutineLogDto]
 
-SetDto _heaviestWeightInSetPerLog({required BuildContext context, required RoutineLog log}) {
+SetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
   SetDto setWithHeaviestWeight = SetDto();
 
-  final sets = _allSets(context: context, procedureJsons: log.procedures);
+  final sets = _allSets(procedureJsons: log.procedures);
 
   for (var set in sets) {
     final weight = set.weight;
@@ -59,7 +59,7 @@ SetDto _heaviestWeightInSetPerLog({required BuildContext context, required Routi
 double _heaviestWeightPerLog({required BuildContext context, required RoutineLog log}) {
   double heaviestWeight = 0;
 
-  final sets = _allSets(context: context, procedureJsons: log.procedures);
+  final sets = _allSets(procedureJsons: log.procedures);
 
   for (var set in sets) {
     final weight = set.weight;
@@ -74,10 +74,10 @@ double _heaviestWeightPerLog({required BuildContext context, required RoutineLog
   return conversion;
 }
 
-int repsPerLog({required BuildContext context, required RoutineLog log}) {
+int repsPerLog({required RoutineLog log}) {
   int totalReps = 0;
 
-  final sets = _allSets(context: context, procedureJsons: log.procedures);
+  final sets = _allSets(procedureJsons: log.procedures);
 
   for (var set in sets) {
     final reps = set.reps;
@@ -89,7 +89,7 @@ int repsPerLog({required BuildContext context, required RoutineLog log}) {
 double _heaviestSetVolumePerLog({required BuildContext context, required RoutineLog log}) {
   double heaviestVolume = 0;
 
-  final sets = _allSets(context: context, procedureJsons: log.procedures);
+  final sets = _allSets(procedureJsons: log.procedures);
 
   for (var set in sets) {
     final volume = set.reps * set.weight;
@@ -107,7 +107,7 @@ double _heaviestSetVolumePerLog({required BuildContext context, required Routine
 double volumePerLog({required BuildContext context, required RoutineLog log}) {
   double totalVolume = 0;
 
-  final sets = _allSets(context: context, procedureJsons: log.procedures);
+  final sets = _allSets(procedureJsons: log.procedures);
 
   for (var set in sets) {
     final volume = set.reps * set.weight;
@@ -121,7 +121,7 @@ double volumePerLog({required BuildContext context, required RoutineLog log}) {
 }
 
 double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}) {
-  final heaviestWeightInSet = _heaviestWeightInSetPerLog(context: context, log: log);
+  final heaviestWeightInSet = _heaviestWeightInSetPerLog(log: log);
 
   final max = (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
 
@@ -145,7 +145,7 @@ Duration durationPerLog({required RoutineLog log}) {
 double _totalVolumePerLog({required BuildContext context, required RoutineLog log}) {
   double totalVolume = 0;
 
-  final sets = _allSets(context: context, procedureJsons: log.procedures);
+  final sets = _allSets(procedureJsons: log.procedures);
 
   for (var set in sets) {
     final volume = set.reps * set.weight;
@@ -164,7 +164,7 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
   SetDto heaviestSet = SetDto();
   String logId = "";
   for (var log in logs) {
-    final sets = _allSets(context: context, procedureJsons: log.procedures);
+    final sets = _allSets(procedureJsons: log.procedures);
     for (var set in sets) {
       final volume = set.reps * set.weight;
       if (volume > (heaviestSet.reps * heaviestSet.weight)) {
@@ -212,7 +212,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   const ExerciseHistoryScreen({super.key, required this.exerciseId});
 
-  List<RoutineLog> _whereLogsForExercise({required BuildContext context, required List<RoutineLog> logs}) {
+  List<RoutineLog> _logsWhereExercise({required List<RoutineLog> logs}) {
     return logs
         .where((log) => log.procedures
             .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
@@ -230,7 +230,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
-    final routineLogsForExercise = _whereLogsForExercise(context: context, logs: routineLogs);
+    final routineLogsForExercise = _logsWhereExercise(logs: routineLogs);
 
     final heaviestRoutineLogVolume = _heaviestLogVolume(context: context, logs: routineLogsForExercise);
 
@@ -346,7 +346,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _reps() {
-    final values = widget.routineLogs.map((log) => repsPerLog(context: context, log: log)).toList().reversed.toList();
+    final values = widget.routineLogs.map((log) => repsPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.reps;

@@ -104,31 +104,45 @@ class ProcedureWidget extends StatelessWidget {
     ];
   }
 
-  List<Widget>? _displaySets(BuildContext context) {
-    int workingSets = 0;
+  SetDto? _whereSets({required SetType type, required int index,  required List<ProcedureDto> procedures}) {
 
-    final pastProcedures =
-        Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereProcedure(procedureDto: procedureDto);
+    SetDto? set;
+
+    for (ProcedureDto procedure in procedures) {
+      final pastSets = procedure.sets;
+
+      if (pastSets.isEmpty) continue; /// Skip to next past [ProcedureDto] in the list
+
+      final sets = pastSets.where((set) => set.type == type).toList();
+
+      if (sets.length <= index) continue; /// Skip to next past [ProcedureDto] in the list
+
+      final pastSet = sets[index];
+      final volume = pastSet.reps * pastSet.weight;
+
+      if (volume > 0) {
+        set = pastSet;
+        break;
+      }
+    }
+    return set;
+  }
+
+  List<Widget>? _displaySets(BuildContext context) {
+    int warmupSets = 0;
+    int workingSets = 0;
+    int failureSets = 0;
+    int dropSets = 0;
+
+    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereProcedure(procedureDto: procedureDto);
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
-      SetDto? pastSet;
-
-      for (ProcedureDto procedure in pastProcedures) {
-        final pastSets = procedure.sets;
-        if (pastSets.isNotEmpty) {
-          if (setDto.type == SetType.working) {
-            final sets = pastSets.where((set) => set.type == SetType.working).toList();
-            if (sets.length > workingSets) {
-              final set = sets[workingSets];
-              final volume = set.reps * set.weight;
-              if (volume > 0) {
-                pastSet = set;
-                break;
-              }
-            }
-          }
-        }
-      }
+      SetDto? pastSet = switch(setDto.type) {
+        SetType.warmUp => _whereSets(type: setDto.type, index: warmupSets, procedures: pastProcedures),
+        SetType.working => _whereSets(type: setDto.type, index: workingSets, procedures: pastProcedures),
+        SetType.failure => _whereSets(type: setDto.type, index: failureSets, procedures: pastProcedures),
+        SetType.drop => _whereSets(type: setDto.type, index: dropSets, procedures: pastProcedures),
+      };
 
       final widget = SetWidget(
         index: index,
@@ -143,8 +157,20 @@ class ProcedureWidget extends StatelessWidget {
         onTapCheck: () => onCheckSet(index),
       );
 
+      if (setDto.type == SetType.warmUp) {
+        warmupSets += 1;
+      }
+
       if (setDto.type == SetType.working) {
         workingSets += 1;
+      }
+
+      if (setDto.type == SetType.failure) {
+        failureSets += 1;
+      }
+
+      if (setDto.type == SetType.drop) {
+        dropSets += 1;
       }
 
       return widget;
