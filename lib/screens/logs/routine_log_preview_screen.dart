@@ -145,7 +145,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                               child: Center(
                                 child: Text(completedSetsSummary,
                                     style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
                             TableCell(
@@ -153,7 +153,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                               child: Center(
                                 child: Text(totalWeightSummary,
                                     style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
                             TableCell(
@@ -161,7 +161,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                               child: Center(
                                 child: Text(_logDuration(log: log),
                                     style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             )
                           ]),
