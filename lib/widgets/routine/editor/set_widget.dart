@@ -49,7 +49,7 @@ class SetWidget extends StatelessWidget {
     return Table(
       columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(),
-        1: FixedColumnWidth(120),
+        1: FixedColumnWidth(100),
         2: FixedColumnWidth(85),
         3: FixedColumnWidth(55),
         4: FlexColumnWidth(),
