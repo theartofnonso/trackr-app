@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../../screens/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -131,45 +132,35 @@ class _SetIcon extends StatelessWidget {
         displayBottomSheet(
             context: context,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ListTile(
                     onTap: () => selectType(context, SetType.warmUp),
-                    visualDensity: VisualDensity.compact,
                     leading: Text("W",
                         style: TextStyle(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
                     title: const Text("Warm up Set", style: TextStyle(fontSize: 14))),
                 ListTile(
                     onTap: () => selectType(context, SetType.working),
-                    visualDensity: VisualDensity.compact,
                     leading: Text("1",
                         style: TextStyle(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
                     title: const Text("Working Set", style: TextStyle(fontSize: 14))),
                 ListTile(
                     onTap: () => selectType(context, SetType.failure),
-                    visualDensity: VisualDensity.compact,
                     leading: Text("F",
                         style: TextStyle(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
                     title: const Text("Failure Set", style: TextStyle(fontSize: 14))),
                 ListTile(
                     onTap: () => selectType(context, SetType.drop),
-                    visualDensity: VisualDensity.compact,
                     leading: Text("D",
                         style: TextStyle(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
                     title: const Text("Drop Set", style: TextStyle(fontSize: 14))),
-                ListTile(
-                    onTap: () {
-                      Navigator.pop(context);
-                      onRemoveSet();
-                    },
-                    visualDensity: VisualDensity.compact,
-                    leading: const Icon(
-                      Icons.delete_sweep,
-                      color: Colors.red,
-                    ),
-                    title: const Text("Remove Set", style: TextStyle(color: Colors.red, fontSize: 14)))
+                CTextButton(onPressed: () {
+                  Navigator.pop(context);
+                  onRemoveSet();
+                }, label: "Remove Set", buttonColor: tealBlueDark,)
               ],
             ),
-            height: 250);
+            height: 290);
       },
       child: CircleAvatar(
         backgroundColor: Colors.transparent,

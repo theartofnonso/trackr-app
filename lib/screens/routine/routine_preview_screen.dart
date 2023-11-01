@@ -100,7 +100,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _loadChart() {
-    Provider.of<RoutineProvider>(context, listen: false).routinesWhere(id: widget.routineId).then((logs) {
+    Provider.of<RoutineProvider>(context, listen: false).routinesLogsWhere(id: widget.routineId).then((logs) {
       setState(() {
         _logs = logs;
         final values = logs.map((log) => volumePerLog(context: context, log: log)).toList();
