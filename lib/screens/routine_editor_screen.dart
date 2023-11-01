@@ -435,8 +435,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
           name: _routineNameController.text,
           notes: _routineNotesController.text,
-          procedures: _procedures,
-          context: context);
+          procedures: _procedures);
       _navigateAndPop();
     }
   }

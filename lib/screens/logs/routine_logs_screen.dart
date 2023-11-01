@@ -12,7 +12,7 @@ import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
 import '../../widgets/routine/minimised_routine_banner.dart';
-import '../../widgets/routine/preview/routine_log_widget.dart';
+import '../../widgets/routine_log/routine_log_widget.dart';
 import '../calender_screen.dart';
 
 void navigateToRoutineEditor({required BuildContext context, TemporalDateTime? createdAt}) async {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -80,7 +81,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     tooltip: 'Show menu',
                   );
                 },
-                menuChildren: _menuActionButtons(context: context, logDto: log),
+                menuChildren: _menuActionButtons(context: context, log: log),
               )
             ],
           ),
@@ -307,14 +308,23 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context, required RoutineLog logDto}) {
+  List<Widget> _menuActionButtons({required BuildContext context, required RoutineLog log}) {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, log: logDto);
+          _navigateToRoutineEditor(context: context, log: log);
         },
         leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          final procedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+          Provider.of<RoutineProvider>(context, listen: false)
+              .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
+        },
+        leadingIcon: const Icon(Icons.save_alt_rounded),
+        child: const Text("Save as workout"),
       ),
       MenuItemButton(
         onPressed: () {

@@ -28,11 +28,7 @@ class RoutineProvider with ChangeNotifier {
     return routineToSave;
   }
 
-  void saveRoutine(
-      {required BuildContext context,
-      required String name,
-      required String notes,
-      required List<ProcedureDto> procedures}) async {
+  void saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
     final routineToSave = Routine(
         name: name,
