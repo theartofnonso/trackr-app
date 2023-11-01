@@ -751,13 +751,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ],
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
-            ? FloatingActionButton(
+            ? MediaQuery.of(context).viewInsets.bottom <= 0 ? FloatingActionButton(
                 heroTag: "fab_routine_editor_screen",
                 onPressed: _endRoutineLog,
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(Icons.stop),
-              )
+              ) : null
             : null,
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {

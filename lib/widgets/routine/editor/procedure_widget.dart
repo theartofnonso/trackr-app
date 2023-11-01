@@ -267,10 +267,10 @@ class ProcedureWidget extends StatelessWidget {
           Table(
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
-              1: FixedColumnWidth(100),
+              1: FixedColumnWidth(110),
               2: FixedColumnWidth(85),
               3: FixedColumnWidth(55),
-              4: FlexColumnWidth(),
+              4: FixedColumnWidth(55),
             },
             children: const <TableRow>[
               TableRow(
