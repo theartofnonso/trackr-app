@@ -15,6 +15,7 @@ import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/chart/line_chart_widget.dart';
+import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../exercise_history_screen.dart';
 
@@ -80,7 +81,21 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       ),
       MenuItemButton(
         onPressed: () {
-          Navigator.of(context).pop({"id": widget.routineId});
+          final alertDialogActions = <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+            ),
+            CTextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).pop({"id": widget.routineId});
+                },
+                label: 'Delete'),
+          ];
+          showAlertDialog(context: context, message: "Delete workout?", actions: alertDialogActions);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),

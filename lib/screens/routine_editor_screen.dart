@@ -489,7 +489,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         ),
         CTextButton(
             onPressed: () {
@@ -521,7 +521,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         ),
         CTextButton(
             onPressed: () {
@@ -618,7 +618,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             Navigator.pop(context);
             _navigateBackAndClearCache();
           },
-          child: const Text('End', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+          child: const Text('Discard', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
         ),
         TextButton(
           onPressed: () {

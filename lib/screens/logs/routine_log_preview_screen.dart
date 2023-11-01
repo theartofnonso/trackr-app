@@ -15,6 +15,8 @@ import '../../dtos/set_dto.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/weight_unit_provider.dart';
+import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../exercise_history_screen.dart';
 
@@ -323,7 +325,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       ),
       MenuItemButton(
         onPressed: () {
-          final procedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+          final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
+          final procedures = decodedProcedures.map((procedure) {
+            final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
+            return procedure.copyWith(sets: newSets);
+          }).toList();
+
           Provider.of<RoutineProvider>(context, listen: false)
               .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
         },
@@ -332,7 +339,21 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       ),
       MenuItemButton(
         onPressed: () {
-          Navigator.of(context).pop({"id": widget.routineLogId});
+          final alertDialogActions = <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+            ),
+            CTextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).pop({"id": widget.routineLogId});
+                },
+                label: 'Delete'),
+          ];
+          showAlertDialog(context: context, message: "Delete log?", actions: alertDialogActions);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),
