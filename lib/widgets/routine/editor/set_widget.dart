@@ -215,7 +215,7 @@ class _WeightTextField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
               hintText: value.toString(),
               hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
           maxLines: 1,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),

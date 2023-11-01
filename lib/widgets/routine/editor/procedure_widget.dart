@@ -253,7 +253,7 @@ class ProcedureWidget extends StatelessWidget {
                   Text("SET",
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
                       textAlign: TextAlign.center),
-                  Text("Past",
+                  Text("PREVIOUS",
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
                       textAlign: TextAlign.center),
                   Text("KG",
@@ -262,7 +262,7 @@ class ProcedureWidget extends StatelessWidget {
                   Text("REPS",
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
                       textAlign: TextAlign.center),
-                  SizedBox()
+                  TableCell(verticalAlignment: TableCellVerticalAlignment.middle, child: Icon(Icons.check, size: 12,))
                 ]
               ),
             ],

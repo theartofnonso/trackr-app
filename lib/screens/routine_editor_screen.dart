@@ -5,6 +5,7 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
@@ -682,7 +683,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return previousRoutine != null ? previousRoutine.name : previousRoutineLog?.name;
   }
 
-  void _dismissKeyboard(BuildContext context) {
+  void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
 
@@ -739,17 +740,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 child: const Icon(Icons.stop),
               )
             : null,
-        body: NotificationListener(
+        body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
-            if (scrollNotification is ScrollStartNotification) {
-              _dismissKeyboard(context);
+            if (scrollNotification.direction != ScrollDirection.idle) {
+              _dismissKeyboard();
             }
             return false;
           },
           child: Padding(
             padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
             child: GestureDetector(
-              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              onTap: _dismissKeyboard,
               child: Column(
                 children: [
                   if (widget.mode == RoutineEditorMode.routine)
