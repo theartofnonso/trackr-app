@@ -153,7 +153,7 @@ extension DateTimeExtension on DateTime {
     } else if(duration.inDays == 1) {
       display = "Yesterday";
     } else if(duration.inHours > 24) {
-      display = "${duration.inDays} day ago";
+      display = "${duration.inDays} days ago";
     } else if(duration.inMinutes > 59) {
       display = duration.inHours == 1 ? "${duration.inHours} hour ago" : "${duration.inHours} hours ago";
     } else if(duration.inSeconds > 59) {
