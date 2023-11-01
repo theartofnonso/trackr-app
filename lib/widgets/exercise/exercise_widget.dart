@@ -37,15 +37,14 @@ class ExerciseWidget extends StatelessWidget {
                   child: Text(
                     "Primary: ${exerciseInLibraryDto.exercise.primary.join(", ")}",
                     style: const TextStyle(
-                        color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
+                        color: Colors.white70, overflow: TextOverflow.ellipsis),
                   )),
-              const SizedBox(height: 5),
               SizedBox(
                   width: 300,
                   child: Text(
                     "Secondary: ${exerciseInLibraryDto.exercise.secondary.isNotEmpty ? exerciseInLibraryDto.exercise.secondary.join(", ") : "None"}",
                     style: const TextStyle(
-                        color: Colors.white70, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
+                        color: Colors.white70, overflow: TextOverflow.ellipsis),
                   )),
             ],
           )),
