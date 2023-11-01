@@ -25,7 +25,7 @@ class ExerciseProvider with ChangeNotifier {
 
   Future<void> uploadExercises() async {
 
-    // final exercise = Exercise(name: "Smith Machine Shrug", primary: ['Trapezius'], secondary: ["Forearm Flexors"], bodyPart: BodyPart.Back, createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
+    // final exercise = Exercise(name: "Smith Machine Lunge", primary: ['Quads', 'Glutes', 'Adductors'], secondary: [], bodyPart: BodyPart.Legs, createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
     // final request = ModelMutations.create(exercise);
     // final result = await Amplify.API.mutate(request: request).response;
     // print(result);
