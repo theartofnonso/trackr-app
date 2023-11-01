@@ -46,7 +46,6 @@ dependencies:
   google_fonts: ^6.1.0
   shared_preferences: ^2.2.1
   collection: ^1.17.2
-  excel: ^2.1.0
   fl_chart: ^0.64.0
 
 dev_dependencies:
