@@ -59,7 +59,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _routineDuration;
 
-  DateTime _routineStartTime = DateTime.now();
+  TemporalDateTime _routineStartTime = TemporalDateTime.now();
 
   Duration? _elapsedProcedureRestInterval;
 
@@ -776,7 +776,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     RunningRoutineSummaryWidget(
                       sets: _totalCompletedSets.length,
                       weight: _totalWeight(),
-                      timer: _TimerWidget(DateTime.now().difference(_routineStartTime.toLocal())),
+                      timer: _TimerWidget(TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
                     ),
                   elapsedRestInterval != null
                       ? Padding(
@@ -874,7 +874,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       if (previousRoutineLog != null) {
         _procedures
             .addAll([...previousRoutineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
-        _routineStartTime = previousRoutineLog.startTime.getDateTimeInUtc();
+        _routineStartTime = previousRoutineLog.startTime;
       } else if (previousRoutine != null) {
         _procedures
             .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);

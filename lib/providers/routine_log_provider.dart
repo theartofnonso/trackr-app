@@ -59,7 +59,7 @@ class RoutineLogProvider with ChangeNotifier {
       {required String name,
       required String notes,
       required List<ProcedureDto> procedures,
-      required DateTime startTime,
+      required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine routine}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
@@ -68,7 +68,7 @@ class RoutineLogProvider with ChangeNotifier {
         name: name,
         notes: notes,
         procedures: proceduresJson,
-        startTime: TemporalDateTime.fromString("${startTime.toLocal().toIso8601String()}Z"),
+        startTime: startTime,
         endTime: TemporalDateTime.now(),
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
@@ -89,7 +89,7 @@ class RoutineLogProvider with ChangeNotifier {
       {required String name,
       required String notes,
       required List<ProcedureDto> procedures,
-      required DateTime startTime,
+      required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine routine}) {
     _cachedLog = RoutineLog(
@@ -98,7 +98,7 @@ class RoutineLogProvider with ChangeNotifier {
         notes: notes,
         routine: routine,
         procedures: procedures.map((procedure) => procedure.toJson()).toList(),
-        startTime: TemporalDateTime.fromString("${startTime.toLocal().toIso8601String()}Z"),
+        startTime: startTime,
         endTime: TemporalDateTime.now(),
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now());
