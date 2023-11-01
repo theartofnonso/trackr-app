@@ -5,12 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../models/Routine.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
+import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/routine/minimised_routine_banner.dart';
 import '../routine_editor_screen.dart';
 
@@ -71,6 +73,7 @@ class _RoutineWidget extends StatelessWidget {
     return [
       MenuItemButton(
         onPressed: () {
+          Navigator.pop(context);
           _navigateToRoutineEditor(context: context, routine: routine);
         },
         leadingIcon: const Icon(
@@ -81,7 +84,21 @@ class _RoutineWidget extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
+          final alertDialogActions = <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+            ),
+            CTextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
+                },
+                label: "Delete"),
+          ];
+          showAlertDialog(context: context, message: 'Delete workout?', actions: alertDialogActions);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: const Text("Delete", style: TextStyle(color: Colors.red)),

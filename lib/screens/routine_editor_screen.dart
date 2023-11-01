@@ -42,7 +42,8 @@ class RoutineEditorScreen extends StatefulWidget {
       this.routine,
       this.routineLog,
       this.mode = RoutineEditorMode.editing,
-      this.type = RoutineEditingType.template, this.createdAt});
+      this.type = RoutineEditingType.template,
+      this.createdAt});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -432,11 +433,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     } else if (_procedures.isEmpty) {
       showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
-          name: _routineNameController.text,
-          notes: _routineNotesController.text,
-          procedures: _procedures);
-      _navigateAndPop();
+      Provider.of<RoutineProvider>(context, listen: false)
+          .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
+      _navigateBack();
     }
   }
 
@@ -445,7 +444,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       TextButton(
         onPressed: () {
           Navigator.pop(context);
-          _navigateAndPop();
+          _navigateBackAndClearCache();
         },
         child: const Text('Discard workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
       ),
@@ -462,7 +461,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 startTime: _routineStartTime,
                 createdAt: widget.createdAt,
                 routine: widget.routine!);
-            _navigateAndPop();
+            _navigateBackAndClearCache();
           }
         },
         child: const Text('Finish', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
@@ -492,13 +491,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           },
           child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            _doUpdateRoutine(routine: routine);
-          },
-          child: const Text('Update', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        ),
+        CTextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _doUpdateRoutine(routine: routine);
+            },
+            label: "Update")
       ];
       showAlertDialog(context: context, message: "Update workout?", actions: alertDialogActions);
     }
@@ -525,13 +523,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           },
           child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            _doUpdateRoutineLog(routineLog: routineLog);
-          },
-          child: const Text('Update', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        ),
+        CTextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _doUpdateRoutineLog(routineLog: routineLog);
+            },
+            label: 'Update'),
       ];
       showAlertDialog(context: context, message: "Update log?", actions: alertDialogActions);
     }
@@ -559,19 +556,19 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
 
-    _navigateAndPop();
+    _navigateBack();
   }
 
   void _doUpdateRoutineLog({required RoutineLog routineLog}) {
-      final updatedRoutineLog = routineLog.copyWith(
-          name: _routineNameController.text,
-          notes: _routineNotesController.text,
-          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
-          updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+    final updatedRoutineLog = routineLog.copyWith(
+        name: _routineNameController.text,
+        notes: _routineNotesController.text,
+        procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
 
-      Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
+    Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
 
-      _navigateAndPop();
+    _navigateBack();
   }
 
   void _calculateCompletedSets() {
@@ -619,7 +616,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            _navigateAndPop();
+            _navigateBackAndClearCache();
           },
           child: const Text('End', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
         ),
@@ -670,7 +667,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _navigateAndPop() {
+  void _navigateBackAndClearCache() {
+    Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
+    Navigator.of(context).pop();
+  }
+
+  void _navigateBack() {
     Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
     Navigator.of(context).pop();
   }
@@ -709,6 +711,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         appBar: widget.mode == RoutineEditorMode.editing
             ? AppBar(
                 backgroundColor: tealBlueDark,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_outlined),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 actions: [
                   CTextButton(
                     onPressed: _canUpdate() ? _doUpdate : _createRoutine,
@@ -722,7 +728,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 leading: GestureDetector(
                   onTap: () => _minimiseRunningRoutine(),
                   child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
+                    Icons.arrow_back_outlined,
                     color: Colors.white,
                     size: 24,
                   ),

@@ -23,7 +23,6 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
           ));
 }
 
-/// Show [CupertinoAlertDialog] for creating a workout
 void showAlertDialog({required BuildContext context, required String message, required List<Widget> actions}) {
   showDialog(
     context: context,
