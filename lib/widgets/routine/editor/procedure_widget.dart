@@ -276,16 +276,16 @@ class ProcedureWidget extends StatelessWidget {
               TableRow(
                 children: [
                   Text("SET",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("PREVIOUS",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("KG",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("REPS",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   TableCell(verticalAlignment: TableCellVerticalAlignment.middle, child: Icon(Icons.check, size: 12,))
                 ]
