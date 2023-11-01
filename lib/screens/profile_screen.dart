@@ -132,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.reversed.toList();
     final values = _logs.map((log) => volumePerLog(context: context, log: log)).toList();
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-    _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+    _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
   }
 
   @override
