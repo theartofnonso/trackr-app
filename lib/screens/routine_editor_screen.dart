@@ -62,29 +62,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _elapsedProcedureRestInterval;
 
-  /// Show [CupertinoAlertDialog] for creating a workout
-  void _showAlertDialog({required String message, required List<Widget> actions}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          icon: const Icon(Icons.info_outline),
-          backgroundColor: tealBlueLighter,
-          content: Text(
-            message,
-            style: const TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
-          actions: actions,
-          actionsAlignment: MainAxisAlignment.center,
-          actionsPadding: const EdgeInsets.only(bottom: 8),
-        );
-      },
-    );
-  }
-
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProcedures(firstProcedure: firstProcedure);
     displayBottomSheet(
@@ -193,7 +170,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       )
     ];
 
-    _showAlertDialog(message: "All your data will be replaced", actions: alertDialogActions);
+    showAlertDialog(context: context, message: "All your data will be replaced", actions: alertDialogActions);
   }
 
   void _doReplaceProcedure({required String procedureId}) async {
@@ -451,9 +428,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     ];
 
     if (_routineNameController.text.isEmpty) {
-      _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
+      showAlertDialog(context: context, message: 'Please provide a name for this workout', actions: alertDialogActions);
     } else if (_procedures.isEmpty) {
-      _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
+      showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
       Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
           name: _routineNameController.text,
@@ -492,7 +469,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         child: const Text('Finish', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       )
     ];
-    _showAlertDialog(message: "Finish workout?", actions: actions);
+    showAlertDialog(context: context, message: "Finish workout?", actions: actions);
   }
 
   void _updateRoutine({required Routine routine}) {
@@ -505,19 +482,26 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ),
     ];
     if (_routineNameController.text.isEmpty) {
-      _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
+      showAlertDialog(context: context, message: 'Please provide a name for this workout', actions: alertDialogActions);
     } else if (_procedures.isEmpty) {
-      _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
+      showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      final updatedRoutine = routine.copyWith(
-          name: _routineNameController.text,
-          notes: _routineNotesController.text,
-          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
-          updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
-
-      Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
-
-      _navigateAndPop();
+      final alertDialogActions = <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            _doUpdateRoutine(routine: routine);
+          },
+          child: const Text('Update', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        ),
+      ];
+      showAlertDialog(context: context, message: "Update workout?", actions: alertDialogActions);
     }
   }
 
@@ -531,20 +515,26 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ),
     ];
     if (_routineNameController.text.isEmpty) {
-      _showAlertDialog(message: 'Please provide a name for this workout', actions: alertDialogActions);
+      showAlertDialog(context: context, message: 'Please provide a name for this workout', actions: alertDialogActions);
     } else if (_procedures.isEmpty) {
-      _showAlertDialog(message: "Workout must have exercise(s)", actions: alertDialogActions);
+      showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
     } else {
-      final previousRoutineLog = widget.routineLog;
-      if (previousRoutineLog != null) {
-        final updatedRoutineLog = routineLog.copyWith(
-            name: _routineNameController.text,
-            notes: _routineNotesController.text,
-            procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
-            updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
-        Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
-        _navigateAndPop();
-      }
+      final alertDialogActions = <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            _doUpdateRoutineLog(routineLog: routineLog);
+          },
+          child: const Text('Update', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        ),
+      ];
+      showAlertDialog(context: context, message: "Update log?", actions: alertDialogActions);
     }
   }
 
@@ -559,6 +549,30 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         _updateRoutineLog(routineLog: previousRoutineLog);
       }
     }
+  }
+
+  void _doUpdateRoutine({required Routine routine}) {
+    final updatedRoutine = routine.copyWith(
+        name: _routineNameController.text,
+        notes: _routineNotesController.text,
+        procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+
+    Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
+
+    _navigateAndPop();
+  }
+
+  void _doUpdateRoutineLog({required RoutineLog routineLog}) {
+      final updatedRoutineLog = routineLog.copyWith(
+          name: _routineNameController.text,
+          notes: _routineNotesController.text,
+          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+          updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+
+      Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
+
+      _navigateAndPop();
   }
 
   void _calculateCompletedSets() {
@@ -617,7 +631,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           child: const Text('Continue', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         )
       ];
-      _showAlertDialog(message: "You have not completed any sets", actions: actions);
+      showAlertDialog(context: context, message: "You have not completed any sets", actions: actions);
     }
   }
 
@@ -667,14 +681,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  bool _isUpdating() {
+  bool _canUpdate() {
     final previousRoutine = widget.routine;
     final previousRoutineLog = widget.routineLog;
     return previousRoutine != null || previousRoutineLog != null;
   }
 
   String _editorActionLabel() {
-    return _isUpdating() ? "Update" : "Save";
+    return _canUpdate() ? "Update" : "Save";
   }
 
   String? _editorTitle() {
@@ -698,7 +712,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 backgroundColor: tealBlueDark,
                 actions: [
                   CTextButton(
-                    onPressed: _isUpdating() ? _doUpdate : _createRoutine,
+                    onPressed: _canUpdate() ? _doUpdate : _createRoutine,
                     label: _editorActionLabel(),
                     buttonColor: Colors.transparent,
                   )

@@ -22,3 +22,26 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
             ),
           ));
 }
+
+/// Show [CupertinoAlertDialog] for creating a workout
+void showAlertDialog({required BuildContext context, required String message, required List<Widget> actions}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        icon: const Icon(Icons.info_outline),
+        backgroundColor: tealBlueLighter,
+        content: Text(
+          message,
+          style: const TextStyle(fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+        contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+        actions: actions,
+        actionsAlignment: MainAxisAlignment.center,
+        actionsPadding: const EdgeInsets.only(bottom: 8),
+      );
+    },
+  );
+}
