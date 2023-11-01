@@ -1123,40 +1123,33 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child:
+      Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: FixedColumnWidth(55),
+          1: FlexColumnWidth(),
+          2: FlexColumnWidth(),
+        },
         children: [
-          Row(
-            children: [
-              const Text("Sets", style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-              const SizedBox(
-                width: 4,
-              ),
-              Text("$sets", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16))
-            ],
-          ),
-          const SizedBox(width: 25),
-          Row(
-            children: [
-              Text(weightLabel(),
-                  style: const TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-              const SizedBox(
-                width: 4,
-              ),
-              Consumer<WeightUnitProvider>(
-                builder: (_, provider, __) {
-                  final value = provider.isLbs ? toLbs(weight) : weight;
-                  return Text("$value",
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
-                },
-              )
-            ],
-          ),
-          const Spacer(),
-          timer,
+          const TableRow(children: [
+            Text("Sets", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+            Text("Volume", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+            Text("Duration", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
+          ]),
+          TableRow(children: [
+            Text("$sets", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+            Consumer<WeightUnitProvider>(
+              builder: (_, provider, __) {
+                final value = provider.isLbs ? toLbs(weight) : weight;
+                return Text("$value",
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
+              },
+            ),
+            timer
+          ])
         ],
-      ),
+      )
     );
   }
 }
