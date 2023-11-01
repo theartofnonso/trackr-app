@@ -73,7 +73,6 @@ class _RoutineWidget extends StatelessWidget {
     return [
       MenuItemButton(
         onPressed: () {
-          Navigator.pop(context);
           _navigateToRoutineEditor(context: context, routine: routine);
         },
         leadingIcon: const Icon(
