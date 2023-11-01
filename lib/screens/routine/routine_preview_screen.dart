@@ -102,7 +102,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   void _loadChart() {
     Provider.of<RoutineProvider>(context, listen: false).routinesLogsWhere(id: widget.routineId).then((logs) {
       setState(() {
-        _logs = logs;
+        _logs = logs.reversed.toList();
         final values = logs.map((log) => volumePerLog(context: context, log: log)).toList();
         _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
         _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();

@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _loadChart() {
-    _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
+    _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.reversed.toList();
     final values = _logs.map((log) => volumePerLog(context: context, log: log)).toList();
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
     _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();

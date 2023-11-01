@@ -21,8 +21,8 @@ void navigateToRoutineEditor({required BuildContext context, TemporalDateTime? c
         name: '',
         procedures: [],
         notes: '',
-        createdAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"),
-        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+        createdAt: TemporalDateTime.now(),
+        updatedAt: TemporalDateTime.now());
 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
