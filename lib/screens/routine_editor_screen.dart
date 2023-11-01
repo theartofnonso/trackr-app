@@ -87,7 +87,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProcedures(firstProcedure: firstProcedure);
-    showModalPopup(
+    displayBottomSheet(
         context: context,
         child: _ProceduresList(
           procedures: procedures,
@@ -359,7 +359,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _showRoutineIntervalPicker() {
-    showModalPopup(
+    displayBottomSheet(
         context: context,
         child: _TimerPicker(
             initialDuration: _routineDuration,
@@ -372,7 +372,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _showRestIntervalTimePicker({required ProcedureDto procedure}) {
-    showModalPopup(
+    displayBottomSheet(
         context: context,
         child: _TimerPicker(
           initialDuration: procedure.restInterval,

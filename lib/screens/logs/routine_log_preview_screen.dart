@@ -38,7 +38,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
     if (log != null) {
       final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
-      final completedSetsSummary = completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
+      final completedSetsSummary =
+          completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
       final totalWeight = _totalWeight(sets: completedSets);
       final conversion = weightProvider.isLbs ? toLbs(totalWeight) : totalWeight;
@@ -123,54 +124,48 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
-                    Padding(
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: tealBlueLight, // Set the background color
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                          color: tealBlueLight, // Set the background color
-                        ),
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          children: [
-                            Expanded(
+                      child: Table(
+                        border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(),
+                          1: FlexColumnWidth(),
+                          2: FlexColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children: [
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(completedSetsSummary,
                                     style: const TextStyle(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                               ),
                             ),
-                            const VerticalDivider(
-                              color: tealBlueLighter,
-                              thickness: 2,
-                              indent: 12,
-                              endIndent: 12,
-                              width: 20,
-                            ),
-                            Expanded(
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(totalWeightSummary,
                                     style: const TextStyle(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                               ),
                             ),
-                            const VerticalDivider(
-                              color: tealBlueLighter,
-                              thickness: 2,
-                              indent: 12,
-                              endIndent: 12,
-                              width: 20,
-                            ),
-                            Expanded(
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(_logDuration(log: log),
                                     style: const TextStyle(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
                               ),
-                            ),
-                          ],
-                        ),
+                            )
+                          ]),
+                        ],
                       ),
                     ),
                     Column(
@@ -279,7 +274,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   List<Widget> _bodyPartSplit({required List<String> procedureJsons}) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-    final parts = procedures.map((procedure) => exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart).toList();
+    final parts = procedures
+        .map((procedure) => exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart)
+        .toList();
     final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {

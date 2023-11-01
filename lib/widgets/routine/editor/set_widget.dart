@@ -1,5 +1,3 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -36,38 +34,6 @@ class SetWidget extends StatelessWidget {
   final void Function(double value) onChangedWeight;
   final void Function(SetType type) onChangedType;
 
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons(BuildContext context) {
-    return [
-      MenuItemButton(
-        onPressed: () {
-          _showProcedureTypePicker(context: context);
-        },
-        leadingIcon: const Icon(Icons.find_replace_rounded),
-        child: const Text("Change type"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          onRemoved();
-        },
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-        child: const Text(
-          "Remove",
-          style: TextStyle(color: Colors.red),
-        ),
-      )
-    ];
-  }
-
-  void _showProcedureTypePicker({required BuildContext context}) {
-    showModalPopup(
-        context: context,
-        child: _SetTypesList(
-          onSelect: (SetType type) => onChangedType(type),
-          currentType: setDto.type,
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
@@ -91,7 +57,12 @@ class SetWidget extends StatelessWidget {
         TableRow(children: [
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: _SetIcon(type: setDto.type, label: workingIndex)),
+              child: _SetIcon(
+                type: setDto.type,
+                label: workingIndex,
+                onSelectSetType: onChangedType,
+                onRemoveSet: onRemoved,
+              )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
@@ -136,21 +107,76 @@ class SetWidget extends StatelessWidget {
 }
 
 class _SetIcon extends StatelessWidget {
+  final SetType type;
+  final int label;
+  final void Function(SetType type) onSelectSetType;
+  final void Function() onRemoveSet;
+
   const _SetIcon({
     required this.type,
     required this.label,
+    required this.onSelectSetType,
+    required this.onRemoveSet,
   });
 
-  final SetType type;
-  final int label;
+  void selectType(BuildContext context, SetType type) {
+    Navigator.pop(context);
+    onSelectSetType(type);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Colors.transparent,
-      child: Text(
-        type == SetType.working ? "${label + 1}" : type.label,
-        style: TextStyle(color: type.color, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+        displayBottomSheet(
+            context: context,
+            child: Column(
+              children: [
+                ListTile(
+                    onTap: () => selectType(context, SetType.warmUp),
+                    visualDensity: VisualDensity.compact,
+                    leading: Text("W",
+                        style: TextStyle(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: const Text("Warm up Set", style: TextStyle(fontSize: 14))),
+                ListTile(
+                    onTap: () => selectType(context, SetType.working),
+                    visualDensity: VisualDensity.compact,
+                    leading: Text("1",
+                        style: TextStyle(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: const Text("Working Set", style: TextStyle(fontSize: 14))),
+                ListTile(
+                    onTap: () => selectType(context, SetType.failure),
+                    visualDensity: VisualDensity.compact,
+                    leading: Text("F",
+                        style: TextStyle(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: const Text("Failure Set", style: TextStyle(fontSize: 14))),
+                ListTile(
+                    onTap: () => selectType(context, SetType.drop),
+                    visualDensity: VisualDensity.compact,
+                    leading: Text("D",
+                        style: TextStyle(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: const Text("Drop Set", style: TextStyle(fontSize: 14))),
+                ListTile(
+                    onTap: () {
+                      Navigator.pop(context);
+                      onRemoveSet();
+                    },
+                    visualDensity: VisualDensity.compact,
+                    leading: const Icon(
+                      Icons.delete_sweep,
+                      color: Colors.red,
+                    ),
+                    title: const Text("Remove Set", style: TextStyle(color: Colors.red, fontSize: 14)))
+              ],
+            ),
+            height: 250);
+      },
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        child: Text(
+          type == SetType.working ? "${label + 1}" : type.label,
+          style: TextStyle(color: type.color, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
@@ -171,21 +197,18 @@ class _RepsTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 0,
-      child: TextField(
-        onChanged: (value) => onChangedReps(_parseIntOrDefault(value: value)),
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.zero,
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
-            hintText: initialValue.toString(),
-            hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
-        keyboardType: TextInputType.number,
-        maxLines: 1,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-      ),
+    return TextField(
+      onChanged: (value) => onChangedReps(_parseIntOrDefault(value: value)),
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.zero,
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+          hintText: initialValue.toString(),
+          hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+      keyboardType: TextInputType.number,
+      maxLines: 1,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
     );
   }
 }
@@ -203,89 +226,21 @@ class _WeightTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 0,
-      child: Consumer<WeightUnitProvider>(builder: (_, provider, __) {
-        final value = provider.isLbs ? toLbs(initialValue) : initialValue;
-        return TextField(
-          onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.zero,
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
-              hintText: value.toString(),
-              hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          maxLines: 1,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
-        );
-      }),
-    );
-  }
-}
-
-class _SetTypesList extends StatefulWidget {
-  final SetType currentType;
-  final void Function(SetType type) onSelect;
-
-  const _SetTypesList({required this.onSelect, required this.currentType});
-
-  @override
-  State<_SetTypesList> createState() => _SetTypesListState();
-}
-
-class _SetTypesListState extends State<_SetTypesList> {
-  late SetType _setType;
-  late List<SetType> _procedureTypes;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-            widget.onSelect(_setType);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: Text(
-              "Select",
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
-          ),
-        ),
-        Flexible(
-          child: CupertinoPicker(
-            magnification: 1.22,
-            squeeze: 1.2,
-            useMagnifier: true,
-            itemExtent: 32.0,
-            // This is called when selected item is changed.
-            onSelectedItemChanged: (int index) {
-              setState(() {
-                _setType = _procedureTypes[index];
-              });
-            },
-            children: List<Widget>.generate(_procedureTypes.length, (int index) {
-              return Center(
-                  child: Text(
-                _procedureTypes[index].name,
-                style: const TextStyle(color: Colors.white),
-              ));
-            }),
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _procedureTypes = SetType.values.whereNot((type) => type == widget.currentType).toList();
-    _setType = _procedureTypes.first;
+    return Consumer<WeightUnitProvider>(builder: (_, provider, __) {
+      final value = provider.isLbs ? toLbs(initialValue) : initialValue;
+      return TextField(
+        onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.zero,
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+            hintText: value.toString(),
+            hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        maxLines: 1,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+      );
+    });
   }
 }

@@ -112,6 +112,7 @@ class _RoutineWidget extends StatelessWidget {
             data: ThemeData(splashColor: tealBlueLight),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
               leading: canStartRoutine
                   ? GestureDetector(
                       onTap: () {
@@ -186,6 +187,7 @@ class _RoutineWidget extends StatelessWidget {
                 data: ThemeData(splashColor: tealBlueLight),
                 child: ListTile(
                     onTap: () => _navigateToRoutinePreview(context: context),
+                    visualDensity: VisualDensity.compact,
                     tileColor: tealBlueLight,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed

@@ -33,6 +33,7 @@ class ProcedureWidget extends StatelessWidget {
           ),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
             onTap: () {
               if(!readOnly) {
                 Navigator.of(context).push(

@@ -24,6 +24,7 @@ class RoutineLogWidget extends StatelessWidget {
       children: [
         ListTile(
             contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
             title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Row(children: [
               const Icon(
@@ -139,6 +140,7 @@ class RoutineLogWidget extends StatelessWidget {
               child: Theme(
                 data: ThemeData(splashColor: tealBlueLight),
                 child: ListTile(
+                    visualDensity: VisualDensity.compact,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
                     ),
