@@ -64,6 +64,9 @@ class PieChartWidget extends StatelessWidget {
                   Text(segments[2].key)
                 ],
               ),
+              const SizedBox(
+                height: 4,
+              ),
               Row(
                 children: [
                   Container(
@@ -74,6 +77,9 @@ class PieChartWidget extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(segments[3].key)
                 ],
+              ),
+              const SizedBox(
+                height: 4,
               ),
               Row(
                 children: [
