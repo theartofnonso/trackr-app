@@ -163,13 +163,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     )
                   : const SizedBox.shrink(),
               const SizedBox(height: 20),
-              ListTile(
-                  onTap: () => _navigateToMuscleDistribution(context),
-                  tileColor: tealBlueLight,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
-                  subtitle: Text("Number of sets logged for each muscle group",
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70)))
+              Theme(
+                data: ThemeData(splashColor: tealBlueLight),
+                child: ListTile(
+                    onTap: () => _navigateToMuscleDistribution(context),
+                    tileColor: tealBlueLight,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                    title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
+                    subtitle: Text("Number of sets logged for each muscle group",
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+              )
             ],
           ),
         ),
