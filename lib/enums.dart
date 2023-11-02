@@ -1,15 +1,15 @@
-enum HistoricalDates {
+enum HistoricalTimePeriod {
   lastThreeMonths("Last 3 months"), lastOneYear("Last 1 year"), allTime("All Time");
 
-  const HistoricalDates(this.label);
+  const HistoricalTimePeriod(this.label);
 
   final String label;
 }
 
-enum CurrentDates {
-  allTime("This Week"), lastThreeMonths("This Month"), lastYear("This Year");
+enum CurrentTimePeriod {
+  thisWeek("This Week"), thisMonth("This Month"), thisYear("This Year"), allTime("All Time");
 
-  const CurrentDates(this.label);
+  const CurrentTimePeriod(this.label);
 
   final String label;
 }

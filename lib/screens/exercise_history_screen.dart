@@ -302,6 +302,9 @@ class SummaryWidget extends StatefulWidget {
 enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps }
 
 class _SummaryWidgetState extends State<SummaryWidget> {
+
+  List<RoutineLog> _routineLogs = [];
+
   List<String> _dateTimes = [];
 
   List<ChartPointDto> _chartPoints = [];
@@ -310,9 +313,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   SummaryType _summaryType = SummaryType.heaviestWeights;
 
-  HistoricalDates _selectedHistoricalDate = HistoricalDates.lastThreeMonths;
-
-  List<RoutineLog> _routineLogs = [];
+  HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
 
   void _heaviestWeights() {
     final values = _routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList();
@@ -353,25 +354,6 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     });
   }
 
-  void _fetchLogsForHistoryDate() {
-    switch(_selectedHistoricalDate) {
-
-      case HistoricalDates.lastThreeMonths:
-          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(5, logs: widget.routineLogs).reversed.toList();
-      _routineLogs.forEach((element) { print(element.createdAt); });
-      case HistoricalDates.lastOneYear:
-
-          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(365, logs: widget.routineLogs).reversed.toList();
-
-      case HistoricalDates.allTime:
-
-          _routineLogs = widget.routineLogs.reversed.toList();
-
-    }
-    _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
-
-  }
-
   void _reps() {
     final values = widget.routineLogs.map((log) => repsPerLog(log: log)).toList().reversed.toList();
     setState(() {
@@ -379,6 +361,30 @@ class _SummaryWidgetState extends State<SummaryWidget> {
       _summaryType = SummaryType.reps;
       _chartUnit = ChartUnit.reps;
     });
+  }
+
+  void _recomputeChart() {
+    switch(_selectedHistoricalDate) {
+      case HistoricalTimePeriod.lastThreeMonths:
+          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(90, logs: widget.routineLogs).reversed.toList();
+      case HistoricalTimePeriod.lastOneYear:
+          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(365, logs: widget.routineLogs).reversed.toList();
+      case HistoricalTimePeriod.allTime:
+          _routineLogs = widget.routineLogs.reversed.toList();
+    }
+    _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+    switch(_summaryType) {
+      case SummaryType.heaviestWeights:
+        _heaviestWeights();
+      case SummaryType.heaviestSetVolumes:
+        _heaviestSetVolumes();
+      case SummaryType.logVolumes:
+        _logVolumes();
+      case SummaryType.oneRepMaxes:
+        _oneRepMaxes();
+      case SummaryType.reps:
+        _reps();
+    }
   }
 
   Color? _buttonColor({required SummaryType type}) {
@@ -429,17 +435,19 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                     style: const TextStyle(color: Colors.white),
                     onChanged: (String? value) {
                       // This is called when the user selects an item.
-                      setState(() {
-                        _selectedHistoricalDate = switch (value) {
-                          "Last 3 months" => HistoricalDates.lastThreeMonths,
-                          "Last 1 year" => HistoricalDates.lastOneYear,
-                          "All Time" => HistoricalDates.allTime,
-                          _ => HistoricalDates.allTime
-                        };
-                        _fetchLogsForHistoryDate();
-                      });
+                      if(value != null) {
+                        setState(() {
+                          _selectedHistoricalDate = switch (value) {
+                            "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
+                            "Last 1 year" => HistoricalTimePeriod.lastOneYear,
+                            "All Time" => HistoricalTimePeriod.allTime,
+                            _ => HistoricalTimePeriod.allTime
+                          };
+                          _recomputeChart();
+                        });
+                      }
                     },
-                    items: HistoricalDates.values.map<DropdownMenuItem<String>>((HistoricalDates historicalDate) {
+                    items: HistoricalTimePeriod.values.map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
                       return DropdownMenuItem<String>(
                         value: historicalDate.label,
                         child: Text(historicalDate.label, style: const TextStyle(fontSize: 12)),
@@ -448,7 +456,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                   ),
                   const SizedBox(height: 16),
                   LineChartWidget(
-                    chartPoints: _chartPoints.toList(),
+                    chartPoints: _chartPoints,
                     dateTimes: _dateTimes,
                     unit: _chartUnit,
                   ),

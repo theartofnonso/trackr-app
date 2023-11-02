@@ -10,6 +10,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/graph/chart_point_dto.dart';
+import '../enums.dart';
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';
@@ -35,6 +36,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
+  CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.allTime;
+
   void _navigateBack(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
   }
@@ -43,35 +46,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleDistributionScreen()));
   }
 
-  int _logsForTheWeek({required List<RoutineLog> logs}) {
+  DateTimeRange _thisWeekDateRange() {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final endOfWeek = now.add(Duration(days: 7 - now.weekday));
-    final thisWeek = DateTimeRange(start: startOfWeek, end: endOfWeek);
+    return DateTimeRange(start: startOfWeek, end: endOfWeek);
+  }
+
+  DateTimeRange _thisMonthDateRange() {
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
+    return DateTimeRange(start: startOfMonth, end: endOfMonth);
+  }
+
+  DateTimeRange _thisYearDateRange() {
+    final now = DateTime.now();
+    final startOfYear = DateTime(now.year, 1, 1);
+    final endOfYear = DateTime(now.year, 12, 31);
+    return DateTimeRange(start: startOfYear, end: endOfYear);
+  }
+
+  int _logsForTheWeekCount({required List<RoutineLog> logs}) {
+    final thisWeek = _thisWeekDateRange();
     return logs
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek.endInclusive()))
         .toList()
         .length;
   }
 
-  int _logsForTheMonth({required List<RoutineLog> logs}) {
-    final now = DateTime.now();
-    final startOfMonth = DateTime(now.year, now.month, 1);
-    final endOfMonth = DateTime(now.year, now.month + 1, 0);
-    final thisMonth = DateTimeRange(start: startOfMonth, end: endOfMonth);
+  int _logsForTheMonthCount({required List<RoutineLog> logs}) {
+    final thisMonth = _thisMonthDateRange();
     return logs
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth.endInclusive()))
         .toList()
         .length;
   }
 
-  int _logsForTheYear({required List<RoutineLog> logs}) {
-    final now = DateTime.now();
-    final startOfYear = DateTime(now.year, 1, 1);
-    final endOfYear = DateTime(now.year, 12, 31);
-
-    final thisYear = DateTimeRange(start: startOfYear, end: endOfYear);
-
+  int _logsForTheYearCount({required List<RoutineLog> logs}) {
+    final thisYear = _thisYearDateRange();
     return logs
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear.endInclusive()))
         .toList()
@@ -83,9 +96,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final provider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = provider.logs;
     final earliestLog = logs.lastOrNull;
-    final logsForTheWeek = _logsForTheWeek(logs: logs);
-    final logsForTheMonth = _logsForTheMonth(logs: logs);
-    final logsForTheYear = _logsForTheYear(logs: logs);
+    final logsForTheWeek = _logsForTheWeekCount(logs: logs);
+    final logsForTheMonth = _logsForTheMonthCount(logs: logs);
+    final logsForTheYear = _logsForTheYearCount(logs: logs);
 
     return Scaffold(
       appBar: AppBar(
@@ -138,7 +151,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Container(
                           padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
+                              DropdownButton<String>(
+                                isDense: true,
+                                value: _selectedCurrentTimePeriod.label,
+                                underline: Container(
+                                  color: Colors.transparent,
+                                ),
+                                style: const TextStyle(color: Colors.white),
+                                onChanged: (String? value) {
+                                  if(value != null) {
+                                    setState(() {
+                                      _selectedCurrentTimePeriod = switch (value) {
+                                        "This Week" => CurrentTimePeriod.thisWeek,
+                                        "This Month" => CurrentTimePeriod.thisMonth,
+                                        "This Year" => CurrentTimePeriod.thisYear,
+                                        _ => CurrentTimePeriod.allTime
+                                      };
+                                      _recomputeChart();
+                                    });
+                                  }
+                                },
+                                items: CurrentTimePeriod.values.map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
+                                  return DropdownMenuItem<String>(
+                                    value: currentTimePeriod.label,
+                                    child: Text(currentTimePeriod.label, style: const TextStyle(fontSize: 12)),
+                                  );
+                                }).toList(),
+                              ),
+                              const SizedBox(height: 16),
                               LineChartWidget(
                                 chartPoints: _chartPoints,
                                 dateTimes: _dateTimes,
@@ -224,6 +266,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _summaryType = RoutineSummaryType.duration;
       _chartUnit = ChartUnit.min;
     });
+  }
+
+  void _recomputeChart() {
+    switch(_selectedCurrentTimePeriod) {
+      case CurrentTimePeriod.thisWeek:
+        final thisWeek = _thisWeekDateRange();
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisWeek).toList().reversed.toList();
+      case CurrentTimePeriod.thisMonth:
+        final thisMonth = _thisMonthDateRange();
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisMonth).toList().reversed.toList();
+      case CurrentTimePeriod.thisYear:
+        final thisYear = _thisYearDateRange();
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisYear).toList().reversed.toList();
+      case CurrentTimePeriod.allTime:
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.toList().reversed.toList();
+    }
+
+    _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+
+    switch(_summaryType) {
+      case RoutineSummaryType.volume:
+        _volume();
+      case RoutineSummaryType.reps:
+        _totalReps();
+      case RoutineSummaryType.duration:
+        _totalDuration();
+    }
   }
 
   Color? _buttonColor({required RoutineSummaryType type}) {
