@@ -14,9 +14,6 @@ class MuscleDistributionScreen extends StatefulWidget {
 
 class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> with SingleTickerProviderStateMixin {
 
-  late AnimationController _controller;
-  late Animation<Color?> _colorAnimation;
-
   @override
   Widget build(BuildContext context) {
 
@@ -33,7 +30,9 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             ..._bodyPartSplit(provider: routineLogProvider)
           ],),
         ),
@@ -45,7 +44,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     Navigator.of(context).pop();
   }
 
-  Map<String, double> _calculateBodySplitPercentage ({required RoutineLogProvider provider}) {
+  Map<String, int> _calculateBodySplitPercentage ({required RoutineLogProvider provider}) {
     const bodyParts = BodyPart.values;
 
     final Map<BodyPart, int> frequencyMap = {};
@@ -55,13 +54,11 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
       frequencyMap[bodyPart] = provider.whereSetDtos(bodyPart: bodyPart, context: context).length;
     }
 
-    final int totalItems = bodyParts.length;
-    final Map<String, double> percentageMap = {};
+    final Map<String, int> percentageMap = {};
 
     // Calculate the percentage for each bodyPart
     frequencyMap.forEach((item, count) {
-      final double percentage = ((count / totalItems) * 100.0) / 100;
-      percentageMap[item.name] = percentage;
+      percentageMap[item.name] = count;
     });
 
     return percentageMap;
@@ -76,52 +73,14 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "$key ${(value * 100).toInt()}%",
+            "$key $value",
             style: const TextStyle(fontWeight: FontWeight.w400),
           ),
-          const SizedBox(height: 4),
-          AnimatedBuilder(
-              animation: _controller,
-              builder: (_, __) {
-                return LinearProgressIndicator(
-                    value: value,
-                    valueColor: _colorAnimation,
-                    backgroundColor: tealBlueLight,
-                    minHeight: 15,
-                    borderRadius: BorderRadius.circular(2));
-              }),
           const SizedBox(height: 12)
         ],
       );
       splitList.add(widget);
     });
     return splitList;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Create an animation controller with a duration
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 700),
-      vsync: this,
-    );
-
-    // Create a tween for the color animation
-    _colorAnimation = ColorTween(
-      begin: tealBlueLight,
-      end: Colors.blueAccent,
-    ).animate(_controller);
-
-    // Start the animation
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _controller.forward();
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }
