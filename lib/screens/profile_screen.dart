@@ -308,9 +308,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-
-    _chartUnit = weightUnit();
-
     _loadChart();
   }
 }

@@ -21,7 +21,6 @@ import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../exercise_history_screen.dart';
-import '../profile_screen.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
 
@@ -37,6 +36,8 @@ class RoutinePreviewScreen extends StatefulWidget {
 class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   List<RoutineLog> _logs = [];
 
+  List<RoutineLog> _filteredLogs = [];
+
   List<String> _dateTimes = [];
 
   List<ChartPointDto> _chartPoints = [];
@@ -45,10 +46,10 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
-  CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.allTime;
+  HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
 
   void _volume() {
-    final values = _logs.map((log) => volumePerLog(context: context, log: log)).toList();
+    final values = _filteredLogs.map((log) => volumePerLog(context: context, log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.volume;
@@ -57,7 +58,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _totalReps() {
-    final values = _logs.map((log) => repsPerLog(log: log)).toList();
+    final values = _filteredLogs.map((log) => repsPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;
@@ -66,7 +67,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _totalDuration() {
-    final values = _logs.map((log) => durationPerLog(log: log)).toList();
+    final values = _filteredLogs.map((log) => durationPerLog(log: log)).toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
@@ -76,30 +77,15 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _recomputeChart() {
-    switch (_selectedCurrentTimePeriod) {
-      case CurrentTimePeriod.thisWeek:
-        final thisWeek = thisWeekDateRange();
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .routineLogsWhereDateRange(thisWeek)
-            .toList()
-            .reversed
-            .toList();
-      case CurrentTimePeriod.thisMonth:
-        final thisMonth = thisMonthDateRange();
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .routineLogsWhereDateRange(thisMonth)
-            .toList()
-            .reversed
-            .toList();
-      case CurrentTimePeriod.thisYear:
-        final thisYear = thisYearDateRange();
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .routineLogsWhereDateRange(thisYear)
-            .toList()
-            .reversed
-            .toList();
-      case CurrentTimePeriod.allTime:
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.toList().reversed.toList();
+    switch (_selectedHistoricalDate) {
+      case HistoricalTimePeriod.lastThreeMonths:
+        _filteredLogs =
+            Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(90, logs: _logs).toList();
+      case HistoricalTimePeriod.lastOneYear:
+        _filteredLogs =
+            Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(365, logs: _logs).toList();
+      case HistoricalTimePeriod.allTime:
+        _filteredLogs = _logs.toList();
     }
 
     _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
@@ -162,6 +148,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   void _loadChart() {
     Provider.of<RoutineProvider>(context, listen: false).routinesLogsWhere(id: widget.routineId).then((logs) {
       _logs = logs.reversed.toList();
+      _filteredLogs = _logs;
       _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
       WidgetsBinding.instance.addPostFrameCallback((_) => _volume());
     });
@@ -254,7 +241,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                                 children: [
                                   DropdownButton<String>(
                                     isDense: true,
-                                    value: _selectedCurrentTimePeriod.label,
+                                    value: _selectedHistoricalDate.label,
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
@@ -262,24 +249,25 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                                     onChanged: (String? value) {
                                       if (value != null) {
                                         setState(() {
-                                          _selectedCurrentTimePeriod = switch (value) {
-                                            "This Week" => CurrentTimePeriod.thisWeek,
-                                            "This Month" => CurrentTimePeriod.thisMonth,
-                                            "This Year" => CurrentTimePeriod.thisYear,
-                                            _ => CurrentTimePeriod.allTime
+                                          _selectedHistoricalDate = switch (value) {
+                                            "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
+                                            "Last 1 year" => HistoricalTimePeriod.lastOneYear,
+                                            "All Time" => HistoricalTimePeriod.allTime,
+                                            _ => HistoricalTimePeriod.allTime
                                           };
                                           _recomputeChart();
                                         });
                                       }
                                     },
-                                    items: CurrentTimePeriod.values
-                                        .map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
+                                    items: HistoricalTimePeriod.values
+                                        .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalTimePeriod) {
                                       return DropdownMenuItem<String>(
-                                        value: currentTimePeriod.label,
-                                        child: Text(currentTimePeriod.label, style: const TextStyle(fontSize: 12)),
+                                        value: historicalTimePeriod.label,
+                                        child: Text(historicalTimePeriod.label, style: const TextStyle(fontSize: 12)),
                                       );
                                     }).toList(),
                                   ),
+                                  const SizedBox(height: 16),
                                   LineChartWidget(
                                     chartPoints: _chartPoints,
                                     dateTimes: _dateTimes,
@@ -349,9 +337,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   @override
   void initState() {
     super.initState();
-
-    _chartUnit = weightUnit();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadChart());
+    _loadChart();
   }
 }
