@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _logsForTheWeekCount({required List<RoutineLog> logs}) {
     final thisWeek = thisWeekDateRange();
     return logs
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek.endInclusive()))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek))
         .toList()
         .length;
   }
@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _logsForTheMonthCount({required List<RoutineLog> logs}) {
     final thisMonth = thisMonthDateRange();
     return logs
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth.endInclusive()))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth))
         .toList()
         .length;
   }
@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _logsForTheYearCount({required List<RoutineLog> logs}) {
     final thisYear = thisYearDateRange();
     return logs
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear.endInclusive()))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear))
         .toList()
         .length;
   }

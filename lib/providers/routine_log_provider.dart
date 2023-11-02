@@ -175,11 +175,11 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<RoutineLog> routineLogsWhereDate({required DateTime dateTime}) {
-    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime)).toList();
+    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime)).toList();
   }
 
   RoutineLog? routineLogWhereDate({required DateTime dateTime}) {
-    return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
+    return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
   }
 
   List<RoutineLog> routineLogsWhereDateRange(DateTimeRange range, {List<RoutineLog>? logs}) {

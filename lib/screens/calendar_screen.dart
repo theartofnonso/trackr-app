@@ -91,7 +91,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _logRoutine() {
-    final createdAt = _currentDate.isSameDateAs(other: DateTime.now())
+    final createdAt = _currentDate.isSameDateAs(DateTime.now())
         ? TemporalDateTime.now()
         : TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z");
     startEmptyRoutine(context: context, createdAt: createdAt);
@@ -293,7 +293,7 @@ class _DateWidget extends StatelessWidget {
 
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
-    if (selectedDate.isSameDateAs(other: dateTime)) {
+    if (selectedDate.isSameDateAs(dateTime)) {
       return Border.all(color: Colors.white, width: 1.0);
     } else {
       return null;
@@ -304,14 +304,14 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return Colors.black;
     }
-    if (dateTime.isSameDateAs(other: DateTime.now())) {
+    if (dateTime.isSameDateAs(DateTime.now())) {
       return Colors.white;
     }
     return Colors.white70;
   }
 
   FontWeight? _getFontWeight() {
-    if (dateTime.isSameDateAs(other: DateTime.now())) {
+    if (dateTime.isSameDateAs(DateTime.now())) {
       return FontWeight.bold;
     }
     return FontWeight.w500;

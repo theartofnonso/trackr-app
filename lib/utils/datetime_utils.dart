@@ -105,11 +105,11 @@ extension DateTimeExtension on DateTime {
   }
 
   bool isAfterOrEqual(DateTime other) {
-    return isAtSameMomentAs(other) || isAfter(other);
+    return isSameDateAs(other) || isAfter(other);
   }
 
   bool isBeforeOrEqual(DateTime other) {
-    return isAtSameMomentAs(other) || isBefore(other);
+    return isSameDateAs(other) || isBefore(other);
   }
 
   bool isBetween({required DateTime from, required DateTime to}) {
@@ -130,7 +130,7 @@ extension DateTimeExtension on DateTime {
     return date.day == now.day && date.month == now.month && date.year == now.year;
   }
 
-  bool isSameDateAs({required DateTime other}) {
+  bool isSameDateAs(DateTime other) {
     final date = this;
     return date.day == other.day && date.month == other.month && date.year == other.year;
   }
