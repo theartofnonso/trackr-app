@@ -18,6 +18,27 @@ import '../widgets/chart/line_chart_widget.dart';
 import 'exercise_history_screen.dart';
 import 'logs/routine_logs_screen.dart';
 
+DateTimeRange thisWeekDateRange() {
+  final now = DateTime.now();
+  final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+  final endOfWeek = now.add(Duration(days: 7 - now.weekday));
+  return DateTimeRange(start: startOfWeek, end: endOfWeek);
+}
+
+DateTimeRange thisMonthDateRange() {
+  final now = DateTime.now();
+  final startOfMonth = DateTime(now.year, now.month, 1);
+  final endOfMonth = DateTime(now.year, now.month + 1, 0);
+  return DateTimeRange(start: startOfMonth, end: endOfMonth);
+}
+
+DateTimeRange thisYearDateRange() {
+  final now = DateTime.now();
+  final startOfYear = DateTime(now.year, 1, 1);
+  final endOfYear = DateTime(now.year, 12, 31);
+  return DateTimeRange(start: startOfYear, end: endOfYear);
+}
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -46,29 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleDistributionScreen()));
   }
 
-  DateTimeRange _thisWeekDateRange() {
-    final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = now.add(Duration(days: 7 - now.weekday));
-    return DateTimeRange(start: startOfWeek, end: endOfWeek);
-  }
-
-  DateTimeRange _thisMonthDateRange() {
-    final now = DateTime.now();
-    final startOfMonth = DateTime(now.year, now.month, 1);
-    final endOfMonth = DateTime(now.year, now.month + 1, 0);
-    return DateTimeRange(start: startOfMonth, end: endOfMonth);
-  }
-
-  DateTimeRange _thisYearDateRange() {
-    final now = DateTime.now();
-    final startOfYear = DateTime(now.year, 1, 1);
-    final endOfYear = DateTime(now.year, 12, 31);
-    return DateTimeRange(start: startOfYear, end: endOfYear);
-  }
-
   int _logsForTheWeekCount({required List<RoutineLog> logs}) {
-    final thisWeek = _thisWeekDateRange();
+    final thisWeek = thisWeekDateRange();
     return logs
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek.endInclusive()))
         .toList()
@@ -76,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   int _logsForTheMonthCount({required List<RoutineLog> logs}) {
-    final thisMonth = _thisMonthDateRange();
+    final thisMonth = thisMonthDateRange();
     return logs
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth.endInclusive()))
         .toList()
@@ -84,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   int _logsForTheYearCount({required List<RoutineLog> logs}) {
-    final thisYear = _thisYearDateRange();
+    final thisYear = thisYearDateRange();
     return logs
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear.endInclusive()))
         .toList()
@@ -271,13 +271,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _recomputeChart() {
     switch(_selectedCurrentTimePeriod) {
       case CurrentTimePeriod.thisWeek:
-        final thisWeek = _thisWeekDateRange();
+        final thisWeek = thisWeekDateRange();
         _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisWeek).toList().reversed.toList();
       case CurrentTimePeriod.thisMonth:
-        final thisMonth = _thisMonthDateRange();
+        final thisMonth = thisMonthDateRange();
         _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisMonth).toList().reversed.toList();
       case CurrentTimePeriod.thisYear:
-        final thisYear = _thisYearDateRange();
+        final thisYear = thisYearDateRange();
         _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisYear).toList().reversed.toList();
       case CurrentTimePeriod.allTime:
         _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.toList().reversed.toList();
@@ -301,9 +301,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _loadChart() {
     _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.reversed.toList();
-    final values = _logs.map((log) => volumePerLog(context: context, log: log)).toList();
-    _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
     _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _volume());
   }
 
   @override

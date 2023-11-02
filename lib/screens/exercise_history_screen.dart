@@ -311,7 +311,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   late ChartUnit _chartUnit;
 
-  SummaryType _summaryType = SummaryType.heaviestWeights;
+  late SummaryType _summaryType = SummaryType.heaviestWeights;
 
   HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
 
@@ -350,7 +350,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
-      _chartUnit = weightUnit();
+      _chartUnit = ChartUnit.reps;
     });
   }
 
@@ -537,19 +537,21 @@ class _SummaryWidgetState extends State<SummaryWidget> {
         : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    _chartUnit = weightUnit();
+  void _loadChart() {
 
     _routineLogs = widget.routineLogs.reversed.toList();
 
-    final values = _routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList();
-    _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-
     _dateTimes =
         widget.routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _heaviestWeights());
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadChart();
   }
 }
 

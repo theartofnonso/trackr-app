@@ -39,155 +39,151 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     final weightProvider = Provider.of<WeightUnitProvider>(context, listen: true);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
-    if (log != null) {
-      final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
-      final completedSetsSummary =
-          completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
+    final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
+    final completedSetsSummary =
+        completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
-      final totalWeight = _totalWeight(sets: completedSets);
-      final conversion = weightProvider.isLbs ? toLbs(totalWeight) : totalWeight;
-      final totalWeightSummary = "$conversion ${weightLabel()}";
+    final totalWeight = _totalWeight(sets: completedSets);
+    final conversion = weightProvider.isLbs ? toLbs(totalWeight) : totalWeight;
+    final totalWeightSummary = "$conversion ${weightLabel()}";
 
-      return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            heroTag: "fab_routine_log_preview_screen",
-            onPressed: () => _navigateToRoutineEditor(context: context, log: log),
-            backgroundColor: tealBlueLighter,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const Icon(Icons.edit),
-          ),
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          heroTag: "fab_routine_log_preview_screen",
+          onPressed: () => _navigateToRoutineEditor(context: context, log: log),
+          backgroundColor: tealBlueLighter,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: const Icon(Icons.edit),
+        ),
+        backgroundColor: tealBlueDark,
+        appBar: AppBar(
           backgroundColor: tealBlueDark,
-          appBar: AppBar(
-            backgroundColor: tealBlueDark,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_outlined),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title:
-                Text(log.name, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: [
-              MenuAnchor(
-                style: MenuStyle(
-                  backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                ),
-                builder: (BuildContext context, MenuController controller, Widget? child) {
-                  return IconButton(
-                    onPressed: () {
-                      if (controller.isOpen) {
-                        controller.close();
-                      } else {
-                        controller.open();
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.more_vert_rounded,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                    tooltip: 'Show menu',
-                  );
-                },
-                menuChildren: _menuActionButtons(context: context, log: log),
-              )
-            ],
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_outlined),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    log.notes.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(log.notes,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                )),
-                          )
-                        : const SizedBox.shrink(),
-                    Row(
+          title:
+              Text(log.name, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+          actions: [
+            MenuAnchor(
+              style: MenuStyle(
+                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+              ),
+              builder: (BuildContext context, MenuController controller, Widget? child) {
+                return IconButton(
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.more_vert_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  tooltip: 'Show menu',
+                );
+              },
+              menuChildren: _menuActionButtons(context: context, log: log),
+            )
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  log.notes.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text(log.notes,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              )),
+                        )
+                      : const SizedBox.shrink(),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.date_range_rounded,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      const SizedBox(width: 10),
+                      const Icon(
+                        Icons.access_time_rounded,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(log.endTime.getDateTimeInUtc().formattedTime(),
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                      color: tealBlueLight, // Set the background color
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Table(
+                      border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(),
+                        1: FlexColumnWidth(),
+                        2: FlexColumnWidth(),
+                      },
                       children: [
-                        const Icon(
-                          Icons.date_range_rounded,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 1),
-                        Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                        const SizedBox(width: 10),
-                        const Icon(
-                          Icons.access_time_rounded,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 1),
-                        Text(log.endTime.getDateTimeInUtc().formattedTime(),
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(completedSetsSummary,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(totalWeightSummary,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(_logDuration(log: log),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          )
+                        ]),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                        color: tealBlueLight, // Set the background color
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Table(
-                        border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
-                        columnWidths: const <int, TableColumnWidth>{
-                          0: FlexColumnWidth(),
-                          1: FlexColumnWidth(),
-                          2: FlexColumnWidth(),
-                        },
-                        children: [
-                          TableRow(children: [
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(completedSetsSummary,
-                                    style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(totalWeightSummary,
-                                    style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(_logDuration(log: log),
-                                    style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            )
-                          ]),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      children: [..._bodyPartSplit(procedureJsons: log.procedures)],
-                    ),
-                    ..._proceduresToWidgets(routineLog: log)
-                  ],
-                ),
+                  ),
+                  Column(
+                    children: [..._bodyPartSplit(procedureJsons: log.procedures)],
+                  ),
+                  ..._proceduresToWidgets(routineLog: log)
+                ],
               ),
             ),
-          ));
+          ),
+        ));
     }
-
-    return const SizedBox.shrink();
-  }
 
   @override
   void initState() {

@@ -59,8 +59,8 @@ class RoutineProvider with ChangeNotifier {
     return _routines.indexWhere((routine) => routine.id == id);
   }
 
-  Routine? routineWhere({required String id}) {
-    return _routines.firstWhereOrNull((dto) => dto.id == id);
+  Routine routineWhere({required String id}) {
+    return _routines.firstWhere((dto) => dto.id == id);
   }
 
   Future<List<RoutineLog>> routinesLogsWhere({required String id}) async {

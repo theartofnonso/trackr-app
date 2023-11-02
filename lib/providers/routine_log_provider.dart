@@ -131,8 +131,8 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.indexWhere((log) => log.id == id);
   }
 
-  RoutineLog? whereRoutineLog({required String id}) {
-    return _logs.firstWhereOrNull((log) => log.id == id);
+  RoutineLog whereRoutineLog({required String id}) {
+    return _logs.firstWhere((log) => log.id == id);
   }
 
   List<ProcedureDto> whereProcedureDtos({required ProcedureDto procedureDto}) {
