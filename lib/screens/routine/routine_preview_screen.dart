@@ -245,7 +245,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                                   _navigateToRoutineEditor(
                                       context: context, routine: routine, mode: RoutineEditorMode.routine);
                                 },
-                                label: " $startTrackingPerformance} "),
+                                label: " $startTrackingPerformance "),
                           ),
                         ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
                     const SizedBox(height: 5),
