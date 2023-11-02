@@ -302,7 +302,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _loadChart() {
     _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.reversed.toList();
     _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _volume());
+    _volume();
   }
 
   @override

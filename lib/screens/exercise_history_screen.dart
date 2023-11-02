@@ -302,7 +302,6 @@ class SummaryWidget extends StatefulWidget {
 enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps }
 
 class _SummaryWidgetState extends State<SummaryWidget> {
-
   List<RoutineLog> _routineLogs = [];
 
   List<String> _dateTimes = [];
@@ -325,9 +324,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _heaviestSetVolumes() {
-    final values = _routineLogs
-        .map((log) => _heaviestSetVolumePerLog(context: context, log: log))
-        .toList();
+    final values = _routineLogs.map((log) => _heaviestSetVolumePerLog(context: context, log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestSetVolumes;
@@ -345,8 +342,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _oneRepMaxes() {
-    final values =
-        _routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList();
+    final values = _routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
@@ -364,16 +360,22 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _recomputeChart() {
-    switch(_selectedHistoricalDate) {
+    switch (_selectedHistoricalDate) {
       case HistoricalTimePeriod.lastThreeMonths:
-          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(90, logs: widget.routineLogs).reversed.toList();
+        _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
+            .routineLogsSince(90, logs: widget.routineLogs)
+            .reversed
+            .toList();
       case HistoricalTimePeriod.lastOneYear:
-          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(365, logs: widget.routineLogs).reversed.toList();
+        _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
+            .routineLogsSince(365, logs: widget.routineLogs)
+            .reversed
+            .toList();
       case HistoricalTimePeriod.allTime:
-          _routineLogs = widget.routineLogs.reversed.toList();
+        _routineLogs = widget.routineLogs.reversed.toList();
     }
     _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
-    switch(_summaryType) {
+    switch (_summaryType) {
       case SummaryType.heaviestWeights:
         _heaviestWeights();
       case SummaryType.heaviestSetVolumes:
@@ -435,7 +437,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                     style: const TextStyle(color: Colors.white),
                     onChanged: (String? value) {
                       // This is called when the user selects an item.
-                      if(value != null) {
+                      if (value != null) {
                         setState(() {
                           _selectedHistoricalDate = switch (value) {
                             "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
@@ -447,7 +449,8 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                         });
                       }
                     },
-                    items: HistoricalTimePeriod.values.map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
+                    items: HistoricalTimePeriod.values
+                        .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
                       return DropdownMenuItem<String>(
                         value: historicalDate.label,
                         child: Text(historicalDate.label, style: const TextStyle(fontSize: 12)),
@@ -538,15 +541,12 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _loadChart() {
-
     _routineLogs = widget.routineLogs.reversed.toList();
 
     _dateTimes =
         widget.routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _heaviestWeights());
+    _heaviestWeights();
   }
-
 
   @override
   void initState() {

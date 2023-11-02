@@ -146,11 +146,11 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _loadChart() {
-    Provider.of<RoutineProvider>(context, listen: false).routinesLogsWhere(id: widget.routineId).then((logs) {
+    Provider.of<RoutineProvider>(context, listen: false).routinesLogsWhere(id: widget.routineId).then((logs) async {
       _logs = logs.reversed.toList();
       _filteredLogs = _logs;
       _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _volume());
+      _volume();
     });
   }
 
