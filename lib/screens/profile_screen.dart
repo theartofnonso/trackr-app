@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -31,8 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
-  void _navigateTo(BuildContext context) {
+  void _navigateBack(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+  }
+
+  void _navigateToMuscleDistribution(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleDistributionScreen()));
   }
 
   int _logsForTheWeek({required List<RoutineLog> logs}) {
@@ -40,7 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final endOfWeek = now.add(Duration(days: 7 - now.weekday));
     final thisWeek = DateTimeRange(start: startOfWeek, end: endOfWeek);
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek.endInclusive())).toList().length;
+    return logs
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek.endInclusive()))
+        .toList()
+        .length;
   }
 
   int _logsForTheMonth({required List<RoutineLog> logs}) {
@@ -48,7 +56,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
     final thisMonth = DateTimeRange(start: startOfMonth, end: endOfMonth);
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth.endInclusive())).toList().length;
+    return logs
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth.endInclusive()))
+        .toList()
+        .length;
   }
 
   int _logsForTheYear({required List<RoutineLog> logs}) {
@@ -58,7 +69,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final thisYear = DateTimeRange(start: startOfYear, end: endOfYear);
 
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear.endInclusive())).toList().length;
+    return logs
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear.endInclusive()))
+        .toList()
+        .length;
   }
 
   @override
@@ -77,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: false,
         actions: [
           GestureDetector(
-            onTap: () => _navigateTo(context),
+            onTap: () => _navigateBack(context),
             child: const Padding(
               padding: EdgeInsets.only(right: 14.0),
               child: Icon(Icons.settings),
@@ -92,22 +106,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               _chartPoints.isNotEmpty
                   ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         RichText(
                           text: TextSpan(
-                            style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),  // This gets the default style
+                            style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                            // This gets the default style
                             children: <TextSpan>[
                               const TextSpan(text: 'You have logged '),
-                              TextSpan(text: '$logsForTheWeek workouts this week,', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                              TextSpan(text: '$logsForTheMonth this month', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                              TextSpan(
+                                  text: '$logsForTheWeek workouts this week,',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                              TextSpan(
+                                  text: '$logsForTheMonth this month',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                               const TextSpan(text: ' and '),
-                              TextSpan(text: '$logsForTheYear this year', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
+                              TextSpan(
+                                  text: '$logsForTheYear this year',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
                             ],
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Text("${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}", style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                        Text(
+                            "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
@@ -141,20 +164,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : const SizedBox.shrink(),
               const SizedBox(height: 20),
               ListTile(
-                  tileColor: tealBlueLight,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  title: Text(
-                    "Sets per muscle group",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  subtitle: Text("Number of sets logged for each muscle group",
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
-              const SizedBox(height: 10),
-              ListTile(
+                  onTap: () => _navigateToMuscleDistribution(context),
                   tileColor: tealBlueLight,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                   title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
-                  subtitle: Text("See what muscles are trained freqently",
+                  subtitle: Text("Number of sets logged for each muscle group",
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70)))
             ],
           ),

@@ -258,18 +258,18 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return totalWeight;
   }
 
-  Map<String, double> _calculateBodySplitPercentage(List<BodyPart> itemList) {
+  Map<String, double> _calculateBodySplitPercentage(List<BodyPart> bodyParts) {
     final Map<BodyPart, int> frequencyMap = {};
 
-    // Count the occurrences of each item
-    for (var item in itemList) {
-      frequencyMap[item] = (frequencyMap[item] ?? 0) + 1;
+    // Count the occurrences of each bodyPart
+    for (BodyPart bodyPart in bodyParts) {
+      frequencyMap[bodyPart] = (frequencyMap[bodyPart] ?? 0) + 1;
     }
 
-    final int totalItems = itemList.length;
+    final int totalItems = bodyParts.length;
     final Map<String, double> percentageMap = {};
 
-    // Calculate the percentage for each item
+    // Calculate the percentage for each bodyPart
     frequencyMap.forEach((item, count) {
       final double percentage = ((count / totalItems) * 100.0) / 100;
       percentageMap[item.name] = percentage;

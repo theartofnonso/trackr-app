@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/models/BodyPart.dart';
 import 'package:tracker_app/models/Routine.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
+import 'exercise_provider.dart';
 
 class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> _logs = [];
@@ -130,17 +134,42 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ProcedureDto> routineLogsWhereProcedure({required ProcedureDto procedureDto}) {
+  List<ProcedureDto> whereProcedureDtos({required ProcedureDto procedureDto}) {
+    // This list will hold all matching ProcedureDtos.
+    List<ProcedureDto> matchedDtos = [];
+
+    // Iterate through each log.
+    for (var log in logs) {
+      // Decode all procedures once instead of doing it multiple times.
+      List<ProcedureDto> decodedProcedures =
+          log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+
+      // Use where to filter out procedures with different exerciseId.
+      List<ProcedureDto> filteredProcedures =
+          decodedProcedures.where((procedure) => procedure.exerciseId == procedureDto.exerciseId).toList();
+
+      // If there are any matches, add them to the final list.
+      if (filteredProcedures.isNotEmpty) {
+        matchedDtos.addAll(filteredProcedures);
+      }
+    }
+
+    return matchedDtos;
+  }
+
+  List<SetDto> whereSetDtos({required BodyPart bodyPart, required BuildContext context}) {
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+
+    bool hasMatchingBodyPart(String procedureJson) {
+      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
+      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart == bodyPart;
+    }
+
     return logs
-        .where((log) => log.procedures
-            .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-            .any((procedure) => procedure.exerciseId == procedureDto.exerciseId))
-        .map((log) => log.copyWith(
-            procedures: log.procedures
-                .where(
-                    (procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exerciseId == procedureDto.exerciseId)
-                .toList()))
-        .expand((log) => log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))))
+        .where((log) => log.procedures.any(hasMatchingBodyPart))
+        .expand((log) => log.procedures.where(hasMatchingBodyPart))
+        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+        .expand((procedure) => procedure.sets)
         .toList();
   }
 
@@ -160,6 +189,8 @@ class RoutineLogProvider with ChangeNotifier {
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: days));
     final dateRange = DateTimeRange(start: now, end: then);
-    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange.endInclusive())).toList();
+    return _logs
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange.endInclusive()))
+        .toList();
   }
 }

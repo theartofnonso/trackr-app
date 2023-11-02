@@ -133,7 +133,7 @@ class ProcedureWidget extends StatelessWidget {
     int failureSets = 0;
     int dropSets = 0;
 
-    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereProcedure(procedureDto: procedureDto);
+    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).whereProcedureDtos(procedureDto: procedureDto);
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
       SetDto? pastSet = switch(setDto.type) {
