@@ -297,19 +297,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                             ),
                           ],
                         )
-                      : cachedRoutineLogDto == null
-                          ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                child: CTextButton(
-                                    onPressed: () {
-                                      _navigateToRoutineEditor(
-                                          context: context, routine: routine, mode: RoutineEditorMode.routine);
-                                    },
-                                    label: " $startTrackingPerformance "),
-                              ),
-                            )
-                          : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
+                      : const SizedBox.shrink(),
                   const SizedBox(height: 5),
                   ..._proceduresToWidgets(procedures: procedures)
                 ],
