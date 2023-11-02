@@ -134,7 +134,7 @@ double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}
 }
 
 DateTime dateTimePerLog({required RoutineLog log}) {
-  return log.endTime.getDateTimeInUtc();
+  return log.createdAt.getDateTimeInUtc();
 }
 
 Duration durationPerLog({required RoutineLog log}) {
