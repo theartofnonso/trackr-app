@@ -38,7 +38,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PieChartWidget(segments: splitMapEntries.take(3).toList()),
+              PieChartWidget(segments: splitMapEntries.take(5).toList()),
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.separated(

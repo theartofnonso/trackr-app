@@ -63,6 +63,28 @@ class PieChartWidget extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(segments[2].key)
                 ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    color: Colors.purpleAccent,
+                    width: 10,
+                    height: 10,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(segments[3].key)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    color: Colors.pinkAccent,
+                    width: 10,
+                    height: 10,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(segments[4].key)
+                ],
               )
             ],
           ),
@@ -82,7 +104,7 @@ class PieChartWidget extends StatelessWidget {
       shadows: [Shadow(color: Colors.white60, blurRadius: 1)],
     );
 
-    return List.generate(3, (i) {
+    return List.generate(5, (i) {
       switch (i) {
         case 0:
           return PieChartSectionData(
@@ -106,6 +128,22 @@ class PieChartWidget extends StatelessWidget {
             value: segments[2].value.toDouble(),
             title: '${segments[2].value}',
             radius: 50,
+            titleStyle: textStyle,
+          );
+        case 3:
+          return PieChartSectionData(
+            color: Colors.purpleAccent,
+            value: segments[3].value.toDouble(),
+            title: '${segments[3].value}',
+            radius: 40,
+            titleStyle: textStyle,
+          );
+        case 4:
+          return PieChartSectionData(
+            color: Colors.pinkAccent,
+            value: segments[4].value.toDouble(),
+            title: '${segments[4].value}',
+            radius: 40,
             titleStyle: textStyle,
           );
         default:
