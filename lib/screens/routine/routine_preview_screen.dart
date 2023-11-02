@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -15,6 +16,7 @@ import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/chart/line_chart_widget.dart';
+import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../exercise_history_screen.dart';
@@ -105,12 +107,12 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
   void _navigateToRoutineEditor(
       {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.editing}) {
-    if(mode == RoutineEditorMode.editing) {
+    if (mode == RoutineEditorMode.editing) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => RoutineEditorScreen(routine: routine, mode: mode, type: RoutineEditingType.template)));
     } else {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
     }
   }
 
@@ -194,7 +196,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     routine.notes.isNotEmpty
-                        ? Padding(
+                        ? Container(
                             padding: const EdgeInsets.only(bottom: 12.0),
                             child: Text(routine.notes,
                                 style: const TextStyle(
@@ -205,33 +207,47 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                         : const SizedBox.shrink(),
                     chartPoints.isNotEmpty
                         ? Column(
-                          children: [
-                            Padding(
+                            children: [
+                              Padding(
                                 padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
-                                child: LineChartWidget(chartPoints: _chartPoints, dateTimes: _dateTimes, unit: _chartUnit,),
+                                child: LineChartWidget(
+                                  chartPoints: _chartPoints,
+                                  dateTimes: _dateTimes,
+                                  unit: _chartUnit,
+                                ),
                               ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                CTextButton(
-                                    onPressed: _volume,
-                                    label: "Volume",
-                                    buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
-                                const SizedBox(width: 5),
-                                CTextButton(
-                                    onPressed: _totalReps,
-                                    label: "Reps",
-                                    buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
-                                const SizedBox(width: 5),
-                                CTextButton(
-                                    onPressed: _totalDuration,
-                                    label: "Duration",
-                                    buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
-                              ],
-                            ),
-                          ],
-                        )
-                        : const SizedBox.shrink(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CTextButton(
+                                      onPressed: _volume,
+                                      label: "Volume",
+                                      buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
+                                  const SizedBox(width: 5),
+                                  CTextButton(
+                                      onPressed: _totalReps,
+                                      label: "Reps",
+                                      buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
+                                  const SizedBox(width: 5),
+                                  CTextButton(
+                                      onPressed: _totalDuration,
+                                      label: "Duration",
+                                      buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
+                                ],
+                              ),
+                            ],
+                          )
+                        : cachedRoutineLogDto == null ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: CTextButton(
+                                onPressed: () {
+                                  _navigateToRoutineEditor(
+                                      context: context, routine: routine, mode: RoutineEditorMode.routine);
+                                },
+                                label: " $startTrackingPerformance} "),
+                          ),
+                        ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
                     const SizedBox(height: 5),
                     ..._proceduresToWidgets(procedures: procedures)
                   ],

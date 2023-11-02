@@ -12,7 +12,7 @@ class ScreenEmptyState extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(message, style: Theme.of(context).textTheme.titleMedium),
+          Text(message, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );

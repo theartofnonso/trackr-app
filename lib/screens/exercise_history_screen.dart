@@ -10,18 +10,20 @@ import 'package:tracker_app/screens/logs/routine_log_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
+import '../messages.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
 import '../providers/weight_unit_provider.dart';
 import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
 import '../widgets/chart/line_chart_widget.dart';
+import '../widgets/empty_states/screen_empty_state.dart';
 import '../widgets/exercise_history/routine_log_widget.dart';
 import '../dtos/graph/chart_point_dto.dart';
+import 'logs/routine_logs_screen.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
@@ -370,8 +372,10 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.routineLogs.isNotEmpty) {
 
+    final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
+
+    if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
 
       final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList().max;
@@ -460,7 +464,16 @@ class _SummaryWidgetState extends State<SummaryWidget> {
         ),
       ));
     }
-    return const Center(child: ScreenEmptyState(message: "Start logging workouts to generate data"));
+    return routineProvider.cachedLog == null ? Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: CTextButton(
+            onPressed: () {
+              startEmptyRoutine(context: context);
+            },
+            label: " $startTrackingPerformance "),
+      ),
+    ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
   }
 
   @override
@@ -485,6 +498,9 @@ class HistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
+
     return logs.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(10.0),
@@ -499,7 +515,16 @@ class HistoryWidget extends StatelessWidget {
               ],
             ),
           )
-        : const Center(child: ScreenEmptyState(message: "Start logging workouts to generate data"));
+        : routineProvider.cachedLog == null ? Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: CTextButton(
+            onPressed: () {
+              startEmptyRoutine(context: context);
+            },
+            label: " $startTrackingPerformance "),
+      ),
+    ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
   }
 }
 

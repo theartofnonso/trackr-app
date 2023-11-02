@@ -1,6 +1,7 @@
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
@@ -15,7 +16,7 @@ import '../../widgets/routine/minimised_routine_banner.dart';
 import '../../widgets/routine_log/routine_log_widget.dart';
 import '../calendar_screen.dart';
 
-void navigateToRoutineEditor({required BuildContext context, TemporalDateTime? createdAt}) async {
+void startEmptyRoutine({required BuildContext context, TemporalDateTime? createdAt}) async {
   try {
     final emptyRoutine = Routine(
         name: '',
@@ -74,7 +75,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
             ? FloatingActionButton(
                 heroTag: "fab_routine_logs_screen",
                 onPressed: () {
-                  navigateToRoutineEditor(context: context);
+                  startEmptyRoutine(context: context);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -96,7 +97,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                             itemCount: provider.logs.length),
                       )
                     : const Expanded(
-                        child: Center(child: ScreenEmptyState(message: "Start tracking your performance"))),
+                        child: Center(child: ScreenEmptyState(message: startTrackingPerformance))),
               ],
             ),
           ),

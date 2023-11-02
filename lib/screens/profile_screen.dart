@@ -2,10 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/graph/chart_point_dto.dart';
 import '../models/RoutineLog.dart';
@@ -13,6 +15,7 @@ import '../providers/routine_log_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/chart/line_chart_widget.dart';
 import 'exercise_history_screen.dart';
+import 'logs/routine_logs_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -101,11 +104,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _chartPoints.isNotEmpty
-                  ? Column(
+        child: _chartPoints.isNotEmpty
+            ? SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         RichText(
@@ -132,12 +135,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
                             style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
                         const SizedBox(height: 10),
-                        Padding(
+                        Container(
                           padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
-                          child: LineChartWidget(
-                            chartPoints: _chartPoints,
-                            dateTimes: _dateTimes,
-                            unit: _chartUnit,
+                          child: Column(
+                            children: [
+                              LineChartWidget(
+                                chartPoints: _chartPoints,
+                                dateTimes: _dateTimes,
+                                unit: _chartUnit,
+                              ),
+                            ],
                           ),
                         ),
                         Row(
@@ -160,22 +167,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    Theme(
+                      data: ThemeData(splashColor: tealBlueLight),
+                      child: ListTile(
+                          onTap: () => _navigateToMuscleDistribution(context),
+                          tileColor: tealBlueLight,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                          title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
+                          subtitle: Text("Number of sets logged for each muscle group",
+                              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
                     )
-                  : const SizedBox.shrink(),
-              const SizedBox(height: 20),
-              Theme(
-                data: ThemeData(splashColor: tealBlueLight),
-                child: ListTile(
-                    onTap: () => _navigateToMuscleDistribution(context),
-                    tileColor: tealBlueLight,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                    title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
-                    subtitle: Text("Number of sets logged for each muscle group",
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+                  ],
+                ),
               )
-            ],
-          ),
-        ),
+            : provider.cachedLog == null
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: CTextButton(
+                          onPressed: () {
+                            startEmptyRoutine(context: context);
+                          },
+                          label: " $startTrackingPerformance "),
+                    ),
+                  )
+                : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
       ),
     );
   }

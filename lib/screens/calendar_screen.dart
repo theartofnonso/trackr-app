@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../widgets/calendar/routine_log_widget.dart';
+import '../widgets/empty_states/screen_empty_state.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -92,7 +94,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final createdAt = _currentDate.isSameDateAs(other: DateTime.now())
         ? TemporalDateTime.now()
         : TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z");
-    navigateToRoutineEditor(context: context, createdAt: createdAt);
+    startEmptyRoutine(context: context, createdAt: createdAt);
   }
 
   List<Widget> _generateDates() {
@@ -230,8 +232,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 : routineLogProvider.cachedLog == null
                     ? Expanded(
                         child:
-                            Center(child: CTextButton(onPressed: _logRoutine, label: " Start tracking performance ")))
-                    : const SizedBox.shrink()
+                            Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
+                    : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers))
           ],
         ),
       ),

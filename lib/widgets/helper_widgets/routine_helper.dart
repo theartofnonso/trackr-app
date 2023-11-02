@@ -37,9 +37,6 @@ List<Widget> setsToWidgets({required List<SetDto> sets}) {
   return widgets.isNotEmpty
       ? widgets
       : [
-    const Padding(
-      padding: EdgeInsets.only(left: 18.0, top: 10),
-      child: ListStyleEmptyState(),
-    )
+    const ListStyleEmptyState()
   ];
 }
