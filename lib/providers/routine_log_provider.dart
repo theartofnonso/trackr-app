@@ -182,15 +182,17 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(other: dateTime));
   }
 
-  List<RoutineLog> routineLogsWhereDateRange({required DateTimeRange range}) {
-    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range.endInclusive())).toList();
+  List<RoutineLog> routineLogsWhereDateRange(DateTimeRange range, {List<RoutineLog>? logs}) {
+    final values = logs ?? _logs;
+    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range.endInclusive())).toList();
   }
 
-  List<RoutineLog> routineLogsSince({required int days}) {
+  List<RoutineLog> routineLogsSince(int days, {List<RoutineLog>? logs}) {
+    final values = logs ?? _logs;
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: days));
-    final dateRange = DateTimeRange(start: now, end: then);
-    return _logs
+    final dateRange = DateTimeRange(start: then, end: now);
+    return values
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange.endInclusive()))
         .toList();
   }

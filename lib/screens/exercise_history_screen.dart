@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/logs/routine_log_preview_screen.dart';
@@ -309,9 +310,12 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   SummaryType _summaryType = SummaryType.heaviestWeights;
 
+  HistoricalDates _selectedHistoricalDate = HistoricalDates.lastThreeMonths;
+
+  List<RoutineLog> _routineLogs = [];
+
   void _heaviestWeights() {
-    final values =
-        widget.routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestWeights;
@@ -320,10 +324,8 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _heaviestSetVolumes() {
-    final values = widget.routineLogs
+    final values = _routineLogs
         .map((log) => _heaviestSetVolumePerLog(context: context, log: log))
-        .toList()
-        .reversed
         .toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
@@ -333,7 +335,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _logVolumes() {
-    final values = widget.routineLogs.map((log) => volumePerLog(context: context, log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => volumePerLog(context: context, log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.logVolumes;
@@ -343,12 +345,31 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   void _oneRepMaxes() {
     final values =
-        widget.routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList().reversed.toList();
+        _routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
       _chartUnit = weightUnit();
     });
+  }
+
+  void _fetchLogsForHistoryDate() {
+    switch(_selectedHistoricalDate) {
+
+      case HistoricalDates.lastThreeMonths:
+          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(5, logs: widget.routineLogs).reversed.toList();
+      _routineLogs.forEach((element) { print(element.createdAt); });
+      case HistoricalDates.lastOneYear:
+
+          _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(365, logs: widget.routineLogs).reversed.toList();
+
+      case HistoricalDates.allTime:
+
+          _routineLogs = widget.routineLogs.reversed.toList();
+
+    }
+    _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+
   }
 
   void _reps() {
@@ -372,7 +393,6 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
     if (widget.routineLogs.isNotEmpty) {
@@ -381,7 +401,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
       final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList().max;
       return SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -395,13 +415,44 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             //   "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
             //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             // ),
-            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
-              child: LineChartWidget(
-                chartPoints: _chartPoints,
-                dateTimes: _dateTimes,
-                unit: _chartUnit,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  DropdownButton<String>(
+                    isDense: true,
+                    value: _selectedHistoricalDate.label,
+                    underline: Container(
+                      color: Colors.transparent,
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                    onChanged: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        _selectedHistoricalDate = switch (value) {
+                          "Last 3 months" => HistoricalDates.lastThreeMonths,
+                          "Last 1 year" => HistoricalDates.lastOneYear,
+                          "All Time" => HistoricalDates.allTime,
+                          _ => HistoricalDates.allTime
+                        };
+                        _fetchLogsForHistoryDate();
+                      });
+                    },
+                    items: HistoricalDates.values.map<DropdownMenuItem<String>>((HistoricalDates historicalDate) {
+                      return DropdownMenuItem<String>(
+                        value: historicalDate.label,
+                        child: Text(historicalDate.label, style: const TextStyle(fontSize: 12)),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  LineChartWidget(
+                    chartPoints: _chartPoints.toList(),
+                    dateTimes: _dateTimes,
+                    unit: _chartUnit,
+                  ),
+                ],
               ),
             ),
             SingleChildScrollView(
@@ -464,16 +515,18 @@ class _SummaryWidgetState extends State<SummaryWidget> {
         ),
       ));
     }
-    return routineProvider.cachedLog == null ? Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: CTextButton(
-            onPressed: () {
-              startEmptyRoutine(context: context);
-            },
-            label: " $startTrackingPerformance "),
-      ),
-    ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
+    return routineProvider.cachedLog == null
+        ? Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: CTextButton(
+                  onPressed: () {
+                    startEmptyRoutine(context: context);
+                  },
+                  label: " $startTrackingPerformance "),
+            ),
+          )
+        : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
   }
 
   @override
@@ -482,8 +535,9 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
     _chartUnit = weightUnit();
 
-    final values =
-        widget.routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList().reversed.toList();
+    _routineLogs = widget.routineLogs.reversed.toList();
+
+    final values = _routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList();
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     _dateTimes =
@@ -498,7 +552,6 @@ class HistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
     return logs.isNotEmpty
@@ -515,16 +568,18 @@ class HistoryWidget extends StatelessWidget {
               ],
             ),
           )
-        : routineProvider.cachedLog == null ? Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: CTextButton(
-            onPressed: () {
-              startEmptyRoutine(context: context);
-            },
-            label: " $startTrackingPerformance "),
-      ),
-    ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
+        : routineProvider.cachedLog == null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: CTextButton(
+                      onPressed: () {
+                        startEmptyRoutine(context: context);
+                      },
+                      label: " $startTrackingPerformance "),
+                ),
+              )
+            : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
   }
 }
 
