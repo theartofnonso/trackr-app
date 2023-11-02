@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/BodyPart.dart';
+import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
 import '../providers/routine_log_provider.dart';
@@ -17,22 +18,37 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
+    final splitMapEntries = _calculateBodySplitPercentage(provider: routineLogProvider);
+
+    final splitMap = Map.fromEntries(splitMapEntries);
+
+    final bodySplit = _bodyPartSplit(splitMap);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
+        title: const Text("Muscle Distribution", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: _navigateBack,
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Column(
+        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+        child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [..._bodyPartSplit(provider: routineLogProvider)],
-          ),
-        ),
+            children: [
+              const SizedBox(height: 12),
+              PieChartWidget(segments: splitMapEntries.take(3).toList()),
+              const SizedBox(height: 20),
+              Expanded(
+                child: ListView.separated(
+                    itemBuilder: (BuildContext context, int index) => bodySplit[index],
+                    separatorBuilder: (BuildContext context, int index) => const SizedBox(),
+                    itemCount: bodySplit.length),
+              )
+              //..._bodyPartSplit(provider: routineLogProvider)],
+            ]),
       ),
     );
   }
@@ -41,7 +57,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     Navigator.of(context).pop();
   }
 
-  Map<String, int> _calculateBodySplitPercentage({required RoutineLogProvider provider}) {
+  List<MapEntry<String, int>> _calculateBodySplitPercentage({required RoutineLogProvider provider}) {
     const bodyParts = BodyPart.values;
 
     final Map<BodyPart, int> frequencyMap = {};
@@ -58,16 +74,12 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
       percentageMap[item.name] = count;
     });
 
-    var sortedEntries = percentageMap.entries.toList()
+    return percentageMap.entries.toList()
       ..sort((e1, e2) => e2.value.compareTo(e1.value));
 
-    Map<String, int> sortedMap = Map.fromEntries(sortedEntries);
-
-    return sortedMap;
   }
 
-  List<Widget> _bodyPartSplit({required RoutineLogProvider provider}) {
-    final splitMap = _calculateBodySplitPercentage(provider: provider);
+  List<Widget> _bodyPartSplit(Map<String, int> splitMap) {
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {
       final widget = Padding(
