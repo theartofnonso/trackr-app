@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineLogProvider>(context);
+    final provider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = provider.logs;
     final earliestLog = logs.lastOrNull;
     final logsForTheWeek = _logsForTheWeek(logs: logs);
@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
