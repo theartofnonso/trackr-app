@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 10),
                         Text(
                             "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                            style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
@@ -216,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.reversed.toList();
     final values = _logs.map((log) => volumePerLog(context: context, log: log)).toList();
     _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-    _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
+    _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
   }
 
   @override

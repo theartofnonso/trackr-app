@@ -492,9 +492,7 @@ class HistoryWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) => RoutineLogWidget(
-                            routineLog: logs[index],
-                          ),
+                      itemBuilder: (BuildContext context, int index) => RoutineLogWidget(routineLog: logs[index]),
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 18),
                       itemCount: logs.length),
                 ),

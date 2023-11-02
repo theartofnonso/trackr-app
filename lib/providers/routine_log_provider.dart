@@ -84,7 +84,8 @@ class RoutineLogProvider with ChangeNotifier {
       await Amplify.DataStore.save<Routine>(routine);
     }
     await Amplify.DataStore.save<RoutineLog>(logToSave);
-    _logs.insert(0, logToSave);
+    _logs.add(logToSave);
+    _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     clearCachedLog();
     notifyListeners();
   }
