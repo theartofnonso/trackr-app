@@ -175,7 +175,7 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> setDtosForBodyPartWhereDateRangeSince({required BodyPart bodyPart, required int since, required BuildContext context}) {
+  List<SetDto> whereSetDtosForBodyPartSince({required BodyPart bodyPart, required int since, required BuildContext context}) {
 
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: since));
@@ -197,7 +197,7 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtos({required BodyPart bodyPart, required BuildContext context}) {
+  List<SetDto> whereSetDtosForBodyPart({required BodyPart bodyPart, required BuildContext context}) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
 
     bool hasMatchingBodyPart(String procedureJson) {

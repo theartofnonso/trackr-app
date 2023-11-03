@@ -16,17 +16,17 @@ class MuscleDistributionScreen extends StatefulWidget {
 }
 
 class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> with SingleTickerProviderStateMixin {
+
   HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.lastThreeMonths;
 
-  CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.allTime;
+  CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.thisMonth;
 
-  List<MapEntry<String, int>> _bodySplits = [];
+  late Map<BodyPart, int> _bodySplit;
 
   @override
   Widget build(BuildContext context) {
-    final splitMap = Map.fromEntries(_bodySplits);
 
-    final bodySplit = _bodyPartSplit(splitMap);
+    final bodySplitWidgets = _bodyPartSplitToWidgets();
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +57,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
                       "This Year" => CurrentTimePeriod.thisYear,
                       _ => CurrentTimePeriod.allTime
                     };
-                    _recomputeCurrentDatesChart();
+                    _computeCurrentDatesChart();
                   });
                 }
               },
@@ -85,7 +85,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
                       "All Time" => HistoricalTimePeriod.allTime,
                       _ => HistoricalTimePeriod.allTime
                     };
-                    _recomputeHistoricalDatesChart();
+                    _computeHistoricalDatesChart();
                   });
                 }
               },
@@ -97,13 +97,13 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               }).toList(),
             )
           ]),
-          PieChartWidget(segments: _bodySplits.take(5).toList()),
+          PieChartWidget(segments: _bodySplit.entries.take(5).toList()),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => bodySplit[index],
+                itemBuilder: (BuildContext context, int index) => bodySplitWidgets[index],
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(),
-                itemCount: bodySplit.length),
+                itemCount: bodySplitWidgets.length),
           )
           //..._bodyPartSplit(provider: routineLogProvider)],
         ]),
@@ -118,79 +118,63 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
   void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-    const bodyParts = BodyPart.values;
-
     final Map<BodyPart, int> frequencyMap = {};
 
     // Count the occurrences of each bodyPart
-    for (BodyPart bodyPart in bodyParts) {
+    for (BodyPart bodyPart in BodyPart.values) {
       frequencyMap[bodyPart] = range != null
           ? routineLogProvider
               .setDtosForBodyPartWhereDateRange(bodyPart: bodyPart, context: context, range: range)
               .length
-          : routineLogProvider.whereSetDtos(bodyPart: bodyPart, context: context).length;
+          : routineLogProvider.whereSetDtosForBodyPart(bodyPart: bodyPart, context: context).length;
     }
 
-    final Map<String, int> percentageMap = {};
-
-    // Calculate the percentage for each bodyPart
-    frequencyMap.forEach((item, count) {
-      percentageMap[item.name] = count;
-    });
-
+    final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
     setState(() {
-      _bodySplits = percentageMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
+      _bodySplit = Map.fromEntries(sortedBodySplit);
     });
   }
 
   void _calculateBodySplitPercentageSince({int? since}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-    const bodyParts = BodyPart.values;
-
     final Map<BodyPart, int> frequencyMap = {};
 
     // Count the occurrences of each bodyPart
-    for (BodyPart bodyPart in bodyParts) {
+    for (BodyPart bodyPart in BodyPart.values) {
       frequencyMap[bodyPart] = since != null
           ? routineLogProvider
-              .setDtosForBodyPartWhereDateRangeSince(bodyPart: bodyPart, context: context, since: since)
+              .whereSetDtosForBodyPartSince(bodyPart: bodyPart, context: context, since: since)
               .length
-          : routineLogProvider.whereSetDtos(bodyPart: bodyPart, context: context).length;
+          : routineLogProvider.whereSetDtosForBodyPart(bodyPart: bodyPart, context: context).length;
     }
 
-    final Map<String, int> percentageMap = {};
-
-    // Calculate the percentage for each bodyPart
-    frequencyMap.forEach((item, count) {
-      percentageMap[item.name] = count;
-    });
-
+    final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
     setState(() {
-      _bodySplits = percentageMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
+      _bodySplit = Map.fromEntries(sortedBodySplit);
     });
   }
 
-  List<Widget> _bodyPartSplit(Map<String, int> splitMap) {
+  List<Widget> _bodyPartSplitToWidgets() {
     final splitList = <Widget>[];
-    splitMap.forEach((key, value) {
+    _bodySplit.forEach((bodyPart, count) {
       final widget = Padding(
-        key: Key(key),
+        key: Key(bodyPart.name),
         padding: const EdgeInsets.only(bottom: 8.0),
         child: ListTile(
             tileColor: tealBlueLight,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
             ),
-            title: Text(key, style: Theme.of(context).textTheme.labelLarge),
-            trailing: Text("$value", style: Theme.of(context).textTheme.labelLarge)),
+            title: Text(bodyPart.name, style: Theme.of(context).textTheme.labelLarge),
+            trailing: Text("$count", style: Theme.of(context).textTheme.labelLarge)),
       );
       splitList.add(widget);
     });
     return splitList;
   }
 
-  void _recomputeCurrentDatesChart() {
+  void _computeCurrentDatesChart() {
     switch (_selectedCurrentTimePeriod) {
       case CurrentTimePeriod.thisWeek:
         final thisWeek = thisWeekDateRange();
@@ -206,7 +190,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     }
   }
 
-  void _recomputeHistoricalDatesChart() {
+  void _computeHistoricalDatesChart() {
     switch (_selectedHistoricalDate) {
       case HistoricalTimePeriod.lastThreeMonths:
         _calculateBodySplitPercentageSince(since: 90);
@@ -220,6 +204,6 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
   @override
   void initState() {
     super.initState();
-    _recomputeHistoricalDatesChart();
+    _computeHistoricalDatesChart();
   }
 }

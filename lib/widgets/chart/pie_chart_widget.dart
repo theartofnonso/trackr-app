@@ -1,9 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/models/BodyPart.dart';
 
 class PieChartWidget extends StatelessWidget {
-  final List<MapEntry<String, int>> segments;
+  final List<MapEntry<BodyPart, int>> segments;
 
   const PieChartWidget({super.key, required this.segments});
 
@@ -33,7 +34,7 @@ class PieChartWidget extends StatelessWidget {
                 children: [
                   Container(color: Colors.green, width: 10, height: 10),
                   const SizedBox(width: 5),
-                  Text(segments[0].key)
+                  Text(segments[0].key.name)
                 ],
               ),
               const SizedBox(
@@ -47,7 +48,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[1].key)
+                  Text(segments[1].key.name)
                 ],
               ),
               const SizedBox(
@@ -61,7 +62,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[2].key)
+                  Text(segments[2].key.name)
                 ],
               ),
               const SizedBox(
@@ -75,7 +76,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[3].key)
+                  Text(segments[3].key.name)
                 ],
               ),
               const SizedBox(
@@ -89,7 +90,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[4].key)
+                  Text(segments[4].key.name)
                 ],
               )
             ],
@@ -149,7 +150,7 @@ class PieChartWidget extends StatelessWidget {
             color: Colors.pinkAccent,
             value: segments[4].value.toDouble(),
             title: '${segments[4].value}',
-            radius: 40,
+            radius: 30,
             titleStyle: textStyle,
           );
         default:
