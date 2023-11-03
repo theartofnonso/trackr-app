@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/BodyPart.dart';
+import 'package:tracker_app/screens/profile_screen.dart';
 import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
@@ -20,13 +21,12 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
 
   CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.allTime;
 
+  List<MapEntry<String, int>> _bodySplits = [];
+
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final splitMapEntries = _calculateBodySplitPercentage(provider: routineLogProvider);
-
-    final splitMap = Map.fromEntries(splitMapEntries);
+    final splitMap = Map.fromEntries(_bodySplits);
 
     final bodySplit = _bodyPartSplit(splitMap);
 
@@ -63,7 +63,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
                           "This Year" => CurrentTimePeriod.thisYear,
                           _ => CurrentTimePeriod.allTime
                         };
-                        //_recomputeChart();
+                        _recomputeCurrentDatesChart();
                       });
                     }
                   },
@@ -104,7 +104,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
                       }).toList(),
                     )
               ]),
-              PieChartWidget(segments: splitMapEntries.take(5).toList()),
+              PieChartWidget(segments: _bodySplits.take(5).toList()),
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.separated(
@@ -122,14 +122,19 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     Navigator.of(context).pop();
   }
 
-  List<MapEntry<String, int>> _calculateBodySplitPercentage({required RoutineLogProvider provider}) {
+  void _calculateBodySplitPercentage({DateTimeRange? range}) {
+
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+
     const bodyParts = BodyPart.values;
 
     final Map<BodyPart, int> frequencyMap = {};
 
     // Count the occurrences of each bodyPart
     for (BodyPart bodyPart in bodyParts) {
-      frequencyMap[bodyPart] = provider.whereSetDtos(bodyPart: bodyPart, context: context).length;
+      frequencyMap[bodyPart] = range != null ?
+      routineLogProvider.setDtosForBodyPartWhereDateRange(bodyPart: bodyPart, context: context, range: range).length :
+      routineLogProvider.whereSetDtos(bodyPart: bodyPart, context: context).length;
     }
 
     final Map<String, int> percentageMap = {};
@@ -139,8 +144,10 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
       percentageMap[item.name] = count;
     });
 
-    return percentageMap.entries.toList()
-      ..sort((e1, e2) => e2.value.compareTo(e1.value));
+    setState(() {
+      _bodySplits = percentageMap.entries.toList()
+        ..sort((e1, e2) => e2.value.compareTo(e1.value));
+    });
 
   }
 
@@ -162,4 +169,28 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     });
     return splitList;
   }
+
+  void _recomputeCurrentDatesChart() {
+    switch(_selectedCurrentTimePeriod) {
+      case CurrentTimePeriod.thisWeek:
+        final thisWeek = thisWeekDateRange();
+        _calculateBodySplitPercentage(range: thisWeek);
+      case CurrentTimePeriod.thisMonth:
+        final thisMonth = thisMonthDateRange();
+        _calculateBodySplitPercentage(range: thisMonth);
+      case CurrentTimePeriod.thisYear:
+        final thisYear = thisYearDateRange();
+        _calculateBodySplitPercentage(range: thisYear);
+      case CurrentTimePeriod.allTime:
+        _calculateBodySplitPercentage();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _recomputeCurrentDatesChart();
+  }
+
+
 }
