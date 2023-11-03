@@ -4,6 +4,7 @@ import 'package:tracker_app/models/BodyPart.dart';
 import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
+import '../enums.dart';
 import '../providers/routine_log_provider.dart';
 
 class MuscleDistributionScreen extends StatefulWidget {
@@ -14,6 +15,11 @@ class MuscleDistributionScreen extends StatefulWidget {
 }
 
 class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> with SingleTickerProviderStateMixin {
+
+  HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
+
+  CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.allTime;
+
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
@@ -38,6 +44,66 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                DropdownButton<String>(
+                  isDense: true,
+                  value: _selectedCurrentTimePeriod.label,
+                  underline: Container(
+                    color: Colors.transparent,
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: (String? value) {
+                    if(value != null) {
+                      setState(() {
+                        _selectedCurrentTimePeriod = switch (value) {
+                          "This Week" => CurrentTimePeriod.thisWeek,
+                          "This Month" => CurrentTimePeriod.thisMonth,
+                          "This Year" => CurrentTimePeriod.thisYear,
+                          _ => CurrentTimePeriod.allTime
+                        };
+                        //_recomputeChart();
+                      });
+                    }
+                  },
+                  items: CurrentTimePeriod.values.map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
+                    return DropdownMenuItem<String>(
+                      value: currentTimePeriod.label,
+                      child: Text(currentTimePeriod.label, style: const TextStyle(fontSize: 12)),
+                    );
+                  }).toList(),
+                ),
+                    DropdownButton<String>(
+                      isDense: true,
+                      value: _selectedHistoricalDate.label,
+                      underline: Container(
+                        color: Colors.transparent,
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                      onChanged: (String? value) {
+                        // This is called when the user selects an item.
+                        if (value != null) {
+                          setState(() {
+                            _selectedHistoricalDate = switch (value) {
+                              "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
+                              "Last 1 year" => HistoricalTimePeriod.lastOneYear,
+                              "All Time" => HistoricalTimePeriod.allTime,
+                              _ => HistoricalTimePeriod.allTime
+                            };
+                            //_recomputeChart();
+                          });
+                        }
+                      },
+                      items: HistoricalTimePeriod.values
+                          .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
+                        return DropdownMenuItem<String>(
+                          value: historicalDate.label,
+                          child: Text(historicalDate.label, style: const TextStyle(fontSize: 12)),
+                        );
+                      }).toList(),
+                    )
+              ]),
               PieChartWidget(segments: splitMapEntries.take(5).toList()),
               const SizedBox(height: 20),
               Expanded(

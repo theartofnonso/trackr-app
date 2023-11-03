@@ -158,6 +158,45 @@ class RoutineLogProvider with ChangeNotifier {
     return matchedDtos;
   }
 
+  List<SetDto> setDtosForBodyPartWhereDateRange({required BodyPart bodyPart, required DateTimeRange range, required BuildContext context}) {
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+
+    bool hasMatchingBodyPart(String procedureJson) {
+      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
+      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart == bodyPart;
+    }
+
+    return logs
+        .where((log) => log.procedures.any(hasMatchingBodyPart))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
+        .expand((log) => log.procedures.where(hasMatchingBodyPart))
+        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+        .expand((procedure) => procedure.sets)
+        .toList();
+  }
+
+  List<SetDto> setDtosForBodyPartWhereDateRangeSince({required BodyPart bodyPart, required int since, required BuildContext context}) {
+
+    DateTime now = DateTime.now();
+    DateTime then = now.subtract(Duration(days: since));
+    final dateRange = DateTimeRange(start: then, end: now);
+
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+
+    bool hasMatchingBodyPart(String procedureJson) {
+      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
+      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart == bodyPart;
+    }
+
+    return logs
+        .where((log) => log.procedures.any(hasMatchingBodyPart))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange))
+        .expand((log) => log.procedures.where(hasMatchingBodyPart))
+        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+        .expand((procedure) => procedure.sets)
+        .toList();
+  }
+
   List<SetDto> whereSetDtos({required BodyPart bodyPart, required BuildContext context}) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
 
@@ -184,7 +223,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   List<RoutineLog> routineLogsWhereDateRange(DateTimeRange range, {List<RoutineLog>? logs}) {
     final values = logs ?? _logs;
-    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range.endInclusive())).toList();
+    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
   }
 
   List<RoutineLog> routineLogsSince(int days, {List<RoutineLog>? logs}) {
@@ -193,7 +232,7 @@ class RoutineLogProvider with ChangeNotifier {
     DateTime then = now.subtract(Duration(days: days));
     final dateRange = DateTimeRange(start: then, end: now);
     return values
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange.endInclusive()))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange))
         .toList();
   }
 }
