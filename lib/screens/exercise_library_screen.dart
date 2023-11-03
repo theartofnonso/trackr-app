@@ -172,7 +172,5 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .exercises
         .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
         .toList();
-
-    _filteredExercises = _exercisesInLibrary;
   }
 }

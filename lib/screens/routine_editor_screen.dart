@@ -57,8 +57,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
 
-  Duration? _routineDuration;
-
   TemporalDateTime _routineStartTime = TemporalDateTime.now();
 
   Duration? _elapsedProcedureRestInterval;
@@ -334,19 +332,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return _procedures
         .whereNot((procedure) => procedure.exerciseId == firstProcedure.exerciseId || procedure.superSetId.isNotEmpty)
         .toList();
-  }
-
-  void _showRoutineIntervalPicker() {
-    displayBottomSheet(
-        context: context,
-        child: _TimerPicker(
-            initialDuration: _routineDuration,
-            onSelect: (Duration duration) {
-              Navigator.of(context).pop();
-              setState(() {
-                _routineDuration = duration;
-              });
-            }));
   }
 
   void _showRestIntervalTimePicker({required ProcedureDto procedure}) {
@@ -737,18 +722,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   "${_editorTitle()}",
                   style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
-                actions: [
-                  GestureDetector(
-                      onTap: _showRoutineIntervalPicker,
-                      child: const Padding(
-                        padding: EdgeInsets.only(right: 14.0),
-                        child: Icon(
-                          Icons.timer,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ))
-                ],
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
             ? MediaQuery.of(context).viewInsets.bottom <= 0 ? FloatingActionButton(

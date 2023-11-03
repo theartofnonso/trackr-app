@@ -8,18 +8,17 @@ import '../models/BodyPart.dart';
 import '../models/Exercise.dart';
 
 class ExerciseProvider with ChangeNotifier {
-  final List<Exercise> _exercises = [];
+  List<Exercise> _exercises = [];
 
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
 
   Future<void> listExercises() async {
-    final request = ModelQueries.list(Exercise.classType, limit: 500);
+    final request = ModelQueries.list(Exercise.classType, limit: 1000);
     final response = await Amplify.API.query(request: request).response;
 
     final items = response.data?.items.whereType<Exercise>().toList();
-
     if (items != null) {
-      _exercises.addAll(items);
+      _exercises = items;
     }
   }
 
