@@ -22,7 +22,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
         Icons.info_outline,
         color: Colors.white,
       ),
-      backgroundColor: tealBlueLight.withOpacity(0.4),
+      backgroundColor: tealBlueLight,
       actions: <Widget>[
         TextButton(
           onPressed: () {
