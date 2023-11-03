@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
+import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
@@ -59,8 +60,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.allTime;
 
-  void _navigateBack(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+  void _navigateBack(BuildContext context) async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+    if(_summaryType == RoutineSummaryType.volume) {
+      _volume();
+    }
   }
 
   void _navigateToMuscleDistribution(BuildContext context) {
