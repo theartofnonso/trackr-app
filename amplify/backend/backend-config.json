@@ -1,12 +1,26 @@
 {
   "api": {
     "trackerapp": {
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "trackerappd3bb5f5e"
+        }
+      ],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authtrackerappd3bb5f5e"
+              }
             }
           ],
           "defaultAuthentication": {
@@ -22,7 +36,7 @@
     }
   },
   "auth": {
-    "trackerapp3a1289c43a1289c4": {
+    "trackerappd3bb5f5e": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

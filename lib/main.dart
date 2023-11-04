@@ -1,3 +1,5 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -57,6 +59,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     try {
+      await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
@@ -73,27 +76,31 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
-    return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: tealBlueDark,
-        colorScheme: const ColorScheme(
-          brightness: Brightness.dark,
-          primary: tealBlueLighter,
-          onPrimary: Colors.white,
-          secondary: Colors.white,
-          onSecondary: Colors.white,
-          error: Colors.white,
-          onError: Colors.black,
-          background: tealBlueDark,
-          onBackground: Colors.white,
-          surface: Colors.white,
-          onSurface: Colors.white,
+    return Authenticator(
+      initialStep: AuthenticatorStep.signIn,
+      child: MaterialApp(
+        builder: Authenticator.builder(),
+        theme: ThemeData(
+          scaffoldBackgroundColor: tealBlueDark,
+          colorScheme: const ColorScheme(
+            brightness: Brightness.dark,
+            primary: tealBlueLighter,
+            onPrimary: Colors.white,
+            secondary: Colors.white,
+            onSecondary: Colors.white,
+            error: Colors.white,
+            onError: Colors.black,
+            background: tealBlueDark,
+            onBackground: Colors.white,
+            surface: Colors.white,
+            onSurface: Colors.white,
+          ),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
+        home: _isLoading
+            ? const Center(child: CircularProgressIndicator(color: Colors.white))
+            : const HomeScreen(),
       ),
-      home: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.white))
-          : const HomeScreen(),
     );
   }
 }
