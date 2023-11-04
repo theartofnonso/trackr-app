@@ -12,8 +12,19 @@
       "AmplifyAppId": "dykpoii7mca2u"
     },
     "categories": {
+      "auth": {
+        "trackerappd3bb5f5e": {},
+        "trackerapp4f564bea": {},
+        "trackerapp648183fb": {}
+      },
       "api": {
         "trackerapp": {}
+      },
+      "function": {
+        "postAuthentication": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
+        }
       }
     }
   }

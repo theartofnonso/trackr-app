@@ -7,27 +7,17 @@
             "UserPoolId"
           ],
           "category": "auth",
-          "resourceName": "trackerappd3bb5f5e"
+          "resourceName": "trackerapp648183fb"
         }
       ],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "AWS_IAM"
-            },
-            {
-              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-              "userPoolConfig": {
-                "userPoolId": "authtrackerappd3bb5f5e"
-              }
-            }
-          ],
+          "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
-            },
-            "authenticationType": "API_KEY"
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authtrackerapp648183fb"
+            }
           }
         }
       },
@@ -36,7 +26,7 @@
     }
   },
   "auth": {
-    "trackerappd3bb5f5e": {
+    "trackerapp648183fb": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -61,6 +51,40 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    }
+  },
+  "function": {
+    "postAuthentication": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_postAuthentication_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "postAuthentication"
+        }
+      ]
+    },
+    "AMPLIFY_function_postAuthentication_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "postAuthentication"
+        }
+      ]
     }
   }
 }

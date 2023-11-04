@@ -1,11 +1,9 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -62,7 +60,6 @@ class _MyAppState extends State<MyApp> {
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
       setState(() {
         _isLoading = false; // important to set the state!
@@ -75,10 +72,10 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
     return Authenticator(
-      initialStep: AuthenticatorStep.signIn,
       child: MaterialApp(
         builder: Authenticator.builder(),
         theme: ThemeData(
@@ -96,12 +93,29 @@ class _MyAppState extends State<MyApp> {
             surface: Colors.white,
             onSurface: Colors.white,
           ),
-          textTheme: GoogleFonts.latoTextTheme(),
+          snackBarTheme: const SnackBarThemeData(
+            backgroundColor: tealBlueLighter
+          ),
+          tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
+          inputDecorationTheme: InputDecorationTheme(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            // border: OutlineInputBorder(
+            //     borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
+            filled: true,
+            fillColor: tealBlueLighter,
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+          ),
+          filledButtonTheme: FilledButtonThemeData(
+            style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(tealBlueLight),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+          ),
           useMaterial3: true,
         ),
-        home: _isLoading
-            ? const Center(child: CircularProgressIndicator(color: Colors.white))
-            : const HomeScreen(),
+        home: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : const HomeScreen(),
       ),
     );
   }

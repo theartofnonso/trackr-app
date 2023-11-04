@@ -10,13 +10,14 @@ type User
         ]
      ) {
   id: ID!
-  name: String!
+  name: String
   gender: Gender
   email: AWSEmail!
   age: Int
-  exercises: [Exercise]
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
+  routines: [Routine] @hasMany(indexName: "byUser", fields: ["id"])
+  routineLogs: [RoutineLog] @hasMany(indexName: "byUser", fields: ["id"])
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
 type Routine
@@ -28,6 +29,8 @@ type Routine
         ]
      ) {
   id: ID!
+  userID: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userID"])
   name: String!
   procedures: [AWSJSON]!
   notes: String!
@@ -47,6 +50,8 @@ type RoutineLog
         ]
      ) {
   id: ID!
+  userID: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userID"])
   routineID: ID! @index(name: "byRoutine")
   routine: Routine! @belongsTo(fields: ["routineID"])
   name: String!
@@ -62,7 +67,7 @@ type Exercise
      @model
      @auth(
         rules: [
-          { allow: private, operations: [read] }
+          { allow: private }
         ]
      ) {
   id: ID!

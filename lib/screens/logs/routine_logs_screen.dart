@@ -12,30 +12,28 @@ import '../../models/Routine.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/routine/minimised_routine_banner.dart';
 import '../../widgets/routine_log/routine_log_widget.dart';
 import '../calendar_screen.dart';
 
 void startEmptyRoutine({required BuildContext context, TemporalDateTime? createdAt}) async {
-  try {
-    final emptyRoutine = Routine(
-        name: '',
-        procedures: [],
-        notes: '',
-        createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now());
+  final routineOwner = await user();
+  final emptyRoutine = Routine(
+      name: '',
+      procedures: [],
+      notes: '',
+      createdAt: TemporalDateTime.now(),
+      updatedAt: TemporalDateTime.now(),
+      user: routineOwner);
 
+  if (context.mounted) {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            RoutineEditorScreen(routine: emptyRoutine, mode: RoutineEditorMode.routine, type: RoutineEditingType.log, createdAt: createdAt)));
-  } catch (e) {
-    showSnackbar(
-        context: context,
-        icon: const Icon(
-          Icons.info_outline,
-          color: Colors.white,
-        ),
-        message: "Unable to start new workout");
+        builder: (context) => RoutineEditorScreen(
+            routine: emptyRoutine,
+            mode: RoutineEditorMode.routine,
+            type: RoutineEditingType.log,
+            createdAt: createdAt)));
   }
 }
 
@@ -96,8 +94,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                             itemCount: provider.logs.length),
                       )
-                    : const Expanded(
-                        child: Center(child: ScreenEmptyState(message: startTrackingPerformance))),
+                    : const Expanded(child: Center(child: ScreenEmptyState(message: startTrackingPerformance))),
               ],
             ),
           ),
@@ -121,6 +118,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    user();
     _loadData();
   }
 

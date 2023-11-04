@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
+import '../utils/general_utils.dart';
 import 'exercise_provider.dart';
 
 class RoutineLogProvider with ChangeNotifier {
@@ -68,7 +70,9 @@ class RoutineLogProvider with ChangeNotifier {
       required Routine routine}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
-    final logToSave = RoutineLog(
+    final routineLogOwner = await user();
+
+    final logToCreate = RoutineLog(
         name: name,
         notes: notes,
         procedures: proceduresJson,
@@ -76,18 +80,23 @@ class RoutineLogProvider with ChangeNotifier {
         endTime: TemporalDateTime.now(),
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
-        routine: routine);
-
-    /// [RoutineLog] requires and instance of [Routine]
-    /// If [RoutineLog] is from a non-existing [Routine], persist new one
-    if (routine.name.isEmpty) {
-      await Amplify.DataStore.save<Routine>(routine);
+        routine: routine,
+        user: routineLogOwner);
+    final request = ModelMutations.create(logToCreate);
+    final response = await Amplify.API.mutate(request: request).response;
+    final createdLog = response.data;
+    if (createdLog != null) {
+      _logs.add(logToCreate);
+      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      clearCachedLog();
+      notifyListeners();
     }
-    await Amplify.DataStore.save<RoutineLog>(logToSave);
-    _logs.add(logToSave);
-    _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    clearCachedLog();
-    notifyListeners();
+
+    /// [RoutineLog] requires an instance of [Routine]
+    /// If [RoutineLog] is from a non-existing [Routine], persist new one
+    // if (routine.name.isEmpty) {
+    //   await Amplify.DataStore.save<Routine>(routine);
+    // }
   }
 
   void cacheRoutineLog(
@@ -96,7 +105,9 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine routine}) {
+      required Routine routine}) async {
+    final routineLogOwner = await user();
+
     _cachedLog = RoutineLog(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
         name: name,
@@ -106,7 +117,8 @@ class RoutineLogProvider with ChangeNotifier {
         startTime: startTime,
         endTime: TemporalDateTime.now(),
         createdAt: createdAt ?? TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now());
+        updatedAt: TemporalDateTime.now(),
+        user: routineLogOwner);
     final cachedLogDto = _cachedLog;
     if (cachedLogDto != null) {
       SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
@@ -114,17 +126,25 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void updateLog({required RoutineLog log}) async {
-    await Amplify.DataStore.save<RoutineLog>(log);
-    final index = _indexWhereRoutineLog(id: log.id);
-    _logs[index] = log;
-    notifyListeners();
+    final request = ModelMutations.update(log);
+    final response = await Amplify.API.mutate(request: request).response;
+    final updatedLog = response.data;
+    if (updatedLog != null) {
+      final index = _indexWhereRoutineLog(id: log.id);
+      _logs[index] = log;
+      notifyListeners();
+    }
   }
 
   void removeLog({required String id}) async {
     final index = _indexWhereRoutineLog(id: id);
     final logToBeRemoved = _logs.removeAt(index);
-    await Amplify.DataStore.delete<RoutineLog>(logToBeRemoved);
-    notifyListeners();
+    final request = ModelMutations.delete(logToBeRemoved);
+    final response = await Amplify.API.mutate(request: request).response;
+    final deletedLog = response.data;
+    if (deletedLog != null) {
+      notifyListeners();
+    }
   }
 
   int _indexWhereRoutineLog({required String id}) {
@@ -158,7 +178,8 @@ class RoutineLogProvider with ChangeNotifier {
     return matchedDtos;
   }
 
-  List<SetDto> setDtosForBodyPartWhereDateRange({required BodyPart bodyPart, required DateTimeRange range, required BuildContext context}) {
+  List<SetDto> setDtosForBodyPartWhereDateRange(
+      {required BodyPart bodyPart, required DateTimeRange range, required BuildContext context}) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
 
     bool hasMatchingBodyPart(String procedureJson) {
@@ -175,8 +196,8 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtosForBodyPartSince({required BodyPart bodyPart, required int since, required BuildContext context}) {
-
+  List<SetDto> whereSetDtosForBodyPartSince(
+      {required BodyPart bodyPart, required int since, required BuildContext context}) {
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: since));
     final dateRange = DateTimeRange(start: then, end: now);
@@ -231,8 +252,6 @@ class RoutineLogProvider with ChangeNotifier {
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: days));
     final dateRange = DateTimeRange(start: then, end: now);
-    return values
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange))
-        .toList();
+    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange)).toList();
   }
 }

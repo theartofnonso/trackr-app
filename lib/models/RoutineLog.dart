@@ -28,6 +28,7 @@ import 'package:collection/collection.dart';
 class RoutineLog extends amplify_core.Model {
   static const classType = const _RoutineLogModelType();
   final String id;
+  final User? _user;
   final Routine? _routine;
   final String? _name;
   final List<String>? _procedures;
@@ -48,6 +49,19 @@ class RoutineLog extends amplify_core.Model {
       return RoutineLogModelIdentifier(
         id: id
       );
+  }
+  
+  User get user {
+    try {
+      return _user!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   Routine get routine {
@@ -154,11 +168,12 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, required routine, required name, required procedures, required notes, required startTime, required endTime, required createdAt, required updatedAt}): _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineLog._internal({required this.id, required user, required routine, required name, required procedures, required notes, required startTime, required endTime, required createdAt, required updatedAt}): _user = user, _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineLog({String? id, required Routine routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineLog({String? id, required User user, required Routine routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
+      user: user,
       routine: routine,
       name: name,
       procedures: procedures != null ? List<String>.unmodifiable(procedures) : procedures,
@@ -178,6 +193,7 @@ class RoutineLog extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is RoutineLog &&
       id == other.id &&
+      _user == other._user &&
       _routine == other._routine &&
       _name == other._name &&
       DeepCollectionEquality().equals(_procedures, other._procedures) &&
@@ -197,6 +213,7 @@ class RoutineLog extends amplify_core.Model {
     
     buffer.write("RoutineLog {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("routine=" + (_routine != null ? _routine!.toString() : "null") + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("procedures=" + (_procedures != null ? _procedures!.toString() : "null") + ", ");
@@ -210,9 +227,10 @@ class RoutineLog extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineLog copyWith({Routine? routine, String? name, List<String>? procedures, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineLog copyWith({User? user, Routine? routine, String? name, List<String>? procedures, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineLog._internal(
       id: id,
+      user: user ?? this.user,
       routine: routine ?? this.routine,
       name: name ?? this.name,
       procedures: procedures ?? this.procedures,
@@ -224,6 +242,7 @@ class RoutineLog extends amplify_core.Model {
   }
   
   RoutineLog copyWithModelFieldValues({
+    ModelFieldValue<User>? user,
     ModelFieldValue<Routine>? routine,
     ModelFieldValue<String>? name,
     ModelFieldValue<List<String>?>? procedures,
@@ -235,6 +254,7 @@ class RoutineLog extends amplify_core.Model {
   }) {
     return RoutineLog._internal(
       id: id,
+      user: user == null ? this.user : user.value,
       routine: routine == null ? this.routine : routine.value,
       name: name == null ? this.name : name.value,
       procedures: procedures == null ? this.procedures : procedures.value,
@@ -248,6 +268,9 @@ class RoutineLog extends amplify_core.Model {
   
   RoutineLog.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _user = json['user']?['serializedData'] != null
+        ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
+        : null,
       _routine = json['routine']?['serializedData'] != null
         ? Routine.fromJson(new Map<String, dynamic>.from(json['routine']['serializedData']))
         : null,
@@ -260,11 +283,12 @@ class RoutineLog extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'routine': _routine?.toJson(), 'name': _name, 'procedures': _procedures, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'routine': _routine?.toJson(), 'name': _name, 'procedures': _procedures, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
+    'user': _user,
     'routine': _routine,
     'name': _name,
     'procedures': _procedures,
@@ -277,6 +301,9 @@ class RoutineLog extends amplify_core.Model {
 
   static final amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
+  static final USER = amplify_core.QueryField(
+    fieldName: "user",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
   static final ROUTINE = amplify_core.QueryField(
     fieldName: "routine",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Routine'));
@@ -291,11 +318,38 @@ class RoutineLog extends amplify_core.Model {
     modelSchemaDefinition.name = "RoutineLog";
     modelSchemaDefinition.pluralName = "RoutineLogs";
     
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.OWNER,
+        ownerField: "owner",
+        identityClaim: "cognito:username",
+        provider: amplify_core.AuthRuleProvider.USERPOOLS,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ]),
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PRIVATE,
+        operations: const [
+          amplify_core.ModelOperation.READ
+        ])
+    ];
+    
     modelSchemaDefinition.indexes = [
+      amplify_core.ModelIndex(fields: const ["userID"], name: "byUser"),
       amplify_core.ModelIndex(fields: const ["routineID"], name: "byRoutine")
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: RoutineLog.USER,
+      isRequired: true,
+      targetNames: ['userID'],
+      ofModelName: 'User'
+    ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
       key: RoutineLog.ROUTINE,

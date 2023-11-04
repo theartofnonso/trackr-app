@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
@@ -23,12 +24,10 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   Future<void> uploadExercises() async {
-
     // final exercise = Exercise(name: "Smith Machine Lunge", primary: ['Quads', 'Glutes', 'Adductors'], secondary: [], bodyPart: BodyPart.Legs, createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
     // final request = ModelMutations.create(exercise);
     // final result = await Amplify.API.mutate(request: request).response;
     // print(result);
-
 
     // var file = '/Users/nonsobiose/IdeaProjects/tracker_app/.xlsx';
     // var bytes = File(file).readAsBytesSync();
@@ -53,7 +52,39 @@ class ExerciseProvider with ChangeNotifier {
     //     }
     //   }
     // }
+  }
 
+  // Future<void> parseExercises() async {
+  //   final jsonString = '''''';
+  //
+  //   final jsonList = LineSplitter.split(jsonString);
+  //   final exercises = jsonList.map((line) => fromJson(jsonDecode(line)['Item'])).toList();
+  //   for(Exercise exercise in exercises) {
+  //     final request = ModelMutations.create(exercise);
+  //     try {
+  //       final result = await Amplify.API.mutate(request: request).response;
+  //       print(result);
+  //     } catch(e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
+
+  Exercise fromJson(Map<String, dynamic> json) {
+    return Exercise(
+      id: json['id']['S'],
+      name: json['name']?['S'],
+      primary: List<String>.from(json['primary']['L']?.map((item) => item['S']) ?? []),
+      secondary: List<String>.from(json['secondary']['L']?.map((item) => item['S']) ?? []),
+      bodyPart: BodyPart.values.firstWhere(
+        (e) => e.toString().split('.').last == json['bodyPart']['S'],
+        orElse: () => throw Exception('Invalid body part'),
+      ),
+      asset: "https://usetracker.xyz",
+      notes: "",
+      createdAt: TemporalDateTime.now(),
+      updatedAt: TemporalDateTime.now(),
+    );
   }
 
   Future<void> saveExercise({required String id, required String name, required BodyPart bodyPart}) async {
