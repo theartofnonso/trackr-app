@@ -193,8 +193,10 @@ class _RepsTextField extends StatelessWidget {
       onChanged: (value) => onChangedReps(_parseIntOrDefault(value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
+          focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+          fillColor: tealBlueLight,
           hintText: initialValue.toString(),
           hintStyle: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.grey)),
       keyboardType: TextInputType.number,
@@ -224,6 +226,8 @@ class _WeightTextField extends StatelessWidget {
         onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
+            fillColor: tealBlueLight,
+            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
             hintText: value.toString(),
