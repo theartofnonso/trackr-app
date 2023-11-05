@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
           scaffoldBackgroundColor: tealBlueDark,
           colorScheme: const ColorScheme(
             brightness: Brightness.dark,
-            primary: tealBlueLighter,
+            primary: Colors.white,
             onPrimary: Colors.white,
             secondary: Colors.white,
             onSecondary: Colors.white,
@@ -91,11 +91,12 @@ class _MyAppState extends State<MyApp> {
             onError: Colors.black,
             background: tealBlueDark,
             onBackground: Colors.white,
-            surface: Colors.white,
+            surface: tealBlueLighter,
             onSurface: Colors.white,
           ),
           snackBarTheme: const SnackBarThemeData(
-            backgroundColor: tealBlueLighter
+            backgroundColor: tealBlueDark,
+            actionBackgroundColor: tealBlueLighter
           ),
           tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
           inputDecorationTheme: InputDecorationTheme(
