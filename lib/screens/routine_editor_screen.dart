@@ -446,7 +446,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 procedures: completedProcedures,
                 startTime: _routineStartTime,
                 createdAt: widget.createdAt,
-                routine: widget.routine!);
+                routine: routine);
             _navigateBackAndClearCache();
           }
         },
@@ -648,7 +648,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             procedures: _procedures,
             startTime: _routineStartTime,
             createdAt: widget.createdAt,
-            routine: widget.routine!);
+            routine: routine);
       }
     }
   }
