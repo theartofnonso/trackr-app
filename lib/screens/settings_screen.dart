@@ -1,8 +1,10 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../providers/weight_unit_provider.dart';
 
@@ -75,10 +77,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
             ),
+            const Spacer(),
+            CTextButton(onPressed: _logout, label: "Logout")
           ],
         ),
       ),
     );
+  }
+
+  void _logout() async {
+    await Amplify.Auth.signOut();
   }
 
   WeightUnit _weightUnit(String unit) {
