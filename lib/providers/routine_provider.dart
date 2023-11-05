@@ -15,8 +15,8 @@ class RoutineProvider with ChangeNotifier {
   UnmodifiableListView<Routine> get routines => UnmodifiableListView(_routines);
 
   void listRoutines(BuildContext context) async {
-
-    final request = ModelQueries.list(Routine.classType);
+    final routineOwner = await user();
+    final request = ModelQueries.list(Routine.classType, where: Routine.USER.eq(routineOwner.id));
     final response = await Amplify.API.query(request: request).response;
 
     final routines = response.data?.items;

@@ -127,7 +127,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    user();
     _loadData();
   }
 
