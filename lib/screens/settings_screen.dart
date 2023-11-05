@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -34,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text("Weight Unit Type",),
-              subtitle: const Text("Choose kg or lbs", style: TextStyle(color: Colors.white70)),
+              subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70)),
               trailing: SegmentedButton(
                 showSelectedIcon: false,
                 style: ButtonStyle(

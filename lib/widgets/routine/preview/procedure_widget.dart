@@ -60,7 +60,7 @@ class ProcedureWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 5),
                   Text("${procedureDto.restInterval.secondsOrMinutesOrHours()} rest interval",
-                      style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                      style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
                 ]),
               ],
             ),
@@ -70,7 +70,7 @@ class ProcedureWidget extends StatelessWidget {
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(procedureDto.notes,
-                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                    style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
         ...setsToWidgets(sets: procedureDto.sets),

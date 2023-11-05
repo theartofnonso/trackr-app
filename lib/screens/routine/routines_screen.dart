@@ -33,7 +33,7 @@ class RoutinesScreen extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: tealBlueDark,
-          title: const Text("Workouts", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          title: Text("Workouts", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
           centerTitle: false,
         ),
           floatingActionButton: FloatingActionButton(
@@ -79,7 +79,7 @@ class _RoutineWidget extends StatelessWidget {
           Icons.edit,
           color: Colors.white,
         ),
-        child: const Text("Edit", style: TextStyle(color: Colors.white)),
+        child: Text("Edit", style: GoogleFonts.lato(color: Colors.white)),
       ),
       MenuItemButton(
         onPressed: () {
@@ -88,7 +88,7 @@ class _RoutineWidget extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
             ),
             CTextButton(
                 onPressed: () {
@@ -100,7 +100,7 @@ class _RoutineWidget extends StatelessWidget {
           showAlertDialog(context: context, message: 'Delete workout?', actions: alertDialogActions);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
   }
@@ -148,7 +148,7 @@ class _RoutineWidget extends StatelessWidget {
                   size: 12,
                 ),
                 Text("${routine.procedures.length} exercises",
-                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                    style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
               ]),
               trailing: MenuAnchor(
                 style: MenuStyle(

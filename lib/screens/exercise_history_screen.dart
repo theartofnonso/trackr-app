@@ -417,12 +417,12 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             // const SizedBox(height: 10),
             // Text(
             //   "Primary Target: ${exercise.primary.join(", ")}",
-            //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            //   style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             // ),
             // const SizedBox(height: 5),
             // Text(
             //   "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
-            //   style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            //   style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             // ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
@@ -616,7 +616,7 @@ class MetricWidget extends StatelessWidget {
         onTap: onTap,
         tileColor: tealBlueLight,
         title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
-        subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+        subtitle: Text(subtitle, style: GoogleFonts.lato(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing: Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
       ),

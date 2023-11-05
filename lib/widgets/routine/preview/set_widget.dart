@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
@@ -28,9 +29,9 @@ class SetWidget extends StatelessWidget {
         tileColor: tealBlueLight,
         leading: _SetIcon(type: setDto.type, label: workingIndex),
         title: Row(children: [
-          RepText(label: "REPS", value: setDto.reps),
+          WeightText(label: weightLabel().toUpperCase(), value: value),
           const SizedBox(width: 10),
-          WeightText(label: weightLabel().toUpperCase(), value: value)
+          RepText(label: "REPS", value: setDto.reps),
         ], ));
   }
 }
@@ -91,7 +92,7 @@ class _SetIcon extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Text(
         type == SetType.working ? "${label + 1}" : type.label,
-        style: TextStyle(color: type.color, fontWeight: FontWeight.bold),
+        style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
       ),
     );
   }

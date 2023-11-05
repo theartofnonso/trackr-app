@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
@@ -25,14 +26,14 @@ class ProcedureWidget extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text("${procedureDto.restInterval.secondsOrMinutesOrHours()} rest interval",
-              style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
         ]),
         const SizedBox(height: 4),
         procedureDto.notes.isNotEmpty
             ? Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(procedureDto.notes,
-              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
+              style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
         )
             : const SizedBox.shrink(),
         ...setsToWidgets(sets: procedureDto.sets),

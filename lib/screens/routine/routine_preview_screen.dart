@@ -116,7 +116,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+              child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
             ),
             CTextButton(
                 onPressed: () {
@@ -128,7 +128,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
           showAlertDialog(context: context, message: "Delete workout?", actions: alertDialogActions);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
   }

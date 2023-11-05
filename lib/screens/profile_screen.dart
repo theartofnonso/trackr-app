@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
-import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
@@ -108,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
-        title: const Text("Profile", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        title: Text("Profile", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
         centerTitle: false,
         actions: [
           GestureDetector(

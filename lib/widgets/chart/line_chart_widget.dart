@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
 enum ChartUnit {
@@ -90,7 +91,7 @@ class LineChartWidget extends StatelessWidget {
 
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
+    final style = GoogleFonts.lato(
       fontWeight: FontWeight.w600,
       fontSize: 9,
     );
@@ -101,7 +102,7 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
+    final style = GoogleFonts.lato(
       fontWeight: FontWeight.w600,
       fontSize: 10,
     );

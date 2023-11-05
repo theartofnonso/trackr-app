@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 
@@ -147,8 +148,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   color: Colors.white70,
                 ),
                 hintText: "Search exercises",
-                hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white70)),
-                textStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(color: Colors.white)),
+                hintStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.lato(color: Colors.white70)),
+                textStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.lato(color: Colors.white)),
                 surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
                 backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
                 shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(

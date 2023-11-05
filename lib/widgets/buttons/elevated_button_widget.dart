@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class CElevatedButtonWidget extends StatelessWidget {
   final void Function() onPressed;
   final String label;
-  final TextStyle? textStyle;
+  final GoogleFonts.lato? textStyle;
 
   const CElevatedButtonWidget(
       {super.key, required this.onPressed, required this.label, this.textStyle});

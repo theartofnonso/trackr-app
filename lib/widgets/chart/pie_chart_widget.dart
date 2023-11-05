@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/models/BodyPart.dart';
 
@@ -104,11 +105,11 @@ class PieChartWidget extends StatelessWidget {
   }
 
   List<PieChartSectionData> showingSections() {
-    const textStyle = TextStyle(
+    final textStyle = GoogleFonts.lato(
       fontSize: 14,
       fontWeight: FontWeight.bold,
       color: Colors.white,
-      shadows: [Shadow(color: Colors.white60, blurRadius: 1)],
+      shadows: [const Shadow(color: Colors.white60, blurRadius: 1)],
     );
 
     return List.generate(5, (i) {

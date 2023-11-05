@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
@@ -61,9 +62,9 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: Text(
           "Reorder",
-          style: TextStyle(color: Colors.white),
+          style: GoogleFonts.lato(color: Colors.white),
         ),
         actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save", buttonColor: Colors.transparent,) : const SizedBox.shrink()],
       ),

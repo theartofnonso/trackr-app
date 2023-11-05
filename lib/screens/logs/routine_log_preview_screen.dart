@@ -121,7 +121,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ),
                       const SizedBox(width: 1),
                       Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
-                          style: TextStyle(
+                          style: GoogleFonts.lato(
                               color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       const SizedBox(width: 10),
                       const Icon(
@@ -131,7 +131,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ),
                       const SizedBox(width: 1),
                       Text(log.endTime.getDateTimeInUtc().formattedTime(),
-                          style: TextStyle(
+                          style: GoogleFonts.lato(
                               color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                     ],
                   ),
@@ -345,7 +345,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+              child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
             ),
             CTextButton(
                 onPressed: () {
@@ -357,7 +357,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
           showAlertDialog(context: context, message: "Delete log?", actions: alertDialogActions);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-        child: const Text("Delete", style: TextStyle(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
   }

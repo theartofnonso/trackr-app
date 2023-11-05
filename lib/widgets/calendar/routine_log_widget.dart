@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
@@ -29,7 +30,7 @@ class RoutineLogWidget extends StatelessWidget {
             ),
             const SizedBox(width: 1),
             Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-                style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+                style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
             const SizedBox(width: 10),
             const Icon(
               Icons.timer,
@@ -38,7 +39,7 @@ class RoutineLogWidget extends StatelessWidget {
             ),
             const SizedBox(width: 1),
             Text(_logDuration(),
-                style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+                style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
           ])),
     );
   }

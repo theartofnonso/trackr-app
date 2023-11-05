@@ -75,7 +75,7 @@ class ProcedureWidget extends StatelessWidget {
                 onRemoveSuperSet(procedureDto.superSetId);
               },
               leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-              child: const Text("Remove Super-set", style: TextStyle(color: Colors.red)),
+              child: Text("Remove Super-set", style: GoogleFonts.lato(color: Colors.red)),
             )
           : MenuItemButton(
               onPressed: () {
@@ -96,9 +96,9 @@ class ProcedureWidget extends StatelessWidget {
           onRemoveProcedure();
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
-        child: const Text(
+        child: Text(
           "Remove",
-          style: TextStyle(color: Colors.red),
+          style: GoogleFonts.lato(color: Colors.red),
         ),
       )
     ];
@@ -253,7 +253,7 @@ class ProcedureWidget extends StatelessWidget {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 6),
           Row(
@@ -273,22 +273,22 @@ class ProcedureWidget extends StatelessWidget {
               3: FixedColumnWidth(55),
               4: FixedColumnWidth(55),
             },
-            children: const <TableRow>[
+            children: <TableRow>[
               TableRow(
                 children: [
                   Text("SET",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("PREVIOUS",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("KG",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("REPS",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
-                  TableCell(verticalAlignment: TableCellVerticalAlignment.middle, child: Icon(Icons.check, size: 12,))
+                  const TableCell(verticalAlignment: TableCellVerticalAlignment.middle, child: Icon(Icons.check, size: 12,))
                 ]
               ),
             ],

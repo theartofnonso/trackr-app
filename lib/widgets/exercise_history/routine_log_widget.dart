@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/exercise_history/procedure_widget.dart';
@@ -32,7 +33,7 @@ class RoutineLogWidget extends StatelessWidget {
             ),
             const SizedBox(width: 1),
             Text(routineLog.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
-                style: TextStyle(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                style: GoogleFonts.lato(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ]),),
         ),
         ...routineLog.procedures.map((procedure) => ProcedureWidget(procedureDto: ProcedureDto.fromJson(jsonDecode(procedure)))).toList()

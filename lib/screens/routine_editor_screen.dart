@@ -159,14 +159,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
       TextButton(
         onPressed: () {
           Navigator.pop(context);
           _doReplaceProcedure(procedureId: procedureId);
         },
-        child: const Text('Replace', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+        child: Text('Replace', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
       )
     ];
 
@@ -409,8 +409,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+        child: Text('Ok',
+            style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
       ),
     ];
 
@@ -432,7 +432,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           Navigator.pop(context);
           _navigateBackAndClearCache();
         },
-        child: const Text('Discard workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+        child: Text('Discard workout', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
       ),
       TextButton(
         onPressed: () {
@@ -450,7 +450,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             _navigateBackAndClearCache();
           }
         },
-        child: const Text('Finish', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        child: Text('Finish', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
       )
     ];
     showAlertDialog(context: context, message: "Finish workout?", actions: actions);
@@ -462,7 +462,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        child: Text('Ok', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
     ];
     if (_routineNameController.text.isEmpty) {
@@ -475,7 +475,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
         ),
         CTextButton(
             onPressed: () {
@@ -494,7 +494,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text('Ok', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        child: Text('Ok', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
     ];
     if (_routineNameController.text.isEmpty) {
@@ -507,7 +507,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
         ),
         CTextButton(
             onPressed: () {
@@ -604,13 +604,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             Navigator.pop(context);
             _navigateBackAndClearCache();
           },
-          child: const Text('Discard', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+          child: Text('Discard', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Continue', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          child: Text('Continue', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
         )
       ];
       showAlertDialog(context: context, message: "You have not completed any sets", actions: actions);
@@ -784,7 +784,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                   cursorColor: Colors.white,
                                   keyboardType: TextInputType.text,
                                   textCapitalization: TextCapitalization.words,
-                                  style: TextStyle(
+                                  style: GoogleFonts.lato(
                                       fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                                 ),
                                 const SizedBox(height: 10),
@@ -803,7 +803,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                   cursorColor: Colors.white,
                                   keyboardType: TextInputType.text,
                                   textCapitalization: TextCapitalization.sentences,
-                                  style: TextStyle(
+                                  style: GoogleFonts.lato(
                                       fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                                 ),
                               ],
@@ -1106,10 +1106,10 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
           2: FlexColumnWidth(),
         },
         children: [
-          const TableRow(children: [
-            Text("Sets", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-            Text("Volume", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-            Text("Duration", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
+           TableRow(children: [
+            Text("Sets", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+            Text("Volume", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+            Text("Duration", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
           ]),
           TableRow(children: [
             Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),

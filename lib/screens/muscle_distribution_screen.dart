@@ -32,7 +32,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
-        title: const Text("Muscle Distribution", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        title: Text("Muscle Distribution", style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w600)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: _navigateBack,

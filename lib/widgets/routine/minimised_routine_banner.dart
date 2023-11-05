@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 
@@ -28,7 +29,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
           onPressed: () {
             Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
           },
-          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+          child: Text('Cancel', style: GoogleFonts.lato(color: Colors.white)),
         ),
         TextButton(
           onPressed: () {
@@ -39,7 +40,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
                     mode: RoutineEditorMode.routine,
                     type: RoutineEditingType.log)));
           },
-          child: const Text('Continue', style: TextStyle(color: Colors.white)),
+          child: Text('Continue', style: GoogleFonts.lato(color: Colors.white)),
         ),
       ],
     );

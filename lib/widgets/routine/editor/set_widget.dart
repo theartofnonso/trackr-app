@@ -75,7 +75,7 @@ class SetWidget extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   )
-                : const Text("-", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70)),
+                : Text("-", textAlign: TextAlign.center, style: GoogleFonts.lato(color: Colors.white70)),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
@@ -138,23 +138,23 @@ class _SetIcon extends StatelessWidget {
                 ListTile(
                     onTap: () => selectType(context, SetType.warmUp),
                     leading: Text("W",
-                        style: TextStyle(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: const Text("Warm up Set", style: TextStyle(fontSize: 14))),
+                        style: GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: Text("Warm up Set", style: GoogleFonts.lato(fontSize: 14))),
                 ListTile(
                     onTap: () => selectType(context, SetType.working),
                     leading: Text("1",
-                        style: TextStyle(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: const Text("Working Set", style: TextStyle(fontSize: 14))),
+                        style: GoogleFonts.lato(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: Text("Working Set", style: GoogleFonts.lato(fontSize: 14))),
                 ListTile(
                     onTap: () => selectType(context, SetType.failure),
                     leading: Text("F",
-                        style: TextStyle(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: const Text("Failure Set", style: TextStyle(fontSize: 14))),
+                        style: GoogleFonts.lato(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: Text("Failure Set", style: GoogleFonts.lato(fontSize: 14))),
                 ListTile(
                     onTap: () => selectType(context, SetType.drop),
                     leading: Text("D",
-                        style: TextStyle(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: const Text("Drop Set", style: TextStyle(fontSize: 14))),
+                        style: GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: Text("Drop Set", style: GoogleFonts.lato(fontSize: 14))),
                 CTextButton(onPressed: () {
                   Navigator.pop(context);
                   onRemoveSet();
@@ -167,7 +167,7 @@ class _SetIcon extends StatelessWidget {
         backgroundColor: Colors.transparent,
         child: Text(
           type == SetType.working ? "${label + 1}" : type.label,
-          style: TextStyle(color: type.color, fontWeight: FontWeight.bold),
+          style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
         ),
       ),
     );
