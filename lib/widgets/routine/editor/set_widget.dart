@@ -17,7 +17,7 @@ class SetWidget extends StatelessWidget {
     required this.workingIndex,
     required this.setDto,
     required this.pastSetDto,
-    this.editorType = RoutineEditorMode.editing,
+    this.editorType = RoutineEditorType.edit,
     required this.onTapCheck,
     required this.onRemoved,
     required this.onChangedReps,
@@ -29,7 +29,7 @@ class SetWidget extends StatelessWidget {
   final int workingIndex;
   final SetDto setDto;
   final SetDto? pastSetDto;
-  final RoutineEditorMode editorType;
+  final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(int value) onChangedReps;
@@ -93,7 +93,7 @@ class SetWidget extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: editorType == RoutineEditorMode.routine
+            child: editorType == RoutineEditorType.log
                 ? GestureDetector(
                     onTap: onTapCheck,
                     child: setDto.checked

@@ -74,7 +74,6 @@ class RoutineLogProvider with ChangeNotifier {
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine routine}) async {
-    print(routine);
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
     final routineLogOwner = await user();

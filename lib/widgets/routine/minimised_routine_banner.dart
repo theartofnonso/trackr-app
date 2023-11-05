@@ -37,8 +37,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
                 builder: (context) => RoutineEditorScreen(
                     routineLog: log,
                     routine: log.routine,
-                    mode: RoutineEditorMode.routine,
-                    type: RoutineEditingType.log)));
+                    mode: RoutineEditorType.log)));
           },
           child: Text('Continue', style: GoogleFonts.lato(color: Colors.white)),
         ),

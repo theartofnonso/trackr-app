@@ -27,23 +27,19 @@ import '../widgets/helper_widgets/routine_helper.dart';
 import '../widgets/routine/editor/procedure_widget.dart';
 import 'exercise_library_screen.dart';
 
-enum RoutineEditorMode { editing, routine }
-
-enum RoutineEditingType { template, log }
+enum RoutineEditorType { edit, log }
 
 class RoutineEditorScreen extends StatefulWidget {
   final Routine? routine;
   final RoutineLog? routineLog;
-  final RoutineEditorMode mode;
-  final RoutineEditingType type;
+  final RoutineEditorType mode;
   final TemporalDateTime? createdAt;
 
   const RoutineEditorScreen(
       {super.key,
       this.routine,
       this.routineLog,
-      this.mode = RoutineEditorMode.editing,
-      this.type = RoutineEditingType.template,
+      this.mode = RoutineEditorType.edit,
       this.createdAt});
 
   @override
@@ -268,7 +264,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     sets[setIndex] = sets[setIndex].copyWith(reps: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
-    if (widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
 
@@ -281,7 +277,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final sets = [...procedure.sets];
     sets[setIndex] = sets[setIndex].copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-    if (widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
 
@@ -622,13 +618,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _cacheElapsedRestInterval({required int elapsedTime}) {
-    if (widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorType.log) {
       SharedPrefs().cachedRoutineRestInterval = elapsedTime;
     }
   }
 
   void _cachedElapsedRestInterval() {
-    if (widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorType.log) {
       final elapsedRestIntervalDuration = SharedPrefs().cachedRoutineRestInterval;
       if (elapsedRestIntervalDuration > 0) {
         setState(() {
@@ -639,7 +635,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _cacheRoutineLog() {
-    if (widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorType.log) {
       final routine = widget.routine;
       if (routine != null) {
         Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
@@ -694,7 +690,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     return Scaffold(
         backgroundColor: tealBlueDark,
-        appBar: widget.mode == RoutineEditorMode.editing
+        appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
                 backgroundColor: tealBlueDark,
                 leading: IconButton(
@@ -724,7 +720,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
-        floatingActionButton: widget.mode == RoutineEditorMode.routine
+        floatingActionButton: widget.mode == RoutineEditorType.log
             ? MediaQuery.of(context).viewInsets.bottom <= 0 ? FloatingActionButton(
                 heroTag: "fab_routine_editor_screen",
                 onPressed: _endRoutineLog,
@@ -746,7 +742,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               onTap: _dismissKeyboard,
               child: Column(
                 children: [
-                  if (widget.mode == RoutineEditorMode.routine)
+                  if (widget.mode == RoutineEditorType.log)
                     RunningRoutineSummaryWidget(
                       sets: _totalCompletedSets.length,
                       weight: _totalWeight(),
@@ -767,7 +763,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (widget.mode == RoutineEditorMode.editing)
+                          if (widget.mode == RoutineEditorType.edit)
                             Column(
                               children: [
                                 TextField(
@@ -833,7 +829,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final previousRoutineLog = widget.routineLog;
 
     /// In [RoutineEditorMode.editing] mode
-    if (widget.mode == RoutineEditorMode.editing) {
+    if (widget.mode == RoutineEditorType.edit) {
       if (previousRoutine != null) {
         _procedures
             .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
@@ -855,7 +851,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       }
     }
 
-    if (widget.mode == RoutineEditorMode.editing) {
+    if (widget.mode == RoutineEditorType.edit) {
       if (previousRoutineLog != null) {
         _routineNameController = TextEditingController(text: previousRoutineLog.name);
         _routineNotesController = TextEditingController(text: previousRoutineLog.notes);
@@ -865,7 +861,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       }
     }
 
-    if (widget.mode == RoutineEditorMode.routine) {
+    if (widget.mode == RoutineEditorType.log) {
       /// Show progress of resumed routine
       /// Show any previous running timers
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -881,7 +877,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.mode == RoutineEditorMode.editing) {
+    if (widget.mode == RoutineEditorType.edit) {
       _routineNameController.dispose();
       _routineNotesController.dispose();
     }

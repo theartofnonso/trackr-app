@@ -31,8 +31,7 @@ void startEmptyRoutine({required BuildContext context, TemporalDateTime? created
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => RoutineEditorScreen(
             routine: emptyRoutine,
-            mode: RoutineEditorMode.routine,
-            type: RoutineEditingType.log,
+            mode: RoutineEditorType.log,
             createdAt: createdAt)));
   }
 }

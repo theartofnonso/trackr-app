@@ -365,6 +365,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   void _navigateToRoutineEditor({required BuildContext context, required RoutineLog log}) async {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            RoutineEditorScreen(routineLog: log, mode: RoutineEditorMode.editing, type: RoutineEditingType.log)));
+            RoutineEditorScreen(routineLog: log, mode: RoutineEditorType.edit)));
   }
 }
