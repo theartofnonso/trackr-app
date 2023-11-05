@@ -9,6 +9,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../../dtos/procedure_dto.dart';
+import '../../messages.dart';
 import '../../models/Routine.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
@@ -42,22 +43,20 @@ class RoutinesScreen extends StatelessWidget {
             child: const Icon(Icons.add),
           ),
           body: SafeArea(
-              child: routineProvider.routines.isNotEmpty
-                  ? Padding(
+              child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(children: [
                         cachedRoutineLog != null
                             ? MinimisedRoutineBanner(log: cachedRoutineLog)
                             : const SizedBox.shrink(),
-                        Expanded(
+                        routineProvider.routines.isNotEmpty ? Expanded(
                           child: ListView.separated(
                               itemBuilder: (BuildContext context, int index) => _RoutineWidget(
                                   routine: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
                               separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
                               itemCount: routineProvider.routines.length),
-                        )
-                      ]))
-                  : const Center(child: ScreenEmptyState(message: "Create workouts ahead of gym time"))));
+                        ) : const Expanded(child: Center(child: ScreenEmptyState(message: createWorkoutsAheadOfTime)))
+                      ]))));
     });
   }
 }

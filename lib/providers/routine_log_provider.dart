@@ -45,9 +45,15 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void listRoutineLogs(BuildContext context) async {
-    _logs = await Amplify.DataStore.query(RoutineLog.classType,
-        sortBy: [QuerySortBy(order: QuerySortOrder.descending, field: RoutineLog.CREATEDAT.fieldName)]);
-    notifyListeners();
+    final request = ModelQueries.list(RoutineLog.classType);
+    final response = await Amplify.API.query(request: request).response;
+
+    final routineLogs = response.data?.items;
+    if (routineLogs != null) {
+      _logs = routineLogs.whereType<RoutineLog>().toList();
+      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      notifyListeners();
+    }
   }
 
   void retrieveCachedRoutineLog(BuildContext context) {
@@ -72,31 +78,35 @@ class RoutineLogProvider with ChangeNotifier {
 
     final routineLogOwner = await user();
 
-    final logToCreate = RoutineLog(
-        name: name,
-        notes: notes,
-        procedures: proceduresJson,
-        startTime: startTime,
-        endTime: TemporalDateTime.now(),
-        createdAt: createdAt ?? TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(),
-        routine: routine,
-        user: routineLogOwner);
-    final request = ModelMutations.create(logToCreate);
-    final response = await Amplify.API.mutate(request: request).response;
-    final createdLog = response.data;
-    if (createdLog != null) {
-      _logs.add(logToCreate);
-      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      clearCachedLog();
-      notifyListeners();
-    }
-
     /// [RoutineLog] requires an instance of [Routine]
     /// If [RoutineLog] is from a non-existing [Routine], persist new one
-    // if (routine.name.isEmpty) {
-    //   await Amplify.DataStore.save<Routine>(routine);
-    // }
+    Routine? createdRoutine;
+    if (routine.name.isEmpty) {
+      final request = ModelMutations.create(routine);
+      final response = await Amplify.API.mutate(request: request).response;
+      createdRoutine = response.data;
+    }
+    if (createdRoutine != null) {
+      final logToCreate = RoutineLog(
+          name: name,
+          notes: notes,
+          procedures: proceduresJson,
+          startTime: startTime,
+          endTime: TemporalDateTime.now(),
+          createdAt: createdAt ?? TemporalDateTime.now(),
+          updatedAt: TemporalDateTime.now(),
+          routine: createdRoutine,
+          user: routineLogOwner);
+      final request = ModelMutations.create(logToCreate);
+      final response = await Amplify.API.mutate(request: request).response;
+      final createdLog = response.data;
+      if (createdLog != null) {
+        _logs.add(logToCreate);
+        _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        clearCachedLog();
+        notifyListeners();
+      }
+    }
   }
 
   void cacheRoutineLog(
@@ -151,8 +161,8 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.indexWhere((log) => log.id == id);
   }
 
-  RoutineLog whereRoutineLog({required String id}) {
-    return _logs.firstWhere((log) => log.id == id);
+  RoutineLog? whereRoutineLog({required String id}) {
+    return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
   List<ProcedureDto> whereProcedureDtos({required ProcedureDto procedureDto}) {

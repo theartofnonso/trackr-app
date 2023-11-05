@@ -1,10 +1,9 @@
-import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
-import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../../app_constants.dart';
@@ -94,7 +93,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                             itemCount: provider.logs.length),
                       )
-                    : const Expanded(child: Center(child: ScreenEmptyState(message: startTrackingPerformance))),
+                    : Expanded(child: Center(child: ScreenEmptyState(message: cachedRoutineLog == null ? startTrackingPerformance : crunchingPerformanceNumbers))),
               ],
             ),
           ),

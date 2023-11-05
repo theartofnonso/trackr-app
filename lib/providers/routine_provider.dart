@@ -21,7 +21,8 @@ class RoutineProvider with ChangeNotifier {
 
     final routines = response.data?.items;
     if (routines != null) {
-      _routines = routines.whereType<Routine>().toList();
+      _routines = routines.whereType<Routine>().whereNot((routine) => routine.name.isEmpty).toList();
+      _routines.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     }
   }
@@ -42,6 +43,7 @@ class RoutineProvider with ChangeNotifier {
     final createdRoutine = response.data;
     if (createdRoutine != null) {
       _routines.insert(0, routineToCreate);
+      _routines.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     }
   }
@@ -72,8 +74,8 @@ class RoutineProvider with ChangeNotifier {
     return _routines.indexWhere((routine) => routine.id == id);
   }
 
-  Routine routineWhere({required String id}) {
-    return _routines.firstWhere((dto) => dto.id == id);
+  Routine? routineWhere({required String id}) {
+    return _routines.firstWhereOrNull((dto) => dto.id == id);
   }
 
   Future<List<RoutineLog>> routinesLogsWhere({required String id}) async {

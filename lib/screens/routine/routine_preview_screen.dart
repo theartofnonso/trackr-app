@@ -160,6 +160,10 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   Widget build(BuildContext context) {
     final routine = Provider.of<RoutineProvider>(context, listen: true).routineWhere(id: widget.routineId);
 
+    if(routine == null) {
+      return const SizedBox.shrink();
+    }
+
     final procedures = routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
 
     final cachedRoutineLogDto = Provider.of<RoutineLogProvider>(context, listen: true).cachedLog;

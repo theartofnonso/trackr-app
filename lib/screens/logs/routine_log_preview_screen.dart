@@ -39,6 +39,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     final weightProvider = Provider.of<WeightUnitProvider>(context, listen: true);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
+    if(log == null) {
+      return const SizedBox.shrink();
+    }
+
     final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
     final completedSetsSummary =
         completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
