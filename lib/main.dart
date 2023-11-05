@@ -101,6 +101,7 @@ class _MyAppState extends State<MyApp> {
           tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
           inputDecorationTheme: InputDecorationTheme(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
             filled: true,
