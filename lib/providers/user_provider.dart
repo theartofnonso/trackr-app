@@ -1,9 +1,5 @@
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-
-import '../shared_prefs.dart';
 
 class UserProvider with ChangeNotifier {
   late final User _user;

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
@@ -130,27 +131,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         RichText(
                           text: TextSpan(
-                            style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                            style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
                             // This gets the default style
                             children: <TextSpan>[
                               const TextSpan(text: 'You have logged '),
                               TextSpan(
                                   text: '$logsForTheWeek workouts this week,',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                                  style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
                               TextSpan(
                                   text: '$logsForTheMonth this month',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                                  style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
                               const TextSpan(text: ' and '),
                               TextSpan(
                                   text: '$logsForTheYear this year',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
+                                  style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
                             ],
                           ),
                         ),
                         const SizedBox(height: 10),
                         Text(
                             "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                            style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                            style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
                         const SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
@@ -163,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 underline: Container(
                                   color: Colors.transparent,
                                 ),
-                                style: const TextStyle(color: Colors.white),
+                                style: GoogleFonts.lato(color: Colors.white),
                                 onChanged: (String? value) {
                                   if(value != null) {
                                     setState(() {
@@ -180,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 items: CurrentTimePeriod.values.map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
                                   return DropdownMenuItem<String>(
                                     value: currentTimePeriod.label,
-                                    child: Text(currentTimePeriod.label, style: const TextStyle(fontSize: 12)),
+                                    child: Text(currentTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
                                   );
                                 }).toList(),
                               ),

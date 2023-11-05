@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 
 import '../../screens/exercise_history_screen.dart';
@@ -36,15 +37,15 @@ class ExerciseWidget extends StatelessWidget {
                   width: 300,
                   child: Text(
                     "Primary: ${exerciseInLibraryDto.exercise.primary.join(", ")}",
-                    style: const TextStyle(
-                        color: Colors.white70, overflow: TextOverflow.ellipsis),
+                    style: GoogleFonts.lato(
+                        color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),
               SizedBox(
                   width: 300,
                   child: Text(
                     "Secondary: ${exerciseInLibraryDto.exercise.secondary.isNotEmpty ? exerciseInLibraryDto.exercise.secondary.join(", ") : "None"}",
-                    style: const TextStyle(
-                        color: Colors.white70, overflow: TextOverflow.ellipsis),
+                    style: GoogleFonts.lato(
+                        color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),
             ],
           )),

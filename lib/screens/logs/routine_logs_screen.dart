@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/weight_unit_provider.dart';
@@ -56,7 +57,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       return Scaffold(
         appBar: AppBar(
           backgroundColor: tealBlueDark,
-          title: const Text("Home", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          title: Text("Home", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
           centerTitle: false,
           actions: [
             GestureDetector(

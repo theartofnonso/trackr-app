@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
@@ -189,7 +190,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(routine.name,
-              style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
             MenuAnchor(
               style: MenuStyle(
@@ -227,7 +228,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                       ? Container(
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: Text(routine.notes,
-                              style: const TextStyle(
+                              style: GoogleFonts.lato(
                                 color: Colors.white,
                                 fontSize: 14,
                               )),
@@ -247,7 +248,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    style: const TextStyle(color: Colors.white),
+                                    style: GoogleFonts.lato(color: Colors.white),
                                     onChanged: (String? value) {
                                       if (value != null) {
                                         setState(() {
@@ -265,7 +266,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                                         .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalTimePeriod) {
                                       return DropdownMenuItem<String>(
                                         value: historicalTimePeriod.label,
-                                        child: Text(historicalTimePeriod.label, style: const TextStyle(fontSize: 12)),
+                                        child: Text(historicalTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
                                       );
                                     }).toList(),
                                   ),

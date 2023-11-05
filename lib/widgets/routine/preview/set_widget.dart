@@ -47,9 +47,9 @@ class RepText extends StatelessWidget {
     return SizedBox(
       width: 100,
       child: Row(children: [
-        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        Text(label, style: GoogleFonts.lato(fontSize: 12, color: Colors.grey)),
         const SizedBox(width: 10),
-        Text("$value", style: const TextStyle(color: Colors.white),)
+        Text("$value", style: GoogleFonts.lato(color: Colors.white),)
       ],),
     );
   }
@@ -67,9 +67,9 @@ class WeightText extends StatelessWidget {
     return SizedBox(
       width: 100,
       child: Row(children: [
-        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        Text(label, style: GoogleFonts.lato(fontSize: 12, color: Colors.grey)),
         const SizedBox(width: 10),
-        Text("$value", style: const TextStyle(color: Colors.white),)
+        Text("$value", style: GoogleFonts.lato(color: Colors.white),)
       ],),
     );
   }

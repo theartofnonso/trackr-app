@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums.dart';
@@ -251,7 +252,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               title: Text(exercise.name,
-                  style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.lato(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
               bottom: const TabBar(
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.white70,
@@ -434,7 +435,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                     underline: Container(
                       color: Colors.transparent,
                     ),
-                    style: const TextStyle(color: Colors.white),
+                    style: GoogleFonts.lato(color: Colors.white),
                     onChanged: (String? value) {
                       // This is called when the user selects an item.
                       if (value != null) {
@@ -453,7 +454,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                         .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
                       return DropdownMenuItem<String>(
                         value: historicalDate.label,
-                        child: Text(historicalDate.label, style: const TextStyle(fontSize: 12)),
+                        child: Text(historicalDate.label, style: GoogleFonts.lato(fontSize: 12)),
                       );
                     }).toList(),
                   ),
@@ -614,9 +615,9 @@ class MetricWidget extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         tileColor: tealBlueLight,
-        title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white)),
+        title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-        trailing: Text(summary, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        trailing: Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
       ),
     );

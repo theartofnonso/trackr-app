@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_constants.dart';
 
@@ -33,7 +34,7 @@ void showAlertDialog({required BuildContext context, required String message, re
         backgroundColor: tealBlueLighter,
         content: Text(
           message,
-          style: const TextStyle(fontSize: 16),
+          style: GoogleFonts.lato(fontSize: 16),
           textAlign: TextAlign.center,
         ),
         contentPadding: const EdgeInsets.only(top: 12, bottom: 10),

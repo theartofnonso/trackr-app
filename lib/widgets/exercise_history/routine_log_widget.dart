@@ -24,7 +24,7 @@ class RoutineLogWidget extends StatelessWidget {
           ),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(routineLog.name, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)), subtitle: Row(children: [
+            title: Text(routineLog.name, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)), subtitle: Row(children: [
             const Icon(
               Icons.date_range_rounded,
               color: Colors.white,

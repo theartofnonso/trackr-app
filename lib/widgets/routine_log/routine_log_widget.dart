@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
@@ -102,7 +103,7 @@ class RoutineLogWidget extends StatelessWidget {
                     onTap: () => _navigateToRoutineLogPreview(context: context),
                     tileColor: tealBlueLight,
                     title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name,
-                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                        style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                     trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
               ),
             ))

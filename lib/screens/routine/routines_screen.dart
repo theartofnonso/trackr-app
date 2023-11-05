@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
@@ -208,7 +209,7 @@ class _RoutineWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
                     ),
                     title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name,
-                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                        style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                     trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
               ),
             ))

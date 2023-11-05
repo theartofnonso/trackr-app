@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -67,7 +68,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             onPressed: () => Navigator.of(context).pop(),
           ),
           title:
-              Text(log.name, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              Text(log.name, style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
             MenuAnchor(
               style: MenuStyle(
@@ -105,7 +106,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ? Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: Text(log.notes,
-                              style: const TextStyle(
+                              style: GoogleFonts.lato(
                                 color: Colors.white,
                                 fontSize: 14,
                               )),
@@ -154,7 +155,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(completedSetsSummary,
-                                  style: const TextStyle(
+                                  style: GoogleFonts.lato(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
                           ),
@@ -162,7 +163,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(totalWeightSummary,
-                                  style: const TextStyle(
+                                  style: GoogleFonts.lato(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
                           ),
@@ -170,7 +171,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(_logDuration(log: log),
-                                  style: const TextStyle(
+                                  style: GoogleFonts.lato(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
                           )
@@ -292,7 +293,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         children: [
           Text(
             "$key ${(value * 100).toInt()}%",
-            style: const TextStyle(fontWeight: FontWeight.w400),
+            style: GoogleFonts.lato(fontWeight: FontWeight.w400),
           ),
           const SizedBox(height: 4),
           AnimatedBuilder(

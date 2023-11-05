@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
@@ -720,7 +721,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ),
                 title: Text(
                   "${_editorTitle()}",
-                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
         floatingActionButton: widget.mode == RoutineEditorMode.routine
@@ -779,7 +780,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                       filled: true,
                                       fillColor: tealBlueLighter,
                                       hintText: "New workout",
-                                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
                                   cursorColor: Colors.white,
                                   keyboardType: TextInputType.text,
                                   textCapitalization: TextCapitalization.words,
@@ -797,7 +798,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                       filled: true,
                                       fillColor: tealBlueLighter,
                                       hintText: "Notes",
-                                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
                                   maxLines: null,
                                   cursorColor: Colors.white,
                                   keyboardType: TextInputType.text,
@@ -940,7 +941,7 @@ class _ProceduresListState extends State<_ProceduresList> {
                     return Center(
                         child: Text(
                       exerciseProvider.whereExercise(exerciseId: widget.procedures[index].exerciseId).name,
-                      style: const TextStyle(color: Colors.white),
+                      style: GoogleFonts.lato(color: Colors.white),
                     ));
                   }),
                 ),
@@ -1064,7 +1065,7 @@ class _TimerWidgetState extends State<_TimerWidget> {
   @override
   Widget build(BuildContext context) {
     return Text(Duration(seconds: _elapsedTime).secondsOrMinutesOrHours(),
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600));
+        style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600));
   }
 
   @override
@@ -1111,12 +1112,12 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
             Text("Duration", style: TextStyle(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
           ]),
           TableRow(children: [
-            Text("$sets", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+            Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
             Consumer<WeightUnitProvider>(
               builder: (_, provider, __) {
                 final value = provider.isLbs ? toLbs(weight) : weight;
                 return Text("$value",
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
+                    style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
               },
             ),
             timer
@@ -1167,23 +1168,23 @@ class _IntervalTimerState extends State<_IntervalTimer> {
           CTextButton(
             onPressed: _subtractSeconds,
             label: "-5",
-            textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            textStyle: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(width: 5),
           CTextButton(
             onPressed: _addSeconds,
             label: "+5",
-            textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            textStyle: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(width: 10),
           Text(Duration(seconds: _duration).secondsOrMinutesOrHours(),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+              style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
           const Spacer(),
           CTextButton(
             onPressed: widget.onElapsed,
             label: "Skip",
             buttonColor: Colors.red,
-            textStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            textStyle: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
@@ -48,7 +49,7 @@ class ProcedureWidget extends StatelessWidget {
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text("with ${exerciseProvider.whereExercise(exerciseId: otherProcedureDto.exerciseId).name}",
-                            style: const TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
+                            style: GoogleFonts.lato(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
                       )
                     : const SizedBox.shrink(),
                 Row(children: [

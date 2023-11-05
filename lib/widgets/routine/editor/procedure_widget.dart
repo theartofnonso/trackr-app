@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
@@ -206,7 +207,7 @@ class ProcedureWidget extends StatelessWidget {
                       builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exerciseId)));
                 },
                 child: Text(exerciseProvider.whereExercise(exerciseId: procedureDto.exerciseId).name,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                    style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
               )),
               MenuAnchor(
                   style: MenuStyle(
@@ -232,7 +233,7 @@ class ProcedureWidget extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0.0),
                   child: Text("with ${exerciseProvider.whereExercise(exerciseId: otherProcedureDto.exerciseId).name}",
-                      style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
+                      style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
                 )
               : const SizedBox.shrink(),
           const SizedBox(height: 10),
@@ -246,7 +247,7 @@ class ProcedureWidget extends StatelessWidget {
               filled: true,
               fillColor: tealBlueLighter,
               hintText: "Enter notes",
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14),
             ),
             maxLines: null,
             cursorColor: Colors.white,

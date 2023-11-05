@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
@@ -69,7 +70,7 @@ class SetWidget extends StatelessWidget {
             child: previousSetDto != null
                 ? Text(
                     "$prevWeightValue${weightLabel()} x ${previousSetDto.reps}",
-                    style: const TextStyle(
+                    style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
                     textAlign: TextAlign.center,
@@ -195,7 +196,7 @@ class _RepsTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           hintText: initialValue.toString(),
-          hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+          hintStyle: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.grey)),
       keyboardType: TextInputType.number,
       maxLines: 1,
       textAlign: TextAlign.center,
@@ -226,7 +227,7 @@ class _WeightTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
             hintText: value.toString(),
-            hintStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+            hintStyle: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.grey)),
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         maxLines: 1,
         textAlign: TextAlign.center,

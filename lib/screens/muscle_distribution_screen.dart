@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/BodyPart.dart';
 import 'package:tracker_app/screens/profile_screen.dart';
@@ -47,7 +48,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               underline: Container(
                 color: Colors.transparent,
               ),
-              style: const TextStyle(color: Colors.white),
+              style: GoogleFonts.lato(color: Colors.white),
               onChanged: (String? value) {
                 if (value != null) {
                   setState(() {
@@ -64,7 +65,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               items: CurrentTimePeriod.values.map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
                 return DropdownMenuItem<String>(
                   value: currentTimePeriod.label,
-                  child: Text(currentTimePeriod.label, style: const TextStyle(fontSize: 12)),
+                  child: Text(currentTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
                 );
               }).toList(),
             ),
@@ -74,7 +75,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               underline: Container(
                 color: Colors.transparent,
               ),
-              style: const TextStyle(color: Colors.white),
+              style: GoogleFonts.lato(color: Colors.white),
               onChanged: (String? value) {
                 // This is called when the user selects an item.
                 if (value != null) {
@@ -92,7 +93,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               items: HistoricalTimePeriod.values.map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
                 return DropdownMenuItem<String>(
                   value: historicalDate.label,
-                  child: Text(historicalDate.label, style: const TextStyle(fontSize: 12)),
+                  child: Text(historicalDate.label, style: GoogleFonts.lato(fontSize: 12)),
                 );
               }).toList(),
             )
