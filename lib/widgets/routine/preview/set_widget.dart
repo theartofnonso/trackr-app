@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../../../app_constants.dart';
-import '../../../providers/weight_unit_provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../utils/general_utils.dart';
 
 class SetWidget extends StatelessWidget {
@@ -21,7 +21,7 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+    final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
     final value = weightProvider.isLbs ? toLbs(setDto.weight) : setDto.weight;
 
     return ListTile(

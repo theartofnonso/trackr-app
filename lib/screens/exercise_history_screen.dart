@@ -18,7 +18,7 @@ import '../dtos/set_dto.dart';
 import '../messages.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
-import '../providers/weight_unit_provider.dart';
+import '../providers/settings_provider.dart';
 import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
 import '../widgets/chart/line_chart_widget.dart';
@@ -72,7 +72,7 @@ double _heaviestWeightPerLog({required BuildContext context, required RoutineLog
     }
   }
 
-  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
   final conversion = weightProvider.isLbs ? toLbs(heaviestWeight) : heaviestWeight;
 
   return conversion;
@@ -102,7 +102,7 @@ double _heaviestSetVolumePerLog({required BuildContext context, required Routine
     }
   }
 
-  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
   final conversion = weightProvider.isLbs ? toLbs(heaviestVolume) : heaviestVolume;
 
   return conversion;
@@ -118,7 +118,7 @@ double volumePerLog({required BuildContext context, required RoutineLog log}) {
     totalVolume += volume;
   }
 
-  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
   final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
 
   return conversion;
@@ -129,7 +129,7 @@ double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}
 
   final max = (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
 
-  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
   final conversion = weightProvider.isLbs ? toLbs(max) : max;
 
   return conversion;
@@ -156,7 +156,7 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
     totalVolume += volume;
   }
 
-  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
   final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
 
   return conversion;
@@ -178,7 +178,7 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
     }
   }
 
-  final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
   final conversion = weightProvider.isLbs ? toLbs(heaviestSet.weight) : heaviestSet.weight;
 
   return (logId, heaviestSet.copyWith(weight: conversion));

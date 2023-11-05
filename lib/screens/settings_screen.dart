@@ -6,7 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../providers/weight_unit_provider.dart';
+import '../providers/settings_provider.dart';
 
 enum WeightUnit { kg, lbs }
 
@@ -70,10 +70,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 selected: <WeightUnit>{_unit},
                 onSelectionChanged: (Set<WeightUnit> unitType) {
                   setState(() {
-                    SharedPrefs().weightUnit = unitType.first.name;
                     _unit = unitType.first;
                   });
-                  Provider.of<WeightUnitProvider>(context, listen: false).toggleUnit();
+                  Provider.of<SettingsProvider>(context, listen: false).toggleUnit(unit: _unit);
                 },
               ),
             ),

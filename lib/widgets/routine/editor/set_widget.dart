@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/providers/weight_unit_provider.dart';
+import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../../screens/routine_editor_screen.dart';
@@ -43,7 +43,7 @@ class SetWidget extends StatelessWidget {
     double prevWeightValue = 0;
 
     if (previousSetDto != null) {
-      final weightProvider = Provider.of<WeightUnitProvider>(context, listen: false);
+      final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
       prevWeightValue = weightProvider.isLbs ? toLbs(previousSetDto.weight) : previousSetDto.weight;
     }
 
@@ -212,14 +212,14 @@ class _WeightTextField extends StatelessWidget {
 
   const _WeightTextField({required this.initialValue, required this.onChangedWeight});
 
-  double _parseDoubleOrDefault({required WeightUnitProvider provider, required String value}) {
+  double _parseDoubleOrDefault({required SettingsProvider provider, required String value}) {
     final doubleValue = double.tryParse(value) ?? 0;
     return provider.isLbs ? toKg(doubleValue) : doubleValue;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<WeightUnitProvider>(builder: (_, provider, __) {
+    return Consumer<SettingsProvider>(builder: (_, provider, __) {
       final value = provider.isLbs ? toLbs(initialValue) : initialValue;
       return TextField(
         onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),

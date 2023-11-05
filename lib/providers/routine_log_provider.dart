@@ -77,35 +77,24 @@ class RoutineLogProvider with ChangeNotifier {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
     final routineLogOwner = await user();
-
-    /// [RoutineLog] requires an instance of [Routine]
-    /// If [RoutineLog] is from a non-existing [Routine], persist new one
-    Routine? createdRoutine;
-    if (routine.name.isEmpty) {
-      final request = ModelMutations.create(routine);
-      final response = await Amplify.API.mutate(request: request).response;
-      createdRoutine = response.data;
-    }
-    if (createdRoutine != null) {
-      final logToCreate = RoutineLog(
-          name: name,
-          notes: notes,
-          procedures: proceduresJson,
-          startTime: startTime,
-          endTime: TemporalDateTime.now(),
-          createdAt: createdAt ?? TemporalDateTime.now(),
-          updatedAt: TemporalDateTime.now(),
-          routine: createdRoutine,
-          user: routineLogOwner);
-      final request = ModelMutations.create(logToCreate);
-      final response = await Amplify.API.mutate(request: request).response;
-      final createdLog = response.data;
-      if (createdLog != null) {
-        _logs.add(logToCreate);
-        _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        clearCachedLog();
-        notifyListeners();
-      }
+    final logToCreate = RoutineLog(
+        name: name,
+        notes: notes,
+        procedures: proceduresJson,
+        startTime: startTime,
+        endTime: TemporalDateTime.now(),
+        createdAt: createdAt ?? TemporalDateTime.now(),
+        updatedAt: TemporalDateTime.now(),
+        routine: routine,
+        user: routineLogOwner);
+    final request = ModelMutations.create(logToCreate);
+    final response = await Amplify.API.mutate(request: request).response;
+    final createdLog = response.data;
+    if (createdLog != null) {
+      _logs.add(logToCreate);
+      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      clearCachedLog();
+      notifyListeners();
     }
   }
 

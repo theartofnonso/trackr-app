@@ -1,10 +1,12 @@
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/messages.dart';
-import 'package:tracker_app/providers/weight_unit_provider.dart';
+import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../../app_constants.dart';
@@ -26,13 +28,21 @@ void startEmptyRoutine({required BuildContext context, TemporalDateTime? created
       createdAt: TemporalDateTime.now(),
       updatedAt: TemporalDateTime.now(),
       user: routineOwner);
-
-  if (context.mounted) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => RoutineEditorScreen(
-            routine: emptyRoutine,
-            mode: RoutineEditorType.log,
-            createdAt: createdAt)));
+  final request = ModelMutations.create(emptyRoutine);
+  final response = await Amplify.API.mutate(request: request).response;
+  final createdRoutine = response.data;
+  if(createdRoutine != null) {
+    if (context.mounted) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => RoutineEditorScreen(
+              routine: createdRoutine,
+              mode: RoutineEditorType.log,
+              createdAt: createdAt)));
+    }
+  } else {
+    if(context.mounted) {
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to start workout");
+    }
   }
 }
 
@@ -109,7 +119,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       routineLogProvider.listRoutineLogs(context);
       routineLogProvider.retrieveCachedRoutineLog(context);
       Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
-      Provider.of<WeightUnitProvider>(context, listen: false).toggleUnit();
+      Provider.of<SettingsProvider>(context, listen: false).setDefaultUnit();
     }
   }
 

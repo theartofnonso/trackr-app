@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
@@ -282,7 +283,7 @@ class ProcedureWidget extends StatelessWidget {
                   Text("PREVIOUS",
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
-                  Text("KG",
+                  Text(weightLabel().toUpperCase(),
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                       textAlign: TextAlign.center),
                   Text("REPS",

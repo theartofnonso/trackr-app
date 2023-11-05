@@ -15,7 +15,7 @@ import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
-import '../../providers/weight_unit_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -37,7 +37,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    final weightProvider = Provider.of<WeightUnitProvider>(context, listen: true);
+    final weightProvider = Provider.of<SettingsProvider>(context, listen: true);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if(log == null) {
@@ -48,9 +48,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     final completedSetsSummary =
         completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
-    final totalWeight = _totalWeight(sets: completedSets);
-    final conversion = weightProvider.isLbs ? toLbs(totalWeight) : totalWeight;
-    final totalWeightSummary = "$conversion ${weightLabel()}";
+    final totalVolume = _totalWeight(sets: completedSets);
+    final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
+    final totalVolumeSummary = "$conversion ${weightLabel()}";
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -162,7 +162,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                           TableCell(
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
-                              child: Text(totalWeightSummary,
+                              child: Text(totalVolumeSummary,
                                   style: GoogleFonts.lato(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),

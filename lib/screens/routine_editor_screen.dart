@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
-import 'package:tracker_app/providers/weight_unit_provider.dart';
+import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -1109,7 +1109,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
           ]),
           TableRow(children: [
             Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-            Consumer<WeightUnitProvider>(
+            Consumer<SettingsProvider>(
               builder: (_, provider, __) {
                 final value = provider.isLbs ? toLbs(weight) : weight;
                 return Text("$value",
