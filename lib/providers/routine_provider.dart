@@ -21,7 +21,7 @@ class RoutineProvider with ChangeNotifier {
 
     final routines = response.data?.items;
     if (routines != null) {
-      _routines = routines.whereType<Routine>().whereNot((routine) => routine.name.isEmpty).toList();
+      _routines = routines.whereType<Routine>().toList();
       _routines.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     }

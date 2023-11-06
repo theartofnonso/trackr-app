@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ import '../../dtos/set_dto.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/settings_provider.dart';
+import '../../utils/snackbar_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -350,7 +352,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             CTextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.of(context).pop({"id": widget.routineLogId});
+                  try {
+                    Provider.of<RoutineLogProvider>(context, listen: false).removeLogFromCloud(id: widget.routineLogId);
+                    //Navigator.of(context).pop({"id": widget.routineLogId});
+                  } catch (_) {
+                    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to save changes");
+                  }
                 },
                 label: 'Delete'),
           ];

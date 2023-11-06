@@ -61,18 +61,14 @@ class RoutineLogWidget extends StatelessWidget {
   }
 
   void _navigateToRoutineLogPreview({required BuildContext context}) async {
-    final routine = await Navigator.of(context)
+    final value = await Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: log.id)))
         as Map<String, String>?;
-    if (routine != null) {
-      final id = routine["id"] ?? "";
-      if (id.isNotEmpty) {
+    if (value != null) {
+      final id = value["id"];
+      if (id != null) {
         if (context.mounted) {
-          try {
-            Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
-          } on ApiException catch (_) {
-            showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to save changes");
-          }
+          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
         }
       }
     }

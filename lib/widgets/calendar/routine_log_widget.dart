@@ -55,8 +55,8 @@ class RoutineLogWidget extends StatelessWidget {
       if (id.isNotEmpty) {
         if (context.mounted) {
           try {
-            Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
-          } on ApiException catch (_) {
+            Provider.of<RoutineLogProvider>(context, listen: false).removeLogFromCloud(id: id);
+          } catch (_) {
             showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to save changes");
           }
         }
