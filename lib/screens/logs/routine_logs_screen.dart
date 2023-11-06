@@ -6,13 +6,13 @@ import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
-import 'package:tracker_app/widgets/pending_routines_banner.dart';
+import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 
 import '../../app_constants.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
-import '../../widgets/routine/minimised_routine_banner.dart';
+import '../../widgets/banners/minimised_routine_banner.dart';
 import '../../widgets/routine_log/routine_log_widget.dart';
 import '../calendar_screen.dart';
 

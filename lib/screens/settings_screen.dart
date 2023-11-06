@@ -7,6 +7,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../providers/settings_provider.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
 
 enum WeightUnit { kg, lbs }
 
@@ -85,7 +86,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _logout() async {
-    await Amplify.Auth.signOut();
+    final alertDialogActions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+      CTextButton(
+          onPressed: () async {
+            Navigator.pop(context);
+            await Amplify.Auth.signOut();
+          },
+          label: 'Logout'),
+    ];
+    showAlertDialog(context: context, message: "Log out?", actions: alertDialogActions);
   }
 
   WeightUnit _weightUnit(String unit) {

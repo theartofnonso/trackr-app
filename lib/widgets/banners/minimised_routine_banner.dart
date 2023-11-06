@@ -6,6 +6,8 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 import '../../app_constants.dart';
 import '../../models/RoutineLog.dart';
 import '../../screens/routine_editor_screen.dart';
+import '../buttons/text_button_widget.dart';
+import '../helper_widgets/dialog_helper.dart';
 
 class MinimisedRoutineBanner extends StatelessWidget {
   final RoutineLog log;
@@ -13,6 +15,22 @@ class MinimisedRoutineBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final alertDialogActions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+      CTextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
+          },
+          label: 'Discard'),
+    ];
+
     return MaterialBanner(
       padding: const EdgeInsets.only(left: 12, top: 12),
       margin: const EdgeInsets.symmetric(vertical: 12),
@@ -27,9 +45,9 @@ class MinimisedRoutineBanner extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
+            showAlertDialog(context: context, message: "Discard workout?", actions: alertDialogActions);
           },
-          child: Text('Cancel', style: GoogleFonts.lato(color: Colors.white)),
+          child: Text('Discard', style: GoogleFonts.lato(color: Colors.white)),
         ),
         TextButton(
           onPressed: () {

@@ -135,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: <TextSpan>[
                               const TextSpan(text: 'You have logged '),
                               TextSpan(
-                                  text: '$logsForTheWeek workouts this week,',
+                                  text: '$logsForTheWeek workout(s) this week,',
                                   style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
                               TextSpan(
                                   text: ' $logsForTheMonth this month',

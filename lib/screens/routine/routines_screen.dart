@@ -15,7 +15,7 @@ import '../../models/Routine.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
-import '../../widgets/routine/minimised_routine_banner.dart';
+import '../../widgets/banners/minimised_routine_banner.dart';
 import '../routine_editor_screen.dart';
 
 void _navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineEditorType mode = RoutineEditorType.edit}) {
