@@ -686,7 +686,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
-                backgroundColor: tealBlueDark,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_outlined),
                   onPressed: () => Navigator.of(context).pop(),
@@ -700,7 +699,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ],
               )
             : AppBar(
-                backgroundColor: tealBlueDark,
                 leading: GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
                   child: const Icon(

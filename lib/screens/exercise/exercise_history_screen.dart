@@ -246,7 +246,6 @@ class ExerciseHistoryScreen extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-              backgroundColor: tealBlueDark,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_outlined),
                 onPressed: () => Navigator.of(context).pop(),

@@ -44,8 +44,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
 
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: tealBlueDark,
-          surfaceTintColor: tealBlueDark,
           title: Text("Home", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
           centerTitle: false,
           actions: [

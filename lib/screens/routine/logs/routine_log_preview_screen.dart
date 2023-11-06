@@ -63,7 +63,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         ),
         backgroundColor: tealBlueDark,
         appBar: AppBar(
-          backgroundColor: tealBlueDark,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_outlined),
             onPressed: () => Navigator.of(context).pop(),

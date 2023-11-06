@@ -94,6 +94,10 @@ class _MyAppState extends State<MyApp> {
             surface: tealBlueLighter,
             onSurface: Colors.white,
           ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: tealBlueDark,
+            surfaceTintColor: tealBlueDark,
+          ),
           snackBarTheme: const SnackBarThemeData(
             backgroundColor: tealBlueDark,
             actionBackgroundColor: tealBlueLighter

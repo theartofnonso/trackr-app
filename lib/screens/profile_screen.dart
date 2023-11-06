@@ -102,7 +102,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: tealBlueDark,
         title: Text("Profile", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
         centerTitle: false,
         actions: [

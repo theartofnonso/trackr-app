@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../app_constants.dart';
 import '../dtos/procedure_dto.dart';
 import '../providers/exercise_provider.dart';
 
@@ -57,7 +56,6 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: tealBlueDark,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
