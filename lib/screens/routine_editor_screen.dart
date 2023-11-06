@@ -14,6 +14,7 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
@@ -36,11 +37,7 @@ class RoutineEditorScreen extends StatefulWidget {
   final TemporalDateTime? createdAt;
 
   const RoutineEditorScreen(
-      {super.key,
-      this.routine,
-      this.routineLog,
-      this.mode = RoutineEditorType.edit,
-      this.createdAt});
+      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorType.edit, this.createdAt});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -417,7 +414,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     } else {
       Provider.of<RoutineProvider>(context, listen: false)
           .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
-      _navigateBack();
+      Navigator.of(context).pop();
     }
   }
 
@@ -434,17 +431,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         onPressed: () {
           Navigator.pop(context);
           final routine = widget.routine;
-          if (routine != null) {
-            final completedProcedures = _totalCompletedProceduresAndSets();
-            Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-                name: routine.name.isNotEmpty ? routine.name : "${DateTime.now().timeOfDay()} Workout",
-                notes: routine.notes,
-                procedures: completedProcedures,
-                startTime: _routineStartTime,
-                createdAt: widget.createdAt,
-                routine: routine);
-            _navigateBackAndClearCache();
-          }
+          final completedProcedures = _totalCompletedProceduresAndSets();
+          Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+              name: routine != null ? routine.name : "${DateTime.now().timeOfDay()} Workout",
+              notes: routine?.notes ?? "",
+              procedures: completedProcedures,
+              startTime: _routineStartTime,
+              createdAt: widget.createdAt,
+              routine: routine);
+          Navigator.of(context).pop();
         },
         child: Text('Finish', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
       )
@@ -538,7 +533,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
 
-    _navigateBack();
+    Navigator.of(context).pop();
   }
 
   void _doUpdateRoutineLog({required RoutineLog routineLog}) {
@@ -548,9 +543,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
         updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
 
-    Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
-
-    _navigateBack();
+    try {
+      Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
+      Navigator.of(context).pop();
+    } on ApiException catch (_) {
+      showSnackbar(context: context, icon: Icon(Icons.info_outline), message: "Unable to save changes");
+    }
   }
 
   void _calculateCompletedSets() {
@@ -654,16 +652,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  void _navigateBack() {
-    Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
-    Navigator.of(context).pop();
-  }
-
-  void _minimiseRunningRoutine() {
-    Provider.of<RoutineLogProvider>(context, listen: false).notifyAllListeners();
-    Navigator.of(context).pop();
-  }
-
   bool _canUpdate() {
     final previousRoutine = widget.routine;
     final previousRoutineLog = widget.routineLog;
@@ -708,7 +696,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             : AppBar(
                 backgroundColor: tealBlueDark,
                 leading: GestureDetector(
-                  onTap: () => _minimiseRunningRoutine(),
+                  onTap: () => Navigator.of(context).pop(),
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
@@ -721,13 +709,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ),
               ),
         floatingActionButton: widget.mode == RoutineEditorType.log
-            ? MediaQuery.of(context).viewInsets.bottom <= 0 ? FloatingActionButton(
-                heroTag: "fab_routine_editor_screen",
-                onPressed: _endRoutineLog,
-                backgroundColor: tealBlueLighter,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(Icons.stop),
-              ) : null
+            ? MediaQuery.of(context).viewInsets.bottom <= 0
+                ? FloatingActionButton(
+                    heroTag: "fab_routine_editor_screen",
+                    onPressed: _endRoutineLog,
+                    backgroundColor: tealBlueLighter,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    child: const Icon(Icons.stop),
+                  )
+                : null
             : null,
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
@@ -746,7 +736,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     RunningRoutineSummaryWidget(
                       sets: _totalCompletedSets.length,
                       weight: _totalWeight(),
-                      timer: _TimerWidget(TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
+                      timer: _TimerWidget(
+                          TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
                     ),
                   elapsedRestInterval != null
                       ? Padding(
@@ -1093,34 +1084,33 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child:
-      Table(
-        columnWidths: const <int, TableColumnWidth>{
-          0: FixedColumnWidth(55),
-          1: FlexColumnWidth(),
-          2: FlexColumnWidth(),
-        },
-        children: [
-           TableRow(children: [
-            Text("Sets", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-            Text("Volume", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-            Text("Duration", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
-          ]),
-          TableRow(children: [
-            Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-            Consumer<SettingsProvider>(
-              builder: (_, provider, __) {
-                final value = provider.isLbs ? toLbs(weight) : weight;
-                return Text("$value",
-                    style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
-              },
-            ),
-            timer
-          ])
-        ],
-      )
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FixedColumnWidth(55),
+            1: FlexColumnWidth(),
+            2: FlexColumnWidth(),
+          },
+          children: [
+            TableRow(children: [
+              Text("Sets", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+              Text("Volume", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+              Text("Duration",
+                  style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
+            ]),
+            TableRow(children: [
+              Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+              Consumer<SettingsProvider>(
+                builder: (_, provider, __) {
+                  final value = provider.isLbs ? toLbs(weight) : weight;
+                  return Text("$value",
+                      style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16));
+                },
+              ),
+              timer
+            ])
+          ],
+        ));
   }
 }
 

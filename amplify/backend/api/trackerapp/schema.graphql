@@ -52,8 +52,8 @@ type RoutineLog
   id: ID!
   userID: ID! @index(name: "byUser")
   user: User! @belongsTo(fields: ["userID"])
-  routineID: ID! @index(name: "byRoutine")
-  routine: Routine! @belongsTo(fields: ["routineID"])
+  routineID: ID @index(name: "byRoutine")
+  routine: Routine @belongsTo(fields: ["routineID"])
   name: String!
   procedures: [AWSJSON]!
   notes: String!

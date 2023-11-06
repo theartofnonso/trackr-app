@@ -33,6 +33,7 @@ class RoutinesScreen extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: tealBlueDark,
+          surfaceTintColor: tealBlueDark,
           title: Text("Workouts", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
           centerTitle: false,
         ),

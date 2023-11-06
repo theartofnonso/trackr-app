@@ -64,17 +64,8 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  Routine get routine {
-    try {
-      return _routine!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  Routine? get routine {
+    return _routine;
   }
   
   String get name {
@@ -168,9 +159,9 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, required user, required routine, required name, required procedures, required notes, required startTime, required endTime, required createdAt, required updatedAt}): _user = user, _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineLog._internal({required this.id, required user, routine, required name, required procedures, required notes, required startTime, required endTime, required createdAt, required updatedAt}): _user = user, _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineLog({String? id, required User user, required Routine routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineLog({String? id, required User user, Routine? routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user: user,
@@ -243,7 +234,7 @@ class RoutineLog extends amplify_core.Model {
   
   RoutineLog copyWithModelFieldValues({
     ModelFieldValue<User>? user,
-    ModelFieldValue<Routine>? routine,
+    ModelFieldValue<Routine?>? routine,
     ModelFieldValue<String>? name,
     ModelFieldValue<List<String>?>? procedures,
     ModelFieldValue<String>? notes,
@@ -353,7 +344,7 @@ class RoutineLog extends amplify_core.Model {
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
       key: RoutineLog.ROUTINE,
-      isRequired: true,
+      isRequired: false,
       targetNames: ['routineID'],
       ofModelName: 'Routine'
     ));

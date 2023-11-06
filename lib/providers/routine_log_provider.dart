@@ -17,21 +17,19 @@ import '../utils/general_utils.dart';
 import 'exercise_provider.dart';
 
 class RoutineLogProvider with ChangeNotifier {
+
   List<RoutineLog> _logs = [];
-
-  RoutineLog? _cachedLog;
-  List<RoutineLog> _cachedPendingLogs = [];
-
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
+  RoutineLog? _cachedLog;
   RoutineLog? get cachedLog => _cachedLog;
-
-  List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
-
   set cachedLog(RoutineLog? value) {
     _cachedLog = value;
     notifyListeners();
   }
+
+  List<RoutineLog> _cachedPendingLogs = [];
+  List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
 
   void notifyAllListeners() {
     if (_cachedLog != null) {
@@ -64,7 +62,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  Map<String, dynamic> _temp(String jsonString) {
+  Map<String, dynamic> _fixJson(String jsonString) {
     final json = jsonDecode(jsonString) as Map<String, dynamic>;
     json.update("routine", (value) {
       return {"serializedData": value};
@@ -78,7 +76,7 @@ class RoutineLogProvider with ChangeNotifier {
   void retrieveCachedRoutineLog(BuildContext context) {
     final cachedLog = SharedPrefs().cachedRoutineLog;
     if (cachedLog.isNotEmpty) {
-      final json = _temp(cachedLog);
+      final json = _fixJson(cachedLog);
       _cachedLog = RoutineLog.fromJson(json);
     }
   }
@@ -87,7 +85,7 @@ class RoutineLogProvider with ChangeNotifier {
     final cachedLogs = SharedPrefs().cachedPendingRoutineLogs;
     if (cachedLogs.isNotEmpty) {
       _cachedPendingLogs = cachedLogs.map((log) {
-        final json = _temp(log);
+        final json = _fixJson(log);
         return RoutineLog.fromJson(json);
       }).toList();
     }
@@ -99,10 +97,14 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine routine}) async {
+      required Routine? routine}) async {
+
+    clearCachedLog();
+
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
-    final routineLogOwner = await user();
+    final owner = await user();
+
     final logToCreate = RoutineLog(
         name: name,
         notes: notes,
@@ -112,13 +114,13 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         routine: routine,
-        user: routineLogOwner);
+        user: owner);
+
     try {
       final request = ModelMutations.create(logToCreate);
       final response = await Amplify.API.mutate(request: request).response;
       final createdLog = response.data;
       if (createdLog != null) {
-        clearCachedLog();
         _addToLogs(createdLog);
       }
     } on ApiException catch (_) {
@@ -127,6 +129,7 @@ class RoutineLogProvider with ChangeNotifier {
       final jsonLog = jsonEncode(logToCreate);
       pendingLogs.add(jsonLog);
       SharedPrefs().cachedPendingRoutineLogs = pendingLogs;
+      notifyListeners();
     }
   }
 
@@ -170,6 +173,7 @@ class RoutineLogProvider with ChangeNotifier {
         updatedAt: TemporalDateTime.now(),
         user: routineLogOwner);
     SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
+    notifyListeners();
   }
 
   void _addToLogs(RoutineLog log) {

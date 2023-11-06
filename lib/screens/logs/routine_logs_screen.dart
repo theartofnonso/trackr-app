@@ -1,4 +1,3 @@
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,44 +5,22 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
-import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 import 'package:tracker_app/widgets/pending_routines_banner.dart';
 
 import '../../app_constants.dart';
-import '../../models/Routine.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../providers/routine_provider.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/routine/minimised_routine_banner.dart';
 import '../../widgets/routine_log/routine_log_widget.dart';
 import '../calendar_screen.dart';
 
 void startEmptyRoutine({required BuildContext context, TemporalDateTime? createdAt}) async {
-  final routineOwner = await user();
-  final emptyRoutine = Routine(
-      name: '',
-      procedures: [],
-      notes: '',
-      createdAt: TemporalDateTime.now(),
-      updatedAt: TemporalDateTime.now(),
-      user: routineOwner);
-  final request = ModelMutations.create(emptyRoutine);
-  final response = await Amplify.API.mutate(request: request).response;
-  final createdRoutine = response.data;
-  if(createdRoutine != null) {
-    if (context.mounted) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => RoutineEditorScreen(
-              routine: createdRoutine,
-              mode: RoutineEditorType.log,
-              createdAt: createdAt)));
-    }
-  } else {
-    if(context.mounted) {
-      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to start workout");
-    }
+  if (context.mounted) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            RoutineEditorScreen(mode: RoutineEditorType.log, createdAt: createdAt)));
   }
 }
 
@@ -68,6 +45,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       return Scaffold(
         appBar: AppBar(
           backgroundColor: tealBlueDark,
+          surfaceTintColor: tealBlueDark,
           title: Text("Home", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
           centerTitle: false,
           actions: [
@@ -106,7 +84,12 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
                             itemCount: provider.logs.length),
                       )
-                    : Expanded(child: Center(child: ScreenEmptyState(message: cachedRoutineLog == null ? startTrackingPerformance : crunchingPerformanceNumbers))),
+                    : Expanded(
+                        child: Center(
+                            child: ScreenEmptyState(
+                                message: cachedRoutineLog == null
+                                    ? startTrackingPerformance
+                                    : crunchingPerformanceNumbers))),
               ],
             ),
           ),

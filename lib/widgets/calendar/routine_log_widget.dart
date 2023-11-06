@@ -1,3 +1,4 @@
+import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../screens/logs/routine_log_preview_screen.dart';
+import '../../utils/snackbar_utils.dart';
 
 class RoutineLogWidget extends StatelessWidget {
   final RoutineLog log;
@@ -52,7 +54,11 @@ class RoutineLogWidget extends StatelessWidget {
       final id = routine["id"] ?? "";
       if (id.isNotEmpty) {
         if (context.mounted) {
-          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
+          try {
+            Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
+          } on ApiException catch (_) {
+            showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to save changes");
+          }
         }
       }
     }
