@@ -8,24 +8,24 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/screens/logs/routine_log_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../dtos/procedure_dto.dart';
-import '../dtos/set_dto.dart';
-import '../messages.dart';
-import '../models/Exercise.dart';
-import '../models/RoutineLog.dart';
-import '../providers/settings_provider.dart';
-import '../shared_prefs.dart';
-import '../utils/general_utils.dart';
-import '../widgets/chart/line_chart_widget.dart';
-import '../widgets/empty_states/screen_empty_state.dart';
-import '../widgets/exercise_history/routine_log_widget.dart';
-import '../dtos/graph/chart_point_dto.dart';
-import 'logs/routine_logs_screen.dart';
+import '../../dtos/procedure_dto.dart';
+import '../../dtos/set_dto.dart';
+import '../../messages.dart';
+import '../../models/Exercise.dart';
+import '../../models/RoutineLog.dart';
+import '../../providers/settings_provider.dart';
+import '../../shared_prefs.dart';
+import '../../utils/general_utils.dart';
+import '../../widgets/chart/line_chart_widget.dart';
+import '../../widgets/empty_states/screen_empty_state.dart';
+import '../../widgets/exercise_history/routine_log_widget.dart';
+import '../../dtos/graph/chart_point_dto.dart';
+import '../routine/logs/routine_log_preview_screen.dart';
+import '../routine/logs/routine_logs_screen.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 

@@ -10,7 +10,7 @@ import '../../dtos/procedure_dto.dart';
 import '../../models/RoutineLog.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
-import '../../screens/logs/routine_log_preview_screen.dart';
+import '../../screens/routine/logs/routine_log_preview_screen.dart';
 
 void navigateToRoutineLogPreview({required BuildContext context, required String logId}) async {
   final routineLogId = await Navigator.of(context)

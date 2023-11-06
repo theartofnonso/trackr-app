@@ -18,15 +18,15 @@ import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
-import '../app_constants.dart';
-import '../dtos/set_dto.dart';
-import '../providers/exercise_provider.dart';
-import '../providers/routine_log_provider.dart';
-import '../shared_prefs.dart';
-import '../widgets/empty_states/list_tile_empty_state.dart';
-import '../widgets/helper_widgets/routine_helper.dart';
-import '../widgets/routine/editor/procedure_widget.dart';
-import 'exercise_library_screen.dart';
+import '../../app_constants.dart';
+import '../../dtos/set_dto.dart';
+import '../../providers/exercise_provider.dart';
+import '../../providers/routine_log_provider.dart';
+import '../../shared_prefs.dart';
+import '../../widgets/empty_states/list_tile_empty_state.dart';
+import '../../widgets/helper_widgets/routine_helper.dart';
+import '../../widgets/routine/editor/procedure_widget.dart';
+import '../exercise/exercise_library_screen.dart';
 
 enum RoutineEditorType { edit, log }
 

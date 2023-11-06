@@ -61,11 +61,12 @@ class RoutineProvider with ChangeNotifier {
 
   void removeRoutine({required String id}) async {
     final index = _indexWhereRoutine(id: id);
-    final routineToBeRemoved = _routines.removeAt(index);
+    final routineToBeRemoved = _routines[index];
     final request = ModelMutations.delete(routineToBeRemoved);
     final response = await Amplify.API.mutate(request: request).response;
     final deletedRoutine = response.data;
     if (deletedRoutine != null) {
+      _routines.removeAt(index);
       notifyListeners();
     }
   }

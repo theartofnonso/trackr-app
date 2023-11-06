@@ -5,7 +5,7 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../../app_constants.dart';
 import '../../models/RoutineLog.dart';
-import '../../screens/routine_editor_screen.dart';
+import '../../screens/editor/routine_editor_screen.dart';
 import '../buttons/text_button_widget.dart';
 import '../helper_widgets/dialog_helper.dart';
 

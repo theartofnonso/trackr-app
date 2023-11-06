@@ -12,8 +12,8 @@ import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../providers/exercise_provider.dart';
-import '../../../screens/exercise_history_screen.dart';
-import '../../../screens/routine_editor_screen.dart';
+import '../../../screens/exercise/exercise_history_screen.dart';
+import '../../../screens/editor/routine_editor_screen.dart';
 
 class ProcedureWidget extends StatelessWidget {
   final RoutineEditorType editorType;

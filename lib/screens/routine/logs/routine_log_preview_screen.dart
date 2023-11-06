@@ -5,22 +5,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
-import 'package:tracker_app/screens/routine_editor_screen.dart';
+import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
-import '../../app_constants.dart';
-import '../../dtos/procedure_dto.dart';
-import '../../dtos/set_dto.dart';
-import '../../providers/exercise_provider.dart';
-import '../../providers/routine_log_provider.dart';
-import '../../providers/settings_provider.dart';
-import '../../utils/snackbar_utils.dart';
-import '../../widgets/buttons/text_button_widget.dart';
-import '../../widgets/helper_widgets/dialog_helper.dart';
-import '../../widgets/helper_widgets/routine_helper.dart';
-import '../exercise_history_screen.dart';
+import '../../../app_constants.dart';
+import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/set_dto.dart';
+import '../../../providers/exercise_provider.dart';
+import '../../../providers/routine_log_provider.dart';
+import '../../../providers/settings_provider.dart';
+import '../../../utils/snackbar_utils.dart';
+import '../../../widgets/buttons/text_button_widget.dart';
+import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../../widgets/helper_widgets/routine_helper.dart';
+import '../../exercise/exercise_history_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;
@@ -284,7 +284,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     final parts = procedures
-        .map((procedure) => exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart)
+        .map((procedure) => exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).primaryMuscle)
         .toList();
     final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];

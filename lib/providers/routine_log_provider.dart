@@ -250,7 +250,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart == bodyPart;
+      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).primaryMuscle == bodyPart;
     }
 
     return logs
@@ -272,7 +272,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart == bodyPart;
+      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).primaryMuscle == bodyPart;
     }
 
     return logs
@@ -289,7 +289,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).bodyPart == bodyPart;
+      return exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).primaryMuscle == bodyPart;
     }
 
     return logs

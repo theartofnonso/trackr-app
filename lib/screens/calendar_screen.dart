@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 

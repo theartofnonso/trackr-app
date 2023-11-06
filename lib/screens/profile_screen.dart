@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
+import 'package:tracker_app/screens/exercise/exercise_library_screen.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
-import 'package:tracker_app/screens/routine/routine_preview_screen.dart';
+import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
@@ -16,8 +18,7 @@ import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/chart/line_chart_widget.dart';
-import 'exercise_history_screen.dart';
-import 'logs/routine_logs_screen.dart';
+import 'exercise/exercise_history_screen.dart';
 
 DateTimeRange thisWeekDateRange() {
   final now = DateTime.now();
@@ -62,37 +63,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _navigateBack(BuildContext context) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-    if(_summaryType == RoutineSummaryType.volume) {
+    if (_summaryType == RoutineSummaryType.volume) {
       _volume();
     }
   }
 
-  void _navigateToMuscleDistribution(BuildContext context) {
+  void _navigateToMuscleDistribution() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleDistributionScreen()));
+  }
+
+  void _navigateToExerciseLibrary() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen()));
   }
 
   int _logsForTheWeekCount({required List<RoutineLog> logs}) {
     final thisWeek = thisWeekDateRange();
-    return logs
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek))
-        .toList()
-        .length;
+    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek)).toList().length;
   }
 
   int _logsForTheMonthCount({required List<RoutineLog> logs}) {
     final thisMonth = thisMonthDateRange();
-    return logs
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth))
-        .toList()
-        .length;
+    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth)).toList().length;
   }
 
   int _logsForTheYearCount({required List<RoutineLog> logs}) {
     final thisYear = thisYearDateRange();
-    return logs
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear))
-        .toList()
-        .length;
+    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear)).toList().length;
   }
 
   @override
@@ -165,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 style: GoogleFonts.lato(color: Colors.white),
                                 onChanged: (String? value) {
-                                  if(value != null) {
+                                  if (value != null) {
                                     setState(() {
                                       _selectedCurrentTimePeriod = switch (value) {
                                         "This Week" => CurrentTimePeriod.thisWeek,
@@ -177,7 +173,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     });
                                   }
                                 },
-                                items: CurrentTimePeriod.values.map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
+                                items: CurrentTimePeriod.values
+                                    .map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
                                   return DropdownMenuItem<String>(
                                     value: currentTimePeriod.label,
                                     child: Text(currentTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
@@ -218,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Theme(
                       data: ThemeData(splashColor: tealBlueLight),
                       child: ListTile(
-                          onTap: () => _navigateToMuscleDistribution(context),
+                          onTap: () => _navigateToMuscleDistribution(),
                           tileColor: tealBlueLight,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                           title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
@@ -229,7 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Theme(
                       data: ThemeData(splashColor: tealBlueLight),
                       child: ListTile(
-                          onTap: () => _navigateToMuscleDistribution(context),
+                          onTap: () => _navigateToExerciseLibrary(),
                           tileColor: tealBlueLight,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                           title: Text("Exercises", style: Theme.of(context).textTheme.labelLarge),
@@ -284,23 +281,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _recomputeChart() {
-    switch(_selectedCurrentTimePeriod) {
+    switch (_selectedCurrentTimePeriod) {
       case CurrentTimePeriod.thisWeek:
         final thisWeek = thisWeekDateRange();
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisWeek).toList().reversed.toList();
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false)
+            .routineLogsWhereDateRange(thisWeek)
+            .toList()
+            .reversed
+            .toList();
       case CurrentTimePeriod.thisMonth:
         final thisMonth = thisMonthDateRange();
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisMonth).toList().reversed.toList();
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false)
+            .routineLogsWhereDateRange(thisMonth)
+            .toList()
+            .reversed
+            .toList();
       case CurrentTimePeriod.thisYear:
         final thisYear = thisYearDateRange();
-        _logs = Provider.of<RoutineLogProvider>(context, listen: false).routineLogsWhereDateRange(thisYear).toList().reversed.toList();
+        _logs = Provider.of<RoutineLogProvider>(context, listen: false)
+            .routineLogsWhereDateRange(thisYear)
+            .toList()
+            .reversed
+            .toList();
       case CurrentTimePeriod.allTime:
         _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.toList().reversed.toList();
     }
 
     _dateTimes = _logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
 
-    switch(_summaryType) {
+    switch (_summaryType) {
       case RoutineSummaryType.volume:
         _volume();
       case RoutineSummaryType.reps:

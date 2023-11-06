@@ -14,6 +14,7 @@ type User
   gender: Gender
   email: AWSEmail!
   age: Int
+  exercises: [Exercise] @hasMany(indexName: "byUser", fields: ["id"])
   routines: [Routine] @hasMany(indexName: "byUser", fields: ["id"])
   routineLogs: [RoutineLog] @hasMany(indexName: "byUser", fields: ["id"])
   createdAt: AWSDateTime
@@ -67,29 +68,43 @@ type Exercise
      @model
      @auth(
         rules: [
-          { allow: private }
+          { allow: owner }
         ]
      ) {
   id: ID!
+  userID: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userID"])
   name: String!
-  primary: [String!]!
-  secondary: [String]!
-  bodyPart: BodyPart!
-  asset: AWSURL
+  primaryMuscle: BodyPart!
+  secondaryMuscles: [BodyPart]!
   notes: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
 
 enum BodyPart {
-  Chest
-  Shoulder
+  Abs
+  Adductors
+  Abductors
   Back
+  Back_Upper
+  Back_Lower
+  Back_Lats
+  Back_Traps
   Biceps
+  Chest
+  Chest_Upper
+  Chest_Inner
+  Chest_Lower
+  Shoulder
+  Shoulder_Frontal
+  Shoulder_Side
+  Shoulder_Rear
+  Neck
   Triceps
   Forearms
-  Abs
-  Legs
+  Quadriceps
+  Hamstrings
   Glutes
   Calves
 }

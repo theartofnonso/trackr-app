@@ -32,6 +32,7 @@ class User extends amplify_core.Model {
   final Gender? _gender;
   final String? _email;
   final int? _age;
+  final List<Exercise>? _exercises;
   final List<Routine>? _routines;
   final List<RoutineLog>? _routineLogs;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -75,6 +76,10 @@ class User extends amplify_core.Model {
     return _age;
   }
   
+  List<Exercise>? get exercises {
+    return _exercises;
+  }
+  
   List<Routine>? get routines {
     return _routines;
   }
@@ -91,15 +96,16 @@ class User extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const User._internal({required this.id, name, gender, required email, age, routines, routineLogs, createdAt, updatedAt}): _name = name, _gender = gender, _email = email, _age = age, _routines = routines, _routineLogs = routineLogs, _createdAt = createdAt, _updatedAt = updatedAt;
+  const User._internal({required this.id, name, gender, required email, age, exercises, routines, routineLogs, createdAt, updatedAt}): _name = name, _gender = gender, _email = email, _age = age, _exercises = exercises, _routines = routines, _routineLogs = routineLogs, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory User({String? id, String? name, Gender? gender, required String email, int? age, List<Routine>? routines, List<RoutineLog>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory User({String? id, String? name, Gender? gender, required String email, int? age, List<Exercise>? exercises, List<Routine>? routines, List<RoutineLog>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       gender: gender,
       email: email,
       age: age,
+      exercises: exercises != null ? List<Exercise>.unmodifiable(exercises) : exercises,
       routines: routines != null ? List<Routine>.unmodifiable(routines) : routines,
       routineLogs: routineLogs != null ? List<RoutineLog>.unmodifiable(routineLogs) : routineLogs,
       createdAt: createdAt,
@@ -119,6 +125,7 @@ class User extends amplify_core.Model {
       _gender == other._gender &&
       _email == other._email &&
       _age == other._age &&
+      DeepCollectionEquality().equals(_exercises, other._exercises) &&
       DeepCollectionEquality().equals(_routines, other._routines) &&
       DeepCollectionEquality().equals(_routineLogs, other._routineLogs) &&
       _createdAt == other._createdAt &&
@@ -145,13 +152,14 @@ class User extends amplify_core.Model {
     return buffer.toString();
   }
   
-  User copyWith({String? name, Gender? gender, String? email, int? age, List<Routine>? routines, List<RoutineLog>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  User copyWith({String? name, Gender? gender, String? email, int? age, List<Exercise>? exercises, List<Routine>? routines, List<RoutineLog>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id,
       name: name ?? this.name,
       gender: gender ?? this.gender,
       email: email ?? this.email,
       age: age ?? this.age,
+      exercises: exercises ?? this.exercises,
       routines: routines ?? this.routines,
       routineLogs: routineLogs ?? this.routineLogs,
       createdAt: createdAt ?? this.createdAt,
@@ -163,6 +171,7 @@ class User extends amplify_core.Model {
     ModelFieldValue<Gender?>? gender,
     ModelFieldValue<String>? email,
     ModelFieldValue<int?>? age,
+    ModelFieldValue<List<Exercise>?>? exercises,
     ModelFieldValue<List<Routine>?>? routines,
     ModelFieldValue<List<RoutineLog>?>? routineLogs,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
@@ -174,6 +183,7 @@ class User extends amplify_core.Model {
       gender: gender == null ? this.gender : gender.value,
       email: email == null ? this.email : email.value,
       age: age == null ? this.age : age.value,
+      exercises: exercises == null ? this.exercises : exercises.value,
       routines: routines == null ? this.routines : routines.value,
       routineLogs: routineLogs == null ? this.routineLogs : routineLogs.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
@@ -187,6 +197,12 @@ class User extends amplify_core.Model {
       _gender = amplify_core.enumFromString<Gender>(json['gender'], Gender.values),
       _email = json['email'],
       _age = (json['age'] as num?)?.toInt(),
+      _exercises = json['exercises'] is List
+        ? (json['exercises'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Exercise.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _routines = json['routines'] is List
         ? (json['routines'] as List)
           .where((e) => e?['serializedData'] != null)
@@ -203,7 +219,7 @@ class User extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'gender': amplify_core.enumToString(_gender), 'email': _email, 'age': _age, 'routines': _routines?.map((Routine? e) => e?.toJson()).toList(), 'routineLogs': _routineLogs?.map((RoutineLog? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'gender': amplify_core.enumToString(_gender), 'email': _email, 'age': _age, 'exercises': _exercises?.map((Exercise? e) => e?.toJson()).toList(), 'routines': _routines?.map((Routine? e) => e?.toJson()).toList(), 'routineLogs': _routineLogs?.map((RoutineLog? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -212,6 +228,7 @@ class User extends amplify_core.Model {
     'gender': _gender,
     'email': _email,
     'age': _age,
+    'exercises': _exercises,
     'routines': _routines,
     'routineLogs': _routineLogs,
     'createdAt': _createdAt,
@@ -224,6 +241,9 @@ class User extends amplify_core.Model {
   static final GENDER = amplify_core.QueryField(fieldName: "gender");
   static final EMAIL = amplify_core.QueryField(fieldName: "email");
   static final AGE = amplify_core.QueryField(fieldName: "age");
+  static final EXERCISES = amplify_core.QueryField(
+    fieldName: "exercises",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Exercise'));
   static final ROUTINES = amplify_core.QueryField(
     fieldName: "routines",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Routine'));
@@ -269,6 +289,13 @@ class User extends amplify_core.Model {
       key: User.AGE,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+      key: User.EXERCISES,
+      isRequired: false,
+      ofModelName: 'Exercise',
+      associatedKey: Exercise.USER
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(

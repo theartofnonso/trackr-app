@@ -6,7 +6,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../../../screens/routine_editor_screen.dart';
+import '../../../screens/editor/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/dialog_helper.dart';
 

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
 
-import '../app_constants.dart';
-import '../models/Exercise.dart';
-import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/exercise/exercise_widget.dart';
-import '../widgets/exercise/selectable_exercise_widget.dart';
+import '../../app_constants.dart';
+import '../../models/Exercise.dart';
+import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/exercise/exercise_widget.dart';
+import '../../widgets/exercise/selectable_exercise_widget.dart';
 
 class ExerciseInLibraryDto {
   final bool selected;
@@ -111,6 +112,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     FocusScope.of(context).unfocus();
   }
 
+  void _navigateToExerciseEditor() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +135,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 )
               : const SizedBox.shrink()
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "fab_exercise_library_screen",
+        onPressed: _navigateToExerciseEditor,
+        backgroundColor: tealBlueLighter,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: const Icon(Icons.add),
       ),
       body: NotificationListener(
         onNotification: (scrollNotification) {

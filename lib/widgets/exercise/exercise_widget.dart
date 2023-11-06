@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 
-import '../../screens/exercise_history_screen.dart';
-import '../../screens/exercise_library_screen.dart';
+import '../../screens/exercise/exercise_history_screen.dart';
+import '../../screens/exercise/exercise_library_screen.dart';
 
 class ExerciseWidget extends StatelessWidget {
   final ExerciseInLibraryDto exerciseInLibraryDto;
@@ -36,14 +36,14 @@ class ExerciseWidget extends StatelessWidget {
               SizedBox(
                   width: 300,
                   child: Text(
-                    "Primary: ${exerciseInLibraryDto.exercise.primary.join(", ")}",
+                    "Primary: ${exerciseInLibraryDto.exercise.primaryMuscle.name}",
                     style: GoogleFonts.lato(
                         color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),
               SizedBox(
                   width: 300,
                   child: Text(
-                    "Secondary: ${exerciseInLibraryDto.exercise.secondary.isNotEmpty ? exerciseInLibraryDto.exercise.secondary.join(", ") : "None"}",
+                    "Secondary: ${exerciseInLibraryDto.exercise.secondaryMuscles.isNotEmpty ? exerciseInLibraryDto.exercise.secondaryMuscles.join(", ") : "None"}",
                     style: GoogleFonts.lato(
                         color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),
