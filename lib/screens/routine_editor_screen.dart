@@ -433,7 +433,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           final routine = widget.routine;
           final completedProcedures = _totalCompletedProceduresAndSets();
           Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-              name: routine != null ? routine.name : "${DateTime.now().timeOfDay()} Workout",
+              name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
               notes: routine?.notes ?? "",
               procedures: completedProcedures,
               startTime: _routineStartTime,
@@ -536,7 +536,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  void _doUpdateRoutineLog({required RoutineLog routineLog}) {
+  void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
     final updatedRoutineLog = routineLog.copyWith(
         name: _routineNameController.text,
         notes: _routineNotesController.text,
@@ -544,10 +544,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
 
     try {
-      Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
-      Navigator.of(context).pop();
-    } on ApiException catch (_) {
-      showSnackbar(context: context, icon: Icon(Icons.info_outline), message: "Unable to save changes");
+      await Provider.of<RoutineLogProvider>(context, listen: false).updateLogInCloud(log: updatedRoutineLog);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (_) {
+      if (mounted) {
+        showSnackbar(
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
+      }
     }
   }
 
@@ -635,15 +640,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorType.log) {
       final routine = widget.routine;
-      if (routine != null) {
-        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-            name: routine.name,
-            notes: routine.notes,
-            procedures: _procedures,
-            startTime: _routineStartTime,
-            createdAt: widget.createdAt,
-            routine: routine);
-      }
+      Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
+          name: routine?.name ?? "",
+          notes: routine?.notes ?? "",
+          procedures: _procedures,
+          startTime: _routineStartTime,
+          createdAt: widget.createdAt,
+          routine: routine);
     }
   }
 
@@ -665,7 +668,18 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   String? _editorTitle() {
     final previousRoutine = widget.routine;
     final previousRoutineLog = widget.routineLog;
-    return previousRoutine != null ? previousRoutine.name : previousRoutineLog?.name;
+
+    String title = "";
+
+    /// We are editing a [Routine]
+    if (previousRoutine != null) {
+      title = previousRoutine.name;
+    } else {
+      if (previousRoutineLog != null) {
+        title = previousRoutineLog.name;
+      }
+    }
+    return title;
   }
 
   void _dismissKeyboard() {

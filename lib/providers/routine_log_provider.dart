@@ -17,18 +17,21 @@ import '../utils/general_utils.dart';
 import 'exercise_provider.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-
   List<RoutineLog> _logs = [];
+
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
   RoutineLog? _cachedLog;
+
   RoutineLog? get cachedLog => _cachedLog;
+
   set cachedLog(RoutineLog? value) {
     _cachedLog = value;
     notifyListeners();
   }
 
   List<RoutineLog> _cachedPendingLogs = [];
+
   List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
 
   void notifyAllListeners() {
@@ -98,7 +101,6 @@ class RoutineLogProvider with ChangeNotifier {
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine? routine}) async {
-
     clearCachedLog();
 
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
@@ -124,16 +126,20 @@ class RoutineLogProvider with ChangeNotifier {
         _addToLogs(createdLog);
       }
     } on ApiException catch (_) {
-      _cachedPendingLogs.add(logToCreate);
-      final pendingLogs = SharedPrefs().cachedPendingRoutineLogs;
-      final jsonLog = jsonEncode(logToCreate);
-      pendingLogs.add(jsonLog);
-      SharedPrefs().cachedPendingRoutineLogs = pendingLogs;
-      notifyListeners();
+      _cachePendingLogs(logToCreate);
     }
   }
 
-  void retrySavingRoutineLogs() async {
+  void _cachePendingLogs(RoutineLog pendingLog) {
+    _cachedPendingLogs.add(pendingLog);
+    final pendingLogs = SharedPrefs().cachedPendingRoutineLogs;
+    final jsonLog = jsonEncode(pendingLog);
+    pendingLogs.add(jsonLog);
+    SharedPrefs().cachedPendingRoutineLogs = pendingLogs;
+    notifyListeners();
+  }
+
+  void retryPendingRoutineLogs() async {
     final cachedPendingRoutineLogs = SharedPrefs().cachedPendingRoutineLogs;
     for (int index = 0; index < _cachedPendingLogs.length; index++) {
       final pendingLog = _cachedPendingLogs[index];
@@ -158,7 +164,7 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine routine}) async {
+      required Routine? routine}) async {
     final routineLogOwner = await user();
 
     _cachedLog = RoutineLog(
@@ -182,26 +188,26 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateLog({required RoutineLog log}) async {
+  Future<void> updateLogInCloud({required RoutineLog log}) async {
     final request = ModelMutations.update(log);
-    final response = await Amplify.API.mutate(request: request).response;
-    final updatedLog = response.data;
-    if (updatedLog != null) {
-      final index = _indexWhereRoutineLog(id: log.id);
-      _logs[index] = log;
-      notifyListeners();
-    }
+    await Amplify.API.mutate(request: request).response;
+    _updateLogInLocal(log: log);
   }
 
-  void removeLogFromCloud({required String id}) async {
+  void _updateLogInLocal({required RoutineLog log}) async {
+    final index = _indexWhereRoutineLog(id: log.id);
+    _logs[index] = log;
+    notifyListeners();
+  }
+
+  Future<void> removeLogFromCloud({required String id}) async {
     final index = _indexWhereRoutineLog(id: id);
     final logToBeRemoved = _logs[index];
     final request = ModelMutations.delete(logToBeRemoved);
-    final we = await Amplify.API.mutate(request: request).response;
-    print(we);
+    await Amplify.API.mutate(request: request).response;
   }
 
-  void removeLog({required String id}) async {
+  void removeLogFromLocal({required String id}) async {
     final index = _indexWhereRoutineLog(id: id);
     _logs.removeAt(index);
     notifyListeners();

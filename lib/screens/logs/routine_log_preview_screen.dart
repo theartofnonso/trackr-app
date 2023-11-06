@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -350,13 +349,17 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
               child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
             ),
             CTextButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
                   try {
-                    Provider.of<RoutineLogProvider>(context, listen: false).removeLogFromCloud(id: widget.routineLogId);
-                    //Navigator.of(context).pop({"id": widget.routineLogId});
+                    await Provider.of<RoutineLogProvider>(context, listen: false).removeLogFromCloud(id: widget.routineLogId);
+                    if(mounted) {
+                      Navigator.of(context).pop(widget.routineLogId);
+                    }
                   } catch (_) {
-                    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to save changes");
+                    if(mounted) {
+                      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable delete this log");
+                    }
                   }
                 },
                 label: 'Delete'),

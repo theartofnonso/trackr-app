@@ -32,7 +32,7 @@ class PendingRoutinesBanner extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            provider.retrySavingRoutineLogs();
+            provider.retryPendingRoutineLogs();
           },
           child: Text('Retry upload', style: GoogleFonts.lato(color: Colors.white)),
         ),

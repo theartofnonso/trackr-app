@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,16 @@ import '../../models/RoutineLog.dart';
 import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../screens/logs/routine_log_preview_screen.dart';
-import '../../utils/snackbar_utils.dart';
+
+void navigateToRoutineLogPreview({required BuildContext context, required String logId}) async {
+  final routineLogId = await Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logId))) as String?;
+  if (routineLogId != null) {
+    if (context.mounted) {
+      Provider.of<RoutineLogProvider>(context, listen: false).removeLogFromLocal(id: routineLogId);
+    }
+  }
+}
 
 class RoutineLogWidget extends StatelessWidget {
   final RoutineLog log;
@@ -36,7 +44,8 @@ class RoutineLogWidget extends StatelessWidget {
               ),
               const SizedBox(width: 1),
               Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-                  style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+                  style: GoogleFonts.lato(
+                      color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
               const SizedBox(width: 10),
               const Icon(
                 Icons.timer,
@@ -45,7 +54,8 @@ class RoutineLogWidget extends StatelessWidget {
               ),
               const SizedBox(width: 1),
               Text(_logDuration(),
-                  style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+                  style: GoogleFonts.lato(
+                      color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
             ])),
         const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedureJsons: log.procedures),
@@ -58,20 +68,6 @@ class RoutineLogWidget extends StatelessWidget {
             : const SizedBox.shrink()
       ],
     );
-  }
-
-  void _navigateToRoutineLogPreview({required BuildContext context}) async {
-    final value = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: log.id)))
-        as Map<String, String>?;
-    if (value != null) {
-      final id = value["id"];
-      if (id != null) {
-        if (context.mounted) {
-          Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: id);
-        }
-      }
-    }
   }
 
   String _footerLabel() {
@@ -102,7 +98,7 @@ class RoutineLogWidget extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
                     ),
-                    onTap: () => _navigateToRoutineLogPreview(context: context),
+                    onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
                     tileColor: tealBlueLight,
                     title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name,
                         style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
