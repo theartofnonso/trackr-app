@@ -8,6 +8,7 @@ import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/screens/routine_editor_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
+import 'package:tracker_app/widgets/pending_routines_banner.dart';
 
 import '../../app_constants.dart';
 import '../../models/Routine.dart';
@@ -62,6 +63,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
       final cachedRoutineLog = provider.cachedLog;
+      final cachedPendingLogs = provider.cachedPendingLogs;
 
       return Scaffold(
         appBar: AppBar(
@@ -94,6 +96,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               children: [
+                cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
                 cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                 provider.logs.isNotEmpty
                     ? Expanded(
@@ -118,6 +121,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
       routineLogProvider.listRoutineLogs(context);
       routineLogProvider.retrieveCachedRoutineLog(context);
+      routineLogProvider.retrieveCachedPendingRoutineLog(context);
       Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
       Provider.of<SettingsProvider>(context, listen: false).setDefaultUnit();
     }

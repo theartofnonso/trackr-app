@@ -20,10 +20,13 @@ class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> _logs = [];
 
   RoutineLog? _cachedLog;
+  List<RoutineLog> _cachedPendingLogs = [];
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
   RoutineLog? get cachedLog => _cachedLog;
+
+  List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
 
   set cachedLog(RoutineLog? value) {
     _cachedLog = value;
@@ -37,11 +40,15 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void clearCachedLog() {
-    if (_cachedLog != null) {
-      _cachedLog = null;
-      SharedPrefs().cachedRoutineLog = "";
-      notifyListeners();
-    }
+    _cachedLog = null;
+    SharedPrefs().cachedRoutineLog = "";
+    notifyListeners();
+  }
+
+  void clearCachedPendingLogs() {
+    _cachedPendingLogs = [];
+    SharedPrefs().cachedPendingRoutineLogs = [];
+    notifyListeners();
   }
 
   void listRoutineLogs(BuildContext context) async {
@@ -57,14 +64,32 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
+  Map<String, dynamic> _temp(String jsonString) {
+    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+    json.update("routine", (value) {
+      return {"serializedData": value};
+    });
+    json.update("user", (value) {
+      return {"serializedData": value};
+    });
+    return json;
+  }
+
   void retrieveCachedRoutineLog(BuildContext context) {
-    final cache = SharedPrefs().cachedRoutineLog;
-    if (cache.isNotEmpty) {
-      final temp = jsonDecode(cache) as Map<String, dynamic>;
-      temp.update("routine", (value) {
-        return {"serializedData": value};
-      });
-      _cachedLog = RoutineLog.fromJson(temp);
+    final cachedLog = SharedPrefs().cachedRoutineLog;
+    if (cachedLog.isNotEmpty) {
+      final json = _temp(cachedLog);
+      _cachedLog = RoutineLog.fromJson(json);
+    }
+  }
+
+  void retrieveCachedPendingRoutineLog(BuildContext context) {
+    final cachedLogs = SharedPrefs().cachedPendingRoutineLogs;
+    if (cachedLogs.isNotEmpty) {
+      _cachedPendingLogs = cachedLogs.map((log) {
+        final json = _temp(log);
+        return RoutineLog.fromJson(json);
+      }).toList();
     }
   }
 
@@ -88,14 +113,39 @@ class RoutineLogProvider with ChangeNotifier {
         updatedAt: TemporalDateTime.now(),
         routine: routine,
         user: routineLogOwner);
-    final request = ModelMutations.create(logToCreate);
-    final response = await Amplify.API.mutate(request: request).response;
-    final createdLog = response.data;
-    if (createdLog != null) {
-      _logs.add(logToCreate);
-      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      clearCachedLog();
-      notifyListeners();
+    try {
+      final request = ModelMutations.create(logToCreate);
+      final response = await Amplify.API.mutate(request: request).response;
+      final createdLog = response.data;
+      if (createdLog != null) {
+        clearCachedLog();
+        _addToLogs(createdLog);
+      }
+    } on ApiException catch (_) {
+      _cachedPendingLogs.add(logToCreate);
+      final pendingLogs = SharedPrefs().cachedPendingRoutineLogs;
+      final jsonLog = jsonEncode(logToCreate);
+      pendingLogs.add(jsonLog);
+      SharedPrefs().cachedPendingRoutineLogs = pendingLogs;
+    }
+  }
+
+  void retrySavingRoutineLogs() async {
+    final cachedPendingRoutineLogs = SharedPrefs().cachedPendingRoutineLogs;
+    for (int index = 0; index < _cachedPendingLogs.length; index++) {
+      final pendingLog = _cachedPendingLogs[index];
+      final request = ModelMutations.create(pendingLog);
+      final response = await Amplify.API.mutate(request: request).response;
+      final createdLog = response.data;
+      if (createdLog != null) {
+        /// Remove from caches i.e both [_cachedPendingLogs] and [SharedPrefs().cachedPendingRoutineLogs]
+        _cachedPendingLogs.removeAt(index);
+        cachedPendingRoutineLogs.removeAt(index);
+        SharedPrefs().cachedPendingRoutineLogs = cachedPendingRoutineLogs;
+
+        /// Add to logs
+        _addToLogs(createdLog);
+      }
     }
   }
 
@@ -119,10 +169,13 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         user: routineLogOwner);
-    final cachedLogDto = _cachedLog;
-    if (cachedLogDto != null) {
-      SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
-    }
+    SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
+  }
+
+  void _addToLogs(RoutineLog log) {
+    _logs.add(log);
+    _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    notifyListeners();
   }
 
   void updateLog({required RoutineLog log}) async {

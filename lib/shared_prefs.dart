@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String userIdKey = "user_id_key";
 const String cachedRoutineLogKey = "cached_routine_log_key";
+const String cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
 const String cachedRoutineRestIntervalKey = "cached_routine_rest_interval_key";
 const String weightUnitKey = "weight_Unit_type_key";
 
@@ -20,14 +20,14 @@ class SharedPrefs {
     _sharedPrefs?.clear();
   }
 
-  String get userId => _sharedPrefs?.getString(userIdKey) ?? "";
-  set userId(String value) {
-    _sharedPrefs?.setString(userIdKey, value);
-  }
-
   String get cachedRoutineLog => _sharedPrefs?.getString(cachedRoutineLogKey) ?? "";
   set cachedRoutineLog(String value) {
     _sharedPrefs?.setString(cachedRoutineLogKey, value);
+  }
+
+  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(cachedPendingRoutineLogsKey) ?? <String>[];
+  set cachedPendingRoutineLogs(List<String> value) {
+    _sharedPrefs?.setStringList(cachedPendingRoutineLogsKey, value);
   }
 
   /// Cached Rest timer interval during routine
