@@ -57,7 +57,6 @@ class RoutineLogWidget extends StatelessWidget {
                   style: GoogleFonts.lato(
                       color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
             ])),
-        const SizedBox(height: 8),
         ..._proceduresToWidgets(context: context, procedureJsons: log.procedures),
         log.procedures.length > 3
             ? Text(_footerLabel(),

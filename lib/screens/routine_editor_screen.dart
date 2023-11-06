@@ -73,12 +73,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   /// Navigate to [ExerciseLibraryScreen]
   void _selectExercisesInLibrary() async {
-    final exercises = await showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return const ExerciseLibraryScreen();
-      },
-    ) as List<Exercise>?;
+    final exercises = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen())) as List<Exercise>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
@@ -167,12 +163,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doReplaceProcedure({required String procedureId}) async {
-    final selectedExercises = await showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return const ExerciseLibraryScreen(multiSelect: false);
-      },
-    ) as List<ExerciseInLibraryDto>?;
+    final selectedExercises = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen())) as List<Exercise>?;
 
     if (selectedExercises != null) {
       if (mounted) {
@@ -182,7 +174,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
         }
 
-        final selectedExercise = selectedExercises.first.exercise;
+        final selectedExercise = selectedExercises.first;
         final oldProcedureIndex = _indexWhereProcedure(procedureId: procedureId);
         setState(() {
           _procedures[oldProcedureIndex] = ProcedureDto(exerciseId: selectedExercise.id);

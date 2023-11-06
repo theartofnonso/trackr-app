@@ -86,7 +86,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Select an exercise
   void _selectExercise({required ExerciseInLibraryDto selectedExercise}) {
-    Navigator.of(context).pop([selectedExercise]);
+    Navigator.of(context).pop([selectedExercise.exercise]);
   }
 
   /// Convert [ExerciseInLibraryDto] to [SelectableExerciseWidget]
