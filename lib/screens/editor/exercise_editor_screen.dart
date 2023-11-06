@@ -115,9 +115,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
-    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(multiSelect: multiSelect))) as List<MuscleGroupDto>;
-    if(multiSelect) {
-
+    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(multiSelect: multiSelect))) as List<BodyPart>?;
+    if(muscleGroups != null) {
+      if(multiSelect) {
+        setState(() {
+          _secondaryBodyPart = muscleGroups;
+        });
+      } else {
+        setState(() {
+          _primaryBodyPart = muscleGroups.first;
+        });
+      }
     }
   }
 
