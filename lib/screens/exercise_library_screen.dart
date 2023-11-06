@@ -116,6 +116,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: tealBlueDark,
+        surfaceTintColor: tealBlueDark,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
