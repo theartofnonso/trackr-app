@@ -104,7 +104,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         itemBuilder: (BuildContext context, int index) => ExerciseWidget(
             exerciseInLibraryDto: _filteredExercises[index],
             onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
-        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+        separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
         itemCount: _filteredExercises.length);
   }
 

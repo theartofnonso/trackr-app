@@ -225,7 +225,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ? Expanded(
                     child: ListView.separated(
                         itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: logs[index]),
-                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 14),
+                        separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
                         itemCount: logs.length),
                   )
                 : routineLogProvider.cachedLog == null

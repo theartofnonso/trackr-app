@@ -79,7 +79,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                         child: ListView.separated(
                             itemBuilder: (BuildContext context, int index) =>
                                 RoutineLogWidget(log: provider.logs[index]),
-                            separatorBuilder: (BuildContext context, int index) => const SizedBox.shrink(),
+                            separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
                             itemCount: provider.logs.length),
                       )
                     : Expanded(
