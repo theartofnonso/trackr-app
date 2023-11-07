@@ -136,6 +136,7 @@ class _RoutineLogWidget extends StatelessWidget {
       child: ListTile(
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
+        dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
         subtitle: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
