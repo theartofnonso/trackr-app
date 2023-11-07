@@ -24,7 +24,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   late TextEditingController _exerciseNotesController;
 
   late MuscleGroup _primaryMuscleGroup;
-  late List<MuscleGroup> _secondaryMuscleGroup;
+  List<MuscleGroup> _secondaryMuscleGroup = [];
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   subtitle: Text(_primaryMuscleGroup.name,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Theme(
               data: ThemeData(splashColor: tealBlueLight),
               child: ListTile(
@@ -147,7 +147,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNotesController = TextEditingController(text: exercise?.notes);
 
     _primaryMuscleGroup = MuscleGroup.values.first;
-    _secondaryMuscleGroup = MuscleGroup.values.take(4).toList();
   }
 
     @override

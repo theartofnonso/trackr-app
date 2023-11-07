@@ -35,13 +35,15 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
+  final TextEditingController _searchEditingController = TextEditingController();
+
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
   List<ExerciseInLibraryDto> _filteredExercises = [];
 
   /// Search through the list of exercises
-  void _runSearch({required String searchTerm}) {
+  void _runSearch(String searchTerm) {
     setState(() {
       _filteredExercises = _exercisesInLibrary
           .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
@@ -52,62 +54,44 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   /// Navigate to previous screen
-  void _addSelectedExercises() {
-    final exercises = _whereSelectedExercises().map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
-    Navigator.of(context).pop(exercises);
+  void _navigateBackWithSelectedExercises() {
+    final exercisesFromLibrary =
+    _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
+    Navigator.of(context).pop(exercisesFromLibrary);
   }
 
-  int _indexWhereExercise({required String exerciseId}) {
-    return _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
+  /// Select an exercise
+  void _navigateBackWithSelectedExercise({required ExerciseInLibraryDto selectedExercise}) {
+    Navigator.of(context).pop([selectedExercise.exercise]);
   }
 
   int _indexWhereFilteredExercise({required String exerciseId}) {
     return _filteredExercises.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
   }
 
-  List<ExerciseInLibraryDto> _whereSelectedExercises() {
-    return _exercisesInLibrary.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
-  }
-
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final exerciseIndex = _indexWhereExercise(exerciseId: exerciseInLibraryDto.exercise.id);
     final filteredExerciseIndex = _indexWhereFilteredExercise(exerciseId: exerciseInLibraryDto.exercise.id);
     if (selected) {
       setState(() {
-        _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
         _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
       });
     } else {
       setState(() {
-        _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
         _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
       });
     }
   }
 
-  /// Select an exercise
-  void _selectExercise({required ExerciseInLibraryDto selectedExercise}) {
-    Navigator.of(context).pop([selectedExercise.exercise]);
-  }
-
-  /// Convert [ExerciseInLibraryDto] to [SelectableExerciseWidget]
-  Widget _exercisesToWidgets() {
+  Widget _exerciseWidget(ExerciseInLibraryDto exerciseInLibraryDto) {
     if (widget.multiSelect) {
-      return ListView.separated(
-          itemBuilder: (BuildContext context, int index) => SelectableExerciseWidget(
-              exerciseInLibraryDto: _filteredExercises[index],
-              onTap: (selected) =>
-                  _selectCheckedExercise(selected: selected, exerciseInLibraryDto: _filteredExercises[index])),
-          separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
-          itemCount: _filteredExercises.length);
+      return SelectableExerciseWidget(
+          exerciseInLibraryDto: exerciseInLibraryDto,
+          onTap: (selected) => _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto));
     }
-    return ListView.separated(
-        itemBuilder: (BuildContext context, int index) => ExerciseWidget(
-            exerciseInLibraryDto: _filteredExercises[index],
-            onTap: () => _selectExercise(selectedExercise: _filteredExercises[index])),
-        separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
-        itemCount: _filteredExercises.length);
+    return ExerciseWidget(
+        exerciseInLibraryDto: exerciseInLibraryDto,
+        onTap: () => _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto));
   }
 
   void _dismissKeyboard(BuildContext context) {
@@ -118,8 +102,28 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
   }
 
+  List<ExerciseInLibraryDto> _combineExercises({required List<Exercise> exercises}) {
+
+    final exercisesInLibrary = exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise)).toList();
+
+    // Create a map from the full list
+    final Map<String, ExerciseInLibraryDto> combinedMap = {
+      for (ExerciseInLibraryDto dto in exercisesInLibrary) dto.exercise.id: dto,
+    };
+
+    // Replace entries with the ones from the filtered list
+    for (ExerciseInLibraryDto filteredDto in _filteredExercises) {
+      combinedMap[filteredDto.exercise.id] = filteredDto;
+    }
+
+    // Convert the map back to a list
+    return combinedMap.values.toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final selectedExercises = _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -127,10 +131,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          _whereSelectedExercises().isNotEmpty
+          selectedExercises.isNotEmpty
               ? CTextButton(
-                  onPressed: _addSelectedExercises,
-                  label: "Add (${_whereSelectedExercises().length})",
+                  onPressed: _navigateBackWithSelectedExercises,
+                  label: "Add (${selectedExercises.length})",
                   buttonColor: Colors.transparent,
                 )
               : const SizedBox.shrink()
@@ -155,7 +159,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           child: Column(
             children: [
               SearchBar(
-                onChanged: (searchTerm) => _runSearch(searchTerm: searchTerm),
+                controller: _searchEditingController,
+                onChanged: _runSearch,
                 leading: const Icon(
                   Icons.search_rounded,
                   color: Colors.white70,
@@ -171,10 +176,25 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 constraints: const BoxConstraints(minHeight: 50),
               ),
               const SizedBox(height: 12),
-              _exercisesInLibrary.isNotEmpty
-                  ? Expanded(child: _exercisesToWidgets())
-                  : const Expanded(
-                      child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
+              Consumer<ExerciseProvider>(
+                builder: (BuildContext context, ExerciseProvider value, Widget? child) {
+                  final exercises = value.exercises;
+                  final exercisesInLibrary = exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise)).toList();
+                  _filteredExercises = _searchEditingController.text.isNotEmpty
+                      ? _filteredExercises
+                      : _exercisesInLibrary;
+                  return exercises.isNotEmpty
+                      ? Expanded(
+                          child: ListView.separated(
+                              itemBuilder: (BuildContext context, int index) =>
+                                  _exerciseWidget(_filteredExercises[index]),
+                              separatorBuilder: (BuildContext context, int index) =>
+                                  Divider(color: Colors.white70.withOpacity(0.1)),
+                              itemCount: _filteredExercises.length))
+                      : const Expanded(
+                          child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")));
+                },
+              )
             ],
           ),
         ),
@@ -190,5 +210,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
         .toList();
     _filteredExercises = _exercisesInLibrary;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchEditingController.dispose();
   }
 }

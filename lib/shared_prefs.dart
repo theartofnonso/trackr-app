@@ -1,9 +1,5 @@
-import 'package:shared_preferences/shared_preferences.dart';
 
-const String cachedRoutineLogKey = "cached_routine_log_key";
-const String cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
-const String cachedRoutineRestIntervalKey = "cached_routine_rest_interval_key";
-const String weightUnitKey = "weight_Unit_type_key";
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;
@@ -20,25 +16,31 @@ class SharedPrefs {
     _sharedPrefs?.clear();
   }
 
-  String get cachedRoutineLog => _sharedPrefs?.getString(cachedRoutineLogKey) ?? "";
+  /// RoutineLog that is currently running
+  final String _cachedRoutineLogKey = "cached_routine_log_key";
+  String get cachedRoutineLog => _sharedPrefs?.getString(_cachedRoutineLogKey) ?? "";
   set cachedRoutineLog(String value) {
-    _sharedPrefs?.setString(cachedRoutineLogKey, value);
+    _sharedPrefs?.setString(_cachedRoutineLogKey, value);
   }
 
-  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(cachedPendingRoutineLogsKey) ?? <String>[];
+  /// RoutineLogs that are yet to be update
+  final String _cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
+  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(_cachedPendingRoutineLogsKey) ?? <String>[];
   set cachedPendingRoutineLogs(List<String> value) {
-    _sharedPrefs?.setStringList(cachedPendingRoutineLogsKey, value);
+    _sharedPrefs?.setStringList(_cachedPendingRoutineLogsKey, value);
   }
 
   /// Cached Rest timer interval during routine
-  int get cachedRoutineRestInterval => _sharedPrefs?.getInt(cachedRoutineRestIntervalKey) ?? 0;
+  final String _cachedRoutineRestIntervalKey = "cached_routine_rest_interval_key";
+  int get cachedRoutineRestInterval => _sharedPrefs?.getInt(_cachedRoutineRestIntervalKey) ?? 0;
   set cachedRoutineRestInterval(int value) {
-    _sharedPrefs?.setInt(cachedRoutineRestIntervalKey, value);
+    _sharedPrefs?.setInt(_cachedRoutineRestIntervalKey, value);
   }
 
   /// Weight Unit Type
-  String get weightUnit => _sharedPrefs?.getString(weightUnitKey) ?? "";
+  final String _weightUnitKey = "weight_Unit_type_key";
+  String get weightUnit => _sharedPrefs?.getString(_weightUnitKey) ?? "";
   set weightUnit(String value) {
-    _sharedPrefs?.setString(weightUnitKey, value);
+    _sharedPrefs?.setString(_weightUnitKey, value);
   }
 }
