@@ -7,7 +7,6 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
@@ -364,30 +363,15 @@ class _RoutineLogWidget extends StatelessWidget {
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        dense: true,
         title: Text(log.name, style: Theme
             .of(context)
             .textTheme
             .labelLarge),
-        subtitle: Row(children: [
-          const Icon(
-            Icons.date_range_rounded,
-            color: Colors.white,
-            size: 12,
-          ),
-          const SizedBox(width: 1),
-          Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
-          const SizedBox(width: 10),
-          const Icon(
-            Icons.timer,
-            color: Colors.white,
-            size: 12,
-          ),
-          const SizedBox(width: 1),
-          Text(log.durationInString(),
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
-        ]),
-
+        subtitle: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+        trailing: Text(log.durationInString(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
       ),
     );
   }

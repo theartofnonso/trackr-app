@@ -72,14 +72,14 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           itemBuilder: (BuildContext context, int index) => SelectableMuscleGroupWidget(
               muscleGroupDto: _muscleGroups[index],
               onTap: (selected) => _selectCheckedMuscleGroup(selected: selected, muscleGroupDto: _muscleGroups[index])),
-          separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
           itemCount: _muscleGroups.length);
     }
     return ListView.separated(
         itemBuilder: (BuildContext context, int index) => MuscleGroupWidget(
             muscleGroupDto: _muscleGroups[index],
             onTap: () => _selectMuscleGroup(muscleGroupDto: _muscleGroups[index])),
-        separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
         itemCount: _muscleGroups.length);
   }
 

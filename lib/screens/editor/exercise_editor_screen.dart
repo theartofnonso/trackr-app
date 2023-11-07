@@ -85,6 +85,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               child: ListTile(
                   onTap: _navigateToMuscleGroupsScreen,
                   tileColor: tealBlueLight,
+                  dense: true,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                   title: Text("Primary Muscle", style: Theme.of(context).textTheme.labelLarge),
                   subtitle: Text(_primaryMuscleGroup.name,
@@ -96,6 +97,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               child: ListTile(
                   onTap: () => _navigateToMuscleGroupsScreen(multiSelect: true),
                   tileColor: tealBlueLight,
+                  dense: true,
                   contentPadding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12) : null,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                   title: Text("Secondary Muscles", style: Theme.of(context).textTheme.labelLarge),

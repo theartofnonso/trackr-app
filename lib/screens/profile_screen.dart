@@ -216,6 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: ListTile(
                           onTap: () => _navigateToMuscleDistribution(),
                           tileColor: tealBlueLight,
+                          dense: true,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                           title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
                           subtitle: Text("Number of sets logged for each muscle group",
@@ -227,6 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: ListTile(
                           onTap: () => _navigateToExerciseLibrary(),
                           tileColor: tealBlueLight,
+                          dense: true,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                           title: Text("Exercises", style: Theme.of(context).textTheme.labelLarge),
                           subtitle: Text("Add your favourites exercises",

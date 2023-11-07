@@ -28,6 +28,7 @@ class SetWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         tileColor: tealBlueLight,
         leading: _SetIcon(type: setDto.type, label: workingIndex),
+        dense: true,
         title: Row(children: [
           WeightText(label: weightLabel().toUpperCase(), value: value),
           const SizedBox(width: 10),
