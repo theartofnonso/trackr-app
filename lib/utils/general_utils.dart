@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:tracker_app/screens/settings_screen.dart';

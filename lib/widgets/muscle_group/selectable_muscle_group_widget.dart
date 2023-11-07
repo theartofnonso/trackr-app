@@ -26,9 +26,8 @@ class SelectableMuscleGroupWidget extends StatelessWidget {
           activeColor: Colors.white,
           checkColor: Colors.black,
           hoverColor: Colors.transparent,
-          contentPadding: EdgeInsets.zero,
           dense: true,
-          title: Text(muscleGroupDto.bodyPart.name,
+          title: Text(muscleGroupDto.muscleGroup.name,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500))),
     );
   }

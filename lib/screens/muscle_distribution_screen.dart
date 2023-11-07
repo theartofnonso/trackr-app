@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/models/BodyPart.dart';
 import 'package:tracker_app/screens/profile_screen.dart';
 import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
 import '../enums.dart';
+import '../enums/muscle_group_enums.dart';
 import '../providers/routine_log_provider.dart';
 
 class MuscleDistributionScreen extends StatefulWidget {
@@ -22,12 +22,12 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
 
   CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.thisMonth;
 
-  late Map<BodyPart, int> _bodySplit;
+  late Map<MuscleGroup, int> _muscleGroup;
 
   @override
   Widget build(BuildContext context) {
 
-    final bodySplitWidgets = _bodyPartSplitToWidgets();
+    final bodySplitWidgets = _muscleGroupSplitToWidgets();
 
     return Scaffold(
       appBar: AppBar(
@@ -97,7 +97,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               }).toList(),
             )
           ]),
-          PieChartWidget(segments: _bodySplit.entries.take(5).toList()),
+          PieChartWidget(segments: _muscleGroup.entries.take(5).toList()),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
@@ -105,7 +105,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
                 separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
                 itemCount: bodySplitWidgets.length),
           )
-          //..._bodyPartSplit(provider: routineLogProvider)],
+          //..._MuscleGroupSplit(provider: routineLogProvider)],
         ]),
       ),
     );
@@ -118,55 +118,55 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
   void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-    final Map<BodyPart, int> frequencyMap = {};
+    final Map<MuscleGroup, int> frequencyMap = {};
 
-    // Count the occurrences of each bodyPart
-    for (BodyPart bodyPart in BodyPart.values) {
-      frequencyMap[bodyPart] = range != null
+    // Count the occurrences of each MuscleGroup
+    for (MuscleGroup muscle in MuscleGroup.values) {
+      frequencyMap[muscle] = range != null
           ? routineLogProvider
-              .setDtosForBodyPartWhereDateRange(bodyPart: bodyPart, context: context, range: range)
+              .setDtosForMuscleGroupWhereDateRange(muscleGroup: muscle, context: context, range: range)
               .length
-          : routineLogProvider.whereSetDtosForBodyPart(bodyPart: bodyPart, context: context).length;
+          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscle, context: context).length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
     setState(() {
-      _bodySplit = Map.fromEntries(sortedBodySplit);
+      _muscleGroup = Map.fromEntries(sortedBodySplit);
     });
   }
 
   void _calculateBodySplitPercentageSince({int? since}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-    final Map<BodyPart, int> frequencyMap = {};
+    final Map<MuscleGroup, int> frequencyMap = {};
 
-    // Count the occurrences of each bodyPart
-    for (BodyPart bodyPart in BodyPart.values) {
-      frequencyMap[bodyPart] = since != null
+    // Count the occurrences of each MuscleGroup
+    for (MuscleGroup muscleGroup in MuscleGroup.values) {
+      frequencyMap[muscleGroup] = since != null
           ? routineLogProvider
-              .whereSetDtosForBodyPartSince(bodyPart: bodyPart, context: context, since: since)
+              .whereSetDtosForMuscleGroupSince(muscleGroup: muscleGroup, context: context, since: since)
               .length
-          : routineLogProvider.whereSetDtosForBodyPart(bodyPart: bodyPart, context: context).length;
+          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscleGroup, context: context).length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
     setState(() {
-      _bodySplit = Map.fromEntries(sortedBodySplit);
+      _muscleGroup = Map.fromEntries(sortedBodySplit);
     });
   }
 
-  List<Widget> _bodyPartSplitToWidgets() {
+  List<Widget> _muscleGroupSplitToWidgets() {
     final splitList = <Widget>[];
-    _bodySplit.forEach((bodyPart, count) {
+    _muscleGroup.forEach((muscleGroup, count) {
       final widget = Padding(
-        key: Key(bodyPart.name),
+        key: Key(muscleGroup.name),
         padding: const EdgeInsets.only(bottom: 8.0),
         child: ListTile(
             tileColor: tealBlueLight,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
             ),
-            title: Text(bodyPart.name, style: Theme.of(context).textTheme.labelLarge),
+            title: Text(muscleGroup.name, style: Theme.of(context).textTheme.labelLarge),
             trailing: Text("$count", style: Theme.of(context).textTheme.labelLarge)),
       );
       splitList.add(widget);

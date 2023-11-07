@@ -36,7 +36,7 @@ class ExerciseWidget extends StatelessWidget {
               SizedBox(
                   width: 300,
                   child: Text(
-                    "Primary: ${exerciseInLibraryDto.exercise.primaryMuscle.name}",
+                    "Primary: ${exerciseInLibraryDto.exercise.primaryMuscle}",
                     style: GoogleFonts.lato(
                         color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),

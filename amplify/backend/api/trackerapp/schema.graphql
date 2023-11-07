@@ -75,38 +75,11 @@ type Exercise
   userID: ID! @index(name: "byUser")
   user: User! @belongsTo(fields: ["userID"])
   name: String!
-  primaryMuscle: BodyPart!
-  secondaryMuscles: [BodyPart]!
+  primaryMuscle: String!
+  secondaryMuscles: [String]!
   notes: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
-}
-
-enum BodyPart {
-  Abs
-  Adductors
-  Abductors
-  Back
-  Back_Upper
-  Back_Lower
-  Back_Lats
-  Back_Traps
-  Biceps
-  Chest
-  Chest_Upper
-  Chest_Inner
-  Chest_Lower
-  Shoulder
-  Shoulder_Frontal
-  Shoulder_Side
-  Shoulder_Rear
-  Neck
-  Triceps
-  Forearms
-  Quadriceps
-  Hamstrings
-  Glutes
-  Calves
 }
 
 enum Gender {

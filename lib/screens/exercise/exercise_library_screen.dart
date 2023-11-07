@@ -7,6 +7,7 @@ import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
 import '../../app_constants.dart';
 import '../../models/Exercise.dart';
 import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
 
@@ -96,7 +97,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       return ListView.separated(
           itemBuilder: (BuildContext context, int index) => SelectableExerciseWidget(
               exerciseInLibraryDto: _filteredExercises[index],
-              onTap: (selected) => _selectCheckedExercise(selected: selected, exerciseInLibraryDto: _filteredExercises[index])),
+              onTap: (selected) =>
+                  _selectCheckedExercise(selected: selected, exerciseInLibraryDto: _filteredExercises[index])),
           separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
           itemCount: _filteredExercises.length);
     }
@@ -169,7 +171,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 constraints: const BoxConstraints(minHeight: 50),
               ),
               const SizedBox(height: 12),
-              Expanded(child: _exercisesToWidgets())
+              _exercisesInLibrary.isNotEmpty
+                  ? Expanded(child: _exercisesToWidgets())
+                  : const Expanded(
+                      child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
             ],
           ),
         ),

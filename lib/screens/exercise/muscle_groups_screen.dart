@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/models/BodyPart.dart';
-import 'package:tracker_app/widgets/exercise/muscle_group_widget.dart';
-import 'package:tracker_app/widgets/exercise/selectable_muscle_group_widget.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/widgets/muscle_group/muscle_group_widget.dart';
+import 'package:tracker_app/widgets/muscle_group/selectable_muscle_group_widget.dart';
 
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
 
 class MuscleGroupDto {
   final bool selected;
-  final BodyPart bodyPart;
+  final MuscleGroup muscleGroup;
 
-  MuscleGroupDto({this.selected = false, required this.bodyPart});
+  MuscleGroupDto({this.selected = false, required this.muscleGroup});
 
-  MuscleGroupDto copyWith({bool? selected, BodyPart? exercise}) {
+  MuscleGroupDto copyWith({bool? selected, MuscleGroup? muscleGroup}) {
     return MuscleGroupDto(
       selected: selected ?? this.selected,
-      bodyPart: exercise ?? this.bodyPart,
+      muscleGroup: muscleGroup ?? this.muscleGroup,
     );
   }
 }
@@ -34,12 +34,12 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
   /// Navigate to previous screen
   void _addSelectedMuscleGroup() {
-    final muscleGroups = _whereSelectedMuscleGroups().map((muscle) => muscle.bodyPart).toList();
+    final muscleGroups = _whereSelectedMuscleGroups().map((muscle) => muscle.muscleGroup).toList();
     Navigator.of(context).pop(muscleGroups);
   }
 
-  int _indexWhereMuscleGroup({required BodyPart bodyPart}) {
-    return _muscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.bodyPart == bodyPart);
+  int _indexWhereMuscleGroup({required MuscleGroup muscleGroup}) {
+    return _muscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.muscleGroup == muscleGroup);
   }
   
   List<MuscleGroupDto> _whereSelectedMuscleGroups() {
@@ -48,7 +48,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
   /// Select up to many exercise
   void _selectCheckedMuscleGroup({required bool selected, required MuscleGroupDto muscleGroupDto}) {
-    final muscleGroupIndex = _indexWhereMuscleGroup(bodyPart: muscleGroupDto.bodyPart);
+    final muscleGroupIndex = _indexWhereMuscleGroup(muscleGroup: muscleGroupDto.muscleGroup);
     if (selected) {
       setState(() {
         _muscleGroups[muscleGroupIndex] = muscleGroupDto.copyWith(selected: true);
@@ -62,7 +62,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
   /// Select an muscle group
   void _selectMuscleGroup({required MuscleGroupDto muscleGroupDto}) {
-    Navigator.of(context).pop([muscleGroupDto.bodyPart]);
+    Navigator.of(context).pop([muscleGroupDto.muscleGroup]);
   }
 
   /// Convert [MuscleGroupDto] to [SelectableExerciseWidget]
@@ -76,7 +76,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           itemCount: _muscleGroups.length);
     }
     return ListView.separated(
-        itemBuilder: (BuildContext context, int index) => MuscleWidget(
+        itemBuilder: (BuildContext context, int index) => MuscleGroupWidget(
             muscleGroupDto: _muscleGroups[index],
             onTap: () => _selectMuscleGroup(muscleGroupDto: _muscleGroups[index])),
         separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
@@ -115,6 +115,6 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   @override
   void initState() {
     super.initState();
-    _muscleGroups = BodyPart.values.map((bodyPart) => MuscleGroupDto(bodyPart: bodyPart)).toList();
+    _muscleGroups = MuscleGroup.values.map((muscle) => MuscleGroupDto(muscleGroup: muscle)).toList();
   }
 }

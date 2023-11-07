@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/models/BodyPart.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 
 import '../../app_constants.dart';
@@ -21,8 +23,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   late TextEditingController _exerciseNameController;
   late TextEditingController _exerciseNotesController;
 
-  late BodyPart _primaryBodyPart;
-  late List<BodyPart> _secondaryBodyPart;
+  late MuscleGroup _primaryMuscleGroup;
+  late List<MuscleGroup> _secondaryMuscleGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +87,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   tileColor: tealBlueLight,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                   title: Text("Primary Muscle", style: Theme.of(context).textTheme.labelLarge),
-                  subtitle: Text(_primaryBodyPart.name,
+                  subtitle: Text(_primaryMuscleGroup.name,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
             ),
             const SizedBox(height: 6),
@@ -94,19 +96,19 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               child: ListTile(
                   onTap: () => _navigateToMuscleGroupsScreen(multiSelect: true),
                   tileColor: tealBlueLight,
-                  contentPadding: _secondaryBodyPart.length > 6 ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12) : null,
+                  contentPadding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12) : null,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                   title: Text("Secondary Muscles", style: Theme.of(context).textTheme.labelLarge),
                   subtitle: Padding(
-                    padding: _secondaryBodyPart.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
-                    child: Text(_secondaryBodyPart.map((bodyPart) => bodyPart.name).join(", "),
+                    padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
+                    child: Text(_secondaryMuscleGroup.map((bodyPart) => bodyPart.name).join(", "),
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70)),
                   )),
             ),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: CTextButton(onPressed: () {}, label: "Create exercise"),
+              child: CTextButton(onPressed: _createExercise, label: "Create exercise"),
             )
           ]),
         ),
@@ -115,18 +117,24 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
-    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(multiSelect: multiSelect))) as List<BodyPart>?;
+    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(multiSelect: multiSelect))) as List<MuscleGroup>?;
     if(muscleGroups != null) {
       if(multiSelect) {
         setState(() {
-          _secondaryBodyPart = muscleGroups;
+          _secondaryMuscleGroup = muscleGroups;
         });
       } else {
         setState(() {
-          _primaryBodyPart = muscleGroups.first;
+          _primaryMuscleGroup = muscleGroups.first;
         });
       }
     }
+  }
+
+  void _createExercise() {
+    Provider.of<ExerciseProvider>(context, listen: false)
+        .saveExercise(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primary: _primaryMuscleGroup, secondary: _secondaryMuscleGroup);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -136,8 +144,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNameController = TextEditingController(text: exercise?.name);
     _exerciseNotesController = TextEditingController(text: exercise?.notes);
 
-    _primaryBodyPart = BodyPart.values.first;
-    _secondaryBodyPart = BodyPart.values.take(4).toList();
+    _primaryMuscleGroup = MuscleGroup.values.first;
+    _secondaryMuscleGroup = MuscleGroup.values.take(4).toList();
   }
 
     @override

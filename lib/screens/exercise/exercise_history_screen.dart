@@ -14,6 +14,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
+import '../../helper_functions/navigation/navigator_helper_functions.dart';
 import '../../messages.dart';
 import '../../models/Exercise.dart';
 import '../../models/RoutineLog.dart';
@@ -25,7 +26,6 @@ import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/exercise_history/routine_log_widget.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../routine/logs/routine_log_preview_screen.dart';
-import '../routine/logs/routine_logs_screen.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 

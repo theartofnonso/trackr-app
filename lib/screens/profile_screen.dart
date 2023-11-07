@@ -6,7 +6,6 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/screens/exercise/exercise_library_screen.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
-import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -14,6 +13,7 @@ import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/graph/chart_point_dto.dart';
 import '../enums.dart';
+import '../helper_functions/navigation/navigator_helper_functions.dart';
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';

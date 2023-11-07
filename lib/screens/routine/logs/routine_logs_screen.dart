@@ -1,28 +1,21 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/settings_provider.dart';
-import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
+import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 
 import '../../../app_constants.dart';
+import '../../../helper_functions/navigation/navigator_helper_functions.dart';
+import '../../../models/RoutineLog.dart';
 import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
-import '../../../widgets/calendar/routine_log_widget.dart';
 import '../../calendar_screen.dart';
-
-void startEmptyRoutine({required BuildContext context, TemporalDateTime? createdAt}) async {
-  if (context.mounted) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            RoutineEditorScreen(mode: RoutineEditorType.log, createdAt: createdAt)));
-  }
-}
 
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
@@ -78,8 +71,9 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                     ? Expanded(
                         child: ListView.separated(
                             itemBuilder: (BuildContext context, int index) =>
-                                RoutineLogWidget(log: provider.logs[index]),
-                            separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+                                _RoutineLogWidget(log: provider.logs[index]),
+                            separatorBuilder: (BuildContext context, int index) =>
+                                const SizedBox(height: 8),
                             itemCount: provider.logs.length),
                       )
                     : Expanded(
@@ -127,5 +121,28 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       WidgetsBinding.instance.addPostFrameCallback(
           (_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context));
     }
+  }
+}
+
+class _RoutineLogWidget extends StatelessWidget {
+  final RoutineLog log;
+
+  const _RoutineLogWidget({required this.log});
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: ThemeData(splashColor: tealBlueLight),
+      child: ListTile(
+        tileColor: tealBlueLight,
+        onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
+        subtitle: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+        trailing: Text(log.durationInString(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+      ),
+    );
   }
 }

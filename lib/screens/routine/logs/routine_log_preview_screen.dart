@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
@@ -41,7 +42,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     final weightProvider = Provider.of<SettingsProvider>(context, listen: true);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
-    if(log == null) {
+    if (log == null) {
       return const SizedBox.shrink();
     }
 
@@ -155,24 +156,24 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(completedSetsSummary,
-                                  style: GoogleFonts.lato(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                                  style:
+                                      GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
                           ),
                           TableCell(
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(totalVolumeSummary,
-                                  style: GoogleFonts.lato(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                                  style:
+                                      GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
                           ),
                           TableCell(
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(_logDuration(log: log),
-                                  style: GoogleFonts.lato(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                                  style:
+                                      GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
                           )
                         ]),
@@ -180,7 +181,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                     ),
                   ),
                   Column(
-                    children: [..._bodyPartSplit(procedureJsons: log.procedures)],
+                    children: [..._muscleGroupSplit(procedureJsons: log.procedures)],
                   ),
                   ..._proceduresToWidgets(routineLog: log)
                 ],
@@ -188,7 +189,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             ),
           ),
         ));
-    }
+  }
 
   @override
   void initState() {
@@ -259,18 +260,18 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return totalWeight;
   }
 
-  Map<String, double> _calculateBodySplitPercentage(List<BodyPart> bodyParts) {
-    final Map<BodyPart, int> frequencyMap = {};
+  Map<String, double> _calculateBodySplitPercentage(List<MuscleGroup> muscleGroups) {
+    final Map<MuscleGroup, int> frequencyMap = {};
 
-    // Count the occurrences of each bodyPart
-    for (BodyPart bodyPart in bodyParts) {
-      frequencyMap[bodyPart] = (frequencyMap[bodyPart] ?? 0) + 1;
+    // Count the occurrences of each muscleGroup
+    for (MuscleGroup muscleGroup in muscleGroups) {
+      frequencyMap[muscleGroup] = (frequencyMap[muscleGroup] ?? 0) + 1;
     }
 
-    final int totalItems = bodyParts.length;
+    final int totalItems = muscleGroups.length;
     final Map<String, double> percentageMap = {};
 
-    // Calculate the percentage for each bodyPart
+    // Calculate the percentage for each muscleGroup
     frequencyMap.forEach((item, count) {
       final double percentage = ((count / totalItems) * 100.0) / 100;
       percentageMap[item.name] = percentage;
@@ -279,12 +280,13 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return percentageMap;
   }
 
-  List<Widget> _bodyPartSplit({required List<String> procedureJsons}) {
+  List<Widget> _muscleGroupSplit({required List<String> procedureJsons}) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-    final parts = procedures
-        .map((procedure) => exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).primaryMuscle)
-        .toList();
+    final parts = procedures.map((procedure) {
+      final exercise = exerciseProvider.whereExercise(exerciseId: procedure.exerciseId);
+      return MuscleGroup.fromString(exercise.primaryMuscle);
+    }).toList();
     final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {
@@ -351,13 +353,17 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                 onPressed: () async {
                   Navigator.pop(context);
                   try {
-                    await Provider.of<RoutineLogProvider>(context, listen: false).removeLogFromCloud(id: widget.routineLogId);
-                    if(mounted) {
+                    await Provider.of<RoutineLogProvider>(context, listen: false)
+                        .removeLogFromCloud(id: widget.routineLogId);
+                    if (mounted) {
                       Navigator.of(context).pop(widget.routineLogId);
                     }
                   } catch (_) {
-                    if(mounted) {
-                      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable delete this log");
+                    if (mounted) {
+                      showSnackbar(
+                          context: context,
+                          icon: const Icon(Icons.info_outline),
+                          message: "Oops, we are unable delete this log");
                     }
                   }
                 },
@@ -372,8 +378,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   void _navigateToRoutineEditor({required BuildContext context, required RoutineLog log}) async {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            RoutineEditorScreen(routineLog: log, mode: RoutineEditorType.edit)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineLog: log, mode: RoutineEditorType.edit)));
   }
 }

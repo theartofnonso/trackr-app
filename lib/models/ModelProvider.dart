@@ -25,7 +25,6 @@ import 'Routine.dart';
 import 'RoutineLog.dart';
 import 'User.dart';
 
-export 'BodyPart.dart';
 export 'Exercise.dart';
 export 'Gender.dart';
 export 'Routine.dart';
@@ -34,7 +33,7 @@ export 'User.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "e113254e66e5881cb4f22e4ed8aaed9e";
+  String version = "63a028e4aea7805d6db2bf3156b529e8";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Exercise.schema, Routine.schema, RoutineLog.schema, User.schema];
   @override

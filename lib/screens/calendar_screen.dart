@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../widgets/calendar/routine_log_widget.dart';
+import '../helper_functions/navigation/navigator_helper_functions.dart';
+import '../models/RoutineLog.dart';
 import '../widgets/empty_states/screen_empty_state.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -175,12 +177,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
         actions: [
           routineLogProvider.cachedLog == null
               ? GestureDetector(
-                  onTap: _logRoutine,
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 14.0),
-                    child: Icon(Icons.add),
-                  ),
-                )
+            onTap: _logRoutine,
+            child: const Padding(
+              padding: EdgeInsets.only(right: 14.0),
+              child: Icon(Icons.add),
+            ),
+          )
               : const SizedBox.shrink()
         ],
       ),
@@ -210,7 +212,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               color: tealBlueDark,
               height: 15,
             ),
-            CalendarHeader(),
+            _CalendarHeader(),
             Container(
               color: tealBlueDark,
               child: Column(
@@ -223,16 +225,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             logs.isNotEmpty
                 ? Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: logs[index]),
-                        separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
-                        itemCount: logs.length),
-                  )
+              child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                  separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(height: 8),
+                  itemCount: logs.length),
+            )
                 : routineLogProvider.cachedLog == null
-                    ? Expanded(
-                        child:
-                            Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
-                    : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers))
+                ? Expanded(
+                child:
+                Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
+                : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers))
           ],
         ),
       ),
@@ -242,15 +245,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void initState() {
     super.initState();
-    final earliestRoutineLog = Provider.of<RoutineLogProvider>(context, listen: false).logs.lastOrNull;
+    final earliestRoutineLog = Provider
+        .of<RoutineLogProvider>(context, listen: false)
+        .logs
+        .lastOrNull;
     final earliestDateTime =
-        earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
+    earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
     _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
   }
 }
 
-class CalendarHeader extends StatelessWidget {
-  CalendarHeader({super.key});
+class _CalendarHeader extends StatelessWidget {
 
   final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -262,13 +267,14 @@ class CalendarHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ...daysOfWeek
-              .map((day) => SizedBox(
-                    width: 40,
-                    child: Center(
-                      child: Text(day,
-                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                    ),
-                  ))
+              .map((day) =>
+              SizedBox(
+                width: 40,
+                child: Center(
+                  child: Text(day,
+                      style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                ),
+              ))
               .toList()
         ],
       ),
@@ -337,9 +343,51 @@ class _DateWidget extends StatelessWidget {
           child: Center(
             child: Text("${dateTime.day}",
                 style:
-                    GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _RoutineLogWidget extends StatelessWidget {
+  final RoutineLog log;
+
+  const _RoutineLogWidget({required this.log});
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: ThemeData(splashColor: tealBlueLight),
+      child: ListTile(
+        tileColor: tealBlueLight,
+        onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        title: Text(log.name, style: Theme
+            .of(context)
+            .textTheme
+            .labelLarge),
+        subtitle: Row(children: [
+          const Icon(
+            Icons.date_range_rounded,
+            color: Colors.white,
+            size: 12,
+          ),
+          const SizedBox(width: 1),
+          Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+          const SizedBox(width: 10),
+          const Icon(
+            Icons.timer,
+            color: Colors.white,
+            size: 12,
+          ),
+          const SizedBox(width: 1),
+          Text(log.durationInString(),
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+        ]),
+
       ),
     );
   }

@@ -3,8 +3,8 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 
-import '../models/BodyPart.dart';
 import '../models/Exercise.dart';
 import '../utils/general_utils.dart';
 
@@ -17,7 +17,6 @@ class ExerciseProvider with ChangeNotifier {
     final exerciseOwner = await user();
     final request = ModelQueries.list(Exercise.classType, where: Exercise.USER.eq(exerciseOwner.id));
     final response = await Amplify.API.query(request: request).response;
-
     final routines = response.data?.items;
     if (routines != null) {
       _exercises = routines.whereType<Exercise>().toList();
@@ -25,10 +24,10 @@ class ExerciseProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveExercise({required String id, required String name, required String notes, required BodyPart primary, required List<BodyPart> secondary}) async {
+  Future<void> saveExercise({required String name, required String notes, required MuscleGroup primary, required List<MuscleGroup> secondary}) async {
     final exerciseOwner = await user();
 
-    final exerciseToCreate = Exercise(user: exerciseOwner, name: name, primaryMuscle: primary, secondaryMuscles: secondary, createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
+    final exerciseToCreate = Exercise(user: exerciseOwner, name: name, primaryMuscle: primary.name, secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(), createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
     final request = ModelMutations.create(exerciseToCreate);
     final response = await Amplify.API.mutate(request: request).response;
     final createdExercise = response.data;

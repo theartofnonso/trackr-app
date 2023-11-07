@@ -2,10 +2,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/models/BodyPart.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 class PieChartWidget extends StatelessWidget {
-  final List<MapEntry<BodyPart, int>> segments;
+  final List<MapEntry<MuscleGroup, int>> segments;
 
   const PieChartWidget({super.key, required this.segments});
 
