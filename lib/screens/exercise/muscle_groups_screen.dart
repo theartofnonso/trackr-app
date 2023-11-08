@@ -113,7 +113,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           children: [
-            CSearchBar(hintText: 'Search muscle group', onChanged: _runSearch),
+            CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
