@@ -45,9 +45,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Search through the list of exercises
   void _runSearch(String searchTerm) {
     setState(() {
-      _filteredExercises = _exercisesInLibrary
-          .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
+      _filteredExercises = Provider.of<ExerciseProvider>(context, listen: false)
+          .exercises
+          .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
+          .where((exerciseItem) => (
+              exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+              exerciseItem.exercise.name.toLowerCase().endsWith(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase() == searchTerm.toLowerCase()))
           .toList();
     });
@@ -182,7 +186,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   final exercisesInLibrary = exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise)).toList();
                   _filteredExercises = _searchEditingController.text.isNotEmpty
                       ? _filteredExercises
-                      : _exercisesInLibrary;
+                      : exercisesInLibrary;
                   return exercises.isNotEmpty
                       ? Expanded(
                           child: ListView.separated(
