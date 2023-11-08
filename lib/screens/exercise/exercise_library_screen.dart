@@ -23,6 +23,11 @@ class ExerciseInLibraryDto {
       exercise: exercise ?? this.exercise,
     );
   }
+
+  @override
+  String toString() {
+    return 'ExerciseInLibraryDto{selected: $selected, exercise: ${exercise.name}}';
+  }
 }
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -35,7 +40,6 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-  final TextEditingController _searchEditingController = TextEditingController();
 
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
@@ -68,17 +72,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     Navigator.of(context).pop([selectedExercise.exercise]);
   }
 
-  int _indexWhereFilteredExercise({required String exerciseId}) {
-    return _filteredExercises.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
-  }
-
-  int _indexWhereExercise({required String exerciseId}) {
-    return _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
-  }
-
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final filteredExerciseIndex = _indexWhereFilteredExercise(exerciseId: exerciseInLibraryDto.exercise.id);
+    final filteredExerciseIndex = _filteredExercises.indexWhere((filteredExercise) => filteredExercise.exercise.id == exerciseInLibraryDto.exercise.id);
     if (selected) {
       setState(() {
         _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
@@ -105,21 +101,22 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     FocusScope.of(context).unfocus();
   }
 
-  void _navigateToExerciseEditor() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
+  void _navigateToExerciseEditor() async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
+    if (mounted) {
+      setState(() {
+        final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
+        _exercisesInLibrary = _updateSelections(exercises);
+        _filteredExercises = _exercisesInLibrary;
+      });
+    }
   }
 
   List<ExerciseInLibraryDto> _updateSelections(List<Exercise> allExercises) {
-    List<ExerciseInLibraryDto> exercisesInLibrary = [];
-    for (ExerciseInLibraryDto filtered in _filteredExercises) {
-      for (Exercise exercise in allExercises) {
-        if (exercise.id == filtered.exercise.id) {
-          exercisesInLibrary.add(ExerciseInLibraryDto(exercise: exercise, selected: filtered.selected));
-          break; // If ID is unique, we can break after finding the match
-        }
-      }
-    }
-    return exercisesInLibrary;
+    return allExercises.map((exercise) {
+      final selectedExercise = _exercisesInLibrary.firstWhere((exercisesInLibrary) => exercisesInLibrary.selected);
+      return selectedExercise.exercise.id == exercise.id ? selectedExercise : ExerciseInLibraryDto(exercise: exercise);
+    }).toList();
   }
 
   @override
@@ -161,7 +158,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           child: Column(
             children: [
               SearchBar(
-                controller: _searchEditingController,
                 onChanged: _runSearch,
                 leading: const Icon(
                   Icons.search_rounded,
@@ -178,23 +174,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 constraints: const BoxConstraints(minHeight: 50),
               ),
               const SizedBox(height: 12),
-              Consumer<ExerciseProvider>(
-                builder: (BuildContext context, ExerciseProvider value, Widget? child) {
-                  final exercises = value.exercises;
-                  _filteredExercises =
-                      _searchEditingController.text.isNotEmpty ? _filteredExercises : _exercisesInLibrary;
-                  return exercises.isNotEmpty
-                      ? Expanded(
-                          child: ListView.separated(
-                              itemBuilder: (BuildContext context, int index) =>
-                                  _exerciseWidget(_filteredExercises[index]),
-                              separatorBuilder: (BuildContext context, int index) =>
-                                  Divider(color: Colors.white70.withOpacity(0.1)),
-                              itemCount: _filteredExercises.length))
-                      : const Expanded(
-                          child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")));
-                },
-              )
+              _filteredExercises.isNotEmpty
+                  ? Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                          separatorBuilder: (BuildContext context, int index) =>
+                              Divider(color: Colors.white70.withOpacity(0.1)),
+                          itemCount: _filteredExercises.length))
+                  : const Expanded(
+                      child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
             ],
           ),
         ),
@@ -210,11 +198,5 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
         .toList();
     _filteredExercises = _exercisesInLibrary;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchEditingController.dispose();
   }
 }

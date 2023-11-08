@@ -133,10 +133,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     }
   }
 
-  void _createExercise() {
-    Provider.of<ExerciseProvider>(context, listen: false)
+  void _createExercise() async {
+    await Provider.of<ExerciseProvider>(context, listen: false)
         .saveExercise(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primary: _primaryMuscleGroup, secondary: _secondaryMuscleGroup);
-    Navigator.of(context).pop();
+    if(mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
