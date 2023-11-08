@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../screens/exercise/exercise_history_screen.dart';
 import '../../screens/exercise/exercise_library_screen.dart';
 
 class SelectableExerciseWidget extends StatelessWidget {
   final ExerciseInLibraryDto exerciseInLibraryDto;
   final void Function(bool selected) onTap;
+  final void Function() onNavigateToExercise;
 
-  const SelectableExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap});
+  const SelectableExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap, required this.onNavigateToExercise});
 
   void _onTap() {
     final isSelected = !exerciseInLibraryDto.selected;
@@ -51,10 +51,7 @@ class SelectableExerciseWidget extends StatelessWidget {
           ],
         ),
         secondary: IconButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
-          },
+          onPressed: onNavigateToExercise,
           icon: const Icon(
             Icons.timeline_rounded,
             color: Colors.white,

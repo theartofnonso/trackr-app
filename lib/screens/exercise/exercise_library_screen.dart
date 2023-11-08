@@ -11,6 +11,7 @@ import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
+import 'exercise_history_screen.dart';
 
 class ExerciseInLibraryDto {
   final bool selected;
@@ -77,7 +78,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final exerciseIndex = _exercisesInLibrary.indexWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
+    final exerciseIndex =
+        _exercisesInLibrary.indexWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
     if (selected) {
       setState(() {
         _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
@@ -93,11 +95,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     if (widget.multiSelect) {
       return SelectableExerciseWidget(
           exerciseInLibraryDto: exerciseInLibraryDto,
-          onTap: (selected) => _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto));
+          onTap: (selected) => _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto),
+          onNavigateToExercise: () {
+            _navigateToExerciseHistory(exerciseInLibraryDto);
+          });
     }
     return ExerciseWidget(
         exerciseInLibraryDto: exerciseInLibraryDto,
-        onTap: () => _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto));
+        onTap: () => _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto),
+        onNavigateToExercise: () {
+          _navigateToExerciseHistory(exerciseInLibraryDto);
+        });
   }
 
   void _dismissKeyboard(BuildContext context) {
@@ -108,14 +116,24 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
     if (mounted) {
       setState(() {
-        final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
-        _exercisesInLibrary = _updateSelections(exercises);
+        _exercisesInLibrary = _updateSelections();
       });
     }
   }
 
-  List<ExerciseInLibraryDto> _updateSelections(List<Exercise> allExercises) {
-    final updatedExercises = allExercises.map((exercise) {
+  void _navigateToExerciseHistory(ExerciseInLibraryDto exerciseInLibraryDto) async {
+    await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
+    if (mounted) {
+      setState(() {
+        _exercisesInLibrary = _updateSelections();
+      });
+    }
+  }
+
+  List<ExerciseInLibraryDto> _updateSelections() {
+    final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
+    final updatedExercises = exercises.map((exercise) {
       final exerciseInLibrary =
           _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
       if (exerciseInLibrary != null) {
@@ -137,9 +155,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final exercises = Provider.of<ExerciseProvider>(context, listen: true).exercises;
-    _exercisesInLibrary = _updateSelections(exercises);
-
     final selectedExercises = _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
 
     return Scaffold(

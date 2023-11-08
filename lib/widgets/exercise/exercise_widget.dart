@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 
-import '../../screens/exercise/exercise_history_screen.dart';
 import '../../screens/exercise/exercise_library_screen.dart';
 
 class ExerciseWidget extends StatelessWidget {
   final ExerciseInLibraryDto exerciseInLibraryDto;
   final void Function() onTap;
+  final void Function() onNavigateToExercise;
 
-  const ExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap});
+  const ExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap, required this.onNavigateToExercise});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +19,7 @@ class ExerciseWidget extends StatelessWidget {
       ),
       child: ListTile(
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
-          },
+          onPressed: onNavigateToExercise,
           icon: const Icon(
             Icons.timeline_rounded,
             color: Colors.white,

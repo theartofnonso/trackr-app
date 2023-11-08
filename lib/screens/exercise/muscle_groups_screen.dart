@@ -4,7 +4,6 @@ import 'package:tracker_app/widgets/muscle_group/muscle_group_widget.dart';
 import 'package:tracker_app/widgets/muscle_group/selectable_muscle_group_widget.dart';
 
 import '../../widgets/buttons/text_button_widget.dart';
-import '../../widgets/exercise/selectable_exercise_widget.dart';
 
 class MuscleGroupDto {
   final bool selected;
@@ -65,7 +64,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     Navigator.of(context).pop([muscleGroupDto.muscleGroup]);
   }
 
-  /// Convert [MuscleGroupDto] to [SelectableExerciseWidget]
+  /// Convert [MuscleGroupDto] to [SelectableMuscleGroupWidget]
   Widget _muscleGroupsToWidgets() {
     if (widget.multiSelect) {
       return ListView.separated(
