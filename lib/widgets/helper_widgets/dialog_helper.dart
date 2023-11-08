@@ -34,7 +34,7 @@ void showAlertDialog({required BuildContext context, required String message, re
         backgroundColor: tealBlueLighter,
         content: Text(
           message,
-          style: GoogleFonts.lato(fontSize: 16),
+          style: GoogleFonts.lato(fontSize: 14),
           textAlign: TextAlign.center,
         ),
         contentPadding: const EdgeInsets.only(top: 12, bottom: 10),

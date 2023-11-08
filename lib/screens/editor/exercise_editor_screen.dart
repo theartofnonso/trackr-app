@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 
 import '../../app_constants.dart';
 import '../../models/Exercise.dart';
@@ -142,12 +143,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _updateExercise() async {
-    final exercise = widget.exercise;
-    if(exercise != null) {
-      final updatedExercise = exercise.copyWith(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primaryMuscle: _primaryMuscleGroup.name, secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
-      await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
-      if(mounted) {
-        Navigator.of(context).pop();
+
+    if(_exerciseNameController.text.isEmpty) {
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
+    } else {
+      final exercise = widget.exercise;
+      if(exercise != null) {
+        final updatedExercise = exercise.copyWith(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primaryMuscle: _primaryMuscleGroup.name, secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
+        await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
+        if(mounted) {
+          Navigator.of(context).pop();
+        }
       }
     }
   }

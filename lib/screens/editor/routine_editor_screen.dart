@@ -389,20 +389,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _createRoutine() {
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text('Ok',
-            style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-      ),
-    ];
-
     if (_routineNameController.text.isEmpty) {
-      showAlertDialog(context: context, message: 'Please provide a name for this workout', actions: alertDialogActions);
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: 'Please provide a name for this workout');
     } else if (_procedures.isEmpty) {
-      showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Workout must have exercise(s)");
     } else {
       Provider.of<RoutineProvider>(context, listen: false)
           .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
@@ -440,18 +430,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateRoutine({required Routine routine}) {
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text('Ok', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      ),
-    ];
     if (_routineNameController.text.isEmpty) {
-      showAlertDialog(context: context, message: 'Please provide a name for this workout', actions: alertDialogActions);
+      showSnackbar(context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
     } else if (_procedures.isEmpty) {
-      showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
+      showSnackbar(context: context, message: "Workout must have exercise(s)", icon: const Icon(Icons.info_outline));
     } else {
       final alertDialogActions = <Widget>[
         TextButton(
@@ -472,18 +454,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateRoutineLog({required RoutineLog routineLog}) {
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text('Ok', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      ),
-    ];
     if (_routineNameController.text.isEmpty) {
-      showAlertDialog(context: context, message: 'Please provide a name for this workout', actions: alertDialogActions);
+      showSnackbar(context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
     } else if (_procedures.isEmpty) {
-      showAlertDialog(context: context, message: "Workout must have exercise(s)", actions: alertDialogActions);
+      showSnackbar(context: context, message: "Workout must have exercise(s)", icon: const Icon(Icons.info_outline));
     } else {
       final alertDialogActions = <Widget>[
         TextButton(
