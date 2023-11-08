@@ -236,8 +236,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
     return [
       MenuItemButton(
         onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
         },
         leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
@@ -255,8 +254,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 onPressed: () async {
                   Navigator.pop(context);
                   try {
-                    await Provider.of<ExerciseProvider>(context, listen: false)
-                        .removeExercise(id: exerciseId);
+                    await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exerciseId);
                     if (context.mounted) {
                       Navigator.of(context).pop();
                     }
@@ -281,7 +279,11 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exercise = Provider.of<ExerciseProvider>(context, listen: true).whereExercise(exerciseId: exerciseId);
+    final exercise = Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exerciseId);
+
+    if (exercise == null) {
+      return const SizedBox.shrink();
+    }
 
     final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
@@ -297,49 +299,49 @@ class ExerciseHistoryScreen extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_outlined),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: Text(exercise.name,
-                  style: GoogleFonts.lato(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
-              bottom: const TabBar(
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
-                tabs: [
-                  Tab(
-                    text: "Summary",
-                  ),
-                  Tab(
-                    text: "History",
-                  )
-                ],
-              ),
-              actions: [
-                MenuAnchor(
-                  style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                  ),
-                  builder: (BuildContext context, MenuController controller, Widget? child) {
-                    return IconButton(
-                      onPressed: () {
-                        if (controller.isOpen) {
-                          controller.close();
-                        } else {
-                          controller.open();
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.more_vert_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      tooltip: 'Show menu',
-                    );
-                  },
-                  menuChildren: _menuActionButtons(context: context, exercise: exercise),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_outlined),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(exercise.name,
+                style: GoogleFonts.lato(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+            bottom: const TabBar(
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white70,
+              tabs: [
+                Tab(
+                  text: "Summary",
+                ),
+                Tab(
+                  text: "History",
                 )
               ],
+            ),
+            actions: [
+              MenuAnchor(
+                style: MenuStyle(
+                  backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                ),
+                builder: (BuildContext context, MenuController controller, Widget? child) {
+                  return IconButton(
+                    onPressed: () {
+                      if (controller.isOpen) {
+                        controller.close();
+                      } else {
+                        controller.open();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.more_vert_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    tooltip: 'Show menu',
+                  );
+                },
+                menuChildren: _menuActionButtons(context: context, exercise: exercise),
+              )
+            ],
           ),
           body: TabBarView(
             children: [
@@ -649,7 +651,8 @@ class HistoryWidget extends StatelessWidget {
                 Expanded(
                   child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) => RoutineLogWidget(routineLog: logs[index]),
-                      separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(color: Colors.white70.withOpacity(0.1)),
                       itemCount: logs.length),
                 ),
               ],
@@ -693,7 +696,8 @@ class MetricWidget extends StatelessWidget {
         tileColor: tealBlueLight,
         title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text(subtitle, style: GoogleFonts.lato(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-        trailing: Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        trailing:
+            Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
       ),
     );

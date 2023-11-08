@@ -24,10 +24,20 @@ class ExerciseProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveExercise({required String name, required String notes, required MuscleGroup primary, required List<MuscleGroup> secondary}) async {
+  Future<void> saveExercise(
+      {required String name,
+      required String notes,
+      required MuscleGroup primary,
+      required List<MuscleGroup> secondary}) async {
     final exerciseOwner = await user();
 
-    final exerciseToCreate = Exercise(user: exerciseOwner, name: name, primaryMuscle: primary.name, secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(), createdAt: TemporalDateTime.now(), updatedAt: TemporalDateTime.now());
+    final exerciseToCreate = Exercise(
+        user: exerciseOwner,
+        name: name,
+        primaryMuscle: primary.name,
+        secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(),
+        createdAt: TemporalDateTime.now(),
+        updatedAt: TemporalDateTime.now());
     final request = ModelMutations.create(exerciseToCreate);
     final response = await Amplify.API.mutate(request: request).response;
     final createdExercise = response.data;
@@ -66,5 +76,9 @@ class ExerciseProvider with ChangeNotifier {
 
   Exercise whereExercise({required String exerciseId}) {
     return _exercises.firstWhere((exercise) => exercise.id == exerciseId);
+  }
+
+  Exercise? whereExerciseOrNull({required String exerciseId}) {
+    return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
   }
 }

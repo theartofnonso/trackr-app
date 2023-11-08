@@ -200,17 +200,17 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeLogFromCloud({required String id}) async {
+  Future<void> removeLog({required String id}) async {
     final index = _indexWhereRoutineLog(id: id);
     final logToBeRemoved = _logs[index];
     final request = ModelMutations.delete(logToBeRemoved);
-    await Amplify.API.mutate(request: request).response;
-  }
-
-  void removeLogFromLocal({required String id}) async {
-    final index = _indexWhereRoutineLog(id: id);
-    _logs.removeAt(index);
-    notifyListeners();
+    final response = await Amplify.API.mutate(request: request).response;
+    final deletedLog = response.data;
+    if(deletedLog != null) {
+      final index = _indexWhereRoutineLog(id: id);
+      _logs.removeAt(index);
+      notifyListeners();
+    }
   }
 
   int _indexWhereRoutineLog({required String id}) {

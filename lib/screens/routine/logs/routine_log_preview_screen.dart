@@ -40,6 +40,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   @override
   Widget build(BuildContext context) {
     final weightProvider = Provider.of<SettingsProvider>(context, listen: true);
+
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if (log == null) {
@@ -353,10 +354,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                 onPressed: () async {
                   Navigator.pop(context);
                   try {
-                    await Provider.of<RoutineLogProvider>(context, listen: false)
-                        .removeLogFromCloud(id: widget.routineLogId);
+                    await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.routineLogId);
                     if (mounted) {
-                      Navigator.of(context).pop(widget.routineLogId);
+                      Navigator.of(context).pop();
                     }
                   } catch (_) {
                     if (mounted) {
