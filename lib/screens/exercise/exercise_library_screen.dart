@@ -41,6 +41,9 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
+
+  final _searchController = TextEditingController();
+
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
@@ -129,15 +132,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     }).toList();
   }
 
-  List<ExerciseInLibraryDto> _filterSelections() {
-    return _filteredExercises
-        .where((filteredExercise) =>
-            _exercisesInLibrary
-                .firstWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == filteredExercise.exercise.id)
-                .exercise
-                .id ==
-            filteredExercise.exercise.id)
-        .toList();
+  List<ExerciseInLibraryDto> synchronizeFilteredList() {
+    var idsInFilteredList = _filteredExercises.map((e) => e.exercise.id).toSet();
+    return _exercisesInLibrary.where((e) => idsInFilteredList.contains(e.exercise.id)).toList();
   }
 
   @override
@@ -183,6 +180,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           child: Column(
             children: [
               SearchBar(
+                controller: _searchController,
                 onChanged: _runSearch,
                 leading: const Icon(
                   Icons.search_rounded,
@@ -201,17 +199,23 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
                   ? Expanded(
-                      child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
-                          separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withOpacity(0.1)),
-                          itemCount: _filteredExercises.length))
+                  child: ListView.separated(
+                      itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(color: Colors.white70.withOpacity(0.1)),
+                      itemCount: _filteredExercises.length))
                   : const Expanded(
-                      child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
+                  child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
   }
 }
