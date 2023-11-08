@@ -41,7 +41,6 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-
   final _searchController = TextEditingController();
 
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
@@ -52,11 +51,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Search through the list of exercises
   void _runSearch(String searchTerm) {
     setState(() {
+      final query = searchTerm.toLowerCase();
       _filteredExercises = _exercisesInLibrary
-          .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
-              exerciseItem.exercise.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
-              exerciseItem.exercise.name.toLowerCase().endsWith(searchTerm.toLowerCase()) ||
-              exerciseItem.exercise.name.toLowerCase() == searchTerm.toLowerCase()))
+          .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
+              exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
+              exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
+              exerciseItem.exercise.name.toLowerCase() == query))
           .toList();
     });
   }
@@ -120,7 +120,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   List<ExerciseInLibraryDto> _updateSelections(List<Exercise> allExercises) {
-    return allExercises.map((exercise) {
+    final updatedExercises = allExercises.map((exercise) {
       final exerciseInLibrary =
           _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
       if (exerciseInLibrary != null) {
@@ -130,18 +130,20 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       }
       return ExerciseInLibraryDto(exercise: exercise);
     }).toList();
+
+    _synchronizeFilteredList();
+    return updatedExercises;
   }
 
-  List<ExerciseInLibraryDto> synchronizeFilteredList() {
+  void _synchronizeFilteredList() {
     var idsInFilteredList = _filteredExercises.map((e) => e.exercise.id).toSet();
-    return _exercisesInLibrary.where((e) => idsInFilteredList.contains(e.exercise.id)).toList();
+    _filteredExercises = _exercisesInLibrary.where((e) => idsInFilteredList.contains(e.exercise.id)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final exercises = Provider.of<ExerciseProvider>(context, listen: true).exercises;
     _exercisesInLibrary = _updateSelections(exercises);
-    _filteredExercises = _exercisesInLibrary;
 
     final selectedExercises = _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
 
@@ -199,13 +201,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
                   ? Expanded(
-                  child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
-                      separatorBuilder: (BuildContext context, int index) =>
-                          Divider(color: Colors.white70.withOpacity(0.1)),
-                      itemCount: _filteredExercises.length))
+                      child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                          separatorBuilder: (BuildContext context, int index) =>
+                              Divider(color: Colors.white70.withOpacity(0.1)),
+                          itemCount: _filteredExercises.length))
                   : const Expanded(
-                  child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
+                      child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
             ],
           ),
         ),
@@ -217,5 +219,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void dispose() {
     super.dispose();
     _searchController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _exercisesInLibrary = Provider.of<ExerciseProvider>(context, listen: false)
+        .exercises
+        .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
+        .toList();
+    _filteredExercises = _exercisesInLibrary;
   }
 }
