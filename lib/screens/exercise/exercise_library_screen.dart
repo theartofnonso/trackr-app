@@ -77,19 +77,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final exerciseIndex =
-        _exercisesInLibrary.indexWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
-    final filteredExerciseIndex = _filteredExercises
-        .indexWhere((filteredExercise) => filteredExercise.exercise.id == exerciseInLibraryDto.exercise.id);
+    final exerciseIndex = _exercisesInLibrary.indexWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
     if (selected) {
       setState(() {
         _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
-        _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
       });
     } else {
       setState(() {
         _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
-        _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
       });
     }
   }
@@ -131,13 +126,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       return ExerciseInLibraryDto(exercise: exercise);
     }).toList();
 
-    _synchronizeFilteredList();
+    _synchronizeFilteredList(updatedExercises);
     return updatedExercises;
   }
 
-  void _synchronizeFilteredList() {
+  void _synchronizeFilteredList(List<ExerciseInLibraryDto> exercisesInLibrary) {
     var idsInFilteredList = _filteredExercises.map((e) => e.exercise.id).toSet();
-    _filteredExercises = _exercisesInLibrary.where((e) => idsInFilteredList.contains(e.exercise.id)).toList();
+    _filteredExercises = exercisesInLibrary.where((e) => idsInFilteredList.contains(e.exercise.id)).toList();
   }
 
   @override
