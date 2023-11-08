@@ -34,12 +34,6 @@ class RoutineLogProvider with ChangeNotifier {
 
   List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
 
-  void notifyAllListeners() {
-    if (_cachedLog != null) {
-      notifyListeners();
-    }
-  }
-
   void clearCachedLog() {
     _cachedLog = null;
     SharedPrefs().cachedRoutineLog = "";
@@ -190,14 +184,13 @@ class RoutineLogProvider with ChangeNotifier {
 
   Future<void> updateLogInCloud({required RoutineLog log}) async {
     final request = ModelMutations.update(log);
-    await Amplify.API.mutate(request: request).response;
-    _updateLogInLocal(log: log);
-  }
-
-  void _updateLogInLocal({required RoutineLog log}) async {
-    final index = _indexWhereRoutineLog(id: log.id);
-    _logs[index] = log;
-    notifyListeners();
+    final response = await Amplify.API.mutate(request: request).response;
+    final updatedLog = response.data;
+    if(updatedLog != null) {
+      final index = _indexWhereRoutineLog(id: log.id);
+      _logs[index] = log;
+      notifyListeners();
+    }
   }
 
   Future<void> removeLog({required String id}) async {
