@@ -45,10 +45,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Search through the list of exercises
   void _runSearch(String searchTerm) {
     setState(() {
-      _filteredExercises = Provider.of<ExerciseProvider>(context, listen: false)
-          .exercises
-          .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
-          .where((exerciseItem) => (
+      _filteredExercises = _exercisesInLibrary.where((exerciseItem) => (
               exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase().endsWith(searchTerm.toLowerCase()) ||
@@ -106,22 +103,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
   }
 
-  List<ExerciseInLibraryDto> _combineExercises({required List<Exercise> exercises}) {
-
-    final exercisesInLibrary = exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise)).toList();
-
-    // Create a map from the full list
-    final Map<String, ExerciseInLibraryDto> combinedMap = {
-      for (ExerciseInLibraryDto dto in exercisesInLibrary) dto.exercise.id: dto,
-    };
-
-    // Replace entries with the ones from the filtered list
-    for (ExerciseInLibraryDto filteredDto in _filteredExercises) {
-      combinedMap[filteredDto.exercise.id] = filteredDto;
+  List<ExerciseInLibraryDto> _updateSelections(List<Exercise> allExercises) {
+    List<ExerciseInLibraryDto> exercisesInLibrary = [];
+    for (ExerciseInLibraryDto filtered in _filteredExercises) {
+      for (Exercise exercise in allExercises) {
+        if (exercise.id == filtered.exercise.id) {
+          exercisesInLibrary.add(ExerciseInLibraryDto(exercise: exercise, selected: filtered.selected));
+          break; // If ID is unique, we can break after finding the match
+        }
+      }
     }
-
-    // Convert the map back to a list
-    return combinedMap.values.toList();
+    return exercisesInLibrary;
   }
 
   @override
@@ -183,15 +175,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               Consumer<ExerciseProvider>(
                 builder: (BuildContext context, ExerciseProvider value, Widget? child) {
                   final exercises = value.exercises;
-                  final exercisesInLibrary = exercises.map((exercise) => ExerciseInLibraryDto(exercise: exercise)).toList();
                   _filteredExercises = _searchEditingController.text.isNotEmpty
                       ? _filteredExercises
-                      : exercisesInLibrary;
+                      : _updateSelections(exercises)
+                      .toList();
                   return exercises.isNotEmpty
                       ? Expanded(
                           child: ListView.separated(
-                              itemBuilder: (BuildContext context, int index) =>
-                                  _exerciseWidget(_filteredExercises[index]),
+                              itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
                               separatorBuilder: (BuildContext context, int index) =>
                                   Divider(color: Colors.white70.withOpacity(0.1)),
                               itemCount: _filteredExercises.length))
