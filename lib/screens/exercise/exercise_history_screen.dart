@@ -8,6 +8,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -21,10 +22,12 @@ import '../../models/RoutineLog.dart';
 import '../../providers/settings_provider.dart';
 import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/snackbar_utils.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/exercise_history/routine_log_widget.dart';
 import '../../dtos/graph/chart_point_dto.dart';
+import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../routine/logs/routine_log_preview_screen.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
@@ -228,6 +231,54 @@ class ExerciseHistoryScreen extends StatelessWidget {
         .toList();
   }
 
+  /// [MenuItemButton]
+  List<Widget> _menuActionButtons({required BuildContext context, required Exercise exercise}) {
+    return [
+      MenuItemButton(
+        onPressed: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
+        },
+        leadingIcon: const Icon(Icons.edit),
+        child: const Text("Edit"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          final alertDialogActions = <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
+            ),
+            CTextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  try {
+                    await Provider.of<ExerciseProvider>(context, listen: false)
+                        .removeExercise(id: exerciseId);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  } catch (_) {
+                    if (context.mounted) {
+                      showSnackbar(
+                          context: context,
+                          icon: const Icon(Icons.info_outline),
+                          message: "Oops, we are unable delete this exercise");
+                    }
+                  }
+                },
+                label: 'Delete'),
+          ];
+          showAlertDialog(context: context, message: "Delete exercise?", actions: alertDialogActions);
+        },
+        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final exercise = Provider.of<ExerciseProvider>(context, listen: true).whereExercise(exerciseId: exerciseId);
@@ -263,7 +314,33 @@ class ExerciseHistoryScreen extends StatelessWidget {
                     text: "History",
                   )
                 ],
-              )),
+              ),
+              actions: [
+                MenuAnchor(
+                  style: MenuStyle(
+                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                  ),
+                  builder: (BuildContext context, MenuController controller, Widget? child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.more_vert_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      tooltip: 'Show menu',
+                    );
+                  },
+                  menuChildren: _menuActionButtons(context: context, exercise: exercise),
+                )
+              ],
+          ),
           body: TabBarView(
             children: [
               SummaryWidget(

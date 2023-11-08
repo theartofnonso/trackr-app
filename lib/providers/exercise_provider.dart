@@ -37,7 +37,7 @@ class ExerciseProvider with ChangeNotifier {
     }
   }
 
-  void updateExercise({required Exercise exercise}) async {
+  Future<void> updateExercise({required Exercise exercise}) async {
     final request = ModelMutations.update(exercise);
     final response = await Amplify.API.mutate(request: request).response;
     final updatedExercise = response.data;
@@ -48,7 +48,7 @@ class ExerciseProvider with ChangeNotifier {
     }
   }
 
-  void removeExercise({required String id}) async {
+  Future<void> removeExercise({required String id}) async {
     final index = _indexWhereExercise(id: id);
     final exerciseToBeRemoved = _exercises[index];
     final request = ModelMutations.delete(exerciseToBeRemoved);

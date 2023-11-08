@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,6 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
@@ -74,13 +74,18 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final filteredExerciseIndex = _filteredExercises.indexWhere((filteredExercise) => filteredExercise.exercise.id == exerciseInLibraryDto.exercise.id);
+    final exerciseIndex =
+        _exercisesInLibrary.indexWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
+    final filteredExerciseIndex = _filteredExercises
+        .indexWhere((filteredExercise) => filteredExercise.exercise.id == exerciseInLibraryDto.exercise.id);
     if (selected) {
       setState(() {
+        _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
         _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
       });
     } else {
       setState(() {
+        _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
         _filteredExercises[filteredExerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
       });
     }
@@ -107,21 +112,41 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       setState(() {
         final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
         _exercisesInLibrary = _updateSelections(exercises);
-        _filteredExercises = _exercisesInLibrary;
       });
     }
   }
 
   List<ExerciseInLibraryDto> _updateSelections(List<Exercise> allExercises) {
     return allExercises.map((exercise) {
-      final selectedExercise = _exercisesInLibrary.firstWhere((exercisesInLibrary) => exercisesInLibrary.selected);
-      return selectedExercise.exercise.id == exercise.id ? selectedExercise : ExerciseInLibraryDto(exercise: exercise);
+      final exerciseInLibrary =
+          _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
+      if (exerciseInLibrary != null) {
+        if (exerciseInLibrary.selected) {
+          return ExerciseInLibraryDto(exercise: exercise, selected: true);
+        }
+      }
+      return ExerciseInLibraryDto(exercise: exercise);
     }).toList();
+  }
+
+  List<ExerciseInLibraryDto> _filterSelections() {
+    return _filteredExercises
+        .where((filteredExercise) =>
+            _exercisesInLibrary
+                .firstWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == filteredExercise.exercise.id)
+                .exercise
+                .id ==
+            filteredExercise.exercise.id)
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedExercises = _exercisesInLibrary.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
+    final exercises = Provider.of<ExerciseProvider>(context, listen: true).exercises;
+    _exercisesInLibrary = _updateSelections(exercises);
+    _filteredExercises = _exercisesInLibrary;
+
+    final selectedExercises = _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -188,15 +213,5 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _exercisesInLibrary = Provider.of<ExerciseProvider>(context, listen: false)
-        .exercises
-        .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
-        .toList();
-    _filteredExercises = _exercisesInLibrary;
   }
 }

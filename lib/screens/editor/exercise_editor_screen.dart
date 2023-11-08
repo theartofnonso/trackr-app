@@ -37,7 +37,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [exercise != null ? CTextButton(onPressed: () {}, label: "Update", buttonColor: Colors.transparent) : const SizedBox.shrink()],
+        actions: [exercise != null ? CTextButton(onPressed: _updateExercise, label: "Update", buttonColor: Colors.transparent) : const SizedBox.shrink()],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -138,6 +138,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         .saveExercise(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primary: _primaryMuscleGroup, secondary: _secondaryMuscleGroup);
     if(mounted) {
       Navigator.of(context).pop();
+    }
+  }
+
+  void _updateExercise() async {
+    final exercise = widget.exercise;
+    if(exercise != null) {
+      final updatedExercise = exercise.copyWith(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primaryMuscle: _primaryMuscleGroup.name, secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
+      await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
+      if(mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
