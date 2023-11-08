@@ -21,11 +21,8 @@ class SelectableExerciseWidget extends StatelessWidget {
       data: ThemeData(
         splashColor: Colors.transparent,
       ),
-      child: CheckboxListTile(
-        value: exerciseInLibraryDto.selected,
-        onChanged: (bool? _) => _onTap(),
-        activeColor: Colors.white,
-        checkColor: Colors.black,
+      child: ListTile(
+        onTap: _onTap,
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         dense: true,
@@ -50,13 +47,14 @@ class SelectableExerciseWidget extends StatelessWidget {
                 )),
           ],
         ),
-        secondary: IconButton(
+        leading: IconButton(
           onPressed: onNavigateToExercise,
           icon: const Icon(
             Icons.timeline_rounded,
             color: Colors.white,
           ),
         ),
+        trailing: exerciseInLibraryDto.selected ? const Icon(Icons.check_box_rounded, color: Colors.green) : Icon(Icons.check_box_rounded, color: Colors.grey.shade800),
       ),
     );
   }

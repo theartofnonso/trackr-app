@@ -19,16 +19,16 @@ class SelectableMuscleGroupWidget extends StatelessWidget {
       data: ThemeData(
         splashColor: Colors.transparent,
       ),
-      child: CheckboxListTile(
-          value: muscleGroupDto.selected,
-          onChanged: (bool? _) => _onTap(),
-          tileColor: tealBlueLight,
-          activeColor: Colors.white,
-          checkColor: Colors.black,
-          hoverColor: Colors.transparent,
-          dense: true,
-          title: Text(muscleGroupDto.muscleGroup.name,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500))),
+      child: ListTile(
+        onTap: _onTap,
+        tileColor: tealBlueLight,
+        dense: true,
+        title: Text(muscleGroupDto.muscleGroup.name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        trailing: muscleGroupDto.selected
+            ? const Icon(Icons.check_box_rounded, color: Colors.green)
+            : Icon(Icons.check_box_rounded, color: Colors.grey.shade800),
+      ),
     );
   }
 }
