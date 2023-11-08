@@ -45,8 +45,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Search through the list of exercises
   void _runSearch(String searchTerm) {
     setState(() {
-      _filteredExercises = _exercisesInLibrary.where((exerciseItem) => (
-              exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
+      _filteredExercises = _exercisesInLibrary
+          .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase().endsWith(searchTerm.toLowerCase()) ||
               exerciseItem.exercise.name.toLowerCase() == searchTerm.toLowerCase()))
@@ -56,8 +56,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Navigate to previous screen
   void _navigateBackWithSelectedExercises() {
-    final exercisesFromLibrary =
-    _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
+    final exercisesFromLibrary = _filteredExercises
+        .where((exerciseInLibrary) => exerciseInLibrary.selected)
+        .map((exerciseInLibrary) => exerciseInLibrary.exercise)
+        .toList();
     Navigator.of(context).pop(exercisesFromLibrary);
   }
 
@@ -68,6 +70,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   int _indexWhereFilteredExercise({required String exerciseId}) {
     return _filteredExercises.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
+  }
+
+  int _indexWhereExercise({required String exerciseId}) {
+    return _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseId);
   }
 
   /// Select up to many exercise
@@ -118,7 +124,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedExercises = _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
+    final selectedExercises = _exercisesInLibrary.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +151,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       ),
       body: NotificationListener(
         onNotification: (scrollNotification) {
-          if (scrollNotification is ScrollStartNotification) {
+          if (scrollNotification is UserScrollNotification) {
             _dismissKeyboard(context);
           }
           return false;
@@ -175,14 +181,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               Consumer<ExerciseProvider>(
                 builder: (BuildContext context, ExerciseProvider value, Widget? child) {
                   final exercises = value.exercises;
-                  _filteredExercises = _searchEditingController.text.isNotEmpty
-                      ? _filteredExercises
-                      : _updateSelections(exercises)
-                      .toList();
+                  _filteredExercises =
+                      _searchEditingController.text.isNotEmpty ? _filteredExercises : _exercisesInLibrary;
                   return exercises.isNotEmpty
                       ? Expanded(
                           child: ListView.separated(
-                              itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                              itemBuilder: (BuildContext context, int index) =>
+                                  _exerciseWidget(_filteredExercises[index]),
                               separatorBuilder: (BuildContext context, int index) =>
                                   Divider(color: Colors.white70.withOpacity(0.1)),
                               itemCount: _filteredExercises.length))
