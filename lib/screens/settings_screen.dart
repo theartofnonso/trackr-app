@@ -8,6 +8,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../providers/settings_provider.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
+import 'exercise/exercise_library_screen.dart';
 
 enum WeightUnit { kg, lbs }
 
@@ -35,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           children: [
             ListTile(
-              contentPadding: EdgeInsets.zero,
+              dense: true,
               title: const Text("Weight Unit Type",),
               subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70)),
               trailing: SegmentedButton(
@@ -76,12 +77,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
             ),
+            const SizedBox(height: 8),
+            Theme(
+              data: ThemeData(splashColor: tealBlueLight),
+              child: ListTile(
+                  onTap: _navigateToExerciseLibrary,
+                  dense: true,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                  title: Text("Exercises", style: Theme.of(context).textTheme.labelLarge),
+                  subtitle: Text("Add your favourites exercises",
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+            ),
             const Spacer(),
             CTextButton(onPressed: _logout, label: "Logout")
           ],
         ),
       ),
     );
+  }
+
+  void _navigateToExerciseLibrary() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen()));
   }
 
   void _logout() async {

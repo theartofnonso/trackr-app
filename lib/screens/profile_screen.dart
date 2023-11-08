@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/messages.dart';
-import 'package:tracker_app/screens/exercise/exercise_library_screen.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
@@ -70,10 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _navigateToMuscleDistribution() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleDistributionScreen()));
-  }
-
-  void _navigateToExerciseLibrary() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen()));
   }
 
   int _logsForTheWeekCount({required List<RoutineLog> logs}) {
@@ -222,18 +217,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           subtitle: Text("Number of sets logged for each muscle group",
                               style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
                     ),
-                    const SizedBox(height: 8),
-                    Theme(
-                      data: ThemeData(splashColor: tealBlueLight),
-                      child: ListTile(
-                          onTap: () => _navigateToExerciseLibrary(),
-                          tileColor: tealBlueLight,
-                          dense: true,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                          title: Text("Exercises", style: Theme.of(context).textTheme.labelLarge),
-                          subtitle: Text("Add your favourites exercises",
-                              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
-                    )
                   ],
                 ),
               )
