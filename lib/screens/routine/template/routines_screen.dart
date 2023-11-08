@@ -53,7 +53,7 @@ class RoutinesScreen extends StatelessWidget {
                           child: ListView.separated(
                               itemBuilder: (BuildContext context, int index) => _RoutineWidget(
                                   routine: routineProvider.routines[index], canStartRoutine: cachedRoutineLog == null),
-                              separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+                              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 6),
                               itemCount: routineProvider.routines.length),
                         ) : const Expanded(child: Center(child: ScreenEmptyState(message: createWorkoutsAheadOfTime)))
                       ]))));

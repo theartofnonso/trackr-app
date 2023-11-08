@@ -73,7 +73,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                             itemBuilder: (BuildContext context, int index) =>
                                 _RoutineLogWidget(log: provider.logs[index]),
                             separatorBuilder: (BuildContext context, int index) =>
-                                const SizedBox(height: 8),
+                                Divider(color: Colors.white70.withOpacity(0.1)),
                             itemCount: provider.logs.length),
                       )
                     : Expanded(
@@ -134,7 +134,7 @@ class _RoutineLogWidget extends StatelessWidget {
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
-        tileColor: tealBlueLight,
+        //tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
