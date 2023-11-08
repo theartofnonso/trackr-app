@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/widgets/muscle_group/muscle_group_widget.dart';
 import 'package:tracker_app/widgets/muscle_group/selectable_muscle_group_widget.dart';
+import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../widgets/buttons/text_button_widget.dart';
 
@@ -31,6 +32,21 @@ class MuscleGroupsScreen extends StatefulWidget {
 class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   List<MuscleGroupDto> _muscleGroups = [];
 
+  List<MuscleGroupDto> _filteredMuscleGroups = [];
+
+  /// Search through the list of exercises
+  void _runSearch(String searchTerm) {
+    setState(() {
+      final query = searchTerm.toLowerCase();
+      _filteredMuscleGroups = _muscleGroups
+          .where((muscleGroup) => (muscleGroup.muscleGroup.name.toLowerCase().contains(query) ||
+              muscleGroup.muscleGroup.name.toLowerCase().startsWith(query) ||
+              muscleGroup.muscleGroup.name.toLowerCase().endsWith(query) ||
+              muscleGroup.muscleGroup.name.toLowerCase() == query))
+          .toList();
+    });
+  }
+
   /// Navigate to previous screen
   void _addSelectedMuscleGroup() {
     final muscleGroups = _whereSelectedMuscleGroups().map((muscle) => muscle.muscleGroup).toList();
@@ -40,7 +56,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   int _indexWhereMuscleGroup({required MuscleGroup muscleGroup}) {
     return _muscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.muscleGroup == muscleGroup);
   }
-  
+
   List<MuscleGroupDto> _whereSelectedMuscleGroups() {
     return _muscleGroups.where((muscle) => muscle.selected).toList();
   }
@@ -64,22 +80,15 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     Navigator.of(context).pop([muscleGroupDto.muscleGroup]);
   }
 
-  /// Convert [MuscleGroupDto] to [SelectableMuscleGroupWidget]
-  Widget _muscleGroupsToWidgets() {
+  Widget _muscleGroupWidget(MuscleGroupDto muscleGroupDto) {
     if (widget.multiSelect) {
-      return ListView.separated(
-          itemBuilder: (BuildContext context, int index) => SelectableMuscleGroupWidget(
-              muscleGroupDto: _muscleGroups[index],
-              onTap: (selected) => _selectCheckedMuscleGroup(selected: selected, muscleGroupDto: _muscleGroups[index])),
-          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-          itemCount: _muscleGroups.length);
+      return SelectableMuscleGroupWidget(
+          muscleGroupDto: muscleGroupDto,
+          onTap: (selected) => _selectCheckedMuscleGroup(selected: selected, muscleGroupDto: muscleGroupDto));
     }
-    return ListView.separated(
-        itemBuilder: (BuildContext context, int index) => MuscleGroupWidget(
-            muscleGroupDto: _muscleGroups[index],
-            onTap: () => _selectMuscleGroup(muscleGroupDto: _muscleGroups[index])),
-        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-        itemCount: _muscleGroups.length);
+    return MuscleGroupWidget(
+        muscleGroupDto: muscleGroupDto,
+        onTap: () => _selectMuscleGroup(muscleGroupDto: muscleGroupDto));
   }
 
   @override
@@ -104,7 +113,14 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           children: [
-            Expanded(child: _muscleGroupsToWidgets())
+            CSearchBar(hintText: 'Search muscle group', onChanged: _runSearch),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) => _muscleGroupWidget(_filteredMuscleGroups[index]),
+                  separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+                  itemCount: _filteredMuscleGroups.length),
+            )
           ],
         ),
       ),
@@ -115,5 +131,6 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   void initState() {
     super.initState();
     _muscleGroups = MuscleGroup.values.map((muscle) => MuscleGroupDto(muscleGroup: muscle)).toList();
+    _filteredMuscleGroups = _muscleGroups;
   }
 }

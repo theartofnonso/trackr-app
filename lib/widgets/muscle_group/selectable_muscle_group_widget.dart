@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../app_constants.dart';
 import '../../screens/exercise/muscle_groups_screen.dart';
 
 class SelectableMuscleGroupWidget extends StatelessWidget {
@@ -21,7 +20,6 @@ class SelectableMuscleGroupWidget extends StatelessWidget {
       ),
       child: ListTile(
         onTap: _onTap,
-        tileColor: tealBlueLight,
         dense: true,
         title: Text(muscleGroupDto.muscleGroup.name,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
