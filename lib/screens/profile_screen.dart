@@ -12,7 +12,6 @@ import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../dtos/graph/chart_point_dto.dart';
 import '../enums.dart';
-import '../helper_functions/navigation/navigator_helper_functions.dart';
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/buttons/text_button_widget.dart';
@@ -220,18 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               )
-            : provider.cachedLog == null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: CTextButton(
-                          onPressed: () {
-                            startEmptyRoutine(context: context);
-                          },
-                          label: " $startTrackingPerformance "),
-                    ),
-                  )
-                : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
+            : const Center(child: ScreenEmptyState(message: "Come back when you start logging workouts")),
       ),
     );
   }

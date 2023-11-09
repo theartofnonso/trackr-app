@@ -15,8 +15,6 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
-import '../../helper_functions/navigation/navigator_helper_functions.dart';
-import '../../messages.dart';
 import '../../models/Exercise.dart';
 import '../../models/RoutineLog.dart';
 import '../../providers/settings_provider.dart';
@@ -480,7 +478,6 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
@@ -615,16 +612,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             Text(
               "Secondary Target: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
               style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-            const SizedBox(height: 10),
-            routineProvider.cachedLog == null
-                ? Center(
-                child: CTextButton(
-                    onPressed: () {
-                      startEmptyRoutine(context: context);
-                    },
-                    label: " $startTrackingPerformance "),
-              ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
+            )
           ],
         );
   }
@@ -651,7 +639,6 @@ class HistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -666,13 +653,7 @@ class HistoryWidget extends StatelessWidget {
                           Divider(color: Colors.white70.withOpacity(0.1)),
                       itemCount: logs.length),
                 )
-              : routineProvider.cachedLog == null
-                  ? CTextButton(
-                      onPressed: () {
-                        startEmptyRoutine(context: context);
-                      },
-                      label: " $startTrackingPerformance ")
-                  : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
+              : const Center(child: ScreenEmptyState(message: "You have no logs")),
         ],
       ),
     );
