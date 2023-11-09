@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import '../../../providers/exercise_provider.dart';
 import '../../../screens/exercise/exercise_history_screen.dart';
 import '../../helper_widgets/routine_helper.dart';
 
@@ -21,7 +19,6 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
 
     final otherProcedureDto = otherSuperSetProcedureDto;
 
@@ -38,17 +35,17 @@ class ProcedureWidget extends StatelessWidget {
             onTap: () {
               if(!readOnly) {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exerciseId)));
+                    MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exercise: procedureDto.exercise)));
               }
             },
-            title: Text(exerciseProvider.whereExercise(exerciseId: procedureDto.exerciseId).name, style: Theme.of(context).textTheme.labelLarge),
+            title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 otherProcedureDto != null
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text("with ${exerciseProvider.whereExercise(exerciseId: otherProcedureDto.exerciseId).name}",
+                        child: Text("with ${procedureDto.exercise.name}",
                             style: GoogleFonts.lato(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
                       )
                     : const SizedBox.shrink(),

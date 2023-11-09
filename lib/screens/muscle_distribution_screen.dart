@@ -124,9 +124,9 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     for (MuscleGroup muscle in MuscleGroup.values) {
       frequencyMap[muscle] = range != null
           ? routineLogProvider
-              .setDtosForMuscleGroupWhereDateRange(muscleGroup: muscle, context: context, range: range)
+              .setDtosForMuscleGroupWhereDateRange(muscleGroup: muscle, range: range)
               .length
-          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscle, context: context).length;
+          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscle).length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
@@ -144,9 +144,9 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     for (MuscleGroup muscleGroup in MuscleGroup.values) {
       frequencyMap[muscleGroup] = since != null
           ? routineLogProvider
-              .whereSetDtosForMuscleGroupSince(muscleGroup: muscleGroup, context: context, since: since)
+              .whereSetDtosForMuscleGroupSince(muscleGroup: muscleGroup, since: since)
               .length
-          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscleGroup, context: context).length;
+          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscleGroup).length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));

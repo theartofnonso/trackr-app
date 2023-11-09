@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -175,7 +176,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           if(mounted) {
             Navigator.of(context).pop();
           }
-        } catch(_) {
+        } on AmplifyCodeGenModelException catch(_) {
+          if(mounted) {
+            showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "${exercise.name} does not exist");
+          }
+        } catch(e) {
           if(mounted) {
             showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to update exercise");
           }

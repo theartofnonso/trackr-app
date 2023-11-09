@@ -125,7 +125,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _navigateToExerciseHistory(ExerciseInLibraryDto exerciseInLibraryDto) async {
     await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exerciseId: exerciseInLibraryDto.exercise.id)));
+        MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exercise: exerciseInLibraryDto.exercise)));
     if (mounted) {
       setState(() {
         _exercisesInLibrary = _updateSelections();

@@ -213,18 +213,18 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
 }
 
 class ExerciseHistoryScreen extends StatelessWidget {
-  final String exerciseId;
+  final Exercise exercise;
 
-  const ExerciseHistoryScreen({super.key, required this.exerciseId});
+  const ExerciseHistoryScreen({super.key, required this.exercise});
 
   List<RoutineLog> _logsWhereExercise({required List<RoutineLog> logs}) {
     return logs
         .where((log) => log.procedures
             .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-            .any((procedure) => procedure.exerciseId == exerciseId))
+            .any((procedure) => procedure.exercise.id == exercise.id))
         .map((log) => log.copyWith(
             procedures: log.procedures
-                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exerciseId == exerciseId)
+                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exercise.id == exercise.id)
                 .toList()))
         .toList();
   }
@@ -252,7 +252,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 onPressed: () async {
                   Navigator.pop(context);
                   try {
-                    await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exerciseId);
+                    await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exercise.id);
                     if (context.mounted) {
                       Navigator.of(context).pop();
                     }
@@ -277,11 +277,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exercise = Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exerciseId);
-
-    if (exercise == null) {
-      return const SizedBox.shrink();
-    }
+    final foundExercise = Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
 
     final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
@@ -301,7 +297,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
               icon: const Icon(Icons.arrow_back_outlined),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text(exercise.name,
+            title: Text(foundExercise.name,
                 style: GoogleFonts.lato(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: const TabBar(
               labelColor: Colors.white,
@@ -337,7 +333,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                     tooltip: 'Show menu',
                   );
                 },
-                menuChildren: _menuActionButtons(context: context, exercise: exercise),
+                menuChildren: _menuActionButtons(context: context, exercise: foundExercise),
               )
             ],
           ),
@@ -348,7 +344,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 heaviestSet: heaviestSet,
                 heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                 routineLogs: routineLogsForExercise,
-                exercise: exercise,
+                exercise: foundExercise,
               ),
               HistoryWidget(logs: routineLogsForExercise)
             ],
@@ -495,7 +491,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             ),
             const SizedBox(height: 5),
             Text(
-              "Secondary Target: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+              "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
               style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             ),
             Padding(
@@ -610,7 +606,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
             ),
             const SizedBox(height: 5),
             Text(
-              "Secondary Target: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+              "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
               style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             )
           ],

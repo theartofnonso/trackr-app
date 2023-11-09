@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -185,7 +184,6 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   List<Widget> _proceduresToWidgets({required BuildContext context, required List<String> procedureJsons}) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     return procedures
         .take(3)
@@ -200,7 +198,7 @@ class _RoutineWidget extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
                     ),
-                    title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name,
+                    title: Text(procedure.exercise.name,
                         style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                     trailing: Text("${procedure.sets.length} sets", style: Theme.of(context).textTheme.labelMedium)),
               ),

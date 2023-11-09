@@ -20,7 +20,6 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
 import '../../dtos/set_dto.dart';
-import '../../providers/exercise_provider.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../shared_prefs.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
@@ -65,7 +64,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         child: _ProceduresList(
           procedures: procedures,
           onSelect: (ProcedureDto secondProcedure) {
-            _addSuperSet(firstProcedureId: firstProcedure.exerciseId, secondProcedureId: secondProcedure.exerciseId);
+            _addSuperSet(firstProcedureId: firstProcedure.exercise.id, secondProcedureId: secondProcedure.exercise.id);
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -106,7 +105,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _addProcedures({required List<Exercise> exercises}) {
-    final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exerciseId: exercise.id)).toList();
+    final proceduresToAdd =
+        exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
       _procedures.addAll(proceduresToAdd);
     });
@@ -180,7 +180,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         final selectedExercise = selectedExercises.first;
         final oldProcedureIndex = _indexWhereProcedure(procedureId: procedureId);
         setState(() {
-          _procedures[oldProcedureIndex] = ProcedureDto(exerciseId: selectedExercise.id);
+          _procedures[oldProcedureIndex] = ProcedureDto(exercise: selectedExercise);
         });
       }
       _cacheRoutineLog();
@@ -188,7 +188,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   int _indexWhereProcedure({required String procedureId}) {
-    return _procedures.indexWhere((procedure) => procedure.exerciseId == procedureId);
+    return _procedures.indexWhere((procedure) => procedure.exercise.id == procedureId);
   }
 
   void _addSet({required String procedureId}) {
@@ -308,7 +308,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _removeSuperSet({required String superSetId}) {
     for (var procedure in _procedures) {
       if (procedure.superSetId == superSetId) {
-        final procedureIndex = _indexWhereProcedure(procedureId: procedure.exerciseId);
+        final procedureIndex = _indexWhereProcedure(procedureId: procedure.exercise.id);
         setState(() {
           _procedures[procedureIndex] = procedure.copyWith(superSetId: "");
         });
@@ -319,7 +319,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
     return _procedures
-        .whereNot((procedure) => procedure.exerciseId == firstProcedure.exerciseId || procedure.superSetId.isNotEmpty)
+        .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.superSetId.isNotEmpty)
         .toList();
   }
 
@@ -330,7 +330,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           initialDuration: procedure.restInterval,
           onSelect: (Duration duration) {
             Navigator.of(context).pop();
-            _setRestInterval(procedureId: procedure.exerciseId, duration: duration);
+            _setRestInterval(procedureId: procedure.exercise.id, duration: duration);
           },
         ));
   }
@@ -357,40 +357,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  List<Widget> _proceduresToWidgets() {
-    return _procedures
-        .map((procedure) => Column(
-              children: [
-                ProcedureWidget(
-                  procedureDto: procedure,
-                  editorType: widget.mode,
-                  otherSuperSetProcedureDto:
-                      whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
-                  onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
-                  onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exerciseId),
-                  onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                  onChangedSetRep: (int setIndex, int value) =>
-                      _updateSetRep(procedureId: procedure.exerciseId, setIndex: setIndex, value: value),
-                  onChangedSetWeight: (int setIndex, double value) =>
-                      _updateWeight(procedureId: procedure.exerciseId, setIndex: setIndex, value: value),
-                  onChangedSetType: (int setIndex, SetType type) =>
-                      _updateSetType(procedureId: procedure.exerciseId, setIndex: setIndex, type: type),
-                  onAddSet: () => _addSet(procedureId: procedure.exerciseId),
-                  onRemoveSet: (int setIndex) => _removeSet(procedureId: procedure.exerciseId, setIndex: setIndex),
-                  onUpdateNotes: (String value) =>
-                      _updateProcedureNotes(procedureId: procedure.exerciseId, value: value),
-                  onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exerciseId),
-                  onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
-                  onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exerciseId),
-                  onReOrderProcedures: () => _reOrderProcedures(),
-                  onCheckSet: (int setIndex) => _checkSet(procedureId: procedure.exerciseId, setIndex: setIndex),
-                ),
-                const SizedBox(height: 18)
-              ],
-            ))
-        .toList();
-  }
-
   void _toggleLoadingState() {
     setState(() {
       _loading = !_loading;
@@ -400,19 +366,20 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _createRoutine() async {
     if (_routineNameController.text.isEmpty) {
-      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: 'Please provide a name for this workout');
+      showSnackbar(
+          context: context, icon: const Icon(Icons.info_outline), message: 'Please provide a name for this workout');
     } else if (_procedures.isEmpty) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Workout must have exercise(s)");
     } else {
       _toggleLoadingState();
       try {
-        await Provider.of<RoutineProvider>(context, listen: false)
-            .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
-        if(mounted) {
+        await Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
+            name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
+        if (mounted) {
           Navigator.of(context).pop();
         }
       } catch (e) {
-        if(mounted) {
+        if (mounted) {
           showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create workout");
         }
       } finally {
@@ -452,7 +419,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _updateRoutine({required Routine routine}) {
     if (_routineNameController.text.isEmpty) {
-      showSnackbar(context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
+      showSnackbar(
+          context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
     } else if (_procedures.isEmpty) {
       showSnackbar(context: context, message: "Workout must have exercise(s)", icon: const Icon(Icons.info_outline));
     } else {
@@ -476,7 +444,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _updateRoutineLog({required RoutineLog routineLog}) {
     if (_routineNameController.text.isEmpty) {
-      showSnackbar(context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
+      showSnackbar(
+          context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
     } else if (_procedures.isEmpty) {
       showSnackbar(context: context, message: "Workout must have exercise(s)", icon: const Icon(Icons.info_outline));
     } else {
@@ -521,12 +490,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           updatedAt: TemporalDateTime.now());
 
       await Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
-      if(mounted) {
+      if (mounted) {
         Navigator.of(context).pop();
       }
     } catch (e) {
-      if(mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
+      if (mounted) {
+        showSnackbar(
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
       }
     } finally {
       _toggleLoadingState();
@@ -695,12 +665,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ),
                 actions: [
                   CTextButton(
-                    onPressed: _canUpdate() ? _doUpdate : _createRoutine,
-                    label: _canUpdate() ? "Update" : "Save",
-                    buttonColor: Colors.transparent,
-                    loading: _loading,
-                    loadingLabel: _loadingLabel
-                  )
+                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                      label: _canUpdate() ? "Update" : "Save",
+                      buttonColor: Colors.transparent,
+                      loading: _loading,
+                      loadingLabel: _loadingLabel)
                 ],
               )
             : AppBar(
@@ -748,71 +717,94 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       timer: _TimerWidget(
                           TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
                     ),
-                  elapsedRestInterval != null
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: _IntervalTimer(
-                            duration: elapsedRestInterval,
-                            onElapsed: () => _hideProcedureRestInterval(),
-                            onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (widget.mode == RoutineEditorType.edit)
-                            Column(
-                              children: [
-                                TextField(
-                                  controller: _routineNameController,
-                                  decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(2),
-                                          borderSide: const BorderSide(color: tealBlueLighter)),
-                                      filled: true,
-                                      fillColor: tealBlueLighter,
-                                      hintText: "New workout",
-                                      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-                                  cursorColor: Colors.white,
-                                  keyboardType: TextInputType.text,
-                                  textCapitalization: TextCapitalization.words,
-                                  style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                                ),
-                                const SizedBox(height: 10),
-                                TextField(
-                                  controller: _routineNotesController,
-                                  decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(2),
-                                          borderSide: const BorderSide(color: tealBlueLighter)),
-                                      filled: true,
-                                      fillColor: tealBlueLighter,
-                                      hintText: "Notes",
-                                      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-                                  maxLines: null,
-                                  cursorColor: Colors.white,
-                                  keyboardType: TextInputType.text,
-                                  textCapitalization: TextCapitalization.sentences,
-                                  style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          const SizedBox(height: 12),
-                          ..._proceduresToWidgets(),
-                          SizedBox(
-                            width: double.infinity,
-                            child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
-                          ),
-                        ],
+                  if (elapsedRestInterval != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: _IntervalTimer(
+                        duration: elapsedRestInterval,
+                        onElapsed: () => _hideProcedureRestInterval(),
+                        onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
                       ),
                     ),
+                  if (widget.mode == RoutineEditorType.edit)
+                    Column(
+                      children: [
+                        TextField(
+                          controller: _routineNameController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "New workout",
+                              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          controller: _routineNotesController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "Notes",
+                              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                          maxLines: null,
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            final procedure = _procedures[index];
+                            return ProcedureWidget(
+                              procedureDto: _procedures[index],
+                              editorType: widget.mode,
+                              otherSuperSetProcedureDto:
+                                  whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                              onRemoveSuperSet: (String superSetId) =>
+                                  _removeSuperSet(superSetId: procedure.superSetId),
+                              onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                              onChangedSetRep: (int setIndex, int value) =>
+                                  _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+                              onChangedSetWeight: (int setIndex, double value) =>
+                                  _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+                              onChangedSetType: (int setIndex, SetType type) =>
+                                  _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
+                              onAddSet: () => _addSet(procedureId: procedure.exercise.id),
+                              onRemoveSet: (int setIndex) =>
+                                  _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+                              onUpdateNotes: (String value) =>
+                                  _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
+                              onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
+                              onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
+                              onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
+                              onReOrderProcedures: () => _reOrderProcedures(),
+                              onCheckSet: (int setIndex) =>
+                                  _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
+                          itemCount: _procedures.length)),
+                  SizedBox(
+                    width: double.infinity,
+                    child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
                   ),
                 ],
               ),
@@ -900,7 +892,6 @@ class _ProceduresListState extends State<_ProceduresList> {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     return widget.procedures.isNotEmpty
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -936,7 +927,7 @@ class _ProceduresListState extends State<_ProceduresList> {
                   children: List<Widget>.generate(widget.procedures.length, (int index) {
                     return Center(
                         child: Text(
-                      exerciseProvider.whereExercise(exerciseId: widget.procedures[index].exerciseId).name,
+                      widget.procedures[index].exercise.name,
                       style: GoogleFonts.lato(color: Colors.white),
                     ));
                   }),

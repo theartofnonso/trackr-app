@@ -14,7 +14,6 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../utils/snackbar_utils.dart';
@@ -301,11 +300,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   }
 
   List<Widget> _muscleGroupSplit({required List<String> procedureJsons}) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     final parts = procedures.map((procedure) {
-      final exercise = exerciseProvider.whereExercise(exerciseId: procedure.exerciseId);
-      return MuscleGroup.fromString(exercise.primaryMuscle);
+      return MuscleGroup.fromString(procedure.exercise.primaryMuscle);
     }).toList();
     final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];

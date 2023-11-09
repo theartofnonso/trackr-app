@@ -73,10 +73,6 @@ class ExerciseProvider with ChangeNotifier {
     return _exercises.indexWhere((routine) => routine.id == id);
   }
 
-  Exercise whereExercise({required String exerciseId}) {
-    return _exercises.firstWhere((exercise) => exercise.id == exerciseId);
-  }
-
   Exercise? whereExerciseOrNull({required String exerciseId}) {
     return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
   }

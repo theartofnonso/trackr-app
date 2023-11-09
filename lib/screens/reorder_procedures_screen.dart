@@ -2,11 +2,9 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/procedure_dto.dart';
-import '../providers/exercise_provider.dart';
 
 class ReOrderProceduresScreen extends StatefulWidget {
   final List<ProcedureDto> procedures;
@@ -34,11 +32,10 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
   }
 
   List<Widget> _proceduresToWidgets() {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
     return _procedures
         .mapIndexed((index, procedure) => ListTile(
               key: Key("$index"),
-              title: Text(exerciseProvider.whereExercise(exerciseId: procedure.exerciseId).name, style: Theme.of(context).textTheme.bodyLarge),
+              title: Text(procedure.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
               trailing: const Icon(
                 Icons.reorder_rounded,
                 color: Colors.white,

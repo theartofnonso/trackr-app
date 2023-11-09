@@ -11,7 +11,6 @@ import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../providers/exercise_provider.dart';
 import '../../../screens/exercise/exercise_history_screen.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 
@@ -105,18 +104,21 @@ class ProcedureWidget extends StatelessWidget {
     ];
   }
 
-  SetDto? _whereSets({required SetType type, required int index,  required List<ProcedureDto> procedures}) {
-
+  SetDto? _wherePastSets({required SetType type, required int index, required List<ProcedureDto> procedures}) {
     SetDto? set;
 
     for (ProcedureDto procedure in procedures) {
       final pastSets = procedure.sets;
 
-      if (pastSets.isEmpty) continue; /// Skip to next past [ProcedureDto] in the list
+      if (pastSets.isEmpty) continue;
+
+      /// Skip to next past [ProcedureDto] in the list
 
       final sets = pastSets.where((set) => set.type == type).toList();
 
-      if (sets.length <= index) continue; /// Skip to next past [ProcedureDto] in the list
+      if (sets.length <= index) continue;
+
+      /// Skip to next past [ProcedureDto] in the list
 
       final pastSet = sets[index];
       final volume = pastSet.reps * pastSet.weight;
@@ -129,20 +131,24 @@ class ProcedureWidget extends StatelessWidget {
     return set;
   }
 
-  List<Widget>? _displaySets(BuildContext context) {
+  List<Widget> _displaySets(BuildContext context) {
     int warmupSets = 0;
     int workingSets = 0;
     int failureSets = 0;
     int dropSets = 0;
 
-    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).whereProcedureDtos(procedureDto: procedureDto);
+    if (procedureDto.sets.isEmpty) {
+      return <Widget>[];
+    }
+
+    final pastProcedures = Provider.of<RoutineLogProvider>(context, listen: false).wherePastProcedureDtos(exercise: procedureDto.exercise);
 
     return procedureDto.sets.mapIndexed(((index, setDto) {
-      SetDto? pastSet = switch(setDto.type) {
-        SetType.warmUp => _whereSets(type: setDto.type, index: warmupSets, procedures: pastProcedures),
-        SetType.working => _whereSets(type: setDto.type, index: workingSets, procedures: pastProcedures),
-        SetType.failure => _whereSets(type: setDto.type, index: failureSets, procedures: pastProcedures),
-        SetType.drop => _whereSets(type: setDto.type, index: dropSets, procedures: pastProcedures),
+      SetDto? pastSet = switch (setDto.type) {
+        SetType.warmUp => _wherePastSets(type: setDto.type, index: warmupSets, procedures: pastProcedures),
+        SetType.working => _wherePastSets(type: setDto.type, index: workingSets, procedures: pastProcedures),
+        SetType.failure => _wherePastSets(type: setDto.type, index: failureSets, procedures: pastProcedures),
+        SetType.drop => _wherePastSets(type: setDto.type, index: dropSets, procedures: pastProcedures),
       };
 
       final widget = SetWidget(
@@ -185,7 +191,6 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
 
     final otherProcedureDto = otherSuperSetProcedureDto;
 
@@ -205,9 +210,9 @@ class ProcedureWidget extends StatelessWidget {
                   child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHistoryScreen(exerciseId: procedureDto.exerciseId)));
+                      builder: (context) => ExerciseHistoryScreen(exercise: procedureDto.exercise)));
                 },
-                child: Text(exerciseProvider.whereExercise(exerciseId: procedureDto.exerciseId).name,
+                child: Text(procedureDto.exercise.name,
                     style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
               )),
               MenuAnchor(
@@ -233,7 +238,7 @@ class ProcedureWidget extends StatelessWidget {
           otherProcedureDto != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Text("with ${exerciseProvider.whereExercise(exerciseId: otherProcedureDto.exerciseId).name}",
+                  child: Text("with ${procedureDto.exercise.name}",
                       style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
                 )
               : const SizedBox.shrink(),
@@ -275,26 +280,29 @@ class ProcedureWidget extends StatelessWidget {
               4: FixedColumnWidth(55),
             },
             children: <TableRow>[
-              TableRow(
-                children: [
-                  Text("SET",
-                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                      textAlign: TextAlign.center),
-                  Text("PREVIOUS",
-                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                      textAlign: TextAlign.center),
-                  Text(weightLabel().toUpperCase(),
-                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                      textAlign: TextAlign.center),
-                  Text("REPS",
-                      style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                      textAlign: TextAlign.center),
-                  const TableCell(verticalAlignment: TableCellVerticalAlignment.middle, child: Icon(Icons.check, size: 12,))
-                ]
-              ),
+              TableRow(children: [
+                Text("SET",
+                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                    textAlign: TextAlign.center),
+                Text("PREVIOUS",
+                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                    textAlign: TextAlign.center),
+                Text(weightLabel().toUpperCase(),
+                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                    textAlign: TextAlign.center),
+                Text("REPS",
+                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                    textAlign: TextAlign.center),
+                const TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Icon(
+                      Icons.check,
+                      size: 12,
+                    ))
+              ]),
             ],
           ),
-          ...?_displaySets(context)
+          ..._displaySets(context)
         ],
       ),
     );

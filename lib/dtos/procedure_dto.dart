@@ -1,27 +1,29 @@
 import 'dart:convert';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/models/Exercise.dart';
 
 class ProcedureDto {
   final String superSetId;
-  final String exerciseId;
+  final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
   final Duration restInterval;
 
   ProcedureDto({this.superSetId = "",
-    required this.exerciseId,
+    required this.exercise,
     this.notes = "",
     this.sets = const [],
     this.restInterval = Duration.zero});
 
   ProcedureDto copyWith({String? superSetId,
-    String? exercise,
+    String? exerciseId,
+    Exercise? exercise,
     String? notes,
     List<SetDto>? sets,
     Duration? restInterval}) {
     return ProcedureDto(
         superSetId: superSetId ?? this.superSetId,
-        exerciseId: exercise ?? this.exerciseId,
+        exercise: exercise ?? this.exercise,
         notes: notes ?? this.notes,
         sets: sets ?? this.sets,
         restInterval: restInterval ?? this.restInterval);
@@ -38,7 +40,7 @@ class ProcedureDto {
   String toJson() {
     return jsonEncode({
       "superSetId": superSetId,
-      "exerciseId": exerciseId,
+      "exercise": exercise,
       "notes": notes,
       "sets": sets.map((set) => set.toJson()).toList(),
       "restInterval": restInterval.inMilliseconds
@@ -47,17 +49,17 @@ class ProcedureDto {
 
   factory ProcedureDto.fromJson(Map<String, dynamic> json) {
     final superSetId = json["superSetId"];
-    final exerciseId = json["exerciseId"];
+    final exercise = Exercise.fromJson(json["exercise"]);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     final restInterval = json["restInterval"];
-    return ProcedureDto(superSetId: superSetId, notes: notes, sets: sets, restInterval: Duration(milliseconds: restInterval), exerciseId: exerciseId);
+    return ProcedureDto(superSetId: superSetId, notes: notes, sets: sets, restInterval: Duration(milliseconds: restInterval), exercise: exercise);
   }
 
 
   @override
   String toString() {
-    return 'ProcedureDto{superSetId: $superSetId, exercise: $exerciseId, notes: $notes, sets: $sets}, restInterval: $restInterval';
+    return 'ProcedureDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}, restInterval: $restInterval';
   }
 }

@@ -4,9 +4,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -14,7 +14,6 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
-import 'exercise_provider.dart';
 
 class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> _logs = [];
@@ -229,19 +228,19 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ProcedureDto> whereProcedureDtos({required ProcedureDto procedureDto}) {
+  List<ProcedureDto> wherePastProcedureDtos({required Exercise exercise}) {
     // This list will hold all matching ProcedureDtos.
     List<ProcedureDto> matchedDtos = [];
 
     // Iterate through each log.
-    for (var log in logs) {
+    for (RoutineLog log in logs) {
       // Decode all procedures once instead of doing it multiple times.
       List<ProcedureDto> decodedProcedures =
           log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
 
       // Use where to filter out procedures with different exerciseId.
       List<ProcedureDto> filteredProcedures =
-          decodedProcedures.where((procedure) => procedure.exerciseId == procedureDto.exerciseId).toList();
+          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
 
       // If there are any matches, add them to the final list.
       if (filteredProcedures.isNotEmpty) {
@@ -252,13 +251,11 @@ class RoutineLogProvider with ChangeNotifier {
     return matchedDtos;
   }
 
-  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroup muscleGroup, required DateTimeRange range, required BuildContext context}) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroup muscleGroup, required DateTimeRange range}) {
 
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      final exercise = exerciseProvider.whereExercise(exerciseId: procedure.exerciseId);
-      final primaryMuscle = MuscleGroup.fromString(exercise.primaryMuscle);
+      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
       return primaryMuscle == muscleGroup;
     }
 
@@ -271,17 +268,14 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtosForMuscleGroupSince({required MuscleGroup muscleGroup, required int since, required BuildContext context}) {
+  List<SetDto> whereSetDtosForMuscleGroupSince({required MuscleGroup muscleGroup, required int since}) {
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: since));
     final dateRange = DateTimeRange(start: then, end: now);
 
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
-
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      final exercise = exerciseProvider.whereExercise(exerciseId: procedure.exerciseId);
-      final primaryMuscle = MuscleGroup.fromString(exercise.primaryMuscle);
+      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
       return primaryMuscle == muscleGroup;
     }
 
@@ -294,13 +288,10 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtosForMuscleGroup({required MuscleGroup muscleGroup, required BuildContext context}) {
-    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
-
+  List<SetDto> whereSetDtosForMuscleGroup({required MuscleGroup muscleGroup}) {
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      final exercise = exerciseProvider.whereExercise(exerciseId: procedure.exerciseId);
-      final primaryMuscle = MuscleGroup.fromString(exercise.primaryMuscle);
+      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
       return primaryMuscle == muscleGroup;
     }
 
