@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -7,9 +6,10 @@ import '../../dtos/set_dto.dart';
 import '../empty_states/list_tile_empty_state.dart';
 import '../routine/preview/set_widget.dart';
 
-ProcedureDto? whereOtherSuperSetProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
+ProcedureDto? whereOtherSuperSetProcedure(
+    {required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
   return procedures.firstWhereOrNull((procedure) =>
-  procedure.superSetId.isNotEmpty &&
+      procedure.superSetId.isNotEmpty &&
       procedure.superSetId == firstProcedure.superSetId &&
       procedure.exercise.id != firstProcedure.exercise.id);
 }
@@ -34,9 +34,5 @@ List<Widget> setsToWidgets({required List<SetDto> sets}) {
     return widget;
   })).toList();
 
-  return widgets.isNotEmpty
-      ? widgets
-      : [
-    const ListStyleEmptyState()
-  ];
+  return widgets.isNotEmpty ? widgets : [const ListStyleEmptyState()];
 }
