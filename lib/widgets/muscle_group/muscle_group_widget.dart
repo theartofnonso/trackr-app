@@ -13,7 +13,6 @@ class MuscleGroupWidget extends StatelessWidget {
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
-        tileColor: tealBlueLight,
         dense: true,
         title: Text(muscleGroupDto.muscleGroup.name, style: Theme.of(context).textTheme.bodyMedium),
         onTap: onTap,
