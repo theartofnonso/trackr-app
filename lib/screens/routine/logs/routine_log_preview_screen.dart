@@ -37,6 +37,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
 
+  bool _loading = false;
+
   @override
   Widget build(BuildContext context) {
     final weightProvider = Provider.of<SettingsProvider>(context, listen: true);
@@ -97,99 +99,110 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             )
           ],
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  log.notes.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text(log.notes,
-                              style: GoogleFonts.lato(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                        )
-                      : const SizedBox.shrink(),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.date_range_rounded,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
-                          style: GoogleFonts.lato(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                      const SizedBox(width: 10),
-                      const Icon(
-                        Icons.access_time_rounded,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(log.endTime.getDateTimeInUtc().formattedTime(),
-                          style: GoogleFonts.lato(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: tealBlueLight, // Set the background color
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                        2: FlexColumnWidth(),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(completedSetsSummary,
-                                  style:
-                                      GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(totalVolumeSummary,
-                                  style:
-                                      GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(_logDuration(log: log),
-                                  style:
-                                      GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
+        body: Stack(children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    log.notes.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Text(log.notes,
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                )),
                           )
-                        ]),
+                        : const SizedBox.shrink(),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.date_range_rounded,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
+                            style: GoogleFonts.lato(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                        const SizedBox(width: 10),
+                        const Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(log.endTime.getDateTimeInUtc().formattedTime(),
+                            style: GoogleFonts.lato(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
-                  ),
-                  Column(
-                    children: [..._muscleGroupSplit(procedureJsons: log.procedures)],
-                  ),
-                  ..._proceduresToWidgets(routineLog: log)
-                ],
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: tealBlueLight, // Set the background color
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Table(
+                        border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(),
+                          1: FlexColumnWidth(),
+                          2: FlexColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children: [
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(completedSetsSummary,
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(totalVolumeSummary,
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(_logDuration(log: log),
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            )
+                          ]),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [..._muscleGroupSplit(procedureJsons: log.procedures)],
+                    ),
+                    ..._proceduresToWidgets(routineLog: log)
+                  ],
+                ),
               ),
             ),
           ),
-        ));
+          _loading
+              ? Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: tealBlueDark.withOpacity(0.7),
+                      child: const Center(child: Text("Deleting log"))))
+              : const SizedBox.shrink()
+        ]));
   }
 
   @override
@@ -217,6 +230,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
   }
 
   List<Widget> _proceduresToWidgets({required RoutineLog routineLog}) {
@@ -353,6 +372,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
             CTextButton(
                 onPressed: () async {
                   Navigator.pop(context);
+                  _toggleLoadingState();
                   try {
                     await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.routineLogId);
                     if (mounted) {
@@ -365,6 +385,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                           icon: const Icon(Icons.info_outline),
                           message: "Oops, we are unable delete this log");
                     }
+                  } finally {
+                    _toggleLoadingState();
                   }
                 },
                 label: 'Delete'),

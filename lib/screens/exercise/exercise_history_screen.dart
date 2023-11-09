@@ -488,20 +488,19 @@ class _SummaryWidgetState extends State<SummaryWidget> {
       final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList().max;
       return SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+        padding: const EdgeInsets.only(top: 12, right: 10.0, bottom: 10, left: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // const SizedBox(height: 10),
-            // Text(
-            //   "Primary Target: ${exercise.primary.join(", ")}",
-            //   style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            // ),
-            // const SizedBox(height: 5),
-            // Text(
-            //   "Secondary Target: ${exercise.secondary.isNotEmpty ? exercise.secondary.join(", ") : "None"}",
-            //   style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            // ),
+            Text(
+              "Primary Muscle: ${widget.exercise.primaryMuscle}",
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              "Secondary Target: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
               child: Column(
@@ -605,18 +604,29 @@ class _SummaryWidgetState extends State<SummaryWidget> {
         ),
       ));
     }
-    return routineProvider.cachedLog == null
-        ? Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: CTextButton(
-                  onPressed: () {
-                    startEmptyRoutine(context: context);
-                  },
-                  label: " $startTrackingPerformance "),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Primary Muscle: ${widget.exercise.primaryMuscle}",
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             ),
-          )
-        : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
+            const SizedBox(height: 5),
+            Text(
+              "Secondary Target: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            ),
+            const SizedBox(height: 10),
+            routineProvider.cachedLog == null
+                ? Center(
+                child: CTextButton(
+                    onPressed: () {
+                      startEmptyRoutine(context: context);
+                    },
+                    label: " $startTrackingPerformance "),
+              ) : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
+          ],
+        );
   }
 
   void _loadChart() {
@@ -643,33 +653,29 @@ class HistoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    return logs.isNotEmpty
-        ? Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Expanded(
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          logs.isNotEmpty
+              ? Expanded(
                   child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) => RoutineLogWidget(routineLog: logs[index]),
                       separatorBuilder: (BuildContext context, int index) =>
                           Divider(color: Colors.white70.withOpacity(0.1)),
                       itemCount: logs.length),
-                ),
-              ],
-            ),
-          )
-        : routineProvider.cachedLog == null
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: CTextButton(
+                )
+              : routineProvider.cachedLog == null
+                  ? CTextButton(
                       onPressed: () {
                         startEmptyRoutine(context: context);
                       },
-                      label: " $startTrackingPerformance "),
-                ),
-              )
-            : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers));
+                      label: " $startTrackingPerformance ")
+                  : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers)),
+        ],
+      ),
+    );
   }
 }
 

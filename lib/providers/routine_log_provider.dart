@@ -59,6 +59,21 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
+  Future<List<RoutineLog>> listRoutineLogsForRoutine({required String id}) async {
+
+    List<RoutineLog> logs = [];
+
+    final routineLogOwner = await user();
+    final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
+    final response = await Amplify.API.query(request: request).response;
+
+    final routineLogs = response.data?.items;
+    if (routineLogs != null) {
+      logs = routineLogs.whereType<RoutineLog>().toList();
+    }
+    return logs;
+  }
+
   Map<String, dynamic> _fixJson(String jsonString) {
     final json = jsonDecode(jsonString) as Map<String, dynamic>;
     json.update("routine", (value) {
@@ -182,7 +197,7 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateLogInCloud({required RoutineLog log}) async {
+  Future<void> updateLog({required RoutineLog log}) async {
     final request = ModelMutations.update(log);
     final response = await Amplify.API.mutate(request: request).response;
     final updatedLog = response.data;

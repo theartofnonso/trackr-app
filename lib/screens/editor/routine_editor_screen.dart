@@ -55,6 +55,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Duration? _elapsedProcedureRestInterval;
 
+  bool _loading = false;
+  String _loadingLabel = "";
+
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProcedures(firstProcedure: firstProcedure);
     displayBottomSheet(
@@ -388,15 +391,33 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         .toList();
   }
 
-  void _createRoutine() {
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+      _loadingLabel = _canUpdate() ? "Updating" : "Creating";
+    });
+  }
+
+  void _createRoutine() async {
     if (_routineNameController.text.isEmpty) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: 'Please provide a name for this workout');
     } else if (_procedures.isEmpty) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Workout must have exercise(s)");
     } else {
-      Provider.of<RoutineProvider>(context, listen: false)
-          .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
-      Navigator.of(context).pop();
+      _toggleLoadingState();
+      try {
+        await Provider.of<RoutineProvider>(context, listen: false)
+            .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
+        if(mounted) {
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        if(mounted) {
+          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create workout");
+        }
+      } finally {
+        _toggleLoadingState();
+      }
     }
   }
 
@@ -490,27 +511,37 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _doUpdateRoutine({required Routine routine}) {
-    final updatedRoutine = routine.copyWith(
-        name: _routineNameController.text,
-        notes: _routineNotesController.text,
-        procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
-        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
+  void _doUpdateRoutine({required Routine routine}) async {
+    _toggleLoadingState();
+    try {
+      final updatedRoutine = routine.copyWith(
+          name: _routineNameController.text,
+          notes: _routineNotesController.text,
+          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+          updatedAt: TemporalDateTime.now());
 
-    Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
-
-    Navigator.of(context).pop();
+      await Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
+      if(mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if(mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
+      }
+    } finally {
+      _toggleLoadingState();
+    }
   }
 
   void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
-    final updatedRoutineLog = routineLog.copyWith(
-        name: _routineNameController.text,
-        notes: _routineNotesController.text,
-        procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
-        updatedAt: TemporalDateTime.fromString("${DateTime.now().toIso8601String()}Z"));
-
+    _toggleLoadingState();
     try {
-      await Provider.of<RoutineLogProvider>(context, listen: false).updateLogInCloud(log: updatedRoutineLog);
+      final updatedRoutineLog = routineLog.copyWith(
+          name: _routineNameController.text,
+          notes: _routineNotesController.text,
+          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+          updatedAt: TemporalDateTime.now());
+      await Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -519,6 +550,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         showSnackbar(
             context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
       }
+    } finally {
+      _toggleLoadingState();
     }
   }
 
@@ -627,10 +660,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return previousRoutine != null || previousRoutineLog != null;
   }
 
-  String _editorActionLabel() {
-    return _canUpdate() ? "Update" : "Save";
-  }
-
   String? _editorTitle() {
     final previousRoutine = widget.routine;
     final previousRoutineLog = widget.routineLog;
@@ -667,8 +696,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 actions: [
                   CTextButton(
                     onPressed: _canUpdate() ? _doUpdate : _createRoutine,
-                    label: _editorActionLabel(),
+                    label: _canUpdate() ? "Update" : "Save",
                     buttonColor: Colors.transparent,
+                    loading: _loading,
+                    loadingLabel: _loadingLabel
                   )
                 ],
               )

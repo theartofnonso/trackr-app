@@ -27,6 +27,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   late MuscleGroup _primaryMuscleGroup;
   List<MuscleGroup> _secondaryMuscleGroup = [];
 
+  bool _loading = false;
+  String _loadingLabel = "";
+
   @override
   Widget build(BuildContext context) {
 
@@ -38,7 +41,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [exercise != null ? CTextButton(onPressed: _updateExercise, label: "Update", buttonColor: Colors.transparent) : const SizedBox.shrink()],
+        actions: [exercise != null ? CTextButton(onPressed: _updateExercise, label: "Update", buttonColor: Colors.transparent, loading: _loading, loadingLabel: _loadingLabel) : const SizedBox.shrink()],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -109,14 +112,21 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   )),
             ),
             const SizedBox(height: 12),
-            SizedBox(
+            widget.exercise == null ? SizedBox(
               width: double.infinity,
-              child: CTextButton(onPressed: _createExercise, label: "Create exercise"),
-            )
+              child: CTextButton(onPressed: _createExercise, label: "Create exercise", loading: _loading, loadingLabel: _loadingLabel),
+            ) : const SizedBox.shrink()
           ]),
         ),
       ),
     );
+  }
+
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+      _loadingLabel = widget.exercise != null ? "Updating" : "Creating";
+    });
   }
 
   void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
@@ -135,10 +145,19 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _createExercise() async {
-    await Provider.of<ExerciseProvider>(context, listen: false)
-        .saveExercise(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primary: _primaryMuscleGroup, secondary: _secondaryMuscleGroup);
-    if(mounted) {
-      Navigator.of(context).pop();
+    _toggleLoadingState();
+    try {
+      await Provider.of<ExerciseProvider>(context, listen: false)
+          .saveExercise(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primary: _primaryMuscleGroup, secondary: _secondaryMuscleGroup);
+      if(mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (_) {
+      if(mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
+      }
+    } finally {
+      _toggleLoadingState();
     }
   }
 
@@ -149,10 +168,19 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     } else {
       final exercise = widget.exercise;
       if(exercise != null) {
-        final updatedExercise = exercise.copyWith(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primaryMuscle: _primaryMuscleGroup.name, secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
-        await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
-        if(mounted) {
-          Navigator.of(context).pop();
+        _toggleLoadingState();
+        try {
+          final updatedExercise = exercise.copyWith(name: _exerciseNameController.text, notes: _exerciseNotesController.text, primaryMuscle: _primaryMuscleGroup.name, secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
+          await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
+          if(mounted) {
+            Navigator.of(context).pop();
+          }
+        } catch(_) {
+          if(mounted) {
+            showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to update exercise");
+          }
+        } finally {
+          _toggleLoadingState();
         }
       }
     }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
@@ -92,7 +93,9 @@ class _RoutineWidget extends StatelessWidget {
             CTextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id);
+                  Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id).onError((_, __) {
+                    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, unable to delete workout");
+                  });
                 },
                 label: "Delete"),
           ];
@@ -105,17 +108,7 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {
-    final routineToBeRemoved = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)))
-        as Map<String, String>?;
-    if (routineToBeRemoved != null) {
-      final id = routineToBeRemoved["id"] ?? "";
-      if (id.isNotEmpty) {
-        if (context.mounted) {
-          Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: id);
-        }
-      }
-    }
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)));
   }
 
   @override

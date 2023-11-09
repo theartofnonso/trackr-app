@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../../../app_constants.dart';
@@ -46,6 +47,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
   HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
+
+  bool _loading = false;
 
   void _volume() {
     final values = _filteredLogs.map((log) => volumePerLog(context: context, log: log)).toList();
@@ -119,9 +122,22 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
               child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
             ),
             CTextButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
-                  Navigator.of(context).pop({"id": widget.routineId});
+                  _toggleLoadingState();
+                  try {
+                    await Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: widget.routineId);
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      showSnackbar(
+                          context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
+                    }
+                  } finally {
+                    _toggleLoadingState();
+                  }
                 },
                 label: 'Delete'),
           ];
@@ -136,8 +152,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   void _navigateToRoutineEditor(
       {required BuildContext context, Routine? routine, RoutineEditorType mode = RoutineEditorType.edit}) {
     if (mode == RoutineEditorType.edit) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
     } else {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
@@ -145,7 +161,9 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _loadChart() {
-    Provider.of<RoutineProvider>(context, listen: false).routinesLogsWhere(id: widget.routineId).then((logs) async {
+    Provider.of<RoutineLogProvider>(context, listen: false)
+        .listRoutineLogsForRoutine(id: widget.routineId)
+        .then((logs) async {
       _logs = logs.reversed.toList();
       _filteredLogs = _logs;
       _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
@@ -157,11 +175,17 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
+  void _toggleLoadingState() {
+    setState(() {
+      _loading = !_loading;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final routine = Provider.of<RoutineProvider>(context, listen: true).routineWhere(id: widget.routineId);
 
-    if(routine == null) {
+    if (routine == null) {
       return const SizedBox.shrink();
     }
 
@@ -216,97 +240,109 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
             )
           ],
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  routine.notes.isNotEmpty
-                      ? Container(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text(routine.notes,
-                              style: GoogleFonts.lato(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                        )
-                      : const SizedBox.shrink(),
-                  chartPoints.isNotEmpty
-                      ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  DropdownButton<String>(
-                                    isDense: true,
-                                    value: _selectedHistoricalDate.label,
-                                    underline: Container(
-                                      color: Colors.transparent,
+        body: Stack(children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    routine.notes.isNotEmpty
+                        ? Container(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Text(routine.notes,
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                )),
+                          )
+                        : const SizedBox.shrink(),
+                    chartPoints.isNotEmpty
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    DropdownButton<String>(
+                                      isDense: true,
+                                      value: _selectedHistoricalDate.label,
+                                      underline: Container(
+                                        color: Colors.transparent,
+                                      ),
+                                      style: GoogleFonts.lato(color: Colors.white),
+                                      onChanged: (String? value) {
+                                        if (value != null) {
+                                          setState(() {
+                                            _selectedHistoricalDate = switch (value) {
+                                              "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
+                                              "Last 1 year" => HistoricalTimePeriod.lastOneYear,
+                                              "All Time" => HistoricalTimePeriod.allTime,
+                                              _ => HistoricalTimePeriod.allTime
+                                            };
+                                            _recomputeChart();
+                                          });
+                                        }
+                                      },
+                                      items: HistoricalTimePeriod.values
+                                          .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalTimePeriod) {
+                                        return DropdownMenuItem<String>(
+                                          value: historicalTimePeriod.label,
+                                          child:
+                                              Text(historicalTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
+                                        );
+                                      }).toList(),
                                     ),
-                                    style: GoogleFonts.lato(color: Colors.white),
-                                    onChanged: (String? value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          _selectedHistoricalDate = switch (value) {
-                                            "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
-                                            "Last 1 year" => HistoricalTimePeriod.lastOneYear,
-                                            "All Time" => HistoricalTimePeriod.allTime,
-                                            _ => HistoricalTimePeriod.allTime
-                                          };
-                                          _recomputeChart();
-                                        });
-                                      }
-                                    },
-                                    items: HistoricalTimePeriod.values
-                                        .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalTimePeriod) {
-                                      return DropdownMenuItem<String>(
-                                        value: historicalTimePeriod.label,
-                                        child: Text(historicalTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
-                                      );
-                                    }).toList(),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  LineChartWidget(
-                                    chartPoints: _chartPoints,
-                                    dateTimes: _dateTimes,
-                                    unit: _chartUnit,
-                                  ),
+                                    const SizedBox(height: 16),
+                                    LineChartWidget(
+                                      chartPoints: _chartPoints,
+                                      dateTimes: _dateTimes,
+                                      unit: _chartUnit,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CTextButton(
+                                      onPressed: _volume,
+                                      label: "Volume",
+                                      buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
+                                  const SizedBox(width: 5),
+                                  CTextButton(
+                                      onPressed: _totalReps,
+                                      label: "Reps",
+                                      buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
+                                  const SizedBox(width: 5),
+                                  CTextButton(
+                                      onPressed: _totalDuration,
+                                      label: "Duration",
+                                      buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
                                 ],
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                CTextButton(
-                                    onPressed: _volume,
-                                    label: "Volume",
-                                    buttonColor: _buttonColor(type: RoutineSummaryType.volume)),
-                                const SizedBox(width: 5),
-                                CTextButton(
-                                    onPressed: _totalReps,
-                                    label: "Reps",
-                                    buttonColor: _buttonColor(type: RoutineSummaryType.reps)),
-                                const SizedBox(width: 5),
-                                CTextButton(
-                                    onPressed: _totalDuration,
-                                    label: "Duration",
-                                    buttonColor: _buttonColor(type: RoutineSummaryType.duration)),
-                              ],
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
-                  const SizedBox(height: 5),
-                  ..._proceduresToWidgets(procedures: procedures)
-                ],
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+                    const SizedBox(height: 5),
+                    ..._proceduresToWidgets(procedures: procedures)
+                  ],
+                ),
               ),
             ),
           ),
-        ));
+          _loading
+              ? Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: tealBlueDark.withOpacity(0.7),
+                      child: const Center(child: Text("Deleting workout"))))
+              : const SizedBox.shrink()
+        ]));
   }
 
   List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {

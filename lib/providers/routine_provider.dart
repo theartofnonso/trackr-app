@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/Routine.dart';
 import '../dtos/procedure_dto.dart';
-import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 const emptyRoutineId = "empty_routine_id";
@@ -27,7 +26,7 @@ class RoutineProvider with ChangeNotifier {
     }
   }
 
-  void saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
+  Future<void> saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
 
     final routineOwner = await user();
 
@@ -48,7 +47,7 @@ class RoutineProvider with ChangeNotifier {
     }
   }
 
-  void updateRoutine({required Routine routine}) async {
+  Future<void> updateRoutine({required Routine routine}) async {
     final request = ModelMutations.update(routine);
     final response = await Amplify.API.mutate(request: request).response;
     final updatedRoutine = response.data;
@@ -59,7 +58,7 @@ class RoutineProvider with ChangeNotifier {
     }
   }
 
-  void removeRoutine({required String id}) async {
+  Future<void> removeRoutine({required String id}) async {
     final index = _indexWhereRoutine(id: id);
     final routineToBeRemoved = _routines[index];
     final request = ModelMutations.delete(routineToBeRemoved);
@@ -77,13 +76,5 @@ class RoutineProvider with ChangeNotifier {
 
   Routine? routineWhere({required String id}) {
     return _routines.firstWhereOrNull((dto) => dto.id == id);
-  }
-
-  Future<List<RoutineLog>> routinesLogsWhere({required String id}) async {
-    final logs = await Amplify.DataStore.query(
-      RoutineLog.classType,
-      where: RoutineLog.ROUTINE.eq(id),
-    );
-    return logs;
   }
 }
