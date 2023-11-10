@@ -1,6 +1,6 @@
 enum ExerciseType {
   weightAndReps("Weight & Reps", "Bench Press, Dumbbell Curls"),
-  bodyWeightAndReps("Bodyweight & Reps", "Pull Ups, Crunches, Burpees"),
+  bodyWeightAndReps("Bodyweight", "Pull Ups, Crunches, Burpees"),
   weightedBodyWeight("Weighted Bodyweight", "Weighted Pull Ups, Weighted Dips"),
   assistedBodyWeight("Assisted Bodyweight", "Assisted Pull Ups, Assisted Dips"),
   duration("Duration", "Planks, Yoga"),

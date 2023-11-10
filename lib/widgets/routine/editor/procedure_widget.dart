@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/assisted_weight_table_header.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/bodyweight_table_header.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/distance_duration_table_header.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/duration_table_header.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_distance_table_header.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_reps_table_header.dart';
+import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weighted_bodyweight_table_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
@@ -122,7 +129,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return pastSet;
   }
 
-  List<Widget> _displaySets(BuildContext context) {
+  List<Widget> _displaySets() {
     if (widget.procedureDto.sets.isEmpty) {
       return <Widget>[];
     }
@@ -180,6 +187,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   @override
   Widget build(BuildContext context) {
     final otherProcedureDto = widget.otherSuperSetProcedureDto;
+
+    final exerciseType = ExerciseType.fromString(widget.procedureDto.exercise.type);
 
     return Container(
       padding: const EdgeInsets.only(top: 12, right: 12, bottom: 10, left: 12),
@@ -262,38 +271,16 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             ],
           ),
           const SizedBox(height: 10),
-          Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(),
-              1: FixedColumnWidth(110),
-              2: FixedColumnWidth(85),
-              3: FixedColumnWidth(55),
-              4: FixedColumnWidth(55),
-            },
-            children: <TableRow>[
-              TableRow(children: [
-                Text("SET",
-                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                    textAlign: TextAlign.center),
-                Text("PREVIOUS",
-                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                    textAlign: TextAlign.center),
-                Text(weightLabel().toUpperCase(),
-                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                    textAlign: TextAlign.center),
-                Text("REPS",
-                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                    textAlign: TextAlign.center),
-                const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Icon(
-                      Icons.check,
-                      size: 12,
-                    ))
-              ]),
-            ],
-          ),
-          ..._displaySets(context)
+          switch(exerciseType) {
+            ExerciseType.weightAndReps => const WeightAndRepsTableHeader(),
+            ExerciseType.bodyWeightAndReps => const BodyWeightTableHeader(),
+            ExerciseType.weightedBodyWeight => const WeightedBodyWeightTableHeader(),
+            ExerciseType.assistedBodyWeight => const AssistedWeightTableHeader(),
+            ExerciseType.duration => const DurationTableHeader(),
+            ExerciseType.distanceAndDuration => const DistanceDurationTableHeader(),
+            ExerciseType.weightAndDistance => const WeightAndDistanceTableHeader(),
+          },
+          ..._displaySets()
         ],
       ),
     );

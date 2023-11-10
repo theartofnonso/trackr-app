@@ -245,12 +245,15 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   @override
   void initState() {
     super.initState();
-    _exerciseNameController = TextEditingController(text: widget.exercise?.name);
-    _exerciseNotesController = TextEditingController(text: widget.exercise?.notes);
+
+    final previousExercise = widget.exercise;
+
+    _exerciseNameController = TextEditingController(text: previousExercise?.name);
+    _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
 
     _primaryMuscleGroup = MuscleGroup.values.first;
     _secondaryMuscleGroup = MuscleGroup.values.take(2).toList();
-    _exerciseType = ExerciseType.weightAndReps;
+    _exerciseType = previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
   }
 
   @override
