@@ -15,7 +15,6 @@ import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../providers/routine_log_provider.dart';
-import '../../../providers/settings_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
@@ -40,7 +39,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    final weightProvider = Provider.of<SettingsProvider>(context, listen: true);
 
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
@@ -53,8 +51,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
 
     final totalVolume = _totalWeight(sets: completedSets);
-    final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
-    final totalVolumeSummary = "$conversion ${weightLabel()}";
+    final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
+    final totalVolumeSummary = "$volume ${weightLabel()}";
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(

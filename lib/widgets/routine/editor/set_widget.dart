@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../../screens/editor/routine_editor_screen.dart';
@@ -43,8 +41,7 @@ class SetWidget extends StatelessWidget {
     double prevWeightValue = 0;
 
     if (previousSetDto != null) {
-      final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-      prevWeightValue = weightProvider.isLbs ? toLbs(previousSetDto.weight) : previousSetDto.weight;
+      prevWeightValue = isDefaultWeightUnit() ? previousSetDto.weight : toLbs(previousSetDto.weight);
     }
 
     return Table(
@@ -219,17 +216,17 @@ class _WeightTextField extends StatelessWidget {
 
   const _WeightTextField({required this.initialValue, required this.onChangedWeight});
 
-  double _parseDoubleOrDefault({required SettingsProvider provider, required String value}) {
+  double _parseDoubleOrDefault({required bool isDefaultWeightUnit, required String value}) {
     final doubleValue = double.tryParse(value) ?? 0;
-    return provider.isLbs ? toKg(doubleValue) : doubleValue;
+    return isDefaultWeightUnit ? doubleValue : toKg(doubleValue) ;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsProvider>(builder: (_, provider, __) {
-      final value = provider.isLbs ? toLbs(initialValue) : initialValue;
+    final defaultWeightUnit = isDefaultWeightUnit();
+      final value = defaultWeightUnit ? initialValue : toLbs(initialValue);
       return TextField(
-        onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(provider: provider, value: value)),
+        onChanged: (value) => onChangedWeight(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
             fillColor: tealBlueLight,
@@ -242,6 +239,5 @@ class _WeightTextField extends StatelessWidget {
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
       );
-    });
   }
 }

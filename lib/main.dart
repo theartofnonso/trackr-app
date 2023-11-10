@@ -11,7 +11,6 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
-import 'package:tracker_app/providers/settings_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
@@ -26,9 +25,6 @@ void main() async {
   await initializeDateFormatting();
 
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider<SettingsProvider>(
-      create: (BuildContext context) => SettingsProvider(),
-    ),
     ChangeNotifierProvider<ExerciseProvider>(
       create: (BuildContext context) => ExerciseProvider(),
     ),

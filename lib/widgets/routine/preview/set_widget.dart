@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../../../app_constants.dart';
-import '../../../providers/settings_provider.dart';
 import '../../../utils/general_utils.dart';
 
 class SetWidget extends StatelessWidget {
@@ -21,8 +19,7 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-    final value = weightProvider.isLbs ? toLbs(setDto.weight) : setDto.weight;
+    final value = isDefaultWeightUnit() ? setDto.weight : toLbs(setDto.weight);
 
     return ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),

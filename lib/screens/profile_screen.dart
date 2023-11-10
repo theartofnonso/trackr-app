@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
@@ -225,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _volume() {
-    final values = _logs.map((log) => volumePerLog(context: context, log: log)).toList();
+    final values = _logs.map((log) => volumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.volume;

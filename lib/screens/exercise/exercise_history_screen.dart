@@ -17,7 +17,6 @@ import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../models/Exercise.dart';
 import '../../models/RoutineLog.dart';
-import '../../providers/settings_provider.dart';
 import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/snackbar_utils.dart';
@@ -61,7 +60,7 @@ SetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
   return setWithHeaviestWeight;
 }
 
-double _heaviestWeightPerLog({required BuildContext context, required RoutineLog log}) {
+double _heaviestWeightPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
 
   final sets = _allSets(procedureJsons: log.procedures);
@@ -73,10 +72,9 @@ double _heaviestWeightPerLog({required BuildContext context, required RoutineLog
     }
   }
 
-  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? toLbs(heaviestWeight) : heaviestWeight;
+  final weight = isDefaultWeightUnit() ? heaviestWeight : toLbs(heaviestWeight);
 
-  return conversion;
+  return weight;
 }
 
 int repsPerLog({required RoutineLog log}) {
@@ -91,7 +89,7 @@ int repsPerLog({required RoutineLog log}) {
   return totalReps;
 }
 
-double _heaviestSetVolumePerLog({required BuildContext context, required RoutineLog log}) {
+double _heaviestSetVolumePerLog({required RoutineLog log}) {
   double heaviestVolume = 0;
 
   final sets = _allSets(procedureJsons: log.procedures);
@@ -103,13 +101,12 @@ double _heaviestSetVolumePerLog({required BuildContext context, required Routine
     }
   }
 
-  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? toLbs(heaviestVolume) : heaviestVolume;
+  final volume = isDefaultWeightUnit() ? heaviestVolume : toLbs(heaviestVolume);
 
-  return conversion;
+  return volume;
 }
 
-double volumePerLog({required BuildContext context, required RoutineLog log}) {
+double volumePerLog({required RoutineLog log}) {
   double totalVolume = 0;
 
   final sets = _allSets(procedureJsons: log.procedures);
@@ -119,21 +116,19 @@ double volumePerLog({required BuildContext context, required RoutineLog log}) {
     totalVolume += volume;
   }
 
-  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
+  final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
 
-  return conversion;
+  return volume;
 }
 
-double _oneRepMaxPerLog({required BuildContext context, required RoutineLog log}) {
+double _oneRepMaxPerLog({required RoutineLog log}) {
   final heaviestWeightInSet = _heaviestWeightInSetPerLog(log: log);
 
   final max = (heaviestWeightInSet.weight * (1 + 0.0333 * heaviestWeightInSet.reps));
 
-  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? toLbs(max) : max;
+  final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
 
-  return conversion;
+  return maxWeight;
 }
 
 DateTime dateTimePerLog({required RoutineLog log}) {
@@ -147,7 +142,7 @@ Duration durationPerLog({required RoutineLog log}) {
   return difference;
 }
 
-double _totalVolumePerLog({required BuildContext context, required RoutineLog log}) {
+double _totalVolumePerLog({required RoutineLog log}) {
   double totalVolume = 0;
 
   final sets = _allSets(procedureJsons: log.procedures);
@@ -157,15 +152,14 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
     totalVolume += volume;
   }
 
-  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? toLbs(totalVolume) : totalVolume;
+  final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
 
-  return conversion;
+  return volume;
 }
 
 /// Highest value across all [RoutineLogDto]
 
-(String, SetDto) _heaviestSet({required BuildContext context, required List<RoutineLog> logs}) {
+(String, SetDto) _heaviestSet({required List<RoutineLog> logs}) {
   SetDto heaviestSet = SetDto();
   String logId = "";
   for (var log in logs) {
@@ -179,17 +173,16 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
     }
   }
 
-  final weightProvider = Provider.of<SettingsProvider>(context, listen: false);
-  final conversion = weightProvider.isLbs ? toLbs(heaviestSet.weight) : heaviestSet.weight;
+  final weight = isDefaultWeightUnit() ? heaviestSet.weight : toLbs(heaviestSet.weight);
 
-  return (logId, heaviestSet.copyWith(weight: conversion));
+  return (logId, heaviestSet.copyWith(weight: weight));
 }
 
-(String, double) _heaviestLogVolume({required BuildContext context, required List<RoutineLog> logs}) {
+(String, double) _heaviestLogVolume({required List<RoutineLog> logs}) {
   double heaviestVolume = 0;
   String logId = "";
   for (var log in logs) {
-    final totalVolume = _totalVolumePerLog(context: context, log: log);
+    final totalVolume = _totalVolumePerLog(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
       logId = log.id;
@@ -199,11 +192,11 @@ double _totalVolumePerLog({required BuildContext context, required RoutineLog lo
   return (logId, heaviestVolume);
 }
 
-(String, double) _heaviestWeight({required BuildContext context, required List<RoutineLog> logs}) {
+(String, double) _heaviestWeight({required List<RoutineLog> logs}) {
   double heaviestWeight = 0;
   String logId = "";
   for (var log in logs) {
-    final weight = _heaviestWeightPerLog(context: context, log: log);
+    final weight = _heaviestWeightPerLog(log: log);
     if (weight > heaviestWeight) {
       heaviestWeight = weight;
       logId = log.id;
@@ -283,11 +276,11 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final routineLogsForExercise = _logsWhereExercise(logs: routineLogs);
 
-    final heaviestRoutineLogVolume = _heaviestLogVolume(context: context, logs: routineLogsForExercise);
+    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogsForExercise);
 
-    final heaviestSet = _heaviestSet(context: context, logs: routineLogsForExercise);
+    final heaviestSet = _heaviestSet(logs: routineLogsForExercise);
 
-    final heaviestWeight = _heaviestWeight(context: context, logs: routineLogsForExercise);
+    final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
 
     return DefaultTabController(
         length: 2,
@@ -388,7 +381,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
 
   void _heaviestWeights() {
-    final values = _routineLogs.map((log) => _heaviestWeightPerLog(context: context, log: log)).toList();
+    final values = _routineLogs.map((log) => _heaviestWeightPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestWeights;
@@ -397,7 +390,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _heaviestSetVolumes() {
-    final values = _routineLogs.map((log) => _heaviestSetVolumePerLog(context: context, log: log)).toList();
+    final values = _routineLogs.map((log) => _heaviestSetVolumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestSetVolumes;
@@ -406,7 +399,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _logVolumes() {
-    final values = _routineLogs.map((log) => volumePerLog(context: context, log: log)).toList();
+    final values = _routineLogs.map((log) => volumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.logVolumes;
@@ -415,7 +408,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _oneRepMaxes() {
-    final values = _routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList();
+    final values = _routineLogs.map((log) => _oneRepMaxPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
@@ -478,7 +471,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
 
-      final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(context: context, log: log)).toList().max;
+      final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(log: log)).toList().max;
       return SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.only(top: 12, right: 10.0, bottom: 10, left: 10),

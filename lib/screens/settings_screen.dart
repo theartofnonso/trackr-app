@@ -1,16 +1,31 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../providers/settings_provider.dart';
+import '../utils/general_utils.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
 import 'exercise/exercise_library_screen.dart';
 
-enum WeightUnit { kg, lbs }
+enum WeightUnit {
+  kg,
+  lbs;
+
+  static WeightUnit fromString(String string) {
+    return WeightUnit.values.firstWhere((value) => value.name == string);
+  }
+}
+
+enum DistanceUnit {
+  mi,
+  km;
+
+  static DistanceUnit fromString(String string) {
+    return DistanceUnit.values.firstWhere((value) => value.name == string);
+  }
+}
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -20,7 +35,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  WeightUnit _unit = WeightUnit.kg;
+  late WeightUnit _weightUnitType;
+  late DistanceUnit _distanceUnitType;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             ListTile(
               dense: true,
-              title: const Text("Weight Unit Type",),
+              title: const Text(
+                "Weight",
+              ),
               subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70)),
               trailing: SegmentedButton(
                 showSelectedIcon: false,
@@ -48,7 +66,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     borderRadius: BorderRadius.circular(5.0),
                   )),
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
+                    (Set<MaterialState> states) {
                       if (states.contains(MaterialState.selected)) {
                         return Colors.white;
                       }
@@ -56,7 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
+                    (Set<MaterialState> states) {
                       if (states.contains(MaterialState.selected)) {
                         return Colors.black;
                       }
@@ -68,12 +86,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
                   ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
                 ],
-                selected: <WeightUnit>{_unit},
+                selected: <WeightUnit>{_weightUnitType},
                 onSelectionChanged: (Set<WeightUnit> unitType) {
                   setState(() {
-                    _unit = unitType.first;
+                    _weightUnitType = unitType.first;
                   });
-                  Provider.of<SettingsProvider>(context, listen: false).toggleUnit(unit: _unit);
+                  toggleWeightUnit(unit: _weightUnitType);
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              dense: true,
+              title: const Text(
+                "Distance",
+              ),
+              subtitle: Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70)),
+              trailing: SegmentedButton(
+                showSelectedIcon: false,
+                style: ButtonStyle(
+                  visualDensity: const VisualDensity(
+                      horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                  shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  )),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.selected)) {
+                        return Colors.white;
+                      }
+                      return Colors.transparent;
+                    },
+                  ),
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.selected)) {
+                        return Colors.black;
+                      }
+                      return Colors.white;
+                    },
+                  ),
+                ),
+                segments: [
+                  ButtonSegment<DistanceUnit>(value: DistanceUnit.mi, label: Text(DistanceUnit.mi.name)),
+                  ButtonSegment<DistanceUnit>(value: DistanceUnit.km, label: Text(DistanceUnit.km.name)),
+                ],
+                selected: <DistanceUnit>{_distanceUnitType},
+                onSelectionChanged: (Set<DistanceUnit> unitType) {
+                  setState(() {
+                    _distanceUnitType = unitType.first;
+                  });
+                  toggleDistanceUnit(unit: _distanceUnitType);
                 },
               ),
             ),
@@ -118,14 +181,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showAlertDialog(context: context, message: "Log out?", actions: alertDialogActions);
   }
 
-  WeightUnit _weightUnit(String unit) {
-    return unit == WeightUnit.kg.name ? WeightUnit.kg : WeightUnit.lbs;
-  }
-
   @override
   void initState() {
     super.initState();
-    final previousValue = SharedPrefs().weightUnit;
-    _unit = SharedPrefs().weightUnit.isNotEmpty ? _weightUnit(previousValue) : WeightUnit.kg;
+    _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
+    _distanceUnitType = DistanceUnit.fromString(SharedPrefs().distanceUnit);
   }
 }

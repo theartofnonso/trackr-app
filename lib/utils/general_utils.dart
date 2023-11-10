@@ -5,9 +5,24 @@ import 'package:tracker_app/screens/settings_screen.dart';
 import '../models/User.dart';
 import '../shared_prefs.dart';
 
+bool isDefaultWeightUnit() {
+  final weightString = SharedPrefs().weightUnit;
+  final weightUnit = WeightUnit.fromString(weightString);
+  return weightUnit == WeightUnit.kg;
+}
+
+bool isDefaultDistanceUnit() {
+  final distanceString = SharedPrefs().distanceUnit;
+  final distanceUnit = DistanceUnit.fromString(distanceString);
+  return distanceUnit == DistanceUnit.mi;
+}
+
 String weightLabel() {
-  final unitType = SharedPrefs().weightUnit == WeightUnit.kg.name ? WeightUnit.kg : WeightUnit.lbs;
-  return unitType.name;
+  return SharedPrefs().weightUnit;
+}
+
+String distanceLabel() {
+  return SharedPrefs().distanceUnit;
 }
 
 double toKg(double value) {
@@ -18,6 +33,14 @@ double toKg(double value) {
 double toLbs(double value) {
   final conversion = value * 2.205;
   return double.parse(conversion.toStringAsFixed(2));
+}
+
+void toggleWeightUnit({required WeightUnit unit}) {
+  SharedPrefs().weightUnit = unit.name;
+}
+
+void toggleDistanceUnit({required DistanceUnit unit}) {
+  SharedPrefs().distanceUnit = unit.name;
 }
 
 Future<User> user() async {

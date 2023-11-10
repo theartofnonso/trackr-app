@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../utils/general_utils.dart';
-
 class BodyWeightTableHeader extends StatelessWidget {
   const BodyWeightTableHeader({super.key});
 

@@ -1,5 +1,6 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tracker_app/screens/settings_screen.dart';
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;
@@ -38,9 +39,16 @@ class SharedPrefs {
   }
 
   /// Weight Unit Type
-  final String _weightUnitKey = "weight_Unit_type_key";
-  String get weightUnit => _sharedPrefs?.getString(_weightUnitKey) ?? "";
+  final String _weightUnitKey = "weight_unit_type_key";
+  String get weightUnit => _sharedPrefs?.getString(_weightUnitKey) ?? WeightUnit.kg.name;
   set weightUnit(String value) {
     _sharedPrefs?.setString(_weightUnitKey, value);
+  }
+
+  /// Distance Unit Type
+  final String _distanceUnitKey = "distance_unit_type_key";
+  String get distanceUnit => _sharedPrefs?.getString(_distanceUnitKey) ?? DistanceUnit.mi.name;
+  set distanceUnit(String value) {
+    _sharedPrefs?.setString(_distanceUnitKey, value);
   }
 }

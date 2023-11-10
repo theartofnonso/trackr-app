@@ -177,7 +177,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToExerciseTypeScreen() async {
-    final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseTypeScreen()))
+    final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
         as ExerciseType?;
     if (type != null) {
       setState(() {
