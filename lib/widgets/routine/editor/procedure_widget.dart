@@ -64,6 +64,8 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
+  List<SetDto> _pastSets = [];
+
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
@@ -109,10 +111,10 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     ];
   }
 
-  SetDto? _wherePastSets({required SetType type, required int index, required List<SetDto> pastSets}) {
+  SetDto? _wherePastSets({required SetType type, required int index}) {
     SetDto? pastSet;
 
-    final sets = pastSets.where((set) => set.type == type).toList();
+    final sets = _pastSets.where((set) => set.type == type).toList();
 
     if (sets.length > index) {
       pastSet = sets[index];
@@ -121,23 +123,21 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   List<Widget> _displaySets(BuildContext context) {
+    if (widget.procedureDto.sets.isEmpty) {
+      return <Widget>[];
+    }
+
     int warmupSets = 0;
     int workingSets = 0;
     int failureSets = 0;
     int dropSets = 0;
 
-    if (widget.procedureDto.sets.isEmpty) {
-      return <Widget>[];
-    }
-
-    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
-        .wherePastSetDtos(exercise: widget.procedureDto.exercise);
     return widget.procedureDto.sets.mapIndexed(((index, setDto) {
       SetDto? pastSet = switch (setDto.type) {
-        SetType.warmUp => _wherePastSets(type: setDto.type, index: warmupSets, pastSets: pastSets),
-        SetType.working => _wherePastSets(type: setDto.type, index: workingSets, pastSets: pastSets),
-        SetType.failure => _wherePastSets(type: setDto.type, index: failureSets, pastSets: pastSets),
-        SetType.drop => _wherePastSets(type: setDto.type, index: dropSets, pastSets: pastSets),
+        SetType.warmUp => _wherePastSets(type: setDto.type, index: warmupSets),
+        SetType.working => _wherePastSets(type: setDto.type, index: workingSets),
+        SetType.failure => _wherePastSets(type: setDto.type, index: failureSets),
+        SetType.drop => _wherePastSets(type: setDto.type, index: dropSets),
       };
 
       final setWidget = SetWidget(
@@ -153,20 +153,19 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         onTapCheck: () => widget.onCheckSet(index),
       );
 
-      if (setDto.type == SetType.warmUp) {
-        warmupSets += 1;
-      }
-
-      if (setDto.type == SetType.working) {
-        workingSets += 1;
-      }
-
-      if (setDto.type == SetType.failure) {
-        failureSets += 1;
-      }
-
-      if (setDto.type == SetType.drop) {
-        dropSets += 1;
+      switch (setDto.type) {
+        case SetType.warmUp:
+          warmupSets += 1;
+          break;
+        case SetType.working:
+          workingSets += 1;
+          break;
+        case SetType.failure:
+          failureSets += 1;
+          break;
+        case SetType.drop:
+          dropSets += 1;
+          break;
       }
 
       return setWidget;
@@ -298,5 +297,12 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
+        .wherePastSetDtos(exercise: widget.procedureDto.exercise);
   }
 }
