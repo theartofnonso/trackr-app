@@ -22,7 +22,9 @@ String weightLabel() {
 }
 
 String distanceLabel() {
-  return SharedPrefs().distanceUnit;
+  final unitString = SharedPrefs().distanceUnit;
+  final unit = DistanceUnit.fromString(unitString);
+  return unit == DistanceUnit.mi ? "YARDS" : "METRES";
 }
 
 double toKg(double value) {
@@ -31,6 +33,16 @@ double toKg(double value) {
 }
 
 double toLbs(double value) {
+  final conversion = value * 2.205;
+  return double.parse(conversion.toStringAsFixed(2));
+}
+
+double toMI(double value) {
+  final conversion = value / 2.205;
+  return double.parse(conversion.toStringAsFixed(2));
+}
+
+double toKM(double value) {
   final conversion = value * 2.205;
   return double.parse(conversion.toStringAsFixed(2));
 }

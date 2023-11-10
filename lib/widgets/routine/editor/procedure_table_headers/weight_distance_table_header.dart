@@ -27,7 +27,7 @@ class WeightAndDistanceTableHeader extends StatelessWidget {
           Text(weightLabel().toUpperCase(),
               style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
               textAlign: TextAlign.center),
-          Text("YARDS",
+          Text(distanceLabel(),
               style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
               textAlign: TextAlign.center),
           const TableCell(

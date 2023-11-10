@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../utils/general_utils.dart';
+
 class DistanceDurationTableHeader extends StatelessWidget {
   const DistanceDurationTableHeader({super.key});
 
@@ -22,7 +24,7 @@ class DistanceDurationTableHeader extends StatelessWidget {
           Text("PREVIOUS",
               style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
               textAlign: TextAlign.center),
-          Text("YARDS",
+          Text(distanceLabel(),
               style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
               textAlign: TextAlign.center),
           Text("TIME",
