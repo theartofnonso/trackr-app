@@ -9,18 +9,20 @@ class ProcedureDto {
   final List<SetDto> sets;
   final Duration restInterval;
 
-  ProcedureDto({this.superSetId = "",
-    required this.exercise,
-    this.notes = "",
-    this.sets = const [],
-    this.restInterval = Duration.zero});
+  ProcedureDto(
+      {this.superSetId = "",
+      required this.exercise,
+      this.notes = "",
+      this.sets = const [],
+      this.restInterval = Duration.zero});
 
-  ProcedureDto copyWith({String? superSetId,
-    String? exerciseId,
-    Exercise? exercise,
-    String? notes,
-    List<SetDto>? sets,
-    Duration? restInterval}) {
+  ProcedureDto copyWith(
+      {String? superSetId,
+      String? exerciseId,
+      Exercise? exercise,
+      String? notes,
+      List<SetDto>? sets,
+      Duration? restInterval}) {
     return ProcedureDto(
         superSetId: superSetId ?? this.superSetId,
         exercise: exercise ?? this.exercise,
@@ -54,9 +56,13 @@ class ProcedureDto {
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     final restInterval = json["restInterval"];
-    return ProcedureDto(superSetId: superSetId, notes: notes, sets: sets, restInterval: Duration(milliseconds: restInterval), exercise: exercise);
+    return ProcedureDto(
+        superSetId: superSetId,
+        notes: notes,
+        sets: sets,
+        restInterval: Duration(milliseconds: restInterval),
+        exercise: exercise);
   }
-
 
   @override
   String toString() {

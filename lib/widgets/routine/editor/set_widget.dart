@@ -130,38 +130,45 @@ class _SetIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        FocusScope.of(context).unfocus();
         displayBottomSheet(
             context: context,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ListTile(
-                    onTap: () => selectType(context, SetType.warmUp),
-                    leading: Text("W",
-                        style: GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: Text("Warm up Set", style: GoogleFonts.lato(fontSize: 14))),
-                ListTile(
-                    onTap: () => selectType(context, SetType.working),
-                    leading: Text("1",
-                        style: GoogleFonts.lato(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: Text("Working Set", style: GoogleFonts.lato(fontSize: 14))),
-                ListTile(
-                    onTap: () => selectType(context, SetType.failure),
-                    leading: Text("F",
-                        style: GoogleFonts.lato(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: Text("Failure Set", style: GoogleFonts.lato(fontSize: 14))),
-                ListTile(
-                    onTap: () => selectType(context, SetType.drop),
-                    leading: Text("D",
-                        style: GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                    title: Text("Drop Set", style: GoogleFonts.lato(fontSize: 14))),
-                CTextButton(onPressed: () {
-                  Navigator.pop(context);
-                  onRemoveSet();
-                }, label: "Remove Set", buttonColor: tealBlueDark,)
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ListTile(
+                    dense: true,
+                      onTap: () => selectType(context, SetType.warmUp),
+                      leading: Text("W",
+                          style: GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                      title: Text("Warm up Set", style: GoogleFonts.lato(fontSize: 14))),
+                  ListTile(
+                      dense: true,
+                      onTap: () => selectType(context, SetType.working),
+                      leading: Text("1",
+                          style: GoogleFonts.lato(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                      title: Text("Working Set", style: GoogleFonts.lato(fontSize: 14))),
+                  ListTile(
+                      dense: true,
+                      onTap: () => selectType(context, SetType.failure),
+                      leading: Text("F",
+                          style: GoogleFonts.lato(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                      title: Text("Failure Set", style: GoogleFonts.lato(fontSize: 14))),
+                  ListTile(
+                      dense: true,
+                      onTap: () => selectType(context, SetType.drop),
+                      leading: Text("D",
+                          style: GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                      title: Text("Drop Set", style: GoogleFonts.lato(fontSize: 14))),
+                  CTextButton(onPressed: () {
+                    Navigator.pop(context);
+                    onRemoveSet();
+                  }, label: "Remove Set", buttonColor: tealBlueDark,)
+                ],
+              ),
             ),
-            height: 290);
+            height: 250);
       },
       child: CircleAvatar(
         backgroundColor: Colors.transparent,

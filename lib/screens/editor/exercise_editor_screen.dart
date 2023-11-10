@@ -8,8 +8,8 @@ import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 
 import '../../app_constants.dart';
+import '../../enums/exercise_type_enums.dart';
 import '../../models/Exercise.dart';
-import '../../models/ExerciseType.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../exercise/exercise_type_screen.dart';
 
@@ -221,7 +221,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               notes: _exerciseNotesController.text,
               primaryMuscle: _primaryMuscleGroup.name,
               secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList(),
-              type: _exerciseType);
+              type: _exerciseType.name);
           await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
           if (mounted) {
             Navigator.of(context).pop();
@@ -245,12 +245,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   @override
   void initState() {
     super.initState();
-    final exercise = widget.exercise;
-    _exerciseNameController = TextEditingController(text: exercise?.name);
-    _exerciseNotesController = TextEditingController(text: exercise?.notes);
+    _exerciseNameController = TextEditingController(text: widget.exercise?.name);
+    _exerciseNotesController = TextEditingController(text: widget.exercise?.notes);
 
     _primaryMuscleGroup = MuscleGroup.values.first;
-    _exerciseType = ExerciseType.WEIGHT_REPS;
+    _secondaryMuscleGroup = MuscleGroup.values.take(2).toList();
+    _exerciseType = ExerciseType.weightAndReps;
   }
 
   @override

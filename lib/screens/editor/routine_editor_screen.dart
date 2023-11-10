@@ -191,6 +191,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _addSet({required String procedureId}) {
+    _dismissKeyboard();
+
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final previousSet = procedure.sets.lastOrNull;
@@ -204,6 +206,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _removeSet({required String procedureId, required int setIndex}) {
+
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
@@ -218,6 +221,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _checkSet({required String procedureId, required int setIndex}) {
+    _dismissKeyboard();
+
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
@@ -323,6 +328,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _showRestIntervalTimePicker({required ProcedureDto procedure}) {
+    _dismissKeyboard();
     displayBottomSheet(
         context: context,
         child: _TimerPicker(

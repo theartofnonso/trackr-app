@@ -77,20 +77,10 @@ type Exercise
   name: String!
   primaryMuscle: String!
   secondaryMuscles: [String]!
-  type: ExerciseType!
+  type: String!
   notes: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
-}
-
-enum ExerciseType {
-  WEIGHT_REPS
-  BODY_REPS
-  WEIGHT_BODY_REPS
-  ASSISTED_BODY
-  DURATION
-  DISTANCE_DURATION
-  WEIGHT_DISTANCE
 }
 
 enum Gender {

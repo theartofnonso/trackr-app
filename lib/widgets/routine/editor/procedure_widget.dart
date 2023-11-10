@@ -209,6 +209,7 @@ class ProcedureWidget extends StatelessWidget {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
+                  FocusScope.of(context).unfocus();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => ExerciseHistoryScreen(exercise: procedureDto.exercise)));
                 },
@@ -225,6 +226,7 @@ class ProcedureWidget extends StatelessWidget {
                         if (controller.isOpen) {
                           controller.close();
                         } else {
+                          FocusScope.of(context).unfocus();
                           controller.open();
                         }
                       },
