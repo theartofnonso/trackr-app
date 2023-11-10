@@ -56,7 +56,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
           child: Column(children: [
             TextField(
               controller: _exerciseNameController,
