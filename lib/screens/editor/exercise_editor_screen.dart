@@ -121,31 +121,32 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   )),
             ),
             const SizedBox(height: 8),
-            Theme(
-              data: ThemeData(splashColor: tealBlueLight),
-              child: ListTile(
-                  onTap: () => _navigateToExerciseTypeScreen(),
-                  tileColor: tealBlueLight,
-                  dense: true,
-                  contentPadding: _secondaryMuscleGroup.length > 6
-                      ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
-                      : null,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  title: Text("Exercise Type", style: Theme.of(context).textTheme.labelLarge),
-                  subtitle: Text(_exerciseType.name,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
-            ),
-            const SizedBox(height: 12),
-            widget.exercise == null
-                ? SizedBox(
-                    width: double.infinity,
-                    child: CTextButton(
-                        onPressed: _createExercise,
-                        label: "Create exercise",
-                        loading: _loading,
-                        loadingLabel: _loadingLabel),
-                  )
-                : const SizedBox.shrink()
+            if (widget.exercise == null)
+              Column(children: [
+                Theme(
+                  data: ThemeData(splashColor: tealBlueLight),
+                  child: ListTile(
+                      onTap: () => _navigateToExerciseTypeScreen(),
+                      tileColor: tealBlueLight,
+                      dense: true,
+                      contentPadding: _secondaryMuscleGroup.length > 6
+                          ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+                          : null,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                      title: Text("Exercise Type", style: Theme.of(context).textTheme.labelLarge),
+                      subtitle: Text(_exerciseType.name,
+                          style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: CTextButton(
+                      onPressed: _createExercise,
+                      label: "Create exercise",
+                      loading: _loading,
+                      loadingLabel: _loadingLabel),
+                )
+              ])
           ]),
         ),
       ),
@@ -220,8 +221,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               name: _exerciseNameController.text,
               notes: _exerciseNotesController.text,
               primaryMuscle: _primaryMuscleGroup.name,
-              secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList(),
-              type: _exerciseType.name);
+              secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
           await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
           if (mounted) {
             Navigator.of(context).pop();
@@ -253,7 +253,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     _primaryMuscleGroup = MuscleGroup.values.first;
     _secondaryMuscleGroup = MuscleGroup.values.take(2).toList();
-    _exerciseType = previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
+    _exerciseType =
+        previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
   }
 
   @override

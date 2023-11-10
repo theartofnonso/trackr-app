@@ -270,7 +270,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foundExercise = Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
+    final foundExercise =
+        Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
 
     final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
@@ -283,7 +284,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
     final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
 
     return DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -301,6 +302,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 ),
                 Tab(
                   text: "History",
+                ),
+                Tab(
+                  text: "Notes",
                 )
               ],
             ),
@@ -339,7 +343,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 routineLogs: routineLogsForExercise,
                 exercise: foundExercise,
               ),
-              HistoryWidget(logs: routineLogsForExercise)
+              HistoryWidget(logs: routineLogsForExercise),
+              NotesWidget(notes: foundExercise.notes)
             ],
           ),
         ));
@@ -467,7 +472,6 @@ class _SummaryWidgetState extends State<SummaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
 
@@ -592,18 +596,18 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Primary Muscle: ${widget.exercise.primaryMuscle}",
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            )
-          ],
-        );
+      children: [
+        Text(
+          "Primary Muscle: ${widget.exercise.primaryMuscle}",
+          style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+          style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+        )
+      ],
+    );
   }
 
   void _loadChart() {
@@ -628,7 +632,6 @@ class HistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -645,6 +648,20 @@ class HistoryWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class NotesWidget extends StatelessWidget {
+  final String? notes;
+
+  const NotesWidget({super.key, required this.notes});
+
+  @override
+  Widget build(BuildContext context) {
+    final exerciseNotes = notes;
+    return exerciseNotes != null
+        ? Padding(padding: const EdgeInsets.only(top: 12, right: 10, bottom: 10, left: 10), child: Text(exerciseNotes))
+        : const Center(child: ScreenEmptyState(message: "You have no notes"));
   }
 }
 
