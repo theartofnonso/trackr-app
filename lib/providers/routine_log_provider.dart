@@ -59,11 +59,11 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   Future<List<RoutineLog>> listRoutineLogsForRoutine({required String id}) async {
-
     List<RoutineLog> logs = [];
 
     final routineLogOwner = await user();
-    final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
+    final request = ModelQueries.list(RoutineLog.classType,
+        where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
     final response = await Amplify.API.query(request: request).response;
 
     final routineLogs = response.data?.items;
@@ -200,7 +200,7 @@ class RoutineLogProvider with ChangeNotifier {
     final request = ModelMutations.update(log);
     final response = await Amplify.API.mutate(request: request).response;
     final updatedLog = response.data;
-    if(updatedLog != null) {
+    if (updatedLog != null) {
       final index = _indexWhereRoutineLog(id: log.id);
       _logs[index] = log;
       notifyListeners();
@@ -213,7 +213,7 @@ class RoutineLogProvider with ChangeNotifier {
     final request = ModelMutations.delete(logToBeRemoved);
     final response = await Amplify.API.mutate(request: request).response;
     final deletedLog = response.data;
-    if(deletedLog != null) {
+    if (deletedLog != null) {
       final index = _indexWhereRoutineLog(id: id);
       _logs.removeAt(index);
       notifyListeners();
@@ -228,31 +228,25 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ProcedureDto> wherePastProcedureDtos({required Exercise exercise}) {
-    // This list will hold all matching ProcedureDtos.
-    List<ProcedureDto> matchedDtos = [];
+  List<SetDto> wherePastSetDtos({required Exercise exercise}) {
+    List<SetDto> pastSets = [];
 
-    // Iterate through each log.
-    for (RoutineLog log in logs) {
-      // Decode all procedures once instead of doing it multiple times.
-      List<ProcedureDto> decodedProcedures =
-          log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-
-      // Use where to filter out procedures with different exerciseId.
+    final mostRecentLog = _logs.firstWhereOrNull((log) {
+      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
       List<ProcedureDto> filteredProcedures =
           decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
+      return filteredProcedures.isNotEmpty;
+    });
 
-      // If there are any matches, add them to the final list.
-      if (filteredProcedures.isNotEmpty) {
-        matchedDtos.addAll(filteredProcedures);
-      }
+    if (mostRecentLog != null) {
+      final decodedProcedures = mostRecentLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
+      pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) => set.weight * set.reps > 0).toList();
     }
 
-    return matchedDtos;
+    return pastSets;
   }
 
   List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroup muscleGroup, required DateTimeRange range}) {
-
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);

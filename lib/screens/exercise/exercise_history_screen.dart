@@ -645,8 +645,7 @@ class HistoryWidget extends StatelessWidget {
               ? Expanded(
                   child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) => RoutineLogWidget(routineLog: logs[index]),
-                      separatorBuilder: (BuildContext context, int index) =>
-                          Divider(color: Colors.white70.withOpacity(0.1)),
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                       itemCount: logs.length),
                 )
               : const Center(child: ScreenEmptyState(message: "You have no logs")),
