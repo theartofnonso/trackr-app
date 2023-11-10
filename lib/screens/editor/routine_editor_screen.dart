@@ -105,8 +105,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _addProcedures({required List<Exercise> exercises}) {
-    final proceduresToAdd =
-        exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
+    final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
     setState(() {
       _procedures.addAll(proceduresToAdd);
     });
@@ -685,6 +684,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   "${_editorTitle()}",
                   style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
+                actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
               ),
         floatingActionButton: widget.mode == RoutineEditorType.log
             ? MediaQuery.of(context).viewInsets.bottom <= 0
@@ -802,10 +802,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                           },
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
                           itemCount: _procedures.length)),
-                  SizedBox(
-                    width: double.infinity,
-                    child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
-                  ),
+                  if (widget.mode == RoutineEditorType.edit)
+                    SizedBox(
+                      width: double.infinity,
+                      child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
+                    ),
                 ],
               ),
             ),
