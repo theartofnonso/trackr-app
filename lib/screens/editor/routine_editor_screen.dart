@@ -809,9 +809,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
                           itemCount: _procedures.length)),
                   if (widget.mode == RoutineEditorType.edit)
-                    SizedBox(
-                      width: double.infinity,
-                      child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
+                    Column(
+                      children: [
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
+                        ),
+                      ],
                     ),
                 ],
               ),
