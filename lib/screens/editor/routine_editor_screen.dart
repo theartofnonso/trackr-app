@@ -970,16 +970,7 @@ class _TimerPickerState extends State<_TimerPicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        GestureDetector(
-          onTap: () => widget.onSelect(_duration),
-          child: Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: Text(
-              "Select",
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
-          ),
-        ),
+        CTextButton(onPressed: () => widget.onSelect(_duration), label: "Select"),
         Flexible(
           child: CupertinoTheme(
             data: const CupertinoThemeData(
