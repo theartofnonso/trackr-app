@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
+import 'package:tracker_app/models/ExerciseType.dart';
 
 import '../models/Exercise.dart';
 import '../utils/general_utils.dart';
@@ -27,6 +28,7 @@ class ExerciseProvider with ChangeNotifier {
       {required String name,
       required String notes,
       required MuscleGroup primary,
+        required ExerciseType type,
       required List<MuscleGroup> secondary}) async {
     final exerciseOwner = await user();
 
@@ -34,6 +36,7 @@ class ExerciseProvider with ChangeNotifier {
         user: exerciseOwner,
         name: name,
         primaryMuscle: primary.name,
+        type: type,
         secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(),
         createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now());
