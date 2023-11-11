@@ -835,7 +835,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
                               onReOrderProcedures: () => _reOrderProcedures(),
                               onCheckSet: (int setIndex) =>
-                                  _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+                                  _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex), onChangedDuration: (int setIndex, Duration duration) {  },
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),

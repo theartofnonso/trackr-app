@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/weight_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -16,6 +17,7 @@ import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weigh
 import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_reps_table_header.dart';
 import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weighted_bodyweight_table_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/body_weight_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_widgets/duration_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/weight_reps_widget.dart';
 
 import '../../../app_constants.dart';
@@ -45,6 +47,7 @@ class ProcedureWidget extends StatefulWidget {
   final void Function(int setIndex) onCheckSet;
   final void Function(int setIndex, int value) onChangedSetRep;
   final void Function(int setIndex, double value) onChangedSetWeight;
+  final void Function(int setIndex, Duration duration) onChangedDuration;
   final void Function(int setIndex, SetType type) onChangedSetType;
 
   const ProcedureWidget({
@@ -57,6 +60,7 @@ class ProcedureWidget extends StatefulWidget {
     required this.onRemoveProcedure,
     required this.onChangedSetRep,
     required this.onChangedSetWeight,
+    required this.onChangedDuration,
     required this.onAddSet,
     required this.onRemoveSet,
     required this.onUpdateNotes,
@@ -159,6 +163,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onChangedReps: (int value) => widget.onChangedSetRep(index, value),
           onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
+          onChangedDuration: (Duration duration) => widget.onChangedDuration(index, duration),
           workingIndex: setDto.type == SetType.working ? workingSets : -1,
           setDto: setDto,
           pastSet: pastSet,
@@ -308,6 +313,7 @@ class _SetWidget extends StatelessWidget {
   final void Function(int value)? onChangedReps;
   final void Function(double value)? onChangedWeight;
   final void Function(SetType type)? onChangedType;
+  final void Function(Duration duration)? onChangedDuration;
   final int workingIndex;
   final SetDto setDto;
   final SetDto? pastSet;
@@ -322,6 +328,7 @@ class _SetWidget extends StatelessWidget {
       this.onChangedReps,
       this.onChangedWeight,
       this.onChangedType,
+        this.onChangedDuration,
       required this.workingIndex,
       required this.setDto,
       required this.pastSet,
@@ -329,8 +336,12 @@ class _SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(type);
     return switch (type) {
-      ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight || ExerciseType.assistedBodyWeight => WeightRepsWidget(
+      ExerciseType.weightAndReps ||
+      ExerciseType.weightedBodyWeight ||
+      ExerciseType.assistedBodyWeight =>
+        WeightRepsWidget(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
@@ -353,7 +364,17 @@ class _SetWidget extends StatelessWidget {
           onChangedType: (SetType type) => onChangedType!(type),
           onTapCheck: onTapCheck,
         ),
-      ExerciseType.duration => const SizedBox.shrink(),
+      ExerciseType.duration => DurationWidget(
+          index: index,
+          onRemoved: onRemoved,
+          workingIndex: workingIndex,
+          setDto: setDto as DurationDto,
+          pastSetDto: pastSet as DurationDto?,
+          editorType: editorType,
+          onChangedType: (SetType type) => onChangedType!(type),
+          onTapCheck: onTapCheck,
+          onChangedDuration: (Duration duration) => onChangedDuration!(duration),
+        ),
       ExerciseType.distanceAndDuration => const SizedBox.shrink(),
       ExerciseType.weightAndDistance => const SizedBox.shrink(),
     };
