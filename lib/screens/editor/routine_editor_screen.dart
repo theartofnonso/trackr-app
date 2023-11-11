@@ -8,7 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/distance_duration_dto.dart';
+import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/weight_distance_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -19,6 +23,7 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
 import '../../dtos/set_dto.dart';
+import '../../dtos/weight_reps_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../shared_prefs.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
@@ -44,7 +49,7 @@ class RoutineEditorScreen extends StatefulWidget {
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   List<ProcedureDto> _procedures = [];
 
-  List<SetDto> _totalCompletedSets = [];
+  int _numberOfCompletedSets = 0;
 
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
@@ -195,7 +200,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final previousSet = procedure.sets.lastOrNull;
-    final sets = [...procedure.sets, SetDto(reps: previousSet?.reps ?? 0, weight: previousSet?.weight ?? 0)];
+    final exerciseTypeString = procedure.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final newSet = switch (exerciseType) {
+      ExerciseType.weightAndReps ||
+      ExerciseType.bodyWeightAndReps ||
+      ExerciseType.weightedBodyWeight ||
+      ExerciseType.assistedBodyWeight =>
+        WeightRepsDto(reps: (previousSet as WeightRepsDto?)?.reps ?? 0, weight: previousSet?.weight ?? 0),
+      ExerciseType.duration => DurationDto(duration: (previousSet as DurationDto?)?.duration ?? Duration.zero),
+      ExerciseType.distanceAndDuration => DistanceDurationDto(
+          distance: (previousSet as DistanceDurationDto?)?.distance ?? 0,
+          duration: previousSet?.duration ?? Duration.zero),
+      ExerciseType.weightAndDistance => WeightDistanceDto(
+          weight: (previousSet as WeightDistanceDto?)?.weight ?? 0, distance: previousSet?.distance ?? 0),
+    };
+    final sets = [...procedure.sets, newSet];
 
     setState(() {
       _procedures[procedureIndex] = procedure.copyWith(sets: sets);
@@ -205,7 +225,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _removeSet({required String procedureId, required int setIndex}) {
-
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
@@ -256,7 +275,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = sets[setIndex].copyWith(reps: value);
+    sets[setIndex] = (sets[setIndex] as WeightRepsDto).copyWith(reps: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
     if (widget.mode == RoutineEditorType.log) {
@@ -270,7 +289,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = sets[setIndex].copyWith(weight: value);
+    sets[setIndex] = (sets[setIndex] as WeightRepsDto).copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
@@ -536,15 +555,28 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       completedSets.addAll(sets);
     }
     setState(() {
-      _totalCompletedSets = completedSets;
+      _numberOfCompletedSets = completedSets.length;
     });
   }
 
   double _totalWeight() {
     double totalWeight = 0;
-    for (var set in _totalCompletedSets) {
-      final weightPerSet = set.reps * set.weight;
-      totalWeight += weightPerSet;
+
+    for (var procedure in _procedures) {
+      final exerciseTypeString = procedure.exercise.type;
+      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+      for (var set in procedure.sets) {
+        final weightPerSet = switch (exerciseType) {
+          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightRepsDto).reps * (set).weight,
+          ExerciseType.bodyWeightAndReps ||
+          ExerciseType.assistedBodyWeight ||
+          ExerciseType.duration ||
+          ExerciseType.distanceAndDuration ||
+          ExerciseType.weightAndDistance =>
+            0,
+        };
+        totalWeight += weightPerSet;
+      }
     }
     return totalWeight;
   }
@@ -717,7 +749,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 children: [
                   if (widget.mode == RoutineEditorType.log)
                     RunningRoutineSummaryWidget(
-                      sets: _totalCompletedSets.length,
+                      sets: _numberOfCompletedSets,
                       weight: _totalWeight(),
                       timer: _TimerWidget(
                           TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
@@ -1085,7 +1117,6 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final value = isDefaultWeightUnit() ? weight : toLbs(weight);
 
     return Container(
@@ -1105,8 +1136,7 @@ class RunningRoutineSummaryWidget extends StatelessWidget {
             ]),
             TableRow(children: [
               Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-              Text("$value",
-                  style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+              Text("$value", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer
             ])
           ],

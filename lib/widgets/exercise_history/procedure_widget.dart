@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
+import '../../enums/exercise_type_enums.dart';
 import '../helper_widgets/routine_helper.dart';
 
 class ProcedureWidget extends StatelessWidget {
@@ -36,7 +37,7 @@ class ProcedureWidget extends StatelessWidget {
               style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
         )
             : const SizedBox.shrink(),
-        ...setsToWidgets(sets: procedureDto.sets),
+        ...setsToWidgets(type: ExerciseType.fromString(procedureDto.exercise.type), sets: procedureDto.sets),
       ],
     );
   }

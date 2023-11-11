@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
+import '../../../dtos/set_dto.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/dialog_helper.dart';

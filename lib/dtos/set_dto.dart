@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -13,45 +14,31 @@ enum SetType {
   final String name;
   final String label;
   final Color color;
+
+  static SetType fromString(String string) {
+    return SetType.values.firstWhere((value) => value.label == string);
+  }
 }
 
 class SetDto {
-  final int reps;
-  final double weight;
   final SetType type;
   final bool checked;
 
-  SetDto({this.reps = 0, this.weight = 0, this.type = SetType.working, this.checked = false});
+  SetDto({this.type = SetType.working, this.checked = false});
 
-  SetDto copyWith({int? reps, double? weight, SetType? type, bool? checked}) {
+  @override
+  String toString() {
+    return 'SetDto{type: $type, checked: $checked}';
+  }
+
+  SetDto copyWith({SetType? type, bool? checked}) {
     return SetDto(
-      reps: reps ?? this.reps,
-      weight: weight ?? this.weight,
       type: type ?? this.type,
       checked: checked ?? this.checked,
     );
   }
 
   String toJson() {
-    return jsonEncode({
-      "reps" : reps,
-      "weight" : weight,
-      "type" : type.label,
-      "checked" : checked
-    });
-  }
-
-  factory SetDto.fromJson(Map<String, dynamic> json) {
-    final reps = json["reps"];
-    final weight = json["weight"];
-    final typeLabel = json["type"];
-    final type = SetType.values.firstWhere((type) => type.label == typeLabel);
-    final checked = json["checked"];
-    return SetDto(reps: reps, weight: weight, type: type, checked: checked);
-  }
-
-  @override
-  String toString() {
-    return 'SetDto{reps: $reps, weight: $weight, type: $type, checked: $checked}';
+    return jsonEncode({"type": type.label, "checked": checked});
   }
 }

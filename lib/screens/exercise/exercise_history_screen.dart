@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
@@ -15,6 +16,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
+import '../../dtos/weight_reps_dto.dart';
 import '../../models/Exercise.dart';
 import '../../models/RoutineLog.dart';
 import '../../shared_prefs.dart';
@@ -33,25 +35,55 @@ ChartUnit weightUnit() {
   return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
 }
 
-List<SetDto> _allSets({required List<String> procedureJsons}) {
+List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-  List<SetDto> completedSets = [];
-  for (var procedure in procedures) {
-    completedSets.addAll(procedure.sets);
-  }
-  return completedSets;
+  return procedures.where((procedure) =>
+  ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.bodyWeightAndReps)
+      .expand((procedure) => procedure.sets)
+      .toList();
+}
+
+List<SetDto> _allSetsWithReps({required List<String> procedureJsons}) {
+  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  return procedures.where((procedure) =>
+  ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.assistedBodyWeight ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.bodyWeightAndReps)
+      .expand((procedure) => procedure.sets)
+      .toList();
+}
+
+List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
+  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  return procedures.where((procedure) =>
+  ExerciseType.fromString(procedure.exercise.type) == ExerciseType.duration ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.distanceAndDuration)
+      .expand((procedure) => procedure.sets)
+      .toList();
+}
+
+List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
+  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  return procedures.where((procedure) =>
+  ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndDistance ||
+      ExerciseType.fromString(procedure.exercise.type) == ExerciseType.distanceAndDuration)
+      .expand((procedure) => procedure.sets)
+      .toList();
 }
 
 /// Highest value per [RoutineLogDto]
 
-SetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
+WeightRepsDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
-  SetDto setWithHeaviestWeight = SetDto();
+  WeightRepsDto setWithHeaviestWeight = WeightRepsDto();
 
-  final sets = _allSets(procedureJsons: log.procedures);
+  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = set.weight;
+    final weight = (set as WeightRepsDto).weight;
     if (weight > heaviestWeight) {
       heaviestWeight = weight;
       setWithHeaviestWeight = set;
@@ -63,10 +95,10 @@ SetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
 double _heaviestWeightPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
 
-  final sets = _allSets(procedureJsons: log.procedures);
+  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = set.weight;
+    final weight = (set as WeightRepsDto).weight;
     if (weight > heaviestWeight) {
       heaviestWeight = weight;
     }
@@ -80,10 +112,10 @@ double _heaviestWeightPerLog({required RoutineLog log}) {
 int repsPerLog({required RoutineLog log}) {
   int totalReps = 0;
 
-  final sets = _allSets(procedureJsons: log.procedures);
+  final sets = _allSetsWithReps(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final reps = set.reps;
+    final reps = (set as WeightRepsDto).reps;
     totalReps += reps;
   }
   return totalReps;
@@ -92,10 +124,10 @@ int repsPerLog({required RoutineLog log}) {
 double _heaviestSetVolumePerLog({required RoutineLog log}) {
   double heaviestVolume = 0;
 
-  final sets = _allSets(procedureJsons: log.procedures);
+  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = set.reps * set.weight;
+    final volume = (set as WeightRepsDto).reps * set.weight;
     if (volume > heaviestVolume) {
       heaviestVolume = volume;
     }
@@ -109,10 +141,10 @@ double _heaviestSetVolumePerLog({required RoutineLog log}) {
 double volumePerLog({required RoutineLog log}) {
   double totalVolume = 0;
 
-  final sets = _allSets(procedureJsons: log.procedures);
+  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = set.reps * set.weight;
+    final volume = (set as WeightRepsDto).reps * set.weight;
     totalVolume += volume;
   }
 
@@ -145,10 +177,10 @@ Duration durationPerLog({required RoutineLog log}) {
 double _totalVolumePerLog({required RoutineLog log}) {
   double totalVolume = 0;
 
-  final sets = _allSets(procedureJsons: log.procedures);
+  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = set.reps * set.weight;
+    final volume = (set as WeightRepsDto).reps * set.weight;
     totalVolume += volume;
   }
 
@@ -159,13 +191,13 @@ double _totalVolumePerLog({required RoutineLog log}) {
 
 /// Highest value across all [RoutineLogDto]
 
-(String, SetDto) _heaviestSet({required List<RoutineLog> logs}) {
-  SetDto heaviestSet = SetDto();
+(String, WeightRepsDto) _heaviestSet({required List<RoutineLog> logs}) {
+  WeightRepsDto heaviestSet = WeightRepsDto();
   String logId = "";
   for (var log in logs) {
-    final sets = _allSets(procedureJsons: log.procedures);
+    final sets = _allSetsWithWeight(procedureJsons: log.procedures);
     for (var set in sets) {
-      final volume = set.reps * set.weight;
+      final volume = (set as WeightRepsDto).reps * set.weight;
       if (volume > (heaviestSet.reps * heaviestSet.weight)) {
         heaviestSet = set;
         logId = log.id;
@@ -212,12 +244,18 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
   List<RoutineLog> _logsWhereExercise({required List<RoutineLog> logs}) {
     return logs
-        .where((log) => log.procedures
+        .where((log) =>
+        log.procedures
             .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
             .any((procedure) => procedure.exercise.id == exercise.id))
-        .map((log) => log.copyWith(
+        .map((log) =>
+        log.copyWith(
             procedures: log.procedures
-                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exercise.id == exercise.id)
+                .where((procedure) =>
+            ProcedureDto
+                .fromJson(jsonDecode(procedure))
+                .exercise
+                .id == exercise.id)
                 .toList()))
         .toList();
   }
@@ -273,7 +311,9 @@ class ExerciseHistoryScreen extends StatelessWidget {
     final foundExercise =
         Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
 
-    final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+    final routineLogs = Provider
+        .of<RoutineLogProvider>(context, listen: true)
+        .logs;
 
     final routineLogsForExercise = _logsWhereExercise(logs: routineLogs);
 
@@ -353,18 +393,17 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
 class SummaryWidget extends StatefulWidget {
   final (String, double) heaviestWeight;
-  final (String, SetDto) heaviestSet;
+  final (String, WeightRepsDto) heaviestSet;
   final (String, double) heaviestRoutineLogVolume;
   final List<RoutineLog> routineLogs;
   final Exercise exercise;
 
-  const SummaryWidget(
-      {super.key,
-      required this.heaviestWeight,
-      required this.heaviestSet,
-      required this.routineLogs,
-      required this.heaviestRoutineLogVolume,
-      required this.exercise});
+  const SummaryWidget({super.key,
+    required this.heaviestWeight,
+    required this.heaviestSet,
+    required this.routineLogs,
+    required this.heaviestRoutineLogVolume,
+    required this.exercise});
 
   @override
   State<SummaryWidget> createState() => _SummaryWidgetState();
@@ -422,7 +461,11 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   }
 
   void _reps() {
-    final values = widget.routineLogs.map((log) => repsPerLog(log: log)).toList().reversed.toList();
+    final values = widget.routineLogs
+        .map((log) => repsPerLog(log: log))
+        .toList()
+        .reversed
+        .toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.reps;
@@ -433,12 +476,14 @@ class _SummaryWidgetState extends State<SummaryWidget> {
   void _recomputeChart() {
     switch (_selectedHistoricalDate) {
       case HistoricalTimePeriod.lastThreeMonths:
-        _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
+        _routineLogs = Provider
+            .of<RoutineLogProvider>(context, listen: false)
             .routineLogsSince(90, logs: widget.routineLogs)
             .reversed
             .toList();
       case HistoricalTimePeriod.lastOneYear:
-        _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
+        _routineLogs = Provider
+            .of<RoutineLogProvider>(context, listen: false)
             .routineLogsSince(365, logs: widget.routineLogs)
             .reversed
             .toList();
@@ -475,124 +520,130 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
 
-      final oneRepMax = widget.routineLogs.map((log) => _oneRepMaxPerLog(log: log)).toList().max;
+      final oneRepMax = widget.routineLogs
+          .map((log) => _oneRepMaxPerLog(log: log))
+          .toList()
+          .max;
       return SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.only(top: 12, right: 10.0, bottom: 10, left: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Primary Muscle: ${widget.exercise.primaryMuscle}",
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  DropdownButton<String>(
-                    isDense: true,
-                    value: _selectedHistoricalDate.label,
-                    underline: Container(
-                      color: Colors.transparent,
-                    ),
-                    style: GoogleFonts.lato(color: Colors.white),
-                    onChanged: (String? value) {
-                      // This is called when the user selects an item.
-                      if (value != null) {
-                        setState(() {
-                          _selectedHistoricalDate = switch (value) {
-                            "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
-                            "Last 1 year" => HistoricalTimePeriod.lastOneYear,
-                            "All Time" => HistoricalTimePeriod.allTime,
-                            _ => HistoricalTimePeriod.allTime
-                          };
-                          _recomputeChart();
-                        });
-                      }
-                    },
-                    items: HistoricalTimePeriod.values
-                        .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
-                      return DropdownMenuItem<String>(
-                        value: historicalDate.label,
-                        child: Text(historicalDate.label, style: GoogleFonts.lato(fontSize: 12)),
-                      );
-                    }).toList(),
+            padding: const EdgeInsets.only(top: 12, right: 10.0, bottom: 10, left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Primary Muscle: ${widget.exercise.primaryMuscle}",
+                  style: GoogleFonts.lato(
+                      color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles
+                      .join(", ") : "None"}",
+                  style: GoogleFonts.lato(
+                      color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      DropdownButton<String>(
+                        isDense: true,
+                        value: _selectedHistoricalDate.label,
+                        underline: Container(
+                          color: Colors.transparent,
+                        ),
+                        style: GoogleFonts.lato(color: Colors.white),
+                        onChanged: (String? value) {
+                          // This is called when the user selects an item.
+                          if (value != null) {
+                            setState(() {
+                              _selectedHistoricalDate = switch (value) {
+                                "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
+                                "Last 1 year" => HistoricalTimePeriod.lastOneYear,
+                                "All Time" => HistoricalTimePeriod.allTime,
+                                _ => HistoricalTimePeriod.allTime
+                              };
+                              _recomputeChart();
+                            });
+                          }
+                        },
+                        items: HistoricalTimePeriod.values
+                            .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
+                          return DropdownMenuItem<String>(
+                            value: historicalDate.label,
+                            child: Text(historicalDate.label, style: GoogleFonts.lato(fontSize: 12)),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 16),
+                      LineChartWidget(
+                        chartPoints: _chartPoints,
+                        dateTimes: _dateTimes,
+                        unit: _chartUnit,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  LineChartWidget(
-                    chartPoints: _chartPoints,
-                    dateTimes: _dateTimes,
-                    unit: _chartUnit,
-                  ),
-                ],
-              ),
+                ),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        CTextButton(
+                            onPressed: _heaviestWeights,
+                            label: "Heaviest Weight",
+                            buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
+                        const SizedBox(width: 5),
+                        CTextButton(
+                            onPressed: _heaviestSetVolumes,
+                            label: "Heaviest Set Volume",
+                            buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
+                        const SizedBox(width: 5),
+                        CTextButton(
+                            onPressed: _logVolumes,
+                            label: "Session Volume",
+                            buttonColor: _buttonColor(type: SummaryType.logVolumes)),
+                        const SizedBox(width: 5),
+                        CTextButton(
+                            onPressed: _oneRepMaxes,
+                            label: "1RM",
+                            buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
+                        const SizedBox(width: 5),
+                        CTextButton(
+                            onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
+                      ],
+                    )),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: 'Heaviest weight',
+                  summary: "${widget.heaviestWeight.$2}$weightUnitLabel",
+                  subtitle: 'Heaviest weight lifted for a set',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                ),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: 'Heaviest Set Volume',
+                  summary: "${widget.heaviestSet.$2.weight}$weightUnitLabel x ${widget.heaviestSet.$2.reps}",
+                  subtitle: 'Heaviest volume lifted for a set',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
+                ),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: 'Heaviest Session Volume',
+                  summary: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
+                  subtitle: 'Heaviest volume lifted for a session',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
+                ),
+                const SizedBox(height: 10),
+                MetricWidget(
+                  title: '1 Rep Max',
+                  summary: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
+                  subtitle: 'Heaviest weight for one rep',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                ),
+              ],
             ),
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    CTextButton(
-                        onPressed: _heaviestWeights,
-                        label: "Heaviest Weight",
-                        buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _heaviestSetVolumes,
-                        label: "Heaviest Set Volume",
-                        buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _logVolumes,
-                        label: "Session Volume",
-                        buttonColor: _buttonColor(type: SummaryType.logVolumes)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _oneRepMaxes,
-                        label: "1RM",
-                        buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
-                  ],
-                )),
-            const SizedBox(height: 10),
-            MetricWidget(
-              title: 'Heaviest weight',
-              summary: "${widget.heaviestWeight.$2}$weightUnitLabel",
-              subtitle: 'Heaviest weight lifted for a set',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-            ),
-            const SizedBox(height: 10),
-            MetricWidget(
-              title: 'Heaviest Set Volume',
-              summary: "${widget.heaviestSet.$2.weight}$weightUnitLabel x ${widget.heaviestSet.$2.reps}",
-              subtitle: 'Heaviest volume lifted for a set',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-            ),
-            const SizedBox(height: 10),
-            MetricWidget(
-              title: 'Heaviest Session Volume',
-              summary: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
-              subtitle: 'Heaviest volume lifted for a session',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
-            ),
-            const SizedBox(height: 10),
-            MetricWidget(
-              title: '1 Rep Max',
-              summary: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
-              subtitle: 'Heaviest weight for one rep',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-            ),
-          ],
-        ),
-      ));
+          ));
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -603,7 +654,9 @@ class _SummaryWidgetState extends State<SummaryWidget> {
         ),
         const SizedBox(height: 5),
         Text(
-          "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+          "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty
+              ? widget.exercise.secondaryMuscles.join(", ")
+              : "None"}",
           style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
         )
       ],
@@ -614,7 +667,11 @@ class _SummaryWidgetState extends State<SummaryWidget> {
     _routineLogs = widget.routineLogs.reversed.toList();
 
     _dateTimes =
-        widget.routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
+        widget.routineLogs
+            .map((log) => dateTimePerLog(log: log).formattedDayAndMonth())
+            .toList()
+            .reversed
+            .toList();
     _heaviestWeights();
   }
 
@@ -639,11 +696,11 @@ class HistoryWidget extends StatelessWidget {
         children: [
           logs.isNotEmpty
               ? Expanded(
-                  child: ListView.separated(
-                      itemBuilder: (BuildContext context, int index) => RoutineLogWidget(routineLog: logs[index]),
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                      itemCount: logs.length),
-                )
+            child: ListView.separated(
+                itemBuilder: (BuildContext context, int index) => RoutineLogWidget(routineLog: logs[index]),
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                itemCount: logs.length),
+          )
               : const Center(child: ScreenEmptyState(message: "You have no logs")),
         ],
       ),
@@ -689,7 +746,7 @@ class MetricWidget extends StatelessWidget {
         title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text(subtitle, style: GoogleFonts.lato(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing:
-            Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
       ),
     );

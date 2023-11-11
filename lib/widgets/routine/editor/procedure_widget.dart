@@ -18,6 +18,7 @@ import 'package:tracker_app/widgets/routine/editor/set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../dtos/weight_reps_dto.dart';
 import '../../../screens/exercise/exercise_history_screen.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 
@@ -71,7 +72,7 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  List<SetDto> _pastSets = [];
+  List<WeightRepsDto> _pastSets = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -118,8 +119,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     ];
   }
 
-  SetDto? _wherePastSets({required SetType type, required int index}) {
-    SetDto? pastSet;
+  WeightRepsDto? _wherePastSets({required SetType type, required int index}) {
+    WeightRepsDto? pastSet;
 
     final sets = _pastSets.where((set) => set.type == type).toList();
 
@@ -140,7 +141,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     int dropSets = 0;
 
     return widget.procedureDto.sets.mapIndexed(((index, setDto) {
-      SetDto? pastSet = switch (setDto.type) {
+      WeightRepsDto? pastSet = switch (setDto.type) {
         SetType.warmUp => _wherePastSets(type: setDto.type, index: warmupSets),
         SetType.working => _wherePastSets(type: setDto.type, index: workingSets),
         SetType.failure => _wherePastSets(type: setDto.type, index: failureSets),

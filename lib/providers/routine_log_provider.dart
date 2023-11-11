@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/weight_reps_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
@@ -240,7 +241,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     if (mostRecentLog != null) {
       final decodedProcedures = mostRecentLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
-      pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) => set.weight * set.reps > 0).toList();
+      pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) => (set as WeightRepsDto).weight * set.reps > 0).toList();
     }
 
     return pastSets;

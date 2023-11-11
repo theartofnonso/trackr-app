@@ -3,6 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/distance_duration_dto.dart';
+import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/weight_distance_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -13,7 +18,7 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
-import '../../../dtos/set_dto.dart';
+import '../../../dtos/weight_reps_dto.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
@@ -39,18 +44,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
-
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if (log == null) {
       return const SizedBox.shrink();
     }
 
-    final completedSets = _calculateCompletedSets(procedureJsons: log.procedures);
-    final completedSetsSummary =
-        completedSets.length > 1 ? "${completedSets.length} sets" : "${completedSets.length} set";
+    final numberOfCompletedSets = _calculateCompletedSets(procedureJsons: log.procedures);
+    final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
-    final totalVolume = _totalWeight(sets: completedSets);
+    final totalVolume = _totalVolume(procedureJsons: log.procedures);
     final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
     final totalVolumeSummary = "$volume ${weightLabel()}";
 
@@ -259,20 +262,33 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return interval;
   }
 
-  List<SetDto> _calculateCompletedSets({required List<String> procedureJsons}) {
+  int _calculateCompletedSets({required List<String> procedureJsons}) {
     final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
       completedSets.addAll(procedure.sets);
     }
-    return completedSets;
+    return completedSets.length;
   }
 
-  double _totalWeight({required List<SetDto> sets}) {
+  double _totalVolume({required List<String> procedureJsons}) {
+    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     double totalWeight = 0;
-    for (var set in sets) {
-      final weightPerSet = set.reps * set.weight;
-      totalWeight += weightPerSet;
+    for (var procedure in procedures) {
+      final exerciseTypeString = procedure.exercise.type;
+      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+      for (var set in procedure.sets) {
+        final weightPerSet = switch (exerciseType) {
+          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightRepsDto).reps * (set).weight,
+          ExerciseType.bodyWeightAndReps ||
+          ExerciseType.assistedBodyWeight ||
+          ExerciseType.duration ||
+          ExerciseType.distanceAndDuration ||
+          ExerciseType.weightAndDistance =>
+            0,
+        };
+        totalWeight += weightPerSet;
+      }
     }
     return totalWeight;
   }
@@ -345,7 +361,19 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         onPressed: () {
           final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
           final procedures = decodedProcedures.map((procedure) {
-            final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
+            final exerciseTypeString = procedure.exercise.type;
+            final exerciseType = ExerciseType.fromString(exerciseTypeString);
+            final newSets = procedure.sets
+                .map((set) => switch (exerciseType) {
+                      ExerciseType.weightAndReps ||
+                      ExerciseType.weightedBodyWeight ||
+                      ExerciseType.assistedBodyWeight || ExerciseType.bodyWeightAndReps =>
+                        (set as WeightRepsDto).copyWith(checked: false),
+                      ExerciseType.duration => (set as DurationDto).copyWith(checked: false),
+                      ExerciseType.distanceAndDuration => (set as DistanceDurationDto).copyWith(checked: false),
+                      ExerciseType.weightAndDistance => (set as WeightDistanceDto).copyWith(checked: false),
+                    })
+                .toList();
             return procedure.copyWith(sets: newSets);
           }).toList();
 

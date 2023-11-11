@@ -1,5 +1,10 @@
 import 'dart:convert';
+import 'package:tracker_app/dtos/distance_duration_dto.dart';
+import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/dtos/weight_distance_dto.dart';
+import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 
 class ProcedureDto {
@@ -40,21 +45,43 @@ class ProcedureDto {
   }
 
   String toJson() {
+    final exerciseType = ExerciseType.fromString(exercise.type);
+    final setJons = switch (exerciseType) {
+      ExerciseType.weightAndReps ||
+      ExerciseType.weightedBodyWeight ||
+      ExerciseType.assistedBodyWeight || ExerciseType.bodyWeightAndReps =>
+        sets.map((set) => (set as WeightRepsDto).toJson()).toList(),
+      ExerciseType.duration => sets.map((set) => (set as DurationDto).toJson()).toList(),
+      ExerciseType.distanceAndDuration => sets.map((set) => (set as DistanceDurationDto).toJson()).toList(),
+      ExerciseType.weightAndDistance => sets.map((set) => (set as WeightDistanceDto).toJson()).toList(),
+    };
+
     return jsonEncode({
       "superSetId": superSetId,
       "exercise": exercise,
       "notes": notes,
-      "sets": sets.map((set) => set.toJson()).toList(),
+      "sets": setJons,
       "restInterval": restInterval.inMilliseconds
     });
   }
 
   factory ProcedureDto.fromJson(Map<String, dynamic> json) {
     final superSetId = json["superSetId"];
-    final exercise = Exercise.fromJson(json["exercise"]);
+    final exerciseString = json["exercise"];
+    final exercise = Exercise.fromJson(exerciseString);
+    final exerciseType = ExerciseType.fromString(exercise.type);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
-    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
+    final sets = switch (exerciseType) {
+      ExerciseType.weightAndReps ||
+      ExerciseType.weightedBodyWeight ||
+      ExerciseType.assistedBodyWeight || ExerciseType.bodyWeightAndReps =>
+        setsJsons.map((json) => WeightRepsDto.fromJson(jsonDecode(json))).toList(),
+      ExerciseType.duration => setsJsons.map((json) => DurationDto.fromJson(jsonDecode(json))).toList(),
+      ExerciseType.distanceAndDuration =>
+        setsJsons.map((json) => DistanceDurationDto.fromJson(jsonDecode(json))).toList(),
+      ExerciseType.weightAndDistance => setsJsons.map((json) => WeightDistanceDto.fromJson(jsonDecode(json))).toList(),
+    };
     final restInterval = json["restInterval"];
     return ProcedureDto(
         superSetId: superSetId,
