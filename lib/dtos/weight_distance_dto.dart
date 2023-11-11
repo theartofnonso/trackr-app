@@ -6,7 +6,7 @@ class WeightDistanceDto extends SetDto {
   final double weight;
   final int distance;
 
-  WeightDistanceDto({this.weight = 0, this.distance = 0, type, checked}) : super(type: type, checked: checked);
+  WeightDistanceDto({this.weight = 0, this.distance = 0, super.type, super.checked});
 
   @override
   WeightDistanceDto copyWith({double? weight, int? distance, SetType? type, bool? checked}) {

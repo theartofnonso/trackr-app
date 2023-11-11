@@ -6,7 +6,7 @@ class WeightRepsDto extends SetDto {
   final int reps;
   final double weight;
 
-  WeightRepsDto({this.reps = 0, this.weight = 0, type, checked}) : super(type: type, checked: checked);
+  WeightRepsDto({this.reps = 0, this.weight = 0, super.type, super.checked});
 
   @override
   WeightRepsDto copyWith({int? reps, double? weight, SetType? type, bool? checked}) {

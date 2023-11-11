@@ -49,7 +49,7 @@ class RoutineEditorScreen extends StatefulWidget {
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   List<ProcedureDto> _procedures = [];
 
-  int _numberOfCompletedSets = 0;
+  List<SetDto> _completedSets = [];
 
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
@@ -555,27 +555,28 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       completedSets.addAll(sets);
     }
     setState(() {
-      _numberOfCompletedSets = completedSets.length;
+      _completedSets = completedSets;
     });
   }
 
   double _totalWeight() {
     double totalWeight = 0;
-
     for (var procedure in _procedures) {
       final exerciseTypeString = procedure.exercise.type;
       final exerciseType = ExerciseType.fromString(exerciseTypeString);
       for (var set in procedure.sets) {
-        final weightPerSet = switch (exerciseType) {
-          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightRepsDto).reps * (set).weight,
-          ExerciseType.bodyWeightAndReps ||
-          ExerciseType.assistedBodyWeight ||
-          ExerciseType.duration ||
-          ExerciseType.distanceAndDuration ||
-          ExerciseType.weightAndDistance =>
+        if(set.checked) {
+          final weightPerSet = switch (exerciseType) {
+            ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightRepsDto).reps * (set).weight,
+            ExerciseType.bodyWeightAndReps ||
+            ExerciseType.assistedBodyWeight ||
+            ExerciseType.duration ||
+            ExerciseType.distanceAndDuration ||
+            ExerciseType.weightAndDistance =>
             0,
-        };
-        totalWeight += weightPerSet;
+          };
+          totalWeight += weightPerSet;
+        }
       }
     }
     return totalWeight;
@@ -749,7 +750,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 children: [
                   if (widget.mode == RoutineEditorType.log)
                     RunningRoutineSummaryWidget(
-                      sets: _numberOfCompletedSets,
+                      sets: _completedSets.length,
                       weight: _totalWeight(),
                       timer: _TimerWidget(
                           TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),

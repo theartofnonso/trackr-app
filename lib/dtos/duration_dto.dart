@@ -5,7 +5,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 class DurationDto extends SetDto {
   final Duration duration;
 
-  DurationDto({this.duration = Duration.zero, type, checked}) : super(type: type, checked: checked);
+  DurationDto({this.duration = Duration.zero, super.type, super.checked});
 
   @override
   DurationDto copyWith({Duration? duration, SetType? type, bool? checked}) {

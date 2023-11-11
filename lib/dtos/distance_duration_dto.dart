@@ -6,7 +6,7 @@ class DistanceDurationDto extends SetDto {
   final int distance;
   final Duration duration;
 
-  DistanceDurationDto({this.distance = 0, this.duration = Duration.zero, type, checked}) : super(type: type, checked: checked);
+  DistanceDurationDto({this.distance = 0, this.duration = Duration.zero, super.type, super.checked});
 
   @override
   DistanceDurationDto copyWith({int? distance, Duration? duration, SetType? type, bool? checked}) {

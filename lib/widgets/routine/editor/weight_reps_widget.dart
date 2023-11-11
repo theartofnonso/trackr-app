@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/dtos/weight_reps_dto.dart';
 
 import '../../../dtos/set_dto.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
-import '../../helper_widgets/dialog_helper.dart';
+import '../editor/set_type_icon.dart';
 
-class SetWidget extends StatelessWidget {
-  const SetWidget({
+class WeightRepsWidget extends StatelessWidget {
+  const WeightRepsWidget({
     super.key,
     required this.index,
     required this.workingIndex,
@@ -36,7 +36,7 @@ class SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previousSetDto = pastSetDto;
+    final previousSetDto = pastSetDto as WeightRepsDto?;
 
     double prevWeightValue = 0;
 
@@ -56,7 +56,7 @@ class SetWidget extends StatelessWidget {
         TableRow(children: [
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: _SetIcon(
+              child: SetTypeIcon(
                 type: setDto.type,
                 label: workingIndex,
                 onSelectSetType: onChangedType,
@@ -77,14 +77,14 @@ class SetWidget extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: _WeightTextField(
-              initialValue: setDto.weight,
+              initialValue: (setDto as WeightRepsDto).weight,
               onChangedWeight: (value) => onChangedWeight(value),
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: _RepsTextField(
-              initialValue: setDto.reps,
+              initialValue: (setDto as WeightRepsDto).reps,
               onChangedReps: (value) => onChangedReps(value),
             ),
           ),
@@ -101,79 +101,6 @@ class SetWidget extends StatelessWidget {
           )
         ])
       ],
-    );
-  }
-}
-
-class _SetIcon extends StatelessWidget {
-  final SetType type;
-  final int label;
-  final void Function(SetType type) onSelectSetType;
-  final void Function() onRemoveSet;
-
-  const _SetIcon({
-    required this.type,
-    required this.label,
-    required this.onSelectSetType,
-    required this.onRemoveSet,
-  });
-
-  void selectType(BuildContext context, SetType type) {
-    Navigator.pop(context);
-    onSelectSetType(type);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        displayBottomSheet(
-            context: context,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ListTile(
-                    dense: true,
-                      onTap: () => selectType(context, SetType.warmUp),
-                      leading: Text("W",
-                          style: GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                      title: Text("Warm up Set", style: GoogleFonts.lato(fontSize: 14))),
-                  ListTile(
-                      dense: true,
-                      onTap: () => selectType(context, SetType.working),
-                      leading: Text("1",
-                          style: GoogleFonts.lato(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                      title: Text("Working Set", style: GoogleFonts.lato(fontSize: 14))),
-                  ListTile(
-                      dense: true,
-                      onTap: () => selectType(context, SetType.failure),
-                      leading: Text("F",
-                          style: GoogleFonts.lato(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                      title: Text("Failure Set", style: GoogleFonts.lato(fontSize: 14))),
-                  ListTile(
-                      dense: true,
-                      onTap: () => selectType(context, SetType.drop),
-                      leading: Text("D",
-                          style: GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
-                      title: Text("Drop Set", style: GoogleFonts.lato(fontSize: 14))),
-                  CTextButton(onPressed: () {
-                    Navigator.pop(context);
-                    onRemoveSet();
-                  }, label: "Remove Set", buttonColor: tealBlueDark,)
-                ],
-              ),
-            ),
-            height: 250);
-      },
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Text(
-          type == SetType.working ? "${label + 1}" : type.label,
-          style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
-        ),
-      ),
     );
   }
 }
