@@ -20,22 +20,14 @@ enum SetType {
   }
 }
 
-class SetDto {
+abstract class SetDto {
   final SetType type;
   final bool checked;
 
   SetDto({this.type = SetType.working, this.checked = false});
 
-  @override
-  String toString() {
-    return 'SetDto{type: $type, checked: $checked}';
-  }
-
   SetDto copyWith({SetType? type, bool? checked}) {
-    return SetDto(
-      type: type ?? this.type,
-      checked: checked ?? this.checked,
-    );
+    throw UnimplementedError('copyWith must be implemented in subclasses');
   }
 
   String toJson() {

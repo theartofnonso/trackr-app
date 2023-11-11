@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/weight_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -14,7 +15,8 @@ import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/durat
 import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_distance_table_header.dart';
 import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_reps_table_header.dart';
 import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weighted_bodyweight_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/weight_reps_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_widgets/body_weight_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_widgets/weight_reps_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
@@ -71,6 +73,8 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
+  late ExerciseType _exerciseType;
+
   List<SetDto> _pastSets = [];
 
   /// [MenuItemButton]
@@ -147,18 +151,18 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         SetType.drop => _wherePastSets(type: setDto.type, index: dropSets),
       };
 
-      final setWidget = WeightRepsWidget(
-        index: index,
-        onRemoved: () => widget.onRemoveSet(index),
-        workingIndex: setDto.type == SetType.working ? workingSets : -1,
-        setDto: setDto,
-        pastSetDto: pastSet,
-        editorType: widget.editorType,
-        onChangedReps: (int value) => widget.onChangedSetRep(index, value),
-        onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
-        onChangedType: (SetType type) => widget.onChangedSetType(index, type),
-        onTapCheck: () => widget.onCheckSet(index),
-      );
+      final setWidget = _SetWidget(
+          type: _exerciseType,
+          index: index,
+          onRemoved: () => widget.onRemoveSet(index),
+          onTapCheck: () => widget.onCheckSet(index),
+          onChangedReps: (int value) => widget.onChangedSetRep(index, value),
+          onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
+          onChangedType: (SetType type) => widget.onChangedSetType(index, type),
+          workingIndex: setDto.type == SetType.working ? workingSets : -1,
+          setDto: setDto,
+          pastSet: pastSet,
+          editorType: widget.editorType);
 
       switch (setDto.type) {
         case SetType.warmUp:
@@ -271,7 +275,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             ],
           ),
           const SizedBox(height: 10),
-          switch(exerciseType) {
+          switch (exerciseType) {
             ExerciseType.weightAndReps => const WeightAndRepsTableHeader(),
             ExerciseType.bodyWeightAndReps => const BodyWeightTableHeader(),
             ExerciseType.weightedBodyWeight => const WeightedBodyWeightTableHeader(),
@@ -289,7 +293,69 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   @override
   void initState() {
     super.initState();
+    final exerciseTypeString = widget.procedureDto.exercise.type;
+    _exerciseType = ExerciseType.fromString(exerciseTypeString);
+
     _pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
         .wherePastSetDtos(exercise: widget.procedureDto.exercise);
+  }
+}
+
+class _SetWidget extends StatelessWidget {
+  final int index;
+  final void Function() onRemoved;
+  final void Function() onTapCheck;
+  final void Function(int value)? onChangedReps;
+  final void Function(double value)? onChangedWeight;
+  final void Function(SetType type)? onChangedType;
+  final int workingIndex;
+  final SetDto setDto;
+  final SetDto? pastSet;
+  final RoutineEditorType editorType;
+  final ExerciseType type;
+
+  const _SetWidget(
+      {required this.type,
+      required this.index,
+      required this.onRemoved,
+      required this.onTapCheck,
+      this.onChangedReps,
+      this.onChangedWeight,
+      this.onChangedType,
+      required this.workingIndex,
+      required this.setDto,
+      required this.pastSet,
+      required this.editorType});
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (type) {
+      ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight || ExerciseType.assistedBodyWeight => WeightRepsWidget(
+          index: index,
+          onRemoved: onRemoved,
+          workingIndex: workingIndex,
+          setDto: setDto as WeightRepsDto,
+          pastSetDto: pastSet as WeightRepsDto?,
+          editorType: editorType,
+          onChangedReps: (int value) => onChangedReps!(value),
+          onChangedWeight: (double value) => onChangedWeight!(value),
+          onChangedType: (SetType type) => onChangedType!(type),
+          onTapCheck: onTapCheck,
+        ),
+      ExerciseType.bodyWeightAndReps => BodyWeightWidget(
+          index: index,
+          onRemoved: onRemoved,
+          workingIndex: workingIndex,
+          setDto: setDto as WeightRepsDto,
+          pastSetDto: pastSet as WeightRepsDto?,
+          editorType: editorType,
+          onChangedReps: (int value) => onChangedReps!(value),
+          onChangedType: (SetType type) => onChangedType!(type),
+          onTapCheck: onTapCheck,
+        ),
+      ExerciseType.duration => const SizedBox.shrink(),
+      ExerciseType.distanceAndDuration => const SizedBox.shrink(),
+      ExerciseType.weightAndDistance => const SizedBox.shrink(),
+    };
   }
 }

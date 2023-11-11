@@ -7,6 +7,7 @@ import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../empty_states/list_tile_empty_state.dart';
 import '../routine/preview/sets/weight_reps_widget.dart';
+import '../routine/preview/sets/body_weight_widget.dart';
 
 ProcedureDto? whereOtherSuperSetProcedure(
     {required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
@@ -20,18 +21,25 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
   int workingSets = 0;
 
   final widgets = sets.mapIndexed(((index, setDto) {
+
+    final workingIndex =  setDto.type == SetType.working ? workingSets : -1;
+
     final widget = Padding(
-      padding: const EdgeInsets.only(top: 6.0),
+      padding: const EdgeInsets.only(bottom: 6.0),
       child: switch (type) {
         ExerciseType.weightAndReps ||
         ExerciseType.weightedBodyWeight ||
         ExerciseType.assistedBodyWeight =>
           WeightRepsWidget(
             index: index,
-            workingIndex: setDto.type == SetType.working ? workingSets : -1,
+            workingIndex: workingIndex,
             setDto: setDto as WeightRepsDto,
           ),
-        ExerciseType.bodyWeightAndReps => null,
+        ExerciseType.bodyWeightAndReps => BodyWeightWidget(
+          index: index,
+          workingIndex: workingIndex,
+          setDto: setDto as WeightRepsDto,
+        ),
         ExerciseType.duration => null,
         ExerciseType.distanceAndDuration => null,
         ExerciseType.weightAndDistance => null,
