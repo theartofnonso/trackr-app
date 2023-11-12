@@ -1040,9 +1040,9 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
 }
 
 class _TimerWidget extends StatefulWidget {
-  final Duration elapsedTime;
+  final Duration elapsedDuration;
 
-  const _TimerWidget(this.elapsedTime);
+  const _TimerWidget(this.elapsedDuration);
 
   @override
   State<_TimerWidget> createState() => _TimerWidgetState();
@@ -1050,21 +1050,22 @@ class _TimerWidget extends StatefulWidget {
 
 class _TimerWidgetState extends State<_TimerWidget> {
   late Timer _timer;
-  int _elapsedTime = 0;
+  int _elapsedSeconds = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Text(Duration(seconds: _elapsedTime).secondsOrMinutesOrHours(),
+    return Text(Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
         style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600));
   }
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _elapsedSeconds = widget.elapsedDuration.inSeconds;
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) {
         setState(() {
-          _elapsedTime = widget.elapsedTime.inSeconds + timer.tick;
+          _elapsedSeconds++;
         });
       }
     });

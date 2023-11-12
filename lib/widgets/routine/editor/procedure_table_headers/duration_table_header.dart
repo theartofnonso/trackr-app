@@ -9,7 +9,7 @@ class DurationTableHeader extends StatelessWidget {
     return Table(
       columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(1),
-        1: FlexColumnWidth(3),
+        1: FlexColumnWidth(2),
         2: FlexColumnWidth(2),
         3: FlexColumnWidth(1),
       },
