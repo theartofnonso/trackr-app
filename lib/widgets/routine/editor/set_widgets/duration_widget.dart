@@ -45,7 +45,7 @@ class DurationWidget extends SetWidget {
       columnWidths: const <int, TableColumnWidth>{
         0: FlexColumnWidth(1),
         1: FlexColumnWidth(2),
-        2: FlexColumnWidth(2),
+        2: FlexColumnWidth(3),
         3: FlexColumnWidth(1),
       },
       children: [
