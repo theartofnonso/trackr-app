@@ -9,21 +9,19 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/assisted_weight_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/bodyweight_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/distance_duration_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/duration_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_distance_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weight_reps_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weighted_bodyweight_table_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_widgets/body_weight_widget.dart';
-import 'package:tracker_app/widgets/routine/editor/set_widgets/duration_widget.dart';
-import 'package:tracker_app/widgets/routine/editor/set_widgets/weighted_set_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/weighted_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/weighted_set_row_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../screens/exercise/exercise_history_screen.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
+import '../../../utils/general_utils.dart';
 
 class ProcedureWidget extends StatefulWidget {
   final RoutineEditorType editorType;
@@ -282,13 +280,13 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           ),
           const SizedBox(height: 10),
           switch (exerciseType) {
-            ExerciseType.weightAndReps => const WeightAndRepsTableHeader(),
-            ExerciseType.bodyWeightAndReps => const BodyWeightTableHeader(),
-            ExerciseType.weightedBodyWeight => const WeightedBodyWeightTableHeader(),
-            ExerciseType.assistedBodyWeight => const AssistedWeightTableHeader(),
-            ExerciseType.duration => const DurationTableHeader(),
-            ExerciseType.distanceAndDuration => const DistanceDurationTableHeader(),
-            ExerciseType.weightAndDistance => const WeightAndDistanceTableHeader(),
+            ExerciseType.weightAndReps => WeightedSetHeader(editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS',),
+            ExerciseType.weightedBodyWeight => WeightedSetHeader(editorType: widget.editorType, firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS',),
+            ExerciseType.assistedBodyWeight => WeightedSetHeader(editorType: widget.editorType, firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS',),
+            ExerciseType.weightAndDistance => WeightedSetHeader(editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
+            ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
+            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
+            ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
           },
           ..._displaySets(exerciseType: exerciseType)
         ],
@@ -339,7 +337,7 @@ class _SetWidget extends StatelessWidget {
       ExerciseType.weightedBodyWeight ||
       ExerciseType.assistedBodyWeight ||
       ExerciseType.weightAndDistance =>
-        WeightedSetWidget(
+        WeightedSetRowWidget(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
@@ -351,7 +349,7 @@ class _SetWidget extends StatelessWidget {
           onChangedType: (SetType type) => onChangedType!(type),
           onTapCheck: onTapCheck,
         ),
-      ExerciseType.bodyWeightAndReps => BodyWeightWidget(
+      ExerciseType.bodyWeightAndReps => RepsSetRowWidget(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
@@ -362,7 +360,7 @@ class _SetWidget extends StatelessWidget {
           onChangedType: (SetType type) => onChangedType!(type),
           onTapCheck: onTapCheck,
         ),
-      ExerciseType.duration => DurationWidget(
+      ExerciseType.duration => DurationSetRowWidget(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,

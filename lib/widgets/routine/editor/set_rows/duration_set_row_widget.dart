@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/routine/editor/set_widgets/set_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row_widget.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
@@ -13,8 +13,8 @@ import '../../../helper_widgets/dialog_helper.dart';
 import '../../../time_picker.dart';
 import '../set_type_icon.dart';
 
-class DurationWidget extends SetWidget {
-  const DurationWidget(
+class DurationSetRowWidget extends SetRowWidget {
+  const DurationSetRowWidget(
       {Key? key,
       required int index,
       required int workingIndex,
@@ -42,12 +42,18 @@ class DurationWidget extends SetWidget {
     final previousSetDto = pastSetDto as DurationDto?;
 
     return Table(
-      columnWidths: const <int, TableColumnWidth>{
-        0: FlexColumnWidth(1),
-        1: FlexColumnWidth(2),
-        2: FlexColumnWidth(3),
-        3: FlexColumnWidth(1),
-      },
+      columnWidths: editorType == RoutineEditorType.edit
+          ? <int, TableColumnWidth>{
+              0: const FixedColumnWidth(30),
+              1: const FlexColumnWidth(2),
+              2: const FlexColumnWidth(3),
+            }
+          : <int, TableColumnWidth>{
+              0: const FixedColumnWidth(30),
+              1: const FlexColumnWidth(2),
+              2: const FlexColumnWidth(2),
+              3: const FlexColumnWidth(1),
+            },
       children: [
         TableRow(children: [
           TableCell(
@@ -81,17 +87,15 @@ class DurationWidget extends SetWidget {
                   }
                 }),
           ),
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: editorType == RoutineEditorType.log
-                ? GestureDetector(
-                    onTap: onTapCheck,
-                    child: setDto.checked
-                        ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                        : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                  )
-                : const SizedBox.shrink(),
-          )
+          if (editorType == RoutineEditorType.log)
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: GestureDetector(
+                  onTap: onTapCheck,
+                  child: setDto.checked
+                      ? const Icon(Icons.check_box_rounded, color: Colors.green)
+                      : const Icon(Icons.check_box_rounded, color: Colors.grey),
+                ))
         ])
       ],
     );
@@ -115,7 +119,7 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _timerButton(),
         GestureDetector(

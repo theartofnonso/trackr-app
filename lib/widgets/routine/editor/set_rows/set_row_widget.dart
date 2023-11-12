@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../dtos/set_dto.dart';
 import '../../../../../screens/editor/routine_editor_screen.dart';
 
-abstract class SetWidget extends StatelessWidget {
-  const SetWidget({
+abstract class SetRowWidget extends StatelessWidget {
+  const SetRowWidget({
     super.key,
     required this.index,
     required this.workingIndex,
