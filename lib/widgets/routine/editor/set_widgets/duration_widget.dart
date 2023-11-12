@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
@@ -6,6 +7,8 @@ import 'package:tracker_app/widgets/routine/editor/set_widgets/set_widget.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../helper_widgets/dialog_helper.dart';
+import '../../../time_picker.dart';
 import '../set_type_icon.dart';
 
 class DurationWidget extends SetWidget {
@@ -36,8 +39,6 @@ class DurationWidget extends SetWidget {
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto as DurationDto?;
-
-    print(previousSetDto);
 
     return Table(
       columnWidths: const <int, TableColumnWidth>{
@@ -70,7 +71,7 @@ class DurationWidget extends SetWidget {
           ),
            TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: GestureDetector(onTap: () {}, child: Text((setDto as DurationDto).duration.secondsOrMinutesOrHours(), textAlign: TextAlign.center,)),
+            child: GestureDetector(onTap: () => _showRestIntervalTimePicker(context: context), child: Text((setDto as DurationDto).duration.secondsOrMinutesOrHours(), textAlign: TextAlign.center,)),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
@@ -86,6 +87,23 @@ class DurationWidget extends SetWidget {
         ])
       ],
     );
+  }
+
+  void _showRestIntervalTimePicker({required BuildContext context}) {
+    FocusScope.of(context).unfocus();
+    displayBottomSheet(
+        context: context,
+        child: TimePicker(
+          mode: CupertinoTimerPickerMode.hms,
+          initialDuration: (setDto as DurationDto).duration,
+          onSelect: (Duration duration) {
+            Navigator.of(context).pop();
+            final callback = onChangedDuration;
+            if(callback != null) {
+              callback(duration);
+            }
+          },
+        ));
   }
 }
 

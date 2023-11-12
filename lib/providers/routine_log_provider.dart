@@ -4,8 +4,10 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
@@ -241,7 +243,20 @@ class RoutineLogProvider with ChangeNotifier {
 
     if (mostRecentLog != null) {
       final decodedProcedures = mostRecentLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
-      pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) => (set as WeightRepsDto).weight * set.reps > 0).toList();
+      pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) {
+        final exerciseTypeString = exercise.type;
+        final exerciseType  = ExerciseType.fromString(exerciseTypeString);
+        return switch(exerciseType) {
+          ExerciseType.weightAndReps => (set as WeightRepsDto).weight * set.reps > 0,
+          ExerciseType.weightedBodyWeight => (set as WeightRepsDto).weight * set.reps > 0,
+          ExerciseType.bodyWeightAndReps => (set as WeightRepsDto).reps > 0,
+          ExerciseType.assistedBodyWeight => (set as WeightRepsDto).reps > 0,
+          ExerciseType.duration => (set as DurationDto).duration > Duration.zero,
+          ExerciseType.distanceAndDuration => (set as WeightRepsDto).weight * set.reps > 0,
+          ExerciseType.weightAndDistance => (set as WeightRepsDto).weight * set.reps > 0,
+        };
+
+      }).toList();
     }
 
     return pastSets;

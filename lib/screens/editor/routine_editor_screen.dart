@@ -29,6 +29,7 @@ import '../../shared_prefs.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editor/procedure_widget.dart';
+import '../../widgets/time_picker.dart';
 import '../exercise/exercise_library_screen.dart';
 
 enum RoutineEditorType { edit, log }
@@ -298,6 +299,20 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
+  void _updateSetDuration({required String procedureId, required int setIndex, required Duration duration}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    sets[setIndex] = (sets[setIndex] as DurationDto).copyWith(duration: duration);
+    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+
+    if (widget.mode == RoutineEditorType.log) {
+      _calculateCompletedSets();
+    }
+
+    _cacheRoutineLog();
+  }
+
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
@@ -349,7 +364,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _dismissKeyboard();
     displayBottomSheet(
         context: context,
-        child: _TimerPicker(
+        child: TimePicker(
           initialDuration: procedure.restInterval,
           onSelect: (Duration duration) {
             Navigator.of(context).pop();
@@ -565,7 +580,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       final exerciseTypeString = procedure.exercise.type;
       final exerciseType = ExerciseType.fromString(exerciseTypeString);
       for (var set in procedure.sets) {
-        if(set.checked) {
+        if (set.checked) {
           final weightPerSet = switch (exerciseType) {
             ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightRepsDto).reps * (set).weight,
             ExerciseType.bodyWeightAndReps ||
@@ -573,7 +588,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             ExerciseType.duration ||
             ExerciseType.distanceAndDuration ||
             ExerciseType.weightAndDistance =>
-            0,
+              0,
           };
           totalWeight += weightPerSet;
         }
@@ -810,8 +825,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
                             final procedure = _procedures[index];
+                            final exerciseId = procedure.exercise.id;
                             return ProcedureWidget(
-                              procedureDto: _procedures[index],
+                              procedureDto: procedure,
                               editorType: widget.mode,
                               otherSuperSetProcedureDto:
                                   whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
@@ -820,22 +836,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
                               onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                               onChangedSetRep: (int setIndex, int value) =>
-                                  _updateSetRep(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+                                  _updateSetRep(procedureId: exerciseId, setIndex: setIndex, value: value),
                               onChangedSetWeight: (int setIndex, double value) =>
-                                  _updateWeight(procedureId: procedure.exercise.id, setIndex: setIndex, value: value),
+                                  _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
                               onChangedSetType: (int setIndex, SetType type) =>
-                                  _updateSetType(procedureId: procedure.exercise.id, setIndex: setIndex, type: type),
-                              onAddSet: () => _addSet(procedureId: procedure.exercise.id),
-                              onRemoveSet: (int setIndex) =>
-                                  _removeSet(procedureId: procedure.exercise.id, setIndex: setIndex),
+                                  _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
+                              onAddSet: () => _addSet(procedureId: exerciseId),
+                              onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
                               onUpdateNotes: (String value) =>
-                                  _updateProcedureNotes(procedureId: procedure.exercise.id, value: value),
-                              onReplaceProcedure: () => _replaceProcedure(procedureId: procedure.exercise.id),
+                                  _updateProcedureNotes(procedureId: exerciseId, value: value),
+                              onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
                               onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
                               onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
                               onReOrderProcedures: () => _reOrderProcedures(),
-                              onCheckSet: (int setIndex) =>
-                                  _checkSet(procedureId: procedure.exercise.id, setIndex: setIndex), onChangedDuration: (int setIndex, Duration duration) {  },
+                              onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
+                              onChangedDuration: (int setIndex, Duration duration) =>
+                                  _updateSetDuration(procedureId: exerciseId, setIndex: setIndex, duration: duration),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
@@ -986,54 +1002,6 @@ class _ProceduresListState extends State<_ProceduresList> {
   void initState() {
     super.initState();
     _procedure = widget.procedures.firstOrNull;
-  }
-}
-
-class _TimerPicker extends StatefulWidget {
-  final Duration? initialDuration;
-  final void Function(Duration duration) onSelect;
-
-  const _TimerPicker({required this.onSelect, required this.initialDuration});
-
-  @override
-  State<_TimerPicker> createState() => _TimerPickerState();
-}
-
-class _TimerPickerState extends State<_TimerPicker> {
-  late Duration _duration;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        CTextButton(onPressed: () => widget.onSelect(_duration), label: "Select"),
-        Flexible(
-          child: CupertinoTheme(
-            data: const CupertinoThemeData(
-              brightness: Brightness.dark,
-            ),
-            child: CupertinoTimerPicker(
-              initialTimerDuration: _duration,
-              backgroundColor: tealBlueLight,
-              mode: CupertinoTimerPickerMode.ms,
-              // This is called when the user changes the timer's
-              // duration.
-              onTimerDurationChanged: (Duration newDuration) {
-                setState(() => _duration = newDuration);
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final previousDuration = widget.initialDuration;
-    _duration = previousDuration ?? Duration.zero;
   }
 }
 

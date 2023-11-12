@@ -77,7 +77,6 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  late ExerciseType _exerciseType;
 
   List<SetDto> _pastSets = [];
 
@@ -137,7 +136,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return pastSet;
   }
 
-  List<Widget> _displaySets() {
+  List<Widget> _displaySets({required ExerciseType exerciseType}) {
     if (widget.procedureDto.sets.isEmpty) {
       return <Widget>[];
     }
@@ -156,7 +155,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       };
 
       final setWidget = _SetWidget(
-          type: _exerciseType,
+          type: exerciseType,
           index: index,
           onRemoved: () => widget.onRemoveSet(index),
           onTapCheck: () => widget.onCheckSet(index),
@@ -197,7 +196,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   Widget build(BuildContext context) {
     final otherProcedureDto = widget.otherSuperSetProcedureDto;
 
-    final exerciseType = ExerciseType.fromString(widget.procedureDto.exercise.type);
+    final exerciseString = widget.procedureDto.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseString);
 
     return Container(
       padding: const EdgeInsets.only(top: 12, right: 12, bottom: 10, left: 12),
@@ -289,7 +289,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             ExerciseType.distanceAndDuration => const DistanceDurationTableHeader(),
             ExerciseType.weightAndDistance => const WeightAndDistanceTableHeader(),
           },
-          ..._displaySets()
+          ..._displaySets(exerciseType: exerciseType)
         ],
       ),
     );
@@ -298,9 +298,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   @override
   void initState() {
     super.initState();
-    final exerciseTypeString = widget.procedureDto.exercise.type;
-    _exerciseType = ExerciseType.fromString(exerciseTypeString);
-
     _pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
         .wherePastSetDtos(exercise: widget.procedureDto.exercise);
   }
