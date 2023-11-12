@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/set_widget.dart';
@@ -116,14 +117,15 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _timerButton(),
         GestureDetector(
-            onTap: () => _showRestIntervalTimePicker(context: context),
-            child: Text(
-              Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
-              textAlign: TextAlign.center,
-            )),
+              onTap: () => _showRestIntervalTimePicker(context: context),
+              child: Text(
+                Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
+                textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold),
+              ))
       ],
     );
   }
@@ -131,8 +133,8 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   Widget _timerButton() {
     final timer = _timer;
     return timer != null && timer.isActive
-        ? IconButton(onPressed: _pauseTimer, icon: const Icon(Icons.pause, color: Colors.orange))
-        : IconButton(onPressed: _startTimer, icon: const Icon(Icons.play_arrow_rounded, color: Colors.blue));
+        ? IconButton(onPressed: _pauseTimer, icon: const Icon(Icons.pause_circle_outline_rounded, color: Colors.orange))
+        : IconButton(onPressed: _startTimer, icon: const Icon(Icons.play_circle_outline_rounded, color: Colors.blue));
   }
 
   void _startTimer() {
@@ -160,7 +162,6 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   @override
   void initState() {
     super.initState();
-    print(widget.durationDto);
     _elapsedSeconds = widget.durationDto.duration.inSeconds;
   }
 
