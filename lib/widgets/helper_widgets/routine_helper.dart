@@ -1,9 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
-import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/sets/duration_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/sets/weight_distance_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
@@ -34,20 +35,21 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
           WeightRepsWidget(
             index: index,
             workingIndex: workingIndex,
-            setDto: setDto as WeightRepsDto,
+            setDto: setDto as WeightedSetDto, exerciseType: type,
           ),
         ExerciseType.bodyWeightAndReps => BodyWeightWidget(
             index: index,
             workingIndex: workingIndex,
-            setDto: setDto as WeightRepsDto,
+            setDto: setDto as WeightedSetDto,
           ),
+        ExerciseType.weightAndDistance =>
+          WeightDistanceWidget(index: index, workingIndex: workingIndex, setDto: setDto as WeightedSetDto),
         ExerciseType.duration => DurationWidget(
             index: index,
             workingIndex: workingIndex,
             setDto: setDto as DurationDto,
           ),
         ExerciseType.distanceAndDuration => null,
-        ExerciseType.weightAndDistance => null,
       },
     );
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/set_widget.dart';
@@ -10,13 +10,13 @@ import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_type_icon.dart';
 
-class WeightRepsWidget extends SetWidget {
-  const WeightRepsWidget(
+class WeightedSetWidget extends SetWidget {
+  const WeightedSetWidget(
       {Key? key,
       required int index,
       required int workingIndex,
-      required WeightRepsDto setDto,
-      WeightRepsDto? pastSetDto,
+      required WeightedSetDto setDto,
+      WeightedSetDto? pastSetDto,
       RoutineEditorType editorType = RoutineEditorType.edit,
       required VoidCallback onTapCheck,
       required VoidCallback onRemoved,
@@ -38,12 +38,12 @@ class WeightRepsWidget extends SetWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previousSetDto = pastSetDto as WeightRepsDto?;
+    final previousSetDto = pastSetDto as WeightedSetDto?;
 
     double prevWeightValue = 0;
 
     if (previousSetDto != null) {
-      prevWeightValue = isDefaultWeightUnit() ? previousSetDto.weight : toLbs(previousSetDto.weight);
+      prevWeightValue = isDefaultWeightUnit() ? previousSetDto.first.toDouble() : toLbs(previousSetDto.first.toDouble());
     }
 
     return Table(
@@ -68,7 +68,7 @@ class WeightRepsWidget extends SetWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.reps}",
+                    "$prevWeightValue${weightLabel()} x ${previousSetDto.first}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -79,7 +79,7 @@ class WeightRepsWidget extends SetWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: (setDto as WeightRepsDto).weight,
+              initialValue: (setDto as WeightedSetDto).first.toDouble(),
               onChanged: (value) {
                 final callback = onChangedWeight;
                 if (callback != null) {
@@ -91,7 +91,7 @@ class WeightRepsWidget extends SetWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: (setDto as WeightRepsDto).reps,
+              initialValue: (setDto as WeightedSetDto).second.toInt(),
               onChanged: (value) {
                 final callback = onChangedReps;
                 if (callback != null) {

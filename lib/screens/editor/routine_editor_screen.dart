@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/distance_duration_dto.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/dtos/weight_distance_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -23,7 +22,7 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
 import '../../dtos/set_dto.dart';
-import '../../dtos/weight_reps_dto.dart';
+import '../../dtos/weighted_set_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../shared_prefs.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
@@ -195,6 +194,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return _procedures.indexWhere((procedure) => procedure.exercise.id == procedureId);
   }
 
+  /// First value is always the weight value and then second can be any value
   void _addSet({required String procedureId}) {
     _dismissKeyboard();
 
@@ -207,14 +207,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ExerciseType.weightAndReps ||
       ExerciseType.bodyWeightAndReps ||
       ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight =>
-        WeightRepsDto(reps: (previousSet as WeightRepsDto?)?.reps ?? 0, weight: previousSet?.weight ?? 0),
+      ExerciseType.assistedBodyWeight ||
+      ExerciseType.weightAndDistance =>
+        WeightedSetDto(first: (previousSet as WeightedSetDto?)?.first ?? 0, second: previousSet?.second ?? 0),
       ExerciseType.duration => DurationDto(duration: (previousSet as DurationDto?)?.duration ?? Duration.zero),
       ExerciseType.distanceAndDuration => DistanceDurationDto(
           distance: (previousSet as DistanceDurationDto?)?.distance ?? 0,
           duration: previousSet?.duration ?? Duration.zero),
-      ExerciseType.weightAndDistance => WeightDistanceDto(
-          weight: (previousSet as WeightDistanceDto?)?.weight ?? 0, distance: previousSet?.distance ?? 0),
     };
     final sets = [...procedure.sets, newSet];
 
@@ -272,13 +271,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  void _updateSetRep({required String procedureId, required int setIndex, required int value}) {
+  void _updateFirstRecordValue({required String procedureId, required int setIndex, required double value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as WeightRepsDto).copyWith(reps: value);
+    sets[setIndex] = (sets[setIndex] as WeightedSetDto).copyWith(first: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
@@ -286,12 +284,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _updateWeight({required String procedureId, required int setIndex, required double value}) {
+  void _updateSecondRecordValue({required String procedureId, required int setIndex, required int value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as WeightRepsDto).copyWith(weight: value);
+    sets[setIndex] = (sets[setIndex] as WeightedSetDto).copyWith(second: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
@@ -586,7 +585,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       for (var set in procedure.sets) {
         if (set.checked) {
           final weightPerSet = switch (exerciseType) {
-            ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightRepsDto).reps * (set).weight,
+            ExerciseType.weightAndReps ||
+            ExerciseType.weightedBodyWeight =>
+              (set as WeightedSetDto).first * (set).second,
             ExerciseType.bodyWeightAndReps ||
             ExerciseType.assistedBodyWeight ||
             ExerciseType.duration ||
@@ -840,9 +841,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                                 onChangedSetRep: (int setIndex, int value) =>
-                                    _updateSetRep(procedureId: exerciseId, setIndex: setIndex, value: value),
+                                    _updateSecondRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
                                 onChangedSetWeight: (int setIndex, double value) =>
-                                    _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
+                                    _updateFirstRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
                                 onChangedSetType: (int setIndex, SetType type) =>
                                     _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
                                 onAddSet: () => _addSet(procedureId: exerciseId),

@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:tracker_app/dtos/distance_duration_dto.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/weight_distance_dto.dart';
-import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 
@@ -49,11 +48,12 @@ class ProcedureDto {
     final setJons = switch (exerciseType) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight || ExerciseType.bodyWeightAndReps =>
-        sets.map((set) => (set as WeightRepsDto).toJson()).toList(),
+      ExerciseType.assistedBodyWeight ||
+      ExerciseType.bodyWeightAndReps ||
+      ExerciseType.weightAndDistance =>
+        sets.map((set) => (set as WeightedSetDto).toJson()).toList(),
       ExerciseType.duration => sets.map((set) => (set as DurationDto).toJson()).toList(),
-      ExerciseType.distanceAndDuration => sets.map((set) => (set as DistanceDurationDto).toJson()).toList(),
-      ExerciseType.weightAndDistance => sets.map((set) => (set as WeightDistanceDto).toJson()).toList(),
+      ExerciseType.distanceAndDuration => sets.map((set) => (set as DistanceDurationDto).toJson()).toList()
     };
 
     return jsonEncode({
@@ -75,12 +75,13 @@ class ProcedureDto {
     final sets = switch (exerciseType) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight || ExerciseType.bodyWeightAndReps =>
-        setsJsons.map((json) => WeightRepsDto.fromJson(jsonDecode(json))).toList(),
+      ExerciseType.assistedBodyWeight ||
+      ExerciseType.bodyWeightAndReps ||
+      ExerciseType.weightAndDistance =>
+        setsJsons.map((json) => WeightedSetDto.fromJson(jsonDecode(json))).toList(),
       ExerciseType.duration => setsJsons.map((json) => DurationDto.fromJson(jsonDecode(json))).toList(),
       ExerciseType.distanceAndDuration =>
-        setsJsons.map((json) => DistanceDurationDto.fromJson(jsonDecode(json))).toList(),
-      ExerciseType.weightAndDistance => setsJsons.map((json) => WeightDistanceDto.fromJson(jsonDecode(json))).toList(),
+        setsJsons.map((json) => DistanceDurationDto.fromJson(jsonDecode(json))).toList()
     };
     final restInterval = json["restInterval"];
     return ProcedureDto(

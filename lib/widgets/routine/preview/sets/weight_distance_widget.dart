@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/weight_distance_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/sets/set_text.dart';
 import 'package:tracker_app/widgets/routine/preview/sets/set_type_icon.dart';
 
@@ -11,12 +11,12 @@ class WeightDistanceWidget extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final WeightDistanceDto setDto;
+  final WeightedSetDto setDto;
 
   @override
   Widget build(BuildContext context) {
-    final weight = isDefaultWeightUnit() ? setDto.weight : toLbs(setDto.weight);
-    final distance = isDefaultDistanceUnit() ? setDto.distance : setDto.distance;
+    final weight = isDefaultWeightUnit() ? setDto.first : toLbs(setDto.first.toDouble());
+    final distance = isDefaultDistanceUnit() ? setDto.second : setDto.second;
 
     return ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),

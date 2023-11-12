@@ -1,6 +1,4 @@
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 enum SetType {
@@ -31,6 +29,6 @@ abstract class SetDto {
   }
 
   String toJson() {
-    return jsonEncode({"type": type.label, "checked": checked});
+    throw UnimplementedError('toJson must be implemented in subclasses');
   }
 }

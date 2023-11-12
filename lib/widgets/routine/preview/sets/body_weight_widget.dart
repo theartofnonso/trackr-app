@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/sets/set_text.dart';
 import 'package:tracker_app/widgets/routine/preview/sets/set_type_icon.dart';
 
@@ -10,7 +10,7 @@ class BodyWeightWidget extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final WeightRepsDto setDto;
+  final WeightedSetDto setDto;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class BodyWeightWidget extends StatelessWidget {
         dense: true,
         title: Row(
           children: [
-            SetText(label: "REPS", number: setDto.reps),
+            SetText(label: "REPS", number: setDto.second),
           ],
         ));
   }

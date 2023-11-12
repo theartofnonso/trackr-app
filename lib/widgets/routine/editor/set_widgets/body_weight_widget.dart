@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/set_widget.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
-import '../../../../utils/general_utils.dart';
 import '../set_type_icon.dart';
 
 class BodyWeightWidget extends SetWidget {
@@ -35,12 +34,12 @@ class BodyWeightWidget extends SetWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previousSetDto = pastSetDto as WeightRepsDto?;
+    final previousSetDto = pastSetDto as WeightedSetDto?;
 
-    double prevWeightValue = 0;
+    int prevRepValue = 0;
 
     if (previousSetDto != null) {
-      prevWeightValue = isDefaultWeightUnit() ? previousSetDto.weight : toLbs(previousSetDto.weight);
+      prevRepValue = previousSetDto.second.toInt();
     }
 
     return Table(
@@ -64,7 +63,7 @@ class BodyWeightWidget extends SetWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.reps}",
+                    "$prevRepValue REPS",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -75,7 +74,7 @@ class BodyWeightWidget extends SetWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: (setDto as WeightRepsDto).reps,
+              initialValue: (setDto as WeightedSetDto).second.toInt(),
               onChanged: (value) {
                 final callback = onChangedReps;
                 if (callback != null) {

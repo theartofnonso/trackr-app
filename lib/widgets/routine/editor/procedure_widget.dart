@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/dtos/weight_reps_dto.dart';
+import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -18,7 +18,7 @@ import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weigh
 import 'package:tracker_app/widgets/routine/editor/procedure_table_headers/weighted_bodyweight_table_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/body_weight_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/duration_widget.dart';
-import 'package:tracker_app/widgets/routine/editor/set_widgets/weight_reps_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_widgets/weighted_set_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
@@ -162,7 +162,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
           onChangedDuration: (Duration duration, bool cache) {
-            print(duration);
             widget.onChangedDuration(index, duration, cache);
           },
           workingIndex: setDto.type == SetType.working ? workingSets : -1,
@@ -338,13 +337,14 @@ class _SetWidget extends StatelessWidget {
     return switch (type) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight =>
-        WeightRepsWidget(
+      ExerciseType.assistedBodyWeight ||
+      ExerciseType.weightAndDistance =>
+        WeightedSetWidget(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
-          setDto: setDto as WeightRepsDto,
-          pastSetDto: pastSet as WeightRepsDto?,
+          setDto: setDto as WeightedSetDto,
+          pastSetDto: pastSet as WeightedSetDto?,
           editorType: editorType,
           onChangedReps: (int value) => onChangedReps!(value),
           onChangedWeight: (double value) => onChangedWeight!(value),
@@ -355,8 +355,8 @@ class _SetWidget extends StatelessWidget {
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
-          setDto: setDto as WeightRepsDto,
-          pastSetDto: pastSet as WeightRepsDto?,
+          setDto: setDto as WeightedSetDto,
+          pastSetDto: pastSet as WeightedSetDto?,
           editorType: editorType,
           onChangedReps: (int value) => onChangedReps!(value),
           onChangedType: (SetType type) => onChangedType!(type),
@@ -374,7 +374,6 @@ class _SetWidget extends StatelessWidget {
           onChangedDuration: (Duration duration, bool cache) => onChangedDuration!(duration, cache),
         ),
       ExerciseType.distanceAndDuration => const SizedBox.shrink(),
-      ExerciseType.weightAndDistance => const SizedBox.shrink(),
     };
   }
 }
