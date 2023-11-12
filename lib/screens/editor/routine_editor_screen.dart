@@ -299,11 +299,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _updateSetDuration({required String procedureId, required int setIndex, required Duration duration}) {
+  void _updateSetDuration(
+      {required String procedureId, required int setIndex, required Duration duration, required bool cache}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as DurationDto).copyWith(duration: duration);
+    final set = cache
+        ? (sets[setIndex] as DurationDto).copyWith(cachedDuration: duration)
+        : (sets[setIndex] as DurationDto).copyWith(duration: duration);
+    sets[setIndex] = set;
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
     if (widget.mode == RoutineEditorType.log) {
@@ -827,32 +831,31 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                             final procedure = _procedures[index];
                             final exerciseId = procedure.exercise.id;
                             return ProcedureWidget(
-                              procedureDto: procedure,
-                              editorType: widget.mode,
-                              otherSuperSetProcedureDto:
-                                  whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
-                              onRemoveSuperSet: (String superSetId) =>
-                                  _removeSuperSet(superSetId: procedure.superSetId),
-                              onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                              onChangedSetRep: (int setIndex, int value) =>
-                                  _updateSetRep(procedureId: exerciseId, setIndex: setIndex, value: value),
-                              onChangedSetWeight: (int setIndex, double value) =>
-                                  _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
-                              onChangedSetType: (int setIndex, SetType type) =>
-                                  _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
-                              onAddSet: () => _addSet(procedureId: exerciseId),
-                              onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
-                              onUpdateNotes: (String value) =>
-                                  _updateProcedureNotes(procedureId: exerciseId, value: value),
-                              onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
-                              onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
-                              onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
-                              onReOrderProcedures: () => _reOrderProcedures(),
-                              onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
-                              onChangedDuration: (int setIndex, Duration duration) =>
-                                  _updateSetDuration(procedureId: exerciseId, setIndex: setIndex, duration: duration),
-                            );
+                                procedureDto: procedure,
+                                editorType: widget.mode,
+                                otherSuperSetProcedureDto:
+                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                                onRemoveSuperSet: (String superSetId) =>
+                                    _removeSuperSet(superSetId: procedure.superSetId),
+                                onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+                                onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                                onChangedSetRep: (int setIndex, int value) =>
+                                    _updateSetRep(procedureId: exerciseId, setIndex: setIndex, value: value),
+                                onChangedSetWeight: (int setIndex, double value) =>
+                                    _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
+                                onChangedSetType: (int setIndex, SetType type) =>
+                                    _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
+                                onAddSet: () => _addSet(procedureId: exerciseId),
+                                onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
+                                onUpdateNotes: (String value) =>
+                                    _updateProcedureNotes(procedureId: exerciseId, value: value),
+                                onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
+                                onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
+                                onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
+                                onReOrderProcedures: () => _reOrderProcedures(),
+                                onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
+                                onChangedDuration: (int setIndex, Duration duration, bool cache) => _updateSetDuration(
+                                    procedureId: exerciseId, setIndex: setIndex, duration: duration, cache: cache));
                           },
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
                           itemCount: _procedures.length)),

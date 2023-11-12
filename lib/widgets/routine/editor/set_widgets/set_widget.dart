@@ -13,9 +13,9 @@ abstract class SetWidget extends StatelessWidget {
     this.editorType = RoutineEditorType.edit,
     required this.onTapCheck,
     required this.onRemoved,
+    required this.onChangedType,
     this.onChangedReps,
     this.onChangedWeight,
-    this.onChangedType,
     this.onChangedDuration,
     this.onChangedDistance,
   });
@@ -27,9 +27,9 @@ abstract class SetWidget extends StatelessWidget {
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
+  final void Function(SetType type) onChangedType;
   final void Function(int value)? onChangedReps;
   final void Function(double value)? onChangedWeight;
-  final void Function(SetType type)? onChangedType;
-  final void Function(Duration duration)? onChangedDuration;
+  final void Function(Duration duration, bool cache)? onChangedDuration;
   final void Function(int distance)? onChangedDistance;
 }

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/editor/set_widgets/set_widget.dart';
@@ -24,20 +23,19 @@ class DurationWidget extends SetWidget {
       RoutineEditorType editorType = RoutineEditorType.edit,
       required VoidCallback onTapCheck,
       required VoidCallback onRemoved,
-      required void Function(Duration duration) onChangedDuration,
+      required void Function(Duration duration, bool cache) onChangedDuration,
       required void Function(SetType type) onChangedType})
       : super(
-          key: key,
-          index: index,
-          workingIndex: workingIndex,
-          setDto: setDto,
-          pastSetDto: pastSetDto,
-          editorType: editorType,
-          onTapCheck: onTapCheck,
-          onRemoved: onRemoved,
-          onChangedDuration: onChangedDuration,
-          onChangedType: onChangedType,
-        );
+            key: key,
+            index: index,
+            workingIndex: workingIndex,
+            setDto: setDto,
+            pastSetDto: pastSetDto,
+            editorType: editorType,
+            onTapCheck: onTapCheck,
+            onRemoved: onRemoved,
+            onChangedType: onChangedType,
+            onChangedDuration: onChangedDuration);
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +74,10 @@ class DurationWidget extends SetWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: _IntervalTimer(
                 durationDto: (setDto as DurationDto),
-                onChangedDuration: (Duration duration) {
+                onChangedDuration: (Duration duration, bool cache) {
                   final callback = onChangedDuration;
                   if (callback != null) {
-                    callback(duration);
+                    callback(duration, cache);
                   }
                 }),
           ),
@@ -102,7 +100,7 @@ class DurationWidget extends SetWidget {
 
 class _IntervalTimer extends StatefulWidget {
   final DurationDto durationDto;
-  final void Function(Duration duration) onChangedDuration;
+  final void Function(Duration duration, bool cache) onChangedDuration;
 
   const _IntervalTimer({required this.durationDto, required this.onChangedDuration});
 
@@ -121,11 +119,12 @@ class _IntervalTimerState extends State<_IntervalTimer> {
       children: [
         _timerButton(),
         GestureDetector(
-              onTap: () => _showRestIntervalTimePicker(context: context),
-              child: Text(
-                Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
-                textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold),
-              ))
+            onTap: () => _showRestIntervalTimePicker(context: context),
+            child: Text(
+              Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ))
       ],
     );
   }
@@ -138,7 +137,17 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   }
 
   void _startTimer() {
-    _elapsedSeconds = _timer != null ? _elapsedSeconds : 0;
+    final timer = _timer;
+    if (timer != null) {
+      _elapsedSeconds = _elapsedSeconds;
+    }
+
+    if (widget.durationDto.cachedDuration > Duration.zero) {
+      _elapsedSeconds = widget.durationDto.cachedDuration.inSeconds;
+    } else {
+      _elapsedSeconds = 0;
+    }
+
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _elapsedSeconds++;
@@ -147,7 +156,7 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   }
 
   void _pauseTimer() {
-    widget.onChangedDuration(Duration(seconds: _elapsedSeconds));
+    widget.onChangedDuration(Duration(seconds: _elapsedSeconds), true);
     setState(() {
       _timer?.cancel();
     });
@@ -162,7 +171,9 @@ class _IntervalTimerState extends State<_IntervalTimer> {
   @override
   void initState() {
     super.initState();
-    _elapsedSeconds = widget.durationDto.duration.inSeconds;
+    _elapsedSeconds = widget.durationDto.cachedDuration > Duration.zero
+        ? widget.durationDto.cachedDuration.inSeconds
+        : widget.durationDto.duration.inSeconds;
   }
 
   void _showRestIntervalTimePicker({required BuildContext context}) {
@@ -178,7 +189,8 @@ class _IntervalTimerState extends State<_IntervalTimer> {
             setState(() {
               _elapsedSeconds = duration.inSeconds;
             });
-            widget.onChangedDuration(duration);
+            widget.onChangedDuration(Duration.zero, true);
+            widget.onChangedDuration(duration, false);
           },
         ));
   }

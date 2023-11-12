@@ -24,18 +24,17 @@ class WeightRepsWidget extends SetWidget {
       required void Function(double value) onChangedWeight,
       required void Function(SetType type) onChangedType})
       : super(
-          key: key,
-          index: index,
-          workingIndex: workingIndex,
-          setDto: setDto,
-          pastSetDto: pastSetDto,
-          editorType: editorType,
-          onTapCheck: onTapCheck,
-          onRemoved: onRemoved,
-          onChangedReps: onChangedReps,
-          onChangedWeight: onChangedWeight,
-          onChangedType: onChangedType,
-        );
+            key: key,
+            index: index,
+            workingIndex: workingIndex,
+            setDto: setDto,
+            pastSetDto: pastSetDto,
+            editorType: editorType,
+            onTapCheck: onTapCheck,
+            onRemoved: onRemoved,
+            onChangedType: onChangedType,
+            onChangedReps: onChangedReps,
+            onChangedWeight: onChangedWeight);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +94,7 @@ class WeightRepsWidget extends SetWidget {
               initialValue: (setDto as WeightRepsDto).reps,
               onChanged: (value) {
                 final callback = onChangedReps;
-                if(callback != null) {
+                if (callback != null) {
                   callback(value);
                 }
               },

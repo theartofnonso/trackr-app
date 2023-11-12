@@ -47,7 +47,7 @@ class ProcedureWidget extends StatefulWidget {
   final void Function(int setIndex) onCheckSet;
   final void Function(int setIndex, int value) onChangedSetRep;
   final void Function(int setIndex, double value) onChangedSetWeight;
-  final void Function(int setIndex, Duration duration) onChangedDuration;
+  final void Function(int setIndex, Duration duration, bool cache) onChangedDuration;
   final void Function(int setIndex, SetType type) onChangedSetType;
 
   const ProcedureWidget({
@@ -77,7 +77,6 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-
   List<SetDto> _pastSets = [];
 
   /// [MenuItemButton]
@@ -162,7 +161,10 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onChangedReps: (int value) => widget.onChangedSetRep(index, value),
           onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
-          onChangedDuration: (Duration duration) => widget.onChangedDuration(index, duration),
+          onChangedDuration: (Duration duration, bool cache) {
+            print(duration);
+            widget.onChangedDuration(index, duration, cache);
+          },
           workingIndex: setDto.type == SetType.working ? workingSets : -1,
           setDto: setDto,
           pastSet: pastSet,
@@ -310,7 +312,7 @@ class _SetWidget extends StatelessWidget {
   final void Function(int value)? onChangedReps;
   final void Function(double value)? onChangedWeight;
   final void Function(SetType type)? onChangedType;
-  final void Function(Duration duration)? onChangedDuration;
+  final void Function(Duration duration, bool cache)? onChangedDuration;
   final int workingIndex;
   final SetDto setDto;
   final SetDto? pastSet;
@@ -325,7 +327,7 @@ class _SetWidget extends StatelessWidget {
       this.onChangedReps,
       this.onChangedWeight,
       this.onChangedType,
-        this.onChangedDuration,
+      this.onChangedDuration,
       required this.workingIndex,
       required this.setDto,
       required this.pastSet,
@@ -333,7 +335,6 @@ class _SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(type);
     return switch (type) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
@@ -370,7 +371,7 @@ class _SetWidget extends StatelessWidget {
           editorType: editorType,
           onChangedType: (SetType type) => onChangedType!(type),
           onTapCheck: onTapCheck,
-          onChangedDuration: (Duration duration) => onChangedDuration!(duration),
+          onChangedDuration: (Duration duration, bool cache) => onChangedDuration!(duration, cache),
         ),
       ExerciseType.distanceAndDuration => const SizedBox.shrink(),
       ExerciseType.weightAndDistance => const SizedBox.shrink(),
