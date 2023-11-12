@@ -21,8 +21,10 @@ class WeightRepsWidget extends StatelessWidget {
     String weightPrefix = "";
     if(exerciseType == ExerciseType.weightedBodyWeight) {
       weightPrefix = "+";
+    } else if(exerciseType == ExerciseType.weightedBodyWeight) {
+      weightPrefix = "+";
     } else {
-      weightPrefix = "-";
+      weightPrefix = "";
     }
 
     return ListTile(
