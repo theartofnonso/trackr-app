@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/routine/preview/sets/duration_widget.dart';
-import 'package:tracker_app/widgets/routine/preview/sets/weight_distance_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/set_rows/duration_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/set_rows/weight_distance_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../empty_states/list_tile_empty_state.dart';
-import '../routine/preview/sets/weight_reps_widget.dart';
-import '../routine/preview/sets/body_weight_widget.dart';
+import '../routine/preview/set_rows/body_weight_widget.dart';
+import '../routine/preview/set_rows/weighted_set_row.dart';
 
 ProcedureDto? whereOtherSuperSetProcedure(
     {required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
@@ -32,10 +32,10 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
         ExerciseType.weightAndReps ||
         ExerciseType.weightedBodyWeight ||
         ExerciseType.assistedBodyWeight =>
-          WeightRepsWidget(
+          WeightedSetRow(
             index: index,
             workingIndex: workingIndex,
-            setDto: setDto as WeightedSetDto, exerciseType: type,
+            setDto: setDto as WeightedSetDto,
           ),
         ExerciseType.bodyWeightAndReps => BodyWeightWidget(
             index: index,

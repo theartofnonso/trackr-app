@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/distance_duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/routine/preview/sets/set_text.dart';
-import 'package:tracker_app/widgets/routine/preview/sets/set_type_icon.dart';
+import 'package:tracker_app/widgets/routine/preview/set_rows/set_text.dart';
+import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 import '../../../../app_constants.dart';
 import '../../../../utils/general_utils.dart';

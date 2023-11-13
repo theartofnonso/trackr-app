@@ -5,7 +5,12 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import '../../../screens/exercise/exercise_history_screen.dart';
+import '../../../utils/general_utils.dart';
 import '../../helper_widgets/routine_helper.dart';
+import '../preview/set_headers/distance_duration_set_header.dart';
+import '../preview/set_headers/duration_set_header.dart';
+import '../preview/set_headers/reps_set_header.dart';
+import '../preview/set_headers/weighted_set_header.dart';
 
 class ProcedureWidget extends StatelessWidget {
   final ProcedureDto procedureDto;
@@ -15,26 +20,27 @@ class ProcedureWidget extends StatelessWidget {
   const ProcedureWidget({
     super.key,
     required this.procedureDto,
-    required this.otherSuperSetProcedureDto, this.readOnly = false,
+    required this.otherSuperSetProcedureDto,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
-
     final otherProcedureDto = otherSuperSetProcedureDto;
+
+    final exerciseString = procedureDto.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseString);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Theme(
-          data: ThemeData(
-            splashColor: tealBlueLight
-          ),
+          data: ThemeData(splashColor: tealBlueLight),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
             onTap: () {
-              if(!readOnly) {
+              if (!readOnly) {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exercise: procedureDto.exercise)));
               }
@@ -71,6 +77,15 @@ class ProcedureWidget extends StatelessWidget {
                     style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
+        switch (exerciseType) {
+          ExerciseType.weightAndReps => WeightedSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS',),
+          ExerciseType.weightedBodyWeight => WeightedSetHeader(firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS',),
+          ExerciseType.assistedBodyWeight => WeightedSetHeader(firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS',),
+          ExerciseType.weightAndDistance => WeightedSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
+          ExerciseType.bodyWeightAndReps => const RepsSetHeader(),
+          ExerciseType.duration => const DurationSetHeader(),
+          ExerciseType.distanceAndDuration => const DistanceDurationSetHeader(),
+        },
         ...setsToWidgets(type: ExerciseType.fromString(procedureDto.exercise.type), sets: procedureDto.sets),
       ],
     );

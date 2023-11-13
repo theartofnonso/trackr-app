@@ -13,18 +13,15 @@ class SetText extends StatelessWidget {
 
     final value = string ?? number;
 
-    return SizedBox(
-      width: 100,
-      child: Row(
-        children: [
-          Text(label, style: GoogleFonts.lato(fontSize: 12, color: Colors.grey)),
-          const SizedBox(width: 10),
-          Text(
-            "$value",
-            style: GoogleFonts.lato(color: Colors.white),
-          )
-        ],
-      ),
+    return Row(
+      children: [
+        Text(label, style: GoogleFonts.lato(fontSize: 12, color: Colors.grey)),
+        const SizedBox(width: 10),
+        Text(
+          "$value",
+          style: GoogleFonts.lato(color: Colors.white),
+        )
+      ],
     );
   }
 }

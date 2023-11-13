@@ -3,15 +3,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_type_icon.dart';
 
-class WeightedSetRowWidget extends SetRowWidget {
-  const WeightedSetRowWidget(
+class WeightedSetRow extends SetRow {
+  const WeightedSetRow(
       {Key? key,
       required int index,
       required int workingIndex,

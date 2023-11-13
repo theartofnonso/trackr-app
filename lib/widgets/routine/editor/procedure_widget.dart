@@ -13,9 +13,9 @@ import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.d
 import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/weighted_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row_widget.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row_widget.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/weighted_set_row_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/weighted_set_row.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
@@ -337,7 +337,7 @@ class _SetWidget extends StatelessWidget {
       ExerciseType.weightedBodyWeight ||
       ExerciseType.assistedBodyWeight ||
       ExerciseType.weightAndDistance =>
-        WeightedSetRowWidget(
+        WeightedSetRow(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
@@ -349,7 +349,7 @@ class _SetWidget extends StatelessWidget {
           onChangedType: (SetType type) => onChangedType!(type),
           onTapCheck: onTapCheck,
         ),
-      ExerciseType.bodyWeightAndReps => RepsSetRowWidget(
+      ExerciseType.bodyWeightAndReps => RepsSetRow(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
@@ -360,7 +360,7 @@ class _SetWidget extends StatelessWidget {
           onChangedType: (SetType type) => onChangedType!(type),
           onTapCheck: onTapCheck,
         ),
-      ExerciseType.duration => DurationSetRowWidget(
+      ExerciseType.duration => DurationSetRow(
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row_widget.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
@@ -13,8 +13,8 @@ import '../../../helper_widgets/dialog_helper.dart';
 import '../../../time_picker.dart';
 import '../set_type_icon.dart';
 
-class DurationSetRowWidget extends SetRowWidget {
-  const DurationSetRowWidget(
+class DurationSetRow extends SetRow {
+  const DurationSetRow(
       {Key? key,
       required int index,
       required int workingIndex,
