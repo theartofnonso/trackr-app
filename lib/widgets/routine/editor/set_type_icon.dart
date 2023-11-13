@@ -9,8 +9,8 @@ import '../../helper_widgets/dialog_helper.dart';
 class SetTypeIcon extends StatelessWidget {
   final SetType type;
   final int label;
-  final void Function(SetType type)? onSelectSetType;
-  final void Function()? onRemoveSet;
+  final void Function(SetType type) onSelectSetType;
+  final void Function() onRemoveSet;
 
   const SetTypeIcon({super.key,
     required this.type,
@@ -21,10 +21,7 @@ class SetTypeIcon extends StatelessWidget {
 
   void selectType(BuildContext context, SetType type) {
     Navigator.pop(context);
-    final callback = onSelectSetType;
-    if(callback != null) {
-      callback(type);
-    }
+    onSelectSetType(type);
   }
 
   @override
@@ -64,10 +61,7 @@ class SetTypeIcon extends StatelessWidget {
                       title: Text("Drop Set", style: GoogleFonts.lato(fontSize: 14))),
                   CTextButton(onPressed: () {
                     Navigator.pop(context);
-                    final callback = onRemoveSet;
-                    if(callback != null) {
-                      callback();
-                    }
+                    onRemoveSet();
                   }, label: "Remove Set", buttonColor: tealBlueDark,)
                 ],
               ),
