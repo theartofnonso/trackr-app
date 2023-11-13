@@ -3,38 +3,40 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_type_icon.dart';
 
-class WeightedSetRow extends SetRow {
+class WeightedSetRow extends StatelessWidget {
+  final int index;
+  final int workingIndex;
+  final SetDto setDto;
+  final SetDto? pastSetDto;
+  final RoutineEditorType editorType;
+  final void Function() onTapCheck;
+  final void Function() onRemoved;
+  final void Function(SetType type) onChangedType;
+  final void Function(int value)? onChangedReps;
+  final void Function(double value)? onChangedWeight;
+  final void Function(Duration duration, bool cache)? onChangedDuration;
+  final void Function(int distance)? onChangedDistance;
+
   const WeightedSetRow(
-      {Key? key,
-      required int index,
-      required int workingIndex,
-      required WeightedSetDto setDto,
-      WeightedSetDto? pastSetDto,
-      RoutineEditorType editorType = RoutineEditorType.edit,
-      required VoidCallback onTapCheck,
-      required VoidCallback onRemoved,
-      required void Function(int value) onChangedReps,
-      required void Function(double value) onChangedWeight,
-      required void Function(SetType type) onChangedType})
-      : super(
-            key: key,
-            index: index,
-            workingIndex: workingIndex,
-            setDto: setDto,
-            pastSetDto: pastSetDto,
-            editorType: editorType,
-            onTapCheck: onTapCheck,
-            onRemoved: onRemoved,
-            onChangedType: onChangedType,
-            onChangedReps: onChangedReps,
-            onChangedWeight: onChangedWeight);
+      {super.key,
+      required this.index,
+      required this.workingIndex,
+      required this.setDto,
+      this.pastSetDto,
+      required this.editorType,
+      required this.onTapCheck,
+      required this.onRemoved,
+      required this.onChangedType,
+      this.onChangedReps,
+      this.onChangedWeight,
+      this.onChangedDuration,
+      this.onChangedDistance});
 
   @override
   Widget build(BuildContext context) {

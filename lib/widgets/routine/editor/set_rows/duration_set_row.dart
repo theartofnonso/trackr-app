@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
@@ -13,36 +12,43 @@ import '../../../helper_widgets/dialog_helper.dart';
 import '../../../time_picker.dart';
 import '../set_type_icon.dart';
 
-class DurationSetRow extends SetRow {
+class DurationSetRow extends StatefulWidget {
+  final int index;
+  final int workingIndex;
+  final SetDto setDto;
+  final SetDto? pastSetDto;
+  final RoutineEditorType editorType;
+  final void Function() onTapCheck;
+  final void Function() onRemoved;
+  final void Function(SetType type) onChangedType;
+  final void Function(Duration duration, bool cache) onChangedDuration;
+
   const DurationSetRow(
-      {Key? key,
-      required int index,
-      required int workingIndex,
-      required SetDto setDto,
-      SetDto? pastSetDto,
-      RoutineEditorType editorType = RoutineEditorType.edit,
-      required VoidCallback onTapCheck,
-      required VoidCallback onRemoved,
-      required void Function(Duration duration, bool cache) onChangedDuration,
-      required void Function(SetType type) onChangedType})
-      : super(
-            key: key,
-            index: index,
-            workingIndex: workingIndex,
-            setDto: setDto,
-            pastSetDto: pastSetDto,
-            editorType: editorType,
-            onTapCheck: onTapCheck,
-            onRemoved: onRemoved,
-            onChangedType: onChangedType,
-            onChangedDuration: onChangedDuration);
+      {super.key,
+      required this.index,
+      required this.workingIndex,
+      required this.setDto,
+      this.pastSetDto,
+      required this.editorType,
+      required this.onTapCheck,
+      required this.onRemoved,
+      required this.onChangedType,
+      required this.onChangedDuration});
+
+  @override
+  State<DurationSetRow> createState() => _DurationSetRowState();
+}
+
+class _DurationSetRowState extends State<DurationSetRow> {
+  int _elapsedTime = 0;
+  bool _isStopped = false;
 
   @override
   Widget build(BuildContext context) {
-    final previousSetDto = pastSetDto as DurationDto?;
+    final previousSetDto = widget.pastSetDto as DurationDto?;
 
     return Table(
-      columnWidths: editorType == RoutineEditorType.edit
+      columnWidths: widget.editorType == RoutineEditorType.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(2),
@@ -59,10 +65,10 @@ class DurationSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: setDto.type,
-                label: workingIndex,
-                onSelectSetType: onChangedType,
-                onRemoveSet: onRemoved,
+                type: widget.setDto.type,
+                label: widget.workingIndex,
+                onSelectSetType: widget.onChangedType,
+                onRemoveSet: widget.onRemoved,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
@@ -79,21 +85,28 @@ class DurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: _IntervalTimer(
-              editorType: editorType,
-                durationDto: (setDto as DurationDto),
-                onChangedDuration: (Duration duration, bool cache) {
-                  final callback = onChangedDuration;
-                  if (callback != null) {
-                    callback(duration, cache);
-                  }
-                }),
+              editorType: widget.editorType,
+              durationDto: (widget.setDto as DurationDto),
+              onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(duration, cache),
+              onTick: (int seconds) {
+                setState(() {
+                  _elapsedTime = seconds;
+                });
+              },
+              enabled: _isStopped,
+            ),
           ),
-          if (editorType == RoutineEditorType.log)
+          if (widget.editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: GestureDetector(
-                  onTap: onTapCheck,
-                  child: setDto.checked
+                  onTap: () {
+                    print(_elapsedTime);
+                    widget.onChangedDuration(Duration(seconds: _elapsedTime), false);
+                    widget.onTapCheck();
+                    _isStopped = true;
+                  },
+                  child: widget.setDto.checked
                       ? const Icon(Icons.check_box_rounded, color: Colors.green)
                       : const Icon(Icons.check_box_rounded, color: Colors.grey),
                 ))
@@ -107,8 +120,15 @@ class _IntervalTimer extends StatefulWidget {
   final DurationDto durationDto;
   final RoutineEditorType editorType;
   final void Function(Duration duration, bool cache) onChangedDuration;
+  final void Function(int seconds) onTick;
+  final bool enabled;
 
-  const _IntervalTimer({required this.durationDto, required this.editorType, required this.onChangedDuration});
+  const _IntervalTimer(
+      {required this.durationDto,
+      required this.editorType,
+      required this.onChangedDuration,
+      required this.onTick,
+      required this.enabled});
 
   @override
   State<_IntervalTimer> createState() => _IntervalTimerState();
@@ -123,8 +143,7 @@ class _IntervalTimerState extends State<_IntervalTimer> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if(widget.editorType == RoutineEditorType.log)
-          _timerButton(),
+        if (widget.editorType == RoutineEditorType.log) _timerButton(),
         GestureDetector(
             onTap: () => _showRestIntervalTimePicker(context: context),
             child: Text(
@@ -159,6 +178,7 @@ class _IntervalTimerState extends State<_IntervalTimer> {
       setState(() {
         _elapsedSeconds++;
       });
+      widget.onTick(_elapsedSeconds);
     });
   }
 
@@ -181,6 +201,14 @@ class _IntervalTimerState extends State<_IntervalTimer> {
     _elapsedSeconds = widget.durationDto.cachedDuration > Duration.zero
         ? widget.durationDto.cachedDuration.inSeconds
         : widget.durationDto.duration.inSeconds;
+  }
+
+  @override
+  void didUpdateWidget(_IntervalTimer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.enabled) {
+      _timer?.cancel();
+    }
   }
 
   void _showRestIntervalTimePicker({required BuildContext context}) {

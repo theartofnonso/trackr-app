@@ -2,35 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../set_type_icon.dart';
 
-class RepsSetRow extends SetRow {
+class RepsSetRow extends StatelessWidget {
+  final int index;
+  final int workingIndex;
+  final SetDto setDto;
+  final SetDto? pastSetDto;
+  final RoutineEditorType editorType;
+  final void Function() onTapCheck;
+  final void Function() onRemoved;
+  final void Function(SetType type) onChangedType;
+  final void Function(int value)? onChangedReps;
+
   const RepsSetRow(
-      {Key? key,
-      required int index,
-      required int workingIndex,
-      required SetDto setDto,
-      SetDto? pastSetDto,
-      RoutineEditorType editorType = RoutineEditorType.edit,
-      required VoidCallback onTapCheck,
-      required VoidCallback onRemoved,
-      required void Function(int value) onChangedReps,
-      required void Function(SetType type) onChangedType})
-      : super(
-            key: key,
-            index: index,
-            workingIndex: workingIndex,
-            setDto: setDto,
-            pastSetDto: pastSetDto,
-            editorType: editorType,
-            onTapCheck: onTapCheck,
-            onRemoved: onRemoved,
-            onChangedType: onChangedType,
-            onChangedReps: onChangedReps);
+      {super.key,
+      required this.index,
+      required this.workingIndex,
+      required this.setDto,
+      this.pastSetDto,
+      required this.editorType,
+      required this.onTapCheck,
+      required this.onRemoved,
+      required this.onChangedType,
+      this.onChangedReps});
 
   @override
   Widget build(BuildContext context) {

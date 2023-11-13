@@ -307,6 +307,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         ? (sets[setIndex] as DurationDto).copyWith(cachedDuration: duration)
         : (sets[setIndex] as DurationDto).copyWith(duration: duration);
     sets[setIndex] = set;
+    print(set);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
     if (widget.mode == RoutineEditorType.log) {
