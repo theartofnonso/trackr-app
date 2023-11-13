@@ -79,6 +79,7 @@ class DurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: _IntervalTimer(
+              editorType: editorType,
                 durationDto: (setDto as DurationDto),
                 onChangedDuration: (Duration duration, bool cache) {
                   final callback = onChangedDuration;
@@ -104,9 +105,10 @@ class DurationSetRow extends SetRow {
 
 class _IntervalTimer extends StatefulWidget {
   final DurationDto durationDto;
+  final RoutineEditorType editorType;
   final void Function(Duration duration, bool cache) onChangedDuration;
 
-  const _IntervalTimer({required this.durationDto, required this.onChangedDuration});
+  const _IntervalTimer({required this.durationDto, required this.editorType, required this.onChangedDuration});
 
   @override
   State<_IntervalTimer> createState() => _IntervalTimerState();
@@ -121,7 +123,8 @@ class _IntervalTimerState extends State<_IntervalTimer> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _timerButton(),
+        if(widget.editorType == RoutineEditorType.log)
+          _timerButton(),
         GestureDetector(
             onTap: () => _showRestIntervalTimePicker(context: context),
             child: Text(
