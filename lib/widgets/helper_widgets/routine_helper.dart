@@ -34,7 +34,7 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
           color: tealBlueLighter,
           borderRadius: BorderRadius.circular(3),
         ),
-        //padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: switch (type) {
           ExerciseType.weightAndReps ||
           ExerciseType.weightedBodyWeight ||
