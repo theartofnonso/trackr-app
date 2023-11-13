@@ -34,8 +34,8 @@ class ExerciseInLibraryDto {
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool multiSelect;
-
-  const ExerciseLibraryScreen({super.key, this.multiSelect = true});
+  final bool readOnly;
+  const ExerciseLibraryScreen({super.key, this.multiSelect = true, this.readOnly = false});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -96,14 +96,22 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     if (widget.multiSelect) {
       return SelectableExerciseWidget(
           exerciseInLibraryDto: exerciseInLibraryDto,
-          onTap: (selected) => _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto),
+          onTap: (selected) {
+            if(!widget.readOnly) {
+              _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto);
+            }
+          },
           onNavigateToExercise: () {
             _navigateToExerciseHistory(exerciseInLibraryDto);
           });
     }
     return ExerciseWidget(
         exerciseInLibraryDto: exerciseInLibraryDto,
-        onTap: () => _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto),
+        onTap: () {
+          if(!widget.readOnly) {
+            _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto);
+          }
+        },
         onNavigateToExercise: () {
           _navigateToExerciseHistory(exerciseInLibraryDto);
         });

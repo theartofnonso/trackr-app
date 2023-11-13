@@ -160,7 +160,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _navigateToExerciseLibrary() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen()));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const ExerciseLibraryScreen(
+              multiSelect: false,
+              readOnly: true,
+            )));
   }
 
   void _logout() async {

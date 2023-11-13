@@ -14,6 +14,7 @@ class SetTypeIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       type == SetType.working ? "${label + 1}" : type.label,
+      textAlign: TextAlign.center,
       style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
     );
   }

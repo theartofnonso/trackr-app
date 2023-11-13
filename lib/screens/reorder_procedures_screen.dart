@@ -64,6 +64,7 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
         actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save", buttonColor: Colors.transparent,) : const SizedBox.shrink()],
       ),
       body: ReorderableListView(
+          buildDefaultDragHandles: true,
           children: _proceduresToWidgets(),
           onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
     );

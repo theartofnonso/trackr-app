@@ -27,18 +27,18 @@ class DistanceDurationSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetTypeIcon(type: setDto.type, label: workingIndex)),
         TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text(
+              "$distance",
+              style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
+            )),
+        TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Text(
             setDto.duration.secondsOrMinutesOrHours(),
             style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
           ),
-        ),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(
-              "$distance",
-              style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-            ))
+        )
       ]),
     ]);
   }

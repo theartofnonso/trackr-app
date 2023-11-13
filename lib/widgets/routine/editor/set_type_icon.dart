@@ -74,12 +74,10 @@ class SetTypeIcon extends StatelessWidget {
             ),
             height: 250);
       },
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Text(
-          type == SetType.working ? "${label + 1}" : type.label,
-          style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
-        ),
+      child: Text(
+        type == SetType.working ? "${label + 1}" : type.label,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
       ),
     );
   }

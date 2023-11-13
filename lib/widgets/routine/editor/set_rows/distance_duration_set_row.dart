@@ -57,7 +57,8 @@ class _DistanceDurationSetRowState extends State<DistanceDurationSetRow> {
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
-              3: const FlexColumnWidth(1),
+              3: const FlexColumnWidth(3),
+              4: const FlexColumnWidth(1),
             },
       children: [
         TableRow(children: [

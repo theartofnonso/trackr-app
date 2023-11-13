@@ -17,7 +17,8 @@ class DurationSetRow extends StatelessWidget {
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),
-      1: FlexColumnWidth(1),
+      1: FlexColumnWidth(),
+      2: FlexColumnWidth()
     }, children: <TableRow>[
       TableRow(children: [
         TableCell(
@@ -28,7 +29,8 @@ class DurationSetRow extends StatelessWidget {
             child: Text(
               setDto.duration.secondsOrMinutesOrHours(),
               style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-            ))
+            )),
+        const TableCell(child: SizedBox.shrink())
       ]),
     ]);
   }
