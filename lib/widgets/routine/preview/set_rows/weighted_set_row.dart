@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 import '../../../../utils/general_utils.dart';
 
 class WeightedSetRow extends StatelessWidget {
-  const WeightedSetRow(
-      {super.key, required this.index, required this.workingIndex, required this.setDto});
+  const WeightedSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
 
   final int index;
   final int workingIndex;
@@ -20,52 +18,29 @@ class WeightedSetRow extends StatelessWidget {
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),
-      1: FlexColumnWidth(2),
-      2: FlexColumnWidth(2),
+      1: FlexColumnWidth(),
+      2: FlexColumnWidth(),
     }, children: <TableRow>[
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: tealBlueLighter,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(3),
-                  bottomLeft: Radius.circular(3),
-                ),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              child: SetTypeIcon(type: setDto.type, label: workingIndex),
-            )),
+            child: SetTypeIcon(type: setDto.type, label: workingIndex)),
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
-          child: Container(
-            color: tealBlueLighter,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "$weight",
-              style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-            ),
+          child: Text(
+            "$weight",
+            style: GoogleFonts.lato(color: Colors.white),
+            textAlign: TextAlign.center,
           ),
         ),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: tealBlueLighter,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(3),
-                  bottomRight: Radius.circular(3),
-                ),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "${setDto.second}",
-                style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-              ),
+            child: Text(
+              "${setDto.second}",
+              style: GoogleFonts.lato(color: Colors.white),
+              textAlign: TextAlign.center,
             ))
       ]),
     ]);
-
   }
 }

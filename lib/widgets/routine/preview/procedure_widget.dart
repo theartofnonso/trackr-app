@@ -86,6 +86,7 @@ class ProcedureWidget extends StatelessWidget {
           ExerciseType.duration => const DurationSetHeader(),
           ExerciseType.distanceAndDuration => const DistanceDurationSetHeader(),
         },
+        const SizedBox(height: 8),
         ...setsToWidgets(type: ExerciseType.fromString(procedureDto.exercise.type), sets: procedureDto.sets),
       ],
     );

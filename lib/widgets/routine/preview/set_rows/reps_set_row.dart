@@ -3,10 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
-import '../../../../utils/general_utils.dart';
-
-class WeightDistanceSetRow extends StatelessWidget {
-  const WeightDistanceSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
+class RepsSetRow extends StatelessWidget {
+  const RepsSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
 
   final int index;
   final int workingIndex;
@@ -14,13 +12,11 @@ class WeightDistanceSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weight = isDefaultWeightUnit() ? setDto.first : toLbs(setDto.first.toDouble());
-    final distance = isDefaultDistanceUnit() ? setDto.second : setDto.second;
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),
-      1: FlexColumnWidth(2),
-      2: FlexColumnWidth(2),
+      1: FlexColumnWidth(),
+      2: FlexColumnWidth(),
     }, children: <TableRow>[
       TableRow(children: [
         TableCell(
@@ -29,16 +25,11 @@ class WeightDistanceSetRow extends StatelessWidget {
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Text(
-            "$weight",
+            "${setDto.second}",
             style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
           ),
         ),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(
-              "$distance",
-              style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-            ))
+        const TableCell(child: SizedBox.shrink())
       ]),
     ]);
   }
