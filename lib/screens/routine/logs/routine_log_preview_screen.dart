@@ -308,7 +308,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       percentageMap[item.name] = percentage;
     });
 
-    return percentageMap;
+    final sortedMap = percentageMap.entries.toList();
+    sortedMap.sort((a, b) => b.value.compareTo(a.value));
+
+    return Map.fromEntries(sortedMap);
   }
 
   List<Widget> _muscleGroupSplit({required List<String> procedureJsons}) {
