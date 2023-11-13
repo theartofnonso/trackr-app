@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/distance_duration_dto.dart';
-import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -370,8 +369,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ExerciseType.bodyWeightAndReps ||
                       ExerciseType.weightAndDistance =>
                         (set as WeightedSetDto).copyWith(checked: false),
-                      ExerciseType.duration => (set as DurationDto).copyWith(checked: false),
-                      ExerciseType.distanceAndDuration => (set as DistanceDurationDto).copyWith(checked: false)
+                      ExerciseType.duration ||
+                      ExerciseType.distanceAndDuration =>
+                        (set as DurationDto).copyWith(checked: false)
                     })
                 .toList();
             return procedure.copyWith(sets: newSets);

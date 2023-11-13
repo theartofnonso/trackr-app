@@ -10,13 +10,13 @@ import '../set_type_icon.dart';
 class RepsSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
-  final SetDto setDto;
-  final SetDto? pastSetDto;
+  final WeightedSetDto setDto;
+  final WeightedSetDto? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
-  final void Function(int value)? onChangedReps;
+  final void Function(int value) onChangedReps;
 
   const RepsSetRow(
       {super.key,
@@ -28,11 +28,11 @@ class RepsSetRow extends StatelessWidget {
       required this.onTapCheck,
       required this.onRemoved,
       required this.onChangedType,
-      this.onChangedReps});
+      required this.onChangedReps});
 
   @override
   Widget build(BuildContext context) {
-    final previousSetDto = pastSetDto as WeightedSetDto?;
+    final previousSetDto = pastSetDto;
 
     int prevRepValue = 0;
 
@@ -78,13 +78,8 @@ class RepsSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: (setDto as WeightedSetDto).second.toInt(),
-              onChanged: (value) {
-                final callback = onChangedReps;
-                if (callback != null) {
-                  callback(value);
-                }
-              },
+              initialValue: setDto.second.toInt(),
+              onChanged: onChangedReps,
             ),
           ),
           if (editorType == RoutineEditorType.log)

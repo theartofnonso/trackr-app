@@ -8,8 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/distance_duration_dto.dart';
-import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
@@ -210,10 +209,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ExerciseType.assistedBodyWeight ||
       ExerciseType.weightAndDistance =>
         WeightedSetDto(first: (previousSet as WeightedSetDto?)?.first ?? 0, second: previousSet?.second ?? 0),
-      ExerciseType.duration => DurationDto(duration: (previousSet as DurationDto?)?.duration ?? Duration.zero),
-      ExerciseType.distanceAndDuration => DistanceDurationDto(
-          distance: (previousSet as DistanceDurationDto?)?.distance ?? 0,
-          duration: previousSet?.duration ?? Duration.zero),
+      ExerciseType.duration ||
+      ExerciseType.distanceAndDuration =>
+        DurationDto(duration: (previousSet as DurationDto?)?.duration ?? Duration.zero, other: previousSet?.other ?? 0),
     };
     final sets = [...procedure.sets, newSet];
 
@@ -307,7 +305,21 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         ? (sets[setIndex] as DurationDto).copyWith(cachedDuration: duration)
         : (sets[setIndex] as DurationDto).copyWith(duration: duration);
     sets[setIndex] = set;
-    print(set);
+    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+
+    if (widget.mode == RoutineEditorType.log) {
+      _calculateCompletedSets();
+    }
+
+    _cacheRoutineLog();
+  }
+
+  void _updateSetDistance({required String procedureId, required int setIndex, required double distance}) {
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+    final procedure = _procedures[procedureIndex];
+    final sets = [...procedure.sets];
+    final set = (sets[setIndex] as DurationDto).copyWith(other: distance);
+    sets[setIndex] = set;
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
     if (widget.mode == RoutineEditorType.log) {
@@ -833,31 +845,34 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                             final procedure = _procedures[index];
                             final exerciseId = procedure.exercise.id;
                             return ProcedureWidget(
-                                procedureDto: procedure,
-                                editorType: widget.mode,
-                                otherSuperSetProcedureDto:
-                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
-                                onRemoveSuperSet: (String superSetId) =>
-                                    _removeSuperSet(superSetId: procedure.superSetId),
-                                onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-                                onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onChangedSetRep: (int setIndex, int value) =>
-                                    _updateSecondRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
-                                onChangedSetWeight: (int setIndex, double value) =>
-                                    _updateFirstRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
-                                onChangedSetType: (int setIndex, SetType type) =>
-                                    _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
-                                onAddSet: () => _addSet(procedureId: exerciseId),
-                                onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
-                                onUpdateNotes: (String value) =>
-                                    _updateProcedureNotes(procedureId: exerciseId, value: value),
-                                onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
-                                onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
-                                onRemoveProcedureTimer: () => _removeRestInterval(procedureId: procedure.exercise.id),
-                                onReOrderProcedures: () => _reOrderProcedures(),
-                                onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
-                                onChangedDuration: (int setIndex, Duration duration, bool cache) => _updateSetDuration(
-                                    procedureId: exerciseId, setIndex: setIndex, duration: duration, cache: cache));
+                              procedureDto: procedure,
+                              editorType: widget.mode,
+                              otherSuperSetProcedureDto:
+                                  whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                              onRemoveSuperSet: (String superSetId) =>
+                                  _removeSuperSet(superSetId: procedure.superSetId),
+                              onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                              onChangedSetRep: (int setIndex, int value) =>
+                                  _updateSecondRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
+                              onChangedSetWeight: (int setIndex, double value) =>
+                                  _updateFirstRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
+                              onChangedSetType: (int setIndex, SetType type) =>
+                                  _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
+                              onAddSet: () => _addSet(procedureId: exerciseId),
+                              onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
+                              onUpdateNotes: (String value) =>
+                                  _updateProcedureNotes(procedureId: exerciseId, value: value),
+                              onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
+                              onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
+                              onRemoveProcedureTimer: () => _removeRestInterval(procedureId: exerciseId),
+                              onReOrderProcedures: () => _reOrderProcedures(),
+                              onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
+                              onChangedDuration: (int setIndex, Duration duration, bool cache) => _updateSetDuration(
+                                  procedureId: exerciseId, setIndex: setIndex, duration: duration, cache: cache),
+                              onChangedDistance: (int setIndex, double distance) =>
+                                  _updateSetDistance(procedureId: exerciseId, setIndex: setIndex, distance: distance),
+                            );
                           },
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
                           itemCount: _procedures.length)),

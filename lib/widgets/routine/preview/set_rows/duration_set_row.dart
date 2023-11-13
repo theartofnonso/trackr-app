@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
-import '../../../../dtos/duration_dto.dart';
+import '../../../../dtos/duration_set_dto.dart';
 
-class DurationWidget extends StatelessWidget {
-  const DurationWidget({super.key, required this.index, required this.workingIndex, required this.setDto});
+class DurationSetRow extends StatelessWidget {
+  const DurationSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
 
   final int index;
   final int workingIndex;

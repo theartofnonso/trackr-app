@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -13,6 +13,7 @@ import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.d
 import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/weighted_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/distance_duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/weighted_set_row.dart';
@@ -46,6 +47,7 @@ class ProcedureWidget extends StatefulWidget {
   final void Function(int setIndex, int value) onChangedSetRep;
   final void Function(int setIndex, double value) onChangedSetWeight;
   final void Function(int setIndex, Duration duration, bool cache) onChangedDuration;
+  final void Function(int setIndex, double distance) onChangedDistance;
   final void Function(int setIndex, SetType type) onChangedSetType;
 
   const ProcedureWidget({
@@ -59,6 +61,7 @@ class ProcedureWidget extends StatefulWidget {
     required this.onChangedSetRep,
     required this.onChangedSetWeight,
     required this.onChangedDuration,
+    required this.onChangedDistance,
     required this.onAddSet,
     required this.onRemoveSet,
     required this.onUpdateNotes,
@@ -159,9 +162,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onChangedReps: (int value) => widget.onChangedSetRep(index, value),
           onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
-          onChangedDuration: (Duration duration, bool cache) {
-            widget.onChangedDuration(index, duration, cache);
-          },
+          onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(index, duration, cache),
+          onChangedDistance: (double value) => widget.onChangedDistance(index, value),
           workingIndex: setDto.type == SetType.working ? workingSets : -1,
           setDto: setDto,
           pastSet: pastSet,
@@ -280,10 +282,23 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           ),
           const SizedBox(height: 10),
           switch (exerciseType) {
-            ExerciseType.weightAndReps => WeightedSetHeader(editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS',),
-            ExerciseType.weightedBodyWeight => WeightedSetHeader(editorType: widget.editorType, firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS',),
-            ExerciseType.assistedBodyWeight => WeightedSetHeader(editorType: widget.editorType, firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS',),
-            ExerciseType.weightAndDistance => WeightedSetHeader(editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
+            ExerciseType.weightAndReps => WeightedSetHeader(
+                editorType: widget.editorType,
+                firstLabel: weightLabel().toUpperCase(),
+                secondLabel: 'REPS',
+              ),
+            ExerciseType.weightedBodyWeight => WeightedSetHeader(
+                editorType: widget.editorType,
+                firstLabel: "+${weightLabel().toUpperCase()}",
+                secondLabel: 'REPS',
+              ),
+            ExerciseType.assistedBodyWeight => WeightedSetHeader(
+                editorType: widget.editorType,
+                firstLabel: '-${weightLabel().toUpperCase()}',
+                secondLabel: 'REPS',
+              ),
+            ExerciseType.weightAndDistance => WeightedSetHeader(
+                editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
             ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
@@ -306,10 +321,11 @@ class _SetWidget extends StatelessWidget {
   final int index;
   final void Function() onRemoved;
   final void Function() onTapCheck;
-  final void Function(int value)? onChangedReps;
-  final void Function(double value)? onChangedWeight;
-  final void Function(SetType type)? onChangedType;
-  final void Function(Duration duration, bool cache)? onChangedDuration;
+  final void Function(int value) onChangedReps;
+  final void Function(double value) onChangedWeight;
+  final void Function(SetType type) onChangedType;
+  final void Function(Duration duration, bool cache) onChangedDuration;
+  final void Function(double distance) onChangedDistance;
   final int workingIndex;
   final SetDto setDto;
   final SetDto? pastSet;
@@ -321,14 +337,14 @@ class _SetWidget extends StatelessWidget {
       required this.index,
       required this.onRemoved,
       required this.onTapCheck,
-      this.onChangedReps,
-      this.onChangedWeight,
-      this.onChangedType,
-      this.onChangedDuration,
+        required this.onChangedReps,
+        required this.onChangedWeight,
+        required this.onChangedType,
+        required this.onChangedDuration,
       required this.workingIndex,
       required this.setDto,
       required this.pastSet,
-      required this.editorType});
+      required this.editorType, required this.onChangedDistance});
 
   @override
   Widget build(BuildContext context) {
@@ -344,9 +360,9 @@ class _SetWidget extends StatelessWidget {
           setDto: setDto as WeightedSetDto,
           pastSetDto: pastSet as WeightedSetDto?,
           editorType: editorType,
-          onChangedReps: (int value) => onChangedReps!(value),
-          onChangedWeight: (double value) => onChangedWeight!(value),
-          onChangedType: (SetType type) => onChangedType!(type),
+          onChangedReps: (int value) => onChangedReps(value),
+          onChangedWeight: (double value) => onChangedWeight(value),
+          onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
         ),
       ExerciseType.bodyWeightAndReps => RepsSetRow(
@@ -356,22 +372,32 @@ class _SetWidget extends StatelessWidget {
           setDto: setDto as WeightedSetDto,
           pastSetDto: pastSet as WeightedSetDto?,
           editorType: editorType,
-          onChangedReps: (int value) => onChangedReps!(value),
-          onChangedType: (SetType type) => onChangedType!(type),
+          onChangedReps: (int value) => onChangedReps(value),
+          onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
         ),
       ExerciseType.duration => DurationSetRow(
           index: index,
-          onRemoved: onRemoved,
           workingIndex: workingIndex,
           setDto: setDto as DurationDto,
           pastSetDto: pastSet as DurationDto?,
           editorType: editorType,
-          onChangedType: (SetType type) => onChangedType!(type),
+          onRemoved: onRemoved,
+          onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
-          onChangedDuration: (Duration duration, bool cache) => onChangedDuration!(duration, cache),
+          onChangedDuration: (Duration duration, bool cache) => onChangedDuration(duration, cache),
         ),
-      ExerciseType.distanceAndDuration => const SizedBox.shrink(),
+      ExerciseType.distanceAndDuration => DistanceDurationSetRow(
+          index: index,
+          workingIndex: workingIndex,
+          setDto: setDto as DurationDto,
+          editorType: editorType,
+          onTapCheck: onTapCheck,
+          onRemoved: onRemoved,
+          onChangedType: (SetType type) {},
+          onChangedDuration: (Duration duration, bool cache) => onChangedDuration(duration, cache),
+          onChangedDistance: (double distance) => onChangedDistance(distance),
+        ),
     };
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'package:tracker_app/dtos/distance_duration_dto.dart';
-import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -52,8 +51,9 @@ class ProcedureDto {
       ExerciseType.bodyWeightAndReps ||
       ExerciseType.weightAndDistance =>
         sets.map((set) => (set as WeightedSetDto).toJson()).toList(),
-      ExerciseType.duration => sets.map((set) => (set as DurationDto).toJson()).toList(),
-      ExerciseType.distanceAndDuration => sets.map((set) => (set as DistanceDurationDto).toJson()).toList()
+      ExerciseType.duration ||
+      ExerciseType.distanceAndDuration =>
+        sets.map((set) => (set as DurationDto).toJson()).toList(),
     };
 
     return jsonEncode({
@@ -79,9 +79,9 @@ class ProcedureDto {
       ExerciseType.bodyWeightAndReps ||
       ExerciseType.weightAndDistance =>
         setsJsons.map((json) => WeightedSetDto.fromJson(jsonDecode(json))).toList(),
-      ExerciseType.duration => setsJsons.map((json) => DurationDto.fromJson(jsonDecode(json))).toList(),
+      ExerciseType.duration ||
       ExerciseType.distanceAndDuration =>
-        setsJsons.map((json) => DistanceDurationDto.fromJson(jsonDecode(json))).toList()
+        setsJsons.map((json) => DurationDto.fromJson(jsonDecode(json))).toList()
     };
     final restInterval = json["restInterval"];
     return ProcedureDto(

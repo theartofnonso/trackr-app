@@ -4,8 +4,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/distance_duration_dto.dart';
-import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -254,7 +253,7 @@ class RoutineLogProvider with ChangeNotifier {
           ExerciseType.assistedBodyWeight => (set as WeightedSetDto).second > 0,
           ExerciseType.weightAndDistance => (set as WeightedSetDto).first * set.second > 0,
           ExerciseType.duration => (set as DurationDto).duration > Duration.zero,
-          ExerciseType.distanceAndDuration => (set as DistanceDurationDto).distance > 0,
+          ExerciseType.distanceAndDuration => (set as DurationDto).duration > Duration.zero || set.other > 0,
         };
 
       }).toList();

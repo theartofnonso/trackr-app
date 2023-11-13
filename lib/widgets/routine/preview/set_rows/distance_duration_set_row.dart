@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/distance_duration_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
+import '../../../../dtos/duration_set_dto.dart';
 import '../../../../utils/general_utils.dart';
 
 class DistanceDurationSetRow extends StatelessWidget {
@@ -11,11 +11,11 @@ class DistanceDurationSetRow extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final DistanceDurationDto setDto;
+  final DurationDto setDto;
 
   @override
   Widget build(BuildContext context) {
-    final distance = isDefaultDistanceUnit() ? setDto.distance : setDto.distance;
+    final distance = isDefaultDistanceUnit() ? setDto.other : setDto.other;
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),

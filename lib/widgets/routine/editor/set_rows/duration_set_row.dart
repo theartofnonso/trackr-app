@@ -1,22 +1,18 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/duration_dto.dart';
+import 'package:tracker_app/dtos/duration_set_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
-import '../../../helper_widgets/dialog_helper.dart';
-import '../../../time_picker.dart';
 import '../set_type_icon.dart';
+import '../timer_widget.dart';
 
 class DurationSetRow extends StatefulWidget {
   final int index;
   final int workingIndex;
-  final SetDto setDto;
-  final SetDto? pastSetDto;
+  final DurationDto setDto;
+  final DurationDto? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -45,7 +41,7 @@ class _DurationSetRowState extends State<DurationSetRow> {
 
   @override
   Widget build(BuildContext context) {
-    final previousSetDto = widget.pastSetDto as DurationDto?;
+    final previousSetDto = widget.pastSetDto;
 
     return Table(
       columnWidths: widget.editorType == RoutineEditorType.edit
@@ -84,9 +80,9 @@ class _DurationSetRowState extends State<DurationSetRow> {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: _IntervalTimer(
+            child: TimerWidget(
               editorType: widget.editorType,
-              durationDto: (widget.setDto as DurationDto),
+              durationDto: widget.setDto,
               onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(duration, cache),
               onTick: (int seconds) {
                 setState(() {
@@ -101,7 +97,6 @@ class _DurationSetRowState extends State<DurationSetRow> {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: GestureDetector(
                   onTap: () {
-                    print(_elapsedTime);
                     widget.onChangedDuration(Duration(seconds: _elapsedTime), false);
                     widget.onTapCheck();
                     _isStopped = true;
@@ -113,120 +108,5 @@ class _DurationSetRowState extends State<DurationSetRow> {
         ])
       ],
     );
-  }
-}
-
-class _IntervalTimer extends StatefulWidget {
-  final DurationDto durationDto;
-  final RoutineEditorType editorType;
-  final void Function(Duration duration, bool cache) onChangedDuration;
-  final void Function(int seconds) onTick;
-  final bool enabled;
-
-  const _IntervalTimer(
-      {required this.durationDto,
-      required this.editorType,
-      required this.onChangedDuration,
-      required this.onTick,
-      required this.enabled});
-
-  @override
-  State<_IntervalTimer> createState() => _IntervalTimerState();
-}
-
-class _IntervalTimerState extends State<_IntervalTimer> {
-  Timer? _timer;
-  int _elapsedSeconds = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (widget.editorType == RoutineEditorType.log) _timerButton(),
-        GestureDetector(
-            onTap: () => _showRestIntervalTimePicker(context: context),
-            child: Text(
-              Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ))
-      ],
-    );
-  }
-
-  Widget _timerButton() {
-    final timer = _timer;
-    return timer != null && timer.isActive
-        ? IconButton(onPressed: _pauseTimer, icon: const Icon(Icons.pause_circle_outline_rounded, color: Colors.orange))
-        : IconButton(onPressed: _startTimer, icon: const Icon(Icons.play_circle_outline_rounded, color: Colors.blue));
-  }
-
-  void _startTimer() {
-    final timer = _timer;
-    if (timer != null) {
-      _elapsedSeconds = _elapsedSeconds;
-    }
-
-    if (widget.durationDto.cachedDuration > Duration.zero) {
-      _elapsedSeconds = widget.durationDto.cachedDuration.inSeconds;
-    } else {
-      _elapsedSeconds = 0;
-    }
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {
-        _elapsedSeconds++;
-      });
-      widget.onTick(_elapsedSeconds);
-    });
-  }
-
-  void _pauseTimer() {
-    widget.onChangedDuration(Duration(seconds: _elapsedSeconds), true);
-    setState(() {
-      _timer?.cancel();
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer?.cancel();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _elapsedSeconds = widget.durationDto.cachedDuration > Duration.zero
-        ? widget.durationDto.cachedDuration.inSeconds
-        : widget.durationDto.duration.inSeconds;
-  }
-
-  @override
-  void didUpdateWidget(_IntervalTimer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.enabled) {
-      _timer?.cancel();
-    }
-  }
-
-  void _showRestIntervalTimePicker({required BuildContext context}) {
-    FocusScope.of(context).unfocus();
-    _pauseTimer();
-    displayBottomSheet(
-        context: context,
-        child: TimePicker(
-          mode: CupertinoTimerPickerMode.hms,
-          initialDuration: widget.durationDto.duration,
-          onSelect: (Duration duration) {
-            Navigator.of(context).pop();
-            setState(() {
-              _elapsedSeconds = duration.inSeconds;
-            });
-            widget.onChangedDuration(Duration.zero, true);
-            widget.onChangedDuration(duration, false);
-          },
-        ));
   }
 }
