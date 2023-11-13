@@ -17,10 +17,7 @@ class SetText extends StatelessWidget {
       children: [
         Text(label, style: GoogleFonts.lato(fontSize: 12, color: Colors.grey)),
         const SizedBox(width: 10),
-        Text(
-          "$value",
-          style: GoogleFonts.lato(color: Colors.white),
-        )
+
       ],
     );
   }

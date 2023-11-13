@@ -29,18 +29,30 @@ class WeightedSetHeader extends StatelessWidget {
             },
       children: <TableRow>[
         TableRow(children: [
-          Text("SET",
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
-          Text("PREVIOUS",
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
-          Text(firstLabel,
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
-          Text(secondLabel,
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text("SET",
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text("PREVIOUS",
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text(firstLabel,
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text(secondLabel,
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
           if (editorType == RoutineEditorType.log)
             const TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,

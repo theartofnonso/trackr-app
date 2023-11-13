@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
-import 'package:tracker_app/widgets/routine/preview/set_rows/set_text.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
-import '../../../../enums/exercise_type_enums.dart';
 import '../../../../utils/general_utils.dart';
 
 class WeightedSetRow extends StatelessWidget {
@@ -28,11 +27,18 @@ class WeightedSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetTypeIcon(type: setDto.type, label: workingIndex)),
         TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetText(label: weightLabel().toUpperCase(), number: weight)),
+          verticalAlignment: TableCellVerticalAlignment.middle,
+          child: Text(
+            "$weight",
+            style: GoogleFonts.lato(color: Colors.white),
+          ),
+        ),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetText(label: "REPS", number: setDto.second))
+            child: Text(
+              "${setDto.second}",
+              style: GoogleFonts.lato(color: Colors.white),
+            ))
       ]),
     ]);
 
