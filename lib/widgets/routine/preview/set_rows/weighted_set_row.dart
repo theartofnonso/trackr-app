@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
@@ -25,19 +26,43 @@ class WeightedSetRow extends StatelessWidget {
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetTypeIcon(type: setDto.type, label: workingIndex)),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: tealBlueLighter,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(3),
+                  bottomLeft: Radius.circular(3),
+                ),
+              ),
+              padding: const EdgeInsets.all(8.0),
+              child: SetTypeIcon(type: setDto.type, label: workingIndex),
+            )),
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
-          child: Text(
-            "$weight",
-            style: GoogleFonts.lato(color: Colors.white),
+          child: Container(
+            color: tealBlueLighter,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "$weight",
+              style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
+            ),
           ),
         ),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(
-              "${setDto.second}",
-              style: GoogleFonts.lato(color: Colors.white),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: tealBlueLighter,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(3),
+                  bottomRight: Radius.circular(3),
+                ),
+              ),
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "${setDto.second}",
+                style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
+              ),
             ))
       ]),
     ]);

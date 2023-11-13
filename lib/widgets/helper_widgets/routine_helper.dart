@@ -4,12 +4,12 @@ import 'package:tracker_app/dtos/duration_dto.dart';
 import 'package:tracker_app/dtos/weighted_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_widget.dart';
-import 'package:tracker_app/widgets/routine/preview/set_rows/weight_distance_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/set_rows/weight_distance_set_row.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../empty_states/list_tile_empty_state.dart';
-import '../routine/preview/set_rows/body_weight_widget.dart';
+import '../routine/preview/set_rows/body_weight_set_row.dart';
 import '../routine/preview/set_rows/weighted_set_row.dart';
 
 ProcedureDto? whereOtherSuperSetProcedure(
@@ -37,13 +37,13 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
             workingIndex: workingIndex,
             setDto: setDto as WeightedSetDto,
           ),
-        ExerciseType.bodyWeightAndReps => BodyWeightWidget(
+        ExerciseType.bodyWeightAndReps => BodyWeightSetRowWidget(
             index: index,
             workingIndex: workingIndex,
             setDto: setDto as WeightedSetDto,
           ),
         ExerciseType.weightAndDistance =>
-          WeightDistanceWidget(index: index, workingIndex: workingIndex, setDto: setDto as WeightedSetDto),
+          WeightDistanceSetRow(index: index, workingIndex: workingIndex, setDto: setDto as WeightedSetDto),
         ExerciseType.duration => DurationWidget(
             index: index,
             workingIndex: workingIndex,

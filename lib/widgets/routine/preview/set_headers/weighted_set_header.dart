@@ -14,18 +14,27 @@ class WeightedSetHeader extends StatelessWidget {
         0: FixedColumnWidth(30),
         1: FlexColumnWidth(2),
         2: FlexColumnWidth(2),
-            },
+      },
       children: <TableRow>[
         TableRow(children: [
-          Text("SET",
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
-          Text(firstLabel,
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
-          Text(secondLabel,
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text("SET",
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text(firstLabel,
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text(secondLabel,
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
         ]),
       ],
     );

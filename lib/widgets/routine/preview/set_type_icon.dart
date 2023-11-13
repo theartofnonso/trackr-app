@@ -12,12 +12,9 @@ class SetTypeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Colors.transparent,
-      child: Text(
-        type == SetType.working ? "${label + 1}" : type.label,
-        style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
-      ),
+    return Text(
+      type == SetType.working ? "${label + 1}" : type.label,
+      style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
     );
   }
 }
