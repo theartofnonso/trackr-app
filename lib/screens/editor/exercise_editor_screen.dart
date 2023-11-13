@@ -161,8 +161,15 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
-    final muscleGroups = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(multiSelect: multiSelect)))
+    final exercise = widget.exercise;
+    List<MuscleGroup> preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroup : [_primaryMuscleGroup];
+    if (exercise != null) {
+      final muscleGroupsStrings = multiSelect ? exercise.secondaryMuscles : [exercise.primaryMuscle];
+      preSelectedMuscleGroups = muscleGroupsStrings.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+    }
+
+    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => MuscleGroupsScreen(muscleGroups: preSelectedMuscleGroups, multiSelect: multiSelect)))
         as List<MuscleGroup>?;
     if (muscleGroups != null) {
       if (multiSelect) {
@@ -251,8 +258,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNameController = TextEditingController(text: previousExercise?.name);
     _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
 
-    _primaryMuscleGroup = MuscleGroup.values.first;
-    _secondaryMuscleGroup = MuscleGroup.values.take(2).toList();
+    _primaryMuscleGroup =
+        previousExercise != null ? MuscleGroup.fromString(previousExercise.primaryMuscle) : MuscleGroup.values.first;
+    _secondaryMuscleGroup = previousExercise != null
+        ? previousExercise.secondaryMuscles.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList()
+        : MuscleGroup.values.take(2).toList();
     _exerciseType =
         previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -42,16 +44,25 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ExerciseProvider>(context, listen: true);
     final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
 
     if (log == null) {
       return const SizedBox.shrink();
     }
 
-    final numberOfCompletedSets = _calculateCompletedSets(procedureJsons: log.procedures);
+    List<ProcedureDto> procedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+      final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+      if(exerciseFromLibrary != null) {
+        return procedure.copyWith(exercise: exerciseFromLibrary);
+      }
+      return procedure;
+    }).toList();
+
+    final numberOfCompletedSets = _calculateCompletedSets(procedures: procedures);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
-    final totalVolume = _totalVolume(procedureJsons: log.procedures);
+    final totalVolume = _totalVolume(procedures: procedures);
     final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
     final totalVolumeSummary = "$volume ${weightLabel()}";
 
@@ -183,9 +194,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ),
                     ),
                     Column(
-                      children: [..._muscleGroupSplit(procedureJsons: log.procedures)],
+                      children: [..._muscleGroupSplit(procedures: procedures)],
                     ),
-                    ..._proceduresToWidgets(routineLog: log)
+                    ..._proceduresToWidgets(procedures: procedures)
                   ],
                 ),
               ),
@@ -206,6 +217,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   @override
   void initState() {
     super.initState();
+
     // Create an animation controller with a duration
     _controller = AnimationController(
       duration: const Duration(milliseconds: 700),
@@ -236,15 +248,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     });
   }
 
-  List<Widget> _proceduresToWidgets({required RoutineLog routineLog}) {
-    final procedures = routineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-    return routineLog.procedures
+  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+    return procedures
         .map((procedure) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: ProcedureWidget(
-                procedureDto: ProcedureDto.fromJson(jsonDecode(procedure)),
+                procedureDto: procedure,
                 otherSuperSetProcedureDto: whereOtherSuperSetProcedure(
-                    firstProcedure: ProcedureDto.fromJson(jsonDecode(procedure)), procedures: procedures),
+                    firstProcedure: procedure, procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))
@@ -260,8 +271,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return interval;
   }
 
-  int _calculateCompletedSets({required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  int _calculateCompletedSets({required List<ProcedureDto> procedures}) {
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
       completedSets.addAll(procedure.sets);
@@ -269,8 +279,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return completedSets.length;
   }
 
-  double _totalVolume({required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  double _totalVolume({required List<ProcedureDto> procedures}) {
     double totalWeight = 0;
     for (var procedure in procedures) {
       final exerciseTypeString = procedure.exercise.type;
@@ -314,12 +323,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return Map.fromEntries(sortedMap);
   }
 
-  List<Widget> _muscleGroupSplit({required List<String> procedureJsons}) {
-    final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  List<Widget> _muscleGroupSplit({required List<ProcedureDto> procedures}) {
     final parts = procedures.map((procedure) {
-      return MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-    }).toList();
-    final splitMap = _calculateBodySplitPercentage(parts);
+      final primaryMuscleGroup = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
+      final secondaryMuscleGroups = procedure.exercise.secondaryMuscles.map((muscleGroupString) => MuscleGroup.fromString(muscleGroupString));
+      final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
+      return muscleGroups;
+    }).expand((element) => element).toList();
+    final splitMap = _calculateBodySplitPercentage(parts.whereNot((part) => part == MuscleGroup.fullBody).toList());
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {
       final widget = Column(
