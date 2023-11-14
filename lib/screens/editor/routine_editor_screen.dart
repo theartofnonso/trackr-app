@@ -238,24 +238,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _checkSet({required String procedureId, required int setIndex}) {
-    _dismissKeyboard();
-
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets];
-    final set = sets[setIndex];
-    sets[setIndex] = sets[setIndex].copyWith(checked: !set.checked);
-
-    setState(() {
-      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-      _calculateCompletedSets();
-      _showProcedureRestInterval(setDto: sets[setIndex], duration: procedure.restInterval);
-    });
-
-    _cacheRoutineLog();
-  }
-
   void _showProcedureRestInterval({required SetDto setDto, required Duration duration}) {
     if (setDto.checked) {
       if (duration != Duration.zero) {
@@ -271,12 +253,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  void _updateWeight({required String procedureId, required int setIndex, required double value}) {
+  void _updateProcedureSet<T extends SetDto>(
+      {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as DoubleNumPair).copyWith(value1: value);
+
+    sets[setIndex] = updateFunction(sets[setIndex] as T);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
@@ -284,62 +269,62 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
+  void _updateWeight({required String procedureId, required int setIndex, required double value}) {
+    _updateProcedureSet<DoubleNumPair>(
+      procedureId: procedureId,
+      setIndex: setIndex,
+      updateFunction: (set) => set.copyWith(value1: value),
+    );
+  }
+
   void _updateReps({required String procedureId, required int setIndex, required num value}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as DoubleNumPair).copyWith(value2: value);
-    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-
-    if (widget.mode == RoutineEditorType.log) {
-      _calculateCompletedSets();
-    }
-
-    _cacheRoutineLog();
+    _updateProcedureSet<DoubleNumPair>(
+      procedureId: procedureId,
+      setIndex: setIndex,
+      updateFunction: (set) => set.copyWith(value2: value),
+    );
   }
 
   void _updateDuration(
       {required String procedureId, required int setIndex, required Duration duration, required bool cache}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets];
-    sets[setIndex] = cache
-        ? (sets[setIndex] as DurationNumPair).copyWith(cachedDuration: duration)
-        : (sets[setIndex] as DurationNumPair).copyWith(value1: duration, cachedDuration: Duration.zero);
-    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-
-    if (widget.mode == RoutineEditorType.log) {
-      _calculateCompletedSets();
-    }
-
-    _cacheRoutineLog();
+    _updateProcedureSet<DurationNumPair>(
+      procedureId: procedureId,
+      setIndex: setIndex,
+      updateFunction: (set) => cache
+          ? set.copyWith(cachedDuration: duration)
+          : set.copyWith(value1: duration, cachedDuration: Duration.zero),
+    );
   }
 
   void _updateDistance({required String procedureId, required int setIndex, required double distance}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets];
-    final set = (sets[setIndex] as DurationNumPair).copyWith(value2: distance);
-    sets[setIndex] = set;
-    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-    if (widget.mode == RoutineEditorType.log) {
-      _calculateCompletedSets();
-    }
-    _cacheRoutineLog();
+    _updateProcedureSet<DurationNumPair>(
+      procedureId: procedureId,
+      setIndex: setIndex,
+      updateFunction: (set) => set.copyWith(value2: distance),
+    );
   }
 
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets];
-    sets[setIndex] = sets[setIndex].copyWith(type: type);
 
-    setState(() {
-      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-    });
+    _updateProcedureSet<SetDto>(
+      procedureId: procedureId,
+      setIndex: setIndex,
+      updateFunction: (set) => set.copyWith(type: type),
+    );
 
-    _cacheRoutineLog();
   }
+
+  void _checkSet({required String procedureId, required int setIndex}) {
+    _dismissKeyboard();
+
+    _updateProcedureSet<SetDto>(
+      procedureId: procedureId,
+      setIndex: setIndex,
+      updateFunction: (set) => set.copyWith(checked: !set.checked),
+    );
+
+  }
+
 
   void _addSuperSet({required String firstProcedureId, required String secondProcedureId}) {
     final id = "superset_id_${DateTime.now().millisecondsSinceEpoch}";
