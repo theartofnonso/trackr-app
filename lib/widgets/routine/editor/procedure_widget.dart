@@ -24,7 +24,7 @@ import '../../../screens/exercise/exercise_history_screen.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 
-class ProcedureWidget extends StatefulWidget {
+class ProcedureWidget extends StatelessWidget {
   final RoutineEditorType editorType;
 
   final ProcedureDto procedureDto;
@@ -73,49 +73,34 @@ class ProcedureWidget extends StatefulWidget {
     required this.onCheckSet,
   });
 
-  @override
-  State<ProcedureWidget> createState() => _ProcedureWidgetState();
-}
-
-class _ProcedureWidgetState extends State<ProcedureWidget> {
- // List<SetDto> _pastSets = [];
-
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
       MenuItemButton(
-        onPressed: () {
-          widget.onReOrderProcedures();
-        },
+        onPressed: onReOrderProcedures,
         leadingIcon: const Icon(Icons.repeat_outlined),
         child: const Text("Reorder"),
       ),
-      widget.procedureDto.superSetId.isNotEmpty
+      procedureDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () {
-                widget.onRemoveSuperSet(widget.procedureDto.superSetId);
+                onRemoveSuperSet(procedureDto.superSetId);
               },
               leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
               child: Text("Remove Super-set", style: GoogleFonts.lato(color: Colors.red)),
             )
           : MenuItemButton(
-              onPressed: () {
-                widget.onSuperSet();
-              },
+              onPressed: onSuperSet,
               leadingIcon: const Icon(Icons.add),
               child: const Text("Super-set"),
             ),
       MenuItemButton(
-        onPressed: () {
-          widget.onReplaceProcedure();
-        },
+        onPressed: onReplaceProcedure,
         leadingIcon: const Icon(Icons.find_replace_rounded),
         child: const Text("Replace"),
       ),
       MenuItemButton(
-        onPressed: () {
-          widget.onRemoveProcedure();
-        },
+        onPressed: onRemoveProcedure,
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text(
           "Remove",
@@ -130,36 +115,30 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return sets.length > index ? sets.elementAt(index) : null;
   }
 
-  List<Widget> _displaySets({required ExerciseType exerciseType}) {
-    if (widget.procedureDto.sets.isEmpty) return [];
+  List<Widget> _displaySets({required BuildContext context, required ExerciseType exerciseType}) {
+    if (procedureDto.sets.isEmpty) return [];
 
-    Map<SetType, int> setCounts = {
-      SetType.warmUp: 0,
-      SetType.working: 0,
-      SetType.failure: 0,
-      SetType.drop: 0
-    };
+    Map<SetType, int> setCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
 
-    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
-        .wherePastSets(exercise: widget.procedureDto.exercise);
+    final pastSets =
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedureDto.exercise);
 
-    return widget.procedureDto.sets.mapIndexed((index, setDto) {
+    return procedureDto.sets.mapIndexed((index, setDto) {
       SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
       final setWidget = _SetWidget(
           type: exerciseType,
           index: index,
-          onRemoved: () => widget.onRemoveSet(index),
-          onTapCheck: () => widget.onCheckSet(index),
-          onChangedWeight: (double value) => widget.onChangedWeight(index, value),
-          onChangedReps: (num value) => widget.onChangedReps(index, value),
-          onChangedType: (SetType type) => widget.onChangedSetType(index, type),
-          onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(index, duration, cache),
-          onChangedDistance: (double value) => widget.onChangedDistance(index, value),
+          onRemoved: () => onRemoveSet(index),
+          onTapCheck: () => onCheckSet(index),
+          onChangedWeight: (double value) => onChangedWeight(index, value),
+          onChangedReps: (num value) => onChangedReps(index, value),
+          onChangedType: (SetType type) => onChangedSetType(index, type),
+          onChangedDuration: (Duration duration, bool cache) => onChangedDuration(index, duration, cache),
+          onChangedDistance: (double value) => onChangedDistance(index, value),
           workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
           setDto: setDto,
           pastSet: pastSet,
-          editorType: widget.editorType
-      );
+          editorType: editorType);
 
       setCounts[setDto.type] = setCounts[setDto.type]! + 1;
 
@@ -168,15 +147,15 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   String _displayTimer() {
-    final duration = widget.procedureDto.restInterval;
+    final duration = procedureDto.restInterval;
     return duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
   }
 
   @override
   Widget build(BuildContext context) {
-    final otherProcedureDto = widget.otherSuperSetProcedureDto;
+    final otherProcedureDto = otherSuperSetProcedureDto;
 
-    final exerciseString = widget.procedureDto.exercise.type;
+    final exerciseString = procedureDto.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseString);
 
     return Container(
@@ -195,10 +174,10 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
                   child: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHistoryScreen(exercise: widget.procedureDto.exercise)));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exercise: procedureDto.exercise)));
                 },
-                child: Text(widget.procedureDto.exercise.name,
+                child: Text(procedureDto.exercise.name,
                     style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
               )),
               MenuAnchor(
@@ -225,14 +204,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           otherProcedureDto != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Text("with ${widget.procedureDto.exercise.name}",
+                  child: Text("with ${procedureDto.exercise.name}",
                       style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
                 )
               : const SizedBox.shrink(),
           const SizedBox(height: 10),
           TextField(
-            controller: TextEditingController(text: widget.procedureDto.notes),
-            onChanged: (value) => widget.onUpdateNotes(value),
+            controller: TextEditingController(text: procedureDto.notes),
+            onChanged: (value) => onUpdateNotes(value),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
@@ -252,48 +231,38 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           Row(
             children: [
               CTextButton(
-                  onPressed: widget.onSetRestInterval,
-                  label: 'Rest timer: ${_displayTimer()}',
-                  buttonColor: tealBlueLighter),
+                  onPressed: onSetRestInterval, label: 'Rest timer: ${_displayTimer()}', buttonColor: tealBlueLighter),
               const SizedBox(width: 6),
-              CTextButton(onPressed: widget.onAddSet, label: 'Add set', buttonColor: tealBlueLighter),
+              CTextButton(onPressed: onAddSet, label: 'Add set', buttonColor: tealBlueLighter),
             ],
           ),
           const SizedBox(height: 10),
           switch (exerciseType) {
             ExerciseType.weightAndReps => WeightedSetHeader(
-                editorType: widget.editorType,
+                editorType: editorType,
                 firstLabel: weightLabel().toUpperCase(),
                 secondLabel: 'REPS',
               ),
             ExerciseType.weightedBodyWeight => WeightedSetHeader(
-                editorType: widget.editorType,
+                editorType: editorType,
                 firstLabel: "+${weightLabel().toUpperCase()}",
                 secondLabel: 'REPS',
               ),
             ExerciseType.assistedBodyWeight => WeightedSetHeader(
-                editorType: widget.editorType,
+                editorType: editorType,
                 firstLabel: '-${weightLabel().toUpperCase()}',
                 secondLabel: 'REPS',
               ),
             ExerciseType.weightAndDistance => WeightedSetHeader(
-                editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
-            ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
-            ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
-            ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
+                editorType: editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
+            ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: editorType),
+            ExerciseType.duration => DurationSetHeader(editorType: editorType),
+            ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: editorType),
           },
-          ..._displaySets(exerciseType: exerciseType)
+          ..._displaySets(context: context, exerciseType: exerciseType)
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // _pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
-    //     .wherePastSets(exercise: widget.procedureDto.exercise);
-    //print(widget.procedureDto.exercise.type);
   }
 }
 

@@ -52,7 +52,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     }
 
     List<ProcedureDto> procedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
-      //print("${procedure.exercise.name} - ${procedure.exercise.type}");
       final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if(exerciseFromLibrary != null) {
         return procedure.copyWith(exercise: exerciseFromLibrary);

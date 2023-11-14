@@ -249,14 +249,11 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     routine.notes.isNotEmpty
-                        ? Container(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(routine.notes,
-                                style: GoogleFonts.lato(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                )),
-                          )
+                        ? Text(routine.notes,
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ))
                         : const SizedBox.shrink(),
                     chartPoints.isNotEmpty
                         ? Column(
