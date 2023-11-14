@@ -308,8 +308,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         : (sets[setIndex] as DurationNumPair).copyWith(value1: duration, cachedDuration: Duration.zero);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
-    print(sets);
-
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
@@ -777,8 +775,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             return false;
           },
           child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: SingleChildScrollView(
+              padding: widget.mode == RoutineEditorType.log ? const EdgeInsets.only(bottom: 100.0) : EdgeInsets.zero,
               child: GestureDetector(
                 onTap: _dismissKeyboard,
                 child: Column(
@@ -874,11 +873,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         ),
                       );
                     }).toList(),
-                    const SizedBox(height: 100),
                     if (widget.mode == RoutineEditorType.edit)
                       Column(
                         children: [
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           SizedBox(
                             width: double.infinity,
                             child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),

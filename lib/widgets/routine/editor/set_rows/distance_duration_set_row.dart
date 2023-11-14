@@ -92,16 +92,19 @@ class _DistanceDurationSetRowState extends State<DistanceDurationSetRow> {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: TimerWidget(
-              editorType: widget.editorType,
-              durationDto: widget.setDto,
-              onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(duration, cache),
-              onTick: (int seconds) {
-                setState(() {
-                  _elapsedTime = seconds;
-                });
-              },
-              enabled: _isStopped,
+            child: SizedBox(
+              height: 45,
+              child: TimerWidget(
+                editorType: widget.editorType,
+                durationDto: widget.setDto,
+                onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(duration, cache),
+                onTick: (int seconds) {
+                  setState(() {
+                    _elapsedTime = seconds;
+                  });
+                },
+                enabled: _isStopped,
+              ),
             ),
           ),
           if (widget.editorType == RoutineEditorType.log)
