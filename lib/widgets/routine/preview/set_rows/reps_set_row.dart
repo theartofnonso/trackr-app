@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/weighted_set_dto.dart';
+import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 class RepsSetRow extends StatelessWidget {
@@ -8,7 +8,7 @@ class RepsSetRow extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final WeightedSetDto setDto;
+  final DoubleNumPair setDto;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class RepsSetRow extends StatelessWidget {
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Text(
-            "${setDto.other}",
+            "${setDto.value2}",
             style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
           ),
         ),

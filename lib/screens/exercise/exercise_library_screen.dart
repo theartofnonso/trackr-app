@@ -35,7 +35,8 @@ class ExerciseInLibraryDto {
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool multiSelect;
   final bool readOnly;
-  const ExerciseLibraryScreen({super.key, this.multiSelect = true, this.readOnly = false});
+  final List<Exercise> preSelectedExercises;
+  const ExerciseLibraryScreen({super.key, this.multiSelect = true, this.readOnly = false, this.preSelectedExercises = const []});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -224,8 +225,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     _searchController = TextEditingController();
 
+    final preSelectedExerciseIds = widget.preSelectedExercises.map((exercise) => exercise.id).toList();
+
     _exercisesInLibrary = Provider.of<ExerciseProvider>(context, listen: false)
         .exercises
+        .whereNot((exercise) => preSelectedExerciseIds.contains(exercise.id))
         .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
         .toList();
     _filteredExercises = _exercisesInLibrary;

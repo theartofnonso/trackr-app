@@ -16,7 +16,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
-import '../../dtos/weighted_set_dto.dart';
+import '../../dtos/double_num_pair.dart';
 import '../../models/Exercise.dart';
 import '../../models/RoutineLog.dart';
 import '../../shared_prefs.dart';
@@ -76,14 +76,14 @@ List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
 
 /// Highest value per [RoutineLogDto]
 
-WeightedSetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
+DoubleNumPair _heaviestWeightInSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
-  WeightedSetDto setWithHeaviestWeight = WeightedSetDto();
+  DoubleNumPair setWithHeaviestWeight = DoubleNumPair();
 
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = (set as WeightedSetDto).other;
+    final weight = (set as DoubleNumPair).value2;
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
       setWithHeaviestWeight = set;
@@ -98,7 +98,7 @@ double _heaviestWeightPerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = (set as WeightedSetDto).other;
+    final weight = (set as DoubleNumPair).value2;
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
     }
@@ -115,7 +115,7 @@ int repsPerLog({required RoutineLog log}) {
   final sets = _allSetsWithReps(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final reps = (set as WeightedSetDto).weight;
+    final reps = (set as DoubleNumPair).value1;
     totalReps += reps.toInt();
   }
   return totalReps;
@@ -127,7 +127,7 @@ double _heaviestSetVolumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as WeightedSetDto).weight * set.other;
+    final volume = (set as DoubleNumPair).value1 * set.value2;
     if (volume > heaviestVolume) {
       heaviestVolume = volume.toDouble();
     }
@@ -144,7 +144,7 @@ double volumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as WeightedSetDto).weight * set.other;
+    final volume = (set as DoubleNumPair).value1 * set.value2;
     totalVolume += volume;
   }
 
@@ -156,7 +156,7 @@ double volumePerLog({required RoutineLog log}) {
 double _oneRepMaxPerLog({required RoutineLog log}) {
   final heaviestWeightInSet = _heaviestWeightInSetPerLog(log: log);
 
-  final max = (heaviestWeightInSet.other * (1 + 0.0333 * heaviestWeightInSet.weight));
+  final max = (heaviestWeightInSet.value2 * (1 + 0.0333 * heaviestWeightInSet.value1));
 
   final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
 
@@ -180,7 +180,7 @@ double _totalVolumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as WeightedSetDto).weight * set.other;
+    final volume = (set as DoubleNumPair).value1 * set.value2;
     totalVolume += volume;
   }
 
@@ -191,23 +191,23 @@ double _totalVolumePerLog({required RoutineLog log}) {
 
 /// Highest value across all [RoutineLogDto]
 
-(String, WeightedSetDto) _heaviestSet({required List<RoutineLog> logs}) {
-  WeightedSetDto heaviestSet = WeightedSetDto();
+(String, DoubleNumPair) _heaviestSet({required List<RoutineLog> logs}) {
+  DoubleNumPair heaviestSet = DoubleNumPair();
   String logId = "";
   for (var log in logs) {
     final sets = _allSetsWithWeight(procedureJsons: log.procedures);
     for (var set in sets) {
-      final volume = (set as WeightedSetDto).weight * set.other;
-      if (volume > (heaviestSet.weight * heaviestSet.other)) {
+      final volume = (set as DoubleNumPair).value1 * set.value2;
+      if (volume > (heaviestSet.value1 * heaviestSet.value2)) {
         heaviestSet = set;
         logId = log.id;
       }
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestSet.other : toLbs(heaviestSet.other.toDouble());
+  final weight = isDefaultWeightUnit() ? heaviestSet.value1 : toLbs(heaviestSet.value1);
 
-  return (logId, heaviestSet.copyWith(other: weight));
+  return (logId, heaviestSet.copyWith(value1: weight));
 }
 
 (String, double) _heaviestLogVolume({required List<RoutineLog> logs}) {
@@ -393,7 +393,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
 class SummaryWidget extends StatefulWidget {
   final (String, double) heaviestWeight;
-  final (String, WeightedSetDto) heaviestSet;
+  final (String, DoubleNumPair) heaviestSet;
   final (String, double) heaviestRoutineLogVolume;
   final List<RoutineLog> routineLogs;
   final Exercise exercise;
@@ -623,7 +623,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                 const SizedBox(height: 10),
                 MetricWidget(
                   title: 'Heaviest Set Volume',
-                  summary: "${widget.heaviestSet.$2.other}$weightUnitLabel x ${widget.heaviestSet.$2.weight}",
+                  summary: "${widget.heaviestSet.$2.value2}$weightUnitLabel x ${widget.heaviestSet.$2.value1}",
                   subtitle: 'Heaviest volume lifted for a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                 ),

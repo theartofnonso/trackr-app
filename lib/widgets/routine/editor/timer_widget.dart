@@ -4,13 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
-import '../../../dtos/duration_set_dto.dart';
+import '../../../dtos/duration_num_pair.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 import '../../helper_widgets/dialog_helper.dart';
 import '../../time_picker.dart';
 
 class TimerWidget extends StatefulWidget {
-  final DurationDto durationDto;
+  final DurationNumPair durationDto;
   final RoutineEditorType editorType;
   final void Function(Duration duration, bool cache) onChangedDuration;
   final void Function(int seconds) onTick;
@@ -93,7 +93,7 @@ class _TimerWidgetState extends State<TimerWidget> {
     super.initState();
     _elapsedSeconds = widget.durationDto.cachedDuration > Duration.zero
         ? widget.durationDto.cachedDuration.inSeconds
-        : widget.durationDto.duration.inSeconds;
+        : widget.durationDto.value1.inSeconds;
   }
 
   @override
@@ -111,7 +111,7 @@ class _TimerWidgetState extends State<TimerWidget> {
         context: context,
         child: TimePicker(
           mode: CupertinoTimerPickerMode.hms,
-          initialDuration: widget.durationDto.duration,
+          initialDuration: widget.durationDto.value1,
           onSelect: (Duration duration) {
             Navigator.of(context).pop();
             setState(() {

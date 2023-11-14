@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/weighted_set_dto.dart';
+import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
@@ -12,8 +12,8 @@ import '../set_type_icon.dart';
 class WeightedSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
-  final WeightedSetDto setDto;
-  final WeightedSetDto? pastSetDto;
+  final DoubleNumPair setDto;
+  final DoubleNumPair? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -42,7 +42,7 @@ class WeightedSetRow extends StatelessWidget {
 
     if (previousSetDto != null) {
       prevWeightValue =
-          isDefaultWeightUnit() ? previousSetDto.weight.toDouble() : toLbs(previousSetDto.weight.toDouble());
+          isDefaultWeightUnit() ? previousSetDto.value1 : toLbs(previousSetDto.value1);
     }
 
     return Table(
@@ -74,7 +74,7 @@ class WeightedSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.weight}",
+                    "$prevWeightValue${weightLabel()} x ${previousSetDto.value1}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -85,14 +85,14 @@ class WeightedSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: setDto.weight.toDouble(),
+              initialValue: setDto.value1,
               onChanged: onChangedWeight,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.other.toInt(),
+              initialValue: setDto.value2.toInt(),
               onChanged: onChangedOther,
             ),
           ),

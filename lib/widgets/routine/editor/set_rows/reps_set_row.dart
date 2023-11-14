@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/weighted_set_dto.dart';
+import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
 import '../../../../dtos/set_dto.dart';
@@ -10,8 +10,8 @@ import '../set_type_icon.dart';
 class RepsSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
-  final WeightedSetDto setDto;
-  final WeightedSetDto? pastSetDto;
+  final DoubleNumPair setDto;
+  final DoubleNumPair? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -37,7 +37,7 @@ class RepsSetRow extends StatelessWidget {
     int prevRepValue = 0;
 
     if (previousSetDto != null) {
-      prevRepValue = previousSetDto.other.toInt();
+      prevRepValue = previousSetDto.value2.toInt();
     }
 
     return Table(
@@ -67,7 +67,7 @@ class RepsSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevRepValue REPS",
+                    "x $prevRepValue",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -78,7 +78,7 @@ class RepsSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.other.toInt(),
+              initialValue: setDto.value2.toInt(),
               onChanged: onChangedOther,
             ),
           ),

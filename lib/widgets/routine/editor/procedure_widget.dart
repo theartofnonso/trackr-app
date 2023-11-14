@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/dtos/weighted_set_dto.dart';
+import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
@@ -44,8 +44,8 @@ class ProcedureWidget extends StatefulWidget {
   final void Function() onAddSet;
   final void Function(int setIndex) onRemoveSet;
   final void Function(int setIndex) onCheckSet;
-  final void Function(int setIndex, double value) onChangedWeightedValue;
-  final void Function(int setIndex, num value) onChangedWeightedOther;
+  final void Function(int setIndex, double value) onChangedWeight;
+  final void Function(int setIndex, num value) onChangedReps;
   final void Function(int setIndex, Duration duration, bool cache) onChangedDuration;
   final void Function(int setIndex, double distance) onChangedDistance;
   final void Function(int setIndex, SetType type) onChangedSetType;
@@ -58,8 +58,8 @@ class ProcedureWidget extends StatefulWidget {
     required this.onSuperSet,
     required this.onRemoveSuperSet,
     required this.onRemoveProcedure,
-    required this.onChangedWeightedOther,
-    required this.onChangedWeightedValue,
+    required this.onChangedReps,
+    required this.onChangedWeight,
     required this.onChangedDuration,
     required this.onChangedDistance,
     required this.onAddSet,
@@ -78,7 +78,7 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  List<SetDto> _pastSets = [];
+ // List<SetDto> _pastSets = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -125,67 +125,46 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     ];
   }
 
-  SetDto? _wherePastSets({required SetType type, required int index}) {
-    SetDto? pastSet;
-
-    final sets = _pastSets.where((set) => set.type == type).toList();
-
-    if (sets.length > index) {
-      pastSet = sets[index];
-    }
-    return pastSet;
+  SetDto? _wherePastSets({required SetType type, required int index, required List<SetDto> pastSets}) {
+    final sets = pastSets.where((set) => set.type == type).toList();
+    return sets.length > index ? sets.elementAt(index) : null;
   }
 
   List<Widget> _displaySets({required ExerciseType exerciseType}) {
-    if (widget.procedureDto.sets.isEmpty) {
-      return <Widget>[];
-    }
+    if (widget.procedureDto.sets.isEmpty) return [];
 
-    int warmupSets = 0;
-    int workingSets = 0;
-    int failureSets = 0;
-    int dropSets = 0;
+    Map<SetType, int> setCounts = {
+      SetType.warmUp: 0,
+      SetType.working: 0,
+      SetType.failure: 0,
+      SetType.drop: 0
+    };
 
-    return widget.procedureDto.sets.mapIndexed(((index, setDto) {
-      SetDto? pastSet = switch (setDto.type) {
-        SetType.warmUp => _wherePastSets(type: setDto.type, index: warmupSets),
-        SetType.working => _wherePastSets(type: setDto.type, index: workingSets),
-        SetType.failure => _wherePastSets(type: setDto.type, index: failureSets),
-        SetType.drop => _wherePastSets(type: setDto.type, index: dropSets),
-      };
+    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
+        .wherePastSets(exercise: widget.procedureDto.exercise);
 
+    return widget.procedureDto.sets.mapIndexed((index, setDto) {
+      SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
       final setWidget = _SetWidget(
           type: exerciseType,
           index: index,
           onRemoved: () => widget.onRemoveSet(index),
           onTapCheck: () => widget.onCheckSet(index),
-          onChangedWeightedValue: (double value) => widget.onChangedWeightedValue(index, value),
-          onChangedWeightedOther: (num value) => widget.onChangedWeightedOther(index, value),
+          onChangedWeight: (double value) => widget.onChangedWeight(index, value),
+          onChangedReps: (num value) => widget.onChangedReps(index, value),
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
           onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(index, duration, cache),
           onChangedDistance: (double value) => widget.onChangedDistance(index, value),
-          workingIndex: setDto.type == SetType.working ? workingSets : -1,
+          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
           setDto: setDto,
           pastSet: pastSet,
-          editorType: widget.editorType);
+          editorType: widget.editorType
+      );
 
-      switch (setDto.type) {
-        case SetType.warmUp:
-          warmupSets += 1;
-          break;
-        case SetType.working:
-          workingSets += 1;
-          break;
-        case SetType.failure:
-          failureSets += 1;
-          break;
-        case SetType.drop:
-          dropSets += 1;
-          break;
-      }
+      setCounts[setDto.type] = setCounts[setDto.type]! + 1;
 
       return setWidget;
-    })).toList();
+    }).toList();
   }
 
   String _displayTimer() {
@@ -312,8 +291,9 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   @override
   void initState() {
     super.initState();
-    _pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
-        .wherePastSetDtos(exercise: widget.procedureDto.exercise);
+    // _pastSets = Provider.of<RoutineLogProvider>(context, listen: false)
+    //     .wherePastSets(exercise: widget.procedureDto.exercise);
+    //print(widget.procedureDto.exercise.type);
   }
 }
 
@@ -321,8 +301,8 @@ class _SetWidget extends StatelessWidget {
   final int index;
   final void Function() onRemoved;
   final void Function() onTapCheck;
-  final void Function(double value) onChangedWeightedValue;
-  final void Function(num value) onChangedWeightedOther;
+  final void Function(double value) onChangedWeight;
+  final void Function(num value) onChangedReps;
   final void Function(SetType type) onChangedType;
   final void Function(Duration duration, bool cache) onChangedDuration;
   final void Function(double distance) onChangedDistance;
@@ -337,10 +317,10 @@ class _SetWidget extends StatelessWidget {
       required this.index,
       required this.onRemoved,
       required this.onTapCheck,
-      required this.onChangedWeightedValue,
+      required this.onChangedWeight,
       required this.onChangedType,
       required this.onChangedDuration,
-      required this.onChangedWeightedOther,
+      required this.onChangedReps,
       required this.workingIndex,
       required this.setDto,
       required this.pastSet,
@@ -349,7 +329,6 @@ class _SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print(pastSet);
     return switch (type) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
@@ -359,11 +338,11 @@ class _SetWidget extends StatelessWidget {
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
-          setDto: setDto as WeightedSetDto,
-          pastSetDto: pastSet as WeightedSetDto?,
+          setDto: setDto as DoubleNumPair,
+          pastSetDto: pastSet as DoubleNumPair?,
           editorType: editorType,
-          onChangedOther: (num value) => onChangedWeightedOther(value),
-          onChangedWeight: (double value) => onChangedWeightedValue(value),
+          onChangedOther: (num value) => onChangedReps(value),
+          onChangedWeight: (double value) => onChangedWeight(value),
           onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
         ),
@@ -371,18 +350,18 @@ class _SetWidget extends StatelessWidget {
           index: index,
           onRemoved: onRemoved,
           workingIndex: workingIndex,
-          setDto: setDto as WeightedSetDto,
-          pastSetDto: pastSet as WeightedSetDto?,
+          setDto: setDto as DoubleNumPair,
+          pastSetDto: pastSet as DoubleNumPair?,
           editorType: editorType,
-          onChangedOther: (num value) => onChangedWeightedOther(value),
+          onChangedOther: (num value) => onChangedReps(value),
           onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
         ),
       ExerciseType.duration => DurationSetRow(
           index: index,
           workingIndex: workingIndex,
-          setDto: setDto as DurationDto,
-          pastSetDto: pastSet as DurationDto?,
+          setDto: setDto as DurationNumPair,
+          pastSetDto: pastSet as DurationNumPair?,
           editorType: editorType,
           onRemoved: onRemoved,
           onChangedType: (SetType type) => onChangedType(type),
@@ -392,7 +371,8 @@ class _SetWidget extends StatelessWidget {
       ExerciseType.distanceAndDuration => DistanceDurationSetRow(
           index: index,
           workingIndex: workingIndex,
-          setDto: setDto as DurationDto,
+          setDto: setDto as DurationNumPair,
+          pastSetDto: pastSet as DurationNumPair?,
           editorType: editorType,
           onTapCheck: onTapCheck,
           onRemoved: onRemoved,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../../../../dtos/set_dto.dart';
@@ -12,8 +12,8 @@ import '../timer_widget.dart';
 class DistanceDurationSetRow extends StatefulWidget {
   final int index;
   final int workingIndex;
-  final DurationDto setDto;
-  final DurationDto? pastSetDto;
+  final DurationNumPair setDto;
+  final DurationNumPair? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -51,7 +51,8 @@ class _DistanceDurationSetRowState extends State<DistanceDurationSetRow> {
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(2),
-              2: const FlexColumnWidth(3),
+              2: const FlexColumnWidth(2),
+              3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
@@ -74,7 +75,7 @@ class _DistanceDurationSetRowState extends State<DistanceDurationSetRow> {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    previousSetDto.duration.secondsOrMinutesOrHours(),
+                    "${previousSetDto.value2} mi \n ${previousSetDto.value1.secondsOrMinutesOrHours()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -85,7 +86,7 @@ class _DistanceDurationSetRowState extends State<DistanceDurationSetRow> {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: widget.setDto.other.toDouble(),
+              initialValue: widget.setDto.value2.toDouble(),
               onChanged: widget.onChangedDistance,
             ),
           ),

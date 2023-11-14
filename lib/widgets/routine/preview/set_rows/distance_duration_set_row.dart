@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
-import '../../../../dtos/duration_set_dto.dart';
+import '../../../../dtos/duration_num_pair.dart';
 import '../../../../utils/general_utils.dart';
 
 class DistanceDurationSetRow extends StatelessWidget {
@@ -11,11 +11,11 @@ class DistanceDurationSetRow extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final DurationDto setDto;
+  final DurationNumPair setDto;
 
   @override
   Widget build(BuildContext context) {
-    final distance = isDefaultDistanceUnit() ? setDto.other : setDto.other;
+    final distance = isDefaultDistanceUnit() ? setDto.value2 : setDto.value2;
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),
@@ -35,7 +35,7 @@ class DistanceDurationSetRow extends StatelessWidget {
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Text(
-            setDto.duration.secondsOrMinutesOrHours(),
+            setDto.value1.secondsOrMinutesOrHours(),
             style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
           ),
         )

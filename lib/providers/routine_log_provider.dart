@@ -4,9 +4,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/weighted_set_dto.dart';
+import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
@@ -231,41 +231,51 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> wherePastSetDtos({required Exercise exercise}) {
-    List<SetDto> pastSets = [];
-
+  List<ProcedureDto> _proceduresForExercise({required Exercise exercise}) {
     final mostRecentLog = _logs.firstWhereOrNull((log) {
-      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
-      List<ProcedureDto> filteredProcedures = decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
+      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+      List<ProcedureDto> filteredProcedures =
+          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
       return filteredProcedures.isNotEmpty;
     });
 
     if (mostRecentLog != null) {
-      final decodedProcedures = mostRecentLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
-      pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) {
-        final exerciseTypeString = exercise.type;
-        final exerciseType  = ExerciseType.fromString(exerciseTypeString);
-        //print("${exercise.name} - $set");
-        //print(set);
-        return switch(exerciseType) {
-          ExerciseType.weightAndReps => (set as WeightedSetDto).weight * set.other > 0,
-          ExerciseType.weightedBodyWeight => (set as WeightedSetDto).weight * set.other > 0,
-          ExerciseType.bodyWeightAndReps => (set as WeightedSetDto).other > 0,
-          ExerciseType.assistedBodyWeight => (set as WeightedSetDto).other > 0,
-          ExerciseType.weightAndDistance => (set as WeightedSetDto).weight * set.other > 0,
-          ExerciseType.duration => (set as DurationDto).duration > Duration.zero,
-          ExerciseType.distanceAndDuration => (set as DurationDto).duration > Duration.zero || set.other > 0,
-        };
-
-        return true;
-
-      }).toList();
+      return mostRecentLog.procedures
+          .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+          .where((procedure) => procedure.exercise.id == exercise.id)
+          .toList();
+    } else {
+      return [];
     }
-
-    return pastSets;
   }
 
-  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+  List<SetDto> wherePastSets({required Exercise exercise}) {
+    final exerciseTypeString = exercise.type;
+    final ExerciseType exerciseType = ExerciseType.fromString(exerciseTypeString);
+
+    final procedures = _proceduresForExercise(exercise: exercise);
+
+    return procedures.expand((procedure) => procedure.sets).where((set) {
+      switch (exerciseType) {
+        case ExerciseType.weightAndReps:
+        case ExerciseType.weightedBodyWeight:
+        case ExerciseType.weightAndDistance:
+          return (set as DoubleNumPair).value1 * set.value2 > 0;
+        case ExerciseType.bodyWeightAndReps:
+        case ExerciseType.assistedBodyWeight:
+          return (set as DoubleNumPair).value2 > 0;
+        case ExerciseType.duration:
+          return (set as DurationNumPair).value1 > Duration.zero;
+        case ExerciseType.distanceAndDuration:
+          return (set as DurationNumPair).value1 > Duration.zero || set.value2 > 0;
+        default:
+          return false; // Or handle unexpected cases appropriately
+      }
+    }).toList();
+  }
+
+  List<SetDto> setDtosForMuscleGroupWhereDateRange(
+      {required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);

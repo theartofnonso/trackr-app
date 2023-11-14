@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/duration_set_dto.dart';
+import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
@@ -18,7 +18,7 @@ import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
-import '../../../dtos/weighted_set_dto.dart';
+import '../../../dtos/double_num_pair.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
@@ -287,7 +287,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       final exerciseType = ExerciseType.fromString(exerciseTypeString);
       for (var set in procedure.sets) {
         final weightPerSet = switch (exerciseType) {
-          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightedSetDto).weight * (set).other,
+          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as DoubleNumPair).value1 * (set).value2,
           ExerciseType.bodyWeightAndReps ||
           ExerciseType.assistedBodyWeight ||
           ExerciseType.duration ||
@@ -382,10 +382,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ExerciseType.assistedBodyWeight ||
                       ExerciseType.bodyWeightAndReps ||
                       ExerciseType.weightAndDistance =>
-                        (set as WeightedSetDto).copyWith(checked: false),
+                        (set as DoubleNumPair).copyWith(checked: false),
                       ExerciseType.duration ||
                       ExerciseType.distanceAndDuration =>
-                        (set as DurationDto).copyWith(checked: false)
+                        (set as DurationNumPair).copyWith(checked: false)
                     })
                 .toList();
             return procedure.copyWith(sets: newSets);
