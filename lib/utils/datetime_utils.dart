@@ -50,22 +50,9 @@ extension DurationExtension on Duration {
   }
 
   String friendlyTime() {
-    return "${inHours.toString().padLeft(2, "0")} : ${_absoluteDuration(inMinutes)} : ${_absoluteDuration(inSeconds)}";
+    return "${inHours.toString().padLeft(2, "0")}:${_absoluteDuration(inMinutes)}:${_absoluteDuration(inSeconds)}";
   }
 
-  ({DurationType type, int durationValue}) nearestDuration() {
-    final duration = this;
-
-    if (duration.inHours > 0) {
-      return (durationValue: duration.inHours, type: DurationType.hours);
-    }
-
-    if (duration.inMinutes > 0) {
-      return (durationValue: duration.inMinutes, type: DurationType.minutes);
-    }
-
-    return (durationValue: duration.inSeconds.round(), type: DurationType.seconds);
-  }
 }
 
 extension DateTimeExtension on DateTime {

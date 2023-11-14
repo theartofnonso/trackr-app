@@ -36,12 +36,12 @@ class _TimerWidgetState extends State<TimerWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (widget.editorType == RoutineEditorType.log) _timerButton(),
+        if (widget.editorType == RoutineEditorType.log && !widget.durationDto.checked) _timerButton(),
         GestureDetector(
             onTap: () => _showRestIntervalTimePicker(context: context),
             child: Text(
-              Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
-              textAlign: TextAlign.center,
+              Duration(seconds: _elapsedSeconds).friendlyTime(),
+              textAlign: TextAlign.start,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ))
       ],

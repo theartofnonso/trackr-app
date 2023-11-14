@@ -69,7 +69,7 @@ class RepsSetRow extends StatelessWidget {
                 ? Text(
                     "x $prevRepValue",
                     style: GoogleFonts.lato(
-                      color: Colors.white70,
+                      color: Colors.white70
                     ),
                     textAlign: TextAlign.center,
                   )
