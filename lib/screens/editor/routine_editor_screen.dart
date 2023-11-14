@@ -305,13 +305,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
-
     _updateProcedureSet<SetDto>(
       procedureId: procedureId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(type: type),
     );
-
   }
 
   void _checkSet({required String procedureId, required int setIndex}) {
@@ -322,9 +320,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(checked: !set.checked),
     );
-
   }
-
 
   void _addSuperSet({required String firstProcedureId, required String secondProcedureId}) {
     final id = "superset_id_${DateTime.now().millisecondsSinceEpoch}";
@@ -402,27 +398,40 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  void _createRoutine() async {
+  bool _validateRoutineInputs() {
     if (_routineNameController.text.isEmpty) {
-      showSnackbar(
-          context: context, icon: const Icon(Icons.info_outline), message: 'Please provide a name for this workout');
-    } else if (_procedures.isEmpty) {
-      showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Workout must have exercise(s)");
-    } else {
+      _showSnackbar('Please provide a name for this workout');
+      return false;
+    }
+    if (_procedures.isEmpty) {
+      _showSnackbar("Workout must have exercise(s)");
+      return false;
+    }
+    return true;
+  }
+
+  void _showSnackbar(String message) {
+    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+  }
+
+  void _handleRoutineCreationError(String message) {
+    if (mounted) {
+      _showSnackbar(message);
+      // Optionally log the error e for debugging
+    }
+  }
+
+  void _createRoutine() async {
+    if (!_validateRoutineInputs()) return;
+    _toggleLoadingState();
+    try {
+      await Provider.of<RoutineProvider>(context, listen: false)
+          .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      _handleRoutineCreationError("Unable to create workout");
+    } finally {
       _toggleLoadingState();
-      try {
-        await Provider.of<RoutineProvider>(context, listen: false).saveRoutine(
-            name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      } catch (e) {
-        if (mounted) {
-          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create workout");
-        }
-      } finally {
-        _toggleLoadingState();
-      }
     }
   }
 
@@ -456,53 +465,43 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateRoutine({required Routine routine}) {
-    if (_routineNameController.text.isEmpty) {
-      showSnackbar(
-          context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
-    } else if (_procedures.isEmpty) {
-      showSnackbar(context: context, message: "Workout must have exercise(s)", icon: const Icon(Icons.info_outline));
-    } else {
-      final alertDialogActions = <Widget>[
-        TextButton(
+    if (!_validateRoutineInputs()) return;
+
+    final alertDialogActions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+      CTextButton(
           onPressed: () {
             Navigator.pop(context);
+            _doUpdateRoutine(routine: routine);
           },
-          child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-        ),
-        CTextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _doUpdateRoutine(routine: routine);
-            },
-            label: "Update")
-      ];
-      showAlertDialog(context: context, message: "Update workout?", actions: alertDialogActions);
-    }
+          label: "Update")
+    ];
+    showAlertDialog(context: context, message: "Update workout?", actions: alertDialogActions);
   }
 
   void _updateRoutineLog({required RoutineLog routineLog}) {
-    if (_routineNameController.text.isEmpty) {
-      showSnackbar(
-          context: context, message: 'Please provide a name for this workout', icon: const Icon(Icons.info_outline));
-    } else if (_procedures.isEmpty) {
-      showSnackbar(context: context, message: "Workout must have exercise(s)", icon: const Icon(Icons.info_outline));
-    } else {
-      final alertDialogActions = <Widget>[
-        TextButton(
+    if (!_validateRoutineInputs()) return;
+
+    final alertDialogActions = <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+      CTextButton(
           onPressed: () {
             Navigator.pop(context);
+            _doUpdateRoutineLog(routineLog: routineLog);
           },
-          child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-        ),
-        CTextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _doUpdateRoutineLog(routineLog: routineLog);
-            },
-            label: 'Update'),
-      ];
-      showAlertDialog(context: context, message: "Update log?", actions: alertDialogActions);
-    }
+          label: 'Update'),
+    ];
+    showAlertDialog(context: context, message: "Update log?", actions: alertDialogActions);
   }
 
   void _doUpdate() {
@@ -528,14 +527,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           updatedAt: TemporalDateTime.now());
 
       await Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+      if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
-      }
+      _handleRoutineCreationError("Unable to update workout");
     } finally {
       _toggleLoadingState();
     }
@@ -550,52 +544,45 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
       await Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    } catch (_) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops! we are unable to save changes");
-      }
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      _handleRoutineCreationError("Unable to update log");
     } finally {
       _toggleLoadingState();
     }
   }
 
   void _calculateCompletedSets() {
-    List<SetDto> completedSets = [];
-    for (var procedure in _procedures) {
-      final sets = procedure.sets.where((set) => set.checked).toList();
-      completedSets.addAll(sets);
-    }
     setState(() {
-      _completedSets = completedSets;
+      _completedSets = _procedures
+          .expand((procedure) => procedure.sets)
+          .where((set) => set.checked)
+          .toList();
     });
   }
 
   double _totalWeight() {
-    double totalWeight = 0;
+    double totalWeight = 0.0;
+
     for (var procedure in _procedures) {
-      final exerciseTypeString = procedure.exercise.type;
-      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+      final exerciseType = ExerciseType.fromString(procedure.exercise.type);
+
       for (var set in procedure.sets) {
         if (set.checked) {
-          final weightPerSet = switch (exerciseType) {
-            ExerciseType.weightAndReps ||
-            ExerciseType.weightedBodyWeight =>
-              (set as DoubleNumPair).value1 * (set).value2,
-            ExerciseType.bodyWeightAndReps ||
-            ExerciseType.assistedBodyWeight ||
-            ExerciseType.duration ||
-            ExerciseType.distanceAndDuration ||
-            ExerciseType.weightAndDistance =>
-              0,
-          };
+          double weightPerSet = 0.0;
+
+          if (exerciseType == ExerciseType.weightAndReps ||
+              exerciseType == ExerciseType.weightedBodyWeight) {
+            weightPerSet = (set as DoubleNumPair).value1 * set.value2;
+          }
+
+          // Add cases for other exercise types if needed
+
           totalWeight += weightPerSet;
         }
       }
     }
+
     return totalWeight;
   }
 
