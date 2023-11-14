@@ -303,11 +303,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    final set = cache
+    sets[setIndex] = cache
         ? (sets[setIndex] as DurationNumPair).copyWith(cachedDuration: duration)
-        : (sets[setIndex] as DurationNumPair).copyWith(value1: duration);
-    sets[setIndex] = set;
+        : (sets[setIndex] as DurationNumPair).copyWith(value1: duration, cachedDuration: Duration.zero);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
+
+    print(sets);
 
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
