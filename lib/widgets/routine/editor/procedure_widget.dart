@@ -298,7 +298,6 @@ class _SetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("H");
     return switch (type) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
