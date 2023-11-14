@@ -42,7 +42,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             child: Text(
               Duration(seconds: _elapsedSeconds).friendlyTime(),
               textAlign: TextAlign.start,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ))
       ],
     );
@@ -51,7 +51,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget _timerButton() {
     final timer = _timer;
     return timer != null && timer.isActive
-        ? IconButton(onPressed: _pauseTimer, icon: const Icon(Icons.pause_circle_outline_rounded, color: Colors.orange))
+        ? IconButton(onPressed: _pauseTimer, icon: const Icon(Icons.pause_circle_outline_rounded, color: Colors.deepOrangeAccent))
         : IconButton(onPressed: _startTimer, icon: const Icon(Icons.play_circle_outline_rounded, color: Colors.blue));
   }
 
