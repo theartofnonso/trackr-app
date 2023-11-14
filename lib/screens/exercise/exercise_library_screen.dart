@@ -81,14 +81,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
     final exerciseIndex =
-        _exercisesInLibrary.indexWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
+        _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
+    final filteredIndex = _filteredExercises.indexWhere((filteredInLibrary) => filteredInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
     if (selected) {
       setState(() {
         _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
+        _filteredExercises[filteredIndex] = exerciseInLibraryDto.copyWith(selected: true);
       });
     } else {
       setState(() {
         _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
+        _filteredExercises[filteredIndex] = exerciseInLibraryDto.copyWith(selected: false);
       });
     }
   }
