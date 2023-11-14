@@ -702,44 +702,44 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_outlined),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                actions: [
-                  CTextButton(
-                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
-                      label: _canUpdate() ? "Update" : "Save",
-                      buttonColor: Colors.transparent,
-                      loading: _loading,
-                      loadingLabel: _loadingLabel)
-                ],
-              )
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_outlined),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            CTextButton(
+                onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                label: _canUpdate() ? "Update" : "Save",
+                buttonColor: Colors.transparent,
+                loading: _loading,
+                loadingLabel: _loadingLabel)
+          ],
+        )
             : AppBar(
-                leading: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(
-                    Icons.arrow_back_outlined,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-                title: Text(
-                  "${_editorTitle()}",
-                  style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
-              ),
+          leading: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(
+              Icons.arrow_back_outlined,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          title: Text(
+            "${_editorTitle()}",
+            style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
+        ),
         floatingActionButton: widget.mode == RoutineEditorType.log
             ? MediaQuery.of(context).viewInsets.bottom <= 0
-                ? FloatingActionButton(
-                    heroTag: "fab_routine_editor_screen",
-                    onPressed: _endRoutineLog,
-                    backgroundColor: tealBlueLighter,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const Icon(Icons.stop),
-                  )
-                : null
+            ? FloatingActionButton(
+          heroTag: "fab_routine_editor_screen",
+          onPressed: _endRoutineLog,
+          backgroundColor: tealBlueLighter,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: const Icon(Icons.stop),
+        )
+            : null
             : null,
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
@@ -749,131 +749,121 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             return false;
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              children: [
-                if (widget.mode == RoutineEditorType.log)
-                  RunningRoutineSummaryWidget(
-                    sets: _completedSets.length,
-                    weight: _totalWeight(),
-                    timer: _TimerWidget(
-                        TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
-                  ),
-                if (elapsedRestInterval != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: _IntervalTimer(
-                      duration: elapsedRestInterval,
-                      onElapsed: () => _hideProcedureRestInterval(),
-                      onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+            child: GestureDetector(
+              onTap: _dismissKeyboard,
+              child: Column(
+                children: [
+                  if (widget.mode == RoutineEditorType.log)
+                    RunningRoutineSummaryWidget(
+                      sets: _completedSets.length,
+                      weight: _totalWeight(),
+                      timer: _TimerWidget(
+                          TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
                     ),
-                  ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding:
-                        widget.mode == RoutineEditorType.log ? const EdgeInsets.only(bottom: 100.0) : EdgeInsets.zero,
-                    child: GestureDetector(
-                      onTap: _dismissKeyboard,
-                      child: Column(
-                        children: [
-                          if (widget.mode == RoutineEditorType.edit)
-                            Column(
-                              children: [
-                                TextField(
-                                  controller: _routineNameController,
-                                  decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(2),
-                                          borderSide: const BorderSide(color: tealBlueLighter)),
-                                      filled: true,
-                                      fillColor: tealBlueLighter,
-                                      hintText: "New workout",
-                                      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-                                  cursorColor: Colors.white,
-                                  keyboardType: TextInputType.text,
-                                  textCapitalization: TextCapitalization.words,
-                                  style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                                ),
-                                const SizedBox(height: 10),
-                                TextField(
-                                  controller: _routineNotesController,
-                                  decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(2),
-                                          borderSide: const BorderSide(color: tealBlueLighter)),
-                                      filled: true,
-                                      fillColor: tealBlueLighter,
-                                      hintText: "Notes",
-                                      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-                                  maxLines: null,
-                                  cursorColor: Colors.white,
-                                  keyboardType: TextInputType.text,
-                                  textCapitalization: TextCapitalization.sentences,
-                                  style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          const SizedBox(height: 10),
-                          ..._procedures.map((procedure) {
-                            final exerciseId = procedure.exercise.id;
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: ProcedureWidget(
-                                procedureDto: procedure,
-                                editorType: widget.mode,
-                                otherSuperSetProcedureDto:
-                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
-                                onRemoveSuperSet: (String superSetId) =>
-                                    _removeSuperSet(superSetId: procedure.superSetId),
-                                onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-                                onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onChangedReps: (int setIndex, num value) =>
-                                    _updateReps(procedureId: exerciseId, setIndex: setIndex, value: value),
-                                onChangedWeight: (int setIndex, double value) =>
-                                    _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
-                                onChangedSetType: (int setIndex, SetType type) =>
-                                    _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
-                                onAddSet: () => _addSet(procedureId: exerciseId),
-                                onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
-                                onUpdateNotes: (String value) =>
-                                    _updateProcedureNotes(procedureId: exerciseId, value: value),
-                                onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
-                                onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
-                                onRemoveProcedureTimer: () => _removeRestInterval(procedureId: exerciseId),
-                                onReOrderProcedures: () => _reOrderProcedures(),
-                                onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
-                                onChangedDuration: (int setIndex, Duration duration, bool cache) => _updateDuration(
-                                    procedureId: exerciseId, setIndex: setIndex, duration: duration, cache: cache),
-                                onChangedDistance: (int setIndex, double distance) =>
-                                    _updateDistance(procedureId: exerciseId, setIndex: setIndex, distance: distance),
-                              ),
-                            );
-                          }).toList(),
-                          if (widget.mode == RoutineEditorType.edit)
-                            Column(
-                              children: [
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
-                                ),
-                              ],
-                            ),
-                        ],
+                  if (elapsedRestInterval != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: _IntervalTimer(
+                        duration: elapsedRestInterval,
+                        onElapsed: () => _hideProcedureRestInterval(),
+                        onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  if (widget.mode == RoutineEditorType.edit)
+                    Column(
+                      children: [
+                        TextField(
+                          controller: _routineNameController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "New workout",
+                              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          controller: _routineNotesController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "Notes",
+                              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                          maxLines: null,
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            final procedure = _procedures[index];
+                            final exerciseId = procedure.exercise.id;
+                            return ProcedureWidget(
+                              procedureDto: procedure,
+                              editorType: widget.mode,
+                              otherSuperSetProcedureDto:
+                              whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                              onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
+                              onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                              onChangedReps: (int setIndex, num value) =>
+                                  _updateReps(procedureId: exerciseId, setIndex: setIndex, value: value),
+                              onChangedWeight: (int setIndex, double value) =>
+                                  _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
+                              onChangedSetType: (int setIndex, SetType type) =>
+                                  _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
+                              onAddSet: () => _addSet(procedureId: exerciseId),
+                              onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
+                              onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: exerciseId, value: value),
+                              onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
+                              onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
+                              onRemoveProcedureTimer: () => _removeRestInterval(procedureId: exerciseId),
+                              onReOrderProcedures: () => _reOrderProcedures(),
+                              onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
+                              onChangedDuration: (int setIndex, Duration duration, bool cache) => _updateDuration(
+                                  procedureId: exerciseId, setIndex: setIndex, duration: duration, cache: cache),
+                              onChangedDistance: (int setIndex, double distance) =>
+                                  _updateDistance(procedureId: exerciseId, setIndex: setIndex, distance: distance),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
+                          itemCount: _procedures.length)),
+                  if (widget.mode == RoutineEditorType.edit)
+                    Column(
+                      children: [
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ));
   }
+
 
   @override
   void initState() {

@@ -20,7 +20,6 @@ class SetDoubleTextField extends StatelessWidget {
     final defaultWeightUnit = isDefaultWeightUnit();
     final value = defaultWeightUnit ? initialValue : toLbs(initialValue);
     return TextField(
-      key: UniqueKey(),
       onChanged: (value) =>
           onChanged(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
       decoration: InputDecoration(
