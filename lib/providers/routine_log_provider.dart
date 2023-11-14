@@ -236,8 +236,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     final mostRecentLog = _logs.firstWhereOrNull((log) {
       final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
-      List<ProcedureDto> filteredProcedures =
-          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
+      List<ProcedureDto> filteredProcedures = decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
       return filteredProcedures.isNotEmpty;
     });
 
@@ -246,15 +245,19 @@ class RoutineLogProvider with ChangeNotifier {
       pastSets = decodedProcedures.expand((procedure) => procedure.sets).where((set) {
         final exerciseTypeString = exercise.type;
         final exerciseType  = ExerciseType.fromString(exerciseTypeString);
+        //print("${exercise.name} - $set");
+        //print(set);
         return switch(exerciseType) {
-          ExerciseType.weightAndReps => (set as WeightedSetDto).first * set.second > 0,
-          ExerciseType.weightedBodyWeight => (set as WeightedSetDto).first * set.second > 0,
-          ExerciseType.bodyWeightAndReps => (set as WeightedSetDto).second > 0,
-          ExerciseType.assistedBodyWeight => (set as WeightedSetDto).second > 0,
-          ExerciseType.weightAndDistance => (set as WeightedSetDto).first * set.second > 0,
+          ExerciseType.weightAndReps => (set as WeightedSetDto).weight * set.other > 0,
+          ExerciseType.weightedBodyWeight => (set as WeightedSetDto).weight * set.other > 0,
+          ExerciseType.bodyWeightAndReps => (set as WeightedSetDto).other > 0,
+          ExerciseType.assistedBodyWeight => (set as WeightedSetDto).other > 0,
+          ExerciseType.weightAndDistance => (set as WeightedSetDto).weight * set.other > 0,
           ExerciseType.duration => (set as DurationDto).duration > Duration.zero,
           ExerciseType.distanceAndDuration => (set as DurationDto).duration > Duration.zero || set.other > 0,
         };
+
+        return true;
 
       }).toList();
     }
@@ -262,11 +265,11 @@ class RoutineLogProvider with ChangeNotifier {
     return pastSets;
   }
 
-  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroup muscleGroup, required DateTimeRange range}) {
+  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-      return primaryMuscle == muscleGroup;
+      return primaryMuscle.family == muscleGroupFamily;
     }
 
     return logs
@@ -278,7 +281,7 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtosForMuscleGroupSince({required MuscleGroup muscleGroup, required int since}) {
+  List<SetDto> whereSetDtosForMuscleGroupSince({required MuscleGroupFamily muscleGroupFamily, required int since}) {
     DateTime now = DateTime.now();
     DateTime then = now.subtract(Duration(days: since));
     final dateRange = DateTimeRange(start: then, end: now);
@@ -286,7 +289,7 @@ class RoutineLogProvider with ChangeNotifier {
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-      return primaryMuscle == muscleGroup;
+      return primaryMuscle.family == muscleGroupFamily;
     }
 
     return logs
@@ -298,11 +301,11 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtosForMuscleGroup({required MuscleGroup muscleGroup}) {
+  List<SetDto> whereSetDtosForMuscleGroup({required MuscleGroupFamily muscleGroupFamily}) {
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-      return primaryMuscle == muscleGroup;
+      return primaryMuscle.family == muscleGroupFamily;
     }
 
     return logs

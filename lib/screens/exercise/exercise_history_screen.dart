@@ -83,7 +83,7 @@ WeightedSetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = (set as WeightedSetDto).second;
+    final weight = (set as WeightedSetDto).other;
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
       setWithHeaviestWeight = set;
@@ -98,7 +98,7 @@ double _heaviestWeightPerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = (set as WeightedSetDto).second;
+    final weight = (set as WeightedSetDto).other;
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
     }
@@ -115,7 +115,7 @@ int repsPerLog({required RoutineLog log}) {
   final sets = _allSetsWithReps(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final reps = (set as WeightedSetDto).first;
+    final reps = (set as WeightedSetDto).weight;
     totalReps += reps.toInt();
   }
   return totalReps;
@@ -127,7 +127,7 @@ double _heaviestSetVolumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as WeightedSetDto).first * set.second;
+    final volume = (set as WeightedSetDto).weight * set.other;
     if (volume > heaviestVolume) {
       heaviestVolume = volume.toDouble();
     }
@@ -144,7 +144,7 @@ double volumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as WeightedSetDto).first * set.second;
+    final volume = (set as WeightedSetDto).weight * set.other;
     totalVolume += volume;
   }
 
@@ -156,7 +156,7 @@ double volumePerLog({required RoutineLog log}) {
 double _oneRepMaxPerLog({required RoutineLog log}) {
   final heaviestWeightInSet = _heaviestWeightInSetPerLog(log: log);
 
-  final max = (heaviestWeightInSet.second * (1 + 0.0333 * heaviestWeightInSet.first));
+  final max = (heaviestWeightInSet.other * (1 + 0.0333 * heaviestWeightInSet.weight));
 
   final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
 
@@ -180,7 +180,7 @@ double _totalVolumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as WeightedSetDto).first * set.second;
+    final volume = (set as WeightedSetDto).weight * set.other;
     totalVolume += volume;
   }
 
@@ -197,17 +197,17 @@ double _totalVolumePerLog({required RoutineLog log}) {
   for (var log in logs) {
     final sets = _allSetsWithWeight(procedureJsons: log.procedures);
     for (var set in sets) {
-      final volume = (set as WeightedSetDto).first * set.second;
-      if (volume > (heaviestSet.first * heaviestSet.second)) {
+      final volume = (set as WeightedSetDto).weight * set.other;
+      if (volume > (heaviestSet.weight * heaviestSet.other)) {
         heaviestSet = set;
         logId = log.id;
       }
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestSet.second : toLbs(heaviestSet.second.toDouble());
+  final weight = isDefaultWeightUnit() ? heaviestSet.other : toLbs(heaviestSet.other.toDouble());
 
-  return (logId, heaviestSet.copyWith(second: weight));
+  return (logId, heaviestSet.copyWith(other: weight));
 }
 
 (String, double) _heaviestLogVolume({required List<RoutineLog> logs}) {
@@ -623,7 +623,7 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                 const SizedBox(height: 10),
                 MetricWidget(
                   title: 'Heaviest Set Volume',
-                  summary: "${widget.heaviestSet.$2.second}$weightUnitLabel x ${widget.heaviestSet.$2.first}",
+                  summary: "${widget.heaviestSet.$2.other}$weightUnitLabel x ${widget.heaviestSet.$2.weight}",
                   subtitle: 'Heaviest volume lifted for a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                 ),

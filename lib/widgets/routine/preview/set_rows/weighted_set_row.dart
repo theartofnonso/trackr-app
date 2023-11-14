@@ -14,7 +14,7 @@ class WeightedSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weight = isDefaultWeightUnit() ? setDto.first : toLbs(setDto.first.toDouble());
+    final weight = isDefaultWeightUnit() ? setDto.weight : toLbs(setDto.weight.toDouble());
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),
@@ -36,7 +36,7 @@ class WeightedSetRow extends StatelessWidget {
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(
-              "${setDto.second}",
+              "${setDto.other}",
               style: GoogleFonts.lato(color: Colors.white),
               textAlign: TextAlign.center,
             ))

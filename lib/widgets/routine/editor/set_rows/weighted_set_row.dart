@@ -18,7 +18,7 @@ class WeightedSetRow extends StatelessWidget {
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
-  final void Function(int value) onChangedReps;
+  final void Function(int value) onChangedOther;
   final void Function(double value) onChangedWeight;
 
   const WeightedSetRow(
@@ -31,7 +31,7 @@ class WeightedSetRow extends StatelessWidget {
       required this.onTapCheck,
       required this.onRemoved,
       required this.onChangedType,
-      required this.onChangedReps,
+      required this.onChangedOther,
       required this.onChangedWeight});
 
   @override
@@ -42,7 +42,7 @@ class WeightedSetRow extends StatelessWidget {
 
     if (previousSetDto != null) {
       prevWeightValue =
-          isDefaultWeightUnit() ? previousSetDto.first.toDouble() : toLbs(previousSetDto.first.toDouble());
+          isDefaultWeightUnit() ? previousSetDto.weight.toDouble() : toLbs(previousSetDto.weight.toDouble());
     }
 
     return Table(
@@ -74,7 +74,7 @@ class WeightedSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.first}",
+                    "$prevWeightValue${weightLabel()} x ${previousSetDto.weight}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -85,15 +85,15 @@ class WeightedSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: setDto.first.toDouble(),
+              initialValue: setDto.weight.toDouble(),
               onChanged: onChangedWeight,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.second.toInt(),
-              onChanged: onChangedReps,
+              initialValue: setDto.other.toInt(),
+              onChanged: onChangedOther,
             ),
           ),
           if (editorType == RoutineEditorType.log)

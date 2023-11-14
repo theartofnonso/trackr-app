@@ -44,8 +44,8 @@ class ProcedureWidget extends StatefulWidget {
   final void Function() onAddSet;
   final void Function(int setIndex) onRemoveSet;
   final void Function(int setIndex) onCheckSet;
-  final void Function(int setIndex, int value) onChangedSetRep;
-  final void Function(int setIndex, double value) onChangedSetWeight;
+  final void Function(int setIndex, double value) onChangedWeightedValue;
+  final void Function(int setIndex, num value) onChangedWeightedOther;
   final void Function(int setIndex, Duration duration, bool cache) onChangedDuration;
   final void Function(int setIndex, double distance) onChangedDistance;
   final void Function(int setIndex, SetType type) onChangedSetType;
@@ -58,8 +58,8 @@ class ProcedureWidget extends StatefulWidget {
     required this.onSuperSet,
     required this.onRemoveSuperSet,
     required this.onRemoveProcedure,
-    required this.onChangedSetRep,
-    required this.onChangedSetWeight,
+    required this.onChangedWeightedOther,
+    required this.onChangedWeightedValue,
     required this.onChangedDuration,
     required this.onChangedDistance,
     required this.onAddSet,
@@ -159,8 +159,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           index: index,
           onRemoved: () => widget.onRemoveSet(index),
           onTapCheck: () => widget.onCheckSet(index),
-          onChangedReps: (int value) => widget.onChangedSetRep(index, value),
-          onChangedWeight: (double value) => widget.onChangedSetWeight(index, value),
+          onChangedWeightedValue: (double value) => widget.onChangedWeightedValue(index, value),
+          onChangedWeightedOther: (num value) => widget.onChangedWeightedOther(index, value),
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
           onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(index, duration, cache),
           onChangedDistance: (double value) => widget.onChangedDistance(index, value),
@@ -321,8 +321,8 @@ class _SetWidget extends StatelessWidget {
   final int index;
   final void Function() onRemoved;
   final void Function() onTapCheck;
-  final void Function(int value) onChangedReps;
-  final void Function(double value) onChangedWeight;
+  final void Function(double value) onChangedWeightedValue;
+  final void Function(num value) onChangedWeightedOther;
   final void Function(SetType type) onChangedType;
   final void Function(Duration duration, bool cache) onChangedDuration;
   final void Function(double distance) onChangedDistance;
@@ -337,17 +337,19 @@ class _SetWidget extends StatelessWidget {
       required this.index,
       required this.onRemoved,
       required this.onTapCheck,
-        required this.onChangedReps,
-        required this.onChangedWeight,
-        required this.onChangedType,
-        required this.onChangedDuration,
+      required this.onChangedWeightedValue,
+      required this.onChangedType,
+      required this.onChangedDuration,
+      required this.onChangedWeightedOther,
       required this.workingIndex,
       required this.setDto,
       required this.pastSet,
-      required this.editorType, required this.onChangedDistance});
+      required this.editorType,
+      required this.onChangedDistance});
 
   @override
   Widget build(BuildContext context) {
+    //print(pastSet);
     return switch (type) {
       ExerciseType.weightAndReps ||
       ExerciseType.weightedBodyWeight ||
@@ -360,8 +362,8 @@ class _SetWidget extends StatelessWidget {
           setDto: setDto as WeightedSetDto,
           pastSetDto: pastSet as WeightedSetDto?,
           editorType: editorType,
-          onChangedReps: (int value) => onChangedReps(value),
-          onChangedWeight: (double value) => onChangedWeight(value),
+          onChangedOther: (num value) => onChangedWeightedOther(value),
+          onChangedWeight: (double value) => onChangedWeightedValue(value),
           onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
         ),
@@ -372,7 +374,7 @@ class _SetWidget extends StatelessWidget {
           setDto: setDto as WeightedSetDto,
           pastSetDto: pastSet as WeightedSetDto?,
           editorType: editorType,
-          onChangedReps: (int value) => onChangedReps(value),
+          onChangedOther: (num value) => onChangedWeightedOther(value),
           onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
         ),

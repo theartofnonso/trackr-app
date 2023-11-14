@@ -11,16 +11,16 @@ import 'package:tracker_app/dtos/set_dto.dart';
 /// All the above weight [double] as a common value, hence why we group them in one class
 class WeightedSetDto extends SetDto {
   /// The first value is always the weight
-  final num first;
-  final num second;
+  final double weight;
+  final num other;
 
-  WeightedSetDto({this.first = 0, this.second = 0, super.type, super.checked});
+  WeightedSetDto({this.weight = 0, this.other = 0, super.type, super.checked});
 
   @override
-  WeightedSetDto copyWith({num? first, num? second, SetType? type, bool? checked}) {
+  WeightedSetDto copyWith({double? weight, num? other, SetType? type, bool? checked}) {
     return WeightedSetDto(
-      first: first ?? this.first,
-      second: second ?? this.second,
+      weight: weight ?? this.weight,
+      other: other ?? this.other,
       type: type ?? this.type,
       checked: checked ?? this.checked,
     );
@@ -28,20 +28,20 @@ class WeightedSetDto extends SetDto {
 
   @override
   String toJson() {
-    return jsonEncode({"first": first, "second": second, "type": type.label, "checked": checked});
+    return jsonEncode({"weight": weight, "other": other, "type": type.label, "checked": checked});
   }
 
   factory WeightedSetDto.fromJson(Map<String, dynamic> json) {
-    final first = json["first"];
-    final second = json["second"];
+    final weight = json["weight"];
+    final other = json["other"];
     final typeString = json["type"];
     final type = SetType.fromString(typeString);
     final checked = json["checked"];
-    return WeightedSetDto(first: first, second: second, type: type, checked: checked);
+    return WeightedSetDto(weight: weight, other: other, type: type, checked: checked);
   }
 
   @override
   String toString() {
-    return 'SetDto{second: $first, second: $second, type: $type, checked: $checked}';
+    return 'SetDto{weight: $weight, other: $other, type: $type, checked: $checked}';
   }
 }

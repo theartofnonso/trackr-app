@@ -22,7 +22,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
 
   CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.thisMonth;
 
-  late Map<MuscleGroup, int> _muscleGroup;
+  late Map<MuscleGroupFamily, int> _muscleGroupFamily;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
               }).toList(),
             )
           ]),
-          PieChartWidget(segments: _muscleGroup.entries.take(5).toList()),
+          PieChartWidget(segments: _muscleGroupFamily.entries.take(5).toList()),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
@@ -118,55 +118,55 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
   void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-    final Map<MuscleGroup, int> frequencyMap = {};
+    final Map<MuscleGroupFamily, int> frequencyMap = {};
 
     // Count the occurrences of each MuscleGroup
-    for (MuscleGroup muscle in MuscleGroup.values) {
-      frequencyMap[muscle] = range != null
+    for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
+      frequencyMap[muscleGroupFamily] = range != null
           ? routineLogProvider
-              .setDtosForMuscleGroupWhereDateRange(muscleGroup: muscle, range: range)
+              .setDtosForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
               .length
-          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscle).length;
+          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroupFamily: muscleGroupFamily).length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
     setState(() {
-      _muscleGroup = Map.fromEntries(sortedBodySplit);
+      _muscleGroupFamily = Map.fromEntries(sortedBodySplit);
     });
   }
 
   void _calculateBodySplitPercentageSince({int? since}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-    final Map<MuscleGroup, int> frequencyMap = {};
+    final Map<MuscleGroupFamily, int> frequencyMap = {};
 
     // Count the occurrences of each MuscleGroup
-    for (MuscleGroup muscleGroup in MuscleGroup.values) {
-      frequencyMap[muscleGroup] = since != null
+    for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
+      frequencyMap[muscleGroupFamily] = since != null
           ? routineLogProvider
-              .whereSetDtosForMuscleGroupSince(muscleGroup: muscleGroup, since: since)
+              .whereSetDtosForMuscleGroupSince(muscleGroupFamily: muscleGroupFamily, since: since)
               .length
-          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroup: muscleGroup).length;
+          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroupFamily: muscleGroupFamily).length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
     setState(() {
-      _muscleGroup = Map.fromEntries(sortedBodySplit);
+      _muscleGroupFamily = Map.fromEntries(sortedBodySplit);
     });
   }
 
   List<Widget> _muscleGroupSplitToWidgets() {
     final splitList = <Widget>[];
-    _muscleGroup.forEach((muscleGroup, count) {
+    _muscleGroupFamily.forEach((muscleGroupFamily, count) {
       final widget = Padding(
-        key: Key(muscleGroup.name),
+        key: Key(muscleGroupFamily.name),
         padding: const EdgeInsets.only(bottom: 8.0),
         child: ListTile(
             tileColor: tealBlueLight,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
             ),
-            title: Text(muscleGroup.name, style: Theme.of(context).textTheme.labelLarge),
+            title: Text(muscleGroupFamily.name, style: Theme.of(context).textTheme.labelLarge),
             trailing: Text("$count", style: Theme.of(context).textTheme.labelLarge)),
       );
       splitList.add(widget);

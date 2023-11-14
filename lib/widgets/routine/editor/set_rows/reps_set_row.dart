@@ -16,7 +16,7 @@ class RepsSetRow extends StatelessWidget {
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
-  final void Function(int value) onChangedReps;
+  final void Function(num value) onChangedOther;
 
   const RepsSetRow(
       {super.key,
@@ -28,7 +28,7 @@ class RepsSetRow extends StatelessWidget {
       required this.onTapCheck,
       required this.onRemoved,
       required this.onChangedType,
-      required this.onChangedReps});
+      required this.onChangedOther});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class RepsSetRow extends StatelessWidget {
     int prevRepValue = 0;
 
     if (previousSetDto != null) {
-      prevRepValue = previousSetDto.second.toInt();
+      prevRepValue = previousSetDto.other.toInt();
     }
 
     return Table(
@@ -78,8 +78,8 @@ class RepsSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.second.toInt(),
-              onChanged: onChangedReps,
+              initialValue: setDto.other.toInt(),
+              onChanged: onChangedOther,
             ),
           ),
           if (editorType == RoutineEditorType.log)

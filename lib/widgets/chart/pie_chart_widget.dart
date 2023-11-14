@@ -5,7 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 class PieChartWidget extends StatelessWidget {
-  final List<MapEntry<MuscleGroup, int>> segments;
+  final List<MapEntry<MuscleGroupFamily, int>> segments;
 
   const PieChartWidget({super.key, required this.segments});
 

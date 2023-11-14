@@ -208,7 +208,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ExerciseType.weightedBodyWeight ||
       ExerciseType.assistedBodyWeight ||
       ExerciseType.weightAndDistance =>
-        WeightedSetDto(first: (previousSet as WeightedSetDto?)?.first ?? 0, second: previousSet?.second ?? 0),
+        WeightedSetDto(weight: (previousSet as WeightedSetDto?)?.weight ?? 0, other: previousSet?.other ?? 0),
       ExerciseType.duration ||
       ExerciseType.distanceAndDuration =>
         DurationDto(duration: (previousSet as DurationDto?)?.duration ?? Duration.zero, other: previousSet?.other ?? 0),
@@ -269,11 +269,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  void _updateFirstRecordValue({required String procedureId, required int setIndex, required double value}) {
+  void _updateWeightedValue({required String procedureId, required int setIndex, required double value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as WeightedSetDto).copyWith(first: value);
+    sets[setIndex] = (sets[setIndex] as WeightedSetDto).copyWith(weight: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
@@ -282,11 +282,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _updateSecondRecordValue({required String procedureId, required int setIndex, required int value}) {
+  void _updateWeightedOtherValue({required String procedureId, required int setIndex, required num value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     final sets = [...procedure.sets];
-    sets[setIndex] = (sets[setIndex] as WeightedSetDto).copyWith(second: value);
+    sets[setIndex] = (sets[setIndex] as WeightedSetDto).copyWith(other: value);
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
 
     if (widget.mode == RoutineEditorType.log) {
@@ -321,14 +321,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final set = (sets[setIndex] as DurationDto).copyWith(other: distance);
     sets[setIndex] = set;
     _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-
     if (widget.mode == RoutineEditorType.log) {
       _calculateCompletedSets();
     }
-
     _cacheRoutineLog();
   }
-
+  
   void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
@@ -600,7 +598,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           final weightPerSet = switch (exerciseType) {
             ExerciseType.weightAndReps ||
             ExerciseType.weightedBodyWeight =>
-              (set as WeightedSetDto).first * (set).second,
+              (set as WeightedSetDto).weight * (set).other,
             ExerciseType.bodyWeightAndReps ||
             ExerciseType.assistedBodyWeight ||
             ExerciseType.duration ||
@@ -853,10 +851,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                   _removeSuperSet(superSetId: procedure.superSetId),
                               onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
                               onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                              onChangedSetRep: (int setIndex, int value) =>
-                                  _updateSecondRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
-                              onChangedSetWeight: (int setIndex, double value) =>
-                                  _updateFirstRecordValue(procedureId: exerciseId, setIndex: setIndex, value: value),
+                              onChangedWeightedOther: (int setIndex, num value) =>
+                                  _updateWeightedOtherValue(procedureId: exerciseId, setIndex: setIndex, value: value),
+                              onChangedWeightedValue: (int setIndex, double value) =>
+                                  _updateWeightedValue(procedureId: exerciseId, setIndex: setIndex, value: value),
                               onChangedSetType: (int setIndex, SetType type) =>
                                   _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
                               onAddSet: () => _addSet(procedureId: exerciseId),

@@ -52,6 +52,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     }
 
     List<ProcedureDto> procedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+      //print("${procedure.exercise.name} - ${procedure.exercise.type}");
       final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if(exerciseFromLibrary != null) {
         return procedure.copyWith(exercise: exerciseFromLibrary);
@@ -194,7 +195,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ),
                     ),
                     Column(
-                      children: [..._muscleGroupSplit(procedures: procedures)],
+                      children: [..._muscleGroupFamilySplit(procedures: procedures)],
                     ),
                     ..._proceduresToWidgets(procedures: procedures)
                   ],
@@ -286,7 +287,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       final exerciseType = ExerciseType.fromString(exerciseTypeString);
       for (var set in procedure.sets) {
         final weightPerSet = switch (exerciseType) {
-          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightedSetDto).first * (set).second,
+          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => (set as WeightedSetDto).weight * (set).other,
           ExerciseType.bodyWeightAndReps ||
           ExerciseType.assistedBodyWeight ||
           ExerciseType.duration ||
@@ -300,12 +301,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return totalWeight;
   }
 
-  Map<String, double> _calculateBodySplitPercentage(List<MuscleGroup> muscleGroups) {
-    final Map<MuscleGroup, int> frequencyMap = {};
+  Map<String, double> _calculateBodySplitPercentage(List<MuscleGroupFamily> muscleGroups) {
+    final Map<MuscleGroupFamily, int> frequencyMap = {};
 
     // Count the occurrences of each muscleGroup
-    for (MuscleGroup muscleGroup in muscleGroups) {
-      frequencyMap[muscleGroup] = (frequencyMap[muscleGroup] ?? 0) + 1;
+    for (MuscleGroupFamily muscleGroupFamily in muscleGroups) {
+      frequencyMap[muscleGroupFamily] = (frequencyMap[muscleGroupFamily] ?? 0) + 1;
     }
 
     final int totalItems = muscleGroups.length;
@@ -323,14 +324,13 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return Map.fromEntries(sortedMap);
   }
 
-  List<Widget> _muscleGroupSplit({required List<ProcedureDto> procedures}) {
+  List<Widget> _muscleGroupFamilySplit({required List<ProcedureDto> procedures}) {
     final parts = procedures.map((procedure) {
-      final primaryMuscleGroup = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-      final secondaryMuscleGroups = procedure.exercise.secondaryMuscles.map((muscleGroupString) => MuscleGroup.fromString(muscleGroupString));
-      final muscleGroups = [primaryMuscleGroup, ...secondaryMuscleGroups];
-      return muscleGroups;
+      final primaryMuscleGroupFamily = MuscleGroup.fromString(procedure.exercise.primaryMuscle).family;
+      final secondaryMuscleGroupsFamily = procedure.exercise.secondaryMuscles.map((muscleGroupString) => MuscleGroup.fromString(muscleGroupString).family);
+      return [primaryMuscleGroupFamily, ...secondaryMuscleGroupsFamily];
     }).expand((element) => element).toList();
-    final splitMap = _calculateBodySplitPercentage(parts.whereNot((part) => part == MuscleGroup.fullBody).toList());
+    final splitMap = _calculateBodySplitPercentage(parts);
     final splitList = <Widget>[];
     splitMap.forEach((key, value) {
       final widget = Column(

@@ -25,7 +25,7 @@ class RepsSetRow extends StatelessWidget {
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Text(
-            "${setDto.second}",
+            "${setDto.other}",
             style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
           ),
         ),
