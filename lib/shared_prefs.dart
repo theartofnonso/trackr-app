@@ -31,13 +31,6 @@ class SharedPrefs {
     _sharedPrefs?.setStringList(_cachedPendingRoutineLogsKey, value);
   }
 
-  /// Cached Rest timer interval during routine
-  final String _cachedRoutineRestIntervalKey = "cached_routine_rest_interval_key";
-  int get cachedRoutineRestInterval => _sharedPrefs?.getInt(_cachedRoutineRestIntervalKey) ?? 0;
-  set cachedRoutineRestInterval(int value) {
-    _sharedPrefs?.setInt(_cachedRoutineRestIntervalKey, value);
-  }
-
   /// Weight Unit Type
   final String _weightUnitKey = "weight_unit_type_key";
   String get weightUnit => _sharedPrefs?.getString(_weightUnitKey) ?? WeightUnit.kg.name;

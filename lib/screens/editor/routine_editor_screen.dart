@@ -23,11 +23,9 @@ import '../../app_constants.dart';
 import '../../dtos/set_dto.dart';
 import '../../dtos/double_num_pair.dart';
 import '../../providers/routine_log_provider.dart';
-import '../../shared_prefs.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editor/procedure_widget.dart';
-import '../../widgets/time_picker.dart';
 import '../exercise/exercise_library_screen.dart';
 
 enum RoutineEditorType { edit, log }
@@ -54,8 +52,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late TextEditingController _routineNotesController;
 
   TemporalDateTime _routineStartTime = TemporalDateTime.now();
-
-  Duration? _elapsedProcedureRestInterval;
 
   bool _loading = false;
   String _loadingLabel = "";
@@ -244,21 +240,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _showProcedureRestInterval({required SetDto setDto, required Duration duration}) {
-    if (setDto.checked) {
-      if (duration != Duration.zero) {
-        _elapsedProcedureRestInterval = duration;
-      }
-    }
-  }
-
-  void _hideProcedureRestInterval() {
-    _clearCachedElapsedRestInterval();
-    setState(() {
-      _elapsedProcedureRestInterval = null;
-    });
-  }
-
   void _updateProcedureSet<T extends SetDto>(
       {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
@@ -358,41 +339,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return _procedures
         .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.superSetId.isNotEmpty)
         .toList();
-  }
-
-  void _showRestIntervalTimePicker({required ProcedureDto procedure}) {
-    _dismissKeyboard();
-    displayBottomSheet(
-        context: context,
-        child: TimePicker(
-          initialDuration: procedure.restInterval,
-          onSelect: (Duration duration) {
-            Navigator.of(context).pop();
-            _setRestInterval(procedureId: procedure.exercise.id, duration: duration);
-          },
-        ));
-  }
-
-  void _setRestInterval({required String procedureId, required Duration duration}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-
-    setState(() {
-      _procedures[procedureIndex] = procedure.copyWith(restInterval: duration);
-    });
-
-    _cacheRoutineLog();
-  }
-
-  void _removeRestInterval({required String procedureId}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-
-    setState(() {
-      _procedures[procedureIndex] = procedure.copyWith(restInterval: Duration.zero);
-    });
-
-    _cacheRoutineLog();
   }
 
   void _toggleLoadingState() {
@@ -626,27 +572,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _clearCachedElapsedRestInterval() {
-    SharedPrefs().cachedRoutineRestInterval = 0;
-  }
-
-  void _cacheElapsedRestInterval({required int elapsedTime}) {
-    if (widget.mode == RoutineEditorType.log) {
-      SharedPrefs().cachedRoutineRestInterval = elapsedTime;
-    }
-  }
-
-  void _cachedElapsedRestInterval() {
-    if (widget.mode == RoutineEditorType.log) {
-      final elapsedRestIntervalDuration = SharedPrefs().cachedRoutineRestInterval;
-      if (elapsedRestIntervalDuration > 0) {
-        setState(() {
-          _elapsedProcedureRestInterval = Duration(seconds: elapsedRestIntervalDuration);
-        });
-      }
-    }
-  }
-
   void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorType.log) {
       final routine = widget.routine;
@@ -694,7 +619,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final elapsedRestInterval = _elapsedProcedureRestInterval;
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -758,15 +682,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       weight: _totalWeight(),
                       timer: _TimerWidget(
                           TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
-                    ),
-                  if (elapsedRestInterval != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: _IntervalTimer(
-                        duration: elapsedRestInterval,
-                        onElapsed: () => _hideProcedureRestInterval(),
-                        onTick: (int seconds) => _cacheElapsedRestInterval(elapsedTime: seconds),
-                      ),
                     ),
                   if (widget.mode == RoutineEditorType.edit)
                     Column(
@@ -833,8 +748,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
                               onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: exerciseId, value: value),
                               onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
-                              onSetRestInterval: () => _showRestIntervalTimePicker(procedure: procedure),
-                              onRemoveProcedureTimer: () => _removeRestInterval(procedureId: exerciseId),
                               onReOrderProcedures: () => _reOrderProcedures(),
                               onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
                               onChangedDuration: (int setIndex, Duration duration) => _updateDuration(
@@ -908,7 +821,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       /// Show any previous running timers
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _calculateCompletedSets();
-        _cachedElapsedRestInterval();
       });
 
       /// Cache initial state of running routine

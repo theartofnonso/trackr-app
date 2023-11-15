@@ -7,7 +7,6 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
@@ -36,8 +35,6 @@ class ProcedureWidget extends StatelessWidget {
   final void Function() onRemoveProcedure;
   final void Function() onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
-  final void Function() onSetRestInterval;
-  final void Function() onRemoveProcedureTimer;
   final void Function() onReOrderProcedures;
 
   /// Set callbacks
@@ -66,8 +63,6 @@ class ProcedureWidget extends StatelessWidget {
     required this.onRemoveSet,
     required this.onUpdateNotes,
     required this.onReplaceProcedure,
-    required this.onSetRestInterval,
-    required this.onRemoveProcedureTimer,
     required this.onChangedSetType,
     required this.onReOrderProcedures,
     required this.onCheckSet,
@@ -146,11 +141,6 @@ class ProcedureWidget extends StatelessWidget {
     }).toList();
   }
 
-  String _displayTimer() {
-    final duration = procedureDto.restInterval;
-    return duration != Duration.zero ? duration.secondsOrMinutesOrHours() : "Off";
-  }
-
   @override
   Widget build(BuildContext context) {
     final otherProcedureDto = otherSuperSetProcedureDto;
@@ -227,16 +217,7 @@ class ProcedureWidget extends StatelessWidget {
             textCapitalization: TextCapitalization.sentences,
             style: GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              CTextButton(
-                  onPressed: onSetRestInterval, label: 'Rest timer: ${_displayTimer()}', buttonColor: tealBlueLighter),
-              const SizedBox(width: 6),
-              CTextButton(onPressed: onAddSet, label: 'Add set', buttonColor: tealBlueLighter),
-            ],
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           switch (exerciseType) {
             ExerciseType.weightAndReps => WeightedSetHeader(
                 editorType: editorType,
@@ -259,7 +240,8 @@ class ProcedureWidget extends StatelessWidget {
             ExerciseType.duration => DurationSetHeader(editorType: editorType),
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: editorType),
           },
-          ..._displaySets(context: context, exerciseType: exerciseType)
+          ..._displaySets(context: context, exerciseType: exerciseType),
+          SizedBox(width: double.infinity, child: CTextButton(onPressed: onAddSet, label: 'Add set', buttonColor: tealBlueLight, textStyle: TextStyle(fontWeight: FontWeight.bold))),
         ],
       ),
     );
