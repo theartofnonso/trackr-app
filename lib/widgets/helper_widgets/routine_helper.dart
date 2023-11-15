@@ -31,7 +31,7 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
       padding: const EdgeInsets.only(bottom: 6.0),
       child: Container(
         decoration: BoxDecoration(
-          color: tealBlueLighter,
+          color: tealBlueLight,
           borderRadius: BorderRadius.circular(3),
         ),
         padding: const EdgeInsets.symmetric(vertical: 10.0),
