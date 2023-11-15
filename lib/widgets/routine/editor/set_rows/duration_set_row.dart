@@ -62,7 +62,7 @@ class DurationSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    previousSetDto.value1.secondsOrMinutesOrHours(),
+                    previousSetDto.value1.digitalTime(),
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),

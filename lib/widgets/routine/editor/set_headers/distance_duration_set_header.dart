@@ -21,7 +21,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
-              1: const FlexColumnWidth(2),
+              1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(3),
               4: const FlexColumnWidth(1),

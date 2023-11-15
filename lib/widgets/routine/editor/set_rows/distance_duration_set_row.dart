@@ -48,7 +48,7 @@ class DistanceDurationSetRow extends StatelessWidget {
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(25),
-              1: const FlexColumnWidth(2),
+              1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(3),
               4: const FlexColumnWidth(1),
@@ -67,7 +67,7 @@ class DistanceDurationSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2} mi \n ${previousSetDto.value1.secondsOrMinutesOrHours()}",
+                    "${previousSetDto.value2} mi \n ${previousSetDto.value1.digitalTime()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
