@@ -49,7 +49,7 @@ extension DurationExtension on Duration {
     return display;
   }
 
-  String friendlyTime() {
+  String digitalTime() {
     return "${inHours.toString().padLeft(2, "0")}:${_absoluteDuration(inMinutes)}:${_absoluteDuration(inSeconds)}";
   }
 

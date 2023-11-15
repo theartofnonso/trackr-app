@@ -84,12 +84,9 @@ class DistanceDurationSetRow extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SizedBox(
-              height: 45,
-              child: TimerWidget(
-                durationDto: setDto,
-                onChangedDuration: (Duration duration) => onChangedDuration(duration),
-              ),
+            child: TimerWidget(
+              durationDto: setDto,
+              onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
           if (editorType == RoutineEditorType.log)

@@ -1,6 +1,6 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../../dtos/duration_num_pair.dart';
 import '../../helper_widgets/dialog_helper.dart';
@@ -14,13 +14,8 @@ class TimerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () => _showRestIntervalTimePicker(context: context),
-        child: Text(
-          durationDto.value1.friendlyTime(),
-          textAlign: TextAlign.start,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ));
+    return CTextButton(
+        onPressed: () => _showRestIntervalTimePicker(context: context), label: durationDto.value1.digitalTime());
   }
 
   void _showRestIntervalTimePicker({required BuildContext context}) {
