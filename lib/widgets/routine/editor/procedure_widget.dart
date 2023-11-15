@@ -7,7 +7,6 @@ import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
@@ -149,10 +148,10 @@ class ProcedureWidget extends StatelessWidget {
     final exerciseType = ExerciseType.fromString(exerciseString);
 
     return Container(
-      padding: const EdgeInsets.only(top: 12, right: 12, bottom: 10, left: 12),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: tealBlueLight, // Set the background color
-        borderRadius: BorderRadius.circular(2), // Set the border radius to make it rounded
+        borderRadius: BorderRadius.circular(3), // Set the border radius to make it rounded
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,11 +191,8 @@ class ProcedureWidget extends StatelessWidget {
             ],
           ),
           otherProcedureDto != null
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Text("with ${otherProcedureDto.exercise.name}",
-                      style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
-                )
+              ? Text("with ${otherProcedureDto.exercise.name}",
+              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12))
               : const SizedBox.shrink(),
           const SizedBox(height: 10),
           TextField(
@@ -241,7 +237,17 @@ class ProcedureWidget extends StatelessWidget {
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: editorType),
           },
           ..._displaySets(context: context, exerciseType: exerciseType),
-          SizedBox(width: double.infinity, child: CTextButton(onPressed: onAddSet, label: 'Add set', buttonColor: tealBlueLight, textStyle: TextStyle(fontWeight: FontWeight.bold))),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: IconButton(
+                onPressed: onAddSet,
+                icon: const Icon(Icons.add),
+                style: ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))),
+          )
         ],
       ),
     );

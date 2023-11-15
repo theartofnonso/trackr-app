@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         height: 60,
         indicatorColor: Colors.transparent,
-        backgroundColor: tealBlueLight,
+        backgroundColor: tealBlueDark,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.history, color: Colors.grey, size: 24),
