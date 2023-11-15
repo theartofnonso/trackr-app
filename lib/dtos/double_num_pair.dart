@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
 /// Dto for the following Exercise Types:
@@ -14,7 +15,7 @@ class DoubleNumPair extends SetDto {
   final double value1;
   final num value2;
 
-  DoubleNumPair({this.value1 = 0, this.value2 = 0, super.type, super.checked});
+  DoubleNumPair({this.value1 = 0, this.value2 = 0, super.type, super.checked, required super.id});
 
   @override
   DoubleNumPair copyWith({double? value1, num? value2, SetType? type, bool? checked}) {
@@ -23,6 +24,7 @@ class DoubleNumPair extends SetDto {
       value2: value2 ?? this.value2,
       type: type ?? this.type,
       checked: checked ?? this.checked,
+      id: UniqueKey().toString(),
     );
   }
 
@@ -36,7 +38,7 @@ class DoubleNumPair extends SetDto {
     final value2 = json["value2"];
     final type = SetType.fromString(json["type"]);
     final checked = json["checked"];
-    return DoubleNumPair(value1: value1, value2: value2, type: type, checked: checked);
+    return DoubleNumPair(value1: value1, value2: value2, type: type, checked: checked, id: UniqueKey().toString());
   }
 
   @override

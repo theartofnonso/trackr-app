@@ -78,7 +78,7 @@ List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
 
 DoubleNumPair _heaviestWeightInSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
-  DoubleNumPair setWithHeaviestWeight = DoubleNumPair();
+  DoubleNumPair setWithHeaviestWeight = DoubleNumPair(id: UniqueKey().toString());
 
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
@@ -192,7 +192,7 @@ double _totalVolumePerLog({required RoutineLog log}) {
 /// Highest value across all [RoutineLogDto]
 
 (String, DoubleNumPair) _heaviestSet({required List<RoutineLog> logs}) {
-  DoubleNumPair heaviestSet = DoubleNumPair();
+  DoubleNumPair heaviestSet = DoubleNumPair(id: UniqueKey().toString());
   String logId = "";
   for (var log in logs) {
     final sets = _allSetsWithWeight(procedureJsons: log.procedures);

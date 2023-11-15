@@ -36,6 +36,25 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
+  void replaceProcedure({required String exerciseId, required Exercise exercise}) async {
+    // Get the index of the procedure to be replaced
+    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+
+    // Check if the procedure was found
+    if (procedureIndex != -1) {
+      final procedureToBeReplaced = _procedures[procedureIndex];
+
+      // If the procedure is part of a super set, remove it from the super set
+      if (procedureToBeReplaced.superSetId.isNotEmpty) {
+        _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
+      }
+
+      _procedures[procedureIndex] = ProcedureDto(exercise: exercise);
+
+      notifyListeners();
+    }
+  }
+
   void superSetProcedures({required String firstExerciseId, required String secondExerciseId}) {
     final id = "superset_id_${firstExerciseId}_$secondExerciseId";
 
@@ -98,22 +117,25 @@ class ProceduresProvider extends ChangeNotifier {
         List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..removeAt(setIndex);
 
         _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
+
+        notifyListeners();
       }
-      notifyListeners();
     }
   }
 
   void _updateProcedureSet<T extends SetDto>(
-      {required String exerciseId, required int setIndex, required T Function(T set) updateFunction, bool shouldNotifyListeners = false}) {
+      {required String exerciseId,
+      required int setIndex,
+      required T Function(T set) updateFunction,
+      bool shouldNotifyListeners = false}) {
     final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
-    if (procedureIndex != 1) {
+    if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
-      if (setIndex >= 0 && setIndex < procedure.sets.length && procedure.sets[setIndex] is T) {
+      if (setIndex != -1 && setIndex < procedure.sets.length && procedure.sets[setIndex] is T) {
         List<SetDto> updatedSets = List<SetDto>.from(procedure.sets);
-
         updatedSets[setIndex] = updateFunction(updatedSets[setIndex] as T);
         _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-        if(shouldNotifyListeners) {
+        if (shouldNotifyListeners) {
           notifyListeners();
         }
       }
@@ -141,6 +163,7 @@ class ProceduresProvider extends ChangeNotifier {
       exerciseId: exerciseId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value1: duration),
+      shouldNotifyListeners: true,
     );
   }
 
@@ -154,32 +177,36 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateSetType({required String exerciseId, required int setIndex, required SetType type}) {
     _updateProcedureSet<SetDto>(
-      exerciseId: exerciseId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(type: type),
-      shouldNotifyListeners: true
-    );
+        exerciseId: exerciseId,
+        setIndex: setIndex,
+        updateFunction: (set) => set.copyWith(type: type),
+        shouldNotifyListeners: true);
   }
 
-  void checkSet({required String procedureId, required int setIndex}) {
+  void checkSet({required String exerciseId, required int setIndex}) {
     _updateProcedureSet<SetDto>(
-      exerciseId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(checked: !set.checked),
-      shouldNotifyListeners: true
-    );
+        exerciseId: exerciseId,
+        setIndex: setIndex,
+        updateFunction: (set) => set.copyWith(checked: !set.checked),
+        shouldNotifyListeners: true);
+  }
+
+  void clearProcedures() {
+    _procedures.clear();
   }
 
   /// Helper functions
 
   DoubleNumPair _createDoubleNumPairSet(ProcedureDto procedure) {
     final previousSet = procedure.sets.lastOrNull as DoubleNumPair?;
-    return DoubleNumPair(value1: previousSet?.value1 ?? 0, value2: previousSet?.value2 ?? 0);
+    return DoubleNumPair(
+        value1: previousSet?.value1 ?? 0, value2: previousSet?.value2 ?? 0, id: UniqueKey().toString());
   }
 
   DurationNumPair _createDurationNumPairSet(ProcedureDto procedure) {
     final previousSet = procedure.sets.lastOrNull as DurationNumPair?;
-    return DurationNumPair(value1: previousSet?.value1 ?? Duration.zero, value2: previousSet?.value2 ?? 0);
+    return DurationNumPair(
+        value1: previousSet?.value1 ?? Duration.zero, value2: previousSet?.value2 ?? 0, id: UniqueKey().toString());
   }
 
   void _removeSuperSet({required String superSetId}) {

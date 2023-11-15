@@ -202,6 +202,7 @@ class ProcedureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Hello");
     final otherProcedureDto = otherSuperSetProcedureDto;
 
     final exerciseString = procedureDto.exercise.type;

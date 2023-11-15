@@ -5,6 +5,7 @@ import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../utils/general_utils.dart';
 import '../set_type_icon.dart';
 import '../textfields/set_double_textfield.dart';
 import '../timer_widget.dart';
@@ -37,6 +38,9 @@ class DistanceDurationSetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
+
+    final defaultDistanceUnit = isDefaultWeightUnit();
+    final distanceValue = defaultDistanceUnit ? setDto.value2 : setDto.value2;
 
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
@@ -78,8 +82,9 @@ class DistanceDurationSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: setDto.value2.toDouble(),
+              value: distanceValue.toDouble(),
               onChanged: onChangedDistance,
+              editingController: TextEditingController(),
             ),
           ),
           TableCell(

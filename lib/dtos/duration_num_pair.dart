@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 
 class DurationNumPair extends SetDto {
   final Duration value1;
   final num value2;
 
-  DurationNumPair({this.value1 = Duration.zero, this.value2 = 0, super.type, super.checked});
+  DurationNumPair({this.value1 = Duration.zero, this.value2 = 0, super.type, super.checked, required super.id});
 
   @override
   DurationNumPair copyWith({Duration? value1, num? value2, SetType? type, bool? checked}) {
@@ -14,7 +15,7 @@ class DurationNumPair extends SetDto {
       value1: value1 ?? this.value1,
       value2: value2 ?? this.value2,
       type: type ?? this.type,
-      checked: checked ?? this.checked,
+      checked: checked ?? this.checked, id: UniqueKey().toString(),
     );
   }
 
@@ -28,7 +29,7 @@ class DurationNumPair extends SetDto {
     final value2 = json["value2"];
     final type = SetType.fromString(json["type"]);
     final checked = json["checked"];
-    return DurationNumPair(value1: value1, value2: value2, type: type, checked: checked);
+    return DurationNumPair(value1: value1, value2: value2, type: type, checked: checked, id: UniqueKey().toString());
   }
 
   @override

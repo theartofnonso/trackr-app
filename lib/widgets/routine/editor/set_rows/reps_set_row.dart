@@ -78,8 +78,9 @@ class RepsSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.value2.toInt(),
+              value: setDto.value2.toInt(),
               onChanged: onChangedReps,
+              editingController: TextEditingController(),
             ),
           ),
           if (editorType == RoutineEditorType.log)

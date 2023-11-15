@@ -45,6 +45,12 @@ class WeightedSetRow extends StatelessWidget {
           isDefaultWeightUnit() ? previousSetDto.value1 : toLbs(previousSetDto.value1);
     }
 
+    final defaultWeightUnit = isDefaultWeightUnit();
+    final weightValue = defaultWeightUnit ? setDto.value1 : toLbs(setDto.value1);
+
+    final repsValue = setDto.value2.toInt();
+
+
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
           ? <int, TableColumnWidth>{
@@ -85,15 +91,17 @@ class WeightedSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: setDto.value1,
+              value: weightValue,
               onChanged: onChangedWeight,
+              editingController: TextEditingController(),
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.value2.toInt(),
+              value: repsValue,
               onChanged: onChangedReps,
+              editingController: TextEditingController(),
             ),
           ),
           if (editorType == RoutineEditorType.log)

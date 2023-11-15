@@ -19,10 +19,11 @@ enum SetType {
 }
 
 abstract class SetDto {
+  final String id;
   final SetType type;
   final bool checked;
 
-  SetDto({this.type = SetType.working, this.checked = false});
+  SetDto({required this.id, this.type = SetType.working, this.checked = false});
 
   SetDto copyWith({SetType? type, bool? checked}) {
     throw UnimplementedError('copyWith must be implemented in subclasses');
