@@ -74,7 +74,7 @@ class WeightedSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.value1}",
+                    "$prevWeightValue${weightLabel()} x ${previousSetDto.value2}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
