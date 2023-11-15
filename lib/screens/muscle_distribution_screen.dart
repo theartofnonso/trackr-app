@@ -102,7 +102,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
           Expanded(
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) => bodySplitWidgets[index],
-                separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(),
                 itemCount: bodySplitWidgets.length),
           )
           //..._MuscleGroupSplit(provider: routineLogProvider)],
