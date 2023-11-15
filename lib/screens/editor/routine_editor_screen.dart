@@ -63,6 +63,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         child: _ProceduresList(
           procedures: procedures,
           onSelect: (ProcedureDto secondProcedure) {
+            Navigator.of(context).pop();
             _addSuperSet(firstProcedureId: firstProcedure.exercise.id, secondProcedureId: secondProcedure.exercise.id);
           },
           onSelectExercisesInLibrary: () {
@@ -838,7 +839,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 }
 
-class _ProceduresList extends StatefulWidget {
+class _ProceduresList extends StatelessWidget {
   final List<ProcedureDto> procedures;
   final void Function(ProcedureDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
@@ -846,64 +847,21 @@ class _ProceduresList extends StatefulWidget {
   const _ProceduresList({required this.procedures, required this.onSelect, required this.onSelectExercisesInLibrary});
 
   @override
-  State<_ProceduresList> createState() => _ProceduresListState();
-}
-
-class _ProceduresListState extends State<_ProceduresList> {
-  late ProcedureDto? _procedure;
-
-  @override
   Widget build(BuildContext context) {
-    return widget.procedures.isNotEmpty
+    final listTiles = procedures
+        .map((procedure) => ListTile(
+            onTap: () => onSelect(procedure),
+            dense: true,
+            title: Text(procedure.exercise.name, style: GoogleFonts.lato(color: Colors.white))))
+        .toList();
+
+    return procedures.isNotEmpty
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              GestureDetector(
-                onTap: () {
-                  final procedure = _procedure;
-                  if (procedure != null) {
-                    Navigator.of(context).pop();
-                    widget.onSelect(procedure);
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Text(
-                    "Select",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ),
-              ),
-              Flexible(
-                child: CupertinoPicker(
-                  magnification: 1.22,
-                  squeeze: 1.2,
-                  useMagnifier: true,
-                  itemExtent: 32.0,
-                  // This is called when selected item is changed.
-                  onSelectedItemChanged: (int index) {
-                    setState(() {
-                      _procedure = widget.procedures[index];
-                    });
-                  },
-                  children: List<Widget>.generate(widget.procedures.length, (int index) {
-                    return Center(
-                        child: Text(
-                      widget.procedures[index].exercise.name,
-                      style: GoogleFonts.lato(color: Colors.white),
-                    ));
-                  }),
-                ),
-              ),
+              Expanded(child: ListView(children: listTiles)),
             ],
           )
-        : _ExercisesInWorkoutEmptyState(onPressed: widget.onSelectExercisesInLibrary);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _procedure = widget.procedures.firstOrNull;
+        : _ExercisesInWorkoutEmptyState(onPressed: onSelectExercisesInLibrary);
   }
 }
 
