@@ -292,13 +292,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateDuration(
-      {required String procedureId, required int setIndex, required Duration duration, required bool cache}) {
+      {required String procedureId, required int setIndex, required Duration duration}) {
     _updateProcedureSet<DurationNumPair>(
       procedureId: procedureId,
       setIndex: setIndex,
-      updateFunction: (set) => cache
-          ? set.copyWith(cachedDuration: duration)
-          : set.copyWith(value1: duration, cachedDuration: Duration.zero),
+      updateFunction: (set) => set.copyWith(value1: duration),
     );
   }
 
@@ -839,8 +837,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               onRemoveProcedureTimer: () => _removeRestInterval(procedureId: exerciseId),
                               onReOrderProcedures: () => _reOrderProcedures(),
                               onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
-                              onChangedDuration: (int setIndex, Duration duration, bool cache) => _updateDuration(
-                                  procedureId: exerciseId, setIndex: setIndex, duration: duration, cache: cache),
+                              onChangedDuration: (int setIndex, Duration duration) => _updateDuration(
+                                  procedureId: exerciseId, setIndex: setIndex, duration: duration),
                               onChangedDistance: (int setIndex, double distance) =>
                                   _updateDistance(procedureId: exerciseId, setIndex: setIndex, distance: distance),
                             );

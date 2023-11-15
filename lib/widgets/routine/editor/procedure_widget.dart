@@ -46,7 +46,7 @@ class ProcedureWidget extends StatelessWidget {
   final void Function(int setIndex) onCheckSet;
   final void Function(int setIndex, double value) onChangedWeight;
   final void Function(int setIndex, num value) onChangedReps;
-  final void Function(int setIndex, Duration duration, bool cache) onChangedDuration;
+  final void Function(int setIndex, Duration duration) onChangedDuration;
   final void Function(int setIndex, double distance) onChangedDistance;
   final void Function(int setIndex, SetType type) onChangedSetType;
 
@@ -133,7 +133,7 @@ class ProcedureWidget extends StatelessWidget {
           onChangedWeight: (double value) => onChangedWeight(index, value),
           onChangedReps: (num value) => onChangedReps(index, value),
           onChangedType: (SetType type) => onChangedSetType(index, type),
-          onChangedDuration: (Duration duration, bool cache) => onChangedDuration(index, duration, cache),
+          onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
           onChangedDistance: (double value) => onChangedDistance(index, value),
           workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
           setDto: setDto,
@@ -273,7 +273,7 @@ class _SetWidget extends StatelessWidget {
   final void Function(double value) onChangedWeight;
   final void Function(num value) onChangedReps;
   final void Function(SetType type) onChangedType;
-  final void Function(Duration duration, bool cache) onChangedDuration;
+  final void Function(Duration duration) onChangedDuration;
   final void Function(double distance) onChangedDistance;
   final int workingIndex;
   final SetDto setDto;
@@ -335,7 +335,7 @@ class _SetWidget extends StatelessWidget {
           onRemoved: onRemoved,
           onChangedType: (SetType type) => onChangedType(type),
           onTapCheck: onTapCheck,
-          onChangedDuration: (Duration duration, bool cache) => onChangedDuration(duration, cache),
+          onChangedDuration: (Duration duration) => onChangedDuration(duration),
         ),
       ExerciseType.distanceAndDuration => DistanceDurationSetRow(
           index: index,
@@ -346,7 +346,7 @@ class _SetWidget extends StatelessWidget {
           onTapCheck: onTapCheck,
           onRemoved: onRemoved,
           onChangedType: (SetType type) {},
-          onChangedDuration: (Duration duration, bool cache) => onChangedDuration(duration, cache),
+          onChangedDuration: (Duration duration) => onChangedDuration(duration),
           onChangedDistance: (double distance) => onChangedDistance(distance),
         ),
     };

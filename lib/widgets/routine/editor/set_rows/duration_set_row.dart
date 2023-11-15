@@ -8,7 +8,7 @@ import '../../../../screens/editor/routine_editor_screen.dart';
 import '../set_type_icon.dart';
 import '../timer_widget.dart';
 
-class DurationSetRow extends StatefulWidget {
+class DurationSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
   final DurationNumPair setDto;
@@ -17,7 +17,7 @@ class DurationSetRow extends StatefulWidget {
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
-  final void Function(Duration duration, bool cache) onChangedDuration;
+  final void Function(Duration duration) onChangedDuration;
 
   const DurationSetRow(
       {super.key,
@@ -32,19 +32,11 @@ class DurationSetRow extends StatefulWidget {
       required this.onChangedDuration});
 
   @override
-  State<DurationSetRow> createState() => _DurationSetRowState();
-}
-
-class _DurationSetRowState extends State<DurationSetRow> {
-  int _elapsedTime = 0;
-  bool _isStopped = false;
-
-  @override
   Widget build(BuildContext context) {
-    final previousSetDto = widget.pastSetDto;
+    final previousSetDto = pastSetDto;
 
     return Table(
-      columnWidths: widget.editorType == RoutineEditorType.edit
+      columnWidths: editorType == RoutineEditorType.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(2),
@@ -61,10 +53,10 @@ class _DurationSetRowState extends State<DurationSetRow> {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: widget.setDto.type,
-                label: widget.workingIndex,
-                onSelectSetType: widget.onChangedType,
-                onRemoveSet: widget.onRemoved,
+                type: setDto.type,
+                label: workingIndex,
+                onSelectSetType: onChangedType,
+                onRemoveSet: onRemoved,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
@@ -81,30 +73,19 @@ class _DurationSetRowState extends State<DurationSetRow> {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SizedBox(
-              height: 45,
+              //height: 45,
               child: TimerWidget(
-                editorType: widget.editorType,
-                durationDto: widget.setDto,
-                onChangedDuration: (Duration duration, bool cache) => widget.onChangedDuration(duration, cache),
-                onTick: (int seconds) {
-                  setState(() {
-                    _elapsedTime = seconds;
-                  });
-                },
-                enabled: _isStopped,
+                durationDto: setDto,
+                onChangedDuration: (Duration duration) => onChangedDuration(duration),
               ),
             ),
           ),
-          if (widget.editorType == RoutineEditorType.log)
+          if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: GestureDetector(
-                  onTap: () {
-                    widget.onChangedDuration(Duration(seconds: _elapsedTime), false);
-                    widget.onTapCheck();
-                    _isStopped = true;
-                  },
-                  child: widget.setDto.checked
+                  onTap: onTapCheck,
+                  child: setDto.checked
                       ? const Icon(Icons.check_box_rounded, color: Colors.green)
                       : const Icon(Icons.check_box_rounded, color: Colors.grey),
                 ))
