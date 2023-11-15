@@ -104,7 +104,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _updateProcedureSet<T extends SetDto>(
-      {required String exerciseId, required int setIndex, required T Function(T set) updateFunction}) {
+      {required String exerciseId, required int setIndex, required T Function(T set) updateFunction, bool shouldNotifyListeners = false}) {
     final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
     if (procedureIndex != 1) {
       final procedure = _procedures[procedureIndex];
@@ -113,7 +113,9 @@ class ProceduresProvider extends ChangeNotifier {
 
         updatedSets[setIndex] = updateFunction(updatedSets[setIndex] as T);
         _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-        notifyListeners();
+        if(shouldNotifyListeners) {
+          notifyListeners();
+        }
       }
     }
   }
@@ -155,6 +157,7 @@ class ProceduresProvider extends ChangeNotifier {
       exerciseId: exerciseId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(type: type),
+      shouldNotifyListeners: true
     );
   }
 
@@ -163,6 +166,7 @@ class ProceduresProvider extends ChangeNotifier {
       exerciseId: procedureId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(checked: !set.checked),
+      shouldNotifyListeners: true
     );
   }
 
