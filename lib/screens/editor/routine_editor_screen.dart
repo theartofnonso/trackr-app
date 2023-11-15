@@ -653,15 +653,21 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
         floatingActionButton: widget.mode == RoutineEditorType.log
             ? MediaQuery.of(context).viewInsets.bottom <= 0
-                ? FloatingActionButton(
-                    heroTag: "fab_routine_editor_screen",
+                ? FloatingActionButton.extended(
+                    heroTag: "fab_routine_log_editor_screen",
                     onPressed: _endRoutineLog,
                     backgroundColor: tealBlueLighter,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const Icon(Icons.stop),
+                    label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
                   )
                 : null
-            : null,
+            : FloatingActionButton.extended(
+                heroTag: "fab_routine_template_editor_screen",
+                onPressed: _selectExercisesInLibrary,
+                backgroundColor: tealBlueLighter,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+              ),
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
             if (scrollNotification.direction != ScrollDirection.idle) {
@@ -760,16 +766,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                           },
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
                           itemCount: _procedures.length)),
-                  if (widget.mode == RoutineEditorType.edit)
-                    Column(
-                      children: [
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: CTextButton(onPressed: _selectExercisesInLibrary, label: "Select Exercises"),
-                        ),
-                      ],
-                    ),
                 ],
               ),
             ),

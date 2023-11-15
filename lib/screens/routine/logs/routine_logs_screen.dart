@@ -49,14 +49,14 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
           ],
         ),
         floatingActionButton: cachedRoutineLog == null
-            ? FloatingActionButton(
+            ? FloatingActionButton.extended(
                 heroTag: "fab_routine_logs_screen",
                 onPressed: () {
                   startEmptyRoutine(context: context);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(Icons.play_arrow_rounded),
+                label: Text("Start Empty Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
               )
             : null,
         body: SafeArea(

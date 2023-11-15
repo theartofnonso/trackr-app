@@ -242,7 +242,7 @@ class ProcedureWidget extends StatelessWidget {
             alignment: Alignment.bottomRight,
             child: IconButton(
                 onPressed: onAddSet,
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add, color: Colors.white70),
                 style: ButtonStyle(
                     visualDensity: VisualDensity.compact,
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),

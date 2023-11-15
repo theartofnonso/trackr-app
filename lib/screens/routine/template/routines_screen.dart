@@ -35,12 +35,12 @@ class RoutinesScreen extends StatelessWidget {
           title: Text("Workouts", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
           centerTitle: false,
         ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: FloatingActionButton.extended(
             heroTag: "fab_routines_screen",
             onPressed: () => _navigateToRoutineEditor(context: context),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const Icon(Icons.add),
+            label: Text("Create Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
           ),
           body: SafeArea(
               child: Padding(

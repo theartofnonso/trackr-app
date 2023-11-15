@@ -31,7 +31,7 @@ void showAlertDialog({required BuildContext context, required String message, re
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         icon: const Icon(Icons.info_outline),
-        backgroundColor: tealBlueLighter,
+        backgroundColor: tealBlueDark,
         content: Text(
           message,
           style: GoogleFonts.lato(fontSize: 14),
