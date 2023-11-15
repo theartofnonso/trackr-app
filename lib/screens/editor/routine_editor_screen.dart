@@ -272,8 +272,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
   }
 
-  void _updateDuration(
-      {required String procedureId, required int setIndex, required Duration duration}) {
+  void _updateDuration({required String procedureId, required int setIndex, required Duration duration}) {
     _updateProcedureSet<DurationNumPair>(
       procedureId: procedureId,
       setIndex: setIndex,
@@ -619,49 +618,48 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_outlined),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          actions: [
-            CTextButton(
-                onPressed: _canUpdate() ? _doUpdate : _createRoutine,
-                label: _canUpdate() ? "Update" : "Save",
-                buttonColor: Colors.transparent,
-                loading: _loading,
-                loadingLabel: _loadingLabel)
-          ],
-        )
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_outlined),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                actions: [
+                  CTextButton(
+                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                      label: _canUpdate() ? "Update" : "Save",
+                      buttonColor: Colors.transparent,
+                      loading: _loading,
+                      loadingLabel: _loadingLabel)
+                ],
+              )
             : AppBar(
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_outlined,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          title: Text(
-            "${_editorTitle()}",
-            style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
-        ),
+                leading: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Icon(
+                    Icons.arrow_back_outlined,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                title: Text(
+                  "${_editorTitle()}",
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
+              ),
         floatingActionButton: widget.mode == RoutineEditorType.log
             ? MediaQuery.of(context).viewInsets.bottom <= 0
-            ? FloatingActionButton(
-          heroTag: "fab_routine_editor_screen",
-          onPressed: _endRoutineLog,
-          backgroundColor: tealBlueLighter,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          child: const Icon(Icons.stop),
-        )
-            : null
+                ? FloatingActionButton(
+                    heroTag: "fab_routine_editor_screen",
+                    onPressed: _endRoutineLog,
+                    backgroundColor: tealBlueLighter,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    child: const Icon(Icons.stop),
+                  )
+                : null
             : null,
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
@@ -727,6 +725,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   const SizedBox(height: 20),
                   Expanded(
                       child: ListView.separated(
+                          padding: const EdgeInsets.only(bottom: 100),
                           itemBuilder: (BuildContext context, int index) {
                             final procedure = _procedures[index];
                             final exerciseId = procedure.exercise.id;
@@ -734,8 +733,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               procedureDto: procedure,
                               editorType: widget.mode,
                               otherSuperSetProcedureDto:
-                              whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
-                              onRemoveSuperSet: (String superSetId) => _removeSuperSet(superSetId: procedure.superSetId),
+                                  whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                              onRemoveSuperSet: (String superSetId) =>
+                                  _removeSuperSet(superSetId: procedure.superSetId),
                               onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
                               onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                               onChangedReps: (int setIndex, num value) =>
@@ -746,12 +746,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                   _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
                               onAddSet: () => _addSet(procedureId: exerciseId),
                               onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
-                              onUpdateNotes: (String value) => _updateProcedureNotes(procedureId: exerciseId, value: value),
+                              onUpdateNotes: (String value) =>
+                                  _updateProcedureNotes(procedureId: exerciseId, value: value),
                               onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
                               onReOrderProcedures: () => _reOrderProcedures(),
                               onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
-                              onChangedDuration: (int setIndex, Duration duration) => _updateDuration(
-                                  procedureId: exerciseId, setIndex: setIndex, duration: duration),
+                              onChangedDuration: (int setIndex, Duration duration) =>
+                                  _updateDuration(procedureId: exerciseId, setIndex: setIndex, duration: duration),
                               onChangedDistance: (int setIndex, double distance) =>
                                   _updateDistance(procedureId: exerciseId, setIndex: setIndex, distance: distance),
                             );
@@ -774,7 +775,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           ),
         ));
   }
-
 
   @override
   void initState() {
