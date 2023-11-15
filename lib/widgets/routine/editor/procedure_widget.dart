@@ -184,7 +184,7 @@ class ProcedureWidget extends StatelessWidget {
           return DistanceDurationSetRow(
             index: index,
             workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
-            setDto: setDto as DurationNumPair,
+            setDto: setDto,
             pastSetDto: pastSet as DurationNumPair?,
             editorType: editorType,
             onRemoved: () => onRemoveSet(index),
