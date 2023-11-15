@@ -254,8 +254,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: ProcedureWidget(
                 procedureDto: procedure,
-                otherSuperSetProcedureDto: whereOtherSuperSetProcedure(
-                    firstProcedure: procedure, procedures: procedures),
+                otherSuperSetProcedureDto: whereOtherSuperSetProcedure(context: context,
+                    firstProcedure: procedure),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))

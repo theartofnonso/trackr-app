@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -57,14 +57,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   String _loadingLabel = "";
 
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
-    final procedures = _whereOtherProcedures(firstProcedure: firstProcedure);
+    final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
     displayBottomSheet(
         context: context,
         child: _ProceduresList(
           procedures: procedures,
           onSelect: (ProcedureDto secondProcedure) {
             Navigator.of(context).pop();
-            _addSuperSet(firstProcedureId: firstProcedure.exercise.id, secondProcedureId: secondProcedure.exercise.id);
+            Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
+                firstExerciseId: firstProcedure.exercise.id, secondExerciseId: secondProcedure.exercise.id);
+            _cacheRoutineLog();
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -83,7 +85,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        _addProcedures(exercises: exercises);
+        Provider.of<ProceduresProvider>(context, listen: false).addProcedures(exercises: exercises);
+        _cacheRoutineLog();
       }
     }
   }
@@ -105,29 +108,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       }
       _cacheRoutineLog();
     }
-  }
-
-  void _addProcedures({required List<Exercise> exercises}) {
-    final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
-    setState(() {
-      _procedures.addAll(proceduresToAdd);
-    });
-
-    _cacheRoutineLog();
-  }
-
-  void _removeProcedure({required String procedureId}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedureToBeRemoved = _procedures[procedureIndex];
-    if (procedureToBeRemoved.superSetId.isNotEmpty) {
-      _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
-    }
-
-    setState(() {
-      _procedures.removeAt(procedureIndex);
-    });
-
-    _cacheRoutineLog();
   }
 
   void _updateProcedureNotes({required String procedureId, required String value}) {
@@ -176,7 +156,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
         final procedureToBeReplaced = _procedures[procedureIndex];
         if (procedureToBeReplaced.superSetId.isNotEmpty) {
-          _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
+          //_removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
         }
 
         final selectedExercise = selectedExercises.first;
@@ -193,150 +173,76 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     return _procedures.indexWhere((procedure) => procedure.exercise.id == procedureId);
   }
 
-  /// First value is always the weight value and then second can be any value
-  void _addSet({required String procedureId}) {
+  void _removeProcedureSuperSets({required String superSetId}) {
+    Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(superSetId: superSetId);
+    _cacheRoutineLog();
+  }
+
+  void _removeProcedure({required String procedureId}) {
+    Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(exerciseId: procedureId);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _addSet({required String exerciseId}) {
+    _dismissKeyboard();
+    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(exerciseId: exerciseId);
+    _cacheRoutineLog();
+  }
+
+  void _removeSet({required String exerciseId, required int setIndex}) {
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .removeSetForProcedure(exerciseId: exerciseId, setIndex: setIndex);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _updateWeight({required String exerciseId, required int setIndex, required double value}) {
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateWeight(exerciseId: exerciseId, setIndex: setIndex, value: value);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _updateReps({required String exerciseId, required int setIndex, required num value}) {
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateReps(exerciseId: exerciseId, setIndex: setIndex, value: value);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _updateDuration({required String exerciseId, required int setIndex, required Duration duration}) {
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _updateDistance({required String exerciseId, required int setIndex, required double distance}) {
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _updateSetType({required String exerciseId, required int setIndex, required SetType type}) {
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateSetType(exerciseId: exerciseId, setIndex: setIndex, type: type);
+    _calculateCompletedSets();
+    _cacheRoutineLog();
+  }
+
+  void _checkSet({required String exerciseId, required int setIndex}) {
     _dismissKeyboard();
 
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final previousSet = procedure.sets.lastOrNull;
-    final exerciseType = ExerciseType.fromString(procedure.exercise.type);
-    SetDto newSet;
-
-    if (exerciseType == ExerciseType.weightAndReps ||
-        exerciseType == ExerciseType.bodyWeightAndReps ||
-        exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.assistedBodyWeight ||
-        exerciseType == ExerciseType.weightAndDistance) {
-      newSet = DoubleNumPair(value1: (previousSet as DoubleNumPair?)?.value1 ?? 0, value2: previousSet?.value2 ?? 0);
-    } else if (exerciseType == ExerciseType.duration || exerciseType == ExerciseType.distanceAndDuration) {
-      newSet = DurationNumPair(
-          value1: (previousSet as DurationNumPair?)?.value1 ?? Duration.zero, value2: previousSet?.value2 ?? 0);
-    } else {
-      // Handle other cases or throw an error
-      throw UnimplementedError("Set type not handled");
-    }
-
-    final sets = [...procedure.sets, newSet];
-
-    setState(() {
-      _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-    });
-
+    Provider.of<ProceduresProvider>(context, listen: false).checkSet(procedureId: exerciseId, setIndex: setIndex);
+    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
-  void _removeSet({required String procedureId, required int setIndex}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-
-    // Directly modify the sets list of the procedure
-    List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..removeAt(setIndex);
-
-    setState(() {
-      _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-      _calculateCompletedSets();
-    });
-
-    _cacheRoutineLog();
-  }
-
-  void _updateProcedureSet<T extends SetDto>(
-      {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    final sets = [...procedure.sets];
-
-    sets[setIndex] = updateFunction(sets[setIndex] as T);
-    _procedures[procedureIndex] = procedure.copyWith(sets: sets);
-
-    if (widget.mode == RoutineEditorType.log) {
-      _calculateCompletedSets();
-    }
-
-    _cacheRoutineLog();
-  }
-
-  void _updateWeight({required String procedureId, required int setIndex, required double value}) {
-    _updateProcedureSet<DoubleNumPair>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value1: value),
-    );
-  }
-
-  void _updateReps({required String procedureId, required int setIndex, required num value}) {
-    _updateProcedureSet<DoubleNumPair>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value2: value),
-    );
-  }
-
-  void _updateDuration({required String procedureId, required int setIndex, required Duration duration}) {
-    _updateProcedureSet<DurationNumPair>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value1: duration),
-    );
-  }
-
-  void _updateDistance({required String procedureId, required int setIndex, required double distance}) {
-    _updateProcedureSet<DurationNumPair>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value2: distance),
-    );
-  }
-
-  void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
-    _updateProcedureSet<SetDto>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(type: type),
-    );
-  }
-
-  void _checkSet({required String procedureId, required int setIndex}) {
-    _dismissKeyboard();
-
-    _updateProcedureSet<SetDto>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(checked: !set.checked),
-    );
-  }
-
-  void _addSuperSet({required String firstProcedureId, required String secondProcedureId}) {
-    final id = "superset_id_${DateTime.now().millisecondsSinceEpoch}";
-
-    final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
-    final firstProcedure = _procedures[firstProcedureIndex];
-    final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
-    final secondProcedure = _procedures[secondProcedureIndex];
-
-    setState(() {
-      _procedures[firstProcedureIndex] = firstProcedure.copyWith(superSetId: id);
-      _procedures[secondProcedureIndex] = secondProcedure.copyWith(superSetId: id);
-    });
-
-    _cacheRoutineLog();
-  }
-
-  void _removeSuperSet({required String superSetId}) {
-    for (var procedure in _procedures) {
-      if (procedure.superSetId == superSetId) {
-        final procedureIndex = _indexWhereProcedure(procedureId: procedure.exercise.id);
-        setState(() {
-          _procedures[procedureIndex] = procedure.copyWith(superSetId: "");
-        });
-      }
-    }
-    _cacheRoutineLog();
-  }
-
-  List<ProcedureDto> _whereOtherProcedures({required ProcedureDto firstProcedure}) {
-    return _procedures
+  List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
+    return Provider.of<ProceduresProvider>(context, listen: false)
+        .procedures
         .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.superSetId.isNotEmpty)
         .toList();
   }
@@ -503,9 +409,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _calculateCompletedSets() {
-    setState(() {
-      _completedSets = _procedures.expand((procedure) => procedure.sets).where((set) => set.checked).toList();
-    });
+    if (widget.mode == RoutineEditorType.log) {
+      setState(() {
+        _completedSets = _procedures.expand((procedure) => procedure.sets).where((set) => set.checked).toList();
+      });
+    }
   }
 
   double _totalWeight() {
@@ -730,42 +638,45 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       ],
                     ),
                   const SizedBox(height: 20),
-                  Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 100),
+                  Expanded(child: Consumer<ProceduresProvider>(
+                    builder: (BuildContext context, ProceduresProvider value, Widget? child) {
+                      final procedures = value.procedures;
+                      return ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
-                            final procedure = _procedures[index];
+                            final procedure = procedures[index];
                             final exerciseId = procedure.exercise.id;
                             return ProcedureWidget(
                               procedureDto: procedure,
                               editorType: widget.mode,
                               otherSuperSetProcedureDto:
-                                  whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: _procedures),
+                                  whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
                               onRemoveSuperSet: (String superSetId) =>
-                                  _removeSuperSet(superSetId: procedure.superSetId),
+                                  _removeProcedureSuperSets(superSetId: procedure.superSetId),
                               onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
                               onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                               onChangedReps: (int setIndex, num value) =>
-                                  _updateReps(procedureId: exerciseId, setIndex: setIndex, value: value),
+                                  _updateReps(exerciseId: exerciseId, setIndex: setIndex, value: value),
                               onChangedWeight: (int setIndex, double value) =>
-                                  _updateWeight(procedureId: exerciseId, setIndex: setIndex, value: value),
+                                  _updateWeight(exerciseId: exerciseId, setIndex: setIndex, value: value),
                               onChangedSetType: (int setIndex, SetType type) =>
-                                  _updateSetType(procedureId: exerciseId, setIndex: setIndex, type: type),
-                              onAddSet: () => _addSet(procedureId: exerciseId),
-                              onRemoveSet: (int setIndex) => _removeSet(procedureId: exerciseId, setIndex: setIndex),
+                                  _updateSetType(exerciseId: exerciseId, setIndex: setIndex, type: type),
+                              onAddSet: () => _addSet(exerciseId: exerciseId),
+                              onRemoveSet: (int setIndex) => _removeSet(exerciseId: exerciseId, setIndex: setIndex),
                               onUpdateNotes: (String value) =>
                                   _updateProcedureNotes(procedureId: exerciseId, value: value),
                               onReplaceProcedure: () => _replaceProcedure(procedureId: exerciseId),
                               onReOrderProcedures: () => _reOrderProcedures(),
-                              onCheckSet: (int setIndex) => _checkSet(procedureId: exerciseId, setIndex: setIndex),
+                              onCheckSet: (int setIndex) => _checkSet(exerciseId: exerciseId, setIndex: setIndex),
                               onChangedDuration: (int setIndex, Duration duration) =>
-                                  _updateDuration(procedureId: exerciseId, setIndex: setIndex, duration: duration),
+                                  _updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration),
                               onChangedDistance: (int setIndex, double distance) =>
-                                  _updateDistance(procedureId: exerciseId, setIndex: setIndex, distance: distance),
+                                  _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance),
                             );
                           },
-                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
-                          itemCount: _procedures.length)),
+                          separatorBuilder: (_, __) => const SizedBox(height: 10),
+                          itemCount: procedures.length);
+                    },
+                  )),
                 ],
               ),
             ),

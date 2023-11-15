@@ -18,7 +18,7 @@ class WeightedSetRow extends StatelessWidget {
   final void Function() onTapCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
-  final void Function(int value) onChangedOther;
+  final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
 
   const WeightedSetRow(
@@ -31,7 +31,7 @@ class WeightedSetRow extends StatelessWidget {
       required this.onTapCheck,
       required this.onRemoved,
       required this.onChangedType,
-      required this.onChangedOther,
+      required this.onChangedReps,
       required this.onChangedWeight});
 
   @override
@@ -93,7 +93,7 @@ class WeightedSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
               initialValue: setDto.value2.toInt(),
-              onChanged: onChangedOther,
+              onChanged: onChangedReps,
             ),
           ),
           if (editorType == RoutineEditorType.log)

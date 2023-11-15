@@ -349,7 +349,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                 ProcedureWidget(
                   procedureDto: procedure,
                   otherSuperSetProcedureDto:
-                      whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                      whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
                 ),
                 const SizedBox(height: 18)
               ],

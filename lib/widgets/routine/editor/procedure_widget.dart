@@ -119,25 +119,85 @@ class ProcedureWidget extends StatelessWidget {
 
     return procedureDto.sets.mapIndexed((index, setDto) {
       SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
-      final setWidget = _SetWidget(
-          type: exerciseType,
-          index: index,
-          onRemoved: () => onRemoveSet(index),
-          onTapCheck: () => onCheckSet(index),
-          onChangedWeight: (double value) => onChangedWeight(index, value),
-          onChangedReps: (num value) => onChangedReps(index, value),
-          onChangedType: (SetType type) => onChangedSetType(index, type),
-          onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
-          onChangedDistance: (double value) => onChangedDistance(index, value),
-          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
-          setDto: setDto,
-          pastSet: pastSet,
-          editorType: editorType);
+      Widget setWidget = _createSetWidget(index, setDto, pastSet, exerciseType, setCounts);
 
       setCounts[setDto.type] = setCounts[setDto.type]! + 1;
 
       return setWidget;
     }).toList();
+  }
+
+  Widget _createSetWidget(
+      int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
+    switch (exerciseType) {
+      case ExerciseType.weightAndReps:
+      case ExerciseType.weightedBodyWeight:
+      case ExerciseType.assistedBodyWeight:
+      case ExerciseType.weightAndDistance:
+        if (setDto is DoubleNumPair) {
+          return WeightedSetRow(
+            index: index,
+            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+            setDto: setDto,
+            pastSetDto: pastSet as DoubleNumPair?,
+            editorType: editorType,
+            onRemoved: () => onRemoveSet(index),
+            onTapCheck: () => onCheckSet(index),
+            onChangedType: (SetType type) => onChangedSetType(index, type),
+            onChangedReps: (num value) => onChangedReps(index, value),
+            onChangedWeight: (double value) => onChangedWeight(index, value),
+          );
+        }
+        break;
+      case ExerciseType.bodyWeightAndReps:
+        if (setDto is DoubleNumPair) {
+          return RepsSetRow(
+            index: index,
+            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+            setDto: setDto,
+            pastSetDto: pastSet as DoubleNumPair?,
+            editorType: editorType,
+            onRemoved: () => onRemoveSet(index),
+            onTapCheck: () => onCheckSet(index),
+            onChangedType: (SetType type) => onChangedSetType(index, type),
+            onChangedReps: (num value) => onChangedReps(index, value),
+          );
+        }
+        break;
+      case ExerciseType.duration:
+        if (setDto is DurationNumPair) {
+          return DurationSetRow(
+            index: index,
+            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+            setDto: setDto,
+            pastSetDto: pastSet as DurationNumPair?,
+            editorType: editorType,
+            onRemoved: () => onRemoveSet(index),
+            onTapCheck: () => onCheckSet(index),
+            onChangedType: (SetType type) => onChangedSetType(index, type),
+            onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
+          );
+        }
+        break;
+      case ExerciseType.distanceAndDuration:
+        if (setDto is DurationNumPair) {
+          return DistanceDurationSetRow(
+            index: index,
+            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+            setDto: setDto as DurationNumPair,
+            pastSetDto: pastSet as DurationNumPair?,
+            editorType: editorType,
+            onRemoved: () => onRemoveSet(index),
+            onTapCheck: () => onCheckSet(index),
+            onChangedType: (SetType type) => onChangedSetType(index, type),
+            onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
+            onChangedDistance: (double distance) => onChangedDistance(index, distance),
+          );
+        }
+        break;
+      // Add other cases or a default case
+    }
+    throw UnimplementedError('Set type and exercise type combination not handled');
   }
 
   @override
@@ -192,7 +252,7 @@ class ProcedureWidget extends StatelessWidget {
           ),
           otherProcedureDto != null
               ? Text("with ${otherProcedureDto.exercise.name}",
-              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12))
+                  style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12))
               : const SizedBox.shrink(),
           const SizedBox(height: 10),
           TextField(
@@ -251,92 +311,5 @@ class ProcedureWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class _SetWidget extends StatelessWidget {
-  final int index;
-  final void Function() onRemoved;
-  final void Function() onTapCheck;
-  final void Function(double value) onChangedWeight;
-  final void Function(num value) onChangedReps;
-  final void Function(SetType type) onChangedType;
-  final void Function(Duration duration) onChangedDuration;
-  final void Function(double distance) onChangedDistance;
-  final int workingIndex;
-  final SetDto setDto;
-  final SetDto? pastSet;
-  final RoutineEditorType editorType;
-  final ExerciseType type;
-
-  const _SetWidget(
-      {required this.type,
-      required this.index,
-      required this.onRemoved,
-      required this.onTapCheck,
-      required this.onChangedWeight,
-      required this.onChangedType,
-      required this.onChangedDuration,
-      required this.onChangedReps,
-      required this.workingIndex,
-      required this.setDto,
-      required this.pastSet,
-      required this.editorType,
-      required this.onChangedDistance});
-
-  @override
-  Widget build(BuildContext context) {
-    return switch (type) {
-      ExerciseType.weightAndReps ||
-      ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight ||
-      ExerciseType.weightAndDistance =>
-        WeightedSetRow(
-          index: index,
-          onRemoved: onRemoved,
-          workingIndex: workingIndex,
-          setDto: setDto as DoubleNumPair,
-          pastSetDto: pastSet as DoubleNumPair?,
-          editorType: editorType,
-          onChangedOther: (num value) => onChangedReps(value),
-          onChangedWeight: (double value) => onChangedWeight(value),
-          onChangedType: (SetType type) => onChangedType(type),
-          onTapCheck: onTapCheck,
-        ),
-      ExerciseType.bodyWeightAndReps => RepsSetRow(
-          index: index,
-          onRemoved: onRemoved,
-          workingIndex: workingIndex,
-          setDto: setDto as DoubleNumPair,
-          pastSetDto: pastSet as DoubleNumPair?,
-          editorType: editorType,
-          onChangedOther: (num value) => onChangedReps(value),
-          onChangedType: (SetType type) => onChangedType(type),
-          onTapCheck: onTapCheck,
-        ),
-      ExerciseType.duration => DurationSetRow(
-          index: index,
-          workingIndex: workingIndex,
-          setDto: setDto as DurationNumPair,
-          pastSetDto: pastSet as DurationNumPair?,
-          editorType: editorType,
-          onRemoved: onRemoved,
-          onChangedType: (SetType type) => onChangedType(type),
-          onTapCheck: onTapCheck,
-          onChangedDuration: (Duration duration) => onChangedDuration(duration),
-        ),
-      ExerciseType.distanceAndDuration => DistanceDurationSetRow(
-          index: index,
-          workingIndex: workingIndex,
-          setDto: setDto as DurationNumPair,
-          pastSetDto: pastSet as DurationNumPair?,
-          editorType: editorType,
-          onTapCheck: onTapCheck,
-          onRemoved: onRemoved,
-          onChangedType: (SetType type) {},
-          onChangedDuration: (Duration duration) => onChangedDuration(duration),
-          onChangedDistance: (double distance) => onChangedDistance(distance),
-        ),
-    };
   }
 }
