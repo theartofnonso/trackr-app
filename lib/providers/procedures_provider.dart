@@ -58,7 +58,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void removeProcedure({required String procedureId}) {
-    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     if (procedureIndex != -1) {
       final procedureToBeRemoved = _procedures[procedureIndex];
 
@@ -78,7 +78,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   void replaceProcedure({required String procedureId, required Exercise exercise}) async {
     // Get the index of the procedure to be replaced
-    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     // Check if the procedure was found
     if (procedureIndex != -1) {
@@ -97,7 +97,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateProcedureNotes({required String procedureId, required String value}) {
     // Find the index of the procedure with the given exercise ID.
-    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
+    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     // Check if a valid procedure is found.
     if (procedureIndex != -1) {
@@ -114,8 +114,8 @@ class ProceduresProvider extends ChangeNotifier {
   void superSetProcedures({required String firstExerciseId, required String secondExerciseId}) {
     final id = "superset_id_${firstExerciseId}_$secondExerciseId";
 
-    final firstProcedureIndex = _indexWhereProcedure(exerciseId: firstExerciseId);
-    final secondProcedureIndex = _indexWhereProcedure(exerciseId: secondExerciseId);
+    final firstProcedureIndex = _indexWhereProcedure(procedureId: firstExerciseId);
+    final secondProcedureIndex = _indexWhereProcedure(procedureId: secondExerciseId);
 
     if (firstProcedureIndex != -1 && secondProcedureIndex != -1) {
       List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures);
@@ -196,77 +196,76 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateProcedureSet<T extends SetDto>(
-      {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
-    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
-    if (procedureIndex != -1) {
-      final procedure = _procedures[procedureIndex];
-      if (setIndex != -1 && setIndex < procedure.sets.length && procedure.sets[setIndex] is T) {
-        List<SetDto> updatedSets = List<SetDto>.from(procedure.sets);
-        updatedSets[setIndex] = updateFunction(updatedSets[setIndex] as T);
-        _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-      }
+  // void _updateProcedureSet<T extends SetDto>(
+  //     {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
+  //   final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
+  //   if (procedureIndex != -1) {
+  //     final procedure = _procedures[procedureIndex];
+  //     if (setIndex != -1 && setIndex < procedure.sets.length && procedure.sets[setIndex] is T) {
+  //       List<SetDto> updatedSets = List<SetDto>.from(procedure.sets);
+  //       updatedSets[setIndex] = updateFunction(updatedSets[setIndex] as T);
+  //       _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
+  //     }
+  //   }
+  // }
+
+  void _updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet, bool notify = false}) {
+    // Check if the exercise ID exists in the map and if the setIndex is valid
+    if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
+      // Handle the case where the exercise ID does not exist or index is invalid
+      // e.g., log an error or throw an exception
+      return;
+    }
+
+    // Clone the old sets for the exercise ID
+    List<SetDto> updatedSets = List<SetDto>.from(_sets[procedureId]!);
+
+    // Replace the set at the specified index with the updated set
+    updatedSets[setIndex] = updatedSet;
+
+    // Create a new map by copying all key-value pairs from the original map
+    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+
+    // Update the new map with the modified list of sets
+    newMap[procedureId] = updatedSets;
+
+    // Assign the new map to _sets to maintain immutability
+    _sets = newMap;
+
+    print(_sets);
+
+    // Notify listeners about the change
+    if(notify) {
+      notifyListeners();
     }
   }
 
-  void updateWeight({required String procedureId, required int setIndex, required double value}) {
-    _updateProcedureSet<SetDto>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value1: value),
-    );
+  void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateReps({required String procedureId, required int setIndex, required num value}) {
-    _updateProcedureSet<SetDto>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value2: value),
-    );
+  void updateReps({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDuration({required String procedureId, required int setIndex, required Duration duration}) {
-    _updateProcedureSet<SetDto>(
-        procedureId: procedureId,
-        setIndex: setIndex,
-        updateFunction: (set) => set.copyWith(value1: duration.inMilliseconds));
+  void updateDuration({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
   }
 
-  void updateDistance({required String procedureId, required int setIndex, required double distance}) {
-    _updateProcedureSet<SetDto>(
-      procedureId: procedureId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value2: distance),
-    );
+  void updateDistance({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType({required String procedureId, required int setIndex, required SetType type}) {
-    _updateProcedureSet<SetDto>(
-        procedureId: procedureId, setIndex: setIndex, updateFunction: (set) => set.copyWith(type: type));
+  void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
   }
 
-  void checkSet({required String exerciseId, required int setIndex}) {
-    _updateProcedureSet<SetDto>(
-        procedureId: exerciseId,
-        setIndex: setIndex,
-        updateFunction: (set) => set.copyWith(checked: set.isNotEmpty() ? !set.checked : false));
+  void checkSet({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void clearProcedures() {
     _procedures.clear();
-  }
-
-  SetDto setWhereProcedure({required String exerciseId, required setIndex}) {
-    final sets = _procedures
-        .where((procedure) => procedure.exercise.id == exerciseId)
-        .expand((procedure) => procedure.sets)
-        .toList();
-    if (sets.isNotEmpty) {
-      if (setIndex <= sets.length) {
-        return sets[setIndex];
-      }
-    }
-    return SetDto(0, 0, SetType.working, false);
   }
 
   int setTypeIndexWhereProcedure({required String exerciseId, required SetType setType, required int setIndex}) {
@@ -328,7 +327,7 @@ class ProceduresProvider extends ChangeNotifier {
     _procedures = updatedProcedures;
   }
 
-  int _indexWhereProcedure({required String exerciseId}) {
-    return _procedures.indexWhere((procedure) => procedure.exercise.id == exerciseId);
+  int _indexWhereProcedure({required String procedureId}) {
+    return _procedures.indexWhere((procedure) => procedure.id == procedureId);
   }
 }

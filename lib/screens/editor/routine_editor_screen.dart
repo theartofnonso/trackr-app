@@ -17,7 +17,6 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
-import '../../dtos/set_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -162,12 +161,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _removeProcedure({required String procedureId}) {
     Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(procedureId: procedureId);
-    _cacheRoutineLog();
-  }
-
-  void _updateSetType({required String procedureId, required int setIndex, required SetType type}) {
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetType(procedureId: procedureId, setIndex: setIndex, type: type);
     _cacheRoutineLog();
   }
 
@@ -580,13 +573,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                     whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
-                                onRemoveProcedure: () => _removeProcedure(procedureId: procedure.id),
+                                onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onChangedSetType: (int setIndex, SetType type) =>
-                                    _updateSetType(procedureId: procedureId, setIndex: setIndex, type: type),
                                 onCache: _cacheRoutineLog,
                                 onReplaceProcedure: () => _replaceProcedure(procedureId: procedureId),
-                                onReOrderProcedures: () => _reOrderProcedures());
+                                onReOrderProcedures: _reOrderProcedures);
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
                           itemCount: procedures.length)),
