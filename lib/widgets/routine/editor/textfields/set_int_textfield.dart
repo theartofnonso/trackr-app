@@ -5,13 +5,11 @@ import '../../../../app_constants.dart';
 
 class SetIntTextField extends StatelessWidget {
   final int value;
-  final TextEditingController editingController;
   final void Function(int) onChanged;
 
   const SetIntTextField({
     super.key,
     required this.value,
-    required this.editingController,
     required this.onChanged,
   });
 
@@ -22,8 +20,7 @@ class SetIntTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: editingController,
-      onChanged: (_) => onChanged(_parseIntOrDefault(value: editingController.text)),
+      onChanged: (value) => onChanged(_parseIntOrDefault(value: value.toString())),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(

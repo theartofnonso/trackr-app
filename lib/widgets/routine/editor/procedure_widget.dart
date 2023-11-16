@@ -37,12 +37,12 @@ class ProcedureWidget extends StatelessWidget {
   /// Set callbacks
   final void Function() onAddSet;
   final void Function(int setIndex) onRemoveSet;
-  final void Function(int setIndex) onCheckSet;
+  final void Function() onCheckSet;
+  final void Function(int setIndex, SetType type) onChangedSetType;
   final void Function(int setIndex, double value) onChangedWeight;
   final void Function(int setIndex, num value) onChangedReps;
   final void Function(int setIndex, Duration duration) onChangedDuration;
   final void Function(int setIndex, double distance) onChangedDistance;
-  final void Function(int setIndex, SetType type) onChangedSetType;
 
   const ProcedureWidget({
     super.key,
@@ -125,8 +125,7 @@ class ProcedureWidget extends StatelessWidget {
     }).toList();
   }
 
-  Widget _createSetWidget(
-      int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
+  Widget _createSetWidget(int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
@@ -134,12 +133,13 @@ class ProcedureWidget extends StatelessWidget {
       case ExerciseType.weightAndDistance:
         return WeightedSetRow(
           index: index,
-          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
+          exerciseId: procedureDto.exercise.id,
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
           onRemoved: () => onRemoveSet(index),
-          onTapCheck: () => onCheckSet(index),
+          onCheck: onCheckSet,
           onChangedType: (SetType type) => onChangedSetType(index, type),
           onChangedReps: (num value) => onChangedReps(index, value),
           onChangedWeight: (double value) => onChangedWeight(index, value),
@@ -147,36 +147,39 @@ class ProcedureWidget extends StatelessWidget {
       case ExerciseType.bodyWeightAndReps:
         return RepsSetRow(
           index: index,
-          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
+          exerciseId: procedureDto.exercise.id,
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
           onRemoved: () => onRemoveSet(index),
-          onTapCheck: () => onCheckSet(index),
+          onCheck: onCheckSet,
           onChangedType: (SetType type) => onChangedSetType(index, type),
           onChangedReps: (num value) => onChangedReps(index, value),
         );
       case ExerciseType.duration:
         return DurationSetRow(
           index: index,
-          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
+          exerciseId: procedureDto.exercise.id,
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
           onRemoved: () => onRemoveSet(index),
-          onTapCheck: () => onCheckSet(index),
+          onCheck: onCheckSet,
           onChangedType: (SetType type) => onChangedSetType(index, type),
           onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
         );
       case ExerciseType.distanceAndDuration:
         return DistanceDurationSetRow(
           index: index,
-          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
+          exerciseId: procedureDto.exercise.id,
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
           onRemoved: () => onRemoveSet(index),
-          onTapCheck: () => onCheckSet(index),
+          onCheck: onCheckSet,
           onChangedType: (SetType type) => onChangedSetType(index, type),
           onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
           onChangedDistance: (double distance) => onChangedDistance(index, distance),

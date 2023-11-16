@@ -6,15 +6,17 @@ import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
+import '../set_check_button.dart';
 import '../set_type_icon.dart';
 
 class WeightedSetRow extends StatelessWidget {
   final int index;
-  final int workingIndex;
+  final String label;
+  final String exerciseId;
   final SetDto setDto;
   final SetDto? pastSetDto;
   final RoutineEditorType editorType;
-  final void Function() onTapCheck;
+  final void Function() onCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
   final void Function(int value) onChangedReps;
@@ -23,11 +25,12 @@ class WeightedSetRow extends StatelessWidget {
   const WeightedSetRow(
       {super.key,
       required this.index,
-      required this.workingIndex,
+      required this.label,
+      required this.exerciseId,
       required this.setDto,
       this.pastSetDto,
       required this.editorType,
-      required this.onTapCheck,
+      required this.onCheck,
       required this.onRemoved,
       required this.onChangedType,
       required this.onChangedReps,
@@ -49,7 +52,6 @@ class WeightedSetRow extends StatelessWidget {
 
     final repsValue = setDto.value2.toInt();
 
-
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
           ? <int, TableColumnWidth>{
@@ -70,10 +72,10 @@ class WeightedSetRow extends StatelessWidget {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: setDto.type,
-                label: workingIndex,
+                label: label,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
+                type: setDto.type,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
@@ -100,18 +102,12 @@ class WeightedSetRow extends StatelessWidget {
             child: SetIntTextField(
               value: repsValue,
               onChanged: onChangedReps,
-              editingController: TextEditingController(),
             ),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: onTapCheck,
-                  child: setDto.checked
-                      ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                      : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                ))
+                child: SetCheckButton(exerciseId: exerciseId, setIndex: index, onCheckSet: onCheck))
         ])
       ],
     );

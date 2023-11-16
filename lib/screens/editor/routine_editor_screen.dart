@@ -212,10 +212,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _checkSet({required String exerciseId, required int setIndex}) {
-    _dismissKeyboard();
-
-    Provider.of<ProceduresProvider>(context, listen: false).checkSet(exerciseId: exerciseId, setIndex: setIndex);
+  void _checkSet() {
     _cacheRoutineLog();
   }
 
@@ -640,7 +637,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                   _updateProcedureNotes(exerciseId: exerciseId, value: value),
                               onReplaceProcedure: () => _replaceProcedure(exerciseId: exerciseId),
                               onReOrderProcedures: () => _reOrderProcedures(),
-                              onCheckSet: (int setIndex) => _checkSet(exerciseId: exerciseId, setIndex: setIndex),
+                              onCheckSet: _checkSet,
                               onChangedDuration: (int setIndex, Duration duration) =>
                                   _updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration),
                               onChangedDistance: (int setIndex, double distance) =>

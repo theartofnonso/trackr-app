@@ -134,10 +134,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _updateProcedureSet<T extends SetDto>(
-      {required String exerciseId,
-      required int setIndex,
-      required T Function(T set) updateFunction,
-      bool shouldNotifyListeners = false}) {
+      {required String exerciseId, required int setIndex, required T Function(T set) updateFunction}) {
     final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
@@ -145,9 +142,6 @@ class ProceduresProvider extends ChangeNotifier {
         List<SetDto> updatedSets = List<SetDto>.from(procedure.sets);
         updatedSets[setIndex] = updateFunction(updatedSets[setIndex] as T);
         _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-        if (shouldNotifyListeners) {
-          notifyListeners();
-        }
       }
     }
   }
@@ -170,11 +164,9 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateDuration({required String exerciseId, required int setIndex, required Duration duration}) {
     _updateProcedureSet<SetDto>(
-      exerciseId: exerciseId,
-      setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value1: duration.inMilliseconds),
-      shouldNotifyListeners: true,
-    );
+        exerciseId: exerciseId,
+        setIndex: setIndex,
+        updateFunction: (set) => set.copyWith(value1: duration.inMilliseconds));
   }
 
   void updateDistance({required String exerciseId, required int setIndex, required double distance}) {
@@ -187,22 +179,46 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateSetType({required String exerciseId, required int setIndex, required SetType type}) {
     _updateProcedureSet<SetDto>(
-        exerciseId: exerciseId,
-        setIndex: setIndex,
-        updateFunction: (set) => set.copyWith(type: type),
-        shouldNotifyListeners: true);
+        exerciseId: exerciseId, setIndex: setIndex, updateFunction: (set) => set.copyWith(type: type));
   }
 
   void checkSet({required String exerciseId, required int setIndex}) {
     _updateProcedureSet<SetDto>(
         exerciseId: exerciseId,
         setIndex: setIndex,
-        updateFunction: (set) => set.copyWith(checked: set.isNotEmpty() ? !set.checked : false),
-        shouldNotifyListeners: true);
+        updateFunction: (set) => set.copyWith(checked: set.isNotEmpty() ? !set.checked : false));
   }
 
   void clearProcedures() {
     _procedures.clear();
+  }
+
+  SetDto setWhereProcedure({required String exerciseId, required setIndex}) {
+    final sets = _procedures
+        .where((procedure) => procedure.exercise.id == exerciseId)
+        .expand((procedure) => procedure.sets)
+        .toList();
+    if (sets.isNotEmpty) {
+      if (setIndex <= sets.length) {
+        return sets[setIndex];
+      }
+    }
+    return SetDto(0, 0, SetType.working, false);
+  }
+
+  int setTypeIndexWhereProcedure({required String exerciseId, required SetType setType, required int setIndex}) {
+
+    Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
+
+    final sets = _procedures.firstWhere((procedure) => procedure.exercise.id == exerciseId).sets;
+
+    for (int index = 0; index < sets.length; index++) {
+      final set = sets[index];
+      setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
+    }
+
+    return setTypeCounts[setType]!;
+
   }
 
   /// Helper functions

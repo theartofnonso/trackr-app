@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
+import '../set_check_button.dart';
 import '../set_type_icon.dart';
 
 class RepsSetRow extends StatelessWidget {
   final int index;
-  final int workingIndex;
+  final String label;
+  final String exerciseId;
   final SetDto setDto;
   final SetDto? pastSetDto;
   final RoutineEditorType editorType;
-  final void Function() onTapCheck;
+  final void Function() onCheck;
   final void Function() onRemoved;
   final void Function(SetType type) onChangedType;
   final void Function(num value) onChangedReps;
@@ -20,14 +24,14 @@ class RepsSetRow extends StatelessWidget {
   const RepsSetRow(
       {super.key,
       required this.index,
-      required this.workingIndex,
+      required this.label,
       required this.setDto,
       this.pastSetDto,
       required this.editorType,
-      required this.onTapCheck,
+      required this.onCheck,
       required this.onRemoved,
       required this.onChangedType,
-      required this.onChangedReps});
+      required this.onChangedReps, required this.exerciseId});
 
   @override
   Widget build(BuildContext context) {
@@ -57,19 +61,17 @@ class RepsSetRow extends StatelessWidget {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: setDto.type,
-                label: workingIndex,
+                label: label,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
+                type: setDto.type,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
                     "x $prevRepValue",
-                    style: GoogleFonts.lato(
-                      color: Colors.white70
-                    ),
+                    style: GoogleFonts.lato(color: Colors.white70),
                     textAlign: TextAlign.center,
                   )
                 : Text("-", textAlign: TextAlign.center, style: GoogleFonts.lato(color: Colors.white70)),
@@ -79,18 +81,12 @@ class RepsSetRow extends StatelessWidget {
             child: SetIntTextField(
               value: setDto.value2.toInt(),
               onChanged: onChangedReps,
-              editingController: TextEditingController(),
             ),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: onTapCheck,
-                  child: setDto.checked
-                      ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                      : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                ))
+                child: SetCheckButton(exerciseId: exerciseId, setIndex: index, onCheckSet: onCheck))
         ])
       ],
     );
