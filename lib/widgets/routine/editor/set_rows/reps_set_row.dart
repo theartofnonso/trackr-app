@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
 import '../../../../dtos/set_dto.dart';
@@ -10,8 +9,8 @@ import '../set_type_icon.dart';
 class RepsSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
-  final DoubleNumPair setDto;
-  final DoubleNumPair? pastSetDto;
+  final SetDto setDto;
+  final SetDto? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;

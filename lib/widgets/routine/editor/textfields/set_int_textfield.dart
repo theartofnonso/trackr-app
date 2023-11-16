@@ -22,8 +22,9 @@ class SetIntTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: editingController,
+    print(value);
+    return TextField(
+      //controller: editingController,
       onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,

@@ -1,8 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/distance_duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_set_row.dart';
@@ -51,22 +49,22 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
             WeightedSetRow(
               index: index,
               workingIndex: workingIndex,
-              setDto: setDto as DoubleNumPair,
+              setDto: setDto,
             ),
           ExerciseType.bodyWeightAndReps => RepsSetRow(
               index: index,
               workingIndex: workingIndex,
-              setDto: setDto as DoubleNumPair,
+              setDto: setDto,
             ),
           ExerciseType.duration => DurationSetRow(
               index: index,
               workingIndex: workingIndex,
-              setDto: setDto as DurationNumPair,
+              setDto: setDto,
             ),
           ExerciseType.distanceAndDuration => DistanceDurationSetRow(
               index: index,
               workingIndex: workingIndex,
-              setDto: setDto as DurationNumPair,
+              setDto: setDto,
             ),
         },
       ),

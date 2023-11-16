@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 
 import '../../../../dtos/set_dto.dart';
@@ -11,8 +10,8 @@ import '../timer_widget.dart';
 class DurationSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
-  final DurationNumPair setDto;
-  final DurationNumPair? pastSetDto;
+  final SetDto setDto;
+  final SetDto? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -62,7 +61,7 @@ class DurationSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    previousSetDto.value1.digitalTime(),
+                    Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime(),
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -73,7 +72,7 @@ class DurationSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              durationDto: setDto,
+              setDto: setDto,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),

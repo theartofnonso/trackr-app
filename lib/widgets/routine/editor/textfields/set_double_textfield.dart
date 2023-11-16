@@ -20,7 +20,7 @@ class SetDoubleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final defaultWeightUnit = isDefaultWeightUnit();
     return TextField(
-      controller: editingController,
+      //controller: editingController,
       onChanged: (value) => onChanged(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,

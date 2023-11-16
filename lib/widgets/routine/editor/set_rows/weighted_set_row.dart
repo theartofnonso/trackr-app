@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
@@ -12,8 +11,8 @@ import '../set_type_icon.dart';
 class WeightedSetRow extends StatelessWidget {
   final int index;
   final int workingIndex;
-  final DoubleNumPair setDto;
-  final DoubleNumPair? pastSetDto;
+  final SetDto setDto;
+  final SetDto? pastSetDto;
   final RoutineEditorType editorType;
   final void Function() onTapCheck;
   final void Function() onRemoved;
@@ -42,11 +41,11 @@ class WeightedSetRow extends StatelessWidget {
 
     if (previousSetDto != null) {
       prevWeightValue =
-          isDefaultWeightUnit() ? previousSetDto.value1 : toLbs(previousSetDto.value1);
+          isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
     }
 
     final defaultWeightUnit = isDefaultWeightUnit();
-    final weightValue = defaultWeightUnit ? setDto.value1 : toLbs(setDto.value1);
+    final weightValue = defaultWeightUnit ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
 
     final repsValue = setDto.value2.toInt();
 

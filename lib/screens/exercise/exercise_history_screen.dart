@@ -16,7 +16,6 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
-import '../../dtos/double_num_pair.dart';
 import '../../models/Exercise.dart';
 import '../../models/RoutineLog.dart';
 import '../../shared_prefs.dart';
@@ -76,14 +75,14 @@ List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
 
 /// Highest value per [RoutineLogDto]
 
-DoubleNumPair _heaviestWeightInSetPerLog({required RoutineLog log}) {
+SetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
-  DoubleNumPair setWithHeaviestWeight = DoubleNumPair(id: UniqueKey().toString());
+  SetDto setWithHeaviestWeight = SetDto(0, 0, SetType.working, false);
 
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = (set as DoubleNumPair).value2;
+    final weight = set.value2;
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
       setWithHeaviestWeight = set;
@@ -98,7 +97,7 @@ double _heaviestWeightPerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final weight = (set as DoubleNumPair).value2;
+    final weight = set.value2;
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
     }
@@ -115,7 +114,7 @@ int repsPerLog({required RoutineLog log}) {
   final sets = _allSetsWithReps(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final reps = (set as DoubleNumPair).value1;
+    final reps = set.value1;
     totalReps += reps.toInt();
   }
   return totalReps;
@@ -127,7 +126,7 @@ double _heaviestSetVolumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as DoubleNumPair).value1 * set.value2;
+    final volume = set.value1 * set.value2;
     if (volume > heaviestVolume) {
       heaviestVolume = volume.toDouble();
     }
@@ -144,7 +143,7 @@ double volumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as DoubleNumPair).value1 * set.value2;
+    final volume = set.value1 * set.value2;
     totalVolume += volume;
   }
 
@@ -180,7 +179,7 @@ double _totalVolumePerLog({required RoutineLog log}) {
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final volume = (set as DoubleNumPair).value1 * set.value2;
+    final volume = set.value1 * set.value2;
     totalVolume += volume;
   }
 
@@ -191,13 +190,13 @@ double _totalVolumePerLog({required RoutineLog log}) {
 
 /// Highest value across all [RoutineLogDto]
 
-(String, DoubleNumPair) _heaviestSet({required List<RoutineLog> logs}) {
-  DoubleNumPair heaviestSet = DoubleNumPair(id: UniqueKey().toString());
+(String, SetDto) _heaviestSet({required List<RoutineLog> logs}) {
+  SetDto heaviestSet = SetDto(0, 0, SetType.working, false);
   String logId = "";
   for (var log in logs) {
     final sets = _allSetsWithWeight(procedureJsons: log.procedures);
     for (var set in sets) {
-      final volume = (set as DoubleNumPair).value1 * set.value2;
+      final volume = set.value1 * set.value2;
       if (volume > (heaviestSet.value1 * heaviestSet.value2)) {
         heaviestSet = set;
         logId = log.id;
@@ -205,7 +204,7 @@ double _totalVolumePerLog({required RoutineLog log}) {
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestSet.value1 : toLbs(heaviestSet.value1);
+  final weight = isDefaultWeightUnit() ? heaviestSet.value1 : toLbs(heaviestSet.value1.toDouble());
 
   return (logId, heaviestSet.copyWith(value1: weight));
 }
@@ -393,7 +392,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
 class SummaryWidget extends StatefulWidget {
   final (String, double) heaviestWeight;
-  final (String, DoubleNumPair) heaviestSet;
+  final (String, SetDto) heaviestSet;
   final (String, double) heaviestRoutineLogVolume;
   final List<RoutineLog> routineLogs;
   final Exercise exercise;

@@ -2,11 +2,8 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../dtos/double_num_pair.dart';
-import '../dtos/duration_num_pair.dart';
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
-import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
 
 class ProceduresProvider extends ChangeNotifier {
@@ -83,21 +80,7 @@ class ProceduresProvider extends ChangeNotifier {
 
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
-      final exerciseType = ExerciseType.fromString(procedure.exercise.type);
-      SetDto newSet;
-
-      if (exerciseType == ExerciseType.weightAndReps ||
-          exerciseType == ExerciseType.bodyWeightAndReps ||
-          exerciseType == ExerciseType.weightedBodyWeight ||
-          exerciseType == ExerciseType.assistedBodyWeight ||
-          exerciseType == ExerciseType.weightAndDistance) {
-        newSet = _createDoubleNumPairSet(procedure);
-      } else if (exerciseType == ExerciseType.duration || exerciseType == ExerciseType.distanceAndDuration) {
-        newSet = _createDurationNumPairSet(procedure);
-      } else {
-        // Handle other cases or throw an error
-        throw UnimplementedError("Set type not handled");
-      }
+      SetDto newSet = _createSet(procedure);
 
       List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..add(newSet);
 
@@ -143,7 +126,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateWeight({required String exerciseId, required int setIndex, required double value}) {
-    _updateProcedureSet<DoubleNumPair>(
+    _updateProcedureSet<SetDto>(
       exerciseId: exerciseId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value1: value),
@@ -151,7 +134,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateReps({required String exerciseId, required int setIndex, required num value}) {
-    _updateProcedureSet<DoubleNumPair>(
+    _updateProcedureSet<SetDto>(
       exerciseId: exerciseId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value2: value),
@@ -159,16 +142,16 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateDuration({required String exerciseId, required int setIndex, required Duration duration}) {
-    _updateProcedureSet<DurationNumPair>(
+    _updateProcedureSet<SetDto>(
       exerciseId: exerciseId,
       setIndex: setIndex,
-      updateFunction: (set) => set.copyWith(value1: duration),
+      updateFunction: (set) => set.copyWith(value1: duration.inMilliseconds),
       shouldNotifyListeners: true,
     );
   }
 
   void updateDistance({required String exerciseId, required int setIndex, required double distance}) {
-    _updateProcedureSet<DurationNumPair>(
+    _updateProcedureSet<SetDto>(
       exerciseId: exerciseId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value2: distance),
@@ -197,17 +180,11 @@ class ProceduresProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  DoubleNumPair _createDoubleNumPairSet(ProcedureDto procedure) {
-    final previousSet = procedure.sets.lastOrNull as DoubleNumPair?;
-    return DoubleNumPair(
-        value1: previousSet?.value1 ?? 0, value2: previousSet?.value2 ?? 0, id: UniqueKey().toString());
+  SetDto _createSet(ProcedureDto procedure) {
+    final previousSet = procedure.sets.lastOrNull;
+    return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
 
-  DurationNumPair _createDurationNumPairSet(ProcedureDto procedure) {
-    final previousSet = procedure.sets.lastOrNull as DurationNumPair?;
-    return DurationNumPair(
-        value1: previousSet?.value1 ?? Duration.zero, value2: previousSet?.value2 ?? 0, id: UniqueKey().toString());
-  }
 
   void _removeSuperSet({required String superSetId}) {
     // Create a copy of the procedures list to modify

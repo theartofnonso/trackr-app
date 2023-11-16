@@ -2,9 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
@@ -134,75 +132,61 @@ class ProcedureWidget extends StatelessWidget {
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
       case ExerciseType.weightAndDistance:
-        if (setDto is DoubleNumPair) {
-          return WeightedSetRow(
-            index: index,
-            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
-            setDto: setDto,
-            pastSetDto: pastSet as DoubleNumPair?,
-            editorType: editorType,
-            onRemoved: () => onRemoveSet(index),
-            onTapCheck: () => onCheckSet(index),
-            onChangedType: (SetType type) => onChangedSetType(index, type),
-            onChangedReps: (num value) => onChangedReps(index, value),
-            onChangedWeight: (double value) => onChangedWeight(index, value),
-          );
-        }
-        break;
+        return WeightedSetRow(
+          index: index,
+          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          setDto: setDto,
+          pastSetDto: pastSet,
+          editorType: editorType,
+          onRemoved: () => onRemoveSet(index),
+          onTapCheck: () => onCheckSet(index),
+          onChangedType: (SetType type) => onChangedSetType(index, type),
+          onChangedReps: (num value) => onChangedReps(index, value),
+          onChangedWeight: (double value) => onChangedWeight(index, value),
+        );
       case ExerciseType.bodyWeightAndReps:
-        if (setDto is DoubleNumPair) {
-          return RepsSetRow(
-            index: index,
-            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
-            setDto: setDto,
-            pastSetDto: pastSet as DoubleNumPair?,
-            editorType: editorType,
-            onRemoved: () => onRemoveSet(index),
-            onTapCheck: () => onCheckSet(index),
-            onChangedType: (SetType type) => onChangedSetType(index, type),
-            onChangedReps: (num value) => onChangedReps(index, value),
-          );
-        }
-        break;
+        return RepsSetRow(
+          index: index,
+          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          setDto: setDto,
+          pastSetDto: pastSet,
+          editorType: editorType,
+          onRemoved: () => onRemoveSet(index),
+          onTapCheck: () => onCheckSet(index),
+          onChangedType: (SetType type) => onChangedSetType(index, type),
+          onChangedReps: (num value) => onChangedReps(index, value),
+        );
       case ExerciseType.duration:
-        if (setDto is DurationNumPair) {
-          return DurationSetRow(
-            index: index,
-            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
-            setDto: setDto,
-            pastSetDto: pastSet as DurationNumPair?,
-            editorType: editorType,
-            onRemoved: () => onRemoveSet(index),
-            onTapCheck: () => onCheckSet(index),
-            onChangedType: (SetType type) => onChangedSetType(index, type),
-            onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
-          );
-        }
-        break;
+        return DurationSetRow(
+          index: index,
+          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          setDto: setDto,
+          pastSetDto: pastSet,
+          editorType: editorType,
+          onRemoved: () => onRemoveSet(index),
+          onTapCheck: () => onCheckSet(index),
+          onChangedType: (SetType type) => onChangedSetType(index, type),
+          onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
+        );
       case ExerciseType.distanceAndDuration:
-        if (setDto is DurationNumPair) {
-          return DistanceDurationSetRow(
-            index: index,
-            workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
-            setDto: setDto,
-            pastSetDto: pastSet as DurationNumPair?,
-            editorType: editorType,
-            onRemoved: () => onRemoveSet(index),
-            onTapCheck: () => onCheckSet(index),
-            onChangedType: (SetType type) => onChangedSetType(index, type),
-            onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
-            onChangedDistance: (double distance) => onChangedDistance(index, distance),
-          );
-        }
-        break;
+        return DistanceDurationSetRow(
+          index: index,
+          workingIndex: setDto.type == SetType.working ? setCounts[SetType.working]! : -1,
+          setDto: setDto,
+          pastSetDto: pastSet,
+          editorType: editorType,
+          onRemoved: () => onRemoveSet(index),
+          onTapCheck: () => onCheckSet(index),
+          onChangedType: (SetType type) => onChangedSetType(index, type),
+          onChangedDuration: (Duration duration) => onChangedDuration(index, duration),
+          onChangedDistance: (double distance) => onChangedDistance(index, distance),
+        );
       // Add other cases or a default case
     }
-    throw UnimplementedError('Set type and exercise type combination not handled');
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Hello");
     final otherProcedureDto = otherSuperSetProcedureDto;
 
     final exerciseString = procedureDto.exercise.type;

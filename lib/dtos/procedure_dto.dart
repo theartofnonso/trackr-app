@@ -1,8 +1,5 @@
 import 'dart:convert';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 
 class ProcedureDto {
@@ -35,18 +32,7 @@ class ProcedureDto {
   }
 
   String toJson() {
-    final exerciseType = ExerciseType.fromString(exercise.type);
-    final setJons = switch (exerciseType) {
-      ExerciseType.weightAndReps ||
-      ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight ||
-      ExerciseType.bodyWeightAndReps ||
-      ExerciseType.weightAndDistance =>
-        sets.map((set) => (set as DoubleNumPair).toJson()).toList(),
-      ExerciseType.duration ||
-      ExerciseType.distanceAndDuration =>
-        sets.map((set) => (set as DurationNumPair).toJson()).toList(),
-    };
+    final setJons = sets.map((set) => (set).toJson()).toList();
 
     return jsonEncode({
       "superSetId": superSetId,
@@ -60,20 +46,9 @@ class ProcedureDto {
     final superSetId = json["superSetId"];
     final exerciseString = json["exercise"];
     final exercise = Exercise.fromJson(exerciseString);
-    final exerciseType = ExerciseType.fromString(exercise.type);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
-    final sets = switch (exerciseType) {
-      ExerciseType.weightAndReps ||
-      ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight ||
-      ExerciseType.bodyWeightAndReps ||
-      ExerciseType.weightAndDistance =>
-        setsJsons.map((json) => DoubleNumPair.fromJson(jsonDecode(json))).toList(),
-      ExerciseType.duration ||
-      ExerciseType.distanceAndDuration =>
-        setsJsons.map((json) => DurationNumPair.fromJson(jsonDecode(json))).toList()
-    };
+    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     return ProcedureDto(
         superSetId: superSetId,
         notes: notes,

@@ -21,7 +21,6 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
 import '../../dtos/set_dto.dart';
-import '../../dtos/double_num_pair.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -422,7 +421,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           double weightPerSet = 0.0;
 
           if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight) {
-            weightPerSet = (set as DoubleNumPair).value1 * set.value2;
+            weightPerSet = set.value1.toDouble() * set.value2;
           }
 
           // Add cases for other exercise types if needed
