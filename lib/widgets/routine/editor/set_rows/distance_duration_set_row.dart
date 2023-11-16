@@ -85,8 +85,8 @@ class DistanceDurationSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
               value: distanceValue.toDouble(),
+              uniqueKey: UniqueKey(),
               onChanged: onChangedDistance,
-              editingController: TextEditingController(),
             ),
           ),
           TableCell(

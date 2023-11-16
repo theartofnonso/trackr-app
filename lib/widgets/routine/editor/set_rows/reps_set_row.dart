@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
 import '../../../../dtos/set_dto.dart';
@@ -80,6 +78,7 @@ class RepsSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
               value: setDto.value2.toInt(),
+              uniqueKey: UniqueKey(),
               onChanged: onChangedReps,
             ),
           ),

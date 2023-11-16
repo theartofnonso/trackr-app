@@ -93,15 +93,16 @@ class WeightedSetRow extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
               value: weightValue,
+              uniqueKey: UniqueKey(),
               onChanged: onChangedWeight,
-              editingController: TextEditingController(),
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
               value: repsValue,
-              onChanged: onChangedReps,
+              uniqueKey: UniqueKey(),
+              onChanged: onChangedReps
             ),
           ),
           if (editorType == RoutineEditorType.log)
