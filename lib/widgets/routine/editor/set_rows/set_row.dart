@@ -11,7 +11,6 @@ abstract class SetRow extends StatelessWidget {
   final SetDto? pastSetDto;
   final RoutineEditorType editorType;  // Assuming EditorType is defined somewhere
   final VoidCallback onRemoved;
-  final void Function() onCheck; // Assuming the signature of onCheck
   final void Function(SetType) onChangedType;
 
   const SetRow({
@@ -23,7 +22,6 @@ abstract class SetRow extends StatelessWidget {
     required this.pastSetDto,
     required this.editorType,
     required this.onRemoved,
-    required this.onCheck,
     required this.onChangedType,
   }) : super(key: key);
 

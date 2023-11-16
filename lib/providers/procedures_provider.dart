@@ -22,6 +22,32 @@ class ProceduresProvider extends ChangeNotifier {
 
   void loadProcedures({required List<String> procedures}) {
     _procedures = procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+    _loadSets();
+  }
+
+  void _loadSets() {
+    for (var procedure in _procedures) {
+      _sets[procedure.id] = procedure.sets;
+    }
+  }
+
+  List<ProcedureDto> mergeSetsIntoProcedures() {
+    // Create a new list to hold the merged procedures
+    List<ProcedureDto> mergedProcedures = [];
+
+    for (var procedure in procedures) {
+
+      // Find the matching sets based on exerciseId and add them to the new procedure
+      List<SetDto> matchingSets = sets[procedure.id] ?? [];
+
+      // Create a new instance of ProcedureDto with existing data
+      ProcedureDto newProcedure = procedure.copyWith(sets: matchingSets);
+
+      // Add the new procedure to the merged list
+      mergedProcedures.add(newProcedure);
+    }
+
+    return mergedProcedures;
   }
 
   void addProcedures({required List<Exercise> exercises}) {
@@ -31,8 +57,8 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeProcedure({required String exerciseId}) {
-    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+  void removeProcedure({required String procedureId}) {
+    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
     if (procedureIndex != -1) {
       final procedureToBeRemoved = _procedures[procedureIndex];
 
@@ -50,9 +76,9 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void replaceProcedure({required String exerciseId, required Exercise exercise}) async {
+  void replaceProcedure({required String procedureId, required Exercise exercise}) async {
     // Get the index of the procedure to be replaced
-    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
 
     // Check if the procedure was found
     if (procedureIndex != -1) {
@@ -69,9 +95,9 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void updateProcedureNotes({required String exerciseId, required String value}) {
+  void updateProcedureNotes({required String procedureId, required String value}) {
     // Find the index of the procedure with the given exercise ID.
-    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
 
     // Check if a valid procedure is found.
     if (procedureIndex != -1) {
@@ -108,15 +134,16 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSetForProcedure({required String exerciseId}) {
-    int procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+  void addSetForProcedure({required String procedureId}) {
+    int procedureIndex = _procedures.indexWhere((procedure) => procedure.id == procedureId);
 
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
+
       SetDto newSet = _createSet(procedure);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
-      List<SetDto> updatedSets = _sets[exerciseId] != null ? List<SetDto>.from(_sets[exerciseId]!) : [];
+      List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
 
       // Add the new set to the cloned list
       updatedSets.add(newSet);
@@ -125,7 +152,7 @@ class ProceduresProvider extends ChangeNotifier {
       Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
       // Update the new map with the modified list of sets
-      newMap[exerciseId] = updatedSets;
+      newMap[procedureId] = updatedSets;
 
       // Assign the new map to _sets to maintain immutability
       _sets = newMap;
@@ -135,16 +162,16 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForProcedure({required String exerciseId, required int setIndex}) {
+  void removeSetForProcedure({required String procedureId, required int setIndex}) {
     // Check if the exercise ID exists in the map
-    if (!_sets.containsKey(exerciseId)) {
+    if (!_sets.containsKey(procedureId)) {
       // Handle the case where the exercise ID does not exist
       // e.g., log an error or throw an exception
       return;
     }
 
     // Clone the old sets for the exercise ID
-    List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseId]!);
+    List<SetDto> updatedSets = List<SetDto>.from(_sets[procedureId]!);
 
     // Check if the setIndex is valid
     if (setIndex < 0 || setIndex >= updatedSets.length) {
@@ -160,7 +187,7 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[exerciseId] = updatedSets;
+    newMap[procedureId] = updatedSets;
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -170,8 +197,8 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _updateProcedureSet<T extends SetDto>(
-      {required String exerciseId, required int setIndex, required T Function(T set) updateFunction}) {
-    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+      {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
+    final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
       if (setIndex != -1 && setIndex < procedure.sets.length && procedure.sets[setIndex] is T) {
@@ -182,45 +209,45 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void updateWeight({required String exerciseId, required int setIndex, required double value}) {
+  void updateWeight({required String procedureId, required int setIndex, required double value}) {
     _updateProcedureSet<SetDto>(
-      exerciseId: exerciseId,
+      procedureId: procedureId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value1: value),
     );
   }
 
-  void updateReps({required String exerciseId, required int setIndex, required num value}) {
+  void updateReps({required String procedureId, required int setIndex, required num value}) {
     _updateProcedureSet<SetDto>(
-      exerciseId: exerciseId,
+      procedureId: procedureId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value2: value),
     );
   }
 
-  void updateDuration({required String exerciseId, required int setIndex, required Duration duration}) {
+  void updateDuration({required String procedureId, required int setIndex, required Duration duration}) {
     _updateProcedureSet<SetDto>(
-        exerciseId: exerciseId,
+        procedureId: procedureId,
         setIndex: setIndex,
         updateFunction: (set) => set.copyWith(value1: duration.inMilliseconds));
   }
 
-  void updateDistance({required String exerciseId, required int setIndex, required double distance}) {
+  void updateDistance({required String procedureId, required int setIndex, required double distance}) {
     _updateProcedureSet<SetDto>(
-      exerciseId: exerciseId,
+      procedureId: procedureId,
       setIndex: setIndex,
       updateFunction: (set) => set.copyWith(value2: distance),
     );
   }
 
-  void updateSetType({required String exerciseId, required int setIndex, required SetType type}) {
+  void updateSetType({required String procedureId, required int setIndex, required SetType type}) {
     _updateProcedureSet<SetDto>(
-        exerciseId: exerciseId, setIndex: setIndex, updateFunction: (set) => set.copyWith(type: type));
+        procedureId: procedureId, setIndex: setIndex, updateFunction: (set) => set.copyWith(type: type));
   }
 
   void checkSet({required String exerciseId, required int setIndex}) {
     _updateProcedureSet<SetDto>(
-        exerciseId: exerciseId,
+        procedureId: exerciseId,
         setIndex: setIndex,
         updateFunction: (set) => set.copyWith(checked: set.isNotEmpty() ? !set.checked : false));
   }

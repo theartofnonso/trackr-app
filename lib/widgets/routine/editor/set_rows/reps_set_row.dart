@@ -20,7 +20,6 @@ class RepsSetRow extends SetRow {
       required super.pastSetDto,
       required super.editorType,
       required super.onRemoved,
-      required super.onCheck,
       required super.onChangedType});
 
   @override
@@ -76,7 +75,7 @@ class RepsSetRow extends SetRow {
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(exerciseId: exerciseId, setIndex: index, onCheckSet: onCheck))
+                child: SetCheckButton(exerciseId: exerciseId, setIndex: index))
         ])
       ],
     );

@@ -7,10 +7,7 @@ class SetIntTextField extends StatelessWidget {
   final int value;
   final void Function(int) onChanged;
 
-  const SetIntTextField({super.key,
-    required this.value,
-    required this.onChanged,
-  });
+  const SetIntTextField({super.key, required this.value, required this.onChanged});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;

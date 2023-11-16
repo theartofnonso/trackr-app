@@ -8,7 +8,7 @@ class SetDoubleTextField extends StatelessWidget {
   final double value;
   final void Function(double) onChanged;
 
-  const SetDoubleTextField({required this.value, required this.onChanged});
+  const SetDoubleTextField({super.key, required this.value, required this.onChanged});
 
   double _parseDoubleOrDefault({required bool isDefaultWeightUnit, required String value}) {
     final doubleValue = double.tryParse(value) ?? 0;

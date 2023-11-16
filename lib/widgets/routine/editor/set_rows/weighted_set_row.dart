@@ -14,7 +14,8 @@ class WeightedSetRow extends SetRow {
   final void Function(double value) onChangedWeight;
 
   const WeightedSetRow(
-      {super.key, required this.onChangedReps,
+      {super.key,
+      required this.onChangedReps,
       required this.onChangedWeight,
       required super.index,
       required super.label,
@@ -22,9 +23,8 @@ class WeightedSetRow extends SetRow {
       required super.setDto,
       required super.pastSetDto,
       required super.editorType,
-      required super.onRemoved,
-      required super.onCheck,
-      required super.onChangedType});
+      required super.onChangedType,
+      required super.onRemoved});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class WeightedSetRow extends SetRow {
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(exerciseId: exerciseId, setIndex: index, onCheckSet: super.onCheck))
+                child: SetCheckButton(exerciseId: exerciseId, setIndex: index))
         ])
       ],
     );

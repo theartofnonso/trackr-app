@@ -6,13 +6,11 @@ import '../../../providers/procedures_provider.dart';
 class SetCheckButton extends StatelessWidget {
   final String exerciseId;
   final int setIndex;
-  final void Function() onCheckSet;
 
   const SetCheckButton({
     super.key,
     required this.exerciseId,
     required this.setIndex,
-    required this.onCheckSet,
   });
 
   @override
@@ -29,8 +27,7 @@ class SetCheckButton extends StatelessWidget {
             // Update the local state to reflect the change
             setState(() {
               checked = !checked; // Toggle the checked state
-            });
-            onCheckSet(); // Call the callback function
+            });// Call the callback function
           },
           child: Icon(
             checked ? Icons.check_box_rounded : Icons.check_box_rounded,
