@@ -28,7 +28,7 @@ class SetDoubleTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           hintText: value > 0 ? value.toString() : "-",
-          hintStyle: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white70)),
+          hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,
       textAlign: TextAlign.center,
