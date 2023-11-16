@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/models/Exercise.dart';
+import 'package:uuid/uuid.dart';
 
 class ProcedureDto {
+  String id;
   final String superSetId;
   final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
 
-  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const [],});
+  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const [],}): id = const Uuid().v4();
 
   ProcedureDto copyWith(
       {String? superSetId,

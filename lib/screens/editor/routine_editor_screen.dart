@@ -490,6 +490,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final procedures = context.select((ProceduresProvider provider) => provider.procedures);
+
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
@@ -608,46 +611,41 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       ],
                     ),
                   const SizedBox(height: 20),
-                  Expanded(child: Consumer<ProceduresProvider>(
-                    builder: (BuildContext context, ProceduresProvider value, Widget? child) {
-                      final procedures = value.procedures;
-                      return ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 100),
-                          itemBuilder: (BuildContext context, int index) {
-                            final procedure = procedures[index];
-                            final exerciseId = procedure.exercise.id;
-                            return ProcedureWidget(
-                              procedureDto: procedure,
-                              editorType: widget.mode,
-                              otherSuperSetProcedureDto:
-                                  whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
-                              onRemoveSuperSet: (String superSetId) =>
-                                  _removeProcedureSuperSets(superSetId: procedure.superSetId),
-                              onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
-                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                              onChangedReps: (int setIndex, num value) =>
-                                  _updateReps(exerciseId: exerciseId, setIndex: setIndex, value: value),
-                              onChangedWeight: (int setIndex, double value) =>
-                                  _updateWeight(exerciseId: exerciseId, setIndex: setIndex, value: value),
-                              onChangedSetType: (int setIndex, SetType type) =>
-                                  _updateSetType(exerciseId: exerciseId, setIndex: setIndex, type: type),
-                              onAddSet: () => _addSet(exerciseId: exerciseId),
-                              onRemoveSet: (int setIndex) => _removeSet(exerciseId: exerciseId, setIndex: setIndex),
-                              onUpdateNotes: (String value) =>
-                                  _updateProcedureNotes(exerciseId: exerciseId, value: value),
-                              onReplaceProcedure: () => _replaceProcedure(exerciseId: exerciseId),
-                              onReOrderProcedures: () => _reOrderProcedures(),
-                              onCheckSet: _checkSet,
-                              onChangedDuration: (int setIndex, Duration duration) =>
-                                  _updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration),
-                              onChangedDistance: (int setIndex, double distance) =>
-                                  _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance), sets: procedure.sets,
-                            );
-                          },
-                          separatorBuilder: (_, __) => const SizedBox(height: 10),
-                          itemCount: procedures.length);
-                    },
-                  )),
+                  Expanded(child: ListView.separated(
+                      padding: const EdgeInsets.only(bottom: 100),
+                      itemBuilder: (BuildContext context, int index) {
+                        final procedure = procedures[index];
+                        final exerciseId = procedure.exercise.id;
+                        return ProcedureWidget(
+                          procedureDto: procedure,
+                          editorType: widget.mode,
+                          otherSuperSetProcedureDto:
+                          whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
+                          onRemoveSuperSet: (String superSetId) =>
+                              _removeProcedureSuperSets(superSetId: procedure.superSetId),
+                          onRemoveProcedure: () => _removeProcedure(procedureId: procedure.exercise.id),
+                          onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                          onChangedReps: (int setIndex, num value) =>
+                              _updateReps(exerciseId: exerciseId, setIndex: setIndex, value: value),
+                          onChangedWeight: (int setIndex, double value) =>
+                              _updateWeight(exerciseId: exerciseId, setIndex: setIndex, value: value),
+                          onChangedSetType: (int setIndex, SetType type) =>
+                              _updateSetType(exerciseId: exerciseId, setIndex: setIndex, type: type),
+                          onAddSet: () => _addSet(exerciseId: exerciseId),
+                          onRemoveSet: (int setIndex) => _removeSet(exerciseId: exerciseId, setIndex: setIndex),
+                          onUpdateNotes: (String value) =>
+                              _updateProcedureNotes(exerciseId: exerciseId, value: value),
+                          onReplaceProcedure: () => _replaceProcedure(exerciseId: exerciseId),
+                          onReOrderProcedures: () => _reOrderProcedures(),
+                          onCheckSet: _checkSet,
+                          onChangedDuration: (int setIndex, Duration duration) =>
+                              _updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration),
+                          onChangedDistance: (int setIndex, double distance) =>
+                              _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance), sets: procedure.sets,
+                        );
+                      },
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemCount: procedures.length)),
                 ],
               ),
             ),

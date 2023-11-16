@@ -313,10 +313,11 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             alignment: Alignment.bottomRight,
             child: IconButton(
                 onPressed: () {
-                  Provider.of<ProceduresProvider>(context, listen: false)
-                      .addSetForProcedure(exerciseId: widget.procedureDto.exercise.id);
                   setState(() {
-                    _sets.add(SetDto(0, 0, SetType.working, false));
+                    final set = SetDto(0, 0, SetType.working, false);
+                    _sets.add(set);
+                    Provider.of<ProceduresProvider>(context, listen: false)
+                        .addSetForProcedure(exerciseId: widget.procedureDto.exercise.id, set: set);
                   });
                   widget.onAddSet();
                 },

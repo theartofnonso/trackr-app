@@ -10,8 +10,10 @@ import '../models/Exercise.dart';
 
 class ProceduresProvider extends ChangeNotifier {
   List<ProcedureDto> _procedures = [];
+  List<Map<ProcedureDto, List<SetDto>>> _sets = [];
 
   UnmodifiableListView<ProcedureDto> get procedures => UnmodifiableListView(_procedures);
+  UnmodifiableListView<Map<ProcedureDto, List<SetDto>>> get sets => UnmodifiableListView(_sets);
 
   void refreshProcedures({required List<ProcedureDto> procedures}) {
     _procedures = procedures;
@@ -24,7 +26,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   void addProcedures({required List<Exercise> exercises}) {
     final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
-    _procedures.addAll(proceduresToAdd);
+    _procedures = [..._procedures, ...proceduresToAdd];
 
     notifyListeners();
   }
@@ -102,18 +104,18 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSetForProcedure({required String exerciseId}) {
+  void addSetForProcedure({required String exerciseId, required SetDto set}) {
     int procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
 
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
-      SetDto newSet = _createSet(procedure);
+     // SetDto newSet = _createSet(procedure);
 
-      List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..add(newSet);
+      List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..add(set);
 
       _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
 
-      //notifyListeners();
+      notifyListeners();
     }
   }
 
