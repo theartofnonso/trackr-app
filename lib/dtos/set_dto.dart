@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 enum SetType {
   warmUp("Warm Up", "W", Colors.orange),
@@ -20,15 +21,15 @@ enum SetType {
 }
 
 class SetDto {
-  /// The first value is always the weight
+  final String id;
   final num value1;
   final num value2;
   final SetType type;
   final bool checked;
 
-  SetDto(this.value1, this.value2, this.type, this.checked);
+   SetDto(this.value1, this.value2, this.type, this.checked): id = const Uuid().v4();
 
-  SetDto copyWith({num? value1, num? value2, SetType? type, bool? checked}) {
+  SetDto copyWith({String? id, num? value1, num? value2, SetType? type, bool? checked}) {
     return SetDto(value1 ?? this.value1, value2 ?? this.value2, type ?? this.type, checked ?? this.checked);
   }
 

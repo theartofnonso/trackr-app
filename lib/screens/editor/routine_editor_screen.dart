@@ -171,14 +171,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _addSet({required String exerciseId}) {
-    _dismissKeyboard();
-    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(exerciseId: exerciseId);
+    // _dismissKeyboard();
+    // Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(exerciseId: exerciseId);
     _cacheRoutineLog();
   }
 
   void _removeSet({required String exerciseId, required int setIndex}) {
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .removeSetForProcedure(exerciseId: exerciseId, setIndex: setIndex);
+    // Provider.of<ProceduresProvider>(context, listen: false)
+    //     .removeSetForProcedure(exerciseId: exerciseId, setIndex: setIndex);
     _cacheRoutineLog();
   }
 
@@ -641,7 +641,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               onChangedDuration: (int setIndex, Duration duration) =>
                                   _updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration),
                               onChangedDistance: (int setIndex, double distance) =>
-                                  _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance),
+                                  _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance), sets: procedure.sets,
                             );
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),

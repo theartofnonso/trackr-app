@@ -83,13 +83,12 @@ class WeightedSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
               value: weightValue,
-              uniqueKey: UniqueKey(),
               onChanged: onChangedWeight,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetIntTextField(value: repsValue, uniqueKey: UniqueKey(), onChanged: onChangedReps),
+            child: SetIntTextField(value: repsValue, onChanged: onChangedReps),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(

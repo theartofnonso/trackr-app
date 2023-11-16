@@ -70,7 +70,6 @@ class RepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
               value: setDto.value2.toInt(),
-              uniqueKey: UniqueKey(),
               onChanged: onChangedReps,
             ),
           ),

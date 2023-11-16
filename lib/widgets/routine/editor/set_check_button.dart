@@ -20,8 +20,8 @@ class SetCheckButton extends StatelessWidget {
     return StatefulBuilder(
       builder: (BuildContext context, void Function(void Function()) setState) {
         final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-        final set = procedureProvider.setWhereProcedure(exerciseId: exerciseId, setIndex: setIndex);
-        bool checked = set.checked;
+        //final set = procedureProvider.setWhereProcedure(exerciseId: exerciseId, setIndex: setIndex);
+        bool checked = false;
         return GestureDetector(
           onTap: () {
             // Update the set's checked status in the provider

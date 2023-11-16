@@ -113,7 +113,7 @@ class ProceduresProvider extends ChangeNotifier {
 
       _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
 
-      notifyListeners();
+      //notifyListeners();
     }
   }
 
@@ -128,7 +128,7 @@ class ProceduresProvider extends ChangeNotifier {
 
         _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
 
-        notifyListeners();
+        //notifyListeners();
       }
     }
   }

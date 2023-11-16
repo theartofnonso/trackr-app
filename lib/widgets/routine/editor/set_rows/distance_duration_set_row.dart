@@ -76,7 +76,6 @@ class DistanceDurationSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
               value: distanceValue.toDouble(),
-              uniqueKey: UniqueKey(),
               onChanged: onChangedDistance,
             ),
           ),
