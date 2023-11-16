@@ -37,15 +37,13 @@ class ProcedureWidget extends StatefulWidget {
 
   /// Set callbacks
   final void Function() onAddSet;
-  final void Function(int setIndex) onRemoveSet;
+  final void Function() onRemoveSet;
   final void Function() onCheckSet;
   final void Function(int setIndex, SetType type) onChangedSetType;
   final void Function(int setIndex, double value) onChangedWeight;
   final void Function(int setIndex, num value) onChangedReps;
   final void Function(int setIndex, Duration duration) onChangedDuration;
   final void Function(int setIndex, double distance) onChangedDistance;
-
-  final List<SetDto> sets;
 
   const ProcedureWidget({
     super.key,
@@ -65,8 +63,7 @@ class ProcedureWidget extends StatefulWidget {
     required this.onReplaceProcedure,
     required this.onChangedSetType,
     required this.onReOrderProcedures,
-    required this.onCheckSet,
-    required this.sets,
+    required this.onCheckSet
   });
 
   @override
@@ -74,7 +71,6 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  List<SetDto> _sets = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -118,15 +114,15 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return sets.length > index ? sets.elementAt(index) : null;
   }
 
-  List<Widget> _displaySets({required BuildContext context, required ExerciseType exerciseType}) {
-    if (_sets.isEmpty) return [];
+  List<Widget> _displaySets({required BuildContext context, required ExerciseType exerciseType, required List<SetDto> sets}) {
+    if (sets.isEmpty) return [];
 
     Map<SetType, int> setCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
 
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
 
-    return _sets.mapIndexed((index, setDto) {
+    return sets.mapIndexed((index, setDto) {
       SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
       Widget setWidget = _createSetWidget(index, setDto, pastSet, exerciseType, setCounts);
 
@@ -136,8 +132,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     }).toList();
   }
 
-  Widget _createSetWidget(
-      int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
+  Widget _createSetWidget(int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
@@ -151,7 +146,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onRemoved: () => widget.onRemoveSet(index),
+          onRemoved: widget.onRemoveSet,
           onCheck: widget.onCheckSet,
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
           onChangedReps: (num value) => widget.onChangedReps(index, value),
@@ -169,10 +164,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onRemoved: () {
             Provider.of<ProceduresProvider>(context, listen: false)
                 .removeSetForProcedure(exerciseId: widget.procedureDto.exercise.id, setIndex: index);
-            setState(() {
-              _sets.removeAt(index);
-            });
-            widget.onRemoveSet(index);
+            widget.onRemoveSet();
           },
           onCheck: widget.onCheckSet,
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
@@ -187,7 +179,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onRemoved: () => widget.onRemoveSet(index),
+          onRemoved: widget.onRemoveSet,
           onCheck: widget.onCheckSet,
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
           onChangedDuration: (Duration duration) => widget.onChangedDuration(index, duration),
@@ -200,7 +192,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onRemoved: () => widget.onRemoveSet(index),
+          onRemoved: widget.onRemoveSet,
           onCheck: widget.onCheckSet,
           onChangedType: (SetType type) => widget.onChangedSetType(index, type),
           onChangedDuration: (Duration duration) => widget.onChangedDuration(index, duration),
@@ -212,6 +204,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final sets = context.select((ProceduresProvider provider) => provider.sets)[widget.procedureDto.exercise.id];
 
     final otherProcedureDto = widget.otherSuperSetProcedureDto;
 
@@ -307,18 +300,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
           },
-          ..._displaySets(context: context, exerciseType: exerciseType),
+          ..._displaySets(context: context, exerciseType: exerciseType, sets: sets ?? []),
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
                 onPressed: () {
-                  setState(() {
-                    final set = SetDto(0, 0, SetType.working, false);
-                    _sets.add(set);
-                    Provider.of<ProceduresProvider>(context, listen: false)
-                        .addSetForProcedure(exerciseId: widget.procedureDto.exercise.id, set: set);
-                  });
+                  Provider.of<ProceduresProvider>(context, listen: false)
+                      .addSetForProcedure(exerciseId: widget.procedureDto.exercise.id);
                   widget.onAddSet();
                 },
                 icon: const Icon(Icons.add, color: Colors.white70),
@@ -330,11 +319,5 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _sets = List.from(widget.sets);
   }
 }

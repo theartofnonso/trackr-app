@@ -170,15 +170,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _cacheRoutineLog();
   }
 
-  void _addSet({required String exerciseId}) {
-    // _dismissKeyboard();
-    // Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(exerciseId: exerciseId);
+  void _addSet() {
     _cacheRoutineLog();
   }
 
-  void _removeSet({required String exerciseId, required int setIndex}) {
-    // Provider.of<ProceduresProvider>(context, listen: false)
-    //     .removeSetForProcedure(exerciseId: exerciseId, setIndex: setIndex);
+  void _removeSet() {
     _cacheRoutineLog();
   }
 
@@ -491,6 +487,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   @override
   Widget build(BuildContext context) {
 
+    print("Editor");
+
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     return Scaffold(
@@ -631,8 +629,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               _updateWeight(exerciseId: exerciseId, setIndex: setIndex, value: value),
                           onChangedSetType: (int setIndex, SetType type) =>
                               _updateSetType(exerciseId: exerciseId, setIndex: setIndex, type: type),
-                          onAddSet: () => _addSet(exerciseId: exerciseId),
-                          onRemoveSet: (int setIndex) => _removeSet(exerciseId: exerciseId, setIndex: setIndex),
+                          onAddSet: _addSet,
+                          onRemoveSet: _removeSet,
                           onUpdateNotes: (String value) =>
                               _updateProcedureNotes(exerciseId: exerciseId, value: value),
                           onReplaceProcedure: () => _replaceProcedure(exerciseId: exerciseId),
@@ -641,7 +639,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                           onChangedDuration: (int setIndex, Duration duration) =>
                               _updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration),
                           onChangedDistance: (int setIndex, double distance) =>
-                              _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance), sets: procedure.sets,
+                              _updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance),
                         );
                       },
                       separatorBuilder: (_, __) => const SizedBox(height: 10),

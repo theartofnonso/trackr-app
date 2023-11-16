@@ -10,10 +10,10 @@ import '../models/Exercise.dart';
 
 class ProceduresProvider extends ChangeNotifier {
   List<ProcedureDto> _procedures = [];
-  List<Map<ProcedureDto, List<SetDto>>> _sets = [];
+  Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
 
   UnmodifiableListView<ProcedureDto> get procedures => UnmodifiableListView(_procedures);
-  UnmodifiableListView<Map<ProcedureDto, List<SetDto>>> get sets => UnmodifiableListView(_sets);
+  UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
   void refreshProcedures({required List<ProcedureDto> procedures}) {
     _procedures = procedures;
@@ -40,7 +40,11 @@ class ProceduresProvider extends ChangeNotifier {
         _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
       }
 
-      _procedures.removeAt(procedureIndex);
+      final procedures = List.from(_procedures);
+
+      procedures.removeAt(procedureIndex);
+
+      _procedures = [...procedures];
 
       notifyListeners();
     }
@@ -104,35 +108,65 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSetForProcedure({required String exerciseId, required SetDto set}) {
+  void addSetForProcedure({required String exerciseId}) {
     int procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
 
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
-     // SetDto newSet = _createSet(procedure);
+      SetDto newSet = _createSet(procedure);
 
-      List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..add(set);
+      // Clone the old sets for the exerciseId, or create a new list if none exist
+      List<SetDto> updatedSets = _sets[exerciseId] != null ? List<SetDto>.from(_sets[exerciseId]!) : [];
 
-      _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
+      // Add the new set to the cloned list
+      updatedSets.add(newSet);
 
+      // Create a new map by copying all key-value pairs from the original map
+      Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+
+      // Update the new map with the modified list of sets
+      newMap[exerciseId] = updatedSets;
+
+      // Assign the new map to _sets to maintain immutability
+      _sets = newMap;
+
+      // Notify listeners about the change
       notifyListeners();
     }
   }
 
   void removeSetForProcedure({required String exerciseId, required int setIndex}) {
-    int procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
-
-    if (procedureIndex != -1 && setIndex >= 0) {
-      final procedure = _procedures[procedureIndex];
-
-      if (setIndex < procedure.sets.length) {
-        List<SetDto> updatedSets = List<SetDto>.from(procedure.sets)..removeAt(setIndex);
-
-        _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-
-        //notifyListeners();
-      }
+    // Check if the exercise ID exists in the map
+    if (!_sets.containsKey(exerciseId)) {
+      // Handle the case where the exercise ID does not exist
+      // e.g., log an error or throw an exception
+      return;
     }
+
+    // Clone the old sets for the exercise ID
+    List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseId]!);
+
+    // Check if the setIndex is valid
+    if (setIndex < 0 || setIndex >= updatedSets.length) {
+      // Handle the invalid index
+      // e.g., log an error or throw an exception
+      return;
+    }
+
+    // Remove the set at the specified index
+    updatedSets.removeAt(setIndex);
+
+    // Create a new map by copying all key-value pairs from the original map
+    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+
+    // Update the new map with the modified list of sets
+    newMap[exerciseId] = updatedSets;
+
+    // Assign the new map to _sets to maintain immutability
+    _sets = newMap;
+
+    // Notify listeners about the change
+    notifyListeners();
   }
 
   void _updateProcedureSet<T extends SetDto>(
