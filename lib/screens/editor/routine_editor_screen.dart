@@ -514,7 +514,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               )
             : AppBar(
                 leading: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () {
+                    Provider.of<ProceduresProvider>(context, listen: false).clearProcedures();
+                    Navigator.of(context).pop();
+                  },
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
