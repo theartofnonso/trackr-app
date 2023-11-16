@@ -1,37 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
 import '../timer_widget.dart';
 
-class DurationSetRow extends StatelessWidget {
-  final int index;
-  final String label;
-  final String exerciseId;
-  final SetDto setDto;
-  final SetDto? pastSetDto;
-  final RoutineEditorType editorType;
-  final void Function() onCheck;
-  final void Function() onRemoved;
-  final void Function(SetType type) onChangedType;
+class DurationSetRow extends SetRow {
   final void Function(Duration duration) onChangedDuration;
 
   const DurationSetRow(
       {super.key,
-      required this.index,
-      required this.label,
-      required this.exerciseId,
-      required this.setDto,
-      this.pastSetDto,
-      required this.editorType,
-      required this.onCheck,
-      required this.onRemoved,
-      required this.onChangedType,
-      required this.onChangedDuration});
+      required this.onChangedDuration,
+      required super.index,
+      required super.label,
+      required super.exerciseId,
+      required super.setDto,
+      required super.pastSetDto,
+      required super.editorType,
+      required super.onRemoved,
+      required super.onCheck,
+      required super.onChangedType});
 
   @override
   Widget build(BuildContext context) {
