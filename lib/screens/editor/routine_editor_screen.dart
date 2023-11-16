@@ -569,7 +569,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   const SizedBox(height: 20),
                   Expanded(
                       child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 100),
+                          padding: const EdgeInsets.only(bottom: 150),
                           itemBuilder: (BuildContext context, int index) {
                             final procedure = procedures[index];
                             final procedureId = procedure.id;
