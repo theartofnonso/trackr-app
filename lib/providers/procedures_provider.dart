@@ -197,7 +197,7 @@ class ProceduresProvider extends ChangeNotifier {
     _updateProcedureSet<SetDto>(
         exerciseId: exerciseId,
         setIndex: setIndex,
-        updateFunction: (set) => set.copyWith(checked: !set.checked),
+        updateFunction: (set) => set.copyWith(checked: set.isNotEmpty() ? !set.checked : false),
         shouldNotifyListeners: true);
   }
 

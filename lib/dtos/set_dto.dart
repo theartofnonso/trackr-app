@@ -44,6 +44,14 @@ class SetDto {
     return SetDto(value1, value2, type, checked);
   }
 
+  bool isEmpty() {
+    return value1 + value2 == 0;
+  }
+
+  bool isNotEmpty() {
+    return value1 + value2 > 0;
+  }
+
   @override
   String toString() {
     return 'SetDto{value1: $value1, value2: $value2, type: $type, checked: $checked}';
