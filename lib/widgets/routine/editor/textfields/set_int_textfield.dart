@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../../../../app_constants.dart';
 
@@ -22,10 +21,9 @@ class SetIntTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(value);
     return TextField(
-      //controller: editingController,
-      onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
+      controller: editingController,
+      onChanged: (_) => onChanged(_parseIntOrDefault(value: editingController.text)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(

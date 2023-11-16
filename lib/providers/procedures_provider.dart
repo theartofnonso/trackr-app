@@ -1,15 +1,26 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
+import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
 
 class ProceduresProvider extends ChangeNotifier {
   List<ProcedureDto> _procedures = [];
 
   UnmodifiableListView<ProcedureDto> get procedures => UnmodifiableListView(_procedures);
+
+  void refreshProcedures({required List<ProcedureDto> procedures}) {
+    _procedures = procedures;
+    notifyListeners();
+  }
+
+  void loadProcedures({required List<String> procedures}) {
+    _procedures = procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  }
 
   void addProcedures({required List<Exercise> exercises}) {
     final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
@@ -49,6 +60,22 @@ class ProceduresProvider extends ChangeNotifier {
       _procedures[procedureIndex] = ProcedureDto(exercise: exercise);
 
       notifyListeners();
+    }
+  }
+
+  void updateProcedureNotes({required String exerciseId, required String value}) {
+    // Find the index of the procedure with the given exercise ID.
+    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
+
+    // Check if a valid procedure is found.
+    if (procedureIndex != -1) {
+      final procedure = _procedures[procedureIndex];
+
+      // Check if the new value is different from the old one.
+      if (procedure.notes != value) {
+        // Update the procedure with the new notes.
+        _procedures[procedureIndex] = procedure.copyWith(notes: value);
+      }
     }
   }
 
@@ -180,11 +207,34 @@ class ProceduresProvider extends ChangeNotifier {
 
   /// Helper functions
 
+  List<SetDto> completedSets() {
+    return _procedures.expand((procedure) => procedure.sets).where((set) => set.checked).toList();
+  }
+
+  double totalWeight() {
+    double totalWeight = 0.0;
+
+    for (var procedure in _procedures) {
+      final exerciseType = ExerciseType.fromString(procedure.exercise.type);
+
+      for (var set in procedure.sets) {
+        if (set.checked) {
+          double weightPerSet = 0.0;
+          if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight) {
+            weightPerSet = set.value1.toDouble() * set.value2;
+          }
+          totalWeight += weightPerSet;
+        }
+      }
+    }
+
+    return totalWeight;
+  }
+
   SetDto _createSet(ProcedureDto procedure) {
     final previousSet = procedure.sets.lastOrNull;
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
-
 
   void _removeSuperSet({required String superSetId}) {
     // Create a copy of the procedures list to modify

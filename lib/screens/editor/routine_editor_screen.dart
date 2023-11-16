@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
@@ -9,12 +8,10 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
@@ -43,10 +40,6 @@ class RoutineEditorScreen extends StatefulWidget {
 }
 
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
-  List<ProcedureDto> _procedures = [];
-
-  List<SetDto> _completedSets = [];
-
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
 
@@ -76,7 +69,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   /// Navigate to [ExerciseLibraryScreen]
   void _selectExercisesInLibrary() async {
-    final preSelectedExercises = _procedures.map((procedure) => procedure.exercise).toList();
+    final provider = Provider.of<ProceduresProvider>(context, listen: false);
+    final preSelectedExercises = provider.procedures.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
@@ -84,7 +78,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        Provider.of<ProceduresProvider>(context, listen: false).addProcedures(exercises: exercises);
+        provider.addProcedures(exercises: exercises);
         _cacheRoutineLog();
       }
     }
@@ -92,27 +86,24 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   // Navigate to [ReOrderProceduresScreen]
   void _reOrderProcedures() async {
+    final provider = Provider.of<ProceduresProvider>(context, listen: false);
     final reOrderedList = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ReOrderProceduresScreen(procedures: _procedures);
+        return ReOrderProceduresScreen(procedures: provider.procedures);
       },
     ) as List<ProcedureDto>?;
 
     if (reOrderedList != null) {
       if (mounted) {
-        setState(() {
-          _procedures = reOrderedList;
-        });
+        provider.refreshProcedures(procedures: reOrderedList);
+        _cacheRoutineLog();
       }
-      _cacheRoutineLog();
     }
   }
 
   void _updateProcedureNotes({required String exerciseId, required String value}) {
-    final procedureIndex = _indexWhereProcedure(exerciseId: exerciseId);
-    final procedure = _procedures[procedureIndex];
-    _procedures[procedureIndex] = procedure.copyWith(notes: value);
+    Provider.of<ProceduresProvider>(context, listen: false).updateProcedureNotes(exerciseId: exerciseId, value: value);
     _cacheRoutineLog();
   }
 
@@ -147,8 +138,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doReplaceProcedure({required String exerciseId}) async {
-    final selectedExercises = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const ExerciseLibraryScreen(multiSelect: false,))) as List<Exercise>?;
+    final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const ExerciseLibraryScreen(
+              multiSelect: false,
+            ))) as List<Exercise>?;
 
     if (selectedExercises != null) {
       if (selectedExercises.isNotEmpty) {
@@ -174,7 +167,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _removeProcedure({required String procedureId}) {
     Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(exerciseId: procedureId);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
@@ -187,42 +179,36 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _removeSet({required String exerciseId, required int setIndex}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .removeSetForProcedure(exerciseId: exerciseId, setIndex: setIndex);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
   void _updateWeight({required String exerciseId, required int setIndex, required double value}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateWeight(exerciseId: exerciseId, setIndex: setIndex, value: value);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
   void _updateReps({required String exerciseId, required int setIndex, required num value}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateReps(exerciseId: exerciseId, setIndex: setIndex, value: value);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
   void _updateDuration({required String exerciseId, required int setIndex, required Duration duration}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateDuration(exerciseId: exerciseId, setIndex: setIndex, duration: duration);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
   void _updateDistance({required String exerciseId, required int setIndex, required double distance}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateDistance(exerciseId: exerciseId, setIndex: setIndex, distance: distance);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
   void _updateSetType({required String exerciseId, required int setIndex, required SetType type}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateSetType(exerciseId: exerciseId, setIndex: setIndex, type: type);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
@@ -230,7 +216,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _dismissKeyboard();
 
     Provider.of<ProceduresProvider>(context, listen: false).checkSet(exerciseId: exerciseId, setIndex: setIndex);
-    _calculateCompletedSets();
     _cacheRoutineLog();
   }
 
@@ -249,11 +234,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   bool _validateRoutineInputs() {
+    final procedureProviders = Provider.of<ProceduresProvider>(context, listen: false);
+    final procedures = procedureProviders.procedures;
+
     if (_routineNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this workout');
       return false;
     }
-    if (_procedures.isEmpty) {
+    if (procedures.isEmpty) {
       _showSnackbar("Workout must have exercise(s)");
       return false;
     }
@@ -272,11 +260,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _createRoutine() async {
+    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
     if (!_validateRoutineInputs()) return;
     _toggleLoadingState();
     try {
-      await Provider.of<RoutineProvider>(context, listen: false)
-          .saveRoutine(name: _routineNameController.text, notes: _routineNotesController.text, procedures: _procedures);
+      await routineProvider.saveRoutine(
+          name: _routineNameController.text,
+          notes: _routineNotesController.text,
+          procedures: procedureProvider.procedures);
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to create workout");
@@ -368,15 +360,18 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doUpdateRoutine({required Routine routine}) async {
+    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
+    final procedures = procedureProvider.procedures;
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
           name: _routineNameController.text,
           notes: _routineNotesController.text,
-          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+          procedures: procedures.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
 
-      await Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: updatedRoutine);
+      await routineProvider.updateRoutine(routine: updatedRoutine);
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to update workout");
@@ -386,14 +381,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
+    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    final procedures = procedureProvider.procedures;
     _toggleLoadingState();
     try {
       final updatedRoutineLog = routineLog.copyWith(
           name: _routineNameController.text,
           notes: _routineNotesController.text,
-          procedures: _procedures.map((procedure) => procedure.toJson()).toList(),
+          procedures: procedures.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
-      await Provider.of<RoutineLogProvider>(context, listen: false).updateLog(log: updatedRoutineLog);
+      await routineLogProvider.updateLog(log: updatedRoutineLog);
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to update log");
@@ -402,45 +400,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _calculateCompletedSets() {
-    if (widget.mode == RoutineEditorType.log) {
-      setState(() {
-        _completedSets = _procedures.expand((procedure) => procedure.sets).where((set) => set.checked).toList();
-      });
-    }
-  }
-
-  double _totalWeight() {
-    double totalWeight = 0.0;
-
-    for (var procedure in _procedures) {
-      final exerciseType = ExerciseType.fromString(procedure.exercise.type);
-
-      for (var set in procedure.sets) {
-        if (set.checked) {
-          double weightPerSet = 0.0;
-
-          if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight) {
-            weightPerSet = set.value1.toDouble() * set.value2;
-          }
-
-          // Add cases for other exercise types if needed
-
-          totalWeight += weightPerSet;
-        }
-      }
-    }
-
-    return totalWeight;
-  }
-
   bool _isRoutinePartiallyComplete() {
-    return _procedures.any((procedure) => procedure.sets.any((set) => set.checked));
+    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final procedures = procedureProvider.procedures;
+    return procedures.any((procedure) => procedure.sets.any((set) => set.checked));
   }
 
   List<ProcedureDto> _totalCompletedProceduresAndSets() {
+    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final procedures = procedureProvider.procedures;
     final completedProcedures = <ProcedureDto>[];
-    for (var procedure in _procedures) {
+    for (var procedure in procedures) {
       final completedSets = procedure.sets.where((set) => set.checked).toList();
       if (completedSets.isNotEmpty) {
         final completedProcedure = procedure.copyWith(sets: completedSets);
@@ -476,11 +446,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorType.log) {
+      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+      final procedures = procedureProvider.procedures;
       final routine = widget.routine;
       Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
           name: routine?.name ?? "",
           notes: routine?.notes ?? "",
-          procedures: _procedures,
+          procedures: procedures,
           startTime: _routineStartTime,
           createdAt: widget.createdAt,
           routine: routine);
@@ -586,12 +558,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               child: Column(
                 children: [
                   if (widget.mode == RoutineEditorType.log)
-                    RunningRoutineSummaryWidget(
-                      sets: _completedSets.length,
-                      weight: _totalWeight(),
-                      timer: _TimerWidget(
-                          TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
-                    ),
+                    Consumer<ProceduresProvider>(
+                        builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
+                      return RunningRoutineSummaryWidget(
+                        sets: provider.completedSets().length,
+                        timer: _TimerWidget(
+                            TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
+                      );
+                    }),
                   if (widget.mode == RoutineEditorType.edit)
                     Column(
                       children: [
@@ -688,26 +662,24 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final previousRoutine = widget.routine;
     final previousRoutineLog = widget.routineLog;
 
+    final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
+
     /// In [RoutineEditorMode.editing] mode
     if (widget.mode == RoutineEditorType.edit) {
       if (previousRoutine != null) {
-        _procedures
-            .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+        proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
       } else {
         if (previousRoutineLog != null) {
-          _procedures.addAll(
-              [...previousRoutineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+          proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
         }
       }
     } else {
       /// In [RoutineEditorMode.routine] mode
       if (previousRoutineLog != null) {
-        _procedures
-            .addAll([...previousRoutineLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+        proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
         _routineStartTime = previousRoutineLog.startTime;
       } else if (previousRoutine != null) {
-        _procedures
-            .addAll([...previousRoutine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList()]);
+        proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
       }
     }
 
@@ -721,14 +693,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       }
     }
 
+    /// Cache initial state of running routine
     if (widget.mode == RoutineEditorType.log) {
-      /// Show progress of resumed routine
-      /// Show any previous running timers
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _calculateCompletedSets();
-      });
-
-      /// Cache initial state of running routine
       _cacheRoutineLog();
     }
   }
@@ -844,33 +810,27 @@ class _TimerWidgetState extends State<_TimerWidget> {
 
 class RunningRoutineSummaryWidget extends StatelessWidget {
   final int sets;
-  final double weight;
   final Widget timer;
 
-  const RunningRoutineSummaryWidget({super.key, required this.sets, required this.weight, required this.timer});
+  const RunningRoutineSummaryWidget({super.key, required this.sets, required this.timer});
 
   @override
   Widget build(BuildContext context) {
-    final value = isDefaultWeightUnit() ? weight : toLbs(weight);
-
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Table(
           columnWidths: const <int, TableColumnWidth>{
-            0: FixedColumnWidth(55),
-            1: FlexColumnWidth(),
-            2: FlexColumnWidth(),
+            0: FlexColumnWidth(1),
+            1: FlexColumnWidth(2),
           },
           children: [
             TableRow(children: [
               Text("Sets", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
-              Text("Volume", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Duration",
                   style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
             ]),
             TableRow(children: [
               Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
-              Text("$value", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer
             ])
           ],
