@@ -196,19 +196,6 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void _updateProcedureSet<T extends SetDto>(
-  //     {required String procedureId, required int setIndex, required T Function(T set) updateFunction}) {
-  //   final procedureIndex = _indexWhereProcedure(exerciseId: procedureId);
-  //   if (procedureIndex != -1) {
-  //     final procedure = _procedures[procedureIndex];
-  //     if (setIndex != -1 && setIndex < procedure.sets.length && procedure.sets[setIndex] is T) {
-  //       List<SetDto> updatedSets = List<SetDto>.from(procedure.sets);
-  //       updatedSets[setIndex] = updateFunction(updatedSets[setIndex] as T);
-  //       _procedures[procedureIndex] = procedure.copyWith(sets: updatedSets);
-  //     }
-  //   }
-  // }
-
   void _updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet, bool notify = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
@@ -236,6 +223,7 @@ class ProceduresProvider extends ChangeNotifier {
 
     // Notify listeners about the change
     if(notify) {
+      print("shit");
       notifyListeners();
     }
   }

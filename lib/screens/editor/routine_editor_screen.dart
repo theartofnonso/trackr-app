@@ -438,7 +438,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Editor");
 
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
