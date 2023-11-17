@@ -5,8 +5,7 @@ enum MuscleGroupFamily {
   arms("Arms"),
   chest("Chest"),
   neck("Neck"),
-  shoulders("Shoulders"),
-  cardio("Cardio");
+  shoulders("Shoulders");
 
   const MuscleGroupFamily(this.name);
 
@@ -21,7 +20,6 @@ enum MuscleGroup {
   back("Back", MuscleGroupFamily.back),
   lats("Lats", MuscleGroupFamily.back),
   traps("Traps", MuscleGroupFamily.back),
-  cardio("Cardio", MuscleGroupFamily.cardio),
   abs("Abs", MuscleGroupFamily.core),
   fullBody("Full Body", MuscleGroupFamily.core),
   chestUpper("Upper Chest", MuscleGroupFamily.chest),
