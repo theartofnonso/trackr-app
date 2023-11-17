@@ -89,7 +89,7 @@ class DistanceDurationSetRow extends SetRow {
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(procedureId: procedureId, setIndex: index, setDto: setDto, onCheck: onCheck))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

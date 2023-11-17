@@ -70,7 +70,7 @@ class SetTypeIcon extends StatelessWidget {
                       onRemoveSet();
                     },
                     label: "Remove Set",
-                    buttonColor: tealBlueDark,
+                    buttonColor: tealBlueLighter,
                   )
                 ],
               ),

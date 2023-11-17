@@ -142,6 +142,7 @@ class ProceduresProvider extends ChangeNotifier {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
+
       final procedure = _procedures[procedureIndex];
 
       SetDto newSet = _createSet(procedure);
@@ -250,8 +251,16 @@ class ProceduresProvider extends ChangeNotifier {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
   }
 
-  void checkSet({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
+    final updatedSets = _sets[procedureId];
+    if(updatedSets != null) {
+      if(updatedSets.isNotEmpty) {
+        final updatedSet = updatedSets[setIndex];
+        if(updatedSet.isNotEmpty()) {
+          _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
+        }
+      }
+    }
   }
 
   void clearProcedures() {
@@ -259,6 +268,11 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   /// Helper functions
+
+  SetDto _createSet(ProcedureDto procedure) {
+    final previousSet = procedure.sets.lastOrNull;
+    return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
+  }
 
   List<SetDto> completedSets() {
     return _procedures.expand((procedure) => procedure.sets).where((set) => set.checked).toList();
@@ -282,11 +296,6 @@ class ProceduresProvider extends ChangeNotifier {
     }
 
     return totalWeight;
-  }
-
-  SetDto _createSet(ProcedureDto procedure) {
-    final previousSet = procedure.sets.lastOrNull;
-    return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
 
   void _removeSuperSet({required String superSetId}) {

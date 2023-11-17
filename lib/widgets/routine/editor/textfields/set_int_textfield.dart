@@ -15,14 +15,16 @@ class SetIntTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(value);
     return TextField(
+      controller: TextEditingController(text: value > 0 ? value.toString() : null)..clearComposing(),
       onChanged: (value) => onChanged(_parseIntOrDefault(value: value.toString())),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           fillColor: tealBlueLight,
-          hintText: value > 0 ? value.toString() : "-",
+          hintText: "-",
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: TextInputType.number,
       maxLines: 1,

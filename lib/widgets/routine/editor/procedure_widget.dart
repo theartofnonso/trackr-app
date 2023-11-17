@@ -123,7 +123,7 @@ class ProcedureWidget extends StatelessWidget {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
-          onCheck: onCache,
+          onCheck: () => _updateSetCheck(context: context, procedureId: procedureDto.id, setIndex: index, setDto: setDto),
           onRemoved: () => _removeSet(context, index),
           onChangedType: (SetType type) => _updateSetType(
               context: context, procedureId: procedureDto.id, setIndex: index, type: type, setDto: setDto),
@@ -141,7 +141,7 @@ class ProcedureWidget extends StatelessWidget {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
-          onCheck: onCache,
+          onCheck: () => _updateSetCheck(context: context, procedureId: procedureDto.id, setIndex: index, setDto: setDto),
           onRemoved: () => _removeSet(context, index),
           onChangedType: (SetType type) => _updateSetType(
               context: context, procedureId: procedureDto.id, setIndex: index, type: type, setDto: setDto),
@@ -157,7 +157,7 @@ class ProcedureWidget extends StatelessWidget {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
-          onCheck: onCache,
+          onCheck: () => _updateSetCheck(context: context, procedureId: procedureDto.id, setIndex: index, setDto: setDto),
           onRemoved: () => _removeSet(context, index),
           onChangedType: (SetType type) => _updateSetType(
               context: context, procedureId: procedureDto.id, setIndex: index, type: type, setDto: setDto),
@@ -172,7 +172,7 @@ class ProcedureWidget extends StatelessWidget {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: editorType,
-          onCheck: onCache,
+          onCheck: () => _updateSetCheck(context: context, procedureId: procedureDto.id, setIndex: index, setDto: setDto),
           onRemoved: () => _removeSet(context, index),
           onChangedType: (SetType type) => _updateSetType(
               context: context, procedureId: procedureDto.id, setIndex: index, type: type, setDto: setDto),
@@ -191,9 +191,7 @@ class ProcedureWidget extends StatelessWidget {
     onCache();
   }
 
-  void _addSet(
-    BuildContext context,
-  ) {
+  void _addSet(BuildContext context) {
     Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(procedureId: procedureDto.id);
     onCache();
   }
@@ -261,6 +259,17 @@ class ProcedureWidget extends StatelessWidget {
     final updatedSet = setDto.copyWith(type: type);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateSetType(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+    onCache();
+  }
+
+  void _updateSetCheck(
+      {required BuildContext context,
+        required String procedureId,
+        required int setIndex,
+        required SetDto setDto}) {
+    final updatedSet = setDto.copyWith(checked: !setDto.checked);
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateSetCheck(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
     onCache();
   }
 

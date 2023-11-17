@@ -69,6 +69,7 @@ class RepsSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
+              key: key,
               value: setDto.value2.toInt(),
               onChanged: onChangedReps,
             ),
@@ -76,7 +77,7 @@ class RepsSetRow extends SetRow {
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(procedureId: procedureId, setIndex: index, setDto: setDto, onCheck: onCheck))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );
