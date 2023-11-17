@@ -64,6 +64,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     });
   }
 
+  void _clearSearch() {
+    print("ds");
+    setState(() {
+      _filteredExercises = _exercisesInLibrary;
+    });
+  }
+
   /// Navigate to previous screen
   void _navigateBackWithSelectedExercises() {
     final exercisesFromLibrary = _filteredExercises
@@ -204,7 +211,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
           child: Column(
             children: [
-              CSearchBar(hintText: "Search exercises", onChanged: _runSearch,),
+              CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
               const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
                   ? Expanded(
