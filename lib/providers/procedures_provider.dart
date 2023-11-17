@@ -89,7 +89,11 @@ class ProceduresProvider extends ChangeNotifier {
         _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
       }
 
-      _procedures[procedureIndex] = ProcedureDto(exercise: exercise);
+      final procedures = List.from(_procedures);
+
+      procedures[procedureIndex] = ProcedureDto(exercise: exercise);
+
+      _procedures = [...procedures];
 
       notifyListeners();
     }
@@ -111,19 +115,18 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void superSetProcedures({required String firstExerciseId, required String secondExerciseId}) {
-    final id = "superset_id_${firstExerciseId}_$secondExerciseId";
+  void superSetProcedures({required String firstProcedureId, required String secondProcedureId, required String superSetId}) {
 
-    final firstProcedureIndex = _indexWhereProcedure(procedureId: firstExerciseId);
-    final secondProcedureIndex = _indexWhereProcedure(procedureId: secondExerciseId);
+    final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
+    final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
 
     if (firstProcedureIndex != -1 && secondProcedureIndex != -1) {
       List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures);
 
-      updatedProcedures[firstProcedureIndex] = updatedProcedures[firstProcedureIndex].copyWith(superSetId: id);
-      updatedProcedures[secondProcedureIndex] = updatedProcedures[secondProcedureIndex].copyWith(superSetId: id);
+      updatedProcedures[firstProcedureIndex] = updatedProcedures[firstProcedureIndex].copyWith(superSetId: superSetId);
+      updatedProcedures[secondProcedureIndex] = updatedProcedures[secondProcedureIndex].copyWith(superSetId: superSetId);
 
-      _procedures = updatedProcedures;
+      _procedures = [...updatedProcedures];
 
       notifyListeners();
     }
@@ -218,8 +221,6 @@ class ProceduresProvider extends ChangeNotifier {
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
-
-    print(_sets);
 
     // Notify listeners about the change
     if(notify) {

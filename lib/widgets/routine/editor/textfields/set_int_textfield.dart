@@ -5,7 +5,7 @@ import '../../../../app_constants.dart';
 
 class SetIntTextField extends StatelessWidget {
   final int value;
-  final void Function(int) onChanged;
+  final void Function(int value) onChanged;
 
   const SetIntTextField({super.key, required this.value, required this.onChanged});
 

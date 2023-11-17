@@ -6,7 +6,7 @@ import '../../../../utils/general_utils.dart';
 
 class SetDoubleTextField extends StatelessWidget {
   final double value;
-  final void Function(double) onChanged;
+  final void Function(double value) onChanged;
 
   const SetDoubleTextField({super.key, required this.value, required this.onChanged});
 

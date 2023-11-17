@@ -54,9 +54,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         child: _ProceduresList(
           procedures: procedures,
           onSelect: (ProcedureDto secondProcedure) {
+            final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
             Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
-                firstExerciseId: firstProcedure.exercise.id, secondExerciseId: secondProcedure.exercise.id);
+                firstProcedureId: firstProcedure.id,
+                secondProcedureId: secondProcedure.id,
+                superSetId: id);
             _cacheRoutineLog();
           },
           onSelectExercisesInLibrary: () {
@@ -101,40 +104,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _replaceProcedure({required String procedureId}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedureToBeReplaced = Provider.of<ProceduresProvider>(context, listen: false).procedures[procedureIndex];
-    if (procedureToBeReplaced.isNotEmpty()) {
-      _showReplaceProcedureAlert(procedureId: procedureId);
-    } else {
-      _doReplaceProcedure(procedureId: procedureId);
-    }
-  }
-
-  void _showReplaceProcedureAlert({required String procedureId}) {
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-          _doReplaceProcedure(procedureId: procedureId);
-        },
-        child: Text('Replace', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
-      )
-    ];
-
-    showAlertDialog(context: context, message: "All your data will be replaced", actions: alertDialogActions);
-  }
-
-  void _doReplaceProcedure({required String procedureId}) async {
+  void _replaceProcedure({required String procedureId}) async {
+    final preSelectedExercises = Provider.of<ProceduresProvider>(context, listen: false)
+        .procedures
+        .map((procedure) => procedure.exercise)
+        .toList();
     final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const ExerciseLibraryScreen(
+        builder: (context) => ExerciseLibraryScreen(
               multiSelect: false,
+              preSelectedExercises: preSelectedExercises,
             ))) as List<Exercise>?;
 
     if (selectedExercises != null) {
@@ -146,12 +124,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         }
       }
     }
-  }
-
-  int _indexWhereProcedure({required String procedureId}) {
-    return Provider.of<ProceduresProvider>(context, listen: false)
-        .procedures
-        .indexWhere((procedure) => procedure.exercise.id == procedureId);
   }
 
   void _removeProcedureSuperSets({required String superSetId}) {
@@ -167,7 +139,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
     return Provider.of<ProceduresProvider>(context, listen: false)
         .procedures
-        .whereNot((procedure) => procedure.exercise.id == firstProcedure.exercise.id || procedure.superSetId.isNotEmpty)
+        .whereNot((procedure) => procedure.id == firstProcedure.id || procedure.superSetId.isNotEmpty)
         .toList();
   }
 
@@ -438,7 +410,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     return Scaffold(

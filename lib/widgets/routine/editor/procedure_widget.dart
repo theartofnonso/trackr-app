@@ -213,7 +213,7 @@ class ProcedureWidget extends StatelessWidget {
     final updatedSet = setDto.copyWith(value1: value);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateWeight(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
-    onCache();
+   onCache();
   }
 
   void _updateReps(
@@ -267,8 +267,6 @@ class ProcedureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sets = context.select((ProceduresProvider provider) => provider.sets)[procedureDto.id];
-
-    print(sets);
 
     final otherProcedureDto = otherSuperSetProcedureDto;
 
