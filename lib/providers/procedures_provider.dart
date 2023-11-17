@@ -73,8 +73,28 @@ class ProceduresProvider extends ChangeNotifier {
 
       _procedures = [...procedures];
 
+      _removeAllSetsForProcedure(procedureId: procedureId);
+
       notifyListeners();
     }
+  }
+
+  void _removeAllSetsForProcedure({required String procedureId}) {
+    // Check if the key exists in the map
+    if (!_sets.containsKey(procedureId)) {
+      // Handle the case where the key does not exist
+      // e.g., log an error or throw an exception
+      return;
+    }
+
+    // Creating a new map by copying the original map
+    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+
+    // Remove the key-value pair from the new map
+    newMap.remove(procedureId);
+
+    // Assign the new map to _sets to maintain immutability
+    _sets = newMap;
   }
 
   void replaceProcedure({required String procedureId, required Exercise exercise}) async {
@@ -102,7 +122,6 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateProcedureNotes({required String procedureId, required String value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    print(_procedures);
     final procedure = _procedures[procedureIndex];
     _procedures[procedureIndex] = procedure.copyWith(notes: value);
   }
@@ -158,6 +177,7 @@ class ProceduresProvider extends ChangeNotifier {
 
       // Assign the new map to _sets to maintain immutability
       _sets = newMap;
+      print(_sets);
 
       // Notify listeners about the change
       notifyListeners();
