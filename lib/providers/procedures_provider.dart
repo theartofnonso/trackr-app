@@ -13,6 +13,7 @@ class ProceduresProvider extends ChangeNotifier {
   Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
 
   UnmodifiableListView<ProcedureDto> get procedures => UnmodifiableListView(_procedures);
+
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
   void refreshProcedures({required List<ProcedureDto> procedures}) {
@@ -36,7 +37,6 @@ class ProceduresProvider extends ChangeNotifier {
     List<ProcedureDto> mergedProcedures = [];
 
     for (var procedure in procedures) {
-
       // Find the matching sets based on exerciseId and add them to the new procedure
       List<SetDto> matchingSets = sets[procedure.id] ?? [];
 
@@ -100,23 +100,24 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateProcedureNotes({required String procedureId, required String value}) {
-    // Find the index of the procedure with the given exercise ID.
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
-    // Check if a valid procedure is found.
     if (procedureIndex != -1) {
-      final procedure = _procedures[procedureIndex];
+      print(procedureIndex);
+      // Create a new instance of ProcedureDto with the updated name
+      ProcedureDto updatedProcedure = _procedures[procedureIndex].copyWith(notes: value);
 
-      // Check if the new value is different from the old one.
-      if (procedure.notes != value) {
-        // Update the procedure with the new notes.
-        _procedures[procedureIndex] = procedure.copyWith(notes: value);
-      }
+      // Create a new list of procedures and replace the old procedure with the updated one
+      List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures)
+        ..[procedureIndex] = updatedProcedure;
+
+      // Assign the new list to _procedures to maintain immutability
+      _procedures = updatedProcedures;
     }
   }
 
-  void superSetProcedures({required String firstProcedureId, required String secondProcedureId, required String superSetId}) {
-
+  void superSetProcedures(
+      {required String firstProcedureId, required String secondProcedureId, required String superSetId}) {
     final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
     final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
 
@@ -124,7 +125,8 @@ class ProceduresProvider extends ChangeNotifier {
       List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures);
 
       updatedProcedures[firstProcedureIndex] = updatedProcedures[firstProcedureIndex].copyWith(superSetId: superSetId);
-      updatedProcedures[secondProcedureIndex] = updatedProcedures[secondProcedureIndex].copyWith(superSetId: superSetId);
+      updatedProcedures[secondProcedureIndex] =
+          updatedProcedures[secondProcedureIndex].copyWith(superSetId: superSetId);
 
       _procedures = [...updatedProcedures];
 
@@ -199,7 +201,8 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet, bool notify = false}) {
+  void _updateSetForProcedure(
+      {required String procedureId, required int setIndex, required SetDto updatedSet, bool notify = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -223,8 +226,7 @@ class ProceduresProvider extends ChangeNotifier {
     _sets = newMap;
 
     // Notify listeners about the change
-    if(notify) {
-      print("shit");
+    if (notify) {
       notifyListeners();
     }
   }
@@ -255,21 +257,6 @@ class ProceduresProvider extends ChangeNotifier {
 
   void clearProcedures() {
     _procedures.clear();
-  }
-
-  int setTypeIndexWhereProcedure({required String exerciseId, required SetType setType, required int setIndex}) {
-
-    Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
-
-    final sets = _procedures.firstWhere((procedure) => procedure.exercise.id == exerciseId).sets;
-
-    for (int index = 0; index < sets.length; index++) {
-      final set = sets[index];
-      setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-    }
-
-    return setTypeCounts[setType]!;
-
   }
 
   /// Helper functions
@@ -304,17 +291,24 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _removeSuperSet({required String superSetId}) {
-    // Create a copy of the procedures list to modify
-    List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures);
+    // Create a new list where modifications will be made
+    List<ProcedureDto> updatedProcedures = [];
 
-    // Iterate over the copy to modify the necessary procedures
-    for (int i = 0; i < updatedProcedures.length; i++) {
-      if (updatedProcedures[i].superSetId == superSetId) {
-        updatedProcedures[i] = updatedProcedures[i].copyWith(superSetId: "");
+    // Iterate over the original procedures list
+    for (ProcedureDto procedure in _procedures) {
+      if (procedure.superSetId == superSetId) {
+        // Create a new ProcedureDto with an updated superSetId
+        updatedProcedures.add(procedure.copyWith(superSetId: ""));
+      } else {
+        // Add the original ProcedureDto to the new list
+        updatedProcedures.add(procedure);
       }
     }
+
+    // Update the _procedures with the new list
     _procedures = updatedProcedures;
   }
+
 
   int _indexWhereProcedure({required String procedureId}) {
     return _procedures.indexWhere((procedure) => procedure.id == procedureId);

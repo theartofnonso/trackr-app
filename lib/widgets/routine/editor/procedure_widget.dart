@@ -213,7 +213,7 @@ class ProcedureWidget extends StatelessWidget {
     final updatedSet = setDto.copyWith(value1: value);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateWeight(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
-   onCache();
+    onCache();
   }
 
   void _updateReps(
@@ -273,6 +273,8 @@ class ProcedureWidget extends StatelessWidget {
     final exerciseString = procedureDto.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseString);
 
+    print("sd");
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -322,7 +324,7 @@ class ProcedureWidget extends StatelessWidget {
               : const SizedBox.shrink(),
           const SizedBox(height: 10),
           TextField(
-            controller: TextEditingController(text: procedureDto.notes),
+            //controller: TextEditingController(text: procedureDto.notes),
             onChanged: (value) => _updateProcedureNotes(context: context, value: value),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
