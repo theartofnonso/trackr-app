@@ -134,7 +134,6 @@ class ProceduresProvider extends ChangeNotifier {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
-
       final sets = _sets[procedureId] ?? [];
 
       SetDto newSet = _createSet(sets);
@@ -245,10 +244,10 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
     final updatedSets = _sets[procedureId];
-    if(updatedSets != null) {
-      if(updatedSets.isNotEmpty) {
+    if (updatedSets != null) {
+      if (updatedSets.isNotEmpty) {
         final updatedSet = updatedSets[setIndex];
-        if(updatedSet.isNotEmpty()) {
+        if (updatedSet.isNotEmpty()) {
           _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
         }
       }
@@ -256,7 +255,8 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void clearProcedures() {
-    _procedures.clear();
+    _procedures = [];
+    _sets = <String, List<SetDto>>{};
   }
 
   /// Helper functions
