@@ -151,7 +151,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   SetDto? _wherePastSet({required int index, required SetType type, required List<SetDto> pastSets}) {
     final workingSets = pastSets.where((set) => set.type == type).toList();
-    return workingSets.length >= index ? workingSets.last : null;
+    return workingSets.length >= index ? workingSets.lastOrNull : null;
   }
 
   void addSetForProcedure({required String procedureId, required List<SetDto> pastSets}) {
