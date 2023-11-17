@@ -115,6 +115,7 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<RoutineLogProvider>(context, listen: true);
     return _chartPoints.isNotEmpty
         ? Column(
             children: [
