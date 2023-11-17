@@ -12,11 +12,11 @@ import '../set_type_icon.dart';
 class WeightedSetRow extends SetRow {
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
-  final TextEditingController controller;
+  final (TextEditingController, TextEditingController) controllers;
 
   const WeightedSetRow(
       {super.key,
-      required this.controller,
+      required this.controllers,
       required this.onChangedReps,
       required this.onChangedWeight,
       required super.index,
@@ -73,7 +73,7 @@ class WeightedSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
+                    "${previousSetDto.value1.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -85,7 +85,7 @@ class WeightedSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
               value: weight,
-              onChanged: onChangedWeight, controller: controller,
+              onChanged: onChangedWeight, controller: controllers.$1,
             ),
           ),
           TableCell(
@@ -93,7 +93,7 @@ class WeightedSetRow extends SetRow {
             child: SetIntTextField(
               value: reps,
               onChanged: onChangedReps,
-              controller: controller,
+              controller: controllers.$2,
             ),
           ),
           if (editorType == RoutineEditorType.log)

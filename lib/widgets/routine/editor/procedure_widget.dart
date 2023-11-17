@@ -54,7 +54,7 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  final List<TextEditingController> _controllers = [];
+  final List<(TextEditingController, TextEditingController)> _controllers = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -96,12 +96,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return sets.length > index ? sets.elementAt(index) : null;
   }
 
-  List<Widget> _displaySets({required BuildContext context, required ExerciseType exerciseType, required List<SetDto> sets}) {
+  List<Widget> _displaySets(
+      {required BuildContext context, required ExerciseType exerciseType, required List<SetDto> sets}) {
     if (sets.isEmpty) return [];
 
     Map<SetType, int> setCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
 
-    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
+    final pastSets =
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
 
     return sets.mapIndexed((index, setDto) {
       SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
@@ -113,8 +115,9 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     }).toList();
   }
 
-  Widget _createSetWidget(BuildContext context, int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
-    _controllers.add(TextEditingController());
+  Widget _createSetWidget(BuildContext context, int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType,
+      Map<SetType, int> setCounts) {
+    _controllers.add((TextEditingController(), TextEditingController()));
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
@@ -136,7 +139,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
               context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
           onChangedWeight: (double value) => _updateWeight(
               context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
-          controller: _controllers[index],
+          controllers: _controllers[index],
         );
       case ExerciseType.bodyWeightAndReps:
         return RepsSetRow(
@@ -153,7 +156,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
               context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
           onChangedReps: (num value) => _updateReps(
               context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
-          controller: _controllers[index],
+          controllers: _controllers[index],
         );
       case ExerciseType.duration:
         return DurationSetRow(
@@ -200,7 +203,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
               setIndex: index,
               distance: distance,
               setDto: setDto),
-          controller: _controllers[index],
+          controllers: _controllers[index],
         );
       // Add other cases or a default case
     }
@@ -213,9 +216,11 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _addSet(BuildContext context) {
-    _controllers.add(TextEditingController());
-    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
-    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(procedureId: widget.procedureDto.id, pastSets: pastSets);
+    _controllers.add((TextEditingController(), TextEditingController()));
+    final pastSets =
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .addSetForProcedure(procedureId: widget.procedureDto.id, pastSets: pastSets);
     widget.onCache();
   }
 

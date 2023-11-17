@@ -130,11 +130,10 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  SetDto? _wherePastSet({required int index, required List<SetDto> pastSets}) {
-    final workingSets = pastSets.where((set) => set.type == SetType.working).toList();
+  SetDto? _wherePastSet({required int index, required SetType type, required List<SetDto> pastSets}) {
+    final workingSets = pastSets.where((set) => set.type == type).toList();
     return workingSets.length > index ? workingSets.last : null;
   }
-
 
   void addSetForProcedure({required String procedureId, required List<SetDto> pastSets}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
@@ -142,7 +141,7 @@ class ProceduresProvider extends ChangeNotifier {
     if (procedureIndex != -1) {
       final currentSets = _sets[procedureId] ?? [];
 
-      final pastSet = _wherePastSet(index: sets.length, pastSets: pastSets);
+      final pastSet = _wherePastSet(index: sets.length, type: SetType.working, pastSets: pastSets);
       SetDto newSet = _createSet(currentSets, pastSet);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
@@ -199,8 +198,7 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateSetForProcedure(
-      {required String procedureId, required int setIndex, required SetDto updatedSet, bool notify = false}) {
+  void _updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -224,9 +222,7 @@ class ProceduresProvider extends ChangeNotifier {
     _sets = newMap;
 
     // Notify listeners about the change
-    if (notify) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {
@@ -238,7 +234,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateDuration({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void updateDistance({required String procedureId, required int setIndex, required SetDto setDto}) {
@@ -246,11 +242,21 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
+  // void updateSetType(
+  //     {required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
+  //   final previousSet = _wherePastSet(index: sets.length, type: setDto.type, pastSets: pastSets);
+  //   print(previousSet);
+  //   // final updatedSet = setDto.copyWith(
+  //   //   value1: previousSet?.value1 ?? 0,
+  //   //   value2: previousSet?.value2 ?? 0,
+  //   // );
+  //   _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  // }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, notify: true);
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void onClearProvider() {
@@ -261,7 +267,6 @@ class ProceduresProvider extends ChangeNotifier {
   /// Helper functions
 
   SetDto _createSet(List<SetDto> sets, SetDto? pastSet) {
-
     final previousSet = pastSet ?? sets.lastOrNull;
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
