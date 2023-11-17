@@ -143,9 +143,9 @@ class ProceduresProvider extends ChangeNotifier {
 
     if (procedureIndex != -1) {
 
-      final procedure = _procedures[procedureIndex];
+      final sets = _sets[procedureId] ?? [];
 
-      SetDto newSet = _createSet(procedure);
+      SetDto newSet = _createSet(sets);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
       List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
@@ -269,8 +269,8 @@ class ProceduresProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  SetDto _createSet(ProcedureDto procedure) {
-    final previousSet = procedure.sets.lastOrNull;
+  SetDto _createSet(List<SetDto> sets) {
+    final previousSet = sets.lastOrNull;
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
 
