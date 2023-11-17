@@ -5,9 +5,10 @@ import '../../../../app_constants.dart';
 
 class SetIntTextField extends StatelessWidget {
   final int value;
+  final String setId;
   final void Function(int value) onChanged;
 
-  const SetIntTextField({super.key, required this.value, required this.onChanged});
+  const SetIntTextField({super.key, required this.value, required this.onChanged, required this.setId});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -16,6 +17,7 @@ class SetIntTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: ValueKey(setId),
       //controller: TextEditingController(text: value > 0 ? value.toString() : null)..clearComposing(),
       onChanged: (value) => onChanged(_parseIntOrDefault(value: value.toString())),
       decoration: InputDecoration(

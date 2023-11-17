@@ -71,6 +71,7 @@ class RepsSetRow extends SetRow {
             child: SetIntTextField(
               key: key,
               value: setDto.value2.toInt(),
+              setId: setDto.id,
               onChanged: onChangedReps,
             ),
           ),
