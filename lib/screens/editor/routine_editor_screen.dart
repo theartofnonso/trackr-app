@@ -76,8 +76,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final preSelectedExercises = provider.procedures.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<Exercise>?;
+        MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
+    as List<Exercise>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
@@ -105,12 +105,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _replaceProcedure({required String procedureId}) async {
-    final preSelectedExercises = Provider.of<ProceduresProvider>(context, listen: false)
+    final preSelectedExercises = Provider
+        .of<ProceduresProvider>(context, listen: false)
         .procedures
         .map((procedure) => procedure.exercise)
         .toList();
     final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ExerciseLibraryScreen(
+        builder: (context) =>
+            ExerciseLibraryScreen(
               multiSelect: false,
               preSelectedExercises: preSelectedExercises,
             ))) as List<Exercise>?;
@@ -137,7 +139,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
-    return Provider.of<ProceduresProvider>(context, listen: false)
+    return Provider
+        .of<ProceduresProvider>(context, listen: false)
         .procedures
         .where((procedure) => procedure.id != firstProcedure.id && procedure.superSetId.isEmpty)
         .toList();
@@ -415,50 +418,53 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
-                leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_outlined),
-                    onPressed: () => Navigator.of(context).pop()),
-                actions: [
-                  CTextButton(
-                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
-                      label: _canUpdate() ? "Update" : "Save",
-                      buttonColor: Colors.transparent,
-                      loading: _loading,
-                      loadingLabel: _loadingLabel)
-                ],
-              )
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back_outlined),
+              onPressed: () => Navigator.of(context).pop()),
+          actions: [
+            CTextButton(
+                onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                label: _canUpdate() ? "Update" : "Save",
+                buttonColor: Colors.transparent,
+                loading: _loading,
+                loadingLabel: _loadingLabel)
+          ],
+        )
             : AppBar(
-                leading: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(
-                    Icons.arrow_back_outlined,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-                title: Text(
-                  "${_editorTitle()}",
-                  style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
-              ),
+          leading: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(
+              Icons.arrow_back_outlined,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          title: Text(
+            "${_editorTitle()}",
+            style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
+        ),
         floatingActionButton: widget.mode == RoutineEditorType.log
-            ? MediaQuery.of(context).viewInsets.bottom <= 0
-                ? FloatingActionButton.extended(
-                    heroTag: "fab_routine_log_editor_screen",
-                    onPressed: _endRoutineLog,
-                    backgroundColor: tealBlueLighter,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-                  )
-                : null
+            ? MediaQuery
+            .of(context)
+            .viewInsets
+            .bottom <= 0
+            ? FloatingActionButton.extended(
+          heroTag: "fab_routine_log_editor_screen",
+          onPressed: _endRoutineLog,
+          backgroundColor: tealBlueLighter,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+        )
+            : null
             : FloatingActionButton.extended(
-                heroTag: "fab_routine_template_editor_screen",
-                onPressed: _selectExercisesInLibrary,
-                backgroundColor: tealBlueLighter,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-              ),
+          heroTag: "fab_routine_template_editor_screen",
+          onPressed: _selectExercisesInLibrary,
+          backgroundColor: tealBlueLighter,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+        ),
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
             if (scrollNotification.direction != ScrollDirection.idle) {
@@ -475,12 +481,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   if (widget.mode == RoutineEditorType.log)
                     Consumer<ProceduresProvider>(
                         builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
-                      return RunningRoutineSummaryWidget(
-                        sets: provider.completedSets().length,
-                        timer: _TimerWidget(
-                            TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
-                      );
-                    }),
+                          return RunningRoutineSummaryWidget(
+                            sets: provider
+                                .completedSets()
+                                .length,
+                            timer: _TimerWidget(
+                                TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime
+                                    .getDateTimeInUtc())),
+                          );
+                        }),
                   if (widget.mode == RoutineEditorType.edit)
                     Column(
                       children: [
@@ -533,7 +542,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 procedureDto: procedure,
                                 editorType: widget.mode,
                                 otherSuperSetProcedureDto:
-                                    whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
+                                whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
                                 onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
@@ -555,47 +564,89 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
-    final previousRoutine = widget.routine;
-    final previousRoutineLog = widget.routineLog;
+    _initializeProcedureData();
+    _initializeTextControllers();
 
-    final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
-
-    /// In [RoutineEditorMode.editing] mode
-    if (widget.mode == RoutineEditorType.edit) {
-      if (previousRoutine != null) {
-        proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
-      } else {
-        if (previousRoutineLog != null) {
-          proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
-        }
-      }
-    } else {
-      /// In [RoutineEditorMode.routine] mode
-      if (previousRoutineLog != null) {
-        proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
-        _routineStartTime = previousRoutineLog.startTime;
-      } else if (previousRoutine != null) {
-        proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
-      }
-    }
-
-    if (widget.mode == RoutineEditorType.edit) {
-      if (previousRoutineLog != null) {
-        _routineNameController = TextEditingController(text: previousRoutineLog.name);
-        _routineNotesController = TextEditingController(text: previousRoutineLog.notes);
-      } else {
-        _routineNameController = TextEditingController(text: previousRoutine?.name);
-        _routineNotesController = TextEditingController(text: previousRoutine?.notes);
-      }
-    }
-
-    /// Cache initial state of running routine
+    // Cache initial state of running routine if in log mode
     if (widget.mode == RoutineEditorType.log) {
       _cacheRoutineLog();
     }
 
+    final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
     _onDisposeCallback = proceduresProvider.onClearProvider;
   }
+
+  void _initializeProcedureData() {
+    final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
+
+    final routine = widget.routine;
+    final routineLog = widget.routineLog;
+    if (routine != null) {
+      proceduresProvider.loadProcedures(procedures: routine.procedures);
+    } else {
+      if (routineLog != null) {
+        proceduresProvider.loadProcedures(procedures: routineLog.procedures);
+        _routineStartTime = routineLog.startTime;
+      }
+    }
+  }
+
+  void _initializeTextControllers() {
+    if (widget.mode == RoutineEditorType.edit) {
+      RoutineLog? routineLog = widget.routineLog;
+      Routine? routine = widget.routine;
+
+      _routineNameController = TextEditingController(text: routineLog?.name ?? routine?.name);
+      _routineNotesController = TextEditingController(text: routineLog?.notes ?? routine?.notes);
+    }
+  }
+
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   final previousRoutine = widget.routine;
+  //   final previousRoutineLog = widget.routineLog;
+  //
+  //   final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
+  //
+  //   /// In [RoutineEditorMode.editing] mode
+  //   if (widget.mode == RoutineEditorType.edit) {
+  //     if (previousRoutine != null) {
+  //       proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
+  //     } else {
+  //       if (previousRoutineLog != null) {
+  //         proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
+  //       }
+  //     }
+  //   } else {
+  //     /// In [RoutineEditorMode.routine] mode
+  //     if (previousRoutineLog != null) {
+  //       proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
+  //       _routineStartTime = previousRoutineLog.startTime;
+  //     } else if (previousRoutine != null) {
+  //       proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
+  //     }
+  //   }
+  //
+  //   if (widget.mode == RoutineEditorType.edit) {
+  //     if (previousRoutineLog != null) {
+  //       _routineNameController = TextEditingController(text: previousRoutineLog.name);
+  //       _routineNotesController = TextEditingController(text: previousRoutineLog.notes);
+  //     } else {
+  //       _routineNameController = TextEditingController(text: previousRoutine?.name);
+  //       _routineNotesController = TextEditingController(text: previousRoutine?.notes);
+  //     }
+  //   }
+  //
+  //   /// Cache initial state of running routine
+  //   if (widget.mode == RoutineEditorType.log) {
+  //     _cacheRoutineLog();
+  //   }
+  //
+  //   _onDisposeCallback = proceduresProvider.onClearProvider;
+  // }
 
   @override
   void dispose() {
