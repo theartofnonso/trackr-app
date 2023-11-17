@@ -58,9 +58,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
             Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
-                firstProcedureId: firstProcedure.id,
-                secondProcedureId: secondProcedure.id,
-                superSetId: id);
+                firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
             _cacheRoutineLog();
           },
           onSelectExercisesInLibrary: () {
@@ -76,8 +74,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final preSelectedExercises = provider.procedures.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-    as List<Exercise>?;
+            MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
+        as List<Exercise>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
@@ -105,14 +103,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _replaceProcedure({required String procedureId}) async {
-    final preSelectedExercises = Provider
-        .of<ProceduresProvider>(context, listen: false)
+    final preSelectedExercises = Provider.of<ProceduresProvider>(context, listen: false)
         .mergeSetsIntoProcedures()
         .map((procedure) => procedure.exercise)
         .toList();
     final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            ExerciseLibraryScreen(
+        builder: (context) => ExerciseLibraryScreen(
               multiSelect: false,
               preSelectedExercises: preSelectedExercises,
             ))) as List<Exercise>?;
@@ -139,8 +135,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
-    return Provider
-        .of<ProceduresProvider>(context, listen: false)
+    return Provider.of<ProceduresProvider>(context, listen: false)
         .procedures
         .where((procedure) => procedure.id != firstProcedure.id && procedure.superSetId.isEmpty)
         .toList();
@@ -418,53 +413,49 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
-          leading: IconButton(
-              icon: const Icon(Icons.arrow_back_outlined),
-              onPressed: () => Navigator.of(context).pop()),
-          actions: [
-            CTextButton(
-                onPressed: _canUpdate() ? _doUpdate : _createRoutine,
-                label: _canUpdate() ? "Update" : "Save",
-                buttonColor: Colors.transparent,
-                loading: _loading,
-                loadingLabel: _loadingLabel)
-          ],
-        )
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_outlined), onPressed: () => Navigator.of(context).pop()),
+                actions: [
+                  CTextButton(
+                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                      label: _canUpdate() ? "Update" : "Save",
+                      buttonColor: Colors.transparent,
+                      loading: _loading,
+                      loadingLabel: _loadingLabel)
+                ],
+              )
             : AppBar(
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_outlined,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          title: Text(
-            "${_editorTitle()}",
-            style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
-        ),
+                leading: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Icon(
+                    Icons.arrow_back_outlined,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                title: Text(
+                  "${_editorTitle()}",
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
+              ),
         floatingActionButton: widget.mode == RoutineEditorType.log
-            ? MediaQuery
-            .of(context)
-            .viewInsets
-            .bottom <= 0
-            ? FloatingActionButton.extended(
-          heroTag: "fab_routine_log_editor_screen",
-          onPressed: _endRoutineLog,
-          backgroundColor: tealBlueLighter,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-        )
-            : null
+            ? MediaQuery.of(context).viewInsets.bottom <= 0
+                ? FloatingActionButton.extended(
+                    heroTag: "fab_routine_log_editor_screen",
+                    onPressed: _endRoutineLog,
+                    backgroundColor: tealBlueLighter,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+                  )
+                : null
             : FloatingActionButton.extended(
-          heroTag: "fab_routine_template_editor_screen",
-          onPressed: _selectExercisesInLibrary,
-          backgroundColor: tealBlueLighter,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-        ),
+                heroTag: "fab_routine_template_editor_screen",
+                onPressed: _selectExercisesInLibrary,
+                backgroundColor: tealBlueLighter,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+              ),
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
             if (scrollNotification.direction != ScrollDirection.idle) {
@@ -481,15 +472,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   if (widget.mode == RoutineEditorType.log)
                     Consumer<ProceduresProvider>(
                         builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
-                          return RunningRoutineSummaryWidget(
-                            sets: provider
-                                .completedSets()
-                                .length,
-                            timer: _TimerWidget(
-                                TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime
-                                    .getDateTimeInUtc())),
-                          );
-                        }),
+                      return RunningRoutineSummaryWidget(
+                        sets: provider.completedSets().length,
+                        timer: _TimerWidget(
+                            TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
+                      );
+                    }),
                   if (widget.mode == RoutineEditorType.edit)
                     Column(
                       children: [
@@ -542,7 +530,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 procedureDto: procedure,
                                 editorType: widget.mode,
                                 otherSuperSetProcedureDto:
-                                whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
+                                    whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
                                 onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
