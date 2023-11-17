@@ -65,7 +65,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _clearSearch() {
-    print("ds");
     setState(() {
       _filteredExercises = _exercisesInLibrary;
     });
