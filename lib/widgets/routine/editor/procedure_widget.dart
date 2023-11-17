@@ -285,9 +285,11 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       required int setIndex,
       required SetType type,
       required SetDto setDto}) {
+    final pastSets =
+    Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
     final updatedSet = setDto.copyWith(type: type);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetType(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+        .updateSetType(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet, pastSets: pastSets);
     widget.onCache();
   }
 

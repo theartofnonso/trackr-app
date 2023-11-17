@@ -149,7 +149,7 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  SetDto? _wherePastWorkingSet({required int index, required SetType type, required List<SetDto> pastSets}) {
+  SetDto? _wherePastSet({required int index, required SetType type, required List<SetDto> pastSets}) {
     final workingSets = pastSets.where((set) => set.type == type).toList();
     return workingSets.length >= index ? workingSets.last : null;
   }
@@ -160,7 +160,7 @@ class ProceduresProvider extends ChangeNotifier {
     if (procedureIndex != -1) {
       final currentSets = _sets[procedureId] ?? [];
 
-      final pastSet = _wherePastWorkingSet(index: sets.length, type: SetType.working, pastSets: pastSets);
+      final pastSet = _wherePastSet(index: currentSets.isEmpty ? currentSets.length : currentSets.length + 1, type: SetType.working, pastSets: pastSets);
       SetDto newSet = _createSet(currentSets, pastSet);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
@@ -240,6 +240,8 @@ class ProceduresProvider extends ChangeNotifier {
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
 
+    print(_sets);
+
     // Notify listeners about the change
     notifyListeners();
   }
@@ -260,8 +262,10 @@ class ProceduresProvider extends ChangeNotifier {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateSetType({required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
+    final pastSet = _wherePastSet(index: sets.length, type: setDto.type, pastSets: pastSets) ?? setDto;
+    final updateSet = pastSet.copyWith(type: setDto.type, checked: setDto.checked);
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: updateSet);
   }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
