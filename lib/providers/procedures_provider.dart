@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
@@ -51,7 +52,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void addProcedures({required List<Exercise> exercises}) {
-    final proceduresToAdd = exercises.map((exercise) => ProcedureDto(exercise: exercise)).toList();
+    final proceduresToAdd = exercises.map((exercise) => _createProcedure(exercise)).toList();
     _procedures = [..._procedures, ...proceduresToAdd];
 
     notifyListeners();
@@ -91,7 +92,7 @@ class ProceduresProvider extends ChangeNotifier {
 
       final procedures = List.from(_procedures);
 
-      procedures[procedureIndex] = ProcedureDto(exercise: exercise);
+      procedures[procedureIndex] = _createProcedure(exercise);
 
       _procedures = [...procedures];
 
@@ -264,6 +265,10 @@ class ProceduresProvider extends ChangeNotifier {
     final previousSet = sets.lastOrNull;
     //print(previousSet);
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
+  }
+
+  ProcedureDto _createProcedure(Exercise exercise) {
+    return ProcedureDto(const Uuid().v4(), "", exercise, "", []);
   }
 
   List<SetDto> completedSets() {

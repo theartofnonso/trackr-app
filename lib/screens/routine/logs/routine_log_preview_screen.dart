@@ -8,7 +8,6 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
-import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';

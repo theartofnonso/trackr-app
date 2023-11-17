@@ -10,16 +10,16 @@ class ProcedureDto {
   final String notes;
   final List<SetDto> sets;
 
-  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const []})
-      : id = const Uuid().v4();
+  ProcedureDto(this.id, this.superSetId, this.exercise, this.notes, this.sets);
 
   ProcedureDto copyWith(
-      {String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets}) {
+      {String? id, String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets}) {
     return ProcedureDto(
-      superSetId: superSetId ?? this.superSetId,
-      exercise: exercise ?? this.exercise,
-      notes: notes ?? this.notes,
-      sets: sets ?? this.sets,
+      id ?? this.id,
+      superSetId ?? this.superSetId,
+      exercise ?? this.exercise,
+      notes ?? this.notes,
+      sets ?? this.sets,
     );
   }
 
@@ -49,7 +49,7 @@ class ProcedureDto {
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    return ProcedureDto(superSetId: superSetId, notes: notes, sets: sets, exercise: exercise);
+    return ProcedureDto(const Uuid().v4(), superSetId, exercise, notes, sets);
   }
 
   @override
