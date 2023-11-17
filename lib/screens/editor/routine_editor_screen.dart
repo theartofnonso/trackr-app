@@ -409,6 +409,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   Widget build(BuildContext context) {
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
+    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
+
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
@@ -439,8 +441,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 ),
                 actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
               ),
-        floatingActionButton: widget.mode == RoutineEditorType.log
-            ? MediaQuery.of(context).viewInsets.bottom <= 0
+        floatingActionButton: isKeyboardOpen
+            ? null
+            : widget.mode == RoutineEditorType.log
                 ? FloatingActionButton.extended(
                     heroTag: "fab_routine_log_editor_screen",
                     onPressed: _endRoutineLog,
@@ -448,14 +451,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
                   )
-                : null
-            : FloatingActionButton.extended(
-                heroTag: "fab_routine_template_editor_screen",
-                onPressed: _selectExercisesInLibrary,
-                backgroundColor: tealBlueLighter,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-              ),
+                : FloatingActionButton.extended(
+                    heroTag: "fab_routine_template_editor_screen",
+                    onPressed: _selectExercisesInLibrary,
+                    backgroundColor: tealBlueLighter,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+                  ),
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
             if (scrollNotification.direction != ScrollDirection.idle) {
