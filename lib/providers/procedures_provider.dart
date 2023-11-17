@@ -130,13 +130,20 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSetForProcedure({required String procedureId}) {
+  SetDto? _wherePastSet({required int index, required List<SetDto> pastSets}) {
+    final workingSets = pastSets.where((set) => set.type == SetType.working).toList();
+    return workingSets.length > index ? workingSets.last : null;
+  }
+
+
+  void addSetForProcedure({required String procedureId, required List<SetDto> pastSets}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
-      final sets = _sets[procedureId] ?? [];
+      final currentSets = _sets[procedureId] ?? [];
 
-      SetDto newSet = _createSet(sets);
+      final pastSet = _wherePastSet(index: sets.length, pastSets: pastSets);
+      SetDto newSet = _createSet(currentSets, pastSet);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
       List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
@@ -253,8 +260,9 @@ class ProceduresProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  SetDto _createSet(List<SetDto> sets) {
-    final previousSet = sets.lastOrNull;
+  SetDto _createSet(List<SetDto> sets, SetDto? pastSet) {
+
+    final previousSet = pastSet ?? sets.lastOrNull;
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
 

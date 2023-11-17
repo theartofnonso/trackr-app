@@ -214,7 +214,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   void _addSet(BuildContext context) {
     _controllers.add(TextEditingController());
-    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(procedureId: widget.procedureDto.id);
+    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
+    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(procedureId: widget.procedureDto.id, pastSets: pastSets);
     widget.onCache();
   }
 
