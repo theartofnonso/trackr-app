@@ -101,18 +101,9 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateProcedureNotes({required String procedureId, required String value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-
-    if (procedureIndex != -1) {
-      final updatedProcedures = List<ProcedureDto>.from(_procedures);
-
-      final procedureToBeUpdated = updatedProcedures[procedureIndex];
-
-      // Create a new instance of ProcedureDto with the updated name
-      updatedProcedures[procedureIndex] = procedureToBeUpdated.copyWith(notes: value);
-
-      // Assign the new list to _procedures to maintain immutability
-      _procedures = updatedProcedures;
-    }
+    print(_procedures);
+    final procedure = _procedures[procedureIndex];
+    _procedures[procedureIndex] = procedure.copyWith(notes: value);
   }
 
   void superSetProcedures(
