@@ -13,9 +13,11 @@ import '../timer_widget.dart';
 class DistanceDurationSetRow extends SetRow {
   final void Function(Duration duration) onChangedDuration;
   final void Function(double distance) onChangedDistance;
+  final TextEditingController controller;
 
   const DistanceDurationSetRow(
       {super.key,
+      required this.controller,
       required this.onChangedDuration,
       required this.onChangedDistance,
       required super.index,
@@ -77,6 +79,7 @@ class DistanceDurationSetRow extends SetRow {
             child: SetDoubleTextField(
               value: distanceValue.toDouble(),
               onChanged: onChangedDistance,
+              controller: controller,
             ),
           ),
           TableCell(

@@ -6,9 +6,10 @@ import '../../../../utils/general_utils.dart';
 
 class SetDoubleTextField extends StatelessWidget {
   final double value;
+  final TextEditingController controller;
   final void Function(double value) onChanged;
 
-  const SetDoubleTextField({super.key, required this.value, required this.onChanged});
+  const SetDoubleTextField({super.key, required this.value, required this.controller, required this.onChanged});
 
   double _parseDoubleOrDefault({required bool isDefaultWeightUnit, required String value}) {
     final doubleValue = double.tryParse(value) ?? 0;
@@ -19,6 +20,7 @@ class SetDoubleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final defaultWeightUnit = isDefaultWeightUnit();
     return TextField(
+      controller: controller,
       onChanged: (value) => onChanged(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,

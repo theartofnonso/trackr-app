@@ -8,7 +8,7 @@ class SetIntTextField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(int value) onChanged;
 
-  const SetIntTextField({super.key, required this.value, required this.onChanged, required this.controller});
+  const SetIntTextField({super.key, required this.value, required this.controller, required this.onChanged});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;

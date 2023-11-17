@@ -86,7 +86,7 @@ class WeightedSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
               value: weightValue,
-              onChanged: onChangedWeight,
+              onChanged: onChangedWeight, controller: controller,
             ),
           ),
           TableCell(

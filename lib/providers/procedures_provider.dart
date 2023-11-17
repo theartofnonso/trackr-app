@@ -271,6 +271,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   SetDto _createSet(List<SetDto> sets) {
     final previousSet = sets.lastOrNull;
+    //print(previousSet);
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
 
