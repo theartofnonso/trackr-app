@@ -114,8 +114,7 @@ int repsPerLog({required RoutineLog log}) {
   final sets = _allSetsWithReps(procedureJsons: log.procedures);
 
   for (var set in sets) {
-    final reps = set.value1;
-    totalReps += reps.toInt();
+    totalReps += set.value2.toInt();
   }
   return totalReps;
 }
