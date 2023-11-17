@@ -94,7 +94,6 @@ class WeightedSetRow extends SetRow {
             child: SetIntTextField(
               value: repsValue,
               onChanged: onChangedReps,
-              setId: setDto.id,
               controller: controller,
             ),
           ),
