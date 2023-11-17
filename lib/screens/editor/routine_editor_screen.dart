@@ -92,7 +92,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final reOrderedList = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ReOrderProceduresScreen(procedures: provider.procedures);
+        return ReOrderProceduresScreen(procedures: List.from(provider.procedures));
       },
     ) as List<ProcedureDto>?;
 
