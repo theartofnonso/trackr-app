@@ -12,9 +12,11 @@ import '../set_type_icon.dart';
 class WeightedSetRow extends SetRow {
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
+  final TextEditingController controller;
 
   const WeightedSetRow(
       {super.key,
+      required this.controller,
       required this.onChangedReps,
       required this.onChangedWeight,
       required super.index,
@@ -89,7 +91,12 @@ class WeightedSetRow extends SetRow {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetIntTextField(value: repsValue, onChanged: onChangedReps, setId: setDto.id,),
+            child: SetIntTextField(
+              value: repsValue,
+              onChanged: onChangedReps,
+              setId: setDto.id,
+              controller: controller,
+            ),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(

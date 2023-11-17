@@ -8,10 +8,12 @@ import '../set_check_button.dart';
 import '../set_type_icon.dart';
 
 class RepsSetRow extends SetRow {
+  final TextEditingController controller;
   final void Function(num value) onChangedReps;
 
   const RepsSetRow(
       {super.key,
+      required this.controller,
       required this.onChangedReps,
       required super.index,
       required super.label,
@@ -73,6 +75,7 @@ class RepsSetRow extends SetRow {
               value: setDto.value2.toInt(),
               setId: setDto.id,
               onChanged: onChangedReps,
+              controller: controller,
             ),
           ),
           if (editorType == RoutineEditorType.log)
