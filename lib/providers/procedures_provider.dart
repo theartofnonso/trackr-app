@@ -240,8 +240,6 @@ class ProceduresProvider extends ChangeNotifier {
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
 
-    print(_sets);
-
     // Notify listeners about the change
     notifyListeners();
   }
