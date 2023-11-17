@@ -244,16 +244,6 @@ class ProceduresProvider extends ChangeNotifier {
   void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
-  // void updateSetType(
-  //     {required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
-  //   final previousSet = _wherePastSet(index: sets.length, type: setDto.type, pastSets: pastSets);
-  //   print(previousSet);
-  //   // final updatedSet = setDto.copyWith(
-  //   //   value1: previousSet?.value1 ?? 0,
-  //   //   value2: previousSet?.value2 ?? 0,
-  //   // );
-  //   _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
-  // }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
