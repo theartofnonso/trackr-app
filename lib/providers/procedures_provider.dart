@@ -272,7 +272,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   List<SetDto> completedSets() {
-    return _procedures.expand((procedure) => procedure.sets).where((set) => set.checked).toList();
+    return _sets.values.expand((set) => set).where((set) => set.checked).toList();
   }
 
   double totalWeight() {
