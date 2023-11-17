@@ -107,7 +107,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _replaceProcedure({required String procedureId}) async {
     final preSelectedExercises = Provider
         .of<ProceduresProvider>(context, listen: false)
-        .procedures
+        .mergeSetsIntoProcedures()
         .map((procedure) => procedure.exercise)
         .toList();
     final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
@@ -600,53 +600,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       _routineNotesController = TextEditingController(text: routineLog?.notes ?? routine?.notes);
     }
   }
-
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   final previousRoutine = widget.routine;
-  //   final previousRoutineLog = widget.routineLog;
-  //
-  //   final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
-  //
-  //   /// In [RoutineEditorMode.editing] mode
-  //   if (widget.mode == RoutineEditorType.edit) {
-  //     if (previousRoutine != null) {
-  //       proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
-  //     } else {
-  //       if (previousRoutineLog != null) {
-  //         proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
-  //       }
-  //     }
-  //   } else {
-  //     /// In [RoutineEditorMode.routine] mode
-  //     if (previousRoutineLog != null) {
-  //       proceduresProvider.loadProcedures(procedures: previousRoutineLog.procedures);
-  //       _routineStartTime = previousRoutineLog.startTime;
-  //     } else if (previousRoutine != null) {
-  //       proceduresProvider.loadProcedures(procedures: previousRoutine.procedures);
-  //     }
-  //   }
-  //
-  //   if (widget.mode == RoutineEditorType.edit) {
-  //     if (previousRoutineLog != null) {
-  //       _routineNameController = TextEditingController(text: previousRoutineLog.name);
-  //       _routineNotesController = TextEditingController(text: previousRoutineLog.notes);
-  //     } else {
-  //       _routineNameController = TextEditingController(text: previousRoutine?.name);
-  //       _routineNotesController = TextEditingController(text: previousRoutine?.notes);
-  //     }
-  //   }
-  //
-  //   /// Cache initial state of running routine
-  //   if (widget.mode == RoutineEditorType.log) {
-  //     _cacheRoutineLog();
-  //   }
-  //
-  //   _onDisposeCallback = proceduresProvider.onClearProvider;
-  // }
 
   @override
   void dispose() {
