@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -33,10 +32,7 @@ class RoutineLogPreviewScreen extends StatefulWidget {
   State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
 }
 
-class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Color?> _colorAnimation;
-
+class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
 
   @override
@@ -48,9 +44,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
       return const SizedBox.shrink();
     }
 
-    List<ProcedureDto> procedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
-      final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
-      if(exerciseFromLibrary != null) {
+    List<ProcedureDto> procedures =
+        log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+      final exerciseFromLibrary =
+          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+      if (exerciseFromLibrary != null) {
         return procedure.copyWith(exercise: exerciseFromLibrary);
       }
       return procedure;
@@ -147,7 +145,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                       ],
                     ),
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 16),
+                      margin: const EdgeInsets.only(top: 16),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
                         color: tealBlueLight, // Set the background color
@@ -190,9 +188,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
                         ],
                       ),
                     ),
-                    Column(
-                      children: [..._muscleGroupFamilySplit(procedures: procedures)],
-                    ),
                     ..._proceduresToWidgets(procedures: procedures)
                   ],
                 ),
@@ -211,34 +206,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         ]));
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    // Create an animation controller with a duration
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 700),
-      vsync: this,
-    );
-
-    // Create a tween for the color animation
-    _colorAnimation = ColorTween(
-      begin: tealBlueLight,
-      end: Colors.blueAccent,
-    ).animate(_controller);
-
-    // Start the animation
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _controller.forward();
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   void _toggleLoadingState() {
     setState(() {
       _loading = !_loading;
@@ -248,11 +215,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
   List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
     return procedures
         .map((procedure) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: ProcedureWidget(
                 procedureDto: procedure,
-                otherSuperSetProcedureDto: whereOtherSuperSetProcedure(context: context,
-                    firstProcedure: procedure),
+                otherSuperSetProcedureDto: whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))
@@ -297,64 +263,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
     return totalWeight;
   }
 
-  Map<String, double> _calculateBodySplitPercentage(List<MuscleGroupFamily> muscleGroups) {
-    final Map<MuscleGroupFamily, int> frequencyMap = {};
-
-    // Count the occurrences of each muscleGroup
-    for (MuscleGroupFamily muscleGroupFamily in muscleGroups) {
-      frequencyMap[muscleGroupFamily] = (frequencyMap[muscleGroupFamily] ?? 0) + 1;
-    }
-
-    final int totalItems = muscleGroups.length;
-    final Map<String, double> percentageMap = {};
-
-    // Calculate the percentage for each muscleGroup
-    frequencyMap.forEach((item, count) {
-      final double percentage = ((count / totalItems) * 100.0) / 100;
-      percentageMap[item.name] = percentage;
-    });
-
-    final sortedMap = percentageMap.entries.toList();
-    sortedMap.sort((a, b) => b.value.compareTo(a.value));
-
-    return Map.fromEntries(sortedMap);
-  }
-
-  List<Widget> _muscleGroupFamilySplit({required List<ProcedureDto> procedures}) {
-    final parts = procedures.map((procedure) {
-      final primaryMuscleGroupFamily = MuscleGroup.fromString(procedure.exercise.primaryMuscle).family;
-      final secondaryMuscleGroupsFamily = procedure.exercise.secondaryMuscles.map((muscleGroupString) => MuscleGroup.fromString(muscleGroupString).family);
-      return [primaryMuscleGroupFamily, ...secondaryMuscleGroupsFamily];
-    }).expand((element) => element).toList();
-    final splitMap = _calculateBodySplitPercentage(parts);
-    final splitList = <Widget>[];
-    splitMap.forEach((key, value) {
-      final widget = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$key ${(value * 100).toInt()}%",
-            style: GoogleFonts.lato(fontWeight: FontWeight.w400),
-          ),
-          const SizedBox(height: 4),
-          AnimatedBuilder(
-              animation: _controller,
-              builder: (_, __) {
-                return LinearProgressIndicator(
-                    value: value,
-                    valueColor: _colorAnimation,
-                    backgroundColor: tealBlueLight,
-                    minHeight: 15,
-                    borderRadius: BorderRadius.circular(2));
-              }),
-          const SizedBox(height: 12)
-        ],
-      );
-      splitList.add(widget);
-    });
-    return splitList;
-  }
-
   /// [MenuItemButton]
   List<Widget> _menuActionButtons({required BuildContext context, required RoutineLog log}) {
     return [
@@ -369,9 +277,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> with 
         onPressed: () {
           final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
           final procedures = decodedProcedures.map((procedure) {
-            final newSets = procedure.sets
-                .map((set) => set.copyWith(checked: false))
-                .toList();
+            final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
             return procedure.copyWith(sets: newSets);
           }).toList();
 
