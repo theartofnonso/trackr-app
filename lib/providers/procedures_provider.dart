@@ -103,13 +103,12 @@ class ProceduresProvider extends ChangeNotifier {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
-      print(procedureIndex);
-      // Create a new instance of ProcedureDto with the updated name
-      ProcedureDto updatedProcedure = _procedures[procedureIndex].copyWith(notes: value);
+      final updatedProcedures = List<ProcedureDto>.from(_procedures);
 
-      // Create a new list of procedures and replace the old procedure with the updated one
-      List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures)
-        ..[procedureIndex] = updatedProcedure;
+      final procedureToBeUpdated = updatedProcedures[procedureIndex];
+
+      // Create a new instance of ProcedureDto with the updated name
+      updatedProcedures[procedureIndex] = procedureToBeUpdated.copyWith(notes: value);
 
       // Assign the new list to _procedures to maintain immutability
       _procedures = updatedProcedures;
@@ -140,7 +139,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void addSetForProcedure({required String procedureId}) {
-    int procedureIndex = _procedures.indexWhere((procedure) => procedure.id == procedureId);
+    int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
       final procedure = _procedures[procedureIndex];
@@ -308,7 +307,6 @@ class ProceduresProvider extends ChangeNotifier {
     // Update the _procedures with the new list
     _procedures = updatedProcedures;
   }
-
 
   int _indexWhereProcedure({required String procedureId}) {
     return _procedures.indexWhere((procedure) => procedure.id == procedureId);

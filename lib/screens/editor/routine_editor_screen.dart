@@ -139,7 +139,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
     return Provider.of<ProceduresProvider>(context, listen: false)
         .procedures
-        .whereNot((procedure) => procedure.id == firstProcedure.id || procedure.superSetId.isNotEmpty)
+        .where((procedure) => procedure.id != firstProcedure.id && procedure.superSetId.isEmpty)
         .toList();
   }
 
