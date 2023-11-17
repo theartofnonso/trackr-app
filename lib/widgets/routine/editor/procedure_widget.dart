@@ -96,14 +96,12 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return sets.length > index ? sets.elementAt(index) : null;
   }
 
-  List<Widget> _displaySets(
-      {required BuildContext context, required ExerciseType exerciseType, required List<SetDto> sets}) {
+  List<Widget> _displaySets({required BuildContext context, required ExerciseType exerciseType, required List<SetDto> sets}) {
     if (sets.isEmpty) return [];
 
     Map<SetType, int> setCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
 
-    final pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
+    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
 
     return sets.mapIndexed((index, setDto) {
       SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
@@ -115,8 +113,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     }).toList();
   }
 
-  Widget _createSetWidget(BuildContext context, int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType,
-      Map<SetType, int> setCounts) {
+  Widget _createSetWidget(BuildContext context, int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType, Map<SetType, int> setCounts) {
     _controllers.add(TextEditingController());
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
