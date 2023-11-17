@@ -4,13 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../app_constants.dart';
 
 class SetIntTextField extends StatelessWidget {
-  final int initialValue;
-  final void Function(int) onChanged;
+  final int value;
+  final TextEditingController controller;
+  final void Function(int value) onChanged;
 
-  const SetIntTextField({super.key,
-    required this.initialValue,
-    required this.onChanged,
-  });
+  const SetIntTextField({super.key, required this.value, required this.controller, required this.onChanged});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -19,14 +17,15 @@ class SetIntTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
+      controller: controller,
+      onChanged: (value) => onChanged(_parseIntOrDefault(value: value.toString())),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           fillColor: tealBlueLight,
-          hintText: initialValue.toString(),
-          hintStyle: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.grey)),
+          hintText: value > 0 ? value.toString() : "-",
+          hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: TextInputType.number,
       maxLines: 1,
       textAlign: TextAlign.center,

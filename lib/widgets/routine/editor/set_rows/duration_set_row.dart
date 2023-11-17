@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
+import '../set_check_button.dart';
 import '../set_type_icon.dart';
 import '../timer_widget.dart';
 
-class DurationSetRow extends StatelessWidget {
-  final int index;
-  final int workingIndex;
-  final DurationNumPair setDto;
-  final DurationNumPair? pastSetDto;
-  final RoutineEditorType editorType;
-  final void Function() onTapCheck;
-  final void Function() onRemoved;
-  final void Function(SetType type) onChangedType;
+class DurationSetRow extends SetRow {
   final void Function(Duration duration) onChangedDuration;
 
   const DurationSetRow(
       {super.key,
-      required this.index,
-      required this.workingIndex,
-      required this.setDto,
-      this.pastSetDto,
-      required this.editorType,
-      required this.onTapCheck,
-      required this.onRemoved,
-      required this.onChangedType,
-      required this.onChangedDuration});
+      required this.onChangedDuration,
+      required super.index,
+      required super.label,
+      required super.procedureId,
+      required super.setDto,
+      required super.pastSetDto,
+      required super.editorType,
+      required super.onRemoved,
+      required super.onChangedType,
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
@@ -53,16 +46,16 @@ class DurationSetRow extends StatelessWidget {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: setDto.type,
-                label: workingIndex,
+                label: label,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
+                type: setDto.type,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    previousSetDto.value1.digitalTime(),
+                    Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime(),
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -73,19 +66,14 @@ class DurationSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              durationDto: setDto,
+              setDto: previousSetDto ?? setDto,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: onTapCheck,
-                  child: setDto.checked
-                      ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                      : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                ))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

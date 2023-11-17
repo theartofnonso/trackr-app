@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
-import '../../../../dtos/duration_num_pair.dart';
 
 class DurationSetRow extends StatelessWidget {
   const DurationSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
 
   final int index;
   final int workingIndex;
-  final DurationNumPair setDto;
+  final SetDto setDto;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class DurationSetRow extends StatelessWidget {
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(
-              setDto.value1.secondsOrMinutesOrHours(),
+              Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours(),
               style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
             )),
         const TableCell(child: SizedBox.shrink())

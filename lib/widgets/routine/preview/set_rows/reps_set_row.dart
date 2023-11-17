@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
+import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 class RepsSetRow extends StatelessWidget {
@@ -8,7 +8,7 @@ class RepsSetRow extends StatelessWidget {
 
   final int index;
   final int workingIndex;
-  final DoubleNumPair setDto;
+  final SetDto setDto;
 
   @override
   Widget build(BuildContext context) {

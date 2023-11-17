@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -18,17 +19,40 @@ enum SetType {
   }
 }
 
-abstract class SetDto {
+class SetDto {
+  final num value1;
+  final num value2;
   final SetType type;
   final bool checked;
 
-  SetDto({this.type = SetType.working, this.checked = false});
+   SetDto(this.value1, this.value2, this.type, this.checked);
 
-  SetDto copyWith({SetType? type, bool? checked}) {
-    throw UnimplementedError('copyWith must be implemented in subclasses');
+  SetDto copyWith({num? value1, num? value2, SetType? type, bool? checked}) {
+    return SetDto(value1 ?? this.value1, value2 ?? this.value2, type ?? this.type, checked ?? this.checked);
   }
 
   String toJson() {
-    throw UnimplementedError('toJson must be implemented in subclasses');
+    return jsonEncode({"value1": value1, "value2": value2, "type": type.label, "checked": checked});
+  }
+
+  factory SetDto.fromJson(Map<String, dynamic> json) {
+    final value1 = json["value1"];
+    final value2 = json["value2"];
+    final type = SetType.fromString(json["type"]);
+    final checked = json["checked"];
+    return SetDto(value1, value2, type, checked);
+  }
+
+  bool isEmpty() {
+    return value1 + value2 == 0;
+  }
+
+  bool isNotEmpty() {
+    return value1 + value2 > 0;
+  }
+
+  @override
+  String toString() {
+    return 'SetDto{value1: $value1, value2: $value2, type: $type, checked: $checked}';
   }
 }

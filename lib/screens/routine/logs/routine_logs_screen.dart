@@ -56,7 +56,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                label: Text("Start Empty Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+                label: Text("Empty Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
               )
             : null,
         body: SafeArea(

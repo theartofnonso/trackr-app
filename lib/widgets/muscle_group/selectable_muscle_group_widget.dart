@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/app_constants.dart';
 import '../../screens/exercise/muscle_groups_screen.dart';
 
 class SelectableMuscleGroupWidget extends StatelessWidget {
@@ -25,7 +26,7 @@ class SelectableMuscleGroupWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
         trailing: muscleGroupDto.selected
             ? const Icon(Icons.check_box_rounded, color: Colors.green)
-            : Icon(Icons.check_box_rounded, color: Colors.grey.shade800),
+            : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
       ),
     );
   }

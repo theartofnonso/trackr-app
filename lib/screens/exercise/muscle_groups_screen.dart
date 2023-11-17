@@ -48,6 +48,12 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     });
   }
 
+  void _clearSearch() {
+    setState(() {
+      _filteredMuscleGroups = _muscleGroups;
+    });
+  }
+
   /// Navigate to previous screen
   void _addSelectedMuscleGroup() {
     final muscleGroups = _whereSelectedMuscleGroups().map((muscle) => muscle.muscleGroup).toList();
@@ -127,7 +133,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           children: [
-            CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch),
+            CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch, onClear: _clearSearch),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(

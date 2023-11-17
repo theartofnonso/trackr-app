@@ -1,29 +1,26 @@
 import 'dart:convert';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
+import 'package:uuid/uuid.dart';
 
 class ProcedureDto {
+  String id;
   final String superSetId;
   final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
 
-  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const [],});
+  ProcedureDto(this.id, this.superSetId, this.exercise, this.notes, this.sets);
 
   ProcedureDto copyWith(
-      {String? superSetId,
-      String? exerciseId,
-      Exercise? exercise,
-      String? notes,
-      List<SetDto>? sets}) {
+      {String? id, String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets}) {
     return ProcedureDto(
-        superSetId: superSetId ?? this.superSetId,
-        exercise: exercise ?? this.exercise,
-        notes: notes ?? this.notes,
-        sets: sets ?? this.sets,);
+      id ?? this.id,
+      superSetId ?? this.superSetId,
+      exercise ?? this.exercise,
+      notes ?? this.notes,
+      sets ?? this.sets,
+    );
   }
 
   bool isEmpty() {
@@ -35,18 +32,7 @@ class ProcedureDto {
   }
 
   String toJson() {
-    final exerciseType = ExerciseType.fromString(exercise.type);
-    final setJons = switch (exerciseType) {
-      ExerciseType.weightAndReps ||
-      ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight ||
-      ExerciseType.bodyWeightAndReps ||
-      ExerciseType.weightAndDistance =>
-        sets.map((set) => (set as DoubleNumPair).toJson()).toList(),
-      ExerciseType.duration ||
-      ExerciseType.distanceAndDuration =>
-        sets.map((set) => (set as DurationNumPair).toJson()).toList(),
-    };
+    final setJons = sets.map((set) => (set).toJson()).toList();
 
     return jsonEncode({
       "superSetId": superSetId,
@@ -60,29 +46,14 @@ class ProcedureDto {
     final superSetId = json["superSetId"];
     final exerciseString = json["exercise"];
     final exercise = Exercise.fromJson(exerciseString);
-    final exerciseType = ExerciseType.fromString(exercise.type);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
-    final sets = switch (exerciseType) {
-      ExerciseType.weightAndReps ||
-      ExerciseType.weightedBodyWeight ||
-      ExerciseType.assistedBodyWeight ||
-      ExerciseType.bodyWeightAndReps ||
-      ExerciseType.weightAndDistance =>
-        setsJsons.map((json) => DoubleNumPair.fromJson(jsonDecode(json))).toList(),
-      ExerciseType.duration ||
-      ExerciseType.distanceAndDuration =>
-        setsJsons.map((json) => DurationNumPair.fromJson(jsonDecode(json))).toList()
-    };
-    return ProcedureDto(
-        superSetId: superSetId,
-        notes: notes,
-        sets: sets,
-        exercise: exercise);
+    final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
+    return ProcedureDto(const Uuid().v4(), superSetId, exercise, notes, sets);
   }
 
   @override
   String toString() {
-    return 'ProcedureDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}';
+    return 'ProcedureDto{id: $id, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}';
   }
 }

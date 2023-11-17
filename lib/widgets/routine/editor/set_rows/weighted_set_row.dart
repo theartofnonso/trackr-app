@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
+import '../set_check_button.dart';
 import '../set_type_icon.dart';
 
-class WeightedSetRow extends StatelessWidget {
-  final int index;
-  final int workingIndex;
-  final DoubleNumPair setDto;
-  final DoubleNumPair? pastSetDto;
-  final RoutineEditorType editorType;
-  final void Function() onTapCheck;
-  final void Function() onRemoved;
-  final void Function(SetType type) onChangedType;
-  final void Function(int value) onChangedOther;
+class WeightedSetRow extends SetRow {
+  final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
+  final (TextEditingController, TextEditingController) controllers;
 
   const WeightedSetRow(
       {super.key,
-      required this.index,
-      required this.workingIndex,
-      required this.setDto,
-      this.pastSetDto,
-      required this.editorType,
-      required this.onTapCheck,
-      required this.onRemoved,
-      required this.onChangedType,
-      required this.onChangedOther,
-      required this.onChangedWeight});
+      required this.controllers,
+      required this.onChangedReps,
+      required this.onChangedWeight,
+      required super.index,
+      required super.label,
+      required super.procedureId,
+      required super.setDto,
+      required super.pastSetDto,
+      required super.editorType,
+      required super.onChangedType,
+      required super.onRemoved,
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double prevWeightValue = 0;
+    double weight = 0;
+    int reps = 0;
 
     if (previousSetDto != null) {
-      prevWeightValue =
-          isDefaultWeightUnit() ? previousSetDto.value1 : toLbs(previousSetDto.value1);
+      weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
+      reps = previousSetDto.value2.toInt();
+    } else {
+      weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+      reps = setDto.value2.toInt();
     }
 
     return Table(
@@ -65,16 +64,16 @@ class WeightedSetRow extends StatelessWidget {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: setDto.type,
-                label: workingIndex,
+                label: label,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
+                type: setDto.type,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.value2}",
+                    "${previousSetDto.value1.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -85,26 +84,22 @@ class WeightedSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: setDto.value1,
-              onChanged: onChangedWeight,
+              value: weight,
+              onChanged: onChangedWeight, controller: controllers.$1,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              initialValue: setDto.value2.toInt(),
-              onChanged: onChangedOther,
+              value: reps,
+              onChanged: onChangedReps,
+              controller: controllers.$2,
             ),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: onTapCheck,
-                  child: setDto.checked
-                      ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                      : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                ))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

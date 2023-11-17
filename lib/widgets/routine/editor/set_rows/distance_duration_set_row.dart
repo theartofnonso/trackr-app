@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../utils/general_utils.dart';
+import '../set_check_button.dart';
 import '../set_type_icon.dart';
 import '../textfields/set_double_textfield.dart';
 import '../timer_widget.dart';
 
-class DistanceDurationSetRow extends StatelessWidget {
-  final int index;
-  final int workingIndex;
-  final DurationNumPair setDto;
-  final DurationNumPair? pastSetDto;
-  final RoutineEditorType editorType;
-  final void Function() onTapCheck;
-  final void Function() onRemoved;
-  final void Function(SetType type) onChangedType;
+class DistanceDurationSetRow extends SetRow {
   final void Function(Duration duration) onChangedDuration;
   final void Function(double distance) onChangedDistance;
+  final (TextEditingController, TextEditingController) controllers;
 
   const DistanceDurationSetRow(
       {super.key,
-      required this.index,
-      required this.workingIndex,
-      required this.setDto,
-      this.pastSetDto,
-      required this.editorType,
-      required this.onTapCheck,
-      required this.onRemoved,
-      required this.onChangedType,
+      required this.controllers,
       required this.onChangedDuration,
-      required this.onChangedDistance});
+      required this.onChangedDistance,
+      required super.index,
+      required super.label,
+      required super.procedureId,
+      required super.setDto,
+      required super.pastSetDto,
+      required super.editorType,
+      required super.onRemoved,
+      required super.onChangedType,
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
+
+    double distance = 0;
+
+    if(previousSetDto != null) {
+      distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
+    } else {
+      distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
+    }
 
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
@@ -58,16 +62,16 @@ class DistanceDurationSetRow extends StatelessWidget {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                type: setDto.type,
-                label: workingIndex,
+                label: label,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
+                type: setDto.type,
               )),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2} mi \n ${previousSetDto.value1.digitalTime()}",
+                    "${previousSetDto.value2.toDouble()} mi \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -78,26 +82,22 @@ class DistanceDurationSetRow extends StatelessWidget {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              initialValue: setDto.value2.toDouble(),
+              value: distance,
               onChanged: onChangedDistance,
+              controller: controllers.$1,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              durationDto: setDto,
+              setDto: previousSetDto ?? setDto,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
           if (editorType == RoutineEditorType.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: onTapCheck,
-                  child: setDto.checked
-                      ? const Icon(Icons.check_box_rounded, color: Colors.green)
-                      : const Icon(Icons.check_box_rounded, color: Colors.grey),
-                ))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

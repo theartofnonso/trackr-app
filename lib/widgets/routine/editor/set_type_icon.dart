@@ -8,11 +8,12 @@ import '../../helper_widgets/dialog_helper.dart';
 
 class SetTypeIcon extends StatelessWidget {
   final SetType type;
-  final int label;
+  final String label;
   final void Function(SetType type) onSelectSetType;
   final void Function() onRemoveSet;
 
-  const SetTypeIcon({super.key,
+  const SetTypeIcon({
+    super.key,
     required this.type,
     required this.label,
     required this.onSelectSetType,
@@ -20,7 +21,7 @@ class SetTypeIcon extends StatelessWidget {
   });
 
   void selectType(BuildContext context, SetType type) {
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     onSelectSetType(type);
   }
 
@@ -39,37 +40,45 @@ class SetTypeIcon extends StatelessWidget {
                       dense: true,
                       onTap: () => selectType(context, SetType.warmUp),
                       leading: Text("W",
-                          style: GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                          style:
+                              GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
                       title: Text("Warm up Set", style: GoogleFonts.lato(fontSize: 14))),
                   ListTile(
                       dense: true,
                       onTap: () => selectType(context, SetType.working),
                       leading: Text("1",
-                          style: GoogleFonts.lato(color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                          style: GoogleFonts.lato(
+                              color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
                       title: Text("Working Set", style: GoogleFonts.lato(fontSize: 14))),
                   ListTile(
                       dense: true,
                       onTap: () => selectType(context, SetType.failure),
                       leading: Text("F",
-                          style: GoogleFonts.lato(color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                          style: GoogleFonts.lato(
+                              color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
                       title: Text("Failure Set", style: GoogleFonts.lato(fontSize: 14))),
                   ListTile(
                       dense: true,
                       onTap: () => selectType(context, SetType.drop),
                       leading: Text("D",
-                          style: GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                          style:
+                              GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
                       title: Text("Drop Set", style: GoogleFonts.lato(fontSize: 14))),
-                  CTextButton(onPressed: () {
-                    Navigator.pop(context);
-                    onRemoveSet();
-                  }, label: "Remove Set", buttonColor: tealBlueDark,)
+                  CTextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      onRemoveSet();
+                    },
+                    label: "Remove Set",
+                    buttonColor: tealBlueLighter,
+                  )
                 ],
               ),
             ),
             height: 250);
       },
       child: Text(
-        type == SetType.working ? "${label + 1}" : type.label,
+        label,
         textAlign: TextAlign.center,
         style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
       ),

@@ -4,10 +4,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/duration_num_pair.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/double_num_pair.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
@@ -250,28 +247,9 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<SetDto> wherePastSets({required Exercise exercise}) {
-    final exerciseTypeString = exercise.type;
-    final ExerciseType exerciseType = ExerciseType.fromString(exerciseTypeString);
 
     final procedures = _proceduresForExercise(exercise: exercise);
-
-    return procedures.expand((procedure) => procedure.sets).where((set) {
-      switch (exerciseType) {
-        case ExerciseType.weightAndReps:
-        case ExerciseType.weightedBodyWeight:
-        case ExerciseType.weightAndDistance:
-          return (set as DoubleNumPair).value1 * set.value2 > 0;
-        case ExerciseType.bodyWeightAndReps:
-        case ExerciseType.assistedBodyWeight:
-          return (set as DoubleNumPair).value2 > 0;
-        case ExerciseType.duration:
-          return (set as DurationNumPair).value1 > Duration.zero;
-        case ExerciseType.distanceAndDuration:
-          return (set as DurationNumPair).value1 > Duration.zero || set.value2 > 0;
-        default:
-          return false; // Or handle unexpected cases appropriately
-      }
-    }).toList();
+    return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
   }
 
   List<SetDto> setDtosForMuscleGroupWhereDateRange(

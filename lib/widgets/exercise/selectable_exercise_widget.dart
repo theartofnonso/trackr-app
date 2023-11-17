@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/app_constants.dart';
 
 import '../../screens/exercise/exercise_library_screen.dart';
 
@@ -54,7 +55,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        trailing: exerciseInLibraryDto.selected ? const Icon(Icons.check_box_rounded, color: Colors.green) : Icon(Icons.check_box_rounded, color: Colors.grey.shade800),
+        trailing: exerciseInLibraryDto.selected ? const Icon(Icons.check_box_rounded, color: Colors.green) : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
       ),
     );
   }

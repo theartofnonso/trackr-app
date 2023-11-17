@@ -5,10 +5,11 @@ import '../../../../app_constants.dart';
 import '../../../../utils/general_utils.dart';
 
 class SetDoubleTextField extends StatelessWidget {
-  final double initialValue;
-  final void Function(double) onChanged;
+  final double value;
+  final TextEditingController controller;
+  final void Function(double value) onChanged;
 
-  const SetDoubleTextField({super.key, required this.initialValue, required this.onChanged});
+  const SetDoubleTextField({super.key, required this.value, required this.controller, required this.onChanged});
 
   double _parseDoubleOrDefault({required bool isDefaultWeightUnit, required String value}) {
     final doubleValue = double.tryParse(value) ?? 0;
@@ -18,17 +19,16 @@ class SetDoubleTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultWeightUnit = isDefaultWeightUnit();
-    final value = defaultWeightUnit ? initialValue : toLbs(initialValue);
     return TextField(
-      onChanged: (value) =>
-          onChanged(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
+      controller: controller,
+      onChanged: (value) => onChanged(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           fillColor: tealBlueLight,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
-          hintText: value.toString(),
-          hintStyle: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.grey)),
+          hintText: value > 0 ? value.toString() : "-",
+          hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,
       textAlign: TextAlign.center,
