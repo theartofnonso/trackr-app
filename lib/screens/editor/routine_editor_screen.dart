@@ -85,7 +85,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  // Navigate to [ReOrderProceduresScreen]
   void _reOrderProcedures() async {
     final provider = Provider.of<ProceduresProvider>(context, listen: false);
     final reOrderedList = await showCupertinoModalPopup(
@@ -171,7 +170,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _handleRoutineCreationError(String message) {
     if (mounted) {
       _showSnackbar(message);
-      // Optionally log the error e for debugging
     }
   }
 
@@ -184,7 +182,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       await routineProvider.saveRoutine(
           name: _routineNameController.text,
           notes: _routineNotesController.text,
-          procedures: procedureProvider.procedures);
+          procedures: procedureProvider.mergeSetsIntoProcedures());
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to create workout");
@@ -278,7 +276,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _doUpdateRoutine({required Routine routine}) async {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-    final procedures = procedureProvider.procedures;
+    final procedures = procedureProvider.mergeSetsIntoProcedures();
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
@@ -299,7 +297,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final procedures = procedureProvider.procedures;
+    final procedures = procedureProvider.mergeSetsIntoProcedures();
     _toggleLoadingState();
     try {
       final updatedRoutineLog = routineLog.copyWith(
@@ -318,13 +316,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   bool _isRoutinePartiallyComplete() {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    final procedures = procedureProvider.procedures;
+    final procedures = procedureProvider.mergeSetsIntoProcedures();
     return procedures.any((procedure) => procedure.sets.any((set) => set.checked));
   }
 
   List<ProcedureDto> _totalCompletedProceduresAndSets() {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    final procedures = procedureProvider.procedures;
+    final procedures = procedureProvider.mergeSetsIntoProcedures();
     final completedProcedures = <ProcedureDto>[];
     for (var procedure in procedures) {
       final completedSets = procedure.sets.where((set) => set.checked).toList();

@@ -72,7 +72,7 @@ class RepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
               key: key,
-              value: setDto.value2.toInt(),
+              value: previousSetDto != null ? previousSetDto.value2.toInt() : setDto.value2.toInt(),
               onChanged: onChangedReps,
               controller: controller,
             ),
