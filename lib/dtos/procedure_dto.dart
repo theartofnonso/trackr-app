@@ -10,7 +10,7 @@ class ProcedureDto {
   final String notes;
   final List<SetDto> sets;
 
-  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const [],}): id = const Uuid().v4();
+  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const []}): id = const Uuid().v4();
 
   ProcedureDto copyWith(
       {String? superSetId,
