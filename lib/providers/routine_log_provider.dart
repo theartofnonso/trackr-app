@@ -249,8 +249,7 @@ class RoutineLogProvider with ChangeNotifier {
   List<SetDto> wherePastSets({required Exercise exercise}) {
 
     final procedures = _proceduresForExercise(exercise: exercise);
-
-    return procedures.expand((procedure) => procedure.sets).where((set) => set.value1 * set.value2 > 0).toList();
+    return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
   }
 
   List<SetDto> setDtosForMuscleGroupWhereDateRange(

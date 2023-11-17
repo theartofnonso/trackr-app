@@ -46,6 +46,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   bool _loading = false;
   String _loadingLabel = "";
 
+  late Function _onDisposeCallback;
+
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
     displayBottomSheet(
@@ -325,7 +327,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final procedures = procedureProvider.mergeSetsIntoProcedures();
     final completedProcedures = <ProcedureDto>[];
     for (var procedure in procedures) {
-      final completedSets = procedure.sets.where((set) => set.checked).toList();
+      final completedSets = procedure.sets.where((set) => set.isNotEmpty() && set.checked).toList();
       if (completedSets.isNotEmpty) {
         final completedProcedure = procedure.copyWith(sets: completedSets);
         completedProcedures.add(completedProcedure);
@@ -415,10 +417,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             ? AppBar(
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_outlined),
-                    onPressed: () {
-                      Provider.of<ProceduresProvider>(context, listen: false).clearProcedures();
-                      Navigator.of(context).pop();
-                    }),
+                    onPressed: () => Navigator.of(context).pop()),
                 actions: [
                   CTextButton(
                       onPressed: _canUpdate() ? _doUpdate : _createRoutine,
@@ -430,10 +429,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               )
             : AppBar(
                 leading: GestureDetector(
-                  onTap: () {
-                    Provider.of<ProceduresProvider>(context, listen: false).clearProcedures();
-                    Navigator.of(context).pop();
-                  },
+                  onTap: () => Navigator.of(context).pop(),
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
@@ -597,15 +593,18 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (widget.mode == RoutineEditorType.log) {
       _cacheRoutineLog();
     }
+
+    _onDisposeCallback = proceduresProvider.onClearProvider;
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _onDisposeCallback();
     if (widget.mode == RoutineEditorType.edit) {
       _routineNameController.dispose();
       _routineNotesController.dispose();
     }
+    super.dispose();
   }
 }
 

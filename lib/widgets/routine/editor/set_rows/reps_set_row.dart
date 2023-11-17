@@ -29,11 +29,7 @@ class RepsSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    int prevRepValue = 0;
-
-    if (previousSetDto != null) {
-      prevRepValue = previousSetDto.value2.toInt();
-    }
+    int reps = previousSetDto != null ? previousSetDto.value2.toInt() : setDto.value2.toInt();
 
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
@@ -62,7 +58,7 @@ class RepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "x $prevRepValue",
+                    "x${previousSetDto.value2.toInt()}",
                     style: GoogleFonts.lato(color: Colors.white70),
                     textAlign: TextAlign.center,
                   )
@@ -71,8 +67,7 @@ class RepsSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              key: key,
-              value: previousSetDto != null ? previousSetDto.value2.toInt() : setDto.value2.toInt(),
+              value: reps,
               onChanged: onChangedReps,
               controller: controller,
             ),

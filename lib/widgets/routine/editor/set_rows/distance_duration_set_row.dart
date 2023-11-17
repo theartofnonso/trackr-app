@@ -34,8 +34,13 @@ class DistanceDurationSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    final defaultDistanceUnit = isDefaultWeightUnit();
-    final distanceValue = defaultDistanceUnit ? setDto.value2 : setDto.value2;
+    double distance = 0;
+
+    if(previousSetDto != null) {
+      distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
+    } else {
+      distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
+    }
 
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
@@ -66,7 +71,7 @@ class DistanceDurationSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2} mi \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
+                    "${previousSetDto.value2.toDouble()} mi \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -77,7 +82,7 @@ class DistanceDurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              value: distanceValue.toDouble(),
+              value: distance,
               onChanged: onChangedDistance,
               controller: controller,
             ),
@@ -85,7 +90,7 @@ class DistanceDurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              setDto: setDto,
+              setDto: previousSetDto ?? setDto,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),

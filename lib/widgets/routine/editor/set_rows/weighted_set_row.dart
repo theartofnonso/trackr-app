@@ -33,17 +33,16 @@ class WeightedSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double prevWeightValue = 0;
+    double weight = 0;
+    int reps = 0;
 
     if (previousSetDto != null) {
-      prevWeightValue =
-          isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
+      weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
+      reps = previousSetDto.value2.toInt();
+    } else {
+      weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+      reps = setDto.value2.toInt();
     }
-
-    final defaultWeightUnit = isDefaultWeightUnit();
-    final weightValue = defaultWeightUnit ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
-
-    final repsValue = setDto.value2.toInt();
 
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
@@ -74,7 +73,7 @@ class WeightedSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "$prevWeightValue${weightLabel()} x ${previousSetDto.value2}",
+                    "${previousSetDto.value2.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -85,14 +84,14 @@ class WeightedSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              value: weightValue,
+              value: weight,
               onChanged: onChangedWeight, controller: controller,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetIntTextField(
-              value: repsValue,
+              value: reps,
               onChanged: onChangedReps,
               controller: controller,
             ),
