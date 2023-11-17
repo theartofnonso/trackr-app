@@ -115,7 +115,7 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
 
   @override
   Widget build(BuildContext context) {
-    return !_chartPoints.isNotEmpty
+    return _chartPoints.isNotEmpty
         ? Column(
             children: [
               Padding(
