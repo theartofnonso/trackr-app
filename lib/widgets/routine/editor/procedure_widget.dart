@@ -54,7 +54,7 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  List<TextEditingController> _controllers = [];
+  final List<TextEditingController> _controllers = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -124,7 +124,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       case ExerciseType.assistedBodyWeight:
       case ExerciseType.weightAndDistance:
         return WeightedSetRow(
-          key: ValueKey(setDto.id),
           index: index,
           label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
           procedureId: widget.procedureDto.id,
@@ -144,7 +143,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         );
       case ExerciseType.bodyWeightAndReps:
         return RepsSetRow(
-          key: ValueKey(setDto.id),
           index: index,
           label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
           procedureId: widget.procedureDto.id,
@@ -162,7 +160,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         );
       case ExerciseType.duration:
         return DurationSetRow(
-          key: ValueKey(setDto.id),
           index: index,
           label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
           procedureId: widget.procedureDto.id,

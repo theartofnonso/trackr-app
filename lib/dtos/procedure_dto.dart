@@ -10,19 +10,17 @@ class ProcedureDto {
   final String notes;
   final List<SetDto> sets;
 
-  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const []}): id = const Uuid().v4();
+  ProcedureDto({this.superSetId = "", required this.exercise, this.notes = "", this.sets = const []})
+      : id = const Uuid().v4();
 
   ProcedureDto copyWith(
-      {String? superSetId,
-      String? exerciseId,
-      Exercise? exercise,
-      String? notes,
-      List<SetDto>? sets}) {
+      {String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets}) {
     return ProcedureDto(
-        superSetId: superSetId ?? this.superSetId,
-        exercise: exercise ?? this.exercise,
-        notes: notes ?? this.notes,
-        sets: sets ?? this.sets,);
+      superSetId: superSetId ?? this.superSetId,
+      exercise: exercise ?? this.exercise,
+      notes: notes ?? this.notes,
+      sets: sets ?? this.sets,
+    );
   }
 
   bool isEmpty() {
@@ -51,15 +49,11 @@ class ProcedureDto {
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    return ProcedureDto(
-        superSetId: superSetId,
-        notes: notes,
-        sets: sets,
-        exercise: exercise);
+    return ProcedureDto(superSetId: superSetId, notes: notes, sets: sets, exercise: exercise);
   }
 
   @override
   String toString() {
-    return 'ProcedureDto{superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}';
+    return 'ProcedureDto{id: $id, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}';
   }
 }
