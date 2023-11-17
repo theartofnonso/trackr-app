@@ -663,7 +663,7 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
               width: double.infinity,
-              child: CTextButton(onPressed: onPressed, label: "Add more exercises"),
+              child: CTextButton(onPressed: onPressed, label: "Add more exercises", buttonColor: tealBlueLighter),
             ),
           )
         ],
