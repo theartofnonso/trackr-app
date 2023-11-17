@@ -21,7 +21,7 @@ class SetTypeIcon extends StatelessWidget {
   });
 
   void selectType(BuildContext context, SetType type) {
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     onSelectSetType(type);
   }
 

@@ -277,6 +277,8 @@ class ProcedureWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final sets = context.select((ProceduresProvider provider) => provider.sets)[procedureDto.id];
 
+    print(sets);
+
     final otherProcedureDto = otherSuperSetProcedureDto;
 
     final exerciseString = procedureDto.exercise.type;
