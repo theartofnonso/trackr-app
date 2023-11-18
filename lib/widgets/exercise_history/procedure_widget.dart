@@ -20,7 +20,7 @@ class ProcedureWidget extends StatelessWidget {
       children: [
         procedureDto.notes.isNotEmpty
             ? Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.only(bottom: 8.0),
           child: Text(procedureDto.notes,
               style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
         )
