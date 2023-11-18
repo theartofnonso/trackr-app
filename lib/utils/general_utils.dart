@@ -1,4 +1,3 @@
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
@@ -23,24 +22,18 @@ String weightLabel() {
 }
 
 String distanceLabel({required ExerciseType type}) {
-  final unitString = SharedPrefs().distanceUnit;
-  final unit = DistanceUnit.fromString(unitString);
-
   if (type == ExerciseType.distanceAndDuration) {
-    return unit == DistanceUnit.mi ? "mi" : "km";
+    return isDefaultDistanceUnit() ? "mi" : "km";
   } else {
-    return unit == DistanceUnit.mi ? "yd" : "m";
+    return isDefaultDistanceUnit() ? "yd" : "m";
   }
 }
 
 String distanceTitle({required ExerciseType type}) {
-  final unitString = SharedPrefs().distanceUnit;
-  final unit = DistanceUnit.fromString(unitString);
-
   if (type == ExerciseType.distanceAndDuration) {
-    return unit == DistanceUnit.mi ? "MILES" : "KILOMETRES";
+    return isDefaultDistanceUnit() ? "MI" : "KM";
   } else {
-    return unit == DistanceUnit.mi ? "YARDS" : "METRES";
+    return isDefaultDistanceUnit() ? "YARDS" : "METRES";
   }
 }
 
@@ -54,13 +47,13 @@ double toLbs(double value) {
   return double.parse(conversion.toStringAsFixed(2));
 }
 
-double toMI(double value) {
-  final conversion = value / 2.205;
+double toMI(double value, {required ExerciseType type}) {
+  final conversion = value / (type == ExerciseType.distanceAndDuration ? 1.609 : 1.094);
   return double.parse(conversion.toStringAsFixed(2));
 }
 
-double toKM(double value) {
-  final conversion = value * 2.205;
+double toKM(double value, {required ExerciseType type}) {
+  final conversion = value * (type == ExerciseType.distanceAndDuration ? 1.609 : 1.094);
   return double.parse(conversion.toStringAsFixed(2));
 }
 
@@ -74,7 +67,7 @@ void toggleDistanceUnit({required DistanceUnit unit}) {
 
 Future<User> user() async {
   final authUser = await Amplify.Auth.getCurrentUser();
-  final signInDetails  = authUser.signInDetails.toJson();
+  final signInDetails = authUser.signInDetails.toJson();
   final email = signInDetails["username"] as String;
   final userId = authUser.userId;
   final user = User(id: userId, email: email);

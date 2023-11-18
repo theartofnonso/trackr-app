@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
@@ -15,7 +16,7 @@ class DistanceDurationSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final distance = isDefaultDistanceUnit() ? setDto.value2 : setDto.value2;
+    final distance = isDefaultDistanceUnit() ? setDto.value2 : toKM(setDto.value2.toDouble(), type: ExerciseType.distanceAndDuration);
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(30),

@@ -43,6 +43,10 @@ class DistanceDurationSetRow extends SetRow {
       distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
     }
 
+    distance = isDefaultDistanceUnit()
+        ? setDto.value2.toDouble()
+        : toKM(setDto.value2.toDouble(), type: ExerciseType.distanceAndDuration);
+
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
           ? <int, TableColumnWidth>{
