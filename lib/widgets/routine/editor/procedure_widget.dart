@@ -394,7 +394,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
                 secondLabel: 'REPS',
               ),
             ExerciseType.weightAndDistance => WeightedSetHeader(
-                editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceLabel()),
+                editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceTitle()),
             ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),

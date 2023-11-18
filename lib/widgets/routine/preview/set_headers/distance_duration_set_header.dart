@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 
 class DistanceDurationSetHeader extends StatelessWidget {
@@ -25,7 +24,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceLabel(),
+            child: Text(distanceTitle(),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

@@ -42,7 +42,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceLabel(),
+            child: Text(distanceTitle(),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
