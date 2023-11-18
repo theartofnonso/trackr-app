@@ -15,7 +15,7 @@ import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/chart/line_chart_widget.dart';
-import '../exercise/exercise_history_screen.dart';
+import '../exercise/history/exercise_history_screen.dart';
 
 DateTimeRange thisWeekDateRange() {
   final now = DateTime.now();

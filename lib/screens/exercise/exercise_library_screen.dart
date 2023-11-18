@@ -11,7 +11,7 @@ import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
-import 'exercise_history_screen.dart';
+import 'history/exercise_history_screen.dart';
 
 class ExerciseInLibraryDto {
   final bool selected;

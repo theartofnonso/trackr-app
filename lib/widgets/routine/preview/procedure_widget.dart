@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import '../../../screens/exercise/exercise_history_screen.dart';
+import '../../../screens/exercise/history/exercise_history_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/routine_helper.dart';
 import '../preview/set_headers/distance_duration_set_header.dart';

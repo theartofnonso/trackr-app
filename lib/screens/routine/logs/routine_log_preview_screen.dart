@@ -20,7 +20,7 @@ import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
-import '../../exercise/exercise_history_screen.dart';
+import '../../exercise/history/exercise_history_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;

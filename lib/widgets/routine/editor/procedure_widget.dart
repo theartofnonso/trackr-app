@@ -17,7 +17,7 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/weighted_set_row.dar
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../screens/exercise/exercise_history_screen.dart';
+import '../../../screens/exercise/history/exercise_history_screen.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 

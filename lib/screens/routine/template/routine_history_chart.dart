@@ -13,7 +13,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../../widgets/empty_states/bar_chart_empty_state.dart';
-import '../../exercise/exercise_history_screen.dart';
+import '../../exercise/history/exercise_history_screen.dart';
 
 class RoutineHistoryChart extends StatefulWidget {
   final String routineId;
