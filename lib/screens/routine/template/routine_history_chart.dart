@@ -46,7 +46,7 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
   }
 
   void _volume() {
-    final values = _filteredLogs.map((log) => volumePerLog(log: log)).toList();
+    final values = _filteredLogs.map((log) => setVolumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.volume;

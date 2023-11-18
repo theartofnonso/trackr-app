@@ -224,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _volume() {
-    final values = _logs.map((log) => volumePerLog(log: log)).toList();
+    final values = _logs.map((log) => setVolumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.volume;

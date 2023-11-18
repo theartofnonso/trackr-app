@@ -30,6 +30,8 @@ ChartUnitLabel weightUnit() {
   return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
 }
 
+/// All [SetDto] for [ExerciseType]
+
 List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
   return procedures
@@ -75,7 +77,7 @@ List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
 
 /// Highest value per [RoutineLogDto]
 
-SetDto _heaviestWeightInSetPerLog({required RoutineLog log}) {
+SetDto _heaviestSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
   SetDto setWithHeaviestWeight = SetDto(0, 0, SetType.working, false);
 
@@ -160,7 +162,6 @@ double totalDistancePerLog({required RoutineLog log}) {
   return totalDistance;
 }
 
-
 int repsPerLog({required RoutineLog log}) {
   int totalReps = 0;
 
@@ -189,7 +190,7 @@ double heaviestSetVolumePerLog({required RoutineLog log}) {
   return volume;
 }
 
-double volumePerLog({required RoutineLog log}) {
+double setVolumePerLog({required RoutineLog log}) {
   double totalVolume = 0;
 
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
@@ -205,7 +206,7 @@ double volumePerLog({required RoutineLog log}) {
 }
 
 double oneRepMaxPerLog({required RoutineLog log}) {
-  final heaviestWeightInSet = _heaviestWeightInSetPerLog(log: log);
+  final heaviestWeightInSet = _heaviestSetPerLog(log: log);
 
   final max = (heaviestWeightInSet.value1 * (1 + 0.0333 * heaviestWeightInSet.value2));
 
@@ -225,7 +226,7 @@ Duration sessionDurationPerLog({required RoutineLog log}) {
   return difference;
 }
 
-double _totalVolumePerLog({required RoutineLog log}) {
+double _sessionVolumePerLog({required RoutineLog log}) {
   double totalVolume = 0;
 
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
@@ -265,7 +266,7 @@ double _totalVolumePerLog({required RoutineLog log}) {
   double heaviestVolume = 0;
   String logId = "";
   for (var log in logs) {
-    final totalVolume = _totalVolumePerLog(log: log);
+    final totalVolume = _sessionVolumePerLog(log: log);
     if (totalVolume > heaviestVolume) {
       heaviestVolume = totalVolume;
       logId = log.id;
