@@ -5,6 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
+import '../models/User.dart';
 import '../utils/general_utils.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
 import 'exercise/exercise_library_screen.dart';
@@ -37,6 +38,8 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late WeightUnit _weightUnitType;
   late DistanceUnit _distanceUnitType;
+
+  User? _user;
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +155,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
             ),
             const Spacer(),
-            CTextButton(onPressed: _logout, label: "Logout")
+            CTextButton(onPressed: _logout, label: "Logout - ${_user?.email}")
           ],
         ),
       ),
@@ -185,10 +188,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showAlertDialog(context: context, message: "Log out?", actions: alertDialogActions);
   }
 
+  void _fetchUser() async {
+    final authUser = await user();
+    setState(() {
+      _user = authUser;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _distanceUnitType = DistanceUnit.fromString(SharedPrefs().distanceUnit);
+    _fetchUser();
   }
 }
