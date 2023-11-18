@@ -1,60 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
+import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
+import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
 
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
-import '../textfields/set_double_textfield.dart';
-import '../timer_widget.dart';
 
-class DistanceDurationSetRow extends SetRow {
-  final void Function(Duration duration) onChangedDuration;
-  final void Function(double distance) onChangedDistance;
+class WeightRepsSetRow extends SetRow {
+  final void Function(int value) onChangedReps;
+  final void Function(double value) onChangedWeight;
   final (TextEditingController, TextEditingController) controllers;
 
-  const DistanceDurationSetRow(
+  const WeightRepsSetRow(
       {super.key,
       required this.controllers,
-      required this.onChangedDuration,
-      required this.onChangedDistance,
+      required this.onChangedReps,
+      required this.onChangedWeight,
       required super.index,
       required super.label,
       required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
       required super.editorType,
-      required super.onRemoved,
       required super.onChangedType,
+      required super.onRemoved,
       required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double distance = 0;
+    double weight = 0;
+    int reps = 0;
 
-    if(previousSetDto != null) {
-      distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
+    if (previousSetDto != null) {
+      weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
+      reps = previousSetDto.value2.toInt();
     } else {
-      distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
+      weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+      reps = setDto.value2.toInt();
     }
 
     return Table(
       columnWidths: editorType == RoutineEditorType.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
-              1: const FlexColumnWidth(2),
+              1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(25),
+              0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
-              3: const FlexColumnWidth(3),
+              3: const FlexColumnWidth(2),
               4: const FlexColumnWidth(1),
             },
       children: [
@@ -71,7 +73,7 @@ class DistanceDurationSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2.toDouble()}${distanceLabel(long: true)} \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
+                    "${previousSetDto.value1.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -82,16 +84,16 @@ class DistanceDurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: SetDoubleTextField(
-              value: distance,
-              onChanged: onChangedDistance,
-              controller: controllers.$1,
+              value: weight,
+              onChanged: onChangedWeight, controller: controllers.$1,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: TimerWidget(
-              setDto: previousSetDto ?? setDto,
-              onChangedDuration: (Duration duration) => onChangedDuration(duration),
+            child: SetIntTextField(
+              value: reps,
+              onChanged: onChangedReps,
+              controller: controllers.$2,
             ),
           ),
           if (editorType == RoutineEditorType.log)

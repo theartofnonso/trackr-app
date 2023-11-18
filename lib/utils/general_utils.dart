@@ -21,16 +21,26 @@ String weightLabel() {
   return SharedPrefs().weightUnit;
 }
 
-String distanceLabel() {
+String distanceLabel({bool long = false}) {
   final unitString = SharedPrefs().distanceUnit;
   final unit = DistanceUnit.fromString(unitString);
-  return unit == DistanceUnit.mi ? "yd" : "m";
+
+  if (long) {
+    return unit == DistanceUnit.mi ? "mi" : "km";
+  } else {
+    return unit == DistanceUnit.mi ? "yd" : "m";
+  }
 }
 
-String distanceTitle() {
+String distanceTitle({bool long = false}) {
   final unitString = SharedPrefs().distanceUnit;
   final unit = DistanceUnit.fromString(unitString);
-  return unit == DistanceUnit.mi ? "YARDS" : "METRES";
+
+  if (long) {
+    return unit == DistanceUnit.mi ? "MILES" : "KILOMETRES";
+  } else {
+    return unit == DistanceUnit.mi ? "YARDS" : "METRES";
+  }
 }
 
 double toKg(double value) {

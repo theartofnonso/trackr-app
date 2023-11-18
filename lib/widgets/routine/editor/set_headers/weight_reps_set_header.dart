@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../screens/editor/routine_editor_screen.dart';
 
-class WeightedSetHeader extends StatelessWidget {
+class WeightRepsSetHeader extends StatelessWidget {
   final RoutineEditorType editorType;
   final String firstLabel;
   final String secondLabel;
 
-  const WeightedSetHeader({super.key, required this.editorType, required this.firstLabel, required this.secondLabel});
+  const WeightRepsSetHeader({super.key, required this.editorType, required this.firstLabel, required this.secondLabel});
 
   @override
   Widget build(BuildContext context) {

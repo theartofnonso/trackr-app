@@ -9,11 +9,13 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/weighted_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/weight_distance_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/weight_reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/distance_duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/weighted_set_row.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/weight_distance_set_row.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/weight_reps_set_row.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
@@ -122,8 +124,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
-      case ExerciseType.weightAndDistance:
-        return WeightedSetRow(
+        return WeightRepsSetRow(
           index: index,
           label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
           procedureId: widget.procedureDto.id,
@@ -155,6 +156,25 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onChangedType: (SetType type) => _updateSetType(
               context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
           onChangedReps: (num value) => _updateReps(
+              context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
+          controllers: _controllers[index],
+        );
+      case ExerciseType.weightAndDistance:
+        return WeightDistanceSetRow(
+          index: index,
+          label: setDto.type == SetType.working ? "${setCounts[SetType.working]! + 1}" : setDto.type.label,
+          procedureId: widget.procedureDto.id,
+          setDto: setDto,
+          pastSetDto: pastSet,
+          editorType: widget.editorType,
+          onCheck: () =>
+              _updateSetCheck(context: context, procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
+          onRemoved: () => _removeSet(context, index),
+          onChangedType: (SetType type) => _updateSetType(
+              context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
+          onChangedDistance: (double value) => _updateDistance(
+              context: context, procedureId: widget.procedureDto.id, setIndex: index, distance: value, setDto: setDto),
+          onChangedWeight: (double value) => _updateWeight(
               context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
           controllers: _controllers[index],
         );
@@ -286,7 +306,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       required SetType type,
       required SetDto setDto}) {
     final pastSets =
-    Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
     final updatedSet = setDto.copyWith(type: type);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateSetType(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet, pastSets: pastSets);
@@ -378,27 +398,27 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
-            ExerciseType.weightAndReps => WeightedSetHeader(
+            ExerciseType.weightAndReps => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
                 secondLabel: 'REPS',
               ),
-            ExerciseType.weightedBodyWeight => WeightedSetHeader(
+            ExerciseType.weightedBodyWeight => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: "+${weightLabel().toUpperCase()}",
                 secondLabel: 'REPS',
               ),
-            ExerciseType.assistedBodyWeight => WeightedSetHeader(
+            ExerciseType.assistedBodyWeight => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: '-${weightLabel().toUpperCase()}',
                 secondLabel: 'REPS',
               ),
-            ExerciseType.weightAndDistance => WeightedSetHeader(
-                editorType: widget.editorType, firstLabel: weightLabel().toUpperCase(), secondLabel: distanceTitle()),
+            ExerciseType.weightAndDistance => WeightDistanceSetHeader(editorType: widget.editorType),
             ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
           },
+          const SizedBox(height: 8),
           ..._displaySets(context: context, exerciseType: exerciseType, sets: sets ?? []),
           const SizedBox(height: 8),
           Align(
