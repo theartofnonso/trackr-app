@@ -119,7 +119,6 @@ class ProfileScreen extends StatelessWidget {
                 child: ListTile(
                     onTap: () => _navigateToMuscleDistribution(context),
                     tileColor: tealBlueLight,
-                    contentPadding: EdgeInsets.zero,
                     dense: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                     title: Text("Muscle distribution", style: Theme.of(context).textTheme.labelLarge),
