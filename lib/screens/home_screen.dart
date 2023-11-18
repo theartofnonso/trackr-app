@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/profile_screen.dart';
+import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routine/template/routines_screen.dart';
 

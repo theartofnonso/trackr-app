@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/profile_screen.dart';
+import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
