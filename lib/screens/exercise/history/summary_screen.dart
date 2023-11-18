@@ -246,7 +246,11 @@ class _SummaryScreenState extends State<SummaryScreen> {
   Widget build(BuildContext context) {
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
-      final distanceUnitLabel = distanceLabel();
+
+      final exerciseTypeString = widget.exercise.type;
+      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+
+      final distanceUnitLabel = distanceLabel(type: exerciseType);
 
       final oneRepMax = widget.routineLogs.map((log) => oneRepMaxPerLog(log: log)).toList().max;
       return SingleChildScrollView(

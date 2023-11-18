@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
+import '../../../../enums/exercise_type_enums.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 
 class WeightDistanceSetHeader extends StatelessWidget {
@@ -48,7 +49,7 @@ class WeightDistanceSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle().toUpperCase(),
+            child: Text(distanceTitle(type: ExerciseType.weightAndDistance).toUpperCase(),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

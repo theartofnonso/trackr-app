@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
 
+import '../../../../enums/exercise_type_enums.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
@@ -72,7 +73,7 @@ class WeightDistanceSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-              "${previousSetDto.value1.toDouble()}${weightLabel()}\n${previousSetDto.value2.toDouble()}${distanceLabel()}",
+              "${previousSetDto.value1.toDouble()}${weightLabel()}\n${previousSetDto.value2.toDouble()}${distanceLabel(type: ExerciseType.weightAndDistance)}",
               style: GoogleFonts.lato(
                 color: Colors.white70,
               ),

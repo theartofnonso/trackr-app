@@ -1,5 +1,6 @@
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../models/User.dart';
@@ -21,22 +22,22 @@ String weightLabel() {
   return SharedPrefs().weightUnit;
 }
 
-String distanceLabel({bool long = false}) {
+String distanceLabel({required ExerciseType type}) {
   final unitString = SharedPrefs().distanceUnit;
   final unit = DistanceUnit.fromString(unitString);
 
-  if (long) {
+  if (type == ExerciseType.distanceAndDuration) {
     return unit == DistanceUnit.mi ? "mi" : "km";
   } else {
     return unit == DistanceUnit.mi ? "yd" : "m";
   }
 }
 
-String distanceTitle({bool long = false}) {
+String distanceTitle({required ExerciseType type}) {
   final unitString = SharedPrefs().distanceUnit;
   final unit = DistanceUnit.fromString(unitString);
 
-  if (long) {
+  if (type == ExerciseType.distanceAndDuration) {
     return unit == DistanceUnit.mi ? "MILES" : "KILOMETRES";
   } else {
     return unit == DistanceUnit.mi ? "YARDS" : "METRES";

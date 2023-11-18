@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
@@ -42,7 +43,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle(long: true),
+            child: Text(distanceTitle(type: ExerciseType.distanceAndDuration),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

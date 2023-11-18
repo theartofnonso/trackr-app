@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/datetime_utils.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
@@ -71,7 +72,7 @@ class DistanceDurationSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2.toDouble()}${distanceLabel(long: true)} \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
+                    "${previousSetDto.value2.toDouble()}${distanceLabel(type: ExerciseType.distanceAndDuration)} \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
