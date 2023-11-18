@@ -24,7 +24,7 @@ enum MuscleGroup {
   fullBody("Full Body", MuscleGroupFamily.core),
   chestUpper("Upper Chest", MuscleGroupFamily.chest),
   chest("Chest", MuscleGroupFamily.chest),
-  chestInner("Inner Chest", MuscleGroupFamily.chest),
+  chestInner("Middle Chest", MuscleGroupFamily.chest),
   abductors("Abductors", MuscleGroupFamily.legs),
   adductors("Adductors", MuscleGroupFamily.legs),
   glutes("Glutes", MuscleGroupFamily.legs),
