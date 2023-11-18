@@ -145,7 +145,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                       ],
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 16),
+                      margin: const EdgeInsets.only(top: 24, bottom: 12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
                         color: tealBlueLight, // Set the background color
