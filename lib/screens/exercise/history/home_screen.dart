@@ -315,10 +315,10 @@ double _sessionVolumePerLog({required RoutineLog log}) {
   return (logId, longestDistance);
 }
 
-class ExerciseHistoryScreen extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   final Exercise exercise;
 
-  const ExerciseHistoryScreen({super.key, required this.exercise});
+  const HomeScreen({super.key, required this.exercise});
 
   List<RoutineLog> _logsWhereExercise({required List<RoutineLog> logs}) {
     return logs

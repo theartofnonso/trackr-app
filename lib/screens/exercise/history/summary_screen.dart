@@ -16,7 +16,7 @@ import '../../../utils/general_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../routine/logs/routine_log_preview_screen.dart';
-import 'exercise_history_screen.dart';
+import 'home_screen.dart';
 
 enum SummaryType {
   heaviestWeights,

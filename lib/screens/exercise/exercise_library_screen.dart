@@ -11,7 +11,7 @@ import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/empty_states/screen_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
-import 'history/exercise_history_screen.dart';
+import 'history/home_screen.dart';
 
 class ExerciseInLibraryDto {
   final bool selected;
@@ -143,7 +143,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   void _navigateToExerciseHistory(ExerciseInLibraryDto exerciseInLibraryDto) async {
     await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ExerciseHistoryScreen(exercise: exerciseInLibraryDto.exercise)));
+        MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseInLibraryDto.exercise)));
     if (mounted) {
       setState(() {
         _exercisesInLibrary = _updateSelections();
