@@ -9,7 +9,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../dtos/procedure_dto.dart';
 import '../models/RoutineLog.dart';

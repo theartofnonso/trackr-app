@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../../dtos/set_dto.dart';

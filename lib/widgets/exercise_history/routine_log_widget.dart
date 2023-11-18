@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/procedure_widget.dart';
 
 import '../../dtos/procedure_dto.dart';

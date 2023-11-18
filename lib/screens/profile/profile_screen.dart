@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_distribution_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';

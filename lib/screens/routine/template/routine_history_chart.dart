@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
