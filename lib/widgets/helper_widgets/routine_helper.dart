@@ -10,8 +10,9 @@ import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../providers/procedures_provider.dart';
 import '../empty_states/list_tile_empty_state.dart';
+import '../routine/preview/set_rows/weight_distance_set_row.dart';
 import '../routine/preview/set_rows/reps_set_row.dart';
-import '../routine/preview/set_rows/weighted_set_row.dart';
+import '../routine/preview/set_rows/weight_reps_set_row.dart';
 
 ProcedureDto? whereOtherSuperSetProcedure({required BuildContext context, required ProcedureDto firstProcedure}) {
   final procedures = Provider.of<ProceduresProvider>(context, listen: false).procedures;
@@ -44,9 +45,8 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
         child: switch (type) {
           ExerciseType.weightAndReps ||
           ExerciseType.weightedBodyWeight ||
-          ExerciseType.assistedBodyWeight ||
-          ExerciseType.weightAndDistance =>
-            WeightedSetRow(
+          ExerciseType.assistedBodyWeight =>
+            WeightRepsSetRow(
               index: index,
               workingIndex: workingIndex,
               setDto: setDto,
@@ -62,6 +62,11 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
               setDto: setDto,
             ),
           ExerciseType.distanceAndDuration => DistanceDurationSetRow(
+              index: index,
+              workingIndex: workingIndex,
+              setDto: setDto,
+            ),
+          ExerciseType.weightAndDistance => WeightDistanceSetRow(
               index: index,
               workingIndex: workingIndex,
               setDto: setDto,

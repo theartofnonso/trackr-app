@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
+import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 
 import '../../../../enums/exercise_type_enums.dart';
 import '../../../../screens/editor/routine_editor_screen.dart';
@@ -87,17 +87,23 @@ class WeightDistanceSetRow extends SetRow {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetDoubleTextField(
+            child: DoubleTextField(
               value: weight,
-              onChanged: onChangedWeight,
+              onChanged: (value) {
+                final conversion = _convertWeight(value: value);
+                onChangedWeight(conversion);
+              },
               controller: controllers.$1,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetDoubleTextField(
+            child: DoubleTextField(
               value: distance,
-              onChanged: onChangedDistance,
+              onChanged: (value) {
+                final conversion = _convertDistance(value: value);
+                onChangedDistance(conversion);
+              },
               controller: controllers.$2,
             ),
           ),
@@ -108,5 +114,13 @@ class WeightDistanceSetRow extends SetRow {
         ])
       ],
     );
+  }
+
+  double _convertWeight({required double value}) {
+    return isDefaultWeightUnit() ? value : toKg(value);
+  }
+
+  double _convertDistance({required double value}) {
+    return isDefaultDistanceUnit() ? value : toMI(value, type: ExerciseType.weightAndDistance);
   }
 }

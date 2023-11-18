@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/set_double_textfield.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/set_int_textfield.dart';
+import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
+import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
 
 import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
@@ -83,14 +83,18 @@ class WeightRepsSetRow extends SetRow {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetDoubleTextField(
+            child: DoubleTextField(
               value: weight,
-              onChanged: onChangedWeight, controller: controllers.$1,
+              onChanged: (value) {
+                final conversion = _convertWeight(value: value);
+                onChangedWeight(conversion);
+              },
+              controller: controllers.$1,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetIntTextField(
+            child: IntTextField(
               value: reps,
               onChanged: onChangedReps,
               controller: controllers.$2,
@@ -103,5 +107,9 @@ class WeightRepsSetRow extends SetRow {
         ])
       ],
     );
+  }
+
+  double _convertWeight({required double value}) {
+    return isDefaultWeightUnit() ? value : toKg(value);
   }
 }

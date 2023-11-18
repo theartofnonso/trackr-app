@@ -8,7 +8,7 @@ import '../../../../screens/editor/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
-import '../textfields/set_double_textfield.dart';
+import '../textfields/double_textfield.dart';
 import '../timer_widget.dart';
 
 class DistanceDurationSetRow extends SetRow {
@@ -86,9 +86,12 @@ class DistanceDurationSetRow extends SetRow {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetDoubleTextField(
+            child: DoubleTextField(
               value: distance,
-              onChanged: onChangedDistance,
+              onChanged: (value) {
+                final conversion = _convertDistance(value: value);
+                onChangedDistance(conversion);
+              },
               controller: controllers.$1,
             ),
           ),
@@ -106,5 +109,9 @@ class DistanceDurationSetRow extends SetRow {
         ])
       ],
     );
+  }
+
+  double _convertDistance({required double value}) {
+    return isDefaultDistanceUnit() ? value : toMI(value, type: ExerciseType.distanceAndDuration);
   }
 }

@@ -48,12 +48,22 @@ double toLbs(double value) {
 }
 
 double toMI(double value, {required ExerciseType type}) {
-  final conversion = value / (type == ExerciseType.distanceAndDuration ? 1.609 : 1.094);
+  double conversion = 0;
+  if (type == ExerciseType.distanceAndDuration) {
+    conversion = value / 1.609;
+  } else {
+    conversion = value * 1.094;
+  }
   return double.parse(conversion.toStringAsFixed(2));
 }
 
 double toKM(double value, {required ExerciseType type}) {
-  final conversion = value * (type == ExerciseType.distanceAndDuration ? 1.609 : 1.094);
+  double conversion = 0;
+  if (type == ExerciseType.distanceAndDuration) {
+    conversion = value * 1.609;
+  } else {
+    conversion = value / 1.094;
+  }
   return double.parse(conversion.toStringAsFixed(2));
 }
 

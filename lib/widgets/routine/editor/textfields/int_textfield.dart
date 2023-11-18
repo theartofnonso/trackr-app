@@ -2,34 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app_constants.dart';
-import '../../../../utils/general_utils.dart';
 
-class SetDoubleTextField extends StatelessWidget {
-  final double value;
+class IntTextField extends StatelessWidget {
+  final int value;
   final TextEditingController controller;
-  final void Function(double value) onChanged;
+  final void Function(int value) onChanged;
 
-  const SetDoubleTextField({super.key, required this.value, required this.controller, required this.onChanged});
+  const IntTextField({super.key, required this.value, required this.controller, required this.onChanged});
 
-  double _parseDoubleOrDefault({required bool isDefaultWeightUnit, required String value}) {
-    final doubleValue = double.tryParse(value) ?? 0;
-    return isDefaultWeightUnit ? doubleValue : toKg(doubleValue);
+  int _parseIntOrDefault({required String value}) {
+    return int.tryParse(value) ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    final defaultWeightUnit = isDefaultWeightUnit();
     return TextField(
       controller: controller,
-      onChanged: (value) => onChanged(_parseDoubleOrDefault(isDefaultWeightUnit: defaultWeightUnit, value: value)),
+      onChanged: (value) => onChanged(_parseIntOrDefault(value: value.toString())),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
-          fillColor: tealBlueLight,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+          fillColor: tealBlueLight,
           hintText: value > 0 ? value.toString() : "-",
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      keyboardType: TextInputType.number,
       maxLines: 1,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
