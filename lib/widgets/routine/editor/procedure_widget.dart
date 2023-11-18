@@ -19,7 +19,7 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/weight_reps_set_row.
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../screens/exercise/history/exercise_history_screen.dart';
+import '../../../screens/exercise/history/home_screen.dart';
 import '../../../screens/editor/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 
@@ -347,7 +347,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
                 onTap: () {
                   FocusScope.of(context).unfocus();
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ExerciseHistoryScreen(exercise: widget.procedureDto.exercise)));
+                      builder: (context) => HomeScreen(exercise: widget.procedureDto.exercise)));
                 },
                 child: Text(widget.procedureDto.exercise.name,
                     style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
