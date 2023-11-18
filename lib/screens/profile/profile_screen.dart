@@ -68,7 +68,6 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
         centerTitle: false,
         actions: [
           GestureDetector(

@@ -31,10 +31,6 @@ class RoutinesScreen extends StatelessWidget {
     return Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
       final cachedRoutineLog = routineLogProvider.cachedLog;
       return Scaffold(
-        appBar: AppBar(
-          title: Text("Workouts", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
-          centerTitle: false,
-        ),
           floatingActionButton: FloatingActionButton.extended(
             heroTag: "fab_routines_screen",
             onPressed: () => _navigateToRoutineEditor(context: context),
@@ -44,7 +40,7 @@ class RoutinesScreen extends StatelessWidget {
           ),
           body: SafeArea(
               child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                       child: Column(children: [
                         cachedRoutineLog != null
                             ? MinimisedRoutineBanner(log: cachedRoutineLog)

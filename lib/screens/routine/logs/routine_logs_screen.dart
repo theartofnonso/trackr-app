@@ -36,7 +36,11 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
 
       return Scaffold(
         appBar: AppBar(
-          title: Text("Home", style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600)),
+          title: Image.asset(
+            'assets/trackr.png',
+            fit: BoxFit.contain,
+            height: 14, // Adjust the height as needed
+          ),
           centerTitle: false,
           actions: [
             GestureDetector(
