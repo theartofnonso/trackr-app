@@ -133,19 +133,23 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   void _longestDistance() {
     final values = widget.routineLogs.map((log) => longestDistancePerLog(log: log)).toList().reversed.toList();
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.longestDistance;
-      _chartUnit = ChartUnitLabel.yd;
+      _chartUnit = exerciseType == ExerciseType.weightAndDistance ? ChartUnitLabel.yd : ChartUnitLabel.mi;
     });
   }
 
   void _totalDistance() {
     final values = widget.routineLogs.map((log) => totalDistancePerLog(log: log)).toList().reversed.toList();
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.totalDistance;
-      _chartUnit = ChartUnitLabel.yd;
+      _chartUnit = exerciseType == ExerciseType.weightAndDistance ? ChartUnitLabel.yd : ChartUnitLabel.mi;
     });
   }
 
