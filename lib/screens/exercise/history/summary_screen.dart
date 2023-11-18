@@ -203,7 +203,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RoutineLogPreviewScreen(routineLogId: routineLogId, previousRouteName: exerciseRouteName)));
   }
 
-  bool _exercisesWithWeights() {
+  bool _weightsOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps ||
@@ -211,13 +211,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
         exerciseType == ExerciseType.weightAndDistance;
   }
 
-  bool _exercisesWithWeightsAndReps() {
+  bool _weightsAndRepsOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
-  bool _exercisesWithReps() {
+  bool _repsOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps ||
@@ -226,13 +226,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
         exerciseType == ExerciseType.bodyWeightAndReps;
   }
 
-  bool _exercisesWithDuration() {
+  bool _durationOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.distanceAndDuration;
   }
 
-  bool _exercisesWithDistance() {
+  bool _distanceOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.distanceAndDuration || exerciseType == ExerciseType.weightAndDistance;
@@ -307,7 +307,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (_exercisesWithWeights())
+                    if (_weightsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -315,7 +315,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Heaviest Weight",
                             buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
                       ),
-                    if (_exercisesWithWeightsAndReps())
+                    if (_weightsAndRepsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -323,7 +323,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Heaviest Set Volume",
                             buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
                       ),
-                    if (_exercisesWithWeightsAndReps())
+                    if (_weightsAndRepsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -331,7 +331,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Session Volume",
                             buttonColor: _buttonColor(type: SummaryType.logVolumes)),
                       ),
-                    if (_exercisesWithWeightsAndReps())
+                    if (_weightsAndRepsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -339,13 +339,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "1RM",
                             buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
                       ),
-                    if (_exercisesWithReps())
+                    if (_repsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
                             onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
                       ),
-                    if (_exercisesWithDuration())
+                    if (_durationOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -353,7 +353,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Best Time",
                             buttonColor: _buttonColor(type: SummaryType.bestTimes)),
                       ),
-                    if (_exercisesWithDuration())
+                    if (_durationOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -361,7 +361,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Total Time",
                             buttonColor: _buttonColor(type: SummaryType.totalTimes)),
                       ),
-                    if (_exercisesWithDistance())
+                    if (_distanceOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -369,7 +369,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Longest Distance",
                             buttonColor: _buttonColor(type: SummaryType.longestDistance)),
                       ),
-                    if (_exercisesWithDistance())
+                    if (_distanceOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
