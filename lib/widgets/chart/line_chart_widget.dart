@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
-enum ChartUnit {
-  kg, lbs, reps, min, hrs
+enum ChartUnitLabel {
+  kg, lbs, reps, mins, hrs
 }
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> dateTimes;
-  final ChartUnit unit;
+  final ChartUnitLabel unit;
 
   const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit});
 

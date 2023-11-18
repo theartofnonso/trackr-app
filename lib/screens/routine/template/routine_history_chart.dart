@@ -33,7 +33,7 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  late ChartUnit _chartUnit;
+  late ChartUnitLabel _chartUnit;
 
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
@@ -59,17 +59,17 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;
-      _chartUnit = ChartUnit.reps;
+      _chartUnit = ChartUnitLabel.reps;
     });
   }
 
   void _totalDuration() {
-    final values = _filteredLogs.map((log) => durationPerLog(log: log)).toList();
+    final values = _filteredLogs.map((log) => sessionDurationPerLog(log: log)).toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = RoutineSummaryType.duration;
-      _chartUnit = ChartUnit.min;
+      _chartUnit = ChartUnitLabel.mins;
     });
   }
 
@@ -110,7 +110,6 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
       _dateTimes = logs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
       _volume();
     });
-    _chartUnit = weightUnit(); // Initial unit
   }
 
   @override

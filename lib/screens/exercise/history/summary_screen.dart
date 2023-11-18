@@ -8,6 +8,7 @@ import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums.dart';
+import '../../../enums/exercise_type_enums.dart';
 import '../../../models/Exercise.dart';
 import '../../../models/RoutineLog.dart';
 import '../../../providers/routine_log_provider.dart';
@@ -17,7 +18,7 @@ import '../../../widgets/chart/line_chart_widget.dart';
 import '../../routine/logs/routine_log_preview_screen.dart';
 import 'exercise_history_screen.dart';
 
-enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps }
+enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps, bestTimes, totalTimes }
 
 class SummaryScreen extends StatefulWidget {
   final (String, double) heaviestWeight;
@@ -45,7 +46,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  late ChartUnit _chartUnit;
+  late ChartUnitLabel _chartUnit;
 
   late SummaryType _summaryType = SummaryType.heaviestWeights;
 
@@ -83,7 +84,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
-      _chartUnit = ChartUnit.reps;
+      _chartUnit = ChartUnitLabel.reps;
     });
   }
 
@@ -92,7 +93,27 @@ class _SummaryScreenState extends State<SummaryScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.reps;
-      _chartUnit = ChartUnit.reps;
+      _chartUnit = ChartUnitLabel.reps;
+    });
+  }
+
+  void _bestTimes() {
+    final values = widget.routineLogs.map((log) => longestDurationPerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints =
+          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
+      _summaryType = SummaryType.bestTimes;
+      _chartUnit = ChartUnitLabel.mins;
+    });
+  }
+
+  void _totalTimes() {
+    final values = widget.routineLogs.map((log) => totalDurationPerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints =
+          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
+      _summaryType = SummaryType.totalTimes;
+      _chartUnit = ChartUnitLabel.mins;
     });
   }
 
@@ -123,6 +144,10 @@ class _SummaryScreenState extends State<SummaryScreen> {
         _oneRepMaxes();
       case SummaryType.reps:
         _reps();
+      case SummaryType.bestTimes:
+      // TODO: Handle this case.
+      case SummaryType.totalTimes:
+      // TODO: Handle this case.
     }
   }
 
@@ -134,6 +159,33 @@ class _SummaryScreenState extends State<SummaryScreen> {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             RoutineLogPreviewScreen(routineLogId: routineLogId, previousRouteName: exerciseRouteName)));
+  }
+
+  bool _exercisesWithWeights() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
+  }
+
+  bool _exercisesWithReps() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.weightAndReps ||
+        exerciseType == ExerciseType.assistedBodyWeight ||
+        exerciseType == ExerciseType.weightedBodyWeight ||
+        exerciseType == ExerciseType.bodyWeightAndReps;
+  }
+
+  bool _exercisesWithDuration() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.distanceAndDuration;
+  }
+
+  bool _exercisesWithDistance() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.distanceAndDuration;
   }
 
   @override
@@ -203,29 +255,62 @@ class _SummaryScreenState extends State<SummaryScreen> {
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CTextButton(
-                        onPressed: _heaviestWeights,
-                        label: "Heaviest Weight",
-                        buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _heaviestSetVolumes,
-                        label: "Heaviest Set Volume",
-                        buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _logVolumes,
-                        label: "Session Volume",
-                        buttonColor: _buttonColor(type: SummaryType.logVolumes)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _oneRepMaxes,
-                        label: "1RM",
-                        buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
-                    const SizedBox(width: 5),
-                    CTextButton(
-                        onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
+                    if (_exercisesWithWeights())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _heaviestWeights,
+                            label: "Heaviest Weight",
+                            buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
+                      ),
+                    if (_exercisesWithWeights())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _heaviestSetVolumes,
+                            label: "Heaviest Set Volume",
+                            buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
+                      ),
+                    if (_exercisesWithWeights())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _logVolumes,
+                            label: "Session Volume",
+                            buttonColor: _buttonColor(type: SummaryType.logVolumes)),
+                      ),
+                    if (_exercisesWithWeights())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _oneRepMaxes,
+                            label: "1RM",
+                            buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
+                      ),
+                    if (_exercisesWithReps())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
+                      ),
+                    if (_exercisesWithDuration())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _bestTimes,
+                            label: "Best Time",
+                            buttonColor: _buttonColor(type: SummaryType.bestTimes)),
+                      ),
+                    if (_exercisesWithDuration())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _totalTimes,
+                            label: "Total Time",
+                            buttonColor: _buttonColor(type: SummaryType.totalTimes)),
+                      ),
                   ],
                 )),
             const SizedBox(height: 10),
@@ -280,8 +365,26 @@ class _SummaryScreenState extends State<SummaryScreen> {
     _routineLogs = widget.routineLogs.reversed.toList();
 
     _dateTimes =
-        widget.routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList().reversed.toList();
-    _heaviestWeights();
+        _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+
+    switch(exerciseType) {
+      case ExerciseType.weightAndReps:
+      case ExerciseType.weightedBodyWeight:
+        _heaviestWeights();
+        break;
+      case ExerciseType.bodyWeightAndReps:
+      case ExerciseType.assistedBodyWeight:
+        break;
+      case ExerciseType.duration:
+      case ExerciseType.distanceAndDuration:
+        _bestTimes();
+        break;
+      case ExerciseType.weightAndDistance:
+
+    }
   }
 
   @override

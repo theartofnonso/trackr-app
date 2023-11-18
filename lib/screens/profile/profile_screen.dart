@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  late ChartUnit _chartUnit;
+  late ChartUnitLabel _chartUnit;
 
   RoutineSummaryType _summaryType = RoutineSummaryType.volume;
 
@@ -237,17 +237,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;
-      _chartUnit = ChartUnit.reps;
+      _chartUnit = ChartUnitLabel.reps;
     });
   }
 
   void _totalDuration() {
-    final values = _logs.map((log) => durationPerLog(log: log)).toList().toList();
+    final values = _logs.map((log) => sessionDurationPerLog(log: log)).toList().toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = RoutineSummaryType.duration;
-      _chartUnit = ChartUnit.min;
+      _chartUnit = ChartUnitLabel.mins;
     });
   }
 

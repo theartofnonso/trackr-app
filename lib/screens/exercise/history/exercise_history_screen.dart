@@ -26,8 +26,8 @@ import 'notes_screen.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
-ChartUnit weightUnit() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
+ChartUnitLabel weightUnit() {
+  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
 }
 
 List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
@@ -107,6 +107,32 @@ double heaviestWeightPerLog({required RoutineLog log}) {
   return weight;
 }
 
+Duration longestDurationPerLog({required RoutineLog log}) {
+  Duration longestDuration = Duration.zero;
+
+  final sets = _allSetsWithDuration(procedureJsons: log.procedures);
+
+  for (var set in sets) {
+    final duration = Duration(milliseconds: set.value1.toInt());
+    if (duration > longestDuration) {
+      longestDuration = duration;
+    }
+  }
+  return longestDuration;
+}
+
+Duration totalDurationPerLog({required RoutineLog log}) {
+  Duration totalDuration = Duration.zero;
+
+  final sets = _allSetsWithDuration(procedureJsons: log.procedures);
+
+  for (var set in sets) {
+    final duration = Duration(milliseconds: set.value1.toInt());
+    totalDuration += duration;
+  }
+  return totalDuration;
+}
+
 int repsPerLog({required RoutineLog log}) {
   int totalReps = 0;
 
@@ -164,7 +190,7 @@ DateTime dateTimePerLog({required RoutineLog log}) {
   return log.createdAt.getDateTimeInUtc();
 }
 
-Duration durationPerLog({required RoutineLog log}) {
+Duration sessionDurationPerLog({required RoutineLog log}) {
   final startTime = log.startTime.getDateTimeInUtc();
   final endTime = log.endTime.getDateTimeInUtc();
   final difference = endTime.difference(startTime);
