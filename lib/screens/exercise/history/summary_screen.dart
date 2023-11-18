@@ -18,7 +18,7 @@ import '../../../widgets/chart/line_chart_widget.dart';
 import '../../routine/logs/routine_log_preview_screen.dart';
 import 'exercise_history_screen.dart';
 
-enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps, bestTimes, totalTimes }
+enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps, bestTimes, totalTimes, longestDistances }
 
 class SummaryScreen extends StatefulWidget {
   final (String, double) heaviestWeight;
@@ -117,6 +117,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
     });
   }
 
+  void _longestDistances() {
+    final values = widget.routineLogs.map((log) => longestDurationPerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints =
+          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
+      _summaryType = SummaryType.longestDistances;
+      _chartUnit = ChartUnitLabel.yd;
+    });
+  }
+
   void _recomputeChart() {
     switch (_selectedHistoricalDate) {
       case HistoricalTimePeriod.lastThreeMonths:
@@ -124,11 +134,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
             .routineLogsSince(90, logs: widget.routineLogs)
             .reversed
             .toList();
+        break;
       case HistoricalTimePeriod.lastOneYear:
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
             .routineLogsSince(365, logs: widget.routineLogs)
             .reversed
             .toList();
+        break;
       case HistoricalTimePeriod.allTime:
         _routineLogs = widget.routineLogs.reversed.toList();
     }
@@ -136,18 +148,27 @@ class _SummaryScreenState extends State<SummaryScreen> {
     switch (_summaryType) {
       case SummaryType.heaviestWeights:
         _heaviestWeights();
+        break;
       case SummaryType.heaviestSetVolumes:
         _heaviestSetVolumes();
+        break;
       case SummaryType.logVolumes:
         _logVolumes();
+        break;
       case SummaryType.oneRepMaxes:
         _oneRepMaxes();
+        break;
       case SummaryType.reps:
         _reps();
+        break;
       case SummaryType.bestTimes:
-      // TODO: Handle this case.
+        _bestTimes();
+        break;
       case SummaryType.totalTimes:
-      // TODO: Handle this case.
+        _totalTimes();
+        break;
+      case SummaryType.longestDistances:
+        _longestDistances();
     }
   }
 
@@ -311,6 +332,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Total Time",
                             buttonColor: _buttonColor(type: SummaryType.totalTimes)),
                       ),
+                    if (_exercisesWithDistance())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _totalTimes,
+                            label: "Longest Distance",
+                            buttonColor: _buttonColor(type: SummaryType.longestDistances)),
+                      ),
                   ],
                 )),
             const SizedBox(height: 10),
@@ -383,7 +412,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
         _bestTimes();
         break;
       case ExerciseType.weightAndDistance:
-
+        _longestDistances();
     }
   }
 

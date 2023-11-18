@@ -260,6 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .toList()
             .reversed
             .toList();
+        break;
       case CurrentTimePeriod.thisMonth:
         final thisMonth = thisMonthDateRange();
         _logs = Provider.of<RoutineLogProvider>(context, listen: false)
@@ -267,6 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .toList()
             .reversed
             .toList();
+        break;
       case CurrentTimePeriod.thisYear:
         final thisYear = thisYearDateRange();
         _logs = Provider.of<RoutineLogProvider>(context, listen: false)
@@ -274,6 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .toList()
             .reversed
             .toList();
+        break;
       case CurrentTimePeriod.allTime:
         _logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.toList().reversed.toList();
     }
@@ -283,8 +286,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     switch (_summaryType) {
       case RoutineSummaryType.volume:
         _volume();
+        break;
       case RoutineSummaryType.reps:
         _totalReps();
+        break;
       case RoutineSummaryType.duration:
         _totalDuration();
     }

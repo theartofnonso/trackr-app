@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 
 enum ChartUnitLabel {
-  kg, lbs, reps, mins, hrs
+  kg, lbs, reps, mins, hrs, yd, mi,
 }
 
 class LineChartWidget extends StatelessWidget {

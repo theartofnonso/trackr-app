@@ -66,7 +66,7 @@ class DurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              setDto: previousSetDto ?? setDto,
+              setDto: setDto,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),

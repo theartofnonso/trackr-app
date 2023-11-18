@@ -78,9 +78,11 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
       case HistoricalTimePeriod.lastThreeMonths:
         _filteredLogs =
             Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(90, logs: _logs).toList();
+        break;
       case HistoricalTimePeriod.lastOneYear:
         _filteredLogs =
             Provider.of<RoutineLogProvider>(context, listen: false).routineLogsSince(365, logs: _logs).toList();
+        break;
       case HistoricalTimePeriod.allTime:
         _filteredLogs = _logs.toList();
     }
@@ -90,8 +92,10 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
     switch (_summaryType) {
       case RoutineSummaryType.volume:
         _volume();
+        break;
       case RoutineSummaryType.reps:
         _totalReps();
+        break;
       case RoutineSummaryType.duration:
         _totalDuration();
     }
