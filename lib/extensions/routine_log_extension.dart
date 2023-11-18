@@ -1,5 +1,5 @@
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/utils/datetime_utils.dart';
 
 extension RoutineLogExtension on RoutineLog {
 
