@@ -289,6 +289,32 @@ double _sessionVolumePerLog({required RoutineLog log}) {
   return (logId, heaviestWeight);
 }
 
+(String, Duration) _longestDuration({required List<RoutineLog> logs}) {
+  Duration longestDuration = Duration.zero;
+  String logId = "";
+  for (var log in logs) {
+    final duration = longestDurationPerLog(log: log);
+    if (duration > longestDuration) {
+      longestDuration = duration;
+      logId = log.id;
+    }
+  }
+  return (logId, longestDuration);
+}
+
+(String, double) _longestDistance({required List<RoutineLog> logs}) {
+  double longestDistance = 0;
+  String logId = "";
+  for (var log in logs) {
+    final distance = longestDistancePerLog(log: log);
+    if (distance > longestDistance) {
+      longestDistance = distance;
+      logId = log.id;
+    }
+  }
+  return (logId, longestDistance);
+}
+
 class ExerciseHistoryScreen extends StatelessWidget {
   final Exercise exercise;
 
@@ -367,6 +393,12 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
 
+    final longestDuration = _longestDuration(logs: routineLogsForExercise);
+
+    final longestDistance = _longestDistance(logs: routineLogsForExercise);
+
+    print(longestDistance);
+
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -424,6 +456,8 @@ class ExerciseHistoryScreen extends StatelessWidget {
                 heaviestWeight: heaviestWeight,
                 heaviestSet: heaviestSet,
                 heaviestRoutineLogVolume: heaviestRoutineLogVolume,
+                longestDuration: longestDuration,
+                longestDistance: longestDistance,
                 routineLogs: routineLogsForExercise,
                 exercise: foundExercise,
               ),

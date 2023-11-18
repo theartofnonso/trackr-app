@@ -24,6 +24,12 @@ String weightLabel() {
 String distanceLabel() {
   final unitString = SharedPrefs().distanceUnit;
   final unit = DistanceUnit.fromString(unitString);
+  return unit == DistanceUnit.mi ? "yd" : "m";
+}
+
+String distanceTitle() {
+  final unitString = SharedPrefs().distanceUnit;
+  final unit = DistanceUnit.fromString(unitString);
   return unit == DistanceUnit.mi ? "YARDS" : "METRES";
 }
 

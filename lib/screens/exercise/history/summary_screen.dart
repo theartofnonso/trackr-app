@@ -34,6 +34,8 @@ class SummaryScreen extends StatefulWidget {
   final (String, double) heaviestWeight;
   final (String, SetDto) heaviestSet;
   final (String, double) heaviestRoutineLogVolume;
+  final (String, Duration) longestDuration;
+  final (String, double) longestDistance;
   final List<RoutineLog> routineLogs;
   final Exercise exercise;
 
@@ -41,8 +43,10 @@ class SummaryScreen extends StatefulWidget {
       {super.key,
       required this.heaviestWeight,
       required this.heaviestSet,
-      required this.routineLogs,
       required this.heaviestRoutineLogVolume,
+      required this.longestDuration,
+      required this.longestDistance,
+      required this.routineLogs,
       required this.exercise});
 
   @override
@@ -242,6 +246,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   Widget build(BuildContext context) {
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
+      final distanceUnitLabel = distanceLabel();
 
       final oneRepMax = widget.routineLogs.map((log) => oneRepMaxPerLog(log: log)).toList().max;
       return SingleChildScrollView(
@@ -380,33 +385,66 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   ],
                 )),
             const SizedBox(height: 10),
-            _MetricWidget(
-              title: 'Heaviest weight',
-              summary: "${widget.heaviestWeight.$2}$weightUnitLabel",
-              subtitle: 'Heaviest weight lifted for a set',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-            ),
-            const SizedBox(height: 10),
-            _MetricWidget(
-              title: 'Heaviest Set Volume',
-              summary: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
-              subtitle: 'Heaviest volume lifted for a set',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-            ),
-            const SizedBox(height: 10),
-            _MetricWidget(
-              title: 'Heaviest Session Volume',
-              summary: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
-              subtitle: 'Heaviest volume lifted for a session',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
-            ),
-            const SizedBox(height: 10),
-            _MetricWidget(
-              title: '1 Rep Max',
-              summary: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
-              subtitle: 'Heaviest weight for one rep',
-              onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-            ),
+            if (_weightsOnly())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Heaviest weight',
+                  trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
+                  subtitle: 'Heaviest weight lifted for a set',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                ),
+              ),
+            if (_weightsAndRepsOnly())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Heaviest Set Volume',
+                  trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
+                  subtitle: 'Heaviest volume lifted for a set',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
+                ),
+              ),
+            if (_weightsAndRepsOnly())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Heaviest Session Volume',
+                  trailing: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
+                  subtitle: 'Heaviest volume lifted for a session',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
+                ),
+              ),
+            if (_weightsAndRepsOnly())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: '1 Rep Max',
+                  trailing: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
+                  subtitle: 'Heaviest weight for one rep',
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                ),
+              ),
+            if (_durationOnly())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Best Time',
+                  trailing: widget.longestDuration.$2.secondsOrMinutesOrHours(),
+                  subtitle: 'Longest time for this exercise',
+                  onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
+                ),
+              ),
+            if (_distanceOnly())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Longest Distance',
+                  trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
+                  subtitle: 'Longest distance for this exercise',
+                  onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
+                ),
+              ),
           ],
         ),
       ));
@@ -458,18 +496,17 @@ class _SummaryScreenState extends State<SummaryScreen> {
   }
 }
 
-class _MetricWidget extends StatelessWidget {
-  const _MetricWidget({
-    super.key,
+class _MetricListTile extends StatelessWidget {
+  const _MetricListTile({
     required this.title,
     required this.subtitle,
-    required this.summary,
+    required this.trailing,
     required this.onTap,
   });
 
   final String title;
   final String subtitle;
-  final String summary;
+  final String trailing;
   final Function()? onTap;
 
   @override
@@ -482,7 +519,7 @@ class _MetricWidget extends StatelessWidget {
         title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text(subtitle, style: GoogleFonts.lato(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing:
-            Text(summary, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+            Text(trailing, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
       ),
     );
