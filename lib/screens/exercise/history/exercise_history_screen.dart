@@ -397,8 +397,6 @@ class ExerciseHistoryScreen extends StatelessWidget {
 
     final longestDistance = _longestDistance(logs: routineLogsForExercise);
 
-    print(longestDistance);
-
     return DefaultTabController(
         length: 3,
         child: Scaffold(

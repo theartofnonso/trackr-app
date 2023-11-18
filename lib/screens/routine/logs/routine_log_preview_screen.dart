@@ -268,13 +268,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, log: log);
-        },
-        leadingIcon: const Icon(Icons.edit),
-        child: const Text("Edit"),
-      ),
-      MenuItemButton(
-        onPressed: () {
           final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
           final procedures = decodedProcedures.map((procedure) {
             final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
