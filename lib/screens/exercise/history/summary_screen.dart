@@ -18,7 +18,17 @@ import '../../../widgets/chart/line_chart_widget.dart';
 import '../../routine/logs/routine_log_preview_screen.dart';
 import 'exercise_history_screen.dart';
 
-enum SummaryType { heaviestWeights, heaviestSetVolumes, logVolumes, oneRepMaxes, reps, bestTimes, totalTimes, longestDistances }
+enum SummaryType {
+  heaviestWeights,
+  heaviestSetVolumes,
+  logVolumes,
+  oneRepMaxes,
+  reps,
+  bestTimes,
+  totalTimes,
+  longestDistance,
+  totalDistance,
+}
 
 class SummaryScreen extends StatefulWidget {
   final (String, double) heaviestWeight;
@@ -117,12 +127,20 @@ class _SummaryScreenState extends State<SummaryScreen> {
     });
   }
 
-  void _longestDistances() {
-    final values = widget.routineLogs.map((log) => longestDurationPerLog(log: log)).toList().reversed.toList();
+  void _longestDistance() {
+    final values = widget.routineLogs.map((log) => longestDistancePerLog(log: log)).toList().reversed.toList();
     setState(() {
-      _chartPoints =
-          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
-      _summaryType = SummaryType.longestDistances;
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.longestDistance;
+      _chartUnit = ChartUnitLabel.yd;
+    });
+  }
+
+  void _totalDistance() {
+    final values = widget.routineLogs.map((log) => totalDistancePerLog(log: log)).toList().reversed.toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.totalDistance;
       _chartUnit = ChartUnitLabel.yd;
     });
   }
@@ -167,8 +185,11 @@ class _SummaryScreenState extends State<SummaryScreen> {
       case SummaryType.totalTimes:
         _totalTimes();
         break;
-      case SummaryType.longestDistances:
-        _longestDistances();
+      case SummaryType.longestDistance:
+        _longestDistance();
+        break;
+      case SummaryType.totalDistance:
+        _totalDistance();
     }
   }
 
@@ -183,6 +204,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
   }
 
   bool _exercisesWithWeights() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.weightAndReps ||
+        exerciseType == ExerciseType.weightedBodyWeight ||
+        exerciseType == ExerciseType.weightAndDistance;
+  }
+
+  bool _exercisesWithWeightsAndReps() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
@@ -206,7 +235,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   bool _exercisesWithDistance() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
-    return exerciseType == ExerciseType.distanceAndDuration;
+    return exerciseType == ExerciseType.distanceAndDuration || exerciseType == ExerciseType.weightAndDistance;
   }
 
   @override
@@ -286,7 +315,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Heaviest Weight",
                             buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
                       ),
-                    if (_exercisesWithWeights())
+                    if (_exercisesWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -294,7 +323,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Heaviest Set Volume",
                             buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
                       ),
-                    if (_exercisesWithWeights())
+                    if (_exercisesWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -302,7 +331,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Session Volume",
                             buttonColor: _buttonColor(type: SummaryType.logVolumes)),
                       ),
-                    if (_exercisesWithWeights())
+                    if (_exercisesWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -336,9 +365,17 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _totalTimes,
+                            onPressed: _longestDistance,
                             label: "Longest Distance",
-                            buttonColor: _buttonColor(type: SummaryType.longestDistances)),
+                            buttonColor: _buttonColor(type: SummaryType.longestDistance)),
+                      ),
+                    if (_exercisesWithDistance())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _totalDistance,
+                            label: "Total Distance",
+                            buttonColor: _buttonColor(type: SummaryType.totalDistance)),
                       ),
                   ],
                 )),
@@ -393,26 +430,24 @@ class _SummaryScreenState extends State<SummaryScreen> {
   void _loadChart() {
     _routineLogs = widget.routineLogs.reversed.toList();
 
-    _dateTimes =
-        _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+    _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
 
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
 
-    switch(exerciseType) {
+    switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
+      case ExerciseType.weightAndDistance:
         _heaviestWeights();
         break;
       case ExerciseType.bodyWeightAndReps:
       case ExerciseType.assistedBodyWeight:
+        _reps();
         break;
       case ExerciseType.duration:
       case ExerciseType.distanceAndDuration:
         _bestTimes();
-        break;
-      case ExerciseType.weightAndDistance:
-        _longestDistances();
     }
   }
 

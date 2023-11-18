@@ -35,7 +35,8 @@ List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight)
+          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
+          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndDistance)
       .expand((procedure) => procedure.sets)
       .toList();
 }
@@ -132,6 +133,33 @@ Duration totalDurationPerLog({required RoutineLog log}) {
   }
   return totalDuration;
 }
+
+double longestDistancePerLog({required RoutineLog log}) {
+  double longestDistance = 0;
+
+  final sets = _allSetsWithDistance(procedureJsons: log.procedures);
+
+  for (var set in sets) {
+    final distance = set.value2.toDouble();
+    if (distance > longestDistance) {
+      longestDistance = distance;
+    }
+  }
+  return longestDistance;
+}
+
+double totalDistancePerLog({required RoutineLog log}) {
+  double totalDistance = 0;
+
+  final sets = _allSetsWithDistance(procedureJsons: log.procedures);
+
+  for (var set in sets) {
+    final distance = set.value2.toDouble();
+    totalDistance += distance;
+  }
+  return totalDistance;
+}
+
 
 int repsPerLog({required RoutineLog log}) {
   int totalReps = 0;
