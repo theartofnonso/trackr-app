@@ -68,14 +68,20 @@ class _IntroScreenState extends State<IntroScreen> {
               ],
             ),
           ),
-          const Spacer(),
+          //const Spacer(),
           SmoothPageIndicator(
             controller: _controller, // PageController
             count: 4,
             effect: const ExpandingDotsEffect(
                 dotColor: tealBlueLighter, activeDotColor: Colors.white), // your preferred effect
           ),
-          const Spacer()
+          const Spacer(),
+          Image.asset(
+            'assets/trackr.png',
+            fit: BoxFit.contain,
+            height: 14, // Adjust the height as needed
+          ),
+          const Spacer(),
         ]),
       ),
     );
