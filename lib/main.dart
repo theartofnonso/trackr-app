@@ -51,7 +51,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _isLoading = true;
   bool _isFirstLaunch = SharedPrefs().firstLaunch;
 
   @override
@@ -65,9 +64,6 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
-      setState(() {
-        _isLoading = false;
-      });
     } on Exception catch (e) {
       print('Could not configure Amplify: $e');
     }
@@ -140,8 +136,7 @@ class _MyAppState extends State<MyApp> {
             child: MaterialApp(
               builder: Authenticator.builder(),
               theme: _themeData,
-              home:
-                  _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : const HomeScreen(),
+              home: const HomeScreen(),
             ),
           );
   }
