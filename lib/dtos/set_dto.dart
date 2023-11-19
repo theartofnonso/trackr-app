@@ -52,6 +52,18 @@ class SetDto {
   }
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SetDto &&
+          runtimeType == other.runtimeType &&
+          value1 == other.value1 &&
+          value2 == other.value2 &&
+          type == other.type;
+
+  @override
+  int get hashCode => value1.hashCode ^ value2.hashCode ^ type.hashCode;
+
+  @override
   String toString() {
     return 'SetDto{value1: $value1, value2: $value2, type: $type, checked: $checked}';
   }
