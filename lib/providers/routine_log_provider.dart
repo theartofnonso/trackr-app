@@ -78,9 +78,9 @@ class RoutineLogProvider with ChangeNotifier {
     json.update("routine", (value) {
       return {"serializedData": value};
     });
-    json.update("user", (value) {
-      return {"serializedData": value};
-    });
+    // json.update("user", (value) {
+    //   return {"serializedData": value};
+    // });
     return json;
   }
 

@@ -14,6 +14,7 @@ import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
+import 'package:tracker_app/screens/intro/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
@@ -51,11 +52,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isLoading = true;
+  bool _isFirstLaunch = SharedPrefs().firstLaunch;
 
   @override
   void initState() {
     super.initState();
-    _configureAmplify();
+    _checkFirstLaunch();
   }
 
   Future<void> _configureAmplify() async {
@@ -64,12 +66,66 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
       setState(() {
-        _isLoading = false; // important to set the state!
+        _isLoading = false;
       });
     } on Exception catch (e) {
       print('Could not configure Amplify: $e');
     }
   }
+
+  Future<void> _checkFirstLaunch() async {
+    if (!_isFirstLaunch) {
+      _configureAmplify();
+    }
+  }
+
+  void _completeIntro() {
+    const isFirstLaunch = false;
+    SharedPrefs().firstLaunch = false;
+    setState(() {
+      _isFirstLaunch = isFirstLaunch;
+    });
+    _checkFirstLaunch();
+  }
+
+  final _themeData = ThemeData(
+    scaffoldBackgroundColor: tealBlueDark,
+    colorScheme: const ColorScheme(
+      brightness: Brightness.dark,
+      primary: Colors.white,
+      onPrimary: Colors.white,
+      secondary: Colors.white,
+      onSecondary: Colors.white,
+      error: Colors.white,
+      onError: Colors.black,
+      background: tealBlueDark,
+      onBackground: Colors.white,
+      surface: tealBlueLighter,
+      onSurface: Colors.white,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: tealBlueDark,
+      surfaceTintColor: tealBlueDark,
+    ),
+    snackBarTheme: const SnackBarThemeData(backgroundColor: tealBlueDark, actionBackgroundColor: tealBlueLighter),
+    tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
+    inputDecorationTheme: InputDecorationTheme(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
+      enabledBorder:
+          OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
+      filled: true,
+      fillColor: tealBlueLighter,
+      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all(Colors.white),
+          backgroundColor: MaterialStateProperty.all(tealBlueLight),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+    ),
+    useMaterial3: true,
+  );
 
   // This widget is the root of your application.
   @override
@@ -77,52 +133,16 @@ class _MyAppState extends State<MyApp> {
     //debugPaintSizeEnabled = true;
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
-    return Authenticator(
-      child: MaterialApp(
-        builder: Authenticator.builder(),
-        theme: ThemeData(
-          scaffoldBackgroundColor: tealBlueDark,
-          colorScheme: const ColorScheme(
-            brightness: Brightness.dark,
-            primary: Colors.white,
-            onPrimary: Colors.white,
-            secondary: Colors.white,
-            onSecondary: Colors.white,
-            error: Colors.white,
-            onError: Colors.black,
-            background: tealBlueDark,
-            onBackground: Colors.white,
-            surface: tealBlueLighter,
-            onSurface: Colors.white,
-          ),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: tealBlueDark,
-            surfaceTintColor: tealBlueDark,
-          ),
-          snackBarTheme: const SnackBarThemeData(
-            backgroundColor: tealBlueDark,
-            actionBackgroundColor: tealBlueLighter
-          ),
-          tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
-          inputDecorationTheme: InputDecorationTheme(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
-            filled: true,
-            fillColor: tealBlueLighter,
-            hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14),
-          ),
-          filledButtonTheme: FilledButtonThemeData(
-            style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                backgroundColor: MaterialStateProperty.all(tealBlueLight),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-          ),
-          useMaterial3: true,
-        ),
-        home: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : const HomeScreen(),
-      ),
-    );
+
+    return _isFirstLaunch
+        ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
+        : Authenticator(
+            child: MaterialApp(
+              builder: Authenticator.builder(),
+              theme: _themeData,
+              home:
+                  _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : const HomeScreen(),
+            ),
+          );
   }
 }

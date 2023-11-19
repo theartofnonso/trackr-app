@@ -44,4 +44,12 @@ class SharedPrefs {
   set distanceUnit(String value) {
     _sharedPrefs?.setString(_distanceUnitKey, value);
   }
+
+
+  /// First launch flag
+  final String _firstLaunchKey = "_first_launch_key";
+  bool get firstLaunch => _sharedPrefs?.getBool(_firstLaunchKey) ?? true;
+  set firstLaunch(bool value) {
+    _sharedPrefs?.setBool(_firstLaunchKey, value);
+  }
 }
