@@ -76,10 +76,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _completeIntro() {
-    const isFirstLaunch = false;
     SharedPrefs().firstLaunch = false;
     setState(() {
-      _isFirstLaunch = isFirstLaunch;
+      _isFirstLaunch = false;
     });
     _checkFirstLaunch();
   }
