@@ -23,14 +23,6 @@ class ProcedureDto {
     );
   }
 
-  bool isEmpty() {
-    return notes.isEmpty || sets.isEmpty;
-  }
-
-  bool isNotEmpty() {
-    return notes.isNotEmpty || sets.isNotEmpty;
-  }
-
   String toJson() {
     final setJons = sets.map((set) => (set).toJson()).toList();
 
