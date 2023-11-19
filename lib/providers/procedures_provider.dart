@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -8,6 +9,7 @@ import '../dtos/procedure_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
+import '../models/RoutineLog.dart';
 
 class ProceduresProvider extends ChangeNotifier {
   List<ProcedureDto> _procedures = [];
@@ -160,7 +162,10 @@ class ProceduresProvider extends ChangeNotifier {
     if (procedureIndex != -1) {
       final currentSets = _sets[procedureId] ?? [];
 
-      final pastSet = _wherePastSet(index: currentSets.isEmpty ? currentSets.length : currentSets.length + 1, type: SetType.working, pastSets: pastSets);
+      final pastSet = _wherePastSet(
+          index: currentSets.isEmpty ? currentSets.length : currentSets.length + 1,
+          type: SetType.working,
+          pastSets: pastSets);
       SetDto newSet = _createSet(currentSets, pastSet);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
@@ -260,7 +265,8 @@ class ProceduresProvider extends ChangeNotifier {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType({required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
+  void updateSetType(
+      {required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
     final pastSet = _wherePastSet(index: sets.length, type: setDto.type, pastSets: pastSets) ?? setDto;
     final updateSet = pastSet.copyWith(type: setDto.type, checked: setDto.checked);
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: updateSet);
@@ -331,5 +337,89 @@ class ProceduresProvider extends ChangeNotifier {
 
   int _indexWhereProcedure({required String procedureId}) {
     return _procedures.indexWhere((procedure) => procedure.id == procedureId);
+  }
+
+  bool hasDifferentProceduresLength(
+      {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    return procedures.length != procedures.length;
+  }
+
+  bool hasDifferentSetsLength({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    for (ProcedureDto proc1 in procedures1) {
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
+
+      if (matchingProc2 == null) continue;
+      for (int i = 0; i < procedures1.length; i++) {
+        if (i >= procedures2.length || procedures1[i].sets.length != procedures2[i].sets.length) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool hasSetTypeChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    for (ProcedureDto proc1 in procedures1) {
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
+
+      if (matchingProc2 == null) continue;
+      for (int i = 0; i < procedures1.length; i++) {
+        if (i >= procedures2.length) continue;
+
+        List<SetDto> sets1 = procedures1[i].sets;
+        List<SetDto> sets2 = procedures2[i].sets;
+
+        for (int j = 0; j < sets1.length; j++) {
+          if (j >= sets2.length || sets1[j].type != sets2[j].type) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  bool hasSetValueChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    for (ProcedureDto proc1 in procedures1) {
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
+
+      if (matchingProc2 == null) continue;
+      for (int i = 0; i < procedures1.length; i++) {
+        if (i >= procedures2.length) continue;
+
+        List<SetDto> sets1 = procedures1[i].sets;
+        List<SetDto> sets2 = procedures2[i].sets;
+
+        for (int j = 0; j < sets1.length; j++) {
+          if (j >= sets2.length || sets1[j].value1 != sets2[j].value1 || sets1[j].value2 != sets2[j].value2) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  bool hasExerciseChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    for (ProcedureDto proc1 in procedures1) {
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
+
+      if (matchingProc2 == null) continue;
+      for (int i = 0; i < procedures1.length; i++) {
+        if (i >= procedures2.length || procedures1[i].exercise.id != procedures2[i].exercise.id) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool hasSuperSetIdChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    for (int i = 0; i < procedures1.length; i++) {
+      if (i >= procedures2.length || procedures1[i].superSetId != procedures2[i].superSetId) {
+        return true;
+      }
+    }
+    return false;
   }
 }
