@@ -112,7 +112,7 @@ class ProceduresProvider extends ChangeNotifier {
 
       final procedures = List.from(_procedures);
 
-      procedures[procedureIndex] = _createProcedure(exercise);
+      procedures[procedureIndex] = _createProcedure(exercise, notes: procedureToBeReplaced.notes);
 
       _procedures = [...procedures];
 
@@ -282,8 +282,8 @@ class ProceduresProvider extends ChangeNotifier {
     return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
   }
 
-  ProcedureDto _createProcedure(Exercise exercise) {
-    return ProcedureDto(const Uuid().v4(), "", exercise, "", []);
+  ProcedureDto _createProcedure(Exercise exercise, {String? notes}) {
+    return ProcedureDto(const Uuid().v4(), "", exercise, notes ?? "", []);
   }
 
   List<SetDto> completedSets() {
