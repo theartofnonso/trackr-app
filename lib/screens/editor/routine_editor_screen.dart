@@ -402,19 +402,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       if(differentSetValueChangeMessage != null) {
         unsavedChangesMessage.add(differentSetValueChangeMessage);
       }
-    }
-    if(unsavedChangesMessage.isNotEmpty) {
-      print(unsavedChangesMessage);
-      showAlertDialog(
-          context: context,
-          message: "You have unsaved changes",
-          leftAction: Navigator.of(context).pop,
-          leftActionLabel: 'Cancel',
-          rightAction: () {  },
-          rightActionLabel: 'Discard',
-          isRightActionDestructive: true);
-    } else {
-      Navigator.of(context).pop();
+      if(unsavedChangesMessage.isNotEmpty) {
+        print(unsavedChangesMessage);
+        showAlertDialog(
+            context: context,
+            message: "You have unsaved changes",
+            leftAction: Navigator.of(context).pop,
+            leftActionLabel: 'Cancel',
+            rightAction: () {
+              Navigator.of(context).pop(); /// Close dialog
+              Navigator.of(context).pop(); /// Navigate back
+            },
+            rightActionLabel: 'Discard',
+            isRightActionDestructive: true);
+      } else {
+        Navigator.of(context).pop();
+      }
     }
   }
 
