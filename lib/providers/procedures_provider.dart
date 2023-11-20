@@ -1,8 +1,10 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/unsaved_changes_messages_dto.dart';
 import 'package:uuid/uuid.dart';
 
 import '../dtos/procedure_dto.dart';
@@ -339,65 +341,69 @@ class ProceduresProvider extends ChangeNotifier {
     return _procedures.indexWhere((procedure) => procedure.id == procedureId);
   }
 
-  bool hasDifferentProceduresLength(
+  UnsavedChangesMessageDto? hasDifferentProceduresLength(
       {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    return procedures1.length != procedures2.length;
+    final int difference = procedures2.length - procedures1.length;
+
+    if (difference > 0) {
+      return UnsavedChangesMessageDto(message: "Added $difference exercise(s)");
+    } else if (difference < 0) {
+      return UnsavedChangesMessageDto(message: "Removed ${-difference} exercise(s)");
+    }
+
+    return null; // No change in length
   }
 
-  bool hasDifferentSetsLength({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+  UnsavedChangesMessageDto? hasDifferentSetsLength({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+    int addedSetsCount = 0;
+    int removedSetsCount = 0;
+
     for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
 
       if (matchingProc2 == null) continue;
-      for (int i = 0; i < procedures1.length; i++) {
-        if (i >= procedures2.length || procedures1[i].sets.length != procedures2[i].sets.length) {
-          return true;
+
+      int difference = matchingProc2.sets.length - proc1.sets.length;
+      if (difference > 0) {
+        addedSetsCount += difference;
+      } else if (difference < 0) {
+        removedSetsCount -= difference; // Subtracting a negative number to add its absolute value
+      }
+    }
+
+    String message = '';
+    if (addedSetsCount > 0) {
+      message = "Added $addedSetsCount set(s)";
+    }
+
+    if (removedSetsCount > 0) {
+      if (message.isNotEmpty) message += ' and ';
+      message += "Removed $removedSetsCount set(s)";
+    }
+
+    return message.isNotEmpty ? UnsavedChangesMessageDto(message: message) : null;
+  }
+
+  UnsavedChangesMessageDto? hasSetTypeChange({
+    required List<ProcedureDto> procedures1,
+    required List<ProcedureDto> procedures2,
+  }) {
+    int changes = 0;
+
+    for (ProcedureDto proc1 in procedures1) {
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+
+      if (matchingProc2 == null) continue;
+
+      int minSetLength = min(proc1.sets.length, matchingProc2.sets.length);
+      for (int i = 0; i < minSetLength; i++) {
+        if (proc1.sets[i].type != matchingProc2.sets[i].type) {
+          changes += 1;
         }
       }
     }
-    return false;
-  }
 
-  bool hasSetTypeChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
-
-      if (matchingProc2 == null) continue;
-      for (int i = 0; i < procedures1.length; i++) {
-        if (i >= procedures2.length) continue;
-
-        List<SetDto> sets1 = procedures1[i].sets;
-        List<SetDto> sets2 = procedures2[i].sets;
-
-        for (int j = 0; j < sets1.length; j++) {
-          if (j >= sets2.length || sets1[j].type != sets2[j].type) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  bool hasSetValueChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
-
-      if (matchingProc2 == null) continue;
-      for (int i = 0; i < procedures1.length; i++) {
-        if (i >= procedures2.length) continue;
-
-        List<SetDto> sets1 = procedures1[i].sets;
-        List<SetDto> sets2 = procedures2[i].sets;
-
-        for (int j = 0; j < sets1.length; j++) {
-          if (j >= sets2.length || sets1[j].value1 != sets2[j].value1 || sets1[j].value2 != sets2[j].value2) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
+    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)") : null;
   }
 
   bool hasExerciseChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {

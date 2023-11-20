@@ -18,6 +18,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
+import '../../dtos/unsaved_changes_messages_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -358,20 +359,39 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _checkForUnsavedChanges() {
-    bool hasChanges = false;
+    List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
     if(widget.mode == RoutineEditorType.edit) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final oldProcedures = widget.routine?.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
       final newProcedures = procedureProvider.mergeSetsIntoProcedures();
-      hasChanges = procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
+
+      final differentProceduresChangeMessage = procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
+      if(differentProceduresChangeMessage != null) {
+        unsavedChangesMessage.add(differentProceduresChangeMessage);
+      }
+
+      final differentSetsChangeMessage = procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
+      if(differentSetsChangeMessage != null) {
+        unsavedChangesMessage.add(differentSetsChangeMessage);
+      }
+
+      final differentSetTypesChangeMessage = procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
+      if(differentSetTypesChangeMessage != null) {
+        unsavedChangesMessage.add(differentSetTypesChangeMessage);
+      }
     }
-    if(hasChanges) {
-      showAlertDialog(context: context,
+    if(unsavedChangesMessage.isNotEmpty) {
+      print(unsavedChangesMessage);
+      showAlertDialog(
+          context: context,
           message: "You have unsaved changes",
           leftAction: Navigator.of(context).pop,
           leftActionLabel: 'Cancel',
           rightAction: () {  },
-          rightActionLabel: 'Discard', isRightActionDestructive: true);
+          rightActionLabel: 'Discard',
+          isRightActionDestructive: true);
+    } else {
+      Navigator.of(context).pop();
     }
   }
 
