@@ -108,7 +108,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
     return sets.mapIndexed((index, setDto) {
       SetDto? pastSet = _wherePastSets(type: setDto.type, index: setCounts[setDto.type]!, pastSets: pastSets);
-      Widget setWidget = _createSetWidget(context, index, setDto, pastSet, exerciseType, setCounts);
+      Widget setWidget = _createSetWidget(index, setDto, pastSet, exerciseType, setCounts);
 
       setCounts[setDto.type] = setCounts[setDto.type]! + 1;
 
@@ -116,7 +116,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     }).toList();
   }
 
-  Widget _createSetWidget(BuildContext context, int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType,
+  Widget _createSetWidget(int index, SetDto setDto, SetDto? pastSet, ExerciseType exerciseType,
       Map<SetType, int> setCounts) {
     _controllers.add((TextEditingController(), TextEditingController()));
     switch (exerciseType) {
