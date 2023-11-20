@@ -354,7 +354,8 @@ class ProceduresProvider extends ChangeNotifier {
     return null; // No change in length
   }
 
-  UnsavedChangesMessageDto? hasDifferentSetsLength({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+  UnsavedChangesMessageDto? hasDifferentSetsLength(
+      {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
     int addedSetsCount = 0;
     int removedSetsCount = 0;
 
@@ -406,19 +407,18 @@ class ProceduresProvider extends ChangeNotifier {
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)") : null;
   }
 
-  bool hasExerciseChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise == proc1.exercise);
+  UnsavedChangesMessageDto? hasExerciseChange({
+    required List<ProcedureDto> procedures1,
+    required List<ProcedureDto> procedures2,
+  }) {
+    Set<String> exerciseIds1 = procedures1.map((p) => p.exercise.id).toSet();
+    Set<String> exerciseIds2 = procedures2.map((p) => p.exercise.id).toSet();
 
-      if (matchingProc2 == null) continue;
-      for (int i = 0; i < procedures1.length; i++) {
-        if (i >= procedures2.length || procedures1[i].exercise.id != procedures2[i].exercise.id) {
-          return true;
-        }
-      }
-    }
-    return false;
+    int changes = exerciseIds2.difference(exerciseIds1).length;
+
+    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercises(s)") : null;
   }
+
 
   bool hasSuperSetIdChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
     for (int i = 0; i < procedures1.length; i++) {

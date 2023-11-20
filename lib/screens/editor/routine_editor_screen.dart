@@ -365,19 +365,28 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       final oldProcedures = widget.routine?.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
       final newProcedures = procedureProvider.mergeSetsIntoProcedures();
 
+      /// Check if [ProcedureDto]'s have been added or removed
       final differentProceduresChangeMessage = procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
       if(differentProceduresChangeMessage != null) {
         unsavedChangesMessage.add(differentProceduresChangeMessage);
       }
 
+      /// Check if [SetDto]'s have been added or removed
       final differentSetsChangeMessage = procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
       if(differentSetsChangeMessage != null) {
         unsavedChangesMessage.add(differentSetsChangeMessage);
       }
 
+      /// Check if [SetType] for [SetDto] has been changed
       final differentSetTypesChangeMessage = procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
       if(differentSetTypesChangeMessage != null) {
         unsavedChangesMessage.add(differentSetTypesChangeMessage);
+      }
+
+      /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
+      final differentExerciseTypesChangeMessage = procedureProvider.hasExerciseChange(procedures1: oldProcedures, procedures2: newProcedures);
+      if(differentExerciseTypesChangeMessage != null) {
+        unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
       }
     }
     if(unsavedChangesMessage.isNotEmpty) {
