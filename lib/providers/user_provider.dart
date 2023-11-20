@@ -20,4 +20,8 @@ class UserProvider with ChangeNotifier {
   //     _user = user;
   //   }
   // }
+  void reset() {
+    _user = User(email: "");
+    notifyListeners();
+  }
 }

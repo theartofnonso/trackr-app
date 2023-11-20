@@ -77,4 +77,9 @@ class RoutineProvider with ChangeNotifier {
   Routine? routineWhere({required String id}) {
     return _routines.firstWhereOrNull((dto) => dto.id == id);
   }
+
+  void reset() {
+    _routines.clear();
+    notifyListeners();
+  }
 }

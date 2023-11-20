@@ -79,4 +79,9 @@ class ExerciseProvider with ChangeNotifier {
   Exercise? whereExerciseOrNull({required String exerciseId}) {
     return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
   }
+
+  void reset() {
+    _exercises.clear();
+    notifyListeners();
+  }
 }

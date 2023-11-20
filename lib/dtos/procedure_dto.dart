@@ -40,6 +40,7 @@ class ProcedureDto {
     final exercise = Exercise.fromJson(exerciseString);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
+    print(setsJsons);
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     return ProcedureDto(const Uuid().v4(), superSetId, exercise, notes, sets);
   }

@@ -4,6 +4,8 @@ import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routine/template/routines_screen.dart';
 
+import '../shared_prefs.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -49,5 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndex: _currentScreenIndex,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPrefs().firstLaunch = false;
   }
 }

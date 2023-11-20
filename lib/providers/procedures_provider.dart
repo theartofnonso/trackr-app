@@ -428,4 +428,10 @@ class ProceduresProvider extends ChangeNotifier {
     }
     return false;
   }
+
+  void reset() {
+    _procedures.clear();
+    _sets.clear();
+    notifyListeners();
+  }
 }

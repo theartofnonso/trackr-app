@@ -324,4 +324,9 @@ class RoutineLogProvider with ChangeNotifier {
     final dateRange = DateTimeRange(start: then, end: now);
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange)).toList();
   }
+
+  void reset() {
+    _logs.clear();
+    notifyListeners();
+  }
 }

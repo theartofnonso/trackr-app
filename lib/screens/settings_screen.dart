@@ -6,6 +6,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../models/User.dart';
+import '../providers/app_provider.dart';
 import '../utils/general_utils.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
 import 'exercise/exercise_library_screen.dart';
@@ -178,7 +179,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          SharedPrefs().firstLaunch = true;
+          SharedPrefs().clear();
+          AppProviders.resetProviders(context);
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
