@@ -98,8 +98,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return sets.length > index ? sets.elementAt(index) : null;
   }
 
-  List<Widget> _displaySets(
-      {required BuildContext context, required ExerciseType exerciseType, required List<SetDto> sets}) {
+  List<Widget> _displaySets({required ExerciseType exerciseType, required List<SetDto> sets}) {
     if (sets.isEmpty) return [];
 
     Map<SetType, int> setCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
@@ -131,15 +130,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () =>
-              _updateSetCheck(context: context, procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
-          onRemoved: () => _removeSet(context, index),
-          onChangedType: (SetType type) => _updateSetType(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
-          onChangedReps: (num value) => _updateReps(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
-          onChangedWeight: (double value) => _updateWeight(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
+          onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
+          onRemoved: () => _removeSet(index),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
+          onChangedReps: (num value) =>
+              _updateReps(procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
+          onChangedWeight: (double value) =>
+              _updateWeight(procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
           controllers: _controllers[index],
         );
       case ExerciseType.bodyWeightAndReps:
@@ -150,13 +148,12 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () =>
-              _updateSetCheck(context: context, procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
-          onRemoved: () => _removeSet(context, index),
-          onChangedType: (SetType type) => _updateSetType(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
-          onChangedReps: (num value) => _updateReps(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
+          onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
+          onRemoved: () => _removeSet(index),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
+          onChangedReps: (num value) =>
+              _updateReps(procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
           controllers: _controllers[index],
         );
       case ExerciseType.weightAndDistance:
@@ -167,15 +164,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () =>
-              _updateSetCheck(context: context, procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
-          onRemoved: () => _removeSet(context, index),
-          onChangedType: (SetType type) => _updateSetType(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
-          onChangedDistance: (double value) => _updateDistance(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, distance: value, setDto: setDto),
-          onChangedWeight: (double value) => _updateWeight(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
+          onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
+          onRemoved: () => _removeSet(index),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
+          onChangedDistance: (double value) =>
+              _updateDistance(procedureId: widget.procedureDto.id, setIndex: index, distance: value, setDto: setDto),
+          onChangedWeight: (double value) =>
+              _updateWeight(procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: setDto),
           controllers: _controllers[index],
         );
       case ExerciseType.duration:
@@ -186,17 +182,12 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () =>
-              _updateSetCheck(context: context, procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
-          onRemoved: () => _removeSet(context, index),
-          onChangedType: (SetType type) => _updateSetType(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
-          onChangedDuration: (Duration duration) => _updateDuration(
-              context: context,
-              procedureId: widget.procedureDto.id,
-              setIndex: index,
-              duration: duration,
-              setDto: setDto),
+          onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
+          onRemoved: () => _removeSet(index),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
+          onChangedDuration: (Duration duration) =>
+              _updateDuration(procedureId: widget.procedureDto.id, setIndex: index, duration: duration, setDto: setDto),
         );
       case ExerciseType.distanceAndDuration:
         return DistanceDurationSetRow(
@@ -206,36 +197,27 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           setDto: setDto,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () =>
-              _updateSetCheck(context: context, procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
-          onRemoved: () => _removeSet(context, index),
-          onChangedType: (SetType type) => _updateSetType(
-              context: context, procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
-          onChangedDuration: (Duration duration) => _updateDuration(
-              context: context,
-              procedureId: widget.procedureDto.id,
-              setIndex: index,
-              duration: duration,
-              setDto: setDto),
-          onChangedDistance: (double distance) => _updateDistance(
-              context: context,
-              procedureId: widget.procedureDto.id,
-              setIndex: index,
-              distance: distance,
-              setDto: setDto),
+          onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: setDto),
+          onRemoved: () => _removeSet(index),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, setIndex: index, type: type, setDto: setDto),
+          onChangedDuration: (Duration duration) =>
+              _updateDuration(procedureId: widget.procedureDto.id, setIndex: index, duration: duration, setDto: setDto),
+          onChangedDistance: (double distance) =>
+              _updateDistance(procedureId: widget.procedureDto.id, setIndex: index, distance: distance, setDto: setDto),
           controllers: _controllers[index],
         );
       // Add other cases or a default case
     }
   }
 
-  void _updateProcedureNotes({required BuildContext context, required String value}) {
+  void _updateProcedureNotes({required String value}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateProcedureNotes(procedureId: widget.procedureDto.id, value: value);
     widget.onCache();
   }
 
-  void _addSet(BuildContext context) {
+  void _addSet() {
     _controllers.add((TextEditingController(), TextEditingController()));
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
@@ -244,7 +226,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     widget.onCache();
   }
 
-  void _removeSet(BuildContext context, int index) {
+  void _removeSet(int index) {
     _controllers.removeAt(index);
     Provider.of<ProceduresProvider>(context, listen: false)
         .removeSetForProcedure(procedureId: widget.procedureDto.id, setIndex: index);
@@ -252,23 +234,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _updateWeight(
-      {required BuildContext context,
-      required String procedureId,
-      required int setIndex,
-      required double value,
-      required SetDto setDto}) {
+      {required String procedureId, required int setIndex, required double value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: value);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateWeight(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
     widget.onCache();
   }
 
-  void _updateReps(
-      {required BuildContext context,
-      required String procedureId,
-      required int setIndex,
-      required num value,
-      required SetDto setDto}) {
+  void _updateReps({required String procedureId, required int setIndex, required num value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: value);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateReps(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
@@ -276,11 +249,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _updateDuration(
-      {required BuildContext context,
-      required String procedureId,
-      required int setIndex,
-      required Duration duration,
-      required SetDto setDto}) {
+      {required String procedureId, required int setIndex, required Duration duration, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateDuration(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
@@ -288,11 +257,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _updateDistance(
-      {required BuildContext context,
-      required String procedureId,
-      required int setIndex,
-      required double distance,
-      required SetDto setDto}) {
+      {required String procedureId, required int setIndex, required double distance, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: distance);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateDistance(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
@@ -300,11 +265,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _updateSetType(
-      {required BuildContext context,
-      required String procedureId,
-      required int setIndex,
-      required SetType type,
-      required SetDto setDto}) {
+      {required String procedureId, required int setIndex, required SetType type, required SetDto setDto}) {
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
     final updatedSet = setDto.copyWith(type: type);
@@ -313,8 +274,9 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     widget.onCache();
   }
 
-  void _updateSetCheck(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void _updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
+    final checked = !setDto.checked;
+    //print(checked);
     final updatedSet = setDto.copyWith(checked: !setDto.checked);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateSetCheck(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
@@ -346,8 +308,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
                   child: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => HomeScreen(exercise: widget.procedureDto.exercise)));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => HomeScreen(exercise: widget.procedureDto.exercise)));
                 },
                 child: Text(widget.procedureDto.exercise.name,
                     style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
@@ -380,7 +342,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           const SizedBox(height: 10),
           TextField(
             controller: TextEditingController(text: widget.procedureDto.notes),
-            onChanged: (value) => _updateProcedureNotes(context: context, value: value),
+            onChanged: (value) => _updateProcedureNotes(value: value),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
@@ -419,12 +381,12 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),
-          ..._displaySets(context: context, exerciseType: exerciseType, sets: sets ?? []),
+          ..._displaySets(exerciseType: exerciseType, sets: sets ?? []),
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
-                onPressed: () => _addSet(context),
+                onPressed: _addSet,
                 icon: const Icon(Icons.add, color: Colors.white70),
                 style: ButtonStyle(
                     visualDensity: VisualDensity.compact,

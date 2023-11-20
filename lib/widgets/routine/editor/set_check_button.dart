@@ -13,7 +13,7 @@ class SetCheckButton extends StatelessWidget {
     return GestureDetector(
       onTap: onCheck,
       child: Icon(
-        setDto.checked ? Icons.check_box : Icons.check_box_rounded,
+        setDto.checked ? Icons.check_box_rounded : Icons.check_box_rounded,
         color:  setDto.checked ? Colors.green : tealBlueLighter,
       ),
     );
