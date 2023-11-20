@@ -32,7 +32,7 @@ class SetTypeIcon extends StatelessWidget {
         FocusScope.of(context).unfocus();
         displayBottomSheet(
             context: context,
-            child: SingleChildScrollView(
+            child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -74,8 +74,7 @@ class SetTypeIcon extends StatelessWidget {
                   )
                 ],
               ),
-            ),
-            height: 250);
+            ));
       },
       child: Text(
         label,

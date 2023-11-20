@@ -21,6 +21,7 @@ class TimerWidget extends StatelessWidget {
   void _showRestIntervalTimePicker({required BuildContext context}) {
     FocusScope.of(context).unfocus();
     displayBottomSheet(
+      height: 216,
         context: context,
         child: TimePicker(
           mode: CupertinoTimerPickerMode.hms,

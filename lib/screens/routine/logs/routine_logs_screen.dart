@@ -16,6 +16,17 @@ import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../calendar_screen.dart';
 
+Future<void> loadData(BuildContext context) async {
+  await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+  if (context.mounted) {
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    routineLogProvider.listRoutineLogs(context);
+    routineLogProvider.retrieveCachedRoutineLog(context);
+    routineLogProvider.retrieveCachedPendingRoutineLog(context);
+    Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
+  }
+}
+
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
 
@@ -72,19 +83,22 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                 cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                 provider.logs.isNotEmpty
                     ? Expanded(
-                        child: ListView.separated(
-                            itemBuilder: (BuildContext context, int index) =>
-                                _RoutineLogWidget(log: provider.logs[index]),
-                            separatorBuilder: (BuildContext context, int index) =>
-                                Divider(color: Colors.white70.withOpacity(0.1)),
-                            itemCount: provider.logs.length),
-                      )
+                  child: RefreshIndicator(
+                    onRefresh: () => loadData(context),
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, int index) =>
+                            _RoutineLogWidget(log: provider.logs[index]),
+                        separatorBuilder: (BuildContext context, int index) =>
+                            Divider(color: Colors.white70.withOpacity(0.1)),
+                        itemCount: provider.logs.length),
+                  ),
+                )
                     : Expanded(
-                        child: Center(
-                            child: ScreenEmptyState(
-                                message: cachedRoutineLog == null
-                                    ? startTrackingPerformance
-                                    : crunchingPerformanceNumbers))),
+                    child: Center(
+                        child: ScreenEmptyState(
+                            message: cachedRoutineLog == null
+                                ? startTrackingPerformance
+                                : crunchingPerformanceNumbers))),
               ],
             ),
           ),
@@ -93,22 +107,11 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
     }));
   }
 
-  void _loadData() async {
-    await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
-    if (mounted) {
-      final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-      routineLogProvider.listRoutineLogs(context);
-      routineLogProvider.retrieveCachedRoutineLog(context);
-      routineLogProvider.retrieveCachedPendingRoutineLog(context);
-      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadData();
+    loadData(context);
   }
 
   @override

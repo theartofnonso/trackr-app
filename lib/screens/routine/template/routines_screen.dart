@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
@@ -45,12 +46,15 @@ class RoutinesScreen extends StatelessWidget {
                     cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                     routineProvider.routines.isNotEmpty
                         ? Expanded(
-                            child: ListView.separated(
-                                itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                    routine: routineProvider.routines[index],
-                                    canStartRoutine: cachedRoutineLog == null),
-                                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 6),
-                                itemCount: routineProvider.routines.length),
+                            child: RefreshIndicator(
+                              onRefresh: () => loadData(context),
+                              child: ListView.separated(
+                                  itemBuilder: (BuildContext context, int index) => _RoutineWidget(
+                                      routine: routineProvider.routines[index],
+                                      canStartRoutine: cachedRoutineLog == null),
+                                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 6),
+                                  itemCount: routineProvider.routines.length),
+                            ),
                           )
                         : const Expanded(child: Center(child: ScreenEmptyState(message: createWorkoutsAheadOfTime)))
                   ]))));

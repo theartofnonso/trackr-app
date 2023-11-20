@@ -54,6 +54,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
     displayBottomSheet(
+      height: 216,
         context: context,
         child: _ProceduresList(
           procedures: procedures,
