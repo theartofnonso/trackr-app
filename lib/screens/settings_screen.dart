@@ -173,22 +173,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _logout() async {
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
+    showAlertDialog(context: context,
+        message: "Log out?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () async {
+          Navigator.of(context).pop();
+          SharedPrefs().firstLaunch = true;
+          await Amplify.Auth.signOut();
         },
-        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      ),
-      CTextButton(
-          onPressed: () async {
-            Navigator.pop(context);
-            SharedPrefs().firstLaunch = true;
-            await Amplify.Auth.signOut();
-          },
-          label: 'Logout'),
-    ];
-    showAlertDialog(context: context, message: "Log out?", actions: alertDialogActions);
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Logout', isRightActionDestructive: true);
   }
 
   void _fetchUser() async {

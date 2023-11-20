@@ -18,7 +18,6 @@ import '../../../app_constants.dart';
 import '../../../dtos/procedure_dto.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
-import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../exercise/history/home_screen.dart';
@@ -283,41 +282,40 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       ),
       MenuItemButton(
         onPressed: () {
-          final alertDialogActions = <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
+          showAlertDialog(
+              context: context,
+              message: "Delete log?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {
+                Navigator.of(context).pop();
+                _toggleLoadingState();
+                _deleteLog();
               },
-              child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
-            ),
-            CTextButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  _toggleLoadingState();
-                  try {
-                    await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.routineLogId);
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  } catch (_) {
-                    if (mounted) {
-                      showSnackbar(
-                          context: context,
-                          icon: const Icon(Icons.info_outline),
-                          message: "Oops, we are unable delete this log");
-                    }
-                  } finally {
-                    _toggleLoadingState();
-                  }
-                },
-                label: 'Delete'),
-          ];
-          showAlertDialog(context: context, message: "Delete log?", actions: alertDialogActions);
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete', isRightActionDestructive: true);
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
+  }
+
+  void _deleteLog() async {
+    try {
+      await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.routineLogId);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (_) {
+      if (mounted) {
+        showSnackbar(
+            context: context,
+            icon: const Icon(Icons.info_outline),
+            message: "Oops, we are unable delete this log");
+      }
+    } finally {
+      _toggleLoadingState();
+    }
   }
 
   void _navigateToRoutineEditor({required BuildContext context, required RoutineLog log}) async {

@@ -11,7 +11,6 @@ import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/summary_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../../dtos/procedure_dto.dart';
 import '../../../dtos/set_dto.dart';
@@ -344,38 +343,35 @@ class HomeScreen extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          final alertDialogActions = <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
-            ),
-            CTextButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  try {
-                    await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exercise.id);
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  } catch (_) {
-                    if (context.mounted) {
-                      showSnackbar(
-                          context: context,
-                          icon: const Icon(Icons.info_outline),
-                          message: "Oops, we are unable delete this exercise");
-                    }
-                  }
-                },
-                label: 'Delete'),
-          ];
-          showAlertDialog(context: context, message: "Delete exercise?", actions: alertDialogActions);
+          showAlertDialog(
+              context: context,
+              message: "Delete exercise?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () => _deleteExercise(context),
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete');
         },
         leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
+  }
+
+  void _deleteExercise(BuildContext context) async {
+    Navigator.pop(context);
+    try {
+      await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exercise.id);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (_) {
+      if (context.mounted) {
+        showSnackbar(
+            context: context,
+            icon: const Icon(Icons.info_outline),
+            message: "Oops, we are unable delete this exercise");
+      }
+    }
   }
 
   @override

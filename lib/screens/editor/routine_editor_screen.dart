@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -193,72 +194,61 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _createRoutineLog() {
-    final actions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
+
+    showAlertDialog(context: context,
+        message: "Finish workout?",
+        leftAction: () {
+          Navigator.of(context).pop();
           _navigateBackAndClearCache();
         },
-        child: Text('Discard workout', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-          final routine = widget.routine;
-          final completedProcedures = _totalCompletedProceduresAndSets();
-          Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-              name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
-              notes: routine?.notes ?? "",
-              procedures: completedProcedures,
-              startTime: _routineStartTime,
-              createdAt: widget.createdAt,
-              routine: routine);
+        rightAction: () {
           Navigator.of(context).pop();
+          _doCreateRoutineLog();
         },
-        child: Text('Finish', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      )
-    ];
-    showAlertDialog(context: context, message: "Finish workout?", actions: actions);
+        leftActionLabel: 'Discard',
+        isLeftActionDestructive: true,
+        rightActionLabel: 'Finish');
+  }
+
+  void _doCreateRoutineLog() {
+    final routine = widget.routine;
+    final completedProcedures = _totalCompletedProceduresAndSets();
+    Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+        name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
+        notes: routine?.notes ?? "",
+        procedures: completedProcedures,
+        startTime: _routineStartTime,
+        createdAt: widget.createdAt,
+        routine: routine);
+    Navigator.of(context).pop();
   }
 
   void _updateRoutine({required Routine routine}) {
     if (!_validateRoutineInputs()) return;
 
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
+    showAlertDialog(context: context,
+        message: "Update workout?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () {
+          Navigator.of(context).pop();
+          _doUpdateRoutine(routine: routine);
         },
-        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      ),
-      CTextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            _doUpdateRoutine(routine: routine);
-          },
-          label: "Update")
-    ];
-    showAlertDialog(context: context, message: "Update workout?", actions: alertDialogActions);
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Update');
   }
 
   void _updateRoutineLog({required RoutineLog routineLog}) {
     if (!_validateRoutineInputs()) return;
 
-    final alertDialogActions = <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
+    showAlertDialog(context: context,
+        message: "Update log?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () {
+          Navigator.of(context).pop();
+          _doUpdateRoutineLog(routineLog: routineLog);
         },
-        child: Text('Cancel', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-      ),
-      CTextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            _doUpdateRoutineLog(routineLog: routineLog);
-          },
-          label: 'Update'),
-    ];
-    showAlertDialog(context: context, message: "Update log?", actions: alertDialogActions);
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Update');
   }
 
   void _doUpdate() {
@@ -340,22 +330,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (isRoutinePartiallyComplete) {
       _createRoutineLog();
     } else {
-      final actions = <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
+      showAlertDialog(context: context,
+          message: "You have not completed any sets",
+          leftAction: () {
+            Navigator.of(context).pop();
             _navigateBackAndClearCache();
           },
-          child: Text('Discard', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.red)),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Continue', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-        )
-      ];
-      showAlertDialog(context: context, message: "You have not completed any sets", actions: actions);
+          rightAction: Navigator.of(context).pop,
+          leftActionLabel: 'Discard',
+          rightActionLabel: 'Continue');
     }
   }
 
@@ -371,6 +354,24 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           startTime: _routineStartTime,
           createdAt: widget.createdAt,
           routine: routine);
+    }
+  }
+
+  void _checkForUnsavedChanges() {
+    bool hasChanges = false;
+    if(widget.mode == RoutineEditorType.edit) {
+      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+      final oldProcedures = widget.routine?.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
+      final newProcedures = procedureProvider.mergeSetsIntoProcedures();
+      hasChanges = procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
+    }
+    if(hasChanges) {
+      showAlertDialog(context: context,
+          message: "You have unsaved changes",
+          leftAction: Navigator.of(context).pop,
+          leftActionLabel: 'Cancel',
+          rightAction: () {  },
+          rightActionLabel: 'Discard', isRightActionDestructive: true);
     }
   }
 
@@ -417,7 +418,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
                 leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_outlined), onPressed: () => Navigator.of(context).pop()),
+                    icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
                 actions: [
                   CTextButton(
                       onPressed: _canUpdate() ? _doUpdate : _createRoutine,

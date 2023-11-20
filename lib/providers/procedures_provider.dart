@@ -341,7 +341,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   bool hasDifferentProceduresLength(
       {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    return procedures.length != procedures.length;
+    return procedures1.length != procedures2.length;
   }
 
   bool hasDifferentSetsLength({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
