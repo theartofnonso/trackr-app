@@ -75,10 +75,10 @@ class _RoutineWidget extends StatelessWidget {
         onPressed: () {
           _navigateToRoutineEditor(context: context, routine: routine);
         },
-        leadingIcon: const Icon(
-          Icons.edit,
-          color: Colors.white,
-        ),
+        // leadingIcon: const Icon(
+        //   Icons.edit,
+        //   color: Colors.white,
+        // ),
         child: Text("Edit", style: GoogleFonts.lato(color: Colors.white)),
       ),
       MenuItemButton(
@@ -94,7 +94,7 @@ class _RoutineWidget extends StatelessWidget {
               leftActionLabel: 'Cancel',
               rightActionLabel: 'Delete', isRightActionDestructive: true);
         },
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];

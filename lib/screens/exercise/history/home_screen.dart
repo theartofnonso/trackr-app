@@ -338,7 +338,7 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
         },
-        leadingIcon: const Icon(Icons.edit),
+        //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
       MenuItemButton(
@@ -351,7 +351,7 @@ class HomeScreen extends StatelessWidget {
               leftActionLabel: 'Cancel',
               rightActionLabel: 'Delete');
         },
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];

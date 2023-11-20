@@ -277,7 +277,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           Provider.of<RoutineProvider>(context, listen: false)
               .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
         },
-        leadingIcon: const Icon(Icons.save_alt_rounded),
+        //leadingIcon: const Icon(Icons.save_alt_rounded),
         child: const Text("Save as workout"),
       ),
       MenuItemButton(
@@ -294,7 +294,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               leftActionLabel: 'Cancel',
               rightActionLabel: 'Delete', isRightActionDestructive: true);
         },
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];

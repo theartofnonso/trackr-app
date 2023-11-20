@@ -37,7 +37,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         onPressed: () {
           _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorType.edit);
         },
-        leadingIcon: const Icon(Icons.edit),
+        //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
       MenuItemButton(
@@ -55,7 +55,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
+        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
