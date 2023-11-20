@@ -417,14 +417,16 @@ class ProceduresProvider extends ChangeNotifier {
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercises(s)") : null;
   }
 
+  UnsavedChangesMessageDto? hasSuperSetIdChanged({
+    required List<ProcedureDto> procedures1,
+    required List<ProcedureDto> procedures2,
+  }) {
+    Set<String> superSetIds1 = procedures1.map((p) => p.superSetId).toSet();
+    Set<String> superSetIds2 = procedures2.map((p) => p.superSetId).toSet();
 
-  bool hasSuperSetIdChange({required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    for (int i = 0; i < procedures1.length; i++) {
-      if (i >= procedures2.length || procedures1[i].superSetId != procedures2[i].superSetId) {
-        return true;
-      }
-    }
-    return false;
+    int changes = superSetIds2.difference(superSetIds1).length;
+
+    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes supersets(s)") : null;
   }
 
   void reset() {
