@@ -445,6 +445,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;

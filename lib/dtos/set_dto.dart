@@ -58,10 +58,11 @@ class SetDto {
           runtimeType == other.runtimeType &&
           value1 == other.value1 &&
           value2 == other.value2 &&
-          type == other.type;
+          type == other.type &&
+          checked == other.checked;
 
   @override
-  int get hashCode => value1.hashCode ^ value2.hashCode ^ type.hashCode;
+  int get hashCode => value1.hashCode ^ value2.hashCode ^ type.hashCode ^ checked.hashCode;
 
   @override
   String toString() {

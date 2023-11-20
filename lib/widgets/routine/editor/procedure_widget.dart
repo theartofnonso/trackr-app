@@ -275,8 +275,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
-    final checked = !setDto.checked;
-    //print(checked);
     final updatedSet = setDto.copyWith(checked: !setDto.checked);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateSetCheck(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
