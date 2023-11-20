@@ -396,6 +396,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       if(differentSuperSetIdsChangeMessage != null) {
         unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
       }
+
+      /// Check if superset in [ProcedureDto] has been changed
+      final differentSetValueChangeMessage = procedureProvider.hasSetValueChanged(procedures1: oldProcedures, procedures2: newProcedures);
+      if(differentSetValueChangeMessage != null) {
+        unsavedChangesMessage.add(differentSetValueChangeMessage);
+      }
     }
     if(unsavedChangesMessage.isNotEmpty) {
       print(unsavedChangesMessage);
