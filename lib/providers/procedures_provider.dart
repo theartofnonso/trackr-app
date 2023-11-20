@@ -429,6 +429,28 @@ class ProceduresProvider extends ChangeNotifier {
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes supersets(s)") : null;
   }
 
+  UnsavedChangesMessageDto? hasSetValueChanged({
+    required List<ProcedureDto> procedures1,
+    required List<ProcedureDto> procedures2,
+  }) {
+    int changes = 0;
+
+    for (ProcedureDto proc1 in procedures1) {
+      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+
+      if (matchingProc2 == null) continue;
+
+      int minSetLength = min(proc1.sets.length, matchingProc2.sets.length);
+      for (int i = 0; i < minSetLength; i++) {
+        if ((proc1.sets[i].value1 != matchingProc2.sets[i].value1) || (proc1.sets[i].value2 != matchingProc2.sets[i].value2)) {
+          changes += 1;
+        }
+      }
+    }
+
+    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes set value(s)") : null;
+  }
+
   void reset() {
     _procedures.clear();
     _sets.clear();

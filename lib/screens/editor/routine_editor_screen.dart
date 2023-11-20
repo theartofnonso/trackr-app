@@ -340,6 +340,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           },
           rightAction: Navigator.of(context).pop,
           leftActionLabel: 'Discard',
+          isLeftActionDestructive: true,
           rightActionLabel: 'Continue');
     }
   }
