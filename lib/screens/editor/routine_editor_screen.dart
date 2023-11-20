@@ -385,7 +385,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       }
 
       /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
-      final differentExerciseTypesChangeMessage = procedureProvider.hasExerciseChange(procedures1: oldProcedures, procedures2: newProcedures);
+      final differentExerciseTypesChangeMessage = procedureProvider.hasExercisesChanged(procedures1: oldProcedures, procedures2: newProcedures);
       if(differentExerciseTypesChangeMessage != null) {
         unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
       }

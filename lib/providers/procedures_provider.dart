@@ -405,7 +405,7 @@ class ProceduresProvider extends ChangeNotifier {
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)") : null;
   }
 
-  UnsavedChangesMessageDto? hasExerciseChange({
+  UnsavedChangesMessageDto? hasExercisesChanged({
     required List<ProcedureDto> procedures1,
     required List<ProcedureDto> procedures2,
   }) {
