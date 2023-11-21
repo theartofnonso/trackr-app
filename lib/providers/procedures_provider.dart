@@ -412,8 +412,6 @@ class ProceduresProvider extends ChangeNotifier {
     Set<String> exerciseIds1 = procedures1.map((p) => p.exercise.id).toSet();
     Set<String> exerciseIds2 = procedures2.map((p) => p.exercise.id).toSet();
 
-    
-
     int changes = exerciseIds2.difference(exerciseIds1).length;
 
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercises(s)") : null;

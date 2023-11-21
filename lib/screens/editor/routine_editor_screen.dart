@@ -405,7 +405,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         unsavedChangesMessage.add(differentSetValueChangeMessage);
       }
       if(unsavedChangesMessage.isNotEmpty) {
-        print(unsavedChangesMessage);
         showAlertDialog(
             context: context,
             message: "You have unsaved changes",
