@@ -9,7 +9,7 @@ abstract class SetRow extends StatelessWidget {
   final String procedureId;
   final SetDto setDto;
   final SetDto? pastSetDto;
-  final RoutineEditorType editorType; // Assuming EditorType is defined somewhere
+  final RoutineEditorMode editorType; // Assuming EditorType is defined somewhere
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final void Function(SetType) onChangedType;

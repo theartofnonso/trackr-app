@@ -35,7 +35,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorType.edit);
+          _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.edit);
         },
         //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
@@ -77,8 +77,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   }
 
   void _navigateToRoutineEditor(
-      {required BuildContext context, Routine? routine, RoutineEditorType mode = RoutineEditorType.edit}) {
-    if (mode == RoutineEditorType.edit) {
+      {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.edit}) {
+    if (mode == RoutineEditorMode.edit) {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
     } else {
@@ -110,7 +110,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
             ? FloatingActionButton(
                 heroTag: "fab_routine_preview_screen",
                 onPressed: () {
-                  _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorType.log);
+                  _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

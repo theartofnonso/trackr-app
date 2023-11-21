@@ -25,16 +25,16 @@ import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editor/procedure_widget.dart';
 import '../exercise/exercise_library_screen.dart';
 
-enum RoutineEditorType { edit, log }
+enum RoutineEditorMode { edit, log }
 
 class RoutineEditorScreen extends StatefulWidget {
   final Routine? routine;
   final RoutineLog? routineLog;
-  final RoutineEditorType mode;
+  final RoutineEditorMode mode;
   final TemporalDateTime? createdAt;
 
   const RoutineEditorScreen(
-      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorType.edit, this.createdAt});
+      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorMode.edit, this.createdAt});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -350,7 +350,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _cacheRoutineLog() {
-    if (widget.mode == RoutineEditorType.log) {
+    if (widget.mode == RoutineEditorMode.log) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final procedures = procedureProvider.mergeSetsIntoProcedures();
       final routine = widget.routine;
@@ -366,7 +366,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _checkForUnsavedChanges() {
     List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
-    if (widget.mode == RoutineEditorType.edit) {
+    if (widget.mode == RoutineEditorMode.edit) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
 
@@ -476,7 +476,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     return Scaffold(
         backgroundColor: tealBlueDark,
-        appBar: widget.mode == RoutineEditorType.edit
+        appBar: widget.mode == RoutineEditorMode.edit
             ? AppBar(
                 leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
                 actions: [
@@ -505,7 +505,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
         floatingActionButton: isKeyboardOpen
             ? null
-            : widget.mode == RoutineEditorType.log
+            : widget.mode == RoutineEditorMode.log
                 ? FloatingActionButton.extended(
                     heroTag: "fab_routine_log_editor_screen",
                     onPressed: _endRoutineLog,
@@ -533,7 +533,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               onTap: _dismissKeyboard,
               child: Column(
                 children: [
-                  if (widget.mode == RoutineEditorType.log)
+                  if (widget.mode == RoutineEditorMode.log)
                     Consumer<ProceduresProvider>(
                         builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
                       return _RoutineLogOverview(
@@ -542,7 +542,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                             TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
                       );
                     }),
-                  if (widget.mode == RoutineEditorType.edit)
+                  if (widget.mode == RoutineEditorMode.edit)
                     Column(
                       children: [
                         TextField(
@@ -620,7 +620,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _initializeTextControllers();
 
     // Cache initial state of running routine if in log mode
-    if (widget.mode == RoutineEditorType.log) {
+    if (widget.mode == RoutineEditorMode.log) {
       _cacheRoutineLog();
     }
 
@@ -635,7 +635,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (routine != null) {
       proceduresProvider.loadProcedures(procedures: routine.procedures);
     }
-    
+
     final routineLog = widget.routineLog;
     if (routineLog != null) {
       proceduresProvider.loadProcedures(procedures: routineLog.procedures);
@@ -644,7 +644,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _initializeTextControllers() {
-    if (widget.mode == RoutineEditorType.edit) {
+    if (widget.mode == RoutineEditorMode.edit) {
       RoutineLog? routineLog = widget.routineLog;
       Routine? routine = widget.routine;
 
@@ -656,7 +656,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   @override
   void dispose() {
     _onDisposeCallback();
-    if (widget.mode == RoutineEditorType.edit) {
+    if (widget.mode == RoutineEditorMode.edit) {
       _routineNameController.dispose();
       _routineNotesController.dispose();
     }
