@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../../../enums/exercise_type_enums.dart';
-import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../screens/editors/routine_editor_screen.dart';
 
 class WeightDistanceSetHeader extends StatelessWidget {
   final RoutineEditorType editorType;

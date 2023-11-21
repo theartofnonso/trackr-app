@@ -7,7 +7,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
+import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/summary_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';

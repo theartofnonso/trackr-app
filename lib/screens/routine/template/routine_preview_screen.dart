@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
+import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/screens/routine/template/routine_history_chart.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';

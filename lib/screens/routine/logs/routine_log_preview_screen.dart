@@ -8,7 +8,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
-import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
+import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 

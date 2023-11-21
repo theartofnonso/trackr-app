@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
-import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../screens/editors/routine_editor_screen.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
 import '../timer_widget.dart';

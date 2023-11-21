@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../../../dtos/set_dto.dart';
-import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../screens/editors/routine_editor_screen.dart';
 
 abstract class SetRow extends StatelessWidget {
   final int index;

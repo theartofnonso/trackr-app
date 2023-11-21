@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../screens/editors/routine_editor_screen.dart';
 
 class DurationSetHeader extends StatelessWidget {
   final RoutineEditorType editorType;

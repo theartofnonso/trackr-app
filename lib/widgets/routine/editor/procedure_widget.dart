@@ -20,7 +20,7 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/weight_reps_set_row.
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../screens/exercise/history/home_screen.dart';
-import '../../../screens/editor/routine_editor_screen.dart';
+import '../../../screens/editors/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 
 class ProcedureWidget extends StatefulWidget {

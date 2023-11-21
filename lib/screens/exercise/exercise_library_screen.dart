@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
-import 'package:tracker_app/screens/editor/exercise_editor_screen.dart';
+import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../app_constants.dart';

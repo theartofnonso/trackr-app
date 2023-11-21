@@ -4,7 +4,7 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
 
-import '../../../../screens/editor/routine_editor_screen.dart';
+import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
