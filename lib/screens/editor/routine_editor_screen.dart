@@ -365,6 +365,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if(widget.mode == RoutineEditorType.edit) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
+
+      if(procedures == null ) {
+
+      }
+
       final oldProcedures = procedures!.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
       final newProcedures = procedureProvider.mergeSetsIntoProcedures();
 

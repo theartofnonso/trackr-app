@@ -444,20 +444,22 @@ class HomeScreen extends StatelessWidget {
               )
             ],
           ),
-          body: TabBarView(
-            children: [
-              SummaryScreen(
-                heaviestWeight: heaviestWeight,
-                heaviestSet: heaviestSet,
-                heaviestRoutineLogVolume: heaviestRoutineLogVolume,
-                longestDuration: longestDuration,
-                longestDistance: longestDistance,
-                routineLogs: routineLogsForExercise,
-                exercise: foundExercise,
-              ),
-              HistoryScreen(logs: routineLogsForExercise),
-              NotesScreen(notes: foundExercise.notes)
-            ],
+          body: SafeArea(
+            child: TabBarView(
+              children: [
+                SummaryScreen(
+                  heaviestWeight: heaviestWeight,
+                  heaviestSet: heaviestSet,
+                  heaviestRoutineLogVolume: heaviestRoutineLogVolume,
+                  longestDuration: longestDuration,
+                  longestDistance: longestDistance,
+                  routineLogs: routineLogsForExercise,
+                  exercise: foundExercise,
+                ),
+                HistoryScreen(logs: routineLogsForExercise),
+                NotesScreen(notes: foundExercise.notes)
+              ],
+            ),
           ),
         ));
   }

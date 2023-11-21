@@ -99,7 +99,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.oneRepMaxes;
-      _chartUnit = ChartUnitLabel.reps;
+      _chartUnit = weightUnit();
     });
   }
 

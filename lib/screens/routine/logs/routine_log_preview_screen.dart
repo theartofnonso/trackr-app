@@ -57,10 +57,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final numberOfCompletedSets = _calculateCompletedSets(procedures: procedures);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
-    final totalVolume = _totalVolume(procedures: procedures);
-    final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
-    final totalVolumeSummary = "$volume ${weightLabel()}";
-
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           heroTag: "fab_routine_log_preview_screen",
@@ -171,7 +167,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text(totalVolumeSummary,
+                                child: Text("${log.procedures.length} exercise(s)",
                                     style: GoogleFonts.lato(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
