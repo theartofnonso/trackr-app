@@ -632,10 +632,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
 
     final routine = widget.routine;
-    final routineLog = widget.routineLog;
     if (routine != null) {
       proceduresProvider.loadProcedures(procedures: routine.procedures);
     }
+    
+    final routineLog = widget.routineLog;
     if (routineLog != null) {
       proceduresProvider.loadProcedures(procedures: routineLog.procedures);
       _routineStartTime = routineLog.startTime;
