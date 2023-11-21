@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/unsaved_changes_messages_dto.dart';
+import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../dtos/procedure_dto.dart';
@@ -24,14 +26,21 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadProcedures({required List<String> procedures}) {
+  void loadProcedures({required BuildContext context, required List<String> procedures}) {
     _procedures = procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-    _loadSets();
+    _loadSets(context);
   }
 
-  void _loadSets() {
+  void _loadSets(BuildContext context) {
     for (var procedure in _procedures) {
-      _sets[procedure.id] = procedure.sets;
+      final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
+      List<SetDto> sets = [];
+      for(int i = 0; i < procedure.sets.length; i++) {
+        final pastSet = _wherePastSet(index: i, type: procedure.sets[i].type, pastSets: pastSets);
+        final newSet = _createSet(sets: procedure.sets, pastSet: pastSet);
+        sets.add(newSet);
+      }
+      _sets[procedure.id] = sets;
     }
   }
 
@@ -152,8 +161,9 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   SetDto? _wherePastSet({required int index, required SetType type, required List<SetDto> pastSets}) {
-    final workingSets = pastSets.where((set) => set.type == type).toList();
-    return workingSets.length >= index ? workingSets.lastOrNull : null;
+    return pastSets.firstWhereIndexedOrNull((pastSetIndex, pastSet) {
+      return pastSetIndex == index && pastSet.type == type;
+    });
   }
 
   void addSetForProcedure({required String procedureId, required List<SetDto> pastSets}) {
@@ -166,7 +176,7 @@ class ProceduresProvider extends ChangeNotifier {
           index: currentSets.isEmpty ? currentSets.length : currentSets.length + 1,
           type: SetType.working,
           pastSets: pastSets);
-      SetDto newSet = _createSet(currentSets, pastSet);
+      SetDto newSet = _createSet(sets: currentSets, pastSet: pastSet);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
       List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
@@ -268,6 +278,7 @@ class ProceduresProvider extends ChangeNotifier {
   void updateSetType(
       {required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
     final pastSet = _wherePastSet(index: sets.length, type: setDto.type, pastSets: pastSets) ?? setDto;
+    print(pastSet);
     final updateSet = pastSet.copyWith(type: setDto.type, checked: setDto.checked);
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: updateSet);
   }
@@ -283,9 +294,9 @@ class ProceduresProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  SetDto _createSet(List<SetDto> sets, SetDto? pastSet) {
-    final previousSet = pastSet ?? sets.lastOrNull;
-    return SetDto(previousSet?.value1 ?? 0, previousSet?.value2 ?? 0, SetType.working, false);
+  SetDto _createSet({required List<SetDto> sets, required SetDto? pastSet}) {
+    final set = pastSet ?? sets.lastOrNull;
+    return SetDto(set?.value1 ?? 0, set?.value2 ?? 0, set != null ? set.type : SetType.working, false);
   }
 
   ProcedureDto _createProcedure(Exercise exercise, {String? notes}) {
