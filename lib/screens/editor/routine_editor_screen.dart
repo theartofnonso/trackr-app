@@ -216,6 +216,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final routine = widget.routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
     Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+      context: context,
         name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
         notes: routine?.notes ?? "",
         procedures: completedProcedures,
@@ -623,6 +624,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final routineLog = widget.routineLog;
     if (routine != null) {
       proceduresProvider.loadProcedures(procedures: routine.procedures);
+      print("Hello");
     } else {
       if (routineLog != null) {
         proceduresProvider.loadProcedures(procedures: routineLog.procedures);

@@ -44,7 +44,7 @@ class PendingRoutinesBanner extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            provider.retryPendingRoutineLogs();
+            provider.retryPendingRoutineLogs(context);
           },
           child: Text('Retry', style: GoogleFonts.lato(color: Colors.white)),
         ),

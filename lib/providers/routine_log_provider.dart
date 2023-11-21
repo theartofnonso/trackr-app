@@ -4,10 +4,12 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
+import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
@@ -103,7 +105,8 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void saveRoutineLog(
-      {required String name,
+      {required BuildContext context,
+      required String name,
       required String notes,
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
@@ -123,7 +126,7 @@ class RoutineLogProvider with ChangeNotifier {
         endTime: TemporalDateTime.now(),
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
-        routine: routine,
+        routine: routine?.copyWith(procedures: proceduresJson),
         user: owner);
 
     try {
@@ -132,6 +135,12 @@ class RoutineLogProvider with ChangeNotifier {
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
+        if (routine != null) {
+          if (context.mounted) {
+            Provider.of<RoutineProvider>(context, listen: false)
+                .updateRoutine(routine: routine.copyWith(procedures: proceduresJson));
+          }
+        }
       }
     } on ApiException catch (_) {
       _cachePendingLogs(logToCreate);
@@ -147,7 +156,7 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void retryPendingRoutineLogs() async {
+  void retryPendingRoutineLogs(BuildContext context) async {
     final cachedPendingRoutineLogs = SharedPrefs().cachedPendingRoutineLogs;
     for (int index = 0; index < _cachedPendingLogs.length; index++) {
       final pendingLog = _cachedPendingLogs[index];
@@ -162,6 +171,15 @@ class RoutineLogProvider with ChangeNotifier {
 
         /// Add to logs
         _addToLogs(createdLog);
+
+        /// Update routine
+        if (context.mounted) {
+          final routine = createdLog.routine;
+          if (routine != null) {
+            Provider.of<RoutineProvider>(context, listen: false)
+                .updateRoutine(routine: routine.copyWith(procedures: createdLog.procedures));
+          }
+        }
       }
     }
   }
@@ -247,7 +265,6 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<SetDto> wherePastSets({required Exercise exercise}) {
-
     final procedures = _proceduresForExercise(exercise: exercise);
     return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
   }
