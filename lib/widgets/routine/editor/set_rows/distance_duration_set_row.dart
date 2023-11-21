@@ -48,7 +48,7 @@ class DistanceDurationSetRow extends SetRow {
         : toKM(setDto.value2.toDouble(), type: ExerciseType.distanceAndDuration);
 
     return Table(
-      columnWidths: editorType == RoutineEditorType.edit
+      columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(2),
@@ -102,7 +102,7 @@ class DistanceDurationSetRow extends SetRow {
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
-          if (editorType == RoutineEditorType.log)
+          if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: SetCheckButton(setDto: setDto, onCheck: onCheck))

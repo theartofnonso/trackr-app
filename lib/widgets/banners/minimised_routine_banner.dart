@@ -45,7 +45,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) =>
-                    RoutineEditorScreen(routineLog: log, routine: log.routine, mode: RoutineEditorType.log)));
+                    RoutineEditorScreen(routineLog: log, routine: log.routine, mode: RoutineEditorMode.log)));
           },
           child: Text('Continue', style: GoogleFonts.lato(color: Colors.white)),
         ),

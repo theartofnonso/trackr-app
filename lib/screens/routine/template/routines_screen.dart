@@ -19,7 +19,7 @@ import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../editors/routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
-    {required BuildContext context, Routine? routine, RoutineEditorType mode = RoutineEditorType.edit}) {
+    {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.edit}) {
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
 }
@@ -127,7 +127,7 @@ class _RoutineWidget extends StatelessWidget {
               leading: canStartRoutine
                   ? GestureDetector(
                       onTap: () {
-                        _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorType.log);
+                        _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
                       },
                       child: const Icon(
                         Icons.play_arrow_rounded,

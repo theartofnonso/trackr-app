@@ -24,7 +24,7 @@ import '../../../screens/editors/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 
 class ProcedureWidget extends StatefulWidget {
-  final RoutineEditorType editorType;
+  final RoutineEditorMode editorType;
 
   final ProcedureDto procedureDto;
   final ProcedureDto? otherSuperSetProcedureDto;
@@ -40,7 +40,7 @@ class ProcedureWidget extends StatefulWidget {
 
   const ProcedureWidget({
     super.key,
-    this.editorType = RoutineEditorType.edit,
+    this.editorType = RoutineEditorMode.edit,
     required this.procedureDto,
     required this.otherSuperSetProcedureDto,
     required this.onSuperSet,

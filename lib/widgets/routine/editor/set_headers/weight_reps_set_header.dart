@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 
 class WeightRepsSetHeader extends StatelessWidget {
-  final RoutineEditorType editorType;
+  final RoutineEditorMode editorType;
   final String firstLabel;
   final String secondLabel;
 
@@ -13,7 +13,7 @@ class WeightRepsSetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Table(
-      columnWidths: editorType == RoutineEditorType.edit
+      columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(3),
@@ -53,7 +53,7 @@ class WeightRepsSetHeader extends StatelessWidget {
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
-          if (editorType == RoutineEditorType.log)
+          if (editorType == RoutineEditorMode.log)
             const TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Icon(

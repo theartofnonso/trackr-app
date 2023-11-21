@@ -32,7 +32,7 @@ class RepsSetRow extends SetRow {
     int reps = previousSetDto != null ? previousSetDto.value2.toInt() : setDto.value2.toInt();
 
     return Table(
-      columnWidths: editorType == RoutineEditorType.edit
+      columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(30),
               1: const FlexColumnWidth(3),
@@ -72,7 +72,7 @@ class RepsSetRow extends SetRow {
               controller: controllers.$1,
             ),
           ),
-          if (editorType == RoutineEditorType.log)
+          if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: SetCheckButton(setDto: setDto, onCheck: onCheck))

@@ -9,5 +9,5 @@ void navigateToRoutineLogPreview({required BuildContext context, required String
 
 void startEmptyRoutine({required BuildContext context, TemporalDateTime? createdAt}) async {
   Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => RoutineEditorScreen(mode: RoutineEditorType.log, createdAt: createdAt)));
+      MaterialPageRoute(builder: (context) => RoutineEditorScreen(mode: RoutineEditorMode.log, createdAt: createdAt)));
 }
