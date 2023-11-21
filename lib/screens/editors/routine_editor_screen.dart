@@ -631,14 +631,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _initializeProcedureData() {
     final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
 
-    final routine = widget.routine;
-    if (routine != null) {
-      proceduresProvider.loadProcedures(procedures: routine.procedures);
+    final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
+    if (procedures != null) {
+      proceduresProvider.loadProcedures(procedures: procedures);
     }
 
     final routineLog = widget.routineLog;
     if (routineLog != null) {
-      proceduresProvider.loadProcedures(procedures: routineLog.procedures);
       _routineStartTime = routineLog.startTime;
     }
   }
@@ -646,7 +645,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _initializeTextControllers() {
     if (widget.mode == RoutineEditorMode.edit) {
       Routine? routine = widget.routine;
-
       _routineNameController = TextEditingController(text: routine?.name);
       _routineNotesController = TextEditingController(text: routine?.notes);
     }
