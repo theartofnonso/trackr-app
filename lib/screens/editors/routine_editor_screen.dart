@@ -213,7 +213,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doCreateRoutineLog() {
-    final routine = widget.routine;
+    final routine = widget.routineLog?.routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
     Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
@@ -645,11 +645,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _initializeTextControllers() {
     if (widget.mode == RoutineEditorMode.edit) {
-      RoutineLog? routineLog = widget.routineLog;
       Routine? routine = widget.routine;
 
-      _routineNameController = TextEditingController(text: routineLog?.name ?? routine?.name);
-      _routineNotesController = TextEditingController(text: routineLog?.notes ?? routine?.notes);
+      _routineNameController = TextEditingController(text: routine?.name);
+      _routineNotesController = TextEditingController(text: routine?.notes);
     }
   }
 
@@ -767,7 +766,7 @@ class _RoutineLogOverview extends StatelessWidget {
   final int sets;
   final Widget timer;
 
-  const _RoutineLogOverview({super.key, required this.sets, required this.timer});
+  const _RoutineLogOverview({required this.sets, required this.timer});
 
   @override
   Widget build(BuildContext context) {
