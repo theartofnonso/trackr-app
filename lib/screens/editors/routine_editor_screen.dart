@@ -56,7 +56,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     displayBottomSheet(
       height: 216,
         context: context,
-        child: _ProceduresList(
+        child: _ProceduresPicker(
           procedures: procedures,
           onSelect: (ProcedureDto secondProcedure) {
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
@@ -525,9 +525,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   if (widget.mode == RoutineEditorType.log)
                     Consumer<ProceduresProvider>(
                         builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
-                      return RunningRoutineSummaryWidget(
+                      return _RoutineLogOverview(
                         sets: provider.completedSets().length,
-                        timer: _TimerWidget(
+                        timer: _RoutineTimer(
                             TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
                       );
                     }),
@@ -654,12 +654,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 }
 
-class _ProceduresList extends StatelessWidget {
+class _ProceduresPicker extends StatelessWidget {
   final List<ProcedureDto> procedures;
   final void Function(ProcedureDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const _ProceduresList({required this.procedures, required this.onSelect, required this.onSelectExercisesInLibrary});
+  const _ProceduresPicker({required this.procedures, required this.onSelect, required this.onSelectExercisesInLibrary});
 
   @override
   Widget build(BuildContext context) {
@@ -714,16 +714,16 @@ class _ExercisesInWorkoutEmptyState extends StatelessWidget {
   }
 }
 
-class _TimerWidget extends StatefulWidget {
+class _RoutineTimer extends StatefulWidget {
   final Duration elapsedDuration;
 
-  const _TimerWidget(this.elapsedDuration);
+  const _RoutineTimer(this.elapsedDuration);
 
   @override
-  State<_TimerWidget> createState() => _TimerWidgetState();
+  State<_RoutineTimer> createState() => _RoutineTimerState();
 }
 
-class _TimerWidgetState extends State<_TimerWidget> {
+class _RoutineTimerState extends State<_RoutineTimer> {
   late Timer _timer;
   int _elapsedSeconds = 0;
 
@@ -753,11 +753,11 @@ class _TimerWidgetState extends State<_TimerWidget> {
   }
 }
 
-class RunningRoutineSummaryWidget extends StatelessWidget {
+class _RoutineLogOverview extends StatelessWidget {
   final int sets;
   final Widget timer;
 
-  const RunningRoutineSummaryWidget({super.key, required this.sets, required this.timer});
+  const _RoutineLogOverview({super.key, required this.sets, required this.timer});
 
   @override
   Widget build(BuildContext context) {
