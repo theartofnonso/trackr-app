@@ -623,6 +623,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final routine = widget.routine;
     final routineLog = widget.routineLog;
     if (routine != null) {
+      print("Hekki");
       proceduresProvider.loadProcedures(procedures: routine.procedures);
     } else {
       if (routineLog != null) {
