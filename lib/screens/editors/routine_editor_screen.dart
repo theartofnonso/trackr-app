@@ -54,7 +54,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
     displayBottomSheet(
-      height: 216,
+        height: 216,
         context: context,
         child: _ProceduresPicker(
           procedures: procedures,
@@ -196,8 +196,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _createRoutineLog() {
-
-    showAlertDialog(context: context,
+    showAlertDialog(
+        context: context,
         message: "Finish workout?",
         leftAction: () {
           Navigator.of(context).pop();
@@ -216,7 +216,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final routine = widget.routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
     Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-      context: context,
+        context: context,
         name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
         notes: routine?.notes ?? "",
         procedures: completedProcedures,
@@ -229,7 +229,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _updateRoutine({required Routine routine}) {
     if (!_validateRoutineInputs()) return;
 
-    showAlertDialog(context: context,
+    showAlertDialog(
+        context: context,
         message: "Update workout?",
         leftAction: Navigator.of(context).pop,
         rightAction: () {
@@ -243,7 +244,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _updateRoutineLog({required RoutineLog routineLog}) {
     if (!_validateRoutineInputs()) return;
 
-    showAlertDialog(context: context,
+    showAlertDialog(
+        context: context,
         message: "Update log?",
         leftAction: Navigator.of(context).pop,
         rightAction: () {
@@ -333,7 +335,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (isRoutinePartiallyComplete) {
       _createRoutineLog();
     } else {
-      showAlertDialog(context: context,
+      showAlertDialog(
+          context: context,
           message: "You have not completed any sets",
           leftAction: () {
             Navigator.of(context).pop();
@@ -363,7 +366,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _checkForUnsavedChanges() {
     List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
-    if(widget.mode == RoutineEditorType.edit) {
+    if (widget.mode == RoutineEditorType.edit) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
 
@@ -371,49 +374,59 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       final newProcedures = procedureProvider.mergeSetsIntoProcedures();
 
       /// Check if [ProcedureDto]'s have been added or removed
-      final differentProceduresChangeMessage = procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
-      if(differentProceduresChangeMessage != null) {
+      final differentProceduresChangeMessage =
+          procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
+      if (differentProceduresChangeMessage != null) {
         unsavedChangesMessage.add(differentProceduresChangeMessage);
       }
 
       /// Check if [SetDto]'s have been added or removed
-      final differentSetsChangeMessage = procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
-      if(differentSetsChangeMessage != null) {
+      final differentSetsChangeMessage =
+          procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
+      if (differentSetsChangeMessage != null) {
         unsavedChangesMessage.add(differentSetsChangeMessage);
       }
 
       /// Check if [SetType] for [SetDto] has been changed
-      final differentSetTypesChangeMessage = procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
-      if(differentSetTypesChangeMessage != null) {
+      final differentSetTypesChangeMessage =
+          procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
+      if (differentSetTypesChangeMessage != null) {
         unsavedChangesMessage.add(differentSetTypesChangeMessage);
       }
 
       /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
-      final differentExerciseTypesChangeMessage = procedureProvider.hasExercisesChanged(procedures1: oldProcedures, procedures2: newProcedures);
-      if(differentExerciseTypesChangeMessage != null) {
+      final differentExerciseTypesChangeMessage =
+          procedureProvider.hasExercisesChanged(procedures1: oldProcedures, procedures2: newProcedures);
+      if (differentExerciseTypesChangeMessage != null) {
         unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
       }
 
       /// Check if superset in [ProcedureDto] has been changed
-      final differentSuperSetIdsChangeMessage = procedureProvider.hasSuperSetIdChanged(procedures1: oldProcedures, procedures2: newProcedures);
-      if(differentSuperSetIdsChangeMessage != null) {
+      final differentSuperSetIdsChangeMessage =
+          procedureProvider.hasSuperSetIdChanged(procedures1: oldProcedures, procedures2: newProcedures);
+      if (differentSuperSetIdsChangeMessage != null) {
         unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
       }
 
       /// Check if [SetDto] value has been changed
-      final differentSetValueChangeMessage = procedureProvider.hasSetValueChanged(procedures1: oldProcedures, procedures2: newProcedures);
-      if(differentSetValueChangeMessage != null) {
+      final differentSetValueChangeMessage =
+          procedureProvider.hasSetValueChanged(procedures1: oldProcedures, procedures2: newProcedures);
+      if (differentSetValueChangeMessage != null) {
         unsavedChangesMessage.add(differentSetValueChangeMessage);
       }
-      if(unsavedChangesMessage.isNotEmpty) {
+      if (unsavedChangesMessage.isNotEmpty) {
         showAlertDialog(
             context: context,
             message: "You have unsaved changes",
             leftAction: Navigator.of(context).pop,
             leftActionLabel: 'Cancel',
             rightAction: () {
-              Navigator.of(context).pop(); /// Close dialog
-              Navigator.of(context).pop(); /// Navigate back
+              Navigator.of(context).pop();
+
+              /// Close dialog
+              Navigator.of(context).pop();
+
+              /// Navigate back
             },
             rightActionLabel: 'Discard',
             isRightActionDestructive: true);
@@ -457,7 +470,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -466,8 +478,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         backgroundColor: tealBlueDark,
         appBar: widget.mode == RoutineEditorType.edit
             ? AppBar(
-                leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
+                leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
                 actions: [
                   CTextButton(
                       onPressed: _canUpdate() ? _doUpdate : _createRoutine,
@@ -623,13 +634,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final routine = widget.routine;
     final routineLog = widget.routineLog;
     if (routine != null) {
-      print("Hekki");
       proceduresProvider.loadProcedures(procedures: routine.procedures);
-    } else {
-      if (routineLog != null) {
-        proceduresProvider.loadProcedures(procedures: routineLog.procedures);
-        _routineStartTime = routineLog.startTime;
-      }
+    }
+    if (routineLog != null) {
+      proceduresProvider.loadProcedures(procedures: routineLog.procedures);
+      _routineStartTime = routineLog.startTime;
     }
   }
 
