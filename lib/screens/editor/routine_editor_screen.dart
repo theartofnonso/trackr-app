@@ -624,7 +624,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final routineLog = widget.routineLog;
     if (routine != null) {
       proceduresProvider.loadProcedures(procedures: routine.procedures);
-      print("Hello");
     } else {
       if (routineLog != null) {
         proceduresProvider.loadProcedures(procedures: routineLog.procedures);
