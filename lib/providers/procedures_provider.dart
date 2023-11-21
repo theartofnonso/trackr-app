@@ -412,6 +412,8 @@ class ProceduresProvider extends ChangeNotifier {
     Set<String> exerciseIds1 = procedures1.map((p) => p.exercise.id).toSet();
     Set<String> exerciseIds2 = procedures2.map((p) => p.exercise.id).toSet();
 
+    
+
     int changes = exerciseIds2.difference(exerciseIds1).length;
 
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercises(s)") : null;
@@ -421,10 +423,10 @@ class ProceduresProvider extends ChangeNotifier {
     required List<ProcedureDto> procedures1,
     required List<ProcedureDto> procedures2,
   }) {
-    Set<String> superSetIds1 = procedures1.map((p) => p.superSetId).toSet();
-    Set<String> superSetIds2 = procedures2.map((p) => p.superSetId).toSet();
+    Set<String> superSetIds1 = procedures1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+    Set<String> superSetIds2 = procedures2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
 
-    int changes = superSetIds2.difference(superSetIds1).length;
+    final changes = superSetIds2.difference(superSetIds1).length;
 
     return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes supersets(s)") : null;
   }

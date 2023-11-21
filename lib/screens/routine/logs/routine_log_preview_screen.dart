@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/editor/routine_editor_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../../../app_constants.dart';
@@ -236,27 +234,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       completedSets.addAll(procedure.sets);
     }
     return completedSets.length;
-  }
-
-  double _totalVolume({required List<ProcedureDto> procedures}) {
-    double totalWeight = 0;
-    for (var procedure in procedures) {
-      final exerciseTypeString = procedure.exercise.type;
-      final exerciseType = ExerciseType.fromString(exerciseTypeString);
-      for (var set in procedure.sets) {
-        final weightPerSet = switch (exerciseType) {
-          ExerciseType.weightAndReps || ExerciseType.weightedBodyWeight => set.value1 * (set).value2,
-          ExerciseType.bodyWeightAndReps ||
-          ExerciseType.assistedBodyWeight ||
-          ExerciseType.duration ||
-          ExerciseType.distanceAndDuration ||
-          ExerciseType.weightAndDistance =>
-            0,
-        };
-        totalWeight += weightPerSet;
-      }
-    }
-    return totalWeight;
   }
 
   /// [MenuItemButton]

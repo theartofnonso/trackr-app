@@ -366,11 +366,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
 
-      if(procedures == null ) {
-
-      }
-
-      final oldProcedures = procedures!.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+      final oldProcedures = procedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
       final newProcedures = procedureProvider.mergeSetsIntoProcedures();
 
       /// Check if [ProcedureDto]'s have been added or removed
@@ -409,6 +405,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         unsavedChangesMessage.add(differentSetValueChangeMessage);
       }
       if(unsavedChangesMessage.isNotEmpty) {
+        print(unsavedChangesMessage);
         showAlertDialog(
             context: context,
             message: "You have unsaved changes",
