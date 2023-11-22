@@ -6,7 +6,7 @@ enum SetType {
   warmUp("Warm Up", "WM", Colors.orange),
   working("Working", "WK", Colors.white),
   failure("Failure", "FL", Colors.red),
-  drop("Drop Set", "DP", Colors.green);
+  drop("Drop", "DP", Colors.green);
 
   const SetType(this.name, this.label, this.color);
 
