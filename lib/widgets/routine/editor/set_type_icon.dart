@@ -88,10 +88,13 @@ class SetTypeIcon extends StatelessWidget {
               ),
             ));
       },
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.lato(color: type.color, fontWeight: FontWeight.bold, fontSize: 13),
+        ),
       ),
     );
   }

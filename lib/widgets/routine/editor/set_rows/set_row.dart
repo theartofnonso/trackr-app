@@ -9,10 +9,11 @@ abstract class SetRow extends StatelessWidget {
   final String procedureId;
   final SetDto setDto;
   final SetDto? pastSetDto;
-  final RoutineEditorMode editorType; // Assuming EditorType is defined somewhere
+  final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
-  final void Function(SetType) onChangedType;
+  final void Function(SetType type) onChangedType;
+  final void Function(SetDto setDto) onUpdateSetWithPastSet;
 
   const SetRow({
     Key? key,
@@ -25,6 +26,7 @@ abstract class SetRow extends StatelessWidget {
     required this.onRemoved,
     required this.onChangedType,
     required this.onCheck,
+    required this.onUpdateSetWithPastSet,
   }) : super(key: key);
 
 // Define common methods here, if any.

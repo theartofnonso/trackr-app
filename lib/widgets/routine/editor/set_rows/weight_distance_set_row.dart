@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 
+import '../../../../app_constants.dart';
 import '../../../../enums/exercise_type_enums.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
@@ -27,7 +28,8 @@ class WeightDistanceSetRow extends SetRow {
       required super.editorType,
       required super.onChangedType,
       required super.onRemoved,
-      required super.onCheck});
+      required super.onCheck,
+      required super.onUpdateSetWithPastSet});
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class WeightDistanceSetRow extends SetRow {
     if (previousSetDto != null) {
       weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
       distance = previousSetDto.value2.toDouble();
+      onUpdateSetWithPastSet(previousSetDto);
     } else {
       weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
       distance = setDto.value2.toDouble();
@@ -49,15 +52,16 @@ class WeightDistanceSetRow extends SetRow {
         : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
 
     return Table(
+      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
               3: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),

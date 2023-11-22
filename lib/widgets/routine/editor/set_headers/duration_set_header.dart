@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../app_constants.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 
 class DurationSetHeader extends StatelessWidget {
@@ -11,14 +12,15 @@ class DurationSetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Table(
+      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(1),

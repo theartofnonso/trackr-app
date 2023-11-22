@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
@@ -27,7 +30,8 @@ class WeightRepsSetRow extends SetRow {
       required super.editorType,
       required super.onChangedType,
       required super.onRemoved,
-      required super.onCheck});
+      required super.onCheck,
+      required super.onUpdateSetWithPastSet});
 
   @override
   Widget build(BuildContext context) {
@@ -39,21 +43,23 @@ class WeightRepsSetRow extends SetRow {
     if (previousSetDto != null) {
       weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
       reps = previousSetDto.value2.toInt();
+      onUpdateSetWithPastSet(previousSetDto);
     } else {
       weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
       reps = setDto.value2.toInt();
     }
 
     return Table(
+      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),

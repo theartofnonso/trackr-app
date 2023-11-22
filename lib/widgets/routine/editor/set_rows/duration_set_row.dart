@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
+import '../../../../app_constants.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
@@ -22,21 +23,32 @@ class DurationSetRow extends SetRow {
       required super.editorType,
       required super.onRemoved,
       required super.onChangedType,
-      required super.onCheck});
+      required super.onCheck,
+      required super.onUpdateSetWithPastSet});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
+    Duration duration = Duration.zero;
+
+    if(previousSetDto != null) {
+      duration = Duration(milliseconds: previousSetDto.value1.toInt());
+      onUpdateSetWithPastSet(previousSetDto);
+    } else {
+      duration = Duration(milliseconds: setDto.value1.toInt());
+    }
+
     return Table(
+      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(1),
@@ -66,7 +78,7 @@ class DurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              setDto: setDto,
+              duration: duration,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),

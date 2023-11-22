@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
 
+import '../../../../app_constants.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
@@ -23,23 +24,32 @@ class RepsSetRow extends SetRow {
       required super.editorType,
       required super.onRemoved,
       required super.onChangedType,
-      required super.onCheck});
+      required super.onCheck,
+      required super.onUpdateSetWithPastSet});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    int reps = previousSetDto != null ? previousSetDto.value2.toInt() : setDto.value2.toInt();
+    int reps = 0;
+
+    if (previousSetDto != null) {
+      reps = previousSetDto.value2.toInt();
+      onUpdateSetWithPastSet(previousSetDto);
+    } else {
+      reps = setDto.value2.toInt();
+    }
 
     return Table(
+      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(1),

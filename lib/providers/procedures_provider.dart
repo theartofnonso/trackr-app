@@ -237,7 +237,36 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet}) {
+  void _updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet, bool shouldNotifyListeners = true}) {
+    // Check if the exercise ID exists in the map and if the setIndex is valid
+    if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
+      // Handle the case where the exercise ID does not exist or index is invalid
+      // e.g., log an error or throw an exception
+      return;
+    }
+
+    // Clone the old sets for the exercise ID
+    List<SetDto> updatedSets = List<SetDto>.from(_sets[procedureId]!);
+
+    // Replace the set at the specified index with the updated set
+    updatedSets[setIndex] = updatedSet;
+
+    // Create a new map by copying all key-value pairs from the original map
+    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+
+    // Update the new map with the modified list of sets
+    newMap[procedureId] = updatedSets;
+
+    // Assign the new map to _sets to maintain immutability
+    _sets = newMap;
+
+    // Notify listeners about the change
+    if(shouldNotifyListeners) {
+      notifyListeners();
+    }
+  }
+
+  void updateSetForProcedure({required String procedureId, required int setIndex, required SetDto updatedSet}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -269,9 +298,6 @@ class ProceduresProvider extends ChangeNotifier {
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
-
-    // Notify listeners about the change
-    notifyListeners();
   }
 
   void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {
@@ -292,6 +318,10 @@ class ProceduresProvider extends ChangeNotifier {
 
   void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  }
+
+  void updateSetWithPastSet({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldNotifyListeners: false);
   }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {

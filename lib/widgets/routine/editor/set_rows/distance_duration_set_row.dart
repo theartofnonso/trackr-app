@@ -4,6 +4,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
+import '../../../../app_constants.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
@@ -29,17 +30,22 @@ class DistanceDurationSetRow extends SetRow {
       required super.editorType,
       required super.onRemoved,
       required super.onChangedType,
-      required super.onCheck});
+      required super.onCheck,
+      required super.onUpdateSetWithPastSet});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
+    Duration duration = Duration.zero;
     double distance = 0;
 
     if (previousSetDto != null) {
+      duration = Duration(milliseconds: previousSetDto.value1.toInt());
       distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
+      onUpdateSetWithPastSet(previousSetDto);
     } else {
+      duration = Duration(milliseconds: setDto.value1.toInt());
       distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
     }
 
@@ -48,15 +54,16 @@ class DistanceDurationSetRow extends SetRow {
         : toKM(setDto.value2.toDouble(), type: ExerciseType.distanceAndDuration);
 
     return Table(
+      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(38),
+              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(3),
@@ -98,7 +105,7 @@ class DistanceDurationSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(
-              setDto: previousSetDto ?? setDto,
+              duration: duration,
               onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
