@@ -5,7 +5,7 @@ import '../../../../screens/editors/routine_editor_screen.dart';
 
 abstract class SetRow extends StatelessWidget {
   final int index;
-  final String label;
+  final int setTypeIndex;
   final String procedureId;
   final SetDto setDto;
   final SetDto? pastSetDto;
@@ -17,7 +17,7 @@ abstract class SetRow extends StatelessWidget {
   const SetRow({
     Key? key,
     required this.index,
-    required this.label,
+    required this.setTypeIndex,
     required this.procedureId,
     required this.setDto,
     required this.pastSetDto,

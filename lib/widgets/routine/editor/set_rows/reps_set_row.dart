@@ -16,7 +16,7 @@ class RepsSetRow extends SetRow {
       required this.controllers,
       required this.onChangedReps,
       required super.index,
-      required super.label,
+      required super.setTypeIndex,
       required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
@@ -34,12 +34,12 @@ class RepsSetRow extends SetRow {
     return Table(
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(1),
@@ -49,7 +49,7 @@ class RepsSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                label: label,
+                label: "${setDto.type.label}${setTypeIndex + 1}",
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,

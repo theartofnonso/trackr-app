@@ -20,7 +20,7 @@ class WeightRepsSetRow extends SetRow {
       required this.onChangedReps,
       required this.onChangedWeight,
       required super.index,
-      required super.label,
+      required super.setTypeIndex,
       required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
@@ -47,13 +47,13 @@ class WeightRepsSetRow extends SetRow {
     return Table(
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
@@ -64,7 +64,7 @@ class WeightRepsSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                label: label,
+                label: "${setDto.type.label}${setTypeIndex + 1}",
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,

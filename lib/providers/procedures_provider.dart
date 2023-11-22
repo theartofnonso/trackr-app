@@ -35,10 +35,15 @@ class ProceduresProvider extends ChangeNotifier {
     for (var procedure in _procedures) {
       final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
       List<SetDto> sets = [];
-      for(int i = 0; i < procedure.sets.length; i++) {
-        final pastSet = _wherePastSet(index: i, type: procedure.sets[i].type, pastSets: pastSets);
-        final newSet = _createSet(sets: procedure.sets, pastSet: pastSet);
-        sets.add(newSet);
+      for(int index = 0; index < procedure.sets.length; index++) {
+        final pastSet = _wherePastSet(index: index, type: procedure.sets[index].type, pastSets: pastSets);
+        if(pastSet != null) {
+          final newSet = _createSet(sets: procedure.sets, pastSet: pastSet);
+          sets.add(newSet);
+        } else {
+          final newSet = SetDto(procedure.sets[index].value1, procedure.sets[index].value2, procedure.sets[index].type, procedure.sets[index].checked);
+          sets.add(newSet);
+        }
       }
       _sets[procedure.id] = sets;
     }
@@ -240,11 +245,21 @@ class ProceduresProvider extends ChangeNotifier {
       return;
     }
 
+    // print(updatedSet);
+    //
+    // print("=========");
+    //
+    // print(_sets[procedureId]);
+
     // Clone the old sets for the exercise ID
     List<SetDto> updatedSets = List<SetDto>.from(_sets[procedureId]!);
 
     // Replace the set at the specified index with the updated set
     updatedSets[setIndex] = updatedSet;
+
+    // print("=========");
+    //
+    // print(updatedSets);
 
     // Create a new map by copying all key-value pairs from the original map
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
@@ -275,11 +290,8 @@ class ProceduresProvider extends ChangeNotifier {
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType(
-      {required String procedureId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
-    final pastSet = _wherePastSet(index: setIndex, type: setDto.type, pastSets: pastSets) ?? setDto;
-    final updateSet = pastSet.copyWith(type: setDto.type, checked: setDto.checked);
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: updateSet);
+  void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {

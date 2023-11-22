@@ -15,7 +15,7 @@ class DurationSetRow extends SetRow {
       {super.key,
       required this.onChangedDuration,
       required super.index,
-      required super.label,
+      required super.setTypeIndex,
       required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
@@ -31,12 +31,12 @@ class DurationSetRow extends SetRow {
     return Table(
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(25),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(1),
@@ -46,7 +46,7 @@ class DurationSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                label: label,
+                label: "${setDto.type.label}${setTypeIndex + 1}",
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,

@@ -22,7 +22,7 @@ class DistanceDurationSetRow extends SetRow {
       required this.onChangedDuration,
       required this.onChangedDistance,
       required super.index,
-      required super.label,
+      required super.setTypeIndex,
       required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
@@ -37,7 +37,7 @@ class DistanceDurationSetRow extends SetRow {
 
     double distance = 0;
 
-    if(previousSetDto != null) {
+    if (previousSetDto != null) {
       distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
     } else {
       distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
@@ -50,13 +50,13 @@ class DistanceDurationSetRow extends SetRow {
     return Table(
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(30),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(2),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(25),
+              0: const FixedColumnWidth(35),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(3),
@@ -67,7 +67,7 @@ class DistanceDurationSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                label: label,
+                label: "${setDto.type.label}${setTypeIndex + 1}",
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,
