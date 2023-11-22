@@ -202,9 +202,7 @@ class RoutineLogProvider with ChangeNotifier {
         updatedAt: currentTime,
         user: user());
     _cachedLog = cachedLog;
-    // print(cachedLog.procedures);
-    // print(cachedLog.toMap());
-    //SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
+    SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
     notifyListeners();
   }
 
