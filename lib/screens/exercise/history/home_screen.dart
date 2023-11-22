@@ -172,6 +172,21 @@ int repsPerLog({required RoutineLog log}) {
   return totalReps;
 }
 
+int mostRepsPerLog({required RoutineLog log}) {
+  int mostReps = 0;
+
+  final sets = _allSetsWithReps(procedureJsons: log.procedures);
+
+  for (var set in sets) {
+    final reps = set.value2;
+    if (reps > mostReps) {
+      mostReps = reps.toInt();
+    }
+  }
+
+  return mostReps;
+}
+
 double heaviestSetVolumePerLog({required RoutineLog log}) {
   double heaviestVolume = 0;
 

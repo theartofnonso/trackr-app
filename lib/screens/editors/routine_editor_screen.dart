@@ -637,8 +637,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _initializeTextControllers() {
     if (widget.mode == RoutineEditorMode.edit) {
       Routine? routine = widget.routine;
-      _routineNameController = TextEditingController(text: routine?.name);
-      _routineNotesController = TextEditingController(text: routine?.notes);
+      RoutineLog? routineLog = widget.routineLog;
+      _routineNameController = TextEditingController(text: routine?.name ?? routineLog?.name);
+      _routineNotesController = TextEditingController(text: routine?.notes ?? routineLog?.notes);
     }
   }
 

@@ -20,15 +20,16 @@ import '../../routine/logs/routine_log_preview_screen.dart';
 import 'home_screen.dart';
 
 enum SummaryType {
-  heaviestWeights,
-  heaviestSetVolumes,
-  logVolumes,
-  oneRepMaxes,
-  reps,
-  bestTimes,
-  totalTimes,
+  heaviestWeight,
+  heaviestSetVolume,
+  oneRepMax,
+  bestTime,
+  mostReps,
   longestDistance,
-  totalDistance,
+  sessionVolume,
+  sessionReps,
+  sessionTimes,
+  sessionDistance,
 }
 
 class SummaryScreen extends StatefulWidget {
@@ -63,76 +64,85 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   late ChartUnitLabel _chartUnit;
 
-  late SummaryType _summaryType = SummaryType.heaviestWeights;
+  late SummaryType _summaryType = SummaryType.heaviestWeight;
 
   HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
 
-  void _heaviestWeights() {
+  void _heaviestWeightPerLog() {
     final values = _routineLogs.map((log) => heaviestWeightPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.heaviestWeights;
+      _summaryType = SummaryType.heaviestWeight;
       _chartUnit = weightUnit();
     });
   }
 
-  void _heaviestSetVolumes() {
+  void _heaviestSetVolumePerLog() {
     final values = _routineLogs.map((log) => heaviestSetVolumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.heaviestSetVolumes;
+      _summaryType = SummaryType.heaviestSetVolume;
       _chartUnit = weightUnit();
     });
   }
 
-  void _logVolumes() {
+  void _setVolumePerLog() {
     final values = _routineLogs.map((log) => setVolumePerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.logVolumes;
+      _summaryType = SummaryType.sessionVolume;
       _chartUnit = weightUnit();
     });
   }
 
-  void _oneRepMaxes() {
+  void _oneRepMaxPerLog() {
     final values = _routineLogs.map((log) => oneRepMaxPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.oneRepMaxes;
+      _summaryType = SummaryType.oneRepMax;
       _chartUnit = weightUnit();
     });
   }
 
-  void _reps() {
+  void _totalRepsPerLog() {
     final values = widget.routineLogs.map((log) => repsPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.reps;
+      _summaryType = SummaryType.sessionReps;
       _chartUnit = ChartUnitLabel.reps;
     });
   }
 
-  void _bestTimes() {
+  void _mostRepsPerLog() {
+    final values = _routineLogs.map((log) => mostRepsPerLog(log: log)).toList();
+    setState(() {
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _summaryType = SummaryType.mostReps;
+      _chartUnit = ChartUnitLabel.reps;
+    });
+  }
+
+  void _longestDurationPerLog() {
     final values = widget.routineLogs.map((log) => longestDurationPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
-      _summaryType = SummaryType.bestTimes;
+      _summaryType = SummaryType.bestTime;
       _chartUnit = ChartUnitLabel.mins;
     });
   }
 
-  void _totalTimes() {
+  void _totalTimePerLog() {
     final values = widget.routineLogs.map((log) => totalDurationPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
-      _summaryType = SummaryType.totalTimes;
+      _summaryType = SummaryType.sessionTimes;
       _chartUnit = ChartUnitLabel.mins;
     });
   }
 
-  void _longestDistance() {
+  void _longestDistancePerLog() {
     final values = widget.routineLogs.map((log) => longestDistancePerLog(log: log)).toList().reversed.toList();
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
@@ -143,13 +153,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
     });
   }
 
-  void _totalDistance() {
+  void _totalDistancePerLog() {
     final values = widget.routineLogs.map((log) => totalDistancePerLog(log: log)).toList().reversed.toList();
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.totalDistance;
+      _summaryType = SummaryType.sessionDistance;
       _chartUnit = exerciseType == ExerciseType.weightAndDistance ? ChartUnitLabel.yd : ChartUnitLabel.mi;
     });
   }
@@ -173,32 +183,34 @@ class _SummaryScreenState extends State<SummaryScreen> {
     }
     _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
     switch (_summaryType) {
-      case SummaryType.heaviestWeights:
-        _heaviestWeights();
+      case SummaryType.heaviestWeight:
+        _heaviestWeightPerLog();
         break;
-      case SummaryType.heaviestSetVolumes:
-        _heaviestSetVolumes();
+      case SummaryType.heaviestSetVolume:
+        _heaviestSetVolumePerLog();
         break;
-      case SummaryType.logVolumes:
-        _logVolumes();
+      case SummaryType.sessionVolume:
+        _setVolumePerLog();
         break;
-      case SummaryType.oneRepMaxes:
-        _oneRepMaxes();
+      case SummaryType.oneRepMax:
+        _oneRepMaxPerLog();
         break;
-      case SummaryType.reps:
-        _reps();
+      case SummaryType.sessionReps:
+        _totalRepsPerLog();
         break;
-      case SummaryType.bestTimes:
-        _bestTimes();
+      case SummaryType.bestTime:
+        _longestDurationPerLog();
         break;
-      case SummaryType.totalTimes:
-        _totalTimes();
+      case SummaryType.sessionTimes:
+        _totalTimePerLog();
         break;
       case SummaryType.longestDistance:
-        _longestDistance();
+        _longestDistancePerLog();
         break;
-      case SummaryType.totalDistance:
-        _totalDistance();
+      case SummaryType.sessionDistance:
+        _totalDistancePerLog();
+      case SummaryType.mostReps:
+        // TODO: Handle this case.
     }
   }
 
@@ -212,7 +224,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RoutineLogPreviewScreen(routineLogId: routineLogId, previousRouteName: exerciseRouteName)));
   }
 
-  bool _weightsOnly() {
+  bool _proceduresWithWeights() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps ||
@@ -220,13 +232,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
         exerciseType == ExerciseType.weightAndDistance;
   }
 
-  bool _weightsAndRepsOnly() {
+  bool _proceduresWithWeightsAndReps() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
-  bool _repsOnly() {
+  bool _proceduresWithReps() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps ||
@@ -235,13 +247,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
         exerciseType == ExerciseType.bodyWeightAndReps;
   }
 
-  bool _durationOnly() {
+  bool _proceduresDuration() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.distanceAndDuration;
   }
 
-  bool _distanceOnly() {
+  bool _proceduresWithDistance() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.distanceAndDuration || exerciseType == ExerciseType.weightAndDistance;
@@ -321,80 +333,88 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (_weightsOnly())
+                    if (_proceduresWithWeights())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _heaviestWeights,
+                            onPressed: _heaviestWeightPerLog,
                             label: "Heaviest Weight",
-                            buttonColor: _buttonColor(type: SummaryType.heaviestWeights)),
+                            buttonColor: _buttonColor(type: SummaryType.heaviestWeight)),
                       ),
-                    if (_weightsAndRepsOnly())
+                    if (_proceduresWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _heaviestSetVolumes,
+                            onPressed: _heaviestSetVolumePerLog,
                             label: "Heaviest Set Volume",
-                            buttonColor: _buttonColor(type: SummaryType.heaviestSetVolumes)),
+                            buttonColor: _buttonColor(type: SummaryType.heaviestSetVolume)),
                       ),
-                    if (_weightsAndRepsOnly())
+                    if (_proceduresWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _logVolumes,
+                            onPressed: _setVolumePerLog,
                             label: "Session Volume",
-                            buttonColor: _buttonColor(type: SummaryType.logVolumes)),
+                            buttonColor: _buttonColor(type: SummaryType.sessionVolume)),
                       ),
-                    if (_weightsAndRepsOnly())
+                    if (_proceduresWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _oneRepMaxes,
+                            onPressed: _oneRepMaxPerLog,
                             label: "1RM",
-                            buttonColor: _buttonColor(type: SummaryType.oneRepMaxes)),
+                            buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
-                    if (_repsOnly())
+                    if (_proceduresWithReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _reps, label: "Session Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
+                            onPressed: _totalRepsPerLog, label: "Session Reps", buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
-                    if (_durationOnly())
+                    if (_proceduresDuration())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _bestTimes,
+                            onPressed: _longestDurationPerLog,
                             label: "Best Time",
-                            buttonColor: _buttonColor(type: SummaryType.bestTimes)),
+                            buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
-                    if (_durationOnly())
+                    if (_proceduresDuration())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _totalTimes,
+                            onPressed: _totalTimePerLog,
                             label: "Total Time",
-                            buttonColor: _buttonColor(type: SummaryType.totalTimes)),
+                            buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),
-                    if (_distanceOnly())
+                    if (_proceduresWithDistance())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _longestDistance,
+                            onPressed: _longestDistancePerLog,
                             label: "Longest Distance",
                             buttonColor: _buttonColor(type: SummaryType.longestDistance)),
                       ),
-                    if (_distanceOnly())
+                    if (_proceduresWithDistance())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _totalDistance,
+                            onPressed: _totalDistancePerLog,
                             label: "Total Distance",
-                            buttonColor: _buttonColor(type: SummaryType.totalDistance)),
+                            buttonColor: _buttonColor(type: SummaryType.sessionDistance)),
+                      ),
+                    if (_proceduresWithReps())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _mostRepsPerLog,
+                            label: "Most Reps (Set)",
+                            buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
                   ],
                 )),
             const SizedBox(height: 10),
-            if (_weightsOnly())
+            if (_proceduresWithWeights())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -404,7 +424,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                 ),
               ),
-            if (_weightsAndRepsOnly())
+            if (_proceduresWithWeightsAndReps())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -414,7 +434,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                 ),
               ),
-            if (_weightsAndRepsOnly())
+            if (_proceduresWithWeightsAndReps())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -424,7 +444,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
                 ),
               ),
-            if (_weightsAndRepsOnly())
+            if (_proceduresWithWeightsAndReps())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -434,7 +454,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                 ),
               ),
-            if (_durationOnly())
+            if (_proceduresDuration())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -444,7 +464,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
                 ),
               ),
-            if (_distanceOnly())
+            if (_proceduresWithDistance())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -454,6 +474,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
                 ),
               ),
+            // if (_proceduresWithReps())
+            //   Padding(
+            //     padding: const EdgeInsets.only(bottom: 10.0),
+            //     child: _MetricListTile(
+            //       title: 'Most ',
+            //       trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
+            //       subtitle: 'Longest distance for this exercise',
+            //       onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
+            //     ),
+            //   ),
           ],
         ),
       ));
@@ -486,15 +516,15 @@ class _SummaryScreenState extends State<SummaryScreen> {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.weightAndDistance:
-        _heaviestWeights();
+        _heaviestWeightPerLog();
         break;
       case ExerciseType.bodyWeightAndReps:
       case ExerciseType.assistedBodyWeight:
-        _reps();
+        _totalRepsPerLog();
         break;
       case ExerciseType.duration:
       case ExerciseType.distanceAndDuration:
-        _bestTimes();
+        _longestDurationPerLog();
     }
   }
 
