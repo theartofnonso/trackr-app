@@ -55,7 +55,7 @@ class _RoutineHistoryChartState extends State<RoutineHistoryChart> {
   }
 
   void _totalReps() {
-    final values = _filteredLogs.map((log) => sessionRepsPerLog(log: log)).toList();
+    final values = _filteredLogs.map((log) => totalRepsPerLog(log: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = RoutineSummaryType.reps;

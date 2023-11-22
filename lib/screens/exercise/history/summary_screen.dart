@@ -109,7 +109,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   }
 
   void _totalRepsPerLog() {
-    final values = widget.routineLogs.map((log) => sessionRepsPerLog(log: log)).toList().reversed.toList();
+    final values = widget.routineLogs.map((log) => totalRepsPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;

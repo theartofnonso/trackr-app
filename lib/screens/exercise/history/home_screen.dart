@@ -54,18 +54,6 @@ List<SetDto> _allSetsWithReps({required List<String> procedureJsons}) {
       .toList();
 }
 
-// List<SetDto> _allSetsWithRepsOnly({required List<String> procedureJsons}) {
-//   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-//   return procedures
-//       .where((procedure) =>
-//   ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
-//       ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
-//       ExerciseType.fromString(procedure.exercise.type) == ExerciseType.assistedBodyWeight ||
-//       ExerciseType.fromString(procedure.exercise.type) == ExerciseType.bodyWeightAndReps)
-//       .expand((procedure) => procedure.sets)
-//       .toList();
-// }
-
 List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
   return procedures
@@ -173,7 +161,7 @@ double totalDistancePerLog({required RoutineLog log}) {
   return totalDistance;
 }
 
-int sessionRepsPerLog({required RoutineLog log}) {
+int totalRepsPerLog({required RoutineLog log}) {
   int totalReps = 0;
 
   final sets = _allSetsWithReps(procedureJsons: log.procedures);
@@ -332,7 +320,7 @@ double _sessionVolumePerLog({required RoutineLog log}) {
   int mostReps = 0;
   String logId = "";
   for (var log in logs) {
-    final reps = sessionRepsPerLog(log: log);
+    final reps = totalRepsPerLog(log: log);
     if (reps > mostReps) {
       mostReps = reps;
       logId = log.id;
