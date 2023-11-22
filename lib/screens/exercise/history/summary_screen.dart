@@ -357,7 +357,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _reps, label: "Total Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
+                            onPressed: _reps, label: "Session Reps", buttonColor: _buttonColor(type: SummaryType.reps)),
                       ),
                     if (_durationOnly())
                       Padding(
