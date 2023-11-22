@@ -54,6 +54,18 @@ List<SetDto> _allSetsWithReps({required List<String> procedureJsons}) {
       .toList();
 }
 
+// List<SetDto> _allSetsWithRepsOnly({required List<String> procedureJsons}) {
+//   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+//   return procedures
+//       .where((procedure) =>
+//   ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
+//       ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
+//       ExerciseType.fromString(procedure.exercise.type) == ExerciseType.assistedBodyWeight ||
+//       ExerciseType.fromString(procedure.exercise.type) == ExerciseType.bodyWeightAndReps)
+//       .expand((procedure) => procedure.sets)
+//       .toList();
+// }
+
 List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
   final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
   return procedures
@@ -161,7 +173,7 @@ double totalDistancePerLog({required RoutineLog log}) {
   return totalDistance;
 }
 
-int repsPerLog({required RoutineLog log}) {
+int sessionRepsPerLog({required RoutineLog log}) {
   int totalReps = 0;
 
   final sets = _allSetsWithReps(procedureJsons: log.procedures);
@@ -303,6 +315,32 @@ double _sessionVolumePerLog({required RoutineLog log}) {
   return (logId, heaviestWeight);
 }
 
+(String, int) _mostRepsSet({required List<RoutineLog> logs}) {
+  int mostReps = 0;
+  String logId = "";
+  for (var log in logs) {
+    final reps = mostRepsPerLog(log: log);
+    if (reps > mostReps) {
+      mostReps = reps;
+      logId = log.id;
+    }
+  }
+  return (logId, mostReps);
+}
+
+(String, int) _mostRepsSession({required List<RoutineLog> logs}) {
+  int mostReps = 0;
+  String logId = "";
+  for (var log in logs) {
+    final reps = sessionRepsPerLog(log: log);
+    if (reps > mostReps) {
+      mostReps = reps;
+      logId = log.id;
+    }
+  }
+  return (logId, mostReps);
+}
+
 (String, Duration) _longestDuration({required List<RoutineLog> logs}) {
   Duration longestDuration = Duration.zero;
   String logId = "";
@@ -394,19 +432,23 @@ class HomeScreen extends StatelessWidget {
     final foundExercise =
         Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
 
-    final routineLogs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+    final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
 
-    final routineLogsForExercise = _logsWhereExercise(logs: routineLogs);
+    final logsForExercise = _logsWhereExercise(logs: logs);
 
-    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: routineLogsForExercise);
+    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: logsForExercise);
 
-    final heaviestSet = _heaviestSet(logs: routineLogsForExercise);
+    final heaviestSet = _heaviestSet(logs: logsForExercise);
 
-    final heaviestWeight = _heaviestWeight(logs: routineLogsForExercise);
+    final heaviestWeight = _heaviestWeight(logs: logsForExercise);
 
-    final longestDuration = _longestDuration(logs: routineLogsForExercise);
+    final longestDuration = _longestDuration(logs: logsForExercise);
 
-    final longestDistance = _longestDistance(logs: routineLogsForExercise);
+    final longestDistance = _longestDistance(logs: logsForExercise);
+
+    final mostRepsSet = _mostRepsSet(logs: logsForExercise);
+
+    final mostRepsSession = _mostRepsSession(logs: logsForExercise);
 
     return DefaultTabController(
         length: 3,
@@ -468,10 +510,12 @@ class HomeScreen extends StatelessWidget {
                   heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                   longestDuration: longestDuration,
                   longestDistance: longestDistance,
-                  routineLogs: routineLogsForExercise,
+                  mostRepsSet: mostRepsSet,
+                  mostRepsSession: mostRepsSession,
+                  routineLogs: logsForExercise,
                   exercise: foundExercise,
                 ),
-                HistoryScreen(logs: routineLogsForExercise),
+                HistoryScreen(logs: logsForExercise),
                 NotesScreen(notes: foundExercise.notes)
               ],
             ),

@@ -38,6 +38,8 @@ class SummaryScreen extends StatefulWidget {
   final (String, double) heaviestRoutineLogVolume;
   final (String, Duration) longestDuration;
   final (String, double) longestDistance;
+  final (String, int) mostRepsSet;
+  final (String, int) mostRepsSession;
   final List<RoutineLog> routineLogs;
   final Exercise exercise;
 
@@ -48,6 +50,8 @@ class SummaryScreen extends StatefulWidget {
       required this.heaviestRoutineLogVolume,
       required this.longestDuration,
       required this.longestDistance,
+      required this.mostRepsSet,
+      required this.mostRepsSession,
       required this.routineLogs,
       required this.exercise});
 
@@ -105,7 +109,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   }
 
   void _totalRepsPerLog() {
-    final values = widget.routineLogs.map((log) => repsPerLog(log: log)).toList().reversed.toList();
+    final values = widget.routineLogs.map((log) => sessionRepsPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;
@@ -210,7 +214,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
       case SummaryType.sessionDistance:
         _totalDistancePerLog();
       case SummaryType.mostReps:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
     }
   }
 
@@ -369,7 +373,17 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _totalRepsPerLog, label: "Session Reps", buttonColor: _buttonColor(type: SummaryType.sessionReps)),
+                            onPressed: _mostRepsPerLog,
+                            label: "Most Reps (Set)",
+                            buttonColor: _buttonColor(type: SummaryType.mostReps)),
+                      ),
+                    if (_proceduresWithReps())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: CTextButton(
+                            onPressed: _totalRepsPerLog,
+                            label: "Session Reps",
+                            buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (_proceduresDuration())
                       Padding(
@@ -403,14 +417,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Total Distance",
                             buttonColor: _buttonColor(type: SummaryType.sessionDistance)),
                       ),
-                    if (_proceduresWithReps())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _mostRepsPerLog,
-                            label: "Most Reps (Set)",
-                            buttonColor: _buttonColor(type: SummaryType.mostReps)),
-                      ),
                   ],
                 )),
             const SizedBox(height: 10),
@@ -420,7 +426,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 child: _MetricListTile(
                   title: 'Heaviest weight',
                   trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
-                  subtitle: 'Heaviest weight lifted for a set',
+                  subtitle: 'Heaviest weight lifted in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                 ),
               ),
@@ -430,7 +436,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 child: _MetricListTile(
                   title: 'Heaviest Set Volume',
                   trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
-                  subtitle: 'Heaviest volume lifted for a set',
+                  subtitle: 'Heaviest volume lifted in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                 ),
               ),
@@ -440,7 +446,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 child: _MetricListTile(
                   title: 'Heaviest Session Volume',
                   trailing: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
-                  subtitle: 'Heaviest volume lifted for a session',
+                  subtitle: 'Heaviest volume lifted in a session',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
                 ),
               ),
@@ -474,16 +480,26 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
                 ),
               ),
-            // if (_proceduresWithReps())
-            //   Padding(
-            //     padding: const EdgeInsets.only(bottom: 10.0),
-            //     child: _MetricListTile(
-            //       title: 'Most ',
-            //       trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
-            //       subtitle: 'Longest distance for this exercise',
-            //       onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
-            //     ),
-            //   ),
+            if (_proceduresWithReps())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Most Reps (Set)',
+                  trailing: "${widget.mostRepsSet.$2} reps",
+                  subtitle: 'Most reps in a set',
+                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
+                ),
+              ),
+            if (_proceduresWithReps())
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _MetricListTile(
+                  title: 'Most Reps (Session)',
+                  trailing: "${widget.mostRepsSession.$2} reps",
+                  subtitle: 'Most reps in a session',
+                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
+                ),
+              ),
           ],
         ),
       ));
