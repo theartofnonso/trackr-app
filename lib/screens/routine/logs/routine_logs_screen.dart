@@ -21,9 +21,9 @@ Future<void> loadData(BuildContext context) async {
   if (context.mounted) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
     routineLogProvider.listRoutineLogs(context);
+    Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
     routineLogProvider.retrieveCachedRoutineLog(context);
     routineLogProvider.retrieveCachedPendingRoutineLog(context);
-    Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
   }
 }
 

@@ -195,7 +195,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     final procedureJsons = procedures.map((procedure) => procedure.toJson()).toList();
 
-    final cachedLog = _cachedLog?.copyWith(
+    final cachedLog = RoutineLog(
         name: name,
         notes: notes,
         routine: routine,
@@ -205,7 +205,9 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? currentTime,
         updatedAt: currentTime,
         user: routineLogOwner);
+    _cachedLog = cachedLog;
     SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
+    notifyListeners();
   }
 
   void _addToLogs(RoutineLog log) {
