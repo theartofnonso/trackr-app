@@ -45,8 +45,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
       final cachedRoutineLog = provider.cachedLog;
       final cachedPendingLogs = provider.cachedPendingLogs;
 
-      print(cachedRoutineLog?.procedures);
-
       return Scaffold(
         appBar: AppBar(
           title: Image.asset(
