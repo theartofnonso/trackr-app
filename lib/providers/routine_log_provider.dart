@@ -212,14 +212,6 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void cacheRoutineLogProcedures({required List<ProcedureDto> procedures}) {
-    final cachedLog = _cachedLog;
-    if(cachedLog != null) {
-      _cachedLog = cachedLog.copyWith(procedures: procedures.map((procedure) => procedure.toJson()).toList());
-      SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
-    }
-  }
-
   void _addToLogs(RoutineLog log) {
     _logs.add(log);
     _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
