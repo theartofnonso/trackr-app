@@ -205,7 +205,7 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? currentTime,
         updatedAt: currentTime,
         user: routineLogOwner);
-    _cachedLog = cachedLog;
+    //_cachedLog = cachedLog;
     // print(cachedLog.procedures);
     // print(cachedLog.toMap());
     //SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
