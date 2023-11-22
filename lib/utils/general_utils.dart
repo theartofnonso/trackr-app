@@ -75,13 +75,10 @@ void toggleDistanceUnit({required DistanceUnit unit}) {
   SharedPrefs().distanceUnit = unit.name;
 }
 
-Future<User> user() async {
-  final authUser = await Amplify.Auth.getCurrentUser();
-  final signInDetails = authUser.signInDetails.toJson();
-  final email = signInDetails["username"] as String;
-  final userId = authUser.userId;
-  final user = User(id: userId, email: email);
-  return user;
+User user() {
+  final email = SharedPrefs().userEmail;
+  final userId = SharedPrefs().userId;
+  return User(id: userId, email: email);
 }
 
 void persistUserCredentials() async {

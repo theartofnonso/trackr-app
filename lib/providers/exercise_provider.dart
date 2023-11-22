@@ -14,7 +14,7 @@ class ExerciseProvider with ChangeNotifier {
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
 
   Future<void> listExercises() async {
-    final exerciseOwner = await user();
+    final exerciseOwner = user();
     final request = ModelQueries.list(Exercise.classType, where: Exercise.USER.eq(exerciseOwner.id));
     final response = await Amplify.API.query(request: request).response;
     final routines = response.data?.items;
@@ -30,10 +30,9 @@ class ExerciseProvider with ChangeNotifier {
       required MuscleGroup primary,
         required ExerciseType type,
       required List<MuscleGroup> secondary}) async {
-    final exerciseOwner = await user();
 
     final exerciseToCreate = Exercise(
-        user: exerciseOwner,
+        user: user(),
         name: name,
         primaryMuscle: primary.name,
         type: type.name,

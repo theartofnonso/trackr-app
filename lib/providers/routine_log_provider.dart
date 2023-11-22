@@ -43,7 +43,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void listRoutineLogs(BuildContext context) async {
-    final routineLogOwner = await user();
+    final routineLogOwner = user();
     final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.USER.eq(routineLogOwner.id));
     final response = await Amplify.API.query(request: request).response;
 
@@ -58,7 +58,7 @@ class RoutineLogProvider with ChangeNotifier {
   Future<List<RoutineLog>> listRoutineLogsForRoutine({required String id}) async {
     List<RoutineLog> logs = [];
 
-    final routineLogOwner = await user();
+    final routineLogOwner = user();
     final request = ModelQueries.list(RoutineLog.classType,
         where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
     final response = await Amplify.API.query(request: request).response;
@@ -111,8 +111,6 @@ class RoutineLogProvider with ChangeNotifier {
 
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
-    final owner = await user();
-
     final logToCreate = RoutineLog(
         name: name,
         notes: notes,
@@ -122,7 +120,7 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         routine: routine?.copyWith(procedures: proceduresJson),
-        user: owner);
+        user: user());
 
     print("${routine?.name} - Before attempting to create log");
 
@@ -188,8 +186,7 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine? routine}) async {
-    final routineLogOwner = await user();
+      required Routine? routine}) {
 
     final currentTime = TemporalDateTime.now();
 
@@ -204,7 +201,7 @@ class RoutineLogProvider with ChangeNotifier {
         endTime: currentTime,
         createdAt: createdAt ?? currentTime,
         updatedAt: currentTime,
-        user: routineLogOwner);
+        user: user());
     _cachedLog = cachedLog;
     // print(cachedLog.procedures);
     // print(cachedLog.toMap());

@@ -14,7 +14,7 @@ class RoutineProvider with ChangeNotifier {
   UnmodifiableListView<Routine> get routines => UnmodifiableListView(_routines);
 
   void listRoutines(BuildContext context) async {
-    final routineOwner = await user();
+    final routineOwner = user();
     final request = ModelQueries.list(Routine.classType, where: Routine.USER.eq(routineOwner.id));
     final response = await Amplify.API.query(request: request).response;
 
@@ -28,15 +28,13 @@ class RoutineProvider with ChangeNotifier {
 
   Future<void> saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
 
-    final routineOwner = await user();
-
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
     final routineToCreate = Routine(
         name: name,
         procedures: proceduresJson,
         notes: notes,
         createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(), user: routineOwner);
+        updatedAt: TemporalDateTime.now(), user: user());
     final request = ModelMutations.create(routineToCreate);
     final response = await Amplify.API.mutate(request: request).response;
     final createdRoutine = response.data;
