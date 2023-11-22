@@ -47,13 +47,13 @@ class WeightRepsSetRow extends SetRow {
     return Table(
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-              0: const FixedColumnWidth(35),
+              0: const FixedColumnWidth(38),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(35),
+              0: const FixedColumnWidth(38),
               1: const FlexColumnWidth(3),
               2: const FlexColumnWidth(2),
               3: const FlexColumnWidth(2),
