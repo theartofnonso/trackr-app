@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';

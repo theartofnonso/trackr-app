@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../../../app_constants.dart';
 import '../../../../enums/exercise_type_enums.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 
