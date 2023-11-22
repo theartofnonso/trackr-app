@@ -72,7 +72,6 @@ class ProceduresProvider extends ChangeNotifier {
   void addProcedures({required BuildContext context, required List<Exercise> exercises}) {
     final proceduresToAdd = exercises.map((exercise) => _createProcedure(exercise)).toList();
     _procedures = [..._procedures, ...proceduresToAdd];
-    _cacheProcedures(context);
     notifyListeners();
   }
 
@@ -92,8 +91,6 @@ class ProceduresProvider extends ChangeNotifier {
       _procedures = [...procedures];
 
       _removeAllSetsForProcedure(procedureId: procedureId);
-
-      _cacheProcedures(context);
 
       notifyListeners();
     }
@@ -136,8 +133,6 @@ class ProceduresProvider extends ChangeNotifier {
 
       _procedures = [...procedures];
 
-      _cacheProcedures(context);
-
       notifyListeners();
     }
   }
@@ -146,8 +141,7 @@ class ProceduresProvider extends ChangeNotifier {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     _procedures[procedureIndex] = procedure.copyWith(notes: value);
-
-    _cacheProcedures(context);
+    notifyListeners();
   }
 
   void superSetProcedures(
@@ -164,17 +158,12 @@ class ProceduresProvider extends ChangeNotifier {
 
       _procedures = [...updatedProcedures];
 
-      _cacheProcedures(context);
-
       notifyListeners();
     }
   }
 
   void removeProcedureSuperSet({required BuildContext context, required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
-
-    _cacheProcedures(context);
-
     notifyListeners();
   }
 
@@ -210,8 +199,6 @@ class ProceduresProvider extends ChangeNotifier {
 
       // Assign the new map to _sets to maintain immutability
       _sets = newMap;
-
-      _cacheProcedures(context);
 
       // Notify listeners about the change
       notifyListeners();
@@ -283,11 +270,6 @@ class ProceduresProvider extends ChangeNotifier {
     if (shouldNotifyListeners) {
       notifyListeners();
     }
-  }
-
-  void _cacheProcedures(BuildContext context) {
-    final procedures = mergeSetsIntoProcedures();
-    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLogProcedures(procedures: procedures);
   }
 
   void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {

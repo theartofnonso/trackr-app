@@ -63,7 +63,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             Navigator.of(context).pop();
             Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(context: context,
                 firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
-            //_cacheRoutineLog();
+            _cacheRoutineLog();
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -84,7 +84,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
         provider.addProcedures(context: context, exercises: exercises);
-        //_cacheRoutineLog();
+        _cacheRoutineLog();
       }
     }
   }
@@ -122,7 +122,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         if (mounted) {
           Provider.of<ProceduresProvider>(context, listen: false)
               .replaceProcedure(context: context, procedureId: procedureId, exercise: selectedExercises.first);
-          //_cacheRoutineLog();
+          _cacheRoutineLog();
         }
       }
     }
@@ -130,12 +130,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _removeProcedureSuperSets({required String superSetId}) {
     Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(context: context, superSetId: superSetId);
-    //_cacheRoutineLog();
+    _cacheRoutineLog();
   }
 
   void _removeProcedure({required String procedureId}) {
     Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(context: context, procedureId: procedureId);
-    //_cacheRoutineLog();
+    _cacheRoutineLog();
   }
 
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
@@ -619,7 +619,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _initializeProcedureData();
     _initializeTextControllers();
 
-    // Cache initial state of running routine if in log mode
+    // Cache initial state of [RoutineLog] if in log mode
     if (widget.mode == RoutineEditorMode.log) {
       _cacheRoutineLog();
     }
@@ -683,14 +683,14 @@ class _ProceduresPicker extends StatelessWidget {
               Expanded(child: ListView(children: listTiles)),
             ],
           )
-        : _ExercisesInWorkoutEmptyState(onPressed: onSelectExercisesInLibrary);
+        : _ProceduresPickerEmptyState(onPressed: onSelectExercisesInLibrary);
   }
 }
 
-class _ExercisesInWorkoutEmptyState extends StatelessWidget {
+class _ProceduresPickerEmptyState extends StatelessWidget {
   final Function() onPressed;
 
-  const _ExercisesInWorkoutEmptyState({required this.onPressed});
+  const _ProceduresPickerEmptyState({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

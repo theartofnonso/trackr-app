@@ -15,7 +15,6 @@ class MinimisedRoutineBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(log.procedures);
     return MaterialBanner(
       padding: const EdgeInsets.only(left: 12, top: 12),
       margin: const EdgeInsets.symmetric(vertical: 12),
