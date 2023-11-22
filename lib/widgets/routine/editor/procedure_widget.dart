@@ -118,7 +118,10 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
       setTypeCounts[setDto.type] = setTypeCounts[setDto.type]! + 1;
 
-      return setWidget;
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: setWidget,
+      );
     }).toList();
   }
 
