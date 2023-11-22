@@ -347,18 +347,21 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _cacheRoutineLog({notifyListeners = false}) {
+  void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorMode.log) {
-      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-      final procedures = procedureProvider.mergeSetsIntoProcedures();
-      final routine = widget.routine;
-      Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-          name: routine?.name ?? "",
-          notes: routine?.notes ?? "",
-          procedures: procedures,
-          startTime: _routineStartTime,
-          createdAt: widget.createdAt,
-          routine: routine, shouldNotifyListeners: notifyListeners);
+      print("JH");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+        final procedures = procedureProvider.mergeSetsIntoProcedures();
+        final routine = widget.routine;
+        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
+            name: routine?.name ?? "",
+            notes: routine?.notes ?? "",
+            procedures: procedures,
+            startTime: _routineStartTime,
+            createdAt: widget.createdAt,
+            routine: routine);
+      });
     }
   }
 
@@ -621,10 +624,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _initializeTextControllers();
 
     _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _cacheRoutineLog(notifyListeners: true);
-    });
   }
 
   void _initializeProcedureData() {

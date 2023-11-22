@@ -186,8 +186,7 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine? routine, bool shouldNotifyListeners = false}) {
-
+      required Routine? routine}) {
     final currentTime = TemporalDateTime.now();
 
     final procedureJsons = procedures.map((procedure) => procedure.toJson()).toList();
@@ -206,9 +205,7 @@ class RoutineLogProvider with ChangeNotifier {
     // print(cachedLog.procedures);
     // print(cachedLog.toMap());
     //SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
-    if(shouldNotifyListeners) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   void _addToLogs(RoutineLog log) {
