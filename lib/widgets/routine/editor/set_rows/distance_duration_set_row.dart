@@ -43,7 +43,7 @@ class DistanceDurationSetRow extends SetRow {
     if (previousSetDto != null) {
       duration = Duration(milliseconds: previousSetDto.value1.toInt());
       distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
-      onUpdateSetWithPastSet(previousSetDto);
+      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       duration = Duration(milliseconds: setDto.value1.toInt());
       distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();

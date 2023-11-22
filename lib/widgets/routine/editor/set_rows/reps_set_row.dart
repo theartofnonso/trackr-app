@@ -35,7 +35,7 @@ class RepsSetRow extends SetRow {
 
     if (previousSetDto != null) {
       reps = previousSetDto.value2.toInt();
-      onUpdateSetWithPastSet(previousSetDto);
+      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       reps = setDto.value2.toInt();
     }

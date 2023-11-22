@@ -41,7 +41,7 @@ class WeightDistanceSetRow extends SetRow {
     if (previousSetDto != null) {
       weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
       distance = previousSetDto.value2.toDouble();
-      onUpdateSetWithPastSet(previousSetDto);
+      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
       distance = setDto.value2.toDouble();

@@ -34,7 +34,7 @@ class DurationSetRow extends SetRow {
 
     if(previousSetDto != null) {
       duration = Duration(milliseconds: previousSetDto.value1.toInt());
-      onUpdateSetWithPastSet(previousSetDto);
+      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       duration = Duration(milliseconds: setDto.value1.toInt());
     }
