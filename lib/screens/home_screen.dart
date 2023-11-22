@@ -3,6 +3,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routine/template/routines_screen.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../shared_prefs.dart';
 
@@ -57,5 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     SharedPrefs().firstLaunch = false;
+    persistUserCredentials();
   }
 }

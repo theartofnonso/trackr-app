@@ -52,4 +52,18 @@ class SharedPrefs {
   set firstLaunch(bool value) {
     _sharedPrefs?.setBool(_firstLaunchKey, value);
   }
+
+  /// User Email
+  final String _userEmailKey = "_user_email_key";
+  String get userEmail => _sharedPrefs?.getString(_userEmailKey) ?? "";
+  set userEmail(String value) {
+    _sharedPrefs?.setString(_userEmailKey, value);
+  }
+
+  /// User Id
+  final String _userIdKey = "_user_id_key";
+  String get userId => _sharedPrefs?.getString(_userIdKey) ?? "";
+  set userId(String value) {
+    _sharedPrefs?.setString(_userIdKey, value);
+  }
 }

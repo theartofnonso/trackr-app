@@ -83,3 +83,12 @@ Future<User> user() async {
   final user = User(id: userId, email: email);
   return user;
 }
+
+void persistUserCredentials() async {
+  final authUser = await Amplify.Auth.getCurrentUser();
+  final signInDetails = authUser.signInDetails.toJson();
+  final email = signInDetails["username"] as String;
+  final id = authUser.userId;
+  SharedPrefs().userEmail = email;
+  SharedPrefs().userId = id;
+}

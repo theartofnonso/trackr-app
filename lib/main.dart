@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _checkFirstLaunch();
+    _configureAmplify();
   }
 
   Future<void> _configureAmplify() async {
@@ -69,18 +69,10 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> _checkFirstLaunch() async {
-    if (!_isFirstLaunch) {
-      _configureAmplify();
-    }
-  }
-
   void _completeIntro() {
-    SharedPrefs().firstLaunch = false;
     setState(() {
       _isFirstLaunch = false;
     });
-    _checkFirstLaunch();
   }
 
   final _themeData = ThemeData(
