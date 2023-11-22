@@ -233,8 +233,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   void _updateProcedureNotes({required String value}) {
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateProcedureNotes(procedureId: widget.procedureDto.id, value: value);
-    widget.onCache();
+        .updateProcedureNotes(context: context, procedureId: widget.procedureDto.id, value: value);
+    //widget.onCache();
   }
 
   void _addSet() {
@@ -242,8 +242,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .addSetForProcedure(procedureId: widget.procedureDto.id, pastSets: pastSets);
-    widget.onCache();
+        .addSetForProcedure(context: context, procedureId: widget.procedureDto.id, pastSets: pastSets);
+    //widget.onCache();
   }
 
   void _removeSet(int index) {

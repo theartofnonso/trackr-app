@@ -61,9 +61,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           onSelect: (ProcedureDto secondProcedure) {
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
-            Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
+            Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(context: context,
                 firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
-            _cacheRoutineLog();
+            //_cacheRoutineLog();
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -83,8 +83,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        provider.addProcedures(exercises: exercises);
-        _cacheRoutineLog();
+        provider.addProcedures(context: context, exercises: exercises);
+        //_cacheRoutineLog();
       }
     }
   }
@@ -121,21 +121,21 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       if (selectedExercises.isNotEmpty) {
         if (mounted) {
           Provider.of<ProceduresProvider>(context, listen: false)
-              .replaceProcedure(procedureId: procedureId, exercise: selectedExercises.first);
-          _cacheRoutineLog();
+              .replaceProcedure(context: context, procedureId: procedureId, exercise: selectedExercises.first);
+          //_cacheRoutineLog();
         }
       }
     }
   }
 
   void _removeProcedureSuperSets({required String superSetId}) {
-    Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(superSetId: superSetId);
-    _cacheRoutineLog();
+    Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(context: context, superSetId: superSetId);
+    //_cacheRoutineLog();
   }
 
   void _removeProcedure({required String procedureId}) {
-    Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(procedureId: procedureId);
-    _cacheRoutineLog();
+    Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(context: context, procedureId: procedureId);
+    //_cacheRoutineLog();
   }
 
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {

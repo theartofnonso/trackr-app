@@ -43,7 +43,7 @@ class WeightRepsSetRow extends SetRow {
     if (previousSetDto != null) {
       weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
       reps = previousSetDto.value2.toInt();
-      onUpdateSetWithPastSet(previousSetDto);
+      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
       reps = setDto.value2.toInt();

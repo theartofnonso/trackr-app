@@ -26,11 +26,6 @@ class RoutineLogProvider with ChangeNotifier {
 
   RoutineLog? get cachedLog => _cachedLog;
 
-  set cachedLog(RoutineLog? value) {
-    _cachedLog = value;
-    notifyListeners();
-  }
-
   List<RoutineLog> _cachedPendingLogs = [];
 
   List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
@@ -129,6 +124,8 @@ class RoutineLogProvider with ChangeNotifier {
         routine: routine?.copyWith(procedures: proceduresJson),
         user: owner);
 
+    print("${routine?.name} - Before attempting to create log");
+
     try {
       final request = ModelMutations.create(logToCreate);
       final response = await Amplify.API.mutate(request: request).response;
@@ -137,6 +134,7 @@ class RoutineLogProvider with ChangeNotifier {
         _addToLogs(createdLog);
         if (routine != null) {
           if (context.mounted) {
+            print("${routine.name} - after attempting to create log");
             Provider.of<RoutineProvider>(context, listen: false)
                 .updateRoutine(routine: routine.copyWith(procedures: proceduresJson));
           }
@@ -206,6 +204,14 @@ class RoutineLogProvider with ChangeNotifier {
         user: routineLogOwner);
     SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
     notifyListeners();
+  }
+
+  void cacheRoutineLogProcedures({required List<ProcedureDto> procedures}) {
+    final cachedLog = _cachedLog;
+    if(cachedLog != null) {
+      _cachedLog = cachedLog.copyWith(procedures: procedures.map((procedure) => procedure.toJson()).toList());
+      SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
+    }
   }
 
   void _addToLogs(RoutineLog log) {
