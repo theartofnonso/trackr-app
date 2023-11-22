@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 enum SetType {
-  warmUp("Warm Up", "W", Colors.orange),
+  warmUp("Warm Up", "WM", Colors.orange),
   working("Working", "WK", Colors.white),
-  failure("Failure", "F", Colors.red),
-  drop("Drop Set", "D", Colors.green);
+  failure("Failure", "FL", Colors.red),
+  drop("Drop Set", "DP", Colors.green);
 
   const SetType(this.name, this.label, this.color);
 
