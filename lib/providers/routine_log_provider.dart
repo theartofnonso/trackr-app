@@ -191,6 +191,8 @@ class RoutineLogProvider with ChangeNotifier {
       required Routine? routine}) async {
     final routineLogOwner = await user();
 
+    final currentTime = TemporalDateTime.now();
+
     _cachedLog = RoutineLog(
         id: "cache_log_${DateTime.now().millisecondsSinceEpoch.toString()}",
         name: name,
@@ -198,19 +200,18 @@ class RoutineLogProvider with ChangeNotifier {
         routine: routine,
         procedures: procedures.map((procedure) => procedure.toJson()).toList(),
         startTime: startTime,
-        endTime: TemporalDateTime.now(),
-        createdAt: createdAt ?? TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(),
+        endTime: currentTime,
+        createdAt: createdAt ?? currentTime,
+        updatedAt: currentTime,
         user: routineLogOwner);
-    print(" ");
-    print(" ");
-    print(" ");
-    print(" ");
-    print(_cachedLog?.procedures);
-    print(_cachedLog);
     SharedPrefs().cachedRoutineLog = jsonEncode(_cachedLog);
     notifyListeners();
   }
+
+  String _generateCacheLogId() {
+    return "cache_log_${DateTime.now().millisecondsSinceEpoch}";
+  }
+
 
   void _addToLogs(RoutineLog log) {
     _logs.add(log);
