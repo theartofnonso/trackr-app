@@ -39,7 +39,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
                 leftActionLabel: 'Cancel',
                 rightActionLabel: 'Discard', isRightActionDestructive: true);
           },
-          child: Text('Discard', style: GoogleFonts.lato(color: Colors.white)),
+          child: Text('Discard', style: GoogleFonts.lato(color: Colors.red)),
         ),
         TextButton(
           onPressed: () {
