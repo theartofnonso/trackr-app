@@ -61,8 +61,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           onSelect: (ProcedureDto secondProcedure) {
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
-            Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(context: context,
-                firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
+            Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
+                context: context,
+                firstProcedureId: firstProcedure.id,
+                secondProcedureId: secondProcedure.id,
+                superSetId: id);
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -125,7 +128,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _removeProcedureSuperSets({required String superSetId}) {
-    Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(context: context, superSetId: superSetId);
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .removeProcedureSuperSet(context: context, superSetId: superSetId);
   }
 
   void _removeProcedure({required String procedureId}) {
@@ -464,9 +468,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    _cacheRoutineLog();
-
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -616,8 +617,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _initializeProcedureData();
     _initializeTextControllers();
 
-    final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    _onDisposeCallback = proceduresProvider.onClearProvider;
+    _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
+
+    _cacheRoutineLog();
   }
 
   void _initializeProcedureData() {
