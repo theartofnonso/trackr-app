@@ -40,40 +40,40 @@ class SetTypeIcon extends StatelessWidget {
                       dense: true,
                       onTap: () => selectType(context, SetType.warmUp),
                       leading: SizedBox(
-                        width: 35,
+                        width: 30,
                         child: Text(SetType.warmUp.label,
                             style:
-                                GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                                GoogleFonts.lato(color: SetType.warmUp.color, fontWeight: FontWeight.bold, fontSize: 14)),
                       ),
                       title: Text(SetType.warmUp.name, style: GoogleFonts.lato(fontSize: 14))),
                   ListTile(
                       dense: true,
                       onTap: () => selectType(context, SetType.working),
                       leading: SizedBox(
-                        width: 35,
+                        width: 30,
                         child: Text(SetType.working.label,
                             style: GoogleFonts.lato(
-                                color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                                color: SetType.working.color, fontWeight: FontWeight.bold, fontSize: 14)),
                       ),
                       title: Text(SetType.working.name, style: GoogleFonts.lato(fontSize: 14))),
                   ListTile(
                       dense: true,
                       onTap: () => selectType(context, SetType.failure),
                       leading: SizedBox(
-                        width: 35,
+                        width: 30,
                         child: Text(SetType.failure.label,
                             style: GoogleFonts.lato(
-                                color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                                color: SetType.failure.color, fontWeight: FontWeight.bold, fontSize: 14)),
                       ),
                       title: Text(SetType.failure.name, style: GoogleFonts.lato(fontSize: 14))),
                   ListTile(
                       dense: true,
                       onTap: () => selectType(context, SetType.drop),
                       leading: SizedBox(
-                        width: 35,
+                        width: 30,
                         child: Text(SetType.drop.label,
                             style:
-                                GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 16)),
+                                GoogleFonts.lato(color: SetType.drop.color, fontWeight: FontWeight.bold, fontSize: 14)),
                       ),
                       title: Text(SetType.drop.name, style: GoogleFonts.lato(fontSize: 14))),
                   CTextButton(
