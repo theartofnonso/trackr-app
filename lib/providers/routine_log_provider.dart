@@ -208,11 +208,6 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  String _generateCacheLogId() {
-    return "cache_log_${DateTime.now().millisecondsSinceEpoch}";
-  }
-
-
   void _addToLogs(RoutineLog log) {
     _logs.add(log);
     _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
