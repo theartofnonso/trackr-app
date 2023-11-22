@@ -347,7 +347,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _cacheRoutineLog() {
+  void _cacheRoutineLog({notifyListeners = false}) {
     if (widget.mode == RoutineEditorMode.log) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
       final procedures = procedureProvider.mergeSetsIntoProcedures();
@@ -358,7 +358,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           procedures: procedures,
           startTime: _routineStartTime,
           createdAt: widget.createdAt,
-          routine: routine);
+          routine: routine, shouldNotifyListeners: notifyListeners);
     }
   }
 
@@ -468,6 +468,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _cacheRoutineLog();
+
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -619,7 +622,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
 
-    _cacheRoutineLog();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _cacheRoutineLog(notifyListeners: true);
+    });
   }
 
   void _initializeProcedureData() {
