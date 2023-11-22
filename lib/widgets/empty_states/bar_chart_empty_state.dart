@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
-
-import '../../messages.dart';
 
 class BarChartEmptyState extends StatelessWidget {
   const BarChartEmptyState({super.key});
