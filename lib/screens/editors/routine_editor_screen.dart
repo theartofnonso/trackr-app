@@ -63,7 +63,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             Navigator.of(context).pop();
             Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(context: context,
                 firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
-            _cacheRoutineLog();
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -84,7 +83,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
         provider.addProcedures(context: context, exercises: exercises);
-        _cacheRoutineLog();
       }
     }
   }
@@ -101,7 +99,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (reOrderedList != null) {
       if (mounted) {
         provider.refreshProcedures(procedures: reOrderedList);
-        _cacheRoutineLog();
       }
     }
   }
@@ -122,7 +119,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         if (mounted) {
           Provider.of<ProceduresProvider>(context, listen: false)
               .replaceProcedure(context: context, procedureId: procedureId, exercise: selectedExercises.first);
-          _cacheRoutineLog();
         }
       }
     }
@@ -130,12 +126,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _removeProcedureSuperSets({required String superSetId}) {
     Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(context: context, superSetId: superSetId);
-    _cacheRoutineLog();
   }
 
   void _removeProcedure({required String procedureId}) {
     Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(context: context, procedureId: procedureId);
-    _cacheRoutineLog();
   }
 
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
@@ -470,6 +464,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _cacheRoutineLog();
+
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -618,11 +615,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     _initializeProcedureData();
     _initializeTextControllers();
-
-    // Cache initial state of [RoutineLog] if in log mode
-    if (widget.mode == RoutineEditorMode.log) {
-      _cacheRoutineLog();
-    }
 
     final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
     _onDisposeCallback = proceduresProvider.onClearProvider;
