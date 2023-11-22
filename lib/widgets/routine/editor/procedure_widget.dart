@@ -298,17 +298,10 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         .updateSetCheck(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
   }
 
-  void _cacheLog() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onCache();
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
 
-    _cacheLog();
+    widget.onCache();
 
     final sets = context.select((ProceduresProvider provider) => provider.sets)[widget.procedureDto.id];
 

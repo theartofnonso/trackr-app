@@ -349,7 +349,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorMode.log) {
-      print("JH");
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
         final procedures = procedureProvider.mergeSetsIntoProcedures();
