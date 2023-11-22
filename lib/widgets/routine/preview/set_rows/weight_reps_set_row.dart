@@ -17,7 +17,7 @@ class WeightRepsSetRow extends StatelessWidget {
     final weight = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
 
     return Table(columnWidths: const <int, TableColumnWidth>{
-      0: FixedColumnWidth(30),
+      0: FixedColumnWidth(50),
       1: FlexColumnWidth(),
       2: FlexColumnWidth(),
     }, children: <TableRow>[

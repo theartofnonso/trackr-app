@@ -11,7 +11,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Table(
       columnWidths: const <int, TableColumnWidth>{
-        0: FixedColumnWidth(30),
+        0: FixedColumnWidth(50),
         1: FlexColumnWidth(2),
         2: FlexColumnWidth(2),
       },

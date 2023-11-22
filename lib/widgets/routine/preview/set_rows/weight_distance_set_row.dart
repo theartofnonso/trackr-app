@@ -19,7 +19,7 @@ class WeightDistanceSetRow extends StatelessWidget {
     final distance = isDefaultDistanceUnit() ? setDto.value2 : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
 
     return Table(columnWidths: const <int, TableColumnWidth>{
-      0: FixedColumnWidth(30),
+      0: FixedColumnWidth(50),
       1: FlexColumnWidth(),
       2: FlexColumnWidth(),
     }, children: <TableRow>[

@@ -18,8 +18,6 @@ class BarChartEmptyState extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [50, 100, 150, 80, 120].map((value) => _buildBar(value, context)).toList(),
           ),
-          const SizedBox(height: 2),
-          const ScreenEmptyState(message: startTrackingPerformance)
         ],
       ),
     );
