@@ -16,7 +16,7 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
               // Provide a background color for the popup.
-              color: tealBlueLight,
+              color: tealBlueDark,
               // Use a SafeArea widget to avoid system overlaps.
               child: SafeArea(
                 top: false,
