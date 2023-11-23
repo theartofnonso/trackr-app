@@ -251,6 +251,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
         exerciseType == ExerciseType.bodyWeightAndReps;
   }
 
+  bool _proceduresWithRepsOnly() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.assistedBodyWeight ||
+        exerciseType == ExerciseType.weightedBodyWeight ||
+        exerciseType == ExerciseType.bodyWeightAndReps;
+  }
+
   bool _proceduresDuration() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
@@ -357,19 +365,19 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _setVolumePerLog,
-                            label: "Session Volume",
-                            buttonColor: _buttonColor(type: SummaryType.sessionVolume)),
+                            onPressed: _oneRepMaxPerLog,
+                            label: "1RM",
+                            buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
                     if (_proceduresWithWeightsAndReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
-                            onPressed: _oneRepMaxPerLog,
-                            label: "1RM",
-                            buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
+                            onPressed: _setVolumePerLog,
+                            label: "Session Volume",
+                            buttonColor: _buttonColor(type: SummaryType.sessionVolume)),
                       ),
-                    if (_proceduresWithReps())
+                    if (_proceduresWithRepsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -480,7 +488,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
                 ),
               ),
-            if (_proceduresWithReps())
+            if (_proceduresWithRepsOnly())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
@@ -490,7 +498,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
                 ),
               ),
-            if (_proceduresWithReps())
+            if (_proceduresWithRepsOnly())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: _MetricListTile(
