@@ -174,7 +174,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedExercises = _filteredExercises.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
+    final selectedExercises = _exercisesInLibrary.where((exerciseInLibrary) => exerciseInLibrary.selected).toList();
 
     return Scaffold(
       appBar: AppBar(
