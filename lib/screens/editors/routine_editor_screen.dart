@@ -291,7 +291,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoProcedures();
+    final procedures = procedureProvider
+        .mergeSetsIntoProcedures()
+        .map((procedure) => procedure.copyWith(sets: procedure.sets.map((set) => set.copyWith(checked: true)).toList()))
+        .toList();
     _toggleLoadingState();
     try {
       final updatedRoutineLog = routineLog.copyWith(
@@ -349,7 +352,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _cacheRoutineLog() {
     if (widget.mode == RoutineEditorMode.log) {
-
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
         final procedures = procedureProvider.mergeSetsIntoProcedures();
@@ -471,7 +473,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     _cacheRoutineLog();
 
     final procedures = context.select((ProceduresProvider provider) => provider.procedures);
