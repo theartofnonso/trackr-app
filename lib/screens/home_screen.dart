@@ -23,24 +23,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         indicatorColor: Colors.transparent,
         backgroundColor: tealBlueDark,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.history, color: Colors.grey, size: 24),
-            selectedIcon: Icon(Icons.history, color: Colors.white, size: 24),
+            icon: Icon(Icons.history, color: Colors.grey, size: 28),
+            selectedIcon: Icon(Icons.history, color: Colors.white, size: 32),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.add, color: Colors.grey, size: 24),
-            selectedIcon: Icon(Icons.add, color: Colors.white, size: 24),
+            icon: Icon(Icons.add, color: Colors.grey, size: 28),
+            selectedIcon: Icon(Icons.add, color: Colors.white, size: 32),
             label: 'Workouts',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_2_outlined, color: Colors.grey, size: 24),
-            selectedIcon: Icon(Icons.person_2_outlined, color: Colors.white, size: 24),
+            icon: Icon(Icons.person_2_outlined, color: Colors.grey, size: 28),
+            selectedIcon: Icon(Icons.person_2_outlined, color: Colors.white, size: 32),
             label: 'Profile',
           ),
         ],

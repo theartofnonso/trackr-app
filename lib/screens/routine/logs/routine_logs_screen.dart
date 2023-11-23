@@ -86,6 +86,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                   child: RefreshIndicator(
                     onRefresh: () => loadData(context),
                     child: ListView.separated(
+                        padding: const EdgeInsets.only(bottom: 150),
                         itemBuilder: (BuildContext context, int index) =>
                             _RoutineLogWidget(log: provider.logs[index]),
                         separatorBuilder: (BuildContext context, int index) =>

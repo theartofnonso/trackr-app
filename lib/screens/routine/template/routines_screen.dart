@@ -49,6 +49,7 @@ class RoutinesScreen extends StatelessWidget {
                             child: RefreshIndicator(
                               onRefresh: () => loadData(context),
                               child: ListView.separated(
+                                  padding: const EdgeInsets.only(bottom: 150),
                                   itemBuilder: (BuildContext context, int index) => _RoutineWidget(
                                       routine: routineProvider.routines[index],
                                       canStartRoutine: cachedRoutineLog == null),
