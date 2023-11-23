@@ -53,13 +53,13 @@ class WeightRepsSetRow extends SetRow {
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
-              2: const FlexColumnWidth(2),
+              2: const FlexColumnWidth(3),
               3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
-              2: const FlexColumnWidth(2),
+              2: const FlexColumnWidth(3),
               3: const FlexColumnWidth(2),
               4: const FixedColumnWidth(50),
             },
