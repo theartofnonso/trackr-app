@@ -4,12 +4,10 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
-import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
