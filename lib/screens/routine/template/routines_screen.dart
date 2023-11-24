@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
@@ -79,9 +80,20 @@ class _RoutineWidget extends StatelessWidget {
     return Theme(
         data: ThemeData(splashColor: tealBlueLight),
         child: ListTile(
-          onTap: () => _navigateToRoutineEditor(context: context, routine: routine),
+          onTap: () => _navigateToRoutinePreview(context: context),
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+          leading: canStartRoutine
+              ? GestureDetector(
+                  onTap: () {
+                    _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+                  },
+                  child: const Icon(
+                    Icons.play_arrow_rounded,
+                    color: Colors.white,
+                    size: 35,
+                  ))
+              : null,
           title: Text(routine.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Row(children: [
             const Icon(
@@ -140,7 +152,6 @@ class _RoutineWidget extends StatelessWidget {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
@@ -150,5 +161,10 @@ class _RoutineWidget extends StatelessWidget {
     Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id).onError((_, __) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, unable to delete workout");
     });
+  }
+
+  void _navigateToRoutinePreview({required BuildContext context}) async {
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routine.id)));
   }
 }
