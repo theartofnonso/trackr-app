@@ -131,7 +131,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       required SetDto? pastSet,
       required ExerciseType exerciseType,
       required int currentSetTypeIndex}) {
-    _controllers.add((TextEditingController(), TextEditingController()));
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
@@ -282,6 +281,14 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     final updatedSet = setDto.copyWith(checked: !checked);
     Provider.of<ProceduresProvider>(context, listen: false)
         .updateSetCheck(context: context, procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    for (var _ in widget.procedureDto.sets) {
+      _controllers.add((TextEditingController(), TextEditingController()));
+    }
   }
 
   @override
