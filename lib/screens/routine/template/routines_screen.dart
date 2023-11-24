@@ -28,6 +28,14 @@ class RoutinesScreen extends StatelessWidget {
     return Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
       final cachedRoutineLog = routineLogProvider.cachedLog;
       return Scaffold(
+          appBar: AppBar(
+            title: Image.asset(
+              'assets/trackr.png',
+              fit: BoxFit.contain,
+              height: 14, // Adjust the height as needed
+            ),
+            centerTitle: false,
+          ),
           floatingActionButton: FloatingActionButton.extended(
             heroTag: "fab_routines_screen",
             onPressed: () => _navigateToRoutineEditor(context: context),
@@ -49,7 +57,8 @@ class RoutinesScreen extends StatelessWidget {
                                   itemBuilder: (BuildContext context, int index) => _RoutineWidget(
                                       routine: routineProvider.routines[index],
                                       canStartRoutine: cachedRoutineLog == null),
-                                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 6),
+                                  separatorBuilder: (BuildContext context, int index) =>
+                                      Divider(color: Colors.white70.withOpacity(0.1)),
                                   itemCount: routineProvider.routines.length),
                             ),
                           )
