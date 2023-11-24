@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
-import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
+import 'package:tracker_app/screens/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
@@ -13,7 +13,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
-import '../../editors/routine_editor_screen.dart';
+import '../editors/routine_editor_screen.dart';
 
 void _navigateToRoutineEditor(
     {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.edit}) {

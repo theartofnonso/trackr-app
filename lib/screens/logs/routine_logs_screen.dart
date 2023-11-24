@@ -14,7 +14,7 @@ import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
-import '../../calendar_screen.dart';
+import '../calendar_screen.dart';
 
 Future<void> loadData(BuildContext context) async {
   await Provider.of<ExerciseProvider>(context, listen: false).listExercises();

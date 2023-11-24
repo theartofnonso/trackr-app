@@ -18,7 +18,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
-import '../../exercise/history/home_screen.dart';
+import '../exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;

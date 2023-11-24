@@ -2,8 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/routine/template/routine_preview_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/screens/template/routine_preview_screen.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
@@ -13,7 +13,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../../widgets/empty_states/bar_chart_empty_state.dart';
-import '../../exercise/history/home_screen.dart';
+import '../exercise/history/home_screen.dart';
 
 class RoutineHistoryChart extends StatefulWidget {
   final String routineId;
