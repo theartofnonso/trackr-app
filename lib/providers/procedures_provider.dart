@@ -39,7 +39,8 @@ class ProceduresProvider extends ChangeNotifier {
       for (int index = 0; index < procedure.sets.length; index++) {
         final pastSet = _wherePastSet(index: index, type: procedure.sets[index].type, pastSets: pastSets);
         if (pastSet != null) {
-          final newSet = _createSet(sets: procedure.sets, pastSet: pastSet);
+          final newSet = SetDto(pastSet.value1, pastSet.value2, pastSet.type,
+              procedure.sets[index].checked);
           sets.add(newSet);
         } else {
           final newSet = SetDto(procedure.sets[index].value1, procedure.sets[index].value2, procedure.sets[index].type,
