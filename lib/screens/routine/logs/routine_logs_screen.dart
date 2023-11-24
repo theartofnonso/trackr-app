@@ -140,7 +140,6 @@ class _RoutineLogWidget extends StatelessWidget {
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
-        //tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
