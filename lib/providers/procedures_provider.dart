@@ -298,7 +298,6 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
-    print(setDto);
     _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
