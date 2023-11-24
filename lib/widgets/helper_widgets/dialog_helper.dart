@@ -6,23 +6,20 @@ import '../../app_constants.dart';
 void displayBottomSheet({required BuildContext context, required Widget child, double? height}) {
   showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) => IntrinsicHeight(
-        child: Container(
-          height: height,
-              padding: const EdgeInsets.only(top: 6.0),
-              // The bottom margin is provided to align the popup above the system
-              // navigation bar.
-              margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              // Provide a background color for the popup.
-              color: tealBlueDark,
-              // Use a SafeArea widget to avoid system overlaps.
-              child: SafeArea(
-                top: false,
-                child: child,
-              ),
+      builder: (BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: height,
+            margin: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
+            color: tealBlueLight,
+            child: SafeArea(
+              child: child,
+            ),
+          ),
+        ],
       ));
 }
 

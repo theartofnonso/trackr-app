@@ -4,10 +4,12 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/Routine.dart';
+import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
@@ -57,7 +59,8 @@ class RoutineLogProvider with ChangeNotifier {
     List<RoutineLog> logs = [];
 
     final routineLogOwner = user();
-    final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
+    final request = ModelQueries.list(RoutineLog.classType,
+        where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
     final response = await Amplify.API.query(request: request).response;
 
     final routineLogs = response.data?.items;
@@ -108,6 +111,14 @@ class RoutineLogProvider with ChangeNotifier {
 
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
+    final routineProcedures = procedures
+        .map(
+            (procedure) => procedure.copyWith(sets: procedure.sets.map((set) => set.copyWith(checked: false)).toList()))
+        .map((procedure) => procedure.toJson())
+        .toList();
+
+    print(routine);
+
     final logToCreate = RoutineLog(
         name: name,
         notes: notes,
@@ -116,7 +127,7 @@ class RoutineLogProvider with ChangeNotifier {
         endTime: TemporalDateTime.now(),
         createdAt: createdAt ?? TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
-        routine: routine?.copyWith(procedures: proceduresJson),
+        routine: routine?.copyWith(procedures: routineProcedures, user: user()),
         user: user());
 
     try {
@@ -125,9 +136,18 @@ class RoutineLogProvider with ChangeNotifier {
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
+        if (context.mounted) {
+          _updateRoutineFromLog(context: context, routine: logToCreate.routine);
+        }
       }
     } on ApiException catch (_) {
       _cachePendingLogs(logToCreate);
+    }
+  }
+
+  void _updateRoutineFromLog({required BuildContext context, Routine? routine}) {
+    if (routine != null) {
+      Provider.of<RoutineProvider>(context, listen: false).updateRoutine(routine: routine);
     }
   }
 
@@ -152,6 +172,11 @@ class RoutineLogProvider with ChangeNotifier {
         _cachedPendingLogs.removeAt(index);
         cachedPendingRoutineLogs.removeAt(index);
         SharedPrefs().cachedPendingRoutineLogs = cachedPendingRoutineLogs;
+
+        /// Update [RoutineLog]
+        if (context.mounted) {
+          _updateRoutineFromLog(context: context, routine: pendingLog.routine);
+        }
 
         /// Add to logs
         _addToLogs(createdLog);

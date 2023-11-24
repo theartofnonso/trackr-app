@@ -211,7 +211,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doCreateRoutineLog() {
-    final routine = widget.routineLog?.routine;
+    final routine = widget.routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
     Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
