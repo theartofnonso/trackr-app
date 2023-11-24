@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/notifications_screen.dart';
 import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/screens/routine/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/routine/template/routines_screen.dart';
@@ -20,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const RoutineLogsScreen(), const RoutinesScreen(), const ProfileScreen(), const NotificationsScreen()];
+    final screens = [const RoutineLogsScreen(), const RoutinesScreen(), const ProfileScreen()];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
@@ -43,12 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.person_2_outlined, color: Colors.grey, size: 28),
             selectedIcon: Icon(Icons.person_2_outlined, color: Colors.white, size: 32),
             label: 'Profile',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.notifications_none_rounded, color: Colors.grey, size: 28),
-            selectedIcon: Icon(Icons.notifications_none_rounded, color: Colors.white, size: 32),
-            label: 'Profile',
-          ),
+          )
         ],
         onDestinationSelected: (int index) {
           setState(() {
