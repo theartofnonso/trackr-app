@@ -28,7 +28,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
             color: Colors.white,
           ),
           minLeadingWidth: 0,
-          title: Text('${log.name.isNotEmpty ? log.name : "Workout"} is running', style: GoogleFonts.lato(color: Colors.white),)),
+          title: Text('${log.name.isNotEmpty ? log.name : "Workout"} is in progress', style: GoogleFonts.lato(color: Colors.white),)),
     );
   }
 }
