@@ -33,22 +33,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   void _loadSets(BuildContext context) {
     for (var procedure in _procedures) {
-      final pastSets =
-          Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
-      List<SetDto> sets = [];
-      for (int index = 0; index < procedure.sets.length; index++) {
-        final pastSet = _wherePastSet(index: index, type: procedure.sets[index].type, pastSets: pastSets);
-        if (pastSet != null) {
-          final newSet = SetDto(pastSet.value1, pastSet.value2, pastSet.type,
-              procedure.sets[index].checked);
-          sets.add(newSet);
-        } else {
-          final newSet = SetDto(procedure.sets[index].value1, procedure.sets[index].value2, procedure.sets[index].type,
-              procedure.sets[index].checked);
-          sets.add(newSet);
-        }
-      }
-      _sets[procedure.id] = sets;
+      _sets[procedure.id] = procedure.sets;
     }
   }
 

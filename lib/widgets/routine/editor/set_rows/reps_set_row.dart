@@ -30,13 +30,7 @@ class RepsSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    int reps = 0;
-
-    if (previousSetDto != null) {
-      reps = previousSetDto.value2.toInt();
-    } else {
-      reps = setDto.value2.toInt();
-    }
+    int reps = setDto.value2.toInt();
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),

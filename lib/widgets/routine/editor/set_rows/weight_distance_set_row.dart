@@ -34,18 +34,8 @@ class WeightDistanceSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double weight = 0;
-    double distance = 0;
-
-    if (previousSetDto != null) {
-      weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
-      distance = previousSetDto.value2.toDouble();
-    } else {
-      weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
-      distance = setDto.value2.toDouble();
-    }
-
-    distance = isDefaultDistanceUnit()
+    double weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+    double distance = isDefaultDistanceUnit()
         ? setDto.value2.toDouble()
         : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
 

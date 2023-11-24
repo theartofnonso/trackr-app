@@ -34,16 +34,8 @@ class WeightRepsSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double weight = 0;
-    int reps = 0;
-
-    if (previousSetDto != null) {
-      weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
-      reps = previousSetDto.value2.toInt();
-    } else {
-      weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
-      reps = setDto.value2.toInt();
-    }
+    double weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+    int reps = setDto.value2.toInt();
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),

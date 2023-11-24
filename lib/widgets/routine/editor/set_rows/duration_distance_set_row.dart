@@ -36,18 +36,8 @@ class DurationDistanceSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    Duration duration = Duration.zero;
-    double distance = 0;
-
-    if (previousSetDto != null) {
-      duration = Duration(milliseconds: previousSetDto.value1.toInt());
-      distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
-    } else {
-      duration = Duration(milliseconds: setDto.value1.toInt());
-      distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
-    }
-
-    distance = isDefaultDistanceUnit()
+    Duration duration = Duration(milliseconds: setDto.value1.toInt());
+    double distance = isDefaultDistanceUnit()
         ? setDto.value2.toDouble()
         : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 
