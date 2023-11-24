@@ -121,21 +121,12 @@ class RoutineLogProvider with ChangeNotifier {
         routine: routine?.copyWith(procedures: proceduresJson),
         user: user());
 
-    print("${routine?.name} - Before attempting to create log");
-
     try {
       final request = ModelMutations.create(logToCreate);
       final response = await Amplify.API.mutate(request: request).response;
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
-        if (routine != null) {
-          if (context.mounted) {
-            print("${routine.name} - after attempting to create log");
-            Provider.of<RoutineProvider>(context, listen: false)
-                .updateRoutine(routine: routine.copyWith(procedures: proceduresJson));
-          }
-        }
       }
     } on ApiException catch (_) {
       _cachePendingLogs(logToCreate);
@@ -166,15 +157,6 @@ class RoutineLogProvider with ChangeNotifier {
 
         /// Add to logs
         _addToLogs(createdLog);
-
-        /// Update routine
-        if (context.mounted) {
-          final routine = createdLog.routine;
-          if (routine != null) {
-            Provider.of<RoutineProvider>(context, listen: false)
-                .updateRoutine(routine: routine.copyWith(procedures: createdLog.procedures));
-          }
-        }
       }
     }
   }
