@@ -68,6 +68,11 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        title: Image.asset(
+          'assets/trackr.png',
+          fit: BoxFit.contain,
+          height: 14, // Adjust the height as needed
+        ),
         centerTitle: false,
         actions: [
           GestureDetector(
