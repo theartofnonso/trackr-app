@@ -59,7 +59,7 @@ List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.duration ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.distanceAndDuration)
+          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.durationAndDistance)
       .expand((procedure) => procedure.sets)
       .toList();
 }
@@ -69,7 +69,7 @@ List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndDistance ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.distanceAndDuration)
+          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.durationAndDistance)
       .expand((procedure) => procedure.sets)
       .toList();
 }

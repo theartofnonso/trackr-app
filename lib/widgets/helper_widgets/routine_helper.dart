@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/routine/preview/set_rows/distance_duration_set_row.dart';
+import 'package:tracker_app/widgets/routine/preview/set_rows/duration_distance_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_set_row.dart';
 
 import '../../app_constants.dart';
@@ -61,7 +61,7 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
               workingIndex: workingIndex,
               setDto: setDto,
             ),
-          ExerciseType.distanceAndDuration => DistanceDurationSetRow(
+          ExerciseType.durationAndDistance => DurationDistanceSetRow(
               index: index,
               workingIndex: workingIndex,
               setDto: setDto,

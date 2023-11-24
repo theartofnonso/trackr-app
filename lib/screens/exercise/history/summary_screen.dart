@@ -262,13 +262,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
   bool _proceduresDuration() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
-    return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.distanceAndDuration;
+    return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.durationAndDistance;
   }
 
   bool _proceduresWithDistance() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
-    return exerciseType == ExerciseType.distanceAndDuration || exerciseType == ExerciseType.weightAndDistance;
+    return exerciseType == ExerciseType.durationAndDistance || exerciseType == ExerciseType.weightAndDistance;
   }
 
   @override
@@ -547,7 +547,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
         _totalRepsPerLog();
         break;
       case ExerciseType.duration:
-      case ExerciseType.distanceAndDuration:
+      case ExerciseType.durationAndDistance:
         _longestDurationPerLog();
     }
   }

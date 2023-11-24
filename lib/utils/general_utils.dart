@@ -22,7 +22,7 @@ String weightLabel() {
 }
 
 String distanceLabel({required ExerciseType type}) {
-  if (type == ExerciseType.distanceAndDuration) {
+  if (type == ExerciseType.durationAndDistance) {
     return isDefaultDistanceUnit() ? "mi" : "km";
   } else {
     return isDefaultDistanceUnit() ? "yd" : "m";
@@ -30,7 +30,7 @@ String distanceLabel({required ExerciseType type}) {
 }
 
 String distanceTitle({required ExerciseType type}) {
-  if (type == ExerciseType.distanceAndDuration) {
+  if (type == ExerciseType.durationAndDistance) {
     return isDefaultDistanceUnit() ? "MI" : "KM";
   } else {
     return isDefaultDistanceUnit() ? "YARDS" : "METRES";
@@ -49,7 +49,7 @@ double toLbs(double value) {
 
 double toMI(double value, {required ExerciseType type}) {
   double conversion = 0;
-  if (type == ExerciseType.distanceAndDuration) {
+  if (type == ExerciseType.durationAndDistance) {
     conversion = value / 1.609;
   } else {
     conversion = value * 1.094;
@@ -59,7 +59,7 @@ double toMI(double value, {required ExerciseType type}) {
 
 double toKM(double value, {required ExerciseType type}) {
   double conversion = 0;
-  if (type == ExerciseType.distanceAndDuration) {
+  if (type == ExerciseType.durationAndDistance) {
     conversion = value * 1.609;
   } else {
     conversion = value / 1.094;

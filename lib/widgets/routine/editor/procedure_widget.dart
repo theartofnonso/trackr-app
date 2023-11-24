@@ -7,11 +7,11 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/distance_duration_set_header.dart';
+import 'package:tracker_app/widgets/routine/editor/set_headers/duration_distance_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/weight_distance_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/weight_reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/distance_duration_set_row.dart';
+import 'package:tracker_app/widgets/routine/editor/set_rows/duration_distance_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/weight_distance_set_row.dart';
@@ -145,8 +145,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: currentSet),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(
-              procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
           onUpdateSetWithPastSet: (SetDto setDto) =>
               _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedReps: (num value) =>
@@ -165,8 +165,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: currentSet),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(
-              procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
           onUpdateSetWithPastSet: (SetDto setDto) =>
               _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedReps: (num value) =>
@@ -183,8 +183,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: currentSet),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(
-              procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
           onUpdateSetWithPastSet: (SetDto setDto) =>
               _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedDistance: (double value) => _updateDistance(
@@ -203,15 +203,15 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: currentSet),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(
-              procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
           onUpdateSetWithPastSet: (SetDto setDto) =>
               _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedDuration: (Duration duration) => _updateDuration(
               procedureId: widget.procedureDto.id, setIndex: index, duration: duration, setDto: currentSet),
         );
-      case ExerciseType.distanceAndDuration:
-        return DistanceDurationSetRow(
+      case ExerciseType.durationAndDistance:
+        return DurationDistanceSetRow(
           index: index,
           setTypeIndex: currentSetTypeIndex,
           procedureId: widget.procedureDto.id,
@@ -220,8 +220,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(procedureId: widget.procedureDto.id, setIndex: index, setDto: currentSet),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(
-              procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) =>
+              _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
           onUpdateSetWithPastSet: (SetDto setDto) =>
               _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedDuration: (Duration duration) => _updateDuration(
@@ -301,7 +301,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     widget.onCache();
 
     final sets = context.select((ProceduresProvider provider) => provider.sets)[widget.procedureDto.id];
@@ -397,7 +396,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
             ExerciseType.weightAndDistance => WeightDistanceSetHeader(editorType: widget.editorType),
             ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
-            ExerciseType.distanceAndDuration => DistanceDurationSetHeader(editorType: widget.editorType),
+            ExerciseType.durationAndDistance => DurationDistanceSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),
           ..._displaySets(exerciseType: exerciseType, sets: sets ?? []),

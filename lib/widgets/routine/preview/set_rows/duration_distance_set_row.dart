@@ -7,8 +7,8 @@ import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 import '../../../../utils/general_utils.dart';
 
-class DistanceDurationSetRow extends StatelessWidget {
-  const DistanceDurationSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
+class DurationDistanceSetRow extends StatelessWidget {
+  const DurationDistanceSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
 
   final int index;
   final int workingIndex;
@@ -16,7 +16,7 @@ class DistanceDurationSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final distance = isDefaultDistanceUnit() ? setDto.value2 : toKM(setDto.value2.toDouble(), type: ExerciseType.distanceAndDuration);
+    final distance = isDefaultDistanceUnit() ? setDto.value2 : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 
     return Table(columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(50),

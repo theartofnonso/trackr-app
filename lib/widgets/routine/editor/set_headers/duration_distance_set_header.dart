@@ -5,10 +5,10 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 
-class DistanceDurationSetHeader extends StatelessWidget {
+class DurationDistanceSetHeader extends StatelessWidget {
   final RoutineEditorMode editorType;
 
-  const DistanceDurationSetHeader({super.key, required this.editorType});
+  const DurationDistanceSetHeader({super.key, required this.editorType});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle(type: ExerciseType.distanceAndDuration),
+            child: Text(distanceTitle(type: ExerciseType.durationAndDistance),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

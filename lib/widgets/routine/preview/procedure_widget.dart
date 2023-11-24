@@ -6,7 +6,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/routine_helper.dart';
-import '../preview/set_headers/distance_duration_set_header.dart';
+import '../preview/set_headers/duration_distance_set_header.dart';
 import '../preview/set_headers/duration_set_header.dart';
 import '../preview/set_headers/reps_set_header.dart';
 import '../preview/set_headers/weighted_set_header.dart';
@@ -68,7 +68,7 @@ class ProcedureWidget extends StatelessWidget {
           ExerciseType.weightAndDistance => WeightedSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: distanceTitle(type: ExerciseType.weightAndDistance)),
           ExerciseType.bodyWeightAndReps => const RepsSetHeader(),
           ExerciseType.duration => const DurationSetHeader(),
-          ExerciseType.distanceAndDuration => const DistanceDurationSetHeader(),
+          ExerciseType.durationAndDistance => const DurationDistanceSetHeader(),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(type: ExerciseType.fromString(procedureDto.exercise.type), sets: procedureDto.sets),

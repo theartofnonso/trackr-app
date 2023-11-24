@@ -12,12 +12,12 @@ import '../set_type_icon.dart';
 import '../textfields/double_textfield.dart';
 import '../timer_widget.dart';
 
-class DistanceDurationSetRow extends SetRow {
+class DurationDistanceSetRow extends SetRow {
   final void Function(Duration duration) onChangedDuration;
   final void Function(double distance) onChangedDistance;
   final (TextEditingController, TextEditingController) controllers;
 
-  const DistanceDurationSetRow(
+  const DurationDistanceSetRow(
       {super.key,
       required this.controllers,
       required this.onChangedDuration,
@@ -51,7 +51,7 @@ class DistanceDurationSetRow extends SetRow {
 
     distance = isDefaultDistanceUnit()
         ? setDto.value2.toDouble()
-        : toKM(setDto.value2.toDouble(), type: ExerciseType.distanceAndDuration);
+        : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
@@ -83,7 +83,7 @@ class DistanceDurationSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value2.toDouble()}${distanceLabel(type: ExerciseType.distanceAndDuration)} \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
+                    "${previousSetDto.value2.toDouble()}${distanceLabel(type: ExerciseType.durationAndDistance)} \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -119,6 +119,6 @@ class DistanceDurationSetRow extends SetRow {
   }
 
   double _convertDistance({required double value}) {
-    return isDefaultDistanceUnit() ? value : toMI(value, type: ExerciseType.distanceAndDuration);
+    return isDefaultDistanceUnit() ? value : toMI(value, type: ExerciseType.durationAndDistance);
   }
 }

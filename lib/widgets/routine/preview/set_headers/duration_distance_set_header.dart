@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../enums/exercise_type_enums.dart';
 import '../../../../utils/general_utils.dart';
 
-class DistanceDurationSetHeader extends StatelessWidget {
-  const DistanceDurationSetHeader({super.key});
+class DurationDistanceSetHeader extends StatelessWidget {
+  const DurationDistanceSetHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class DistanceDurationSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle(type: ExerciseType.distanceAndDuration),
+            child: Text(distanceTitle(type: ExerciseType.durationAndDistance),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
