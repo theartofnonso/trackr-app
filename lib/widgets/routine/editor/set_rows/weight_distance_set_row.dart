@@ -28,8 +28,7 @@ class WeightDistanceSetRow extends SetRow {
       required super.editorType,
       required super.onChangedType,
       required super.onRemoved,
-      required super.onCheck,
-      required super.onUpdateSetWithPastSet});
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,6 @@ class WeightDistanceSetRow extends SetRow {
     if (previousSetDto != null) {
       weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
       distance = previousSetDto.value2.toDouble();
-      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
       distance = setDto.value2.toDouble();

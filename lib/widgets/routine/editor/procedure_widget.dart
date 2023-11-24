@@ -93,7 +93,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     ];
   }
 
-  SetDto? _wherePastSets({required SetType type, required int index, required List<SetDto> pastSets}) {
+  SetDto? _wherePastSet({required SetType type, required int index, required List<SetDto> pastSets}) {
     final sets = pastSets.where((set) => set.type == type).toList();
     return sets.length > index ? sets.elementAt(index) : null;
   }
@@ -107,7 +107,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
 
     return sets.mapIndexed((index, setDto) {
-      SetDto? pastSet = _wherePastSets(type: setDto.type, index: setTypeCounts[setDto.type]!, pastSets: pastSets);
+      SetDto? pastSet = _wherePastSet(type: setDto.type, index: setTypeCounts[setDto.type]!, pastSets: pastSets);
 
       Widget setWidget = _createSetWidget(
           index: index,
@@ -147,8 +147,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onRemoved: () => _removeSet(index),
           onChangedType: (SetType type) =>
               _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
-          onUpdateSetWithPastSet: (SetDto setDto) =>
-              _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedReps: (num value) =>
               _updateReps(procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: currentSet),
           onChangedWeight: (double value) =>
@@ -167,8 +165,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onRemoved: () => _removeSet(index),
           onChangedType: (SetType type) =>
               _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
-          onUpdateSetWithPastSet: (SetDto setDto) =>
-              _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedReps: (num value) =>
               _updateReps(procedureId: widget.procedureDto.id, setIndex: index, value: value, setDto: currentSet),
           controllers: _controllers[index],
@@ -185,8 +181,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onRemoved: () => _removeSet(index),
           onChangedType: (SetType type) =>
               _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
-          onUpdateSetWithPastSet: (SetDto setDto) =>
-              _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedDistance: (double value) => _updateDistance(
               procedureId: widget.procedureDto.id, setIndex: index, distance: value, setDto: currentSet),
           onChangedWeight: (double value) =>
@@ -205,8 +199,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onRemoved: () => _removeSet(index),
           onChangedType: (SetType type) =>
               _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
-          onUpdateSetWithPastSet: (SetDto setDto) =>
-              _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedDuration: (Duration duration) => _updateDuration(
               procedureId: widget.procedureDto.id, setIndex: index, duration: duration, setDto: currentSet),
         );
@@ -222,8 +214,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onRemoved: () => _removeSet(index),
           onChangedType: (SetType type) =>
               _updateSetType(procedureId: widget.procedureDto.id, index: index, type: type, setDto: currentSet),
-          onUpdateSetWithPastSet: (SetDto setDto) =>
-              _updateSetWithPastSet(procedureId: widget.procedureDto.id, index: index, setDto: setDto),
           onChangedDuration: (Duration duration) => _updateDuration(
               procedureId: widget.procedureDto.id, setIndex: index, duration: duration, setDto: currentSet),
           onChangedDistance: (double distance) => _updateDistance(
@@ -257,46 +247,46 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       {required String procedureId, required int setIndex, required double value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: value);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateWeight(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+        .updateWeight(context: context, procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateReps({required String procedureId, required int setIndex, required num value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: value);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateReps(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+        .updateReps(context: context, procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateDuration(
       {required String procedureId, required int setIndex, required Duration duration, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateDuration(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+        .updateDuration(context: context, procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateDistance(
       {required String procedureId, required int setIndex, required double distance, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: distance);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateDistance(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+        .updateDistance(context: context, procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateSetType(
       {required String procedureId, required int index, required SetType type, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(type: type);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetType(procedureId: procedureId, setIndex: index, setDto: updatedSet);
+        .updateSetType(context: context, procedureId: procedureId, setIndex: index, setDto: updatedSet);
   }
 
   void _updateSetWithPastSet({required String procedureId, required int index, required SetDto setDto}) {
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetWithPastSet(procedureId: procedureId, setIndex: index, setDto: setDto);
+        .updateSetWithPastSet(context: context, procedureId: procedureId, setIndex: index, setDto: setDto);
   }
 
   void _updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
     final checked = setDto.checked;
     final updatedSet = setDto.copyWith(checked: !checked);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetCheck(procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
+        .updateSetCheck(context: context, procedureId: procedureId, setIndex: setIndex, setDto: updatedSet);
   }
 
   @override

@@ -24,8 +24,7 @@ class RepsSetRow extends SetRow {
       required super.editorType,
       required super.onRemoved,
       required super.onChangedType,
-      required super.onCheck,
-      required super.onUpdateSetWithPastSet});
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,6 @@ class RepsSetRow extends SetRow {
 
     if (previousSetDto != null) {
       reps = previousSetDto.value2.toInt();
-      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
     } else {
       reps = setDto.value2.toInt();
     }

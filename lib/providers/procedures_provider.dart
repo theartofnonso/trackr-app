@@ -241,10 +241,10 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _updateSetForProcedure(
-      {required String procedureId,
+      {required BuildContext context, required String procedureId,
       required int setIndex,
       required SetDto updatedSet,
-      bool shouldNotifyListeners = true}) {
+      bool shouldNotifyListeners = true, bool shouldReview = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -265,7 +265,11 @@ class ProceduresProvider extends ChangeNotifier {
     newMap[procedureId] = updatedSets;
 
     // Assign the new map to _sets to maintain immutability
-    _sets = newMap;
+    if(shouldReview) {
+      _sets = _reviewSets(context, procedureId, updatedSets);
+    } else {
+      _sets = newMap;
+    }
 
     // Notify listeners about the change
     if (shouldNotifyListeners) {
@@ -273,33 +277,57 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  Map<String, List<SetDto>> _reviewSets(BuildContext context, String procedureId, List<SetDto> updatedSets) {
+    Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
+
+    final procedure = _procedures.firstWhere((procedure) => procedure.id == procedureId);
+    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
+
+    final newSets = <SetDto>[];
+
+    updatedSets.map((set) {
+      SetDto? pastSet = _wherePastSet(type: set.type, index: setTypeCounts[set.type]!, pastSets: pastSets);
+      final newSet = pastSet?.copyWith(checked: set.checked) ?? set;
+      newSets.add(newSet);
+      setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
+    }).toList();
+
+    // Create a new map by copying all key-value pairs from the original map
+    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+
+    // Update the new map with the modified list of sets
+    newMap[procedureId] = newSets;
+
+    // Assign the new map to _sets to maintain immutability
+    return newMap;
   }
 
-  void updateReps({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateWeight({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDuration({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateReps({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDistance({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateDuration({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateDistance({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetWithPastSet({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(
-        procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldNotifyListeners: false);
+  void updateSetType({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldReview: true);
   }
 
-  void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateSetWithPastSet({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldNotifyListeners: false);
+  }
+
+  void updateSetCheck({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void onClearProvider() {
@@ -310,7 +338,7 @@ class ProceduresProvider extends ChangeNotifier {
   /// Helper functions
 
   SetDto _createSet({required List<SetDto> sets, required SetDto? pastSet}) {
-    final set = pastSet ?? sets.lastOrNull;
+    final set = sets.lastOrNull;
     return SetDto(set?.value1 ?? 0, set?.value2 ?? 0, set != null ? set.type : SetType.working, false);
   }
 
