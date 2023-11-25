@@ -21,9 +21,9 @@ Future<void> loadData(BuildContext context) async {
   await persistUserCredentials();
   if (context.mounted) {
     Provider.of<ExerciseProvider>(context, listen: false).listExercises().then((_) {
+      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
       final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
       routineLogProvider.listRoutineLogs(context);
-      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
       routineLogProvider.retrieveCachedRoutineLog(context);
       routineLogProvider.retrieveCachedPendingRoutineLog(context);
     });
