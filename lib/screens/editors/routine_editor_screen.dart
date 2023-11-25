@@ -29,13 +29,13 @@ import '../exercise/exercise_library_screen.dart';
 enum RoutineEditorMode { edit, log }
 
 class RoutineEditorScreen extends StatefulWidget {
-  final Routine? routine;
-  final RoutineLog? routineLog;
+  final String? routineId;
+  final String? routineLogId;
   final RoutineEditorMode mode;
   final TemporalDateTime? createdAt;
 
   const RoutineEditorScreen(
-      {super.key, this.routine, this.routineLog, this.mode = RoutineEditorMode.edit, this.createdAt});
+      {super.key, this.routineId, this.routineLogId, this.mode = RoutineEditorMode.edit, this.createdAt});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -644,11 +644,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _fetchRoutine() {
-   _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routine?.id ?? "");
+   _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routineId ?? "");
   }
 
   void _fetchRoutineLog() {
-    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLog?.id ?? "");
+    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLogId ?? "");
   }
 
   void _initializeProcedureData() {

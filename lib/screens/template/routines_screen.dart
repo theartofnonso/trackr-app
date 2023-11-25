@@ -18,7 +18,7 @@ import '../editors/routine_editor_screen.dart';
 void _navigateToRoutineEditor(
     {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.edit}) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine, mode: mode)));
+      .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, mode: mode)));
 }
 
 class RoutinesScreen extends StatelessWidget {

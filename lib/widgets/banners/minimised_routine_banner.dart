@@ -21,7 +21,7 @@ class MinimisedRoutineBanner extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) =>
-                    RoutineEditorScreen(routineLog: log, routine: log.routine, mode: RoutineEditorMode.log)));
+                    RoutineEditorScreen(routineLogId: log.id, routineId: log.routine?.id, mode: RoutineEditorMode.log)));
           },
           leading: const Icon(
             Icons.info_outline,
