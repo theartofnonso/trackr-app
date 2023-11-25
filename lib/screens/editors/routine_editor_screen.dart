@@ -367,56 +367,62 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _checkForUnsavedChanges() {
+  List<UnsavedChangesMessageDto> _checkForChanges() {
     List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
+    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
+
+    final oldProcedures = procedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
+    final newProcedures = procedureProvider.mergeSetsIntoProcedures();
+
+    /// Check if [ProcedureDto]'s have been added or removed
+    final differentProceduresChangeMessage =
+    procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
+    if (differentProceduresChangeMessage != null) {
+      unsavedChangesMessage.add(differentProceduresChangeMessage);
+    }
+
+    /// Check if [SetDto]'s have been added or removed
+    final differentSetsChangeMessage =
+    procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
+    if (differentSetsChangeMessage != null) {
+      unsavedChangesMessage.add(differentSetsChangeMessage);
+    }
+
+    /// Check if [SetType] for [SetDto] has been changed
+    final differentSetTypesChangeMessage =
+    procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
+    if (differentSetTypesChangeMessage != null) {
+      unsavedChangesMessage.add(differentSetTypesChangeMessage);
+    }
+
+    /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
+    final differentExerciseTypesChangeMessage =
+    procedureProvider.hasExercisesChanged(procedures1: oldProcedures, procedures2: newProcedures);
+    if (differentExerciseTypesChangeMessage != null) {
+      unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
+    }
+
+    /// Check if superset in [ProcedureDto] has been changed
+    final differentSuperSetIdsChangeMessage =
+    procedureProvider.hasSuperSetIdChanged(procedures1: oldProcedures, procedures2: newProcedures);
+    if (differentSuperSetIdsChangeMessage != null) {
+      unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
+    }
+
+    /// Check if [SetDto] value has been changed
+    final differentSetValueChangeMessage =
+    procedureProvider.hasSetValueChanged(procedures1: oldProcedures, procedures2: newProcedures);
+    if (differentSetValueChangeMessage != null) {
+      unsavedChangesMessage.add(differentSetValueChangeMessage);
+    }
+    return unsavedChangesMessage;
+  }
+
+  void _checkForUnsavedChanges() {
+
     if (widget.mode == RoutineEditorMode.edit) {
-      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-      final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
-
-      final oldProcedures = procedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
-      final newProcedures = procedureProvider.mergeSetsIntoProcedures();
-
-      /// Check if [ProcedureDto]'s have been added or removed
-      final differentProceduresChangeMessage =
-          procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
-      if (differentProceduresChangeMessage != null) {
-        unsavedChangesMessage.add(differentProceduresChangeMessage);
-      }
-
-      /// Check if [SetDto]'s have been added or removed
-      final differentSetsChangeMessage =
-          procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
-      if (differentSetsChangeMessage != null) {
-        unsavedChangesMessage.add(differentSetsChangeMessage);
-      }
-
-      /// Check if [SetType] for [SetDto] has been changed
-      final differentSetTypesChangeMessage =
-          procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
-      if (differentSetTypesChangeMessage != null) {
-        unsavedChangesMessage.add(differentSetTypesChangeMessage);
-      }
-
-      /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
-      final differentExerciseTypesChangeMessage =
-          procedureProvider.hasExercisesChanged(procedures1: oldProcedures, procedures2: newProcedures);
-      if (differentExerciseTypesChangeMessage != null) {
-        unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
-      }
-
-      /// Check if superset in [ProcedureDto] has been changed
-      final differentSuperSetIdsChangeMessage =
-          procedureProvider.hasSuperSetIdChanged(procedures1: oldProcedures, procedures2: newProcedures);
-      if (differentSuperSetIdsChangeMessage != null) {
-        unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
-      }
-
-      /// Check if [SetDto] value has been changed
-      final differentSetValueChangeMessage =
-          procedureProvider.hasSetValueChanged(procedures1: oldProcedures, procedures2: newProcedures);
-      if (differentSetValueChangeMessage != null) {
-        unsavedChangesMessage.add(differentSetValueChangeMessage);
-      }
+      final unsavedChangesMessage = _checkForChanges();
       if (unsavedChangesMessage.isNotEmpty) {
         showAlertDialog(
             context: context,

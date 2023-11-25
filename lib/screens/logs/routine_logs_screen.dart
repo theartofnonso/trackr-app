@@ -137,6 +137,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
