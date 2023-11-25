@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../widgets/buttons/text_button_widget.dart';
-
-class IntroScreen extends StatelessWidget {
+class IntroScreen extends StatefulWidget {
   final ThemeData themeData;
   final VoidCallback onComplete;
 
-  IntroScreen({super.key, required this.themeData, required this.onComplete});
+  const IntroScreen({super.key, required this.themeData, required this.onComplete});
+
+  @override
+  State<IntroScreen> createState() => _IntroScreenState();
+}
+
+class _IntroScreenState extends State<IntroScreen> {
+
+  final ScrollController _scrollController = ScrollController();
+  bool _showFab = false;
 
   final _headers = ["CREATE", "LOG", "TRACK", ""];
 
@@ -14,16 +22,24 @@ class IntroScreen extends StatelessWidget {
     "TRACKR helps you pre-plan gym sessions and create workouts with custom exercises, sets, reps, and weights.",
     "A user-friendly way to keep note of every detail about your workout sessions.",
     "Measure and gain insights on your performance across all training sessions and exercises.",
-    ""
   ];
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: themeData,
+      theme: widget.themeData,
       home: Scaffold(
+        floatingActionButton: _showFab ? FloatingActionButton.extended(
+          heroTag: "intro_screen",
+          extendedPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          onPressed: widget.onComplete,
+          backgroundColor: Colors.green,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          label: Text("Start tracking", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+        ) : null,
         body: SafeArea(
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -32,14 +48,6 @@ class IntroScreen extends StatelessWidget {
                 _IntroTile(title: _headers[1], body: _contents[1], image: 'assets/screen1.png'),
                 const SizedBox(height: 8),
                 _IntroTile(title: _headers[2], body: _contents[2], image: 'assets/screen3.png'),
-                const SizedBox(height: 10),
-                CTextButton(
-                  onPressed: onComplete,
-                  label: 'Start Tracking performance',
-                  textStyle: const TextStyle(fontSize: 16),
-                  buttonColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-                )
               ]),
             ),
           ),
@@ -47,6 +55,27 @@ class IntroScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+        // User has scrolled to the bottom, show the FAB
+        if (!_showFab) setState(() => _showFab = true);
+      } else {
+        // User is not at the bottom, hide the FAB
+        if (_showFab) setState(() => _showFab = false);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
 }
 
 class _IntroTile extends StatelessWidget {
