@@ -285,6 +285,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       await routineProvider.updateRoutine(routine: updatedRoutine);
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
+      print(e);
       _handleRoutineCreationError("Unable to update workout");
     } finally {
       _toggleLoadingState();
@@ -702,18 +703,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _updateRoutineAndData(Routine routine, List<ProcedureDto> procedures2) {
     _doUpdateRoutine(routine: routine, procedures: procedures2);
     _initializeProcedureData();
-    Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2, shouldNotifyListeners: true);
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .loadProcedures(procedures: procedures2, shouldNotifyListeners: true);
     final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
     _routine = routine.copyWith(procedures: procedureJsons);
   }
 
   void _initializeTextControllers() {
-    if (widget.mode == RoutineEditorMode.edit) {
-      Routine? routine = _routine;
-      RoutineLog? routineLog = _routineLog;
-      _routineNameController = TextEditingController(text: routine?.name ?? routineLog?.name);
-      _routineNotesController = TextEditingController(text: routine?.notes ?? routineLog?.notes);
-    }
+    Routine? routine = _routine;
+    RoutineLog? routineLog = _routineLog;
+    _routineNameController = TextEditingController(text: routine?.name ?? routineLog?.name);
+    _routineNotesController = TextEditingController(text: routine?.notes ?? routineLog?.notes);
   }
 
   @override
