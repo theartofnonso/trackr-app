@@ -444,7 +444,11 @@ class ProceduresProvider extends ChangeNotifier {
 
     int changes = exerciseIds2.difference(exerciseIds1).length;
 
-    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercises(s)") : null;
+    print(exerciseIds1);
+    print(exerciseIds2);
+    print(exerciseIds2.difference(exerciseIds1));
+
+    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercise(s)") : null;
   }
 
   UnsavedChangesMessageDto? hasSuperSetIdChanged({

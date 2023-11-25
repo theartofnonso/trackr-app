@@ -267,7 +267,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _doUpdateRoutine({required Routine routine}) async {
+  void _doUpdateRoutine({required Routine routine, popWidget = true}) async {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
     final procedures = procedureProvider.mergeSetsIntoProcedures();
@@ -280,7 +280,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           updatedAt: TemporalDateTime.now());
 
       await routineProvider.updateRoutine(routine: updatedRoutine);
-      if (mounted) Navigator.of(context).pop();
+      if (popWidget) {
+        if (mounted) Navigator.of(context).pop();
+      }
     } catch (e) {
       _handleRoutineCreationError("Unable to update workout");
     } finally {
@@ -367,62 +369,63 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  List<UnsavedChangesMessageDto> _checkForChanges() {
+  List<UnsavedChangesMessageDto> _checkForChanges(
+      {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
     List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    final procedures = widget.routine?.procedures ?? widget.routineLog?.procedures;
-
-    final oldProcedures = procedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList() ?? [];
-    final newProcedures = procedureProvider.mergeSetsIntoProcedures();
 
     /// Check if [ProcedureDto]'s have been added or removed
     final differentProceduresChangeMessage =
-    procedureProvider.hasDifferentProceduresLength(procedures1: oldProcedures, procedures2: newProcedures);
+        procedureProvider.hasDifferentProceduresLength(procedures1: procedures1, procedures2: procedures2);
     if (differentProceduresChangeMessage != null) {
       unsavedChangesMessage.add(differentProceduresChangeMessage);
     }
 
     /// Check if [SetDto]'s have been added or removed
     final differentSetsChangeMessage =
-    procedureProvider.hasDifferentSetsLength(procedures1: oldProcedures, procedures2: newProcedures);
+        procedureProvider.hasDifferentSetsLength(procedures1: procedures1, procedures2: procedures2);
     if (differentSetsChangeMessage != null) {
       unsavedChangesMessage.add(differentSetsChangeMessage);
     }
 
     /// Check if [SetType] for [SetDto] has been changed
     final differentSetTypesChangeMessage =
-    procedureProvider.hasSetTypeChange(procedures1: oldProcedures, procedures2: newProcedures);
+        procedureProvider.hasSetTypeChange(procedures1: procedures1, procedures2: procedures2);
     if (differentSetTypesChangeMessage != null) {
       unsavedChangesMessage.add(differentSetTypesChangeMessage);
     }
 
     /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
     final differentExerciseTypesChangeMessage =
-    procedureProvider.hasExercisesChanged(procedures1: oldProcedures, procedures2: newProcedures);
+        procedureProvider.hasExercisesChanged(procedures1: procedures1, procedures2: procedures2);
     if (differentExerciseTypesChangeMessage != null) {
       unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
     }
 
     /// Check if superset in [ProcedureDto] has been changed
     final differentSuperSetIdsChangeMessage =
-    procedureProvider.hasSuperSetIdChanged(procedures1: oldProcedures, procedures2: newProcedures);
+        procedureProvider.hasSuperSetIdChanged(procedures1: procedures1, procedures2: procedures2);
     if (differentSuperSetIdsChangeMessage != null) {
       unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
     }
 
     /// Check if [SetDto] value has been changed
     final differentSetValueChangeMessage =
-    procedureProvider.hasSetValueChanged(procedures1: oldProcedures, procedures2: newProcedures);
+        procedureProvider.hasSetValueChanged(procedures1: procedures1, procedures2: procedures2);
     if (differentSetValueChangeMessage != null) {
       unsavedChangesMessage.add(differentSetValueChangeMessage);
     }
+    print(unsavedChangesMessage);
     return unsavedChangesMessage;
   }
 
   void _checkForUnsavedChanges() {
-
     if (widget.mode == RoutineEditorMode.edit) {
-      final unsavedChangesMessage = _checkForChanges();
+      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+      final oldProcedures = widget.routineLog?.procedures ?? widget.routine?.procedures;
+      final procedures1 = oldProcedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+      final procedures2 = procedureProvider.mergeSetsIntoProcedures();
+      final unsavedChangesMessage = _checkForChanges(procedures1: procedures1 ?? [], procedures2: procedures2);
       if (unsavedChangesMessage.isNotEmpty) {
         showAlertDialog(
             context: context,
@@ -631,6 +634,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _initializeTextControllers();
 
     _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
+
+    _checkForUpdates();
   }
 
   void _initializeProcedureData() {
@@ -645,6 +650,37 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (routineLog != null) {
       _routineStartTime = routineLog.startTime;
     }
+  }
+
+  void _checkForUpdates() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+      final routine = widget.routine;
+      if (routine != null) {
+        final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
+        if (lastLog != null) {
+          final procedures1 = procedureProvider.mergeSetsIntoProcedures();
+          final procedures2 = lastLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+          final changes = _checkForChanges(procedures1: procedures1, procedures2: procedures2);
+          if (changes.isNotEmpty) {
+            displayBottomSheet(
+                height: 216,
+                context: context,
+                child: _NotificationsDialog(
+                    onUpdate: () {
+                      print(routine.copyWith(procedures: lastLog.procedures));
+                      // Update set value
+                      _doUpdateRoutine(routine: routine.copyWith(procedures: lastLog.procedures), popWidget: false);
+                      // _initializeProcedureData();
+                      // setState(() {
+                      //
+                      // });
+                    },
+                    messages: changes));
+          }
+        }
+      }
+    });
   }
 
   void _initializeTextControllers() {
@@ -685,6 +721,7 @@ class _ProceduresPicker extends StatelessWidget {
 
     return procedures.isNotEmpty
         ? Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(child: ListView(children: listTiles)),
             ],
@@ -694,7 +731,7 @@ class _ProceduresPicker extends StatelessWidget {
 }
 
 class _ProceduresPickerEmptyState extends StatelessWidget {
-  final Function() onPressed;
+  final VoidCallback onPressed;
 
   const _ProceduresPickerEmptyState({required this.onPressed});
 
@@ -793,5 +830,35 @@ class _RoutineLogOverview extends StatelessWidget {
             ])
           ],
         ));
+  }
+}
+
+class _NotificationsDialog extends StatelessWidget {
+  final List<UnsavedChangesMessageDto> messages;
+  final VoidCallback onUpdate;
+
+  const _NotificationsDialog({required this.onUpdate, required this.messages});
+
+  @override
+  Widget build(BuildContext context) {
+    final listTiles = messages
+        .map((item) => ListTile(
+            leading: const Icon(Icons.info_outline),
+            dense: true,
+            title: Text(item.message, style: GoogleFonts.lato(color: Colors.white))))
+        .toList();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 8),
+        Expanded(child: ListView(children: listTiles)),
+        CTextButton(
+          onPressed: onUpdate,
+          label: "Update",
+          visualDensity: VisualDensity.standard,
+        )
+      ],
+    );
   }
 }

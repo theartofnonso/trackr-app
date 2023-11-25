@@ -55,6 +55,10 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
+  RoutineLog? lastLog(String id) {
+    return _logs.firstWhereOrNull((log) => log.routine?.id == id);
+  }
+
   Map<String, dynamic> _fixJson(String jsonString) {
     final json = jsonDecode(jsonString) as Map<String, dynamic>;
     json.update("routine", (value) {
@@ -118,9 +122,9 @@ class RoutineLogProvider with ChangeNotifier {
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
-        if (context.mounted) {
-          _updateRoutineFromLog(context: context, routine: logToCreate.routine);
-        }
+        // if (context.mounted) {
+        //   _updateRoutineFromLog(context: context, routine: logToCreate.routine);
+        // }
       }
     } on ApiException catch (_) {
       _cachePendingLogs(logToCreate);
@@ -156,9 +160,9 @@ class RoutineLogProvider with ChangeNotifier {
         SharedPrefs().cachedPendingRoutineLogs = cachedPendingRoutineLogs;
 
         /// Update [RoutineLog]
-        if (context.mounted) {
-          _updateRoutineFromLog(context: context, routine: pendingLog.routine);
-        }
+        // if (context.mounted) {
+        //   _updateRoutineFromLog(context: context, routine: pendingLog.routine);
+        // }
 
         /// Add to logs
         _addToLogs(createdLog);

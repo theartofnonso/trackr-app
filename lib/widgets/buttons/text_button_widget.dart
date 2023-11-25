@@ -10,6 +10,7 @@ class CTextButton extends StatelessWidget {
   final Color? buttonColor;
   final TextStyle? textStyle;
   final EdgeInsets? padding;
+  final VisualDensity? visualDensity;
 
   const CTextButton(
       {super.key,
@@ -18,13 +19,13 @@ class CTextButton extends StatelessWidget {
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor = tealBlueLight,
-      this.textStyle, this.padding});
+      this.textStyle, this.padding, this.visualDensity = VisualDensity.compact});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
         style: ButtonStyle(
-            visualDensity: VisualDensity.compact,
+            visualDensity: visualDensity,
             backgroundColor: MaterialStateProperty.all(buttonColor),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
         onPressed: loading ? () {} : onPressed,
