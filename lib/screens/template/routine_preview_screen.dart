@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
-import 'package:tracker_app/screens/template/routine_history_chart.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
@@ -165,7 +164,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                               fontSize: 14,
                             ))
                         : const SizedBox.shrink(),
-                    RoutineHistoryChart(routineId: widget.routineId),
                     const SizedBox(height: 5),
                     ..._proceduresToWidgets(procedures: procedures)
                   ],
