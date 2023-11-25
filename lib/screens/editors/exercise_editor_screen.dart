@@ -116,7 +116,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   title: Text("Secondary Muscles", style: Theme.of(context).textTheme.labelLarge),
                   subtitle: Padding(
                     padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
-                    child: Text(_secondaryMuscleGroup.map((bodyPart) => bodyPart.name).join(", "),
+                    child: Text(_secondaryMuscleDisplay(),
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70)),
                   )),
             ),
@@ -151,6 +151,16 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         ),
       ),
     );
+  }
+
+  String _secondaryMuscleDisplay() {
+    String display;
+    if(_secondaryMuscleGroup.isNotEmpty) {
+      display = _secondaryMuscleGroup.map((bodyPart) => bodyPart.name).join(", ");
+    } else {
+      display = "Select secondary muscles";
+    }
+    return display;
   }
 
   void _toggleLoadingState() {
