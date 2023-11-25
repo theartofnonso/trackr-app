@@ -72,7 +72,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Navigate to previous screen
   void _navigateBackWithSelectedExercises() {
-    final exercisesFromLibrary = _filteredExercises
+    final exercisesFromLibrary = _exercisesInLibrary
         .where((exerciseInLibrary) => exerciseInLibrary.selected)
         .map((exerciseInLibrary) => exerciseInLibrary.exercise)
         .toList();
