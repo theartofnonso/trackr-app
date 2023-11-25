@@ -24,21 +24,24 @@ class IntroScreen extends StatelessWidget {
       home: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _IntroTile(title: _headers[0], body: _contents[0], image: 'assets/screen1.png'),
-              const SizedBox(height: 8),
-              _IntroTile(title: _headers[1], body: _contents[1], image: 'assets/screen1.png'),
-              const SizedBox(height: 8),
-              _IntroTile(title: _headers[2], body: _contents[2], image: 'assets/screen3.png'),
-              const SizedBox(height: 10),
-              CTextButton(
-                onPressed: onComplete,
-                label: 'Start Tracking performance',
-                textStyle: const TextStyle(fontSize: 16),
-                buttonColor: Colors.green,
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-              )
-            ]),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                _IntroTile(title: _headers[0], body: _contents[0], image: 'assets/screen1.png'),
+                const SizedBox(height: 8),
+                _IntroTile(title: _headers[1], body: _contents[1], image: 'assets/screen1.png'),
+                const SizedBox(height: 8),
+                _IntroTile(title: _headers[2], body: _contents[2], image: 'assets/screen3.png'),
+                const SizedBox(height: 10),
+                CTextButton(
+                  onPressed: onComplete,
+                  label: 'Start Tracking performance',
+                  textStyle: const TextStyle(fontSize: 16),
+                  buttonColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+                )
+              ]),
+            ),
           ),
         ),
       ),
