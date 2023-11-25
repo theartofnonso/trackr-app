@@ -710,38 +710,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _routine = routine.copyWith(procedures: procedureJsons);
   }
 
-  // void _checkForUpdates() {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     final routine = _routine;
-  //     if (routine != null) {
-  //       final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
-  //       if (lastLog != null) {
-  //         final procedures1 = Provider.of<ProceduresProvider>(context, listen: false).mergeSetsIntoProcedures();
-  //         final procedures2 = lastLog.procedures
-  //             .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-  //             .map((procedure) => procedure.refreshSets())
-  //             .toList();
-  //         final changes = _checkForChanges(procedures1: procedures1, procedures2: procedures2);
-  //         if (changes.isNotEmpty) {
-  //           displayBottomSheet(
-  //               height: 216,
-  //               context: context,
-  //               child: _NotificationsDialog(
-  //                   workoutName: routine.name,
-  //                   onUpdate: () {
-  //                     _doUpdateRoutine(routine: routine, procedures: procedures2);
-  //                     _initializeProcedureData();
-  //                     Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2);
-  //                     final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
-  //                     _routine = routine.copyWith(procedures: procedureJsons);
-  //                   },
-  //                   messages: changes));
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
-
   void _initializeTextControllers() {
     if (widget.mode == RoutineEditorMode.edit) {
       Routine? routine = _routine;
