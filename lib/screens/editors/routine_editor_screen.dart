@@ -42,7 +42,6 @@ class RoutineEditorScreen extends StatefulWidget {
 }
 
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
-
   Routine? _routine;
   RoutineLog? _routineLog;
 
@@ -59,7 +58,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _showProceduresPicker({required ProcedureDto firstProcedure}) {
     final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
     displayBottomSheet(
-        height: 216,
         context: context,
         child: _ProceduresPicker(
           procedures: procedures,
@@ -644,7 +642,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _fetchRoutine() {
-   _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routineId ?? "");
+    _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routineId ?? "");
   }
 
   void _fetchRoutineLog() {
@@ -652,7 +650,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _initializeProcedureData() {
-
     final procedureJsons = _routineLog?.procedures ?? _routine?.procedures;
     final procedures = procedureJsons?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     if (procedures != null) {
@@ -690,9 +687,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         .toList();
   }
 
-  void _displayNotificationsDialog(Routine routine, List<ProcedureDto> procedures2, List<UnsavedChangesMessageDto> changes) {
+  void _displayNotificationsDialog(
+      Routine routine, List<ProcedureDto> procedures2, List<UnsavedChangesMessageDto> changes) {
     displayBottomSheet(
-        height: 216,
         context: context,
         child: _NotificationsDialog(
             workoutName: routine.name,
@@ -703,7 +700,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateRoutineAndData(Routine routine, List<ProcedureDto> procedures2) {
-    _doUpdateRoutine(routine: routine, procedures: procedures2);
+    //_doUpdateRoutine(routine: routine, procedures: procedures2);
     _initializeProcedureData();
     Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2);
     final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
@@ -747,11 +744,11 @@ class _ProceduresPicker extends StatelessWidget {
         .toList();
 
     return procedures.isNotEmpty
-        ? Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(child: ListView(children: listTiles)),
-            ],
+        ? SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [...listTiles],
+            ),
           )
         : _ProceduresPickerEmptyState(onPressed: onSelectExercisesInLibrary);
   }
@@ -876,18 +873,20 @@ class _NotificationsDialog extends StatelessWidget {
             title: Text(item.message, style: GoogleFonts.lato(color: Colors.white))))
         .toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 8),
-        Expanded(child: ListView(children: listTiles)),
-        CTextButton(
-          onPressed: onUpdate,
-          label: "Update $workoutName from last log",
-          visualDensity: VisualDensity.standard,
-        )
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 8),
+          ...listTiles,
+          CTextButton(
+            onPressed: onUpdate,
+            label: "Update $workoutName from last log",
+            visualDensity: VisualDensity.standard,
+          )
+        ],
+      ),
     );
   }
 }
