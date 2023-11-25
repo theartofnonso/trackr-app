@@ -14,16 +14,19 @@ import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
+import '../../utils/general_utils.dart';
 import '../calendar_screen.dart';
 
 Future<void> loadData(BuildContext context) async {
-  await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+  await persistUserCredentials();
   if (context.mounted) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    routineLogProvider.listRoutineLogs(context);
-    Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
-    routineLogProvider.retrieveCachedRoutineLog(context);
-    routineLogProvider.retrieveCachedPendingRoutineLog(context);
+    Provider.of<ExerciseProvider>(context, listen: false).listExercises().then((_) {
+      final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+      routineLogProvider.listRoutineLogs(context);
+      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
+      routineLogProvider.retrieveCachedRoutineLog(context);
+      routineLogProvider.retrieveCachedPendingRoutineLog(context);
+    });
   }
 }
 

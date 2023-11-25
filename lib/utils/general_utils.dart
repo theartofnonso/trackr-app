@@ -81,7 +81,7 @@ User user() {
   return User(id: userId, email: email);
 }
 
-void persistUserCredentials() async {
+Future<void> persistUserCredentials() async {
   final authUser = await Amplify.Auth.getCurrentUser();
   final signInDetails = authUser.signInDetails.toJson();
   final email = signInDetails["username"] as String;
