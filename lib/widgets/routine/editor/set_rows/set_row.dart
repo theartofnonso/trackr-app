@@ -13,7 +13,6 @@ abstract class SetRow extends StatelessWidget {
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final void Function(SetType type) onChangedType;
-  final void Function(SetDto setDto) onUpdateSetWithPastSet;
 
   const SetRow({
     Key? key,
@@ -26,7 +25,6 @@ abstract class SetRow extends StatelessWidget {
     required this.onRemoved,
     required this.onChangedType,
     required this.onCheck,
-    required this.onUpdateSetWithPastSet,
   }) : super(key: key);
 
 // Define common methods here, if any.

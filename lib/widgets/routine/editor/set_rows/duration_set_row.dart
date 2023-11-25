@@ -23,21 +23,13 @@ class DurationSetRow extends SetRow {
       required super.editorType,
       required super.onRemoved,
       required super.onChangedType,
-      required super.onCheck,
-      required super.onUpdateSetWithPastSet});
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    Duration duration = Duration.zero;
-
-    if(previousSetDto != null) {
-      duration = Duration(milliseconds: previousSetDto.value1.toInt());
-      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
-    } else {
-      duration = Duration(milliseconds: setDto.value1.toInt());
-    }
+    Duration duration = Duration(milliseconds: setDto.value1.toInt());
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),

@@ -30,26 +30,14 @@ class DurationDistanceSetRow extends SetRow {
       required super.editorType,
       required super.onRemoved,
       required super.onChangedType,
-      required super.onCheck,
-      required super.onUpdateSetWithPastSet});
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    Duration duration = Duration.zero;
-    double distance = 0;
-
-    if (previousSetDto != null) {
-      duration = Duration(milliseconds: previousSetDto.value1.toInt());
-      distance = isDefaultWeightUnit() ? previousSetDto.value2.toDouble() : previousSetDto.value2.toDouble();
-      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
-    } else {
-      duration = Duration(milliseconds: setDto.value1.toInt());
-      distance = isDefaultWeightUnit() ? setDto.value2.toDouble() : setDto.value2.toDouble();
-    }
-
-    distance = isDefaultDistanceUnit()
+    Duration duration = Duration(milliseconds: setDto.value1.toInt());
+    double distance = isDefaultDistanceUnit()
         ? setDto.value2.toDouble()
         : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 

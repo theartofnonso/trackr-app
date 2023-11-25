@@ -28,24 +28,14 @@ class WeightRepsSetRow extends SetRow {
       required super.editorType,
       required super.onChangedType,
       required super.onRemoved,
-      required super.onCheck,
-      required super.onUpdateSetWithPastSet});
+      required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double weight = 0;
-    int reps = 0;
-
-    if (previousSetDto != null) {
-      weight = isDefaultWeightUnit() ? previousSetDto.value1.toDouble() : toLbs(previousSetDto.value1.toDouble());
-      reps = previousSetDto.value2.toInt();
-      onUpdateSetWithPastSet(previousSetDto.copyWith(checked: setDto.checked));
-    } else {
-      weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
-      reps = setDto.value2.toInt();
-    }
+    double weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+    int reps = setDto.value2.toInt();
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
