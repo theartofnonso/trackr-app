@@ -1,11 +1,16 @@
 
-class UnsavedChangesMessageDto {
-  String message;
+enum UnsavedChangesMessageType {
+  setsLength, proceduresLength, proceduresChange, supersetId, setType, setValue,
+}
 
-  UnsavedChangesMessageDto({required this.message});
+class UnsavedChangesMessageDto {
+  final String message;
+  final UnsavedChangesMessageType type;
+
+  UnsavedChangesMessageDto({required this.message, required this.type});
 
   @override
   String toString() {
-    return 'UnsavedChangesMessageDto{message: $message}';
+    return 'UnsavedChangesMessageDto{message: $message, type: $type}';
   }
 }

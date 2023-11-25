@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/procedure_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/procedure_dto_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/procedures_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -41,6 +42,10 @@ class RoutineEditorScreen extends StatefulWidget {
 }
 
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
+
+  Routine? _routine;
+  RoutineLog? _routineLog;
+
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
 
@@ -211,7 +216,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doCreateRoutineLog() {
-    final routine = widget.routine;
+    final routine = _routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
     Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
@@ -255,8 +260,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _doUpdate() {
-    final previousRoutine = widget.routine;
-    final previousRoutineLog = widget.routineLog;
+    final previousRoutine = _routine;
+    final previousRoutineLog = _routineLog;
 
     if (previousRoutine != null) {
       _updateRoutine(routine: previousRoutine);
@@ -267,22 +272,20 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _doUpdateRoutine({required Routine routine, popWidget = true}) async {
+  void _doUpdateRoutine({required Routine routine, List<ProcedureDto>? procedures}) async {
     final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoProcedures();
+    final listOfProcedures = procedures ?? procedureProvider.mergeSetsIntoProcedures();
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
           name: _routineNameController.text,
           notes: _routineNotesController.text,
-          procedures: procedures.map((procedure) => procedure.toJson()).toList(),
+          procedures: listOfProcedures.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
 
       await routineProvider.updateRoutine(routine: updatedRoutine);
-      if (popWidget) {
-        if (mounted) Navigator.of(context).pop();
-      }
+      if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to update workout");
     } finally {
@@ -357,7 +360,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
         final procedures = procedureProvider.mergeSetsIntoProcedures();
-        final routine = widget.routine;
+        final routine = _routine;
         Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
             name: routine?.name ?? "",
             notes: routine?.notes ?? "",
@@ -415,14 +418,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     if (differentSetValueChangeMessage != null) {
       unsavedChangesMessage.add(differentSetValueChangeMessage);
     }
-    print(unsavedChangesMessage);
     return unsavedChangesMessage;
   }
 
   void _checkForUnsavedChanges() {
     if (widget.mode == RoutineEditorMode.edit) {
       final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-      final oldProcedures = widget.routineLog?.procedures ?? widget.routine?.procedures;
+      final oldProcedures = _routineLog?.procedures ?? _routine?.procedures;
       final procedures1 = oldProcedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
       final procedures2 = procedureProvider.mergeSetsIntoProcedures();
       final unsavedChangesMessage = _checkForChanges(procedures1: procedures1 ?? [], procedures2: procedures2);
@@ -454,14 +456,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   bool _canUpdate() {
-    final previousRoutine = widget.routine;
-    final previousRoutineLog = widget.routineLog;
+    final previousRoutine = _routine;
+    final previousRoutineLog = _routineLog;
     return previousRoutine != null || previousRoutineLog != null;
   }
 
   String? _editorTitle() {
-    final previousRoutine = widget.routine;
-    final previousRoutineLog = widget.routineLog;
+    final previousRoutine = _routine;
+    final previousRoutineLog = _routineLog;
 
     String title = "";
 
@@ -630,6 +632,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
+    _fetchRoutine();
+    _fetchRoutineLog();
+
     _initializeProcedureData();
     _initializeTextControllers();
 
@@ -638,55 +643,109 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _checkForUpdates();
   }
 
-  void _initializeProcedureData() {
-    final proceduresProvider = Provider.of<ProceduresProvider>(context, listen: false);
+  void _fetchRoutine() {
+   _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routine?.id ?? "");
+  }
 
-    final procedures = widget.routineLog?.procedures ?? widget.routine?.procedures;
+  void _fetchRoutineLog() {
+    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLog?.id ?? "");
+  }
+
+  void _initializeProcedureData() {
+
+    final procedureJsons = _routineLog?.procedures ?? _routine?.procedures;
+    final procedures = procedureJsons?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     if (procedures != null) {
-      proceduresProvider.loadProcedures(context: context, procedures: procedures);
+      Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures);
     }
 
-    final routineLog = widget.routineLog;
+    final routineLog = _routineLog;
     if (routineLog != null) {
       _routineStartTime = routineLog.startTime;
     }
   }
 
   void _checkForUpdates() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-      final routine = widget.routine;
-      if (routine != null) {
-        final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
-        if (lastLog != null) {
-          final procedures1 = procedureProvider.mergeSetsIntoProcedures();
-          final procedures2 = lastLog.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-          final changes = _checkForChanges(procedures1: procedures1, procedures2: procedures2);
-          if (changes.isNotEmpty) {
-            displayBottomSheet(
-                height: 216,
-                context: context,
-                child: _NotificationsDialog(
-                    onUpdate: () {
-                      print(routine.copyWith(procedures: lastLog.procedures));
-                      // Update set value
-                      _doUpdateRoutine(routine: routine.copyWith(procedures: lastLog.procedures), popWidget: false);
-                      // _initializeProcedureData();
-                      // setState(() {
-                      //
-                      // });
-                    },
-                    messages: changes));
-          }
-        }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final routine = _routine;
+      if (routine == null) return;
+
+      final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
+      if (lastLog == null) return;
+
+      final procedures1 = Provider.of<ProceduresProvider>(context, listen: false).mergeSetsIntoProcedures();
+      final procedures2 = await _decodeAndRefreshProcedures(lastLog.procedures);
+
+      final changes = _checkForChanges(procedures1: procedures1, procedures2: procedures2);
+      if (changes.isNotEmpty) {
+        _displayNotificationsDialog(routine, procedures2, changes);
       }
     });
   }
 
+  Future<List<ProcedureDto>> _decodeAndRefreshProcedures(List<String> procedureJsons) async {
+    return procedureJsons
+        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+        .map((procedure) => procedure.refreshSets())
+        .toList();
+  }
+
+  void _displayNotificationsDialog(Routine routine, List<ProcedureDto> procedures2, List<UnsavedChangesMessageDto> changes) {
+    displayBottomSheet(
+        height: 216,
+        context: context,
+        child: _NotificationsDialog(
+            workoutName: routine.name,
+            onUpdate: () {
+              _updateRoutineAndData(routine, procedures2);
+            },
+            messages: changes));
+  }
+
+  void _updateRoutineAndData(Routine routine, List<ProcedureDto> procedures2) {
+    _doUpdateRoutine(routine: routine, procedures: procedures2);
+    _initializeProcedureData();
+    Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2);
+    final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
+    _routine = routine.copyWith(procedures: procedureJsons);
+  }
+
+  // void _checkForUpdates() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     final routine = _routine;
+  //     if (routine != null) {
+  //       final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
+  //       if (lastLog != null) {
+  //         final procedures1 = Provider.of<ProceduresProvider>(context, listen: false).mergeSetsIntoProcedures();
+  //         final procedures2 = lastLog.procedures
+  //             .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+  //             .map((procedure) => procedure.refreshSets())
+  //             .toList();
+  //         final changes = _checkForChanges(procedures1: procedures1, procedures2: procedures2);
+  //         if (changes.isNotEmpty) {
+  //           displayBottomSheet(
+  //               height: 216,
+  //               context: context,
+  //               child: _NotificationsDialog(
+  //                   workoutName: routine.name,
+  //                   onUpdate: () {
+  //                     _doUpdateRoutine(routine: routine, procedures: procedures2);
+  //                     _initializeProcedureData();
+  //                     Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2);
+  //                     final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
+  //                     _routine = routine.copyWith(procedures: procedureJsons);
+  //                   },
+  //                   messages: changes));
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
+
   void _initializeTextControllers() {
     if (widget.mode == RoutineEditorMode.edit) {
-      Routine? routine = widget.routine;
-      RoutineLog? routineLog = widget.routineLog;
+      Routine? routine = _routine;
+      RoutineLog? routineLog = _routineLog;
       _routineNameController = TextEditingController(text: routine?.name ?? routineLog?.name);
       _routineNotesController = TextEditingController(text: routine?.notes ?? routineLog?.notes);
     }
@@ -834,10 +893,11 @@ class _RoutineLogOverview extends StatelessWidget {
 }
 
 class _NotificationsDialog extends StatelessWidget {
+  final String workoutName;
   final List<UnsavedChangesMessageDto> messages;
   final VoidCallback onUpdate;
 
-  const _NotificationsDialog({required this.onUpdate, required this.messages});
+  const _NotificationsDialog({required this.workoutName, required this.onUpdate, required this.messages});
 
   @override
   Widget build(BuildContext context) {
@@ -849,13 +909,14 @@ class _NotificationsDialog extends StatelessWidget {
         .toList();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 8),
         Expanded(child: ListView(children: listTiles)),
         CTextButton(
           onPressed: onUpdate,
-          label: "Update",
+          label: "Update $workoutName from last log",
           visualDensity: VisualDensity.standard,
         )
       ],

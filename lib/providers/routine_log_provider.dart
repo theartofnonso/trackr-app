@@ -330,6 +330,11 @@ class RoutineLogProvider with ChangeNotifier {
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange)).toList();
   }
 
+  RoutineLog? logWhere({required String id}) {
+    return _logs.firstWhereOrNull((dto) => dto.id == id);
+  }
+
+
   void reset() {
     _logs.clear();
     notifyListeners();

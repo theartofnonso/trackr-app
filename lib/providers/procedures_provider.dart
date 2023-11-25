@@ -26,12 +26,12 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadProcedures({required BuildContext context, required List<String> procedures}) {
-    _procedures = procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-    _loadSets(context);
+  void loadProcedures({required List<ProcedureDto> procedures}) {
+    _procedures = procedures;
+    _loadSets();
   }
 
-  void _loadSets(BuildContext context) {
+  void _loadSets() {
     for (var procedure in _procedures) {
       _sets[procedure.id] = procedure.sets;
     }
@@ -100,7 +100,8 @@ class ProceduresProvider extends ChangeNotifier {
     _sets = newMap;
   }
 
-  void replaceProcedure({required BuildContext context, required String procedureId, required Exercise exercise}) async {
+  void replaceProcedure(
+      {required BuildContext context, required String procedureId, required Exercise exercise}) async {
     // Get the index of the procedure to be replaced
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
@@ -131,7 +132,10 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void superSetProcedures(
-      {required BuildContext context, required String firstProcedureId, required String secondProcedureId, required String superSetId}) {
+      {required BuildContext context,
+      required String firstProcedureId,
+      required String secondProcedureId,
+      required String superSetId}) {
     final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
     final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
 
@@ -159,13 +163,15 @@ class ProceduresProvider extends ChangeNotifier {
     });
   }
 
-  void addSetForProcedure({required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
+  void addSetForProcedure(
+      {required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
       final currentSets = _sets[procedureId] ?? [];
       final nextSet = currentSets.lastOrNull;
-      SetDto newSet = SetDto(nextSet?.value1 ?? 0, nextSet?.value2 ?? 0, nextSet != null ? nextSet.type : SetType.working, false);
+      SetDto newSet =
+          SetDto(nextSet?.value1 ?? 0, nextSet?.value2 ?? 0, nextSet != null ? nextSet.type : SetType.working, false);
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
       List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
@@ -222,10 +228,12 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _updateSetForProcedure(
-      {required BuildContext context, required String procedureId,
+      {required BuildContext context,
+      required String procedureId,
       required int setIndex,
       required SetDto updatedSet,
-      bool shouldNotifyListeners = true, bool shouldReview = false}) {
+      bool shouldNotifyListeners = true,
+      bool shouldReview = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -246,7 +254,7 @@ class ProceduresProvider extends ChangeNotifier {
     newMap[procedureId] = updatedSets;
 
     // Assign the new map to _sets to maintain immutability
-    if(shouldReview) {
+    if (shouldReview) {
       _sets = _reviewSets(context, procedureId, updatedSets);
     } else {
       _sets = newMap;
@@ -262,7 +270,8 @@ class ProceduresProvider extends ChangeNotifier {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
 
     final procedure = _procedures.firstWhere((procedure) => procedure.id == procedureId);
-    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
+    final pastSets =
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
 
     final newSets = <SetDto>[];
 
@@ -283,31 +292,44 @@ class ProceduresProvider extends ChangeNotifier {
     return newMap;
   }
 
-  void updateWeight({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateWeight(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateReps({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateReps(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDuration({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateDuration(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDistance({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateDistance(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldReview: true);
+  void updateSetType(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(
+        context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldReview: true);
   }
 
-  void updateSetWithPastSet({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldNotifyListeners: false);
+  void updateSetWithPastSet(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(
+        context: context,
+        procedureId: procedureId,
+        setIndex: setIndex,
+        updatedSet: setDto,
+        shouldNotifyListeners: false);
   }
 
-  void updateSetCheck({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateSetCheck(
+      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
@@ -374,9 +396,11 @@ class ProceduresProvider extends ChangeNotifier {
     final int difference = procedures2.length - procedures1.length;
 
     if (difference > 0) {
-      return UnsavedChangesMessageDto(message: "Added $difference exercise(s)");
+      return UnsavedChangesMessageDto(
+          message: "Added $difference exercise(s)", type: UnsavedChangesMessageType.proceduresLength);
     } else if (difference < 0) {
-      return UnsavedChangesMessageDto(message: "Removed ${-difference} exercise(s)");
+      return UnsavedChangesMessageDto(
+          message: "Removed ${-difference} exercise(s)", type: UnsavedChangesMessageType.proceduresLength);
     }
 
     return null; // No change in length
@@ -410,7 +434,9 @@ class ProceduresProvider extends ChangeNotifier {
       message += "Removed $removedSetsCount set(s)";
     }
 
-    return message.isNotEmpty ? UnsavedChangesMessageDto(message: message) : null;
+    return message.isNotEmpty
+        ? UnsavedChangesMessageDto(message: message, type: UnsavedChangesMessageType.setsLength)
+        : null;
   }
 
   UnsavedChangesMessageDto? hasSetTypeChange({
@@ -432,7 +458,9 @@ class ProceduresProvider extends ChangeNotifier {
       }
     }
 
-    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)") : null;
+    return changes > 0
+        ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)", type: UnsavedChangesMessageType.setType)
+        : null;
   }
 
   UnsavedChangesMessageDto? hasExercisesChanged({
@@ -442,13 +470,12 @@ class ProceduresProvider extends ChangeNotifier {
     Set<String> exerciseIds1 = procedures1.map((p) => p.exercise.id).toSet();
     Set<String> exerciseIds2 = procedures2.map((p) => p.exercise.id).toSet();
 
-    int changes = exerciseIds2.difference(exerciseIds1).length;
+    int changes = exerciseIds1.difference(exerciseIds2).length;
 
-    print(exerciseIds1);
-    print(exerciseIds2);
-    print(exerciseIds2.difference(exerciseIds1));
-
-    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes exercise(s)") : null;
+    return changes > 0
+        ? UnsavedChangesMessageDto(
+            message: "Changed $changes exercise(s)", type: UnsavedChangesMessageType.proceduresChange)
+        : null;
   }
 
   UnsavedChangesMessageDto? hasSuperSetIdChanged({
@@ -462,7 +489,9 @@ class ProceduresProvider extends ChangeNotifier {
 
     final changes = superSetIds2.difference(superSetIds1).length;
 
-    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes supersets(s)") : null;
+    return changes > 0
+        ? UnsavedChangesMessageDto(message: "Changed $changes supersets(s)", type: UnsavedChangesMessageType.supersetId)
+        : null;
   }
 
   UnsavedChangesMessageDto? hasSetValueChanged({
@@ -485,7 +514,9 @@ class ProceduresProvider extends ChangeNotifier {
       }
     }
 
-    return changes > 0 ? UnsavedChangesMessageDto(message: "Changed $changes set value(s)") : null;
+    return changes > 0
+        ? UnsavedChangesMessageDto(message: "Changed $changes set value(s)", type: UnsavedChangesMessageType.setValue)
+        : null;
   }
 
   void reset() {
