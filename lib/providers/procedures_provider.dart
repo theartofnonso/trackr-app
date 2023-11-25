@@ -20,7 +20,7 @@ class ProceduresProvider extends ChangeNotifier {
 
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
-  void refreshProcedures({required List<ProcedureDto> procedures}) {
+  void reloadProcedures({required List<ProcedureDto> procedures}) {
     _procedures = procedures;
     notifyListeners();
   }

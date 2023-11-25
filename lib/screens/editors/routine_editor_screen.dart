@@ -104,7 +104,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (reOrderedList != null) {
       if (mounted) {
-        provider.refreshProcedures(procedures: reOrderedList);
+        provider.reloadProcedures(procedures: reOrderedList);
       }
     }
   }
