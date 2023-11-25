@@ -771,12 +771,12 @@ class _ProceduresPickerEmptyState extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(left: 18.0),
-            child: ListStyleEmptyState(),
+            child: ListTileEmptyState(),
           ),
           const SizedBox(height: 12),
           const Padding(
             padding: EdgeInsets.only(left: 18.0),
-            child: ListStyleEmptyState(),
+            child: ListTileEmptyState(),
           ),
           const SizedBox(height: 16),
           Padding(

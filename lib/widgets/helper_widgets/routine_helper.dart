@@ -82,5 +82,5 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
     return widget;
   })).toList();
 
-  return widgets.isNotEmpty ? widgets : [const ListStyleEmptyState()];
+  return widgets.isNotEmpty ? widgets : [const ListTileEmptyState()];
 }

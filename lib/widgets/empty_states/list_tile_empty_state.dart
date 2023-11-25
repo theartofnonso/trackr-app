@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../app_constants.dart';
 
-class ListStyleEmptyState extends StatelessWidget {
-  const ListStyleEmptyState({super.key});
+class ListTileEmptyState extends StatelessWidget {
+  const ListTileEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {

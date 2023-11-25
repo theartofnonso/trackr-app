@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 
 import '../../../app_constants.dart';
@@ -79,30 +78,25 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
             : null,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
             child: Column(
               children: [
                 cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
                 cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                 provider.logs.isNotEmpty
                     ? Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: () => loadData(context),
-                    child: ListView.separated(
-                        padding: const EdgeInsets.only(bottom: 150),
-                        itemBuilder: (BuildContext context, int index) =>
-                            _RoutineLogWidget(log: provider.logs[index]),
-                        separatorBuilder: (BuildContext context, int index) =>
-                            Divider(color: Colors.white70.withOpacity(0.1)),
-                        itemCount: provider.logs.length),
-                  ),
-                )
-                    : Expanded(
-                    child: Center(
-                        child: ScreenEmptyState(
-                            message: cachedRoutineLog == null
-                                ? startTrackingPerformance
-                                : crunchingPerformanceNumbers))),
+                        child: RefreshIndicator(
+                          onRefresh: () => loadData(context),
+                          child: ListView.separated(
+                              padding: const EdgeInsets.only(bottom: 150),
+                              itemBuilder: (BuildContext context, int index) =>
+                                  _RoutineLogWidget(log: provider.logs[index]),
+                              separatorBuilder: (BuildContext context, int index) =>
+                                  Divider(color: Colors.white70.withOpacity(0.1)),
+                              itemCount: provider.logs.length),
+                        ),
+                      )
+                    : ListViewEmptyState(onRefresh: () => loadData(context)),
               ],
             ),
           ),
@@ -140,7 +134,6 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(

@@ -8,9 +8,10 @@ import 'package:tracker_app/widgets/search_bar.dart';
 import '../../app_constants.dart';
 import '../../models/Exercise.dart';
 import '../../widgets/buttons/text_button_widget.dart';
-import '../../widgets/empty_states/screen_empty_state.dart';
+import '../../widgets/empty_states/list_view_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
+import '../logs/routine_logs_screen.dart';
 import 'history/home_screen.dart';
 
 class ExerciseInLibraryDto {
@@ -214,13 +215,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
                   ? Expanded(
-                      child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
-                          separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withOpacity(0.1)),
-                          itemCount: _filteredExercises.length))
-                  : const Expanded(
-                      child: Center(child: ScreenEmptyState(message: "Start adding your favourite exercises")))
+                      child: RefreshIndicator(
+                        onRefresh: () => loadData(context),
+                        child: ListView.separated(
+                            itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                            separatorBuilder: (BuildContext context, int index) =>
+                                Divider(color: Colors.white70.withOpacity(0.1)),
+                            itemCount: _filteredExercises.length),
+                      ))
+                  : ListViewEmptyState(onRefresh: () => loadData(context)),
             ],
           ),
         ),
