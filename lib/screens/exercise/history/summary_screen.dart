@@ -172,13 +172,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
     switch (_selectedHistoricalDate) {
       case HistoricalTimePeriod.lastThreeMonths:
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .routineLogsSince(90, logs: widget.routineLogs)
+            .logsSince(90, logs: widget.routineLogs)
             .reversed
             .toList();
         break;
       case HistoricalTimePeriod.lastOneYear:
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .routineLogsSince(365, logs: widget.routineLogs)
+            .logsSince(365, logs: widget.routineLogs)
             .reversed
             .toList();
         break;
