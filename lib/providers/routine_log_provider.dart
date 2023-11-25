@@ -55,21 +55,6 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  Future<List<RoutineLog>> listRoutineLogsForRoutine({required String id}) async {
-    List<RoutineLog> logs = [];
-
-    final routineLogOwner = user();
-    final request = ModelQueries.list(RoutineLog.classType,
-        where: RoutineLog.ROUTINE.eq(id).and(RoutineLog.USER.eq(routineLogOwner.id)));
-    final response = await Amplify.API.query(request: request).response;
-
-    final routineLogs = response.data?.items;
-    if (routineLogs != null) {
-      logs = routineLogs.whereType<RoutineLog>().toList();
-    }
-    return logs;
-  }
-
   Map<String, dynamic> _fixJson(String jsonString) {
     final json = jsonDecode(jsonString) as Map<String, dynamic>;
     json.update("routine", (value) {
@@ -107,7 +92,6 @@ class RoutineLogProvider with ChangeNotifier {
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine? routine}) async {
-    clearCachedLog();
 
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
@@ -116,8 +100,6 @@ class RoutineLogProvider with ChangeNotifier {
             (procedure) => procedure.copyWith(sets: procedure.sets.map((set) => set.copyWith(checked: false)).toList()))
         .map((procedure) => procedure.toJson())
         .toList();
-
-    print(routine);
 
     final logToCreate = RoutineLog(
         name: name,
@@ -346,10 +328,6 @@ class RoutineLogProvider with ChangeNotifier {
 
   void reset() {
     _logs.clear();
-    notifyListeners();
-  }
-
-  void onNotifyListeners() {
     notifyListeners();
   }
 }

@@ -221,7 +221,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         startTime: _routineStartTime,
         createdAt: widget.createdAt,
         routine: routine);
-    Navigator.of(context).pop();
+    _navigateBackAndClearCache();
   }
 
   void _updateRoutine({required Routine routine}) {
