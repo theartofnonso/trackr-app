@@ -25,9 +25,12 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadProcedures({required List<ProcedureDto> procedures}) {
+  void loadProcedures({required List<ProcedureDto> procedures, bool shouldNotifyListeners = false}) {
     _procedures = procedures;
     _loadSets();
+    if(shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   void _loadSets() {

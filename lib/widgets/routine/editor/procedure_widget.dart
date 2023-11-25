@@ -135,6 +135,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
+      _controllers.add((TextEditingController(), TextEditingController()));
         return WeightRepsSetRow(
           index: index,
           setTypeIndex: currentSetTypeIndex,
@@ -153,6 +154,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.bodyWeightAndReps:
+        _controllers.add((TextEditingController(), TextEditingController()));
         return RepsSetRow(
           index: index,
           setTypeIndex: currentSetTypeIndex,
@@ -169,6 +171,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.weightAndDistance:
+        _controllers.add((TextEditingController(), TextEditingController()));
         return WeightDistanceSetRow(
           index: index,
           setTypeIndex: currentSetTypeIndex,
@@ -202,6 +205,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
               procedureId: widget.procedureDto.id, setIndex: index, duration: duration, setDto: currentSet),
         );
       case ExerciseType.durationAndDistance:
+        _controllers.add((TextEditingController(), TextEditingController()));
         return DurationDistanceSetRow(
           index: index,
           setTypeIndex: currentSetTypeIndex,

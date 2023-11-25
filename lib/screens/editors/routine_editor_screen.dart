@@ -700,9 +700,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _updateRoutineAndData(Routine routine, List<ProcedureDto> procedures2) {
-    //_doUpdateRoutine(routine: routine, procedures: procedures2);
+    _doUpdateRoutine(routine: routine, procedures: procedures2);
     _initializeProcedureData();
-    Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2);
+    Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures2, shouldNotifyListeners: true);
     final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
     _routine = routine.copyWith(procedures: procedureJsons);
   }
