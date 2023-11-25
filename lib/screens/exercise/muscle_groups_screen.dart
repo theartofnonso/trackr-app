@@ -72,7 +72,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     final previousMuscleGroups = widget.muscleGroups;
 
     if(previousMuscleGroups != null) {
-      return _whereSelectedMuscleGroups().isEmpty;
+      return _whereSelectedMuscleGroups().isNotEmpty;
     }
     return false;
   }

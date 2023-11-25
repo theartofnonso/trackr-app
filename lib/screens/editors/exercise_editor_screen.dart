@@ -258,11 +258,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNameController = TextEditingController(text: previousExercise?.name);
     _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
 
-    _primaryMuscleGroup =
-        previousExercise != null ? MuscleGroup.fromString(previousExercise.primaryMuscle) : MuscleGroup.values.first;
-    _secondaryMuscleGroup = previousExercise != null
-        ? previousExercise.secondaryMuscles.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList()
-        : MuscleGroup.values.take(2).toList();
+    _primaryMuscleGroup = previousExercise != null ? MuscleGroup.fromString(previousExercise.primaryMuscle) : MuscleGroup.values.first;
+    _secondaryMuscleGroup = previousExercise?.secondaryMuscles.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList() ?? [];
     _exerciseType =
         previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
   }
