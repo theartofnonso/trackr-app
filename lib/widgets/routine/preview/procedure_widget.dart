@@ -48,7 +48,7 @@ class ProcedureWidget extends StatelessWidget {
             subtitle: otherProcedureDto != null
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text("with ${procedureDto.exercise.name}",
+                        child: Text("with ${otherProcedureDto.exercise.name}",
                             style: GoogleFonts.lato(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
                       )
                     : null,

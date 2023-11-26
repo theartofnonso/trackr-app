@@ -285,7 +285,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       await routineProvider.updateRoutine(routine: updatedRoutine);
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      print(e);
       _handleRoutineCreationError("Unable to update workout");
     } finally {
       _toggleLoadingState();
@@ -609,7 +608,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 procedureDto: procedure,
                                 editorType: widget.mode,
                                 otherSuperSetProcedureDto:
-                                    whereOtherSuperSetProcedure(context: context, firstProcedure: procedure),
+                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
                                 onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
