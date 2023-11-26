@@ -390,7 +390,7 @@ class HomeScreen extends StatelessWidget {
               leftAction: Navigator.of(context).pop,
               rightAction: () => _deleteExercise(context),
               leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete');
+              rightActionLabel: 'Delete', isRightActionDestructive: true);
         },
         //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
