@@ -14,6 +14,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
+import '../../providers/exercise_provider.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
 
@@ -100,7 +101,15 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       return const SizedBox.shrink();
     }
 
-    final procedures = routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+    List<ProcedureDto> procedures =
+    routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+      final exerciseFromLibrary =
+      Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+      if (exerciseFromLibrary != null) {
+        return procedure.copyWith(exercise: exerciseFromLibrary);
+      }
+      return procedure;
+    }).toList();
 
     final cachedRoutineLogDto = Provider.of<RoutineLogProvider>(context, listen: true).cachedLog;
 
