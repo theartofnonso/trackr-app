@@ -125,6 +125,7 @@ class _MyAppState extends State<MyApp> {
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp(
+              debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
               home: const HomeScreen(),

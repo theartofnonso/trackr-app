@@ -15,13 +15,15 @@ import '../logs/routine_logs_screen.dart';
 import 'history/home_screen.dart';
 
 class ExerciseInLibraryDto {
+  final int index;
   final bool selected;
   final Exercise exercise;
 
-  ExerciseInLibraryDto({this.selected = false, required this.exercise});
+  ExerciseInLibraryDto(this.index, {this.selected = false, required this.exercise});
 
-  ExerciseInLibraryDto copyWith({bool? selected, Exercise? exercise}) {
+  ExerciseInLibraryDto copyWith({int? index, bool? selected, Exercise? exercise}) {
     return ExerciseInLibraryDto(
+      index ?? this.index,
       selected: selected ?? this.selected,
       exercise: exercise ?? this.exercise,
     );
@@ -29,8 +31,9 @@ class ExerciseInLibraryDto {
 
   @override
   String toString() {
-    return 'ExerciseInLibraryDto{selected: $selected, exercise: ${exercise.name}}';
+    return 'ExerciseInLibraryDto{index: $index, selected: $selected, exercise: ${exercise.name}}';
   }
+
 }
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -73,7 +76,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Navigate to previous screen
   void _navigateBackWithSelectedExercises() {
-    final exercisesFromLibrary = _exercisesInLibrary
+    final exercisesFromLibrary = _exercisesInLibrary.sorted((current, next) => next.index - current.index)
         .where((exerciseInLibrary) => exerciseInLibrary.selected)
         .map((exerciseInLibrary) => exerciseInLibrary.exercise)
         .toList();
@@ -155,15 +158,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   List<ExerciseInLibraryDto> _updateSelections() {
     final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
-    return exercises.map((exercise) {
+    return exercises.mapIndexed((index, exercise) {
       final exerciseInLibrary =
           _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
       if (exerciseInLibrary != null) {
         if (exerciseInLibrary.selected) {
-          return ExerciseInLibraryDto(exercise: exercise, selected: true);
+          return ExerciseInLibraryDto(index, exercise: exercise, selected: true);
         }
       }
-      return ExerciseInLibraryDto(exercise: exercise);
+      return ExerciseInLibraryDto(index, exercise: exercise);
     }).toList();
   }
 
@@ -242,7 +245,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     _exercisesInLibrary = Provider.of<ExerciseProvider>(context, listen: false)
         .exercises
         .whereNot((exercise) => preSelectedExerciseIds.contains(exercise.id))
-        .map((exercise) => ExerciseInLibraryDto(exercise: exercise))
+        .mapIndexed((index, exercise) => ExerciseInLibraryDto(index, exercise: exercise))
         .toList();
     _filteredExercises = _exercisesInLibrary;
   }
