@@ -240,21 +240,6 @@ Duration sessionDurationPerLog({required RoutineLog log}) {
   return difference;
 }
 
-double _sessionVolumePerLog({required RoutineLog log}) {
-  double totalVolume = 0;
-
-  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
-
-  for (var set in sets) {
-    final volume = set.value1 * set.value2;
-    totalVolume += volume;
-  }
-
-  final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
-
-  return volume;
-}
-
 /// Highest value across all [RoutineLogDto]
 
 (String, SetDto) _heaviestSet({required List<RoutineLog> logs}) {
@@ -274,20 +259,6 @@ double _sessionVolumePerLog({required RoutineLog log}) {
   final weight = isDefaultWeightUnit() ? heaviestSet.value1 : toLbs(heaviestSet.value1.toDouble());
 
   return (logId, heaviestSet.copyWith(value1: weight));
-}
-
-(String, double) _heaviestLogVolume({required List<RoutineLog> logs}) {
-  double heaviestVolume = 0;
-  String logId = "";
-  for (var log in logs) {
-    final totalVolume = _sessionVolumePerLog(log: log);
-    if (totalVolume > heaviestVolume) {
-      heaviestVolume = totalVolume;
-      logId = log.id;
-    }
-  }
-
-  return (logId, heaviestVolume);
 }
 
 (String, double) _heaviestWeight({required List<RoutineLog> logs}) {
@@ -424,8 +395,6 @@ class HomeScreen extends StatelessWidget {
 
     final logsForExercise = _logsWhereExercise(logs: logs);
 
-    final heaviestRoutineLogVolume = _heaviestLogVolume(logs: logsForExercise);
-
     final heaviestSet = _heaviestSet(logs: logsForExercise);
 
     final heaviestWeight = _heaviestWeight(logs: logsForExercise);
@@ -495,7 +464,6 @@ class HomeScreen extends StatelessWidget {
                 SummaryScreen(
                   heaviestWeight: heaviestWeight,
                   heaviestSet: heaviestSet,
-                  heaviestRoutineLogVolume: heaviestRoutineLogVolume,
                   longestDuration: longestDuration,
                   longestDistance: longestDistance,
                   mostRepsSet: mostRepsSet,

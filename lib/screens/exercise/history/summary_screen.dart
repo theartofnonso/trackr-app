@@ -35,7 +35,6 @@ enum SummaryType {
 class SummaryScreen extends StatefulWidget {
   final (String, double) heaviestWeight;
   final (String, SetDto) heaviestSet;
-  final (String, double) heaviestRoutineLogVolume;
   final (String, Duration) longestDuration;
   final (String, double) longestDistance;
   final (String, int) mostRepsSet;
@@ -47,7 +46,6 @@ class SummaryScreen extends StatefulWidget {
       {super.key,
       required this.heaviestWeight,
       required this.heaviestSet,
-      required this.heaviestRoutineLogVolume,
       required this.longestDuration,
       required this.longestDistance,
       required this.mostRepsSet,
@@ -242,15 +240,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
-  bool _proceduresWithReps() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
-    return exerciseType == ExerciseType.weightAndReps ||
-        exerciseType == ExerciseType.assistedBodyWeight ||
-        exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.bodyWeightAndReps;
-  }
-
   bool _proceduresWithRepsOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
@@ -369,14 +358,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "1RM",
                             buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
-                    if (_proceduresWithWeightsAndReps())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _setVolumePerLog,
-                            label: "Session Volume",
-                            buttonColor: _buttonColor(type: SummaryType.sessionVolume)),
-                      ),
                     if (_proceduresWithRepsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
@@ -385,7 +366,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             label: "Most Reps (Set)",
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
-                    if (_proceduresWithReps())
+                    if (_proceduresWithRepsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -446,16 +427,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume lifted in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-                ),
-              ),
-            if (_proceduresWithWeightsAndReps())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
-                  title: 'Heaviest Session Volume',
-                  trailing: "${widget.heaviestRoutineLogVolume.$2}$weightUnitLabel",
-                  subtitle: 'Heaviest volume lifted in a session',
-                  onTap: () => _navigateTo(routineLogId: widget.heaviestRoutineLogVolume.$1),
                 ),
               ),
             if (_proceduresWithWeightsAndReps())
