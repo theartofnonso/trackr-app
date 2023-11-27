@@ -74,9 +74,15 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   }
 
   List<MuscleGroup> _difference() {
-    Set<MuscleGroup> previousSelection = widget.muscleGroups?.toSet() ?? <MuscleGroup>{};
-    Set<MuscleGroup> currentSelection = _muscleGroups.where((muscle) => muscle.selected).map((muscleGroup) => muscleGroup.muscleGroup).toSet();
-    return previousSelection.difference(currentSelection).toList();
+    final Set<MuscleGroup> previousSelection = Set.from(widget.muscleGroups ?? []);
+    final Set<MuscleGroup> currentSelection = _muscleGroups
+        .where((muscle) => muscle.selected)
+        .map((muscleGroup) => muscleGroup.muscleGroup)
+        .toSet();
+
+    return previousSelection
+        .difference(currentSelection)
+        .toList();
   }
 
   /// Select up to many exercise
