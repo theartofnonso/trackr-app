@@ -18,6 +18,11 @@ class MuscleGroupDto {
       muscleGroup: muscleGroup ?? this.muscleGroup,
     );
   }
+
+  @override
+  String toString() {
+    return 'MuscleGroupDto{selected: $selected, muscleGroup: $muscleGroup}';
+  }
 }
 
 class MuscleGroupsScreen extends StatefulWidget {
@@ -68,13 +73,10 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     return _muscleGroups.where((muscle) => muscle.selected).toList();
   }
 
-  bool _hasChangesToMuscleGroups() {
-    final previousMuscleGroups = widget.muscleGroups;
-
-    if(previousMuscleGroups != null) {
-      return _whereSelectedMuscleGroups().isNotEmpty;
-    }
-    return false;
+  List<MuscleGroup> _difference() {
+    Set<MuscleGroup> previousSelection = widget.muscleGroups?.toSet() ?? <MuscleGroup>{};
+    Set<MuscleGroup> currentSelection = _muscleGroups.where((muscle) => muscle.selected).map((muscleGroup) => muscleGroup.muscleGroup).toSet();
+    return previousSelection.difference(currentSelection).toList();
   }
 
   /// Select up to many exercise
@@ -115,13 +117,13 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if(_whereSelectedMuscleGroups().isNotEmpty)
+          if (_whereSelectedMuscleGroups().isNotEmpty && _difference().isEmpty)
             CTextButton(
               onPressed: _addSelectedMuscleGroup,
               label: "Add (${_whereSelectedMuscleGroups().length})",
               buttonColor: Colors.transparent,
             ),
-          if(_hasChangesToMuscleGroups())
+          if(_difference().isNotEmpty)
             CTextButton(
               onPressed: _addSelectedMuscleGroup,
               label: "Update",

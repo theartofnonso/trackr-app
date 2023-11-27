@@ -174,8 +174,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     final exercise = widget.exercise;
     List<MuscleGroup> preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroup : [_primaryMuscleGroup];
     if (exercise != null) {
-      final muscleGroupsStrings = multiSelect ? exercise.secondaryMuscles : [exercise.primaryMuscle];
-      preSelectedMuscleGroups = muscleGroupsStrings.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+      preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroup : [_primaryMuscleGroup];
     }
 
     final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(
