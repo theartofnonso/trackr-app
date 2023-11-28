@@ -41,7 +41,7 @@ class RoutineEditorScreen extends StatefulWidget {
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
 }
 
-class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
+class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsBindingObserver {
   Routine? _routine;
   RoutineLog? _routineLog;
 
@@ -630,11 +630,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
+
     _fetchRoutine();
     _fetchRoutineLog();
 
     _initializeProcedureData();
     _initializeTextControllers();
+
+    _loadRoutineStartTime();
 
     _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
 
@@ -653,16 +657,18 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
+  void _loadRoutineStartTime() {
+    final routineLog = _routineLog;
+    if (routineLog != null) {
+      _routineStartTime = routineLog.startTime;
+    }
+  }
+
   void _initializeProcedureData() {
     final procedureJsons = _routineLog?.procedures ?? _routine?.procedures;
     final procedures = procedureJsons?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
     if (procedures != null) {
       Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures);
-    }
-
-    final routineLog = _routineLog;
-    if (routineLog != null) {
-      _routineStartTime = routineLog.startTime;
     }
   }
 
@@ -720,7 +726,15 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadRoutineStartTime();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
     if (widget.mode == RoutineEditorMode.edit) {
       _routineNameController.dispose();
