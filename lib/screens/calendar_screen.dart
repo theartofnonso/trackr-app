@@ -96,11 +96,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final createdAt = _currentDate.isSameDateAs(DateTime.now())
         ? TemporalDateTime.now()
         : TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z");
-    if(!createdAt.getDateTimeInUtc().isAfter(DateTime.now())) {
-      startEmptyRoutine(context: context, createdAt: createdAt);
-    } else {
-      showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "You can't log a future workout");
-    }
+    startEmptyRoutine(context: context, createdAt: createdAt);
+  }
+
+  bool _isFutureDate() {
+    return _currentDate.isAfter(DateTime.now());
   }
 
   List<Widget> _generateDates() {
@@ -179,14 +179,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          routineLogProvider.cachedLog == null
+          routineLogProvider.cachedLog == null && !_isFutureDate()
               ? GestureDetector(
-            onTap: _logRoutine,
-            child: const Padding(
-              padding: EdgeInsets.only(right: 14.0),
-              child: Icon(Icons.add),
-            ),
-          )
+                  onTap: _logRoutine,
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 14.0),
+                    child: Icon(Icons.add),
+                  ),
+                )
               : const SizedBox.shrink()
         ],
       ),
@@ -229,17 +229,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             logs.isNotEmpty
                 ? Expanded(
-              child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                  separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: 8),
-                  itemCount: logs.length),
-            )
-                : routineLogProvider.cachedLog == null
-                ? Expanded(
-                child:
-                Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
-                : const Center(child: ScreenEmptyState(message: crunchingPerformanceNumbers))
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                        itemCount: logs.length),
+                  )
+                : routineLogProvider.cachedLog == null && !_isFutureDate()
+                    ? Expanded(
+                        child: Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
+                    : const SizedBox.shrink()
           ],
         ),
       ),
@@ -249,18 +247,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void initState() {
     super.initState();
-    final earliestRoutineLog = Provider
-        .of<RoutineLogProvider>(context, listen: false)
-        .logs
-        .lastOrNull;
+    final earliestRoutineLog = Provider.of<RoutineLogProvider>(context, listen: false).logs.lastOrNull;
     final earliestDateTime =
-    earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
+        earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
     _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
   }
 }
 
 class _CalendarHeader extends StatelessWidget {
-
   final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
 
   @override
@@ -271,14 +265,13 @@ class _CalendarHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ...daysOfWeek
-              .map((day) =>
-              SizedBox(
-                width: 40,
-                child: Center(
-                  child: Text(day,
-                      style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ))
+              .map((day) => SizedBox(
+                    width: 40,
+                    child: Center(
+                      child: Text(day,
+                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                    ),
+                  ))
               .toList()
         ],
       ),
@@ -347,7 +340,7 @@ class _DateWidget extends StatelessWidget {
           child: Center(
             child: Text("${dateTime.day}",
                 style:
-                GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                    GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),
@@ -369,10 +362,7 @@ class _RoutineLogWidget extends StatelessWidget {
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         dense: true,
-        title: Text(log.name, style: Theme
-            .of(context)
-            .textTheme
-            .labelLarge),
+        title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
         subtitle: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
         trailing: Text(log.durationInString(),
