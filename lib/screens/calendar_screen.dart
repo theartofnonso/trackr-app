@@ -8,6 +8,7 @@ import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../helper_functions/navigation/navigator_helper_functions.dart';
@@ -95,7 +96,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final createdAt = _currentDate.isSameDateAs(DateTime.now())
         ? TemporalDateTime.now()
         : TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z");
-    startEmptyRoutine(context: context, createdAt: createdAt);
+    if(!createdAt.getDateTimeInUtc().isAfter(DateTime.now())) {
+      startEmptyRoutine(context: context, createdAt: createdAt);
+    } else {
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "You can't log a future workout");
+    }
   }
 
   List<Widget> _generateDates() {
