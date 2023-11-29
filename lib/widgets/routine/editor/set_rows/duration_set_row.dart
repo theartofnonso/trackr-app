@@ -15,9 +15,6 @@ class DurationSetRow extends SetRow {
   const DurationSetRow(
       {super.key,
       required this.onChangedDuration,
-      required super.index,
-      required super.setTypeIndex,
-      required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
       required super.editorType,

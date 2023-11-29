@@ -26,7 +26,7 @@ class ProceduresProvider extends ChangeNotifier {
   void loadProcedures({required List<ProcedureDto> procedures, bool shouldNotifyListeners = false}) {
     _procedures = procedures;
     _loadSets();
-    if(shouldNotifyListeners) {
+    if (shouldNotifyListeners) {
       notifyListeners();
     }
   }
@@ -157,11 +157,12 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  SetDto? _wherePastSet({required BuildContext context, required String procedureId, required String setId, required List<SetDto> pastSets}) {
+  SetDto? _wherePastSetOrNull({required String setId, required List<SetDto> pastSets}) {
     return pastSets.firstWhereOrNull((pastSet) => pastSet.id == setId);
   }
 
-  void addSetForProcedure({required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
+  void addSetForProcedure(
+      {required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
@@ -171,12 +172,12 @@ class ProceduresProvider extends ChangeNotifier {
       SetDto newSet = SetDto(1, 0, 0, SetType.working, false);
 
       SetDto? nextSet = currentSets.lastOrNull;
-      if(nextSet != null) {
-        newSet = SetDto(newIndex, nextSet.value1, nextSet.value2, SetType.working, false);
+      if (nextSet != null) {
+        newSet = nextSet.copyWith(index: newIndex, checked: false);
       }
 
-      SetDto? pastSet = _wherePastSet(context: context, procedureId: procedureId, setId: newSet.id, pastSets: pastSets);
-      if(pastSet != null) {
+      SetDto? pastSet = _wherePastSetOrNull(setId: newSet.id, pastSets: pastSets);
+      if (pastSet != null) {
         newSet = pastSet.copyWith(checked: false);
       }
 
@@ -200,7 +201,7 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForProcedure({required String procedureId, required int setIndex}) {
+  void removeSetForProcedure({required String procedureId, required int setIndex, List<SetDto> pastSets = const []}) {
     // Check if the exercise ID exists in the map
     if (!_sets.containsKey(procedureId)) {
       // Handle the case where the exercise ID does not exist
@@ -225,7 +226,7 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[procedureId] = _reOrderSetTypes(updatedSets);
+    newMap[procedureId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -239,8 +240,9 @@ class ProceduresProvider extends ChangeNotifier {
       required String procedureId,
       required int setIndex,
       required SetDto updatedSet,
+      List<SetDto> pastSets = const [],
       bool shouldNotifyListeners = true,
-      bool shouldReview = false}) {
+      bool reorder = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -258,55 +260,28 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[procedureId] = _reOrderSetTypes(updatedSets);
+    if (reorder) {
+      newMap[procedureId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
+    } else {
+      newMap[procedureId] = updatedSets;
+    }
+    _sets = newMap;
 
-    // Assign the new map to _sets to maintain immutability
-    // if (shouldReview) {
-    //   _sets = _reviewSets(context, procedureId, updatedSets);
-    // } else {
-      _sets = newMap;
-    //}
-
-    // Notify listeners about the change
     if (shouldNotifyListeners) {
       notifyListeners();
     }
   }
 
-  List<SetDto> _reOrderSetTypes(List<SetDto> sets) {
+  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets}) {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
-    return sets.mapIndexed((index, set) {
-      final reOrderedSet = set.copyWith(index: setTypeCounts[set.type]! + 1);
+    return currentSets.mapIndexed((index, set) {
+      final newIndex = setTypeCounts[set.type]! + 1;
+      final newId = "${set.type.label}$newIndex";
+      final pastSet = _wherePastSetOrNull(setId: newId, pastSets: pastSets);
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-      return reOrderedSet;
+      return pastSet?.copyWith(index: newIndex, checked: set.checked) ?? set.copyWith(index: newIndex);
     }).toList();
   }
-
-  // Map<String, List<SetDto>> _reviewSets(BuildContext context, String procedureId, List<SetDto> updatedSets) {
-  //   Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
-  //
-  //   final procedure = _procedures.firstWhere((procedure) => procedure.id == procedureId);
-  //   final pastSets =
-  //       Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
-  //
-  //   final newSets = <SetDto>[];
-  //
-  //   updatedSets.map((set) {
-  //     SetDto? pastSet = _wherePastSet(type: set.type, index: setTypeCounts[set.type]!, pastSets: pastSets);
-  //     final newSet = pastSet?.copyWith(checked: set.checked) ?? set;
-  //     newSets.add(newSet);
-  //     setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-  //   }).toList();
-  //
-  //   // Create a new map by copying all key-value pairs from the original map
-  //   Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
-  //
-  //   // Update the new map with the modified list of sets
-  //   newMap[procedureId] = newSets;
-  //
-  //   // Assign the new map to _sets to maintain immutability
-  //   return newMap;
-  // }
 
   void updateWeight(
       {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
@@ -328,20 +303,20 @@ class ProceduresProvider extends ChangeNotifier {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateSetType(
+      {required BuildContext context,
+      required String procedureId,
+      required int setIndex,
+      required SetDto setDto,
+      required List<SetDto> pastSets}) {
     _updateSetForProcedure(
-        context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldReview: true);
+        context: context,
+        procedureId: procedureId,
+        setIndex: setIndex,
+        updatedSet: setDto,
+        pastSets: pastSets,
+        reorder: true);
   }
-
-  // void updateSetWithPastSet(
-  //     {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-  //   _updateSetForProcedure(
-  //       context: context,
-  //       procedureId: procedureId,
-  //       setIndex: setIndex,
-  //       updatedSet: setDto,
-  //       shouldNotifyListeners: false);
-  // }
 
   void updateSetCheck(
       {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
