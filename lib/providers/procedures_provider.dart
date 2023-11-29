@@ -166,14 +166,16 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void addSetForProcedure(
-      {required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
+      {required BuildContext context, required String procedureId}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
       final currentSets = _sets[procedureId] ?? [];
-      final nextSet = currentSets.lastOrNull;
-      SetDto newSet =
-          SetDto(nextSet?.value1 ?? 0, nextSet?.value2 ?? 0, nextSet != null ? nextSet.type : SetType.working, false);
+      SetDto? nextSet = currentSets.lastOrNull;
+      SetDto newSet = SetDto(1, 0, 0, SetType.working, false);
+      if(nextSet != null) {
+        newSet = SetDto(nextSet.index + 1, nextSet.value1, nextSet.value2, SetType.working, false);
+      }
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
       List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
@@ -220,7 +222,7 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[procedureId] = updatedSets;
+    newMap[procedureId] = updatedSets.mapIndexed((index, set) => set.copyWith(index: index + 1)).toList();
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;

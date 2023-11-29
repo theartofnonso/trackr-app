@@ -50,7 +50,7 @@ class DurationSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                label: "${setDto.type.label}${setTypeIndex + 1}",
+                label: setDto.id,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,
