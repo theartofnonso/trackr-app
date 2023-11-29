@@ -20,27 +20,30 @@ enum SetType {
 }
 
 class SetDto {
+  final String id;
+  final int index;
   final num value1;
   final num value2;
   final SetType type;
   final bool checked;
 
-   SetDto(this.value1, this.value2, this.type, this.checked);
+   SetDto(this.index, this.value1, this.value2, this.type, this.checked) : id = "${type.label}$index";
 
-  SetDto copyWith({num? value1, num? value2, SetType? type, bool? checked}) {
-    return SetDto(value1 ?? this.value1, value2 ?? this.value2, type ?? this.type, checked ?? this.checked);
+  SetDto copyWith({int? index, num? value1, num? value2, SetType? type, bool? checked}) {
+    return SetDto(index ?? this.index, value1 ?? this.value1, value2 ?? this.value2, type ?? this.type, checked ?? this.checked);
   }
 
   String toJson() {
-    return jsonEncode({"value1": value1, "value2": value2, "type": type.label, "checked": checked});
+    return jsonEncode({"index": index, "value1": value1, "value2": value2, "type": type.label, "checked": checked});
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {
+    final index = json["index"];
     final value1 = json["value1"];
     final value2 = json["value2"];
     final type = SetType.fromString(json["type"]);
     final checked = json["checked"];
-    return SetDto(value1, value2, type, checked);
+    return SetDto(index, value1, value2, type, checked);
   }
 
   bool isEmpty() {
@@ -56,16 +59,17 @@ class SetDto {
       identical(this, other) ||
       other is SetDto &&
           runtimeType == other.runtimeType &&
+          id == other.id &&
           value1 == other.value1 &&
           value2 == other.value2 &&
           type == other.type &&
           checked == other.checked;
 
   @override
-  int get hashCode => value1.hashCode ^ value2.hashCode ^ type.hashCode ^ checked.hashCode;
+  int get hashCode => id.hashCode ^ value1.hashCode ^ value2.hashCode ^ type.hashCode ^ checked.hashCode;
 
   @override
   String toString() {
-    return 'SetDto{value1: $value1, value2: $value2, type: $type, checked: $checked}';
+    return 'SetDto{index: $index, id: $id, value1: $value1, value2: $value2, type: $type, checked: $checked}';
   }
 }

@@ -78,7 +78,7 @@ List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
 
 SetDto _heaviestSetPerLog({required RoutineLog log}) {
   double heaviestWeight = 0;
-  SetDto setWithHeaviestWeight = SetDto(0, 0, SetType.working, false);
+  SetDto setWithHeaviestWeight = SetDto(0, 0, 0, SetType.working, false);
 
   final sets = _allSetsWithWeight(procedureJsons: log.procedures);
 
@@ -243,7 +243,7 @@ Duration sessionDurationPerLog({required RoutineLog log}) {
 /// Highest value across all [RoutineLogDto]
 
 (String, SetDto) _heaviestSet({required List<RoutineLog> logs}) {
-  SetDto heaviestSet = SetDto(0, 0, SetType.working, false);
+  SetDto heaviestSet = SetDto(0, 0, 0, SetType.working, false);
   String logId = "";
   for (var log in logs) {
     final sets = _allSetsWithWeight(procedureJsons: log.procedures);

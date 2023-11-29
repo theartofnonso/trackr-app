@@ -5,28 +5,32 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
+import '../../../../app_constants.dart';
 import '../../../../utils/general_utils.dart';
 
 class DurationDistanceSetRow extends StatelessWidget {
-  const DurationDistanceSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
+  const DurationDistanceSetRow({super.key, required this.setDto});
 
-  final int index;
-  final int workingIndex;
   final SetDto setDto;
 
   @override
   Widget build(BuildContext context) {
     final distance = isDefaultDistanceUnit() ? setDto.value2 : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 
-    return Table(columnWidths: const <int, TableColumnWidth>{
+    return Table(
+        border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
+        columnWidths: const <int, TableColumnWidth>{
       0: FixedColumnWidth(50),
-      1: FlexColumnWidth(2),
-      2: FlexColumnWidth(2),
+      1: FlexColumnWidth(1),
+      2: FlexColumnWidth(1),
     }, children: <TableRow>[
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetTypeIcon(type: setDto.type, label: workingIndex)),
+            child: SizedBox(
+                height: 50,
+                child: Align(
+                    alignment: Alignment.center, child: SetTypeIcon(type: setDto.type, label: setDto.id)))),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(

@@ -141,10 +141,10 @@ class _RoutineLogWidget extends StatelessWidget {
         dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
-        subtitle: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
-        trailing: Text(log.durationInString(),
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+        subtitle: Text("${log.procedures.length} exercise(s)",
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+        trailing: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
       ),
     );
   }

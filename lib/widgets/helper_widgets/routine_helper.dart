@@ -1,10 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_distance_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_set_row.dart';
 
-import '../../app_constants.dart';
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../empty_states/list_tile_empty_state.dart';
@@ -12,7 +10,8 @@ import '../routine/preview/set_rows/weight_distance_set_row.dart';
 import '../routine/preview/set_rows/reps_set_row.dart';
 import '../routine/preview/set_rows/weight_reps_set_row.dart';
 
-ProcedureDto? whereOtherSuperSetProcedure({required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
+ProcedureDto? whereOtherSuperSetProcedure(
+    {required ProcedureDto firstProcedure, required List<ProcedureDto> procedures}) {
   for (var procedure in procedures) {
     bool isSameSuperset = procedure.superSetId.isNotEmpty && procedure.superSetId == firstProcedure.superSetId;
     bool isDifferentProcedure = procedure.exercise.id != firstProcedure.exercise.id;
@@ -26,55 +25,20 @@ ProcedureDto? whereOtherSuperSetProcedure({required ProcedureDto firstProcedure,
 }
 
 List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets}) {
-  int workingSets = 0;
-
-  final widgets = sets.mapIndexed(((index, setDto) {
-    final workingIndex = setDto.type == SetType.working ? workingSets : -1;
-
+  final widgets = sets.map(((setDto) {
     final widget = Padding(
       padding: const EdgeInsets.only(bottom: 6.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: tealBlueLight,
-          borderRadius: BorderRadius.circular(3),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: switch (type) {
-          ExerciseType.weightAndReps ||
-          ExerciseType.weightedBodyWeight ||
-          ExerciseType.assistedBodyWeight =>
-            WeightRepsSetRow(
-              index: index,
-              workingIndex: workingIndex,
-              setDto: setDto,
-            ),
-          ExerciseType.bodyWeightAndReps => RepsSetRow(
-              index: index,
-              workingIndex: workingIndex,
-              setDto: setDto,
-            ),
-          ExerciseType.duration => DurationSetRow(
-              index: index,
-              workingIndex: workingIndex,
-              setDto: setDto,
-            ),
-          ExerciseType.durationAndDistance => DurationDistanceSetRow(
-              index: index,
-              workingIndex: workingIndex,
-              setDto: setDto,
-            ),
-          ExerciseType.weightAndDistance => WeightDistanceSetRow(
-              index: index,
-              workingIndex: workingIndex,
-              setDto: setDto,
-            ),
-        },
-      ),
+      child: switch (type) {
+        ExerciseType.weightAndReps ||
+        ExerciseType.weightedBodyWeight ||
+        ExerciseType.assistedBodyWeight =>
+          WeightRepsSetRow(setDto: setDto),
+        ExerciseType.bodyWeightAndReps => RepsSetRow(setDto: setDto),
+        ExerciseType.duration => DurationSetRow(setDto: setDto),
+        ExerciseType.durationAndDistance => DurationDistanceSetRow(setDto: setDto),
+        ExerciseType.weightAndDistance => WeightDistanceSetRow(setDto: setDto),
+      },
     );
-
-    if (setDto.type == SetType.working) {
-      workingSets += 1;
-    }
 
     return widget;
   })).toList();

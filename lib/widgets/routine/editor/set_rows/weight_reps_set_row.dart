@@ -20,9 +20,6 @@ class WeightRepsSetRow extends SetRow {
       required this.controllers,
       required this.onChangedReps,
       required this.onChangedWeight,
-      required super.index,
-      required super.setTypeIndex,
-      required super.procedureId,
       required super.setDto,
       required super.pastSetDto,
       required super.editorType,
@@ -58,7 +55,7 @@ class WeightRepsSetRow extends SetRow {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
-                label: "${setDto.type.label}${setTypeIndex + 1}",
+                label: setDto.id,
                 onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,

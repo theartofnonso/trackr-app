@@ -4,13 +4,13 @@ import 'package:tracker_app/models/Exercise.dart';
 import 'package:uuid/uuid.dart';
 
 class ProcedureDto {
-  String id;
+  final String id;
   final String superSetId;
   final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
 
-  ProcedureDto(this.id, this.superSetId, this.exercise, this.notes, this.sets);
+  const ProcedureDto(this.id, this.superSetId, this.exercise, this.notes, this.sets);
 
   ProcedureDto copyWith(
       {String? id, String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets}) {

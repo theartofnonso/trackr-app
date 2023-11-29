@@ -65,7 +65,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
             Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
-                context: context,
                 firstProcedureId: firstProcedure.id,
                 secondProcedureId: secondProcedure.id,
                 superSetId: id);
@@ -88,7 +87,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        provider.addProcedures(context: context, exercises: exercises);
+        provider.addProcedures(exercises: exercises);
       }
     }
   }
@@ -124,7 +123,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       if (selectedExercises.isNotEmpty) {
         if (mounted) {
           Provider.of<ProceduresProvider>(context, listen: false)
-              .replaceProcedure(context: context, procedureId: procedureId, exercise: selectedExercises.first);
+              .replaceProcedure(procedureId: procedureId, exercise: selectedExercises.first);
         }
       }
     }
@@ -132,11 +131,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _removeProcedureSuperSets({required String superSetId}) {
     Provider.of<ProceduresProvider>(context, listen: false)
-        .removeProcedureSuperSet(context: context, superSetId: superSetId);
+        .removeProcedureSuperSet(superSetId: superSetId);
   }
 
   void _removeProcedure({required String procedureId}) {
-    Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(context: context, procedureId: procedureId);
+    Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(procedureId: procedureId);
   }
 
   List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
