@@ -13,7 +13,6 @@ class WeightedSetHeader extends StatelessWidget {
       columnWidths: const <int, TableColumnWidth>{
         0: FixedColumnWidth(50),
         1: FlexColumnWidth(),
-        2: FlexColumnWidth(),
       },
       children: <TableRow>[
         TableRow(children: [

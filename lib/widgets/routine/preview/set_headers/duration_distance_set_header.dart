@@ -12,8 +12,7 @@ class DurationDistanceSetHeader extends StatelessWidget {
     return Table(
       columnWidths: const <int, TableColumnWidth>{
         0: FixedColumnWidth(50),
-        1: FlexColumnWidth(2),
-        2: FlexColumnWidth(2),
+        1: FlexColumnWidth(),
       },
       children: <TableRow>[
         TableRow(children: [

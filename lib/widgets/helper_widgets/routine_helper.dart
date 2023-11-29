@@ -3,7 +3,6 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_distance_set_row.dart';
 import 'package:tracker_app/widgets/routine/preview/set_rows/duration_set_row.dart';
 
-import '../../app_constants.dart';
 import '../../dtos/procedure_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../empty_states/list_tile_empty_state.dart';
@@ -26,28 +25,19 @@ ProcedureDto? whereOtherSuperSetProcedure(
 }
 
 List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets}) {
-
   final widgets = sets.map(((setDto) {
-
     final widget = Padding(
       padding: const EdgeInsets.only(bottom: 6.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: tealBlueLight,
-          borderRadius: BorderRadius.circular(3),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: switch (type) {
-          ExerciseType.weightAndReps ||
-          ExerciseType.weightedBodyWeight ||
-          ExerciseType.assistedBodyWeight =>
-            WeightRepsSetRow(setDto: setDto),
-          ExerciseType.bodyWeightAndReps => RepsSetRow(setDto: setDto),
-          ExerciseType.duration => DurationSetRow(setDto: setDto),
-          ExerciseType.durationAndDistance => DurationDistanceSetRow(setDto: setDto),
-          ExerciseType.weightAndDistance => WeightDistanceSetRow(setDto: setDto),
-        },
-      ),
+      child: switch (type) {
+        ExerciseType.weightAndReps ||
+        ExerciseType.weightedBodyWeight ||
+        ExerciseType.assistedBodyWeight =>
+          WeightRepsSetRow(setDto: setDto),
+        ExerciseType.bodyWeightAndReps => RepsSetRow(setDto: setDto),
+        ExerciseType.duration => DurationSetRow(setDto: setDto),
+        ExerciseType.durationAndDistance => DurationDistanceSetRow(setDto: setDto),
+        ExerciseType.weightAndDistance => WeightDistanceSetRow(setDto: setDto),
+      },
     );
 
     return widget;
