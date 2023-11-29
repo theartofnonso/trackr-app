@@ -166,11 +166,15 @@ class ProceduresProvider extends ChangeNotifier {
 
     if (procedureIndex != -1) {
       final currentSets = _sets[procedureId] ?? [];
-      SetDto? nextSet = currentSets.lastOrNull;
+
+      int newIndex = currentSets.isNotEmpty ? currentSets.last.index + 1 : 1;
       SetDto newSet = SetDto(1, 0, 0, SetType.working, false);
+
+      SetDto? nextSet = currentSets.lastOrNull;
       if(nextSet != null) {
-        newSet = SetDto(nextSet.index + 1, nextSet.value1, nextSet.value2, SetType.working, false);
+        newSet = SetDto(newIndex, nextSet.value1, nextSet.value2, SetType.working, false);
       }
+
       SetDto? pastSet = _wherePastSet(context: context, procedureId: procedureId, setId: newSet.id, pastSets: pastSets);
       if(pastSet != null) {
         newSet = pastSet.copyWith(checked: false);
@@ -324,21 +328,20 @@ class ProceduresProvider extends ChangeNotifier {
     _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateSetType(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  void updateSetType({required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
     _updateSetForProcedure(
         context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, shouldReview: true);
   }
 
-  void updateSetWithPastSet(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(
-        context: context,
-        procedureId: procedureId,
-        setIndex: setIndex,
-        updatedSet: setDto,
-        shouldNotifyListeners: false);
-  }
+  // void updateSetWithPastSet(
+  //     {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
+  //   _updateSetForProcedure(
+  //       context: context,
+  //       procedureId: procedureId,
+  //       setIndex: setIndex,
+  //       updatedSet: setDto,
+  //       shouldNotifyListeners: false);
+  // }
 
   void updateSetCheck(
       {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
