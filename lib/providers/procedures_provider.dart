@@ -222,7 +222,7 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[procedureId] = updatedSets.mapIndexed((index, set) => set.copyWith(index: index + 1)).toList();
+    newMap[procedureId] = _reOrderSetTypes(updatedSets);
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -255,19 +255,28 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[procedureId] = updatedSets;
+    newMap[procedureId] = _reOrderSetTypes(updatedSets);
 
     // Assign the new map to _sets to maintain immutability
-    if (shouldReview) {
-      _sets = _reviewSets(context, procedureId, updatedSets);
-    } else {
+    // if (shouldReview) {
+    //   _sets = _reviewSets(context, procedureId, updatedSets);
+    // } else {
       _sets = newMap;
-    }
+    //}
 
     // Notify listeners about the change
     if (shouldNotifyListeners) {
       notifyListeners();
     }
+  }
+
+  List<SetDto> _reOrderSetTypes(List<SetDto> sets) {
+    Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
+    return sets.mapIndexed((index, set) {
+      final reOrderedSet = set.copyWith(index: setTypeCounts[set.type]! + 1);
+      setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
+      return reOrderedSet;
+    }).toList();
   }
 
   Map<String, List<SetDto>> _reviewSets(BuildContext context, String procedureId, List<SetDto> updatedSets) {

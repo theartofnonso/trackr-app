@@ -4,10 +4,8 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 class RepsSetRow extends StatelessWidget {
-  const RepsSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
+  const RepsSetRow({super.key, required this.setDto});
 
-  final int index;
-  final int workingIndex;
   final SetDto setDto;
 
   @override
@@ -21,7 +19,7 @@ class RepsSetRow extends StatelessWidget {
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetTypeIcon(type: setDto.type, label: workingIndex)),
+            child: SetTypeIcon(type: setDto.type, label: setDto.id)),
         TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Text(

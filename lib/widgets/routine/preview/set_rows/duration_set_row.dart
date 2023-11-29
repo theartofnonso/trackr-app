@@ -6,10 +6,8 @@ import 'package:tracker_app/widgets/routine/preview/set_type_icon.dart';
 
 
 class DurationSetRow extends StatelessWidget {
-  const DurationSetRow({super.key, required this.index, required this.workingIndex, required this.setDto});
+  const DurationSetRow({super.key, required this.setDto});
 
-  final int index;
-  final int workingIndex;
   final SetDto setDto;
 
   @override
@@ -23,7 +21,7 @@ class DurationSetRow extends StatelessWidget {
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SetTypeIcon(type: setDto.type, label: workingIndex)),
+            child: SetTypeIcon(type: setDto.type, label: setDto.id)),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(
