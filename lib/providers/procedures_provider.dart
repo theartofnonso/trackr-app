@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/unsaved_changes_messages_dto.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../dtos/procedure_dto.dart';
@@ -159,14 +157,11 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  SetDto? _wherePastSet({required int index, required SetType type, required List<SetDto> pastSets}) {
-    return pastSets.firstWhereIndexedOrNull((pastSetIndex, pastSet) {
-      return pastSetIndex == index && pastSet.type == type;
-    });
+  SetDto? _wherePastSet({required BuildContext context, required String procedureId, required String setId, required List<SetDto> pastSets}) {
+    return pastSets.firstWhereOrNull((pastSet) => pastSet.id == setId);
   }
 
-  void addSetForProcedure(
-      {required BuildContext context, required String procedureId}) {
+  void addSetForProcedure({required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
@@ -175,6 +170,10 @@ class ProceduresProvider extends ChangeNotifier {
       SetDto newSet = SetDto(1, 0, 0, SetType.working, false);
       if(nextSet != null) {
         newSet = SetDto(nextSet.index + 1, nextSet.value1, nextSet.value2, SetType.working, false);
+      }
+      SetDto? pastSet = _wherePastSet(context: context, procedureId: procedureId, setId: newSet.id, pastSets: pastSets);
+      if(pastSet != null) {
+        newSet = pastSet.copyWith(checked: false);
       }
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
@@ -279,31 +278,31 @@ class ProceduresProvider extends ChangeNotifier {
     }).toList();
   }
 
-  Map<String, List<SetDto>> _reviewSets(BuildContext context, String procedureId, List<SetDto> updatedSets) {
-    Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
-
-    final procedure = _procedures.firstWhere((procedure) => procedure.id == procedureId);
-    final pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
-
-    final newSets = <SetDto>[];
-
-    updatedSets.map((set) {
-      SetDto? pastSet = _wherePastSet(type: set.type, index: setTypeCounts[set.type]!, pastSets: pastSets);
-      final newSet = pastSet?.copyWith(checked: set.checked) ?? set;
-      newSets.add(newSet);
-      setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-    }).toList();
-
-    // Create a new map by copying all key-value pairs from the original map
-    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
-
-    // Update the new map with the modified list of sets
-    newMap[procedureId] = newSets;
-
-    // Assign the new map to _sets to maintain immutability
-    return newMap;
-  }
+  // Map<String, List<SetDto>> _reviewSets(BuildContext context, String procedureId, List<SetDto> updatedSets) {
+  //   Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
+  //
+  //   final procedure = _procedures.firstWhere((procedure) => procedure.id == procedureId);
+  //   final pastSets =
+  //       Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: procedure.exercise);
+  //
+  //   final newSets = <SetDto>[];
+  //
+  //   updatedSets.map((set) {
+  //     SetDto? pastSet = _wherePastSet(type: set.type, index: setTypeCounts[set.type]!, pastSets: pastSets);
+  //     final newSet = pastSet?.copyWith(checked: set.checked) ?? set;
+  //     newSets.add(newSet);
+  //     setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
+  //   }).toList();
+  //
+  //   // Create a new map by copying all key-value pairs from the original map
+  //   Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+  //
+  //   // Update the new map with the modified list of sets
+  //   newMap[procedureId] = newSets;
+  //
+  //   // Assign the new map to _sets to maintain immutability
+  //   return newMap;
+  // }
 
   void updateWeight(
       {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {

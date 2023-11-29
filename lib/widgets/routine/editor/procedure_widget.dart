@@ -57,6 +57,8 @@ class ProcedureWidget extends StatefulWidget {
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
+  final List<SetDto> _pastSets = [];
+
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -234,7 +236,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   void _addSet() {
     _controllers.add((TextEditingController(), TextEditingController()));
-    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(context: context, procedureId: widget.procedureDto.id);
+    Provider.of<ProceduresProvider>(context, listen: false).addSetForProcedure(context: context, procedureId: widget.procedureDto.id, pastSets: _pastSets);
   }
 
   void _removeSet(int index) {
@@ -290,6 +292,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     for (var _ in widget.procedureDto.sets) {
       _controllers.add((TextEditingController(), TextEditingController()));
     }
+    final pastSets = Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
+    _pastSets.addAll(pastSets);
   }
 
   @override
