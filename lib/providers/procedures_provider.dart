@@ -272,10 +272,8 @@ class ProceduresProvider extends ChangeNotifier {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
     return currentSets.mapIndexed((index, set) {
       final newIndex = setTypeCounts[set.type]! + 1;
-      final newId = "${set.type.label}$newIndex";
-      final pastSet = _wherePastSetOrNull(setId: newId, pastSets: pastSets);
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-      return pastSet?.copyWith(index: newIndex, checked: set.checked) ?? set.copyWith(index: newIndex);
+      return set.copyWith(index: newIndex);
     }).toList();
   }
 

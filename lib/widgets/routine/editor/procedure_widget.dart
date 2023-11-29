@@ -127,7 +127,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.bodyWeightAndReps:
-        _controllers.add((TextEditingController(text: set.value2.toInt().toString()), TextEditingController()));
+        _controllers.add((TextEditingController(), TextEditingController()));
         return RepsSetRow(
           setDto: set,
           pastSetDto: pastSet,

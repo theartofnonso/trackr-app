@@ -70,6 +70,6 @@ class SetDto {
 
   @override
   String toString() {
-    return 'SetDto{id: $id, value1: $value1, value2: $value2, type: $type, checked: $checked}';
+    return 'SetDto{index: $index, id: $id, value1: $value1, value2: $value2, type: $type, checked: $checked}';
   }
 }
