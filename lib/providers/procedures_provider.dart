@@ -55,13 +55,13 @@ class ProceduresProvider extends ChangeNotifier {
     return mergedProcedures;
   }
 
-  void addProcedures({required BuildContext context, required List<Exercise> exercises}) {
+  void addProcedures({required List<Exercise> exercises}) {
     final proceduresToAdd = exercises.map((exercise) => _createProcedure(exercise)).toList();
     _procedures = [..._procedures, ...proceduresToAdd];
     notifyListeners();
   }
 
-  void removeProcedure({required BuildContext context, required String procedureId}) {
+  void removeProcedure({required String procedureId}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     if (procedureIndex != -1) {
       final procedureToBeRemoved = _procedures[procedureIndex];
@@ -100,8 +100,7 @@ class ProceduresProvider extends ChangeNotifier {
     _sets = newMap;
   }
 
-  void replaceProcedure(
-      {required BuildContext context, required String procedureId, required Exercise exercise}) async {
+  void replaceProcedure({required String procedureId, required Exercise exercise}) async {
     // Get the index of the procedure to be replaced
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
@@ -124,7 +123,7 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void updateProcedureNotes({required BuildContext context, required String procedureId, required String value}) {
+  void updateProcedureNotes({required String procedureId, required String value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
     _procedures[procedureIndex] = procedure.copyWith(notes: value);
@@ -132,8 +131,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void superSetProcedures(
-      {required BuildContext context,
-      required String firstProcedureId,
+      {required String firstProcedureId,
       required String secondProcedureId,
       required String superSetId}) {
     final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
@@ -152,7 +150,7 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void removeProcedureSuperSet({required BuildContext context, required String superSetId}) {
+  void removeProcedureSuperSet({required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
     notifyListeners();
   }
@@ -161,8 +159,7 @@ class ProceduresProvider extends ChangeNotifier {
     return pastSets.firstWhereOrNull((pastSet) => pastSet.id == setId);
   }
 
-  void addSetForProcedure(
-      {required BuildContext context, required String procedureId, required List<SetDto> pastSets}) {
+  void addSetForProcedure({required String procedureId, required List<SetDto> pastSets}) {
     int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
 
     if (procedureIndex != -1) {
@@ -236,8 +233,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _updateSetForProcedure(
-      {required BuildContext context,
-      required String procedureId,
+      {required String procedureId,
       required int setIndex,
       required SetDto updatedSet,
       List<SetDto> pastSets = const [],
@@ -283,34 +279,28 @@ class ProceduresProvider extends ChangeNotifier {
     }).toList();
   }
 
-  void updateWeight(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateReps(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateReps({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDuration(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateDuration({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDistance(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateDistance({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void updateSetType(
-      {required BuildContext context,
-      required String procedureId,
+      {required String procedureId,
       required int setIndex,
       required SetDto setDto,
       required List<SetDto> pastSets}) {
     _updateSetForProcedure(
-        context: context,
         procedureId: procedureId,
         setIndex: setIndex,
         updatedSet: setDto,
@@ -318,9 +308,8 @@ class ProceduresProvider extends ChangeNotifier {
         reorder: true);
   }
 
-  void updateSetCheck(
-      {required BuildContext context, required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(context: context, procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
+    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void onClearProvider() {
