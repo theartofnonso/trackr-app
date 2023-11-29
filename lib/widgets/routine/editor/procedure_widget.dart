@@ -94,7 +94,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     ];
   }
 
-  SetDto? _wherePastSet({required String id, required List<SetDto> pastSets}) {
+  SetDto? _wherePastSetOrNull({required String id, required List<SetDto> pastSets}) {
     return pastSets.firstWhereOrNull((pastSet) => pastSet.id == id);
   }
 
@@ -102,83 +102,83 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     if (sets.isEmpty) return [];
 
     return sets.mapIndexed((index, setDto) {
-      SetDto? pastSet = _wherePastSet(id: setDto.id, pastSets: _pastSets);
 
-      Widget setWidget = _createSetWidget(index: index, currentSet: setDto, pastSet: pastSet, exerciseType: exerciseType);
+      Widget setWidget = _createSetWidget(index: index, set: setDto, exerciseType: exerciseType);
 
       return Padding(padding: const EdgeInsets.only(bottom: 8.0), child: setWidget);
     }).toList();
   }
 
-  Widget _createSetWidget({required int index, required SetDto currentSet, required SetDto? pastSet, required ExerciseType exerciseType}) {
+  Widget _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
+    SetDto? pastSet = _wherePastSetOrNull(id: set.id, pastSets: _pastSets);
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
         _controllers.add((TextEditingController(), TextEditingController()));
         return WeightRepsSetRow(
-          setDto: currentSet,
+          setDto: set,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(setIndex: index, setDto: currentSet),
+          onCheck: () => _updateSetCheck(setIndex: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: currentSet),
-          onChangedReps: (num value) => _updateReps(setIndex: index, value: value, setDto: currentSet),
+          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
+          onChangedReps: (num value) => _updateReps(setIndex: index, value: value, setDto: set),
           onChangedWeight: (double value) =>
-              _updateWeight(setIndex: index, value: value, setDto: currentSet),
+              _updateWeight(setIndex: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
       case ExerciseType.bodyWeightAndReps:
         _controllers.add((TextEditingController(), TextEditingController()));
         return RepsSetRow(
-          setDto: currentSet,
+          setDto: set,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(setIndex: index, setDto: currentSet),
+          onCheck: () => _updateSetCheck(setIndex: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: currentSet),
-          onChangedReps: (num value) => _updateReps(setIndex: index, value: value, setDto: currentSet),
+          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
+          onChangedReps: (num value) => _updateReps(setIndex: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
       case ExerciseType.weightAndDistance:
         _controllers.add((TextEditingController(), TextEditingController()));
         return WeightDistanceSetRow(
-          setDto: currentSet,
+          setDto: set,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(setIndex: index, setDto: currentSet),
+          onCheck: () => _updateSetCheck(setIndex: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedDistance: (double value) =>
-              _updateDistance(setIndex: index, distance: value, setDto: currentSet),
+              _updateDistance(setIndex: index, distance: value, setDto: set),
           onChangedWeight: (double value) =>
-              _updateWeight(setIndex: index, value: value, setDto: currentSet),
+              _updateWeight(setIndex: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
       case ExerciseType.duration:
         return DurationSetRow(
-          setDto: currentSet,
+          setDto: set,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(setIndex: index, setDto: currentSet),
+          onCheck: () => _updateSetCheck(setIndex: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedDuration: (Duration duration) =>
-              _updateDuration(setIndex: index, duration: duration, setDto: currentSet),
+              _updateDuration(setIndex: index, duration: duration, setDto: set),
         );
       case ExerciseType.durationAndDistance:
         _controllers.add((TextEditingController(), TextEditingController()));
         return DurationDistanceSetRow(
-          setDto: currentSet,
+          setDto: set,
           pastSetDto: pastSet,
           editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(setIndex: index, setDto: currentSet),
+          onCheck: () => _updateSetCheck(setIndex: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: currentSet),
+          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedDuration: (Duration duration) =>
-              _updateDuration(setIndex: index, duration: duration, setDto: currentSet),
+              _updateDuration(setIndex: index, duration: duration, setDto: set),
           onChangedDistance: (double distance) =>
-              _updateDistance(setIndex: index, distance: distance, setDto: currentSet),
+              _updateDistance(setIndex: index, distance: distance, setDto: set),
           controllers: _controllers[index],
         );
       // Add other cases or a default case
