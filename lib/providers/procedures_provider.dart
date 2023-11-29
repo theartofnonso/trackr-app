@@ -201,7 +201,7 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForProcedure({required String procedureId, required int setIndex, List<SetDto> pastSets = const []}) {
+  void removeSetForProcedure({required String procedureId, required int setIndex, required List<SetDto> pastSets}) {
     // Check if the exercise ID exists in the map
     if (!_sets.containsKey(procedureId)) {
       // Handle the case where the exercise ID does not exist

@@ -199,7 +199,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   void _removeSet(int index) {
     _controllers.removeAt(index);
     Provider.of<ProceduresProvider>(context, listen: false)
-        .removeSetForProcedure(procedureId: widget.procedureDto.id, setIndex: index);
+        .removeSetForProcedure(procedureId: widget.procedureDto.id, setIndex: index, pastSets: _pastSets);
   }
 
   void _updateWeight({required int setIndex, required double value, required SetDto setDto}) {
