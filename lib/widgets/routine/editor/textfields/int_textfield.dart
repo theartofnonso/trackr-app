@@ -5,10 +5,11 @@ import '../../../../app_constants.dart';
 
 class IntTextField extends StatelessWidget {
   final int value;
+  final int? pastValue;
   final TextEditingController controller;
   final void Function(int value) onChanged;
 
-  const IntTextField({super.key, required this.value, required this.controller, required this.onChanged});
+  const IntTextField({super.key, required this.value, required this.pastValue, required this.controller, required this.onChanged});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -24,7 +25,7 @@ class IntTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           fillColor: tealBlueLight,
-          hintText: value > 0 ? value.toString() : "-",
+          hintText: pastValue != null ? pastValue.toString() : "-",
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: TextInputType.number,
       maxLines: 1,

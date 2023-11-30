@@ -71,6 +71,7 @@ class RepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: IntTextField(
               value: reps,
+              pastValue: previousSetDto?.value2.toInt(),
               onChanged: onChangedReps,
               controller: controllers.$1,
             ),

@@ -84,6 +84,7 @@ class DurationDistanceSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
               value: distance,
+              pastValue: previousSetDto?.value2.toDouble(),
               onChanged: (value) {
                 final conversion = _convertDistance(value: value);
                 onChangedDistance(conversion);

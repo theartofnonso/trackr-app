@@ -82,6 +82,7 @@ class WeightDistanceSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
               value: weight,
+              pastValue: previousSetDto?.value1.toDouble(),
               onChanged: (value) {
                 final conversion = _convertWeight(value: value);
                 onChangedWeight(conversion);
@@ -93,6 +94,7 @@ class WeightDistanceSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
               value: distance,
+              pastValue: previousSetDto?.value2.toDouble(),
               onChanged: (value) {
                 final conversion = _convertDistance(value: value);
                 onChangedDistance(conversion);

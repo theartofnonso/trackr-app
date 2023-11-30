@@ -80,6 +80,7 @@ class WeightRepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
               value: weight,
+              pastValue: previousSetDto?.value1.toDouble(),
               onChanged: (value) {
                 final conversion = _convertWeight(value: value);
                 onChangedWeight(conversion);
@@ -91,6 +92,7 @@ class WeightRepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: IntTextField(
               value: reps,
+              pastValue: previousSetDto?.value2.toInt(),
               onChanged: onChangedReps,
               controller: controllers.$2,
             ),

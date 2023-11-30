@@ -651,7 +651,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   void _fetchRoutineLog() {
     _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLogId ?? "");
     final cachedLog = Provider.of<RoutineLogProvider>(context, listen: false).cachedLog;
-    if(cachedLog != null) {
+    if(cachedLog != null && widget.mode == RoutineEditorMode.log) {
       _routineLog = cachedLog;
     }
   }
