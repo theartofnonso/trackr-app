@@ -21,7 +21,7 @@ Future<void> loadData(BuildContext context) async {
     Provider.of<ExerciseProvider>(context, listen: false).listExercises().then((_) {
       Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
       final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-      routineLogProvider.listRoutineLogs(context);
+      routineLogProvider.listRoutineLogs();
       routineLogProvider.retrieveCachedRoutineLog(context);
       routineLogProvider.retrieveCachedPendingRoutineLog(context);
     });
@@ -121,7 +121,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs(context));
+          (_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs());
     }
   }
 }

@@ -40,7 +40,7 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void listRoutineLogs(BuildContext context) async {
+  void listRoutineLogs() async {
     final routineLogOwner = user();
     final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.USER.eq(routineLogOwner.id));
     final response = await Amplify.API.query(request: request).response;
