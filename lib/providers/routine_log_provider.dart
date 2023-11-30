@@ -218,11 +218,10 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ProcedureDto> _proceduresForExercise({required Exercise exercise}) {
+  List<ProcedureDto> _pastProceduresForExercise({required Exercise exercise}) {
     final mostRecentLog = _logs.firstWhereOrNull((log) {
       final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-      List<ProcedureDto> filteredProcedures =
-          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
+      List<ProcedureDto> filteredProcedures = decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
       return filteredProcedures.isNotEmpty;
     });
 
@@ -237,7 +236,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<SetDto> wherePastSets({required Exercise exercise}) {
-    final procedures = _proceduresForExercise(exercise: exercise);
+    final procedures = _pastProceduresForExercise(exercise: exercise);
     return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
   }
 

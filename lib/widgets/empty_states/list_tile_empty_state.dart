@@ -9,12 +9,13 @@ class ListTileEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(
+         Container(
           width: 30,
           height: 30,
-          child: CircleAvatar(
-            backgroundColor: tealBlueLighter,
-          ),
+           decoration: BoxDecoration(
+             color: tealBlueLighter, // Container color
+             borderRadius: BorderRadius.circular(5), // Border radius
+           ),
         ),
         const SizedBox(width: 10),
         Column(
@@ -37,6 +38,14 @@ class ListTileEmptyState extends StatelessWidget {
                 ))
           ],
         ),
+        const Spacer(),
+        Container(
+            width: 30,
+            height: 10,
+            decoration: BoxDecoration(
+              color: tealBlueLighter,
+              borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+            ))
       ],
     );
   }
