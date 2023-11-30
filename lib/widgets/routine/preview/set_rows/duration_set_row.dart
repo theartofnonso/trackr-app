@@ -17,8 +17,7 @@ class DurationSetRow extends StatelessWidget {
         border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
         columnWidths: const <int, TableColumnWidth>{
           0: FixedColumnWidth(50),
-          1: FlexColumnWidth(),
-          2: FlexColumnWidth()
+          1: FlexColumnWidth()
         },
         children: <TableRow>[
           TableRow(children: [
@@ -34,8 +33,7 @@ class DurationSetRow extends StatelessWidget {
                   Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours(),
                   style: GoogleFonts.lato(color: Colors.white),
                   textAlign: TextAlign.center,
-                )),
-            const TableCell(child: SizedBox.shrink())
+                ))
           ]),
         ]);
   }
