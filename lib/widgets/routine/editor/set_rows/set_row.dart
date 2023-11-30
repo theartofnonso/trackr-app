@@ -9,7 +9,7 @@ abstract class SetRow extends StatelessWidget {
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
-  final void Function(SetType type) onChangedType;
+  final void Function(SetType type, bool updateValues) onChangedType;
 
   const SetRow({
     Key? key,

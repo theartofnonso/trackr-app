@@ -4,6 +4,7 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 
 import '../../../../app_constants.dart';
+import '../../../../dtos/set_dto.dart';
 import '../../../../enums/exercise_type_enums.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
@@ -58,7 +59,10 @@ class WeightDistanceSetRow extends SetRow {
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
                 label: setDto.id,
-                onSelectSetType: onChangedType,
+                onSelectSetType: (SetType type) {
+                  final shouldChangeValues = controllers.$1.text.isEmpty && controllers.$2.text.isEmpty;
+                  onChangedType(type, shouldChangeValues);
+                },
                 onRemoveSet: onRemoved,
                 type: setDto.type,
               )),
