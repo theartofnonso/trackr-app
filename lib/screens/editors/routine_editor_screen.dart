@@ -108,27 +108,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _replaceProcedure({required String procedureId}) async {
-    final preSelectedExercises = Provider.of<ProceduresProvider>(context, listen: false)
-        .mergeSetsIntoProcedures()
-        .map((procedure) => procedure.exercise)
-        .toList();
-    final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ExerciseLibraryScreen(
-              multiSelect: false,
-              preSelectedExercises: preSelectedExercises,
-            ))) as List<Exercise>?;
-
-    if (selectedExercises != null) {
-      if (selectedExercises.isNotEmpty) {
-        if (mounted) {
-          Provider.of<ProceduresProvider>(context, listen: false)
-              .replaceProcedure(procedureId: procedureId, exercise: selectedExercises.first);
-        }
-      }
-    }
-  }
-
   void _removeProcedureSuperSets({required String superSetId}) {
     Provider.of<ProceduresProvider>(context, listen: false)
         .removeProcedureSuperSet(superSetId: superSetId);
@@ -613,7 +592,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                                 onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                                 onCache: _cacheRoutineLog,
-                                onReplaceProcedure: () => _replaceProcedure(procedureId: procedureId),
                                 onReOrderProcedures: _reOrderProcedures);
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),

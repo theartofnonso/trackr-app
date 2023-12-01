@@ -30,7 +30,6 @@ class ProcedureWidget extends StatefulWidget {
   final ProcedureDto? otherSuperSetProcedureDto;
 
   /// Procedure callbacks
-  final VoidCallback onReplaceProcedure;
   final VoidCallback onRemoveProcedure;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
@@ -46,7 +45,6 @@ class ProcedureWidget extends StatefulWidget {
     required this.onSuperSet,
     required this.onRemoveSuperSet,
     required this.onRemoveProcedure,
-    required this.onReplaceProcedure,
     required this.onReOrderProcedures,
     required this.onCache,
   });
@@ -64,28 +62,19 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
     return [
       MenuItemButton(
         onPressed: widget.onReOrderProcedures,
-        leadingIcon: const Icon(Icons.repeat_outlined),
         child: const Text("Reorder"),
       ),
       widget.procedureDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () => widget.onRemoveSuperSet(widget.procedureDto.superSetId),
-              leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
               child: Text("Remove Super-set", style: GoogleFonts.lato(color: Colors.red)),
             )
           : MenuItemButton(
               onPressed: widget.onSuperSet,
-              leadingIcon: const Icon(Icons.add),
               child: const Text("Super-set"),
             ),
       MenuItemButton(
-        onPressed: widget.onReplaceProcedure,
-        leadingIcon: const Icon(Icons.find_replace_rounded),
-        child: const Text("Replace"),
-      ),
-      MenuItemButton(
         onPressed: widget.onRemoveProcedure,
-        leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text(
           "Remove",
           style: GoogleFonts.lato(color: Colors.red),
@@ -220,11 +209,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   void _updateSetType({required int index, required SetType type, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(type: type);
-    Provider.of<ProceduresProvider>(context, listen: false).updateSetType(
-        procedureId: widget.procedureDto.id,
-        setIndex: index,
-        setDto: updatedSet,
-        pastSets: _pastSets);
+    Provider.of<ProceduresProvider>(context, listen: false)
+        .updateSetType(procedureId: widget.procedureDto.id, setIndex: index, setDto: updatedSet, pastSets: _pastSets);
   }
 
   void _updateSetCheck({required int setIndex, required SetDto setDto}) {

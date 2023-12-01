@@ -100,29 +100,6 @@ class ProceduresProvider extends ChangeNotifier {
     _sets = newMap;
   }
 
-  void replaceProcedure({required String procedureId, required Exercise exercise}) async {
-    // Get the index of the procedure to be replaced
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-
-    // Check if the procedure was found
-    if (procedureIndex != -1) {
-      final procedureToBeReplaced = _procedures[procedureIndex];
-
-      // If the procedure is part of a super set, remove it from the super set
-      if (procedureToBeReplaced.superSetId.isNotEmpty) {
-        _removeSuperSet(superSetId: procedureToBeReplaced.superSetId);
-      }
-
-      final procedures = List.from(_procedures);
-
-      procedures[procedureIndex] = _createProcedure(exercise, notes: procedureToBeReplaced.notes);
-
-      _procedures = [...procedures];
-
-      notifyListeners();
-    }
-  }
-
   void updateProcedureNotes({required String procedureId, required String value}) {
     final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
     final procedure = _procedures[procedureIndex];
