@@ -11,6 +11,12 @@ class DoubleTextField extends StatelessWidget {
 
   const DoubleTextField({super.key, required this.value, required this.pastValue, required this.controller, required this.onChanged});
 
+  double _parseDoubleOrDefault({required String value}) {
+    final parsedOrZero = double.tryParse(value) ?? 0;
+    final pastOrZero = pastValue ?? 0;
+    return parsedOrZero > 0 ? parsedOrZero : pastOrZero;
+  }
+
   String _value() {
     double valueOrPast = pastValue ?? value;
     return valueOrPast > 0 ? valueOrPast.toString() : "-";
@@ -20,7 +26,7 @@ class DoubleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      onChanged: (value) => onChanged(double.tryParse(value) ?? 0),
+      onChanged: (value) => onChanged(_parseDoubleOrDefault(value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(

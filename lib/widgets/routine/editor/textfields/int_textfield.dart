@@ -11,6 +11,12 @@ class IntTextField extends StatelessWidget {
 
   const IntTextField({super.key, required this.value, required this.pastValue, required this.controller, required this.onChanged});
 
+  int _parseIntOrDefault({required String value}) {
+    final parsedOrZero = int.tryParse(value) ?? 0;
+    final pastOrZero = pastValue ?? 0;
+    return parsedOrZero > 0 ? parsedOrZero : pastOrZero;
+  }
+
   String _value() {
     int valueOrPast = pastValue ?? value;
     return valueOrPast > 0 ? valueOrPast.toString() : "-";
@@ -20,7 +26,7 @@ class IntTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      onChanged: (value) => onChanged(int.tryParse(value) ?? 0),
+      onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
