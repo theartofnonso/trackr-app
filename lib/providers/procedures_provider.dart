@@ -246,21 +246,21 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets, bool updateValue1 = false, bool updateValue2 = false}) {
+  List<SetDto> _reOrderSetTypes(
+      {required List<SetDto> currentSets,
+      required List<SetDto> pastSets,
+      bool updateValue1 = false,
+      bool updateValue2 = false}) {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
     return currentSets.mapIndexed((index, set) {
       final newIndex = setTypeCounts[set.type]! + 1;
       final pastSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets);
       SetDto newSet = set;
-      if (updateValue1) {
-        if (pastSet != null) {
-          newSet = pastSet.copyWith(value2: set.value2);
-        }
+      if (updateValue1 && pastSet != null) {
+        newSet = pastSet.copyWith(value2: set.value2);
       }
-      if (updateValue2) {
-        if (pastSet != null) {
-          newSet = pastSet.copyWith(value1: set.value1);
-        }
+      if (updateValue2 && pastSet != null) {
+        newSet = pastSet.copyWith(value1: set.value1);
       }
 
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
