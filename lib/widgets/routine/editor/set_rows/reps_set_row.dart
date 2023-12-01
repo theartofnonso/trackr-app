@@ -4,7 +4,6 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
 
 import '../../../../app_constants.dart';
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
@@ -50,10 +49,7 @@ class RepsSetRow extends SetRow {
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
                 label: setDto.id,
-                onSelectSetType: (SetType type) {
-                  final shouldChangeValues = controllers.$1.text.isEmpty;
-                  onChangedType(type, shouldChangeValues);
-                },
+                onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,
               )),

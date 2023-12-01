@@ -11,6 +11,11 @@ class DoubleTextField extends StatelessWidget {
 
   const DoubleTextField({super.key, required this.value, required this.pastValue, required this.controller, required this.onChanged});
 
+  String _value() {
+    double valueOrPast = pastValue ?? value;
+    return valueOrPast > 0 ? valueOrPast.toString() : "-";
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -21,7 +26,7 @@ class DoubleTextField extends StatelessWidget {
           fillColor: tealBlueLight,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
-          hintText: pastValue != null ? pastValue.toString() : "-",
+          hintText: _value(),
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,

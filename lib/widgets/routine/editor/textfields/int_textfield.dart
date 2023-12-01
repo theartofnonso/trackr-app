@@ -11,21 +11,22 @@ class IntTextField extends StatelessWidget {
 
   const IntTextField({super.key, required this.value, required this.pastValue, required this.controller, required this.onChanged});
 
-  int _parseIntOrDefault({required String value}) {
-    return int.tryParse(value) ?? 0;
+  String _value() {
+    int valueOrPast = pastValue ?? value;
+    return valueOrPast > 0 ? valueOrPast.toString() : "-";
   }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      onChanged: (value) => onChanged(_parseIntOrDefault(value: value.toString())),
+      onChanged: (value) => onChanged(int.tryParse(value) ?? 0),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           fillColor: tealBlueLight,
-          hintText: pastValue != null ? pastValue.toString() : "-",
+          hintText: _value(),
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: TextInputType.number,
       maxLines: 1,

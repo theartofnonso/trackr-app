@@ -5,7 +5,6 @@ import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
 
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
@@ -57,10 +56,7 @@ class WeightRepsSetRow extends SetRow {
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
                 label: setDto.id,
-                onSelectSetType: (SetType type) {
-                  final shouldChangeValues = controllers.$1.text.isEmpty && controllers.$2.text.isEmpty;
-                  onChangedType(type, shouldChangeValues);
-                },
+                onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,
               )),

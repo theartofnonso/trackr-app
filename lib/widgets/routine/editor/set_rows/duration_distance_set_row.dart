@@ -5,7 +5,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
 
 import '../../../../app_constants.dart';
-import '../../../../dtos/set_dto.dart';
 import '../../../../screens/editors/routine_editor_screen.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
@@ -61,10 +60,7 @@ class DurationDistanceSetRow extends SetRow {
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: SetTypeIcon(
                 label: setDto.id,
-                onSelectSetType: (SetType type) {
-                  final shouldChangeValues = controllers.$1.text.isEmpty;
-                  onChangedType(type, shouldChangeValues);
-                },
+                onSelectSetType: onChangedType,
                 onRemoveSet: onRemoved,
                 type: setDto.type,
               )),

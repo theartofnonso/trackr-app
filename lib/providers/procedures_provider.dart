@@ -236,8 +236,7 @@ class ProceduresProvider extends ChangeNotifier {
       required SetDto updatedSet,
       List<SetDto> pastSets = const [],
       bool shouldNotifyListeners = true,
-      bool reorder = false,
-      bool updateValues = false}) {
+      bool reorder = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
     if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -256,7 +255,7 @@ class ProceduresProvider extends ChangeNotifier {
 
     // Update the new map with the modified list of sets
     if (reorder) {
-      newMap[procedureId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets, updateValues: updateValues);
+      newMap[procedureId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
     } else {
       newMap[procedureId] = updatedSets;
     }
@@ -267,13 +266,13 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets, bool updateValues = false}) {
+  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets}) {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
     return currentSets.mapIndexed((index, set) {
       final newIndex = setTypeCounts[set.type]! + 1;
-      final pastSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets);
+      final newSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets) ?? set;
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-      return updateValues && pastSet != null ? pastSet.copyWith(index: newIndex, checked: set.checked) : set.copyWith(index: newIndex);
+      return newSet.copyWith(index: newIndex, checked: set.checked);
     }).toList();
   }
 
@@ -297,10 +296,9 @@ class ProceduresProvider extends ChangeNotifier {
       {required String procedureId,
       required int setIndex,
       required SetDto setDto,
-      required List<SetDto> pastSets,
-      required bool updateValues}) {
+      required List<SetDto> pastSets}) {
     _updateSetForProcedure(
-        procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, pastSets: pastSets, reorder: true, updateValues: updateValues);
+        procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, pastSets: pastSets, reorder: true);
   }
 
   void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
