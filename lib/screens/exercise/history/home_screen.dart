@@ -204,21 +204,6 @@ double heaviestSetVolumePerLog({required RoutineLog log}) {
   return volume;
 }
 
-double setVolumePerLog({required RoutineLog log}) {
-  double totalVolume = 0;
-
-  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
-
-  for (var set in sets) {
-    final volume = set.value1 * set.value2;
-    totalVolume += volume;
-  }
-
-  final volume = isDefaultWeightUnit() ? totalVolume : toLbs(totalVolume);
-
-  return volume;
-}
-
 double oneRepMaxPerLog({required RoutineLog log}) {
   final heaviestWeightInSet = _heaviestSetPerLog(log: log);
 

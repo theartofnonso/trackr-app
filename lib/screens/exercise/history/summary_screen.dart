@@ -26,7 +26,6 @@ enum SummaryType {
   bestTime,
   mostReps,
   longestDistance,
-  sessionVolume,
   sessionReps,
   sessionTimes,
   sessionDistance,
@@ -84,15 +83,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.heaviestSetVolume;
-      _chartUnit = weightUnit();
-    });
-  }
-
-  void _setVolumePerLog() {
-    final values = _routineLogs.map((log) => setVolumePerLog(log: log)).toList();
-    setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.sessionVolume;
       _chartUnit = weightUnit();
     });
   }
@@ -190,9 +180,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
         break;
       case SummaryType.heaviestSetVolume:
         _heaviestSetVolumePerLog();
-        break;
-      case SummaryType.sessionVolume:
-        _setVolumePerLog();
         break;
       case SummaryType.oneRepMax:
         _oneRepMaxPerLog();
