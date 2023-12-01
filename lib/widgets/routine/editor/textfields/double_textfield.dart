@@ -23,9 +23,9 @@ class DoubleTextField extends StatelessWidget {
       onChanged: (value) => onChanged(double.tryParse(value) ?? 0),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
-          fillColor: tealBlueLight,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
+          fillColor: tealBlueLight,
           hintText: _value(),
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
