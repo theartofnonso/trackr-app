@@ -205,8 +205,15 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   void _updateSetType({required int index, required SetType type, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(type: type);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetType(procedureId: widget.procedureDto.id, setIndex: index, setDto: updatedSet, pastSets: _pastSets);
+    final shouldUpdateValue1 = _controllers[index].$1.text.isEmpty;
+    final shouldUpdateValue2 = _controllers[index].$2.text.isEmpty;
+    Provider.of<ProceduresProvider>(context, listen: false).updateSetType(
+        procedureId: widget.procedureDto.id,
+        setIndex: index,
+        setDto: updatedSet,
+        pastSets: _pastSets,
+        updateValue1: shouldUpdateValue1,
+        updateValue2: shouldUpdateValue2);
   }
 
   void _updateSetCheck({required int setIndex, required SetDto setDto}) {
@@ -216,19 +223,35 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
         .updateSetCheck(procedureId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
   }
 
+  void _loadTextEditingControllers() {
+    for (var set in widget.procedureDto.sets) {
+      final value1 = set.value1;
+      final value2 = set.value2;
+      final pastSet = _pastSets.firstWhereOrNull((pastSet) => pastSet.id == set.id);
+      final pastSetValue1 = pastSet?.value1 ?? 0;
+      final pastSetValue2 = pastSet?.value2 ?? 0;
+      TextEditingController controller1 = _getController(value1, pastSetValue1);
+      TextEditingController controller2 = _getController(value2, pastSetValue2);
+
+      _controllers.add((controller1, controller2));
+    }
+  }
+
+  TextEditingController _getController(num currentValue, num pastSetValue) {
+    return currentValue == pastSetValue
+        ? TextEditingController()
+        : TextEditingController(text: currentValue.toString());
+  }
+
   @override
   void initState() {
     super.initState();
 
-    for (var set in widget.procedureDto.sets) {
-      final value1 = set.value1.toString();
-      final value2 = set.value2.toString();
-      _controllers.add((TextEditingController(text: value1), TextEditingController(text: value2)));
-    }
-
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
     _pastSets.addAll(pastSets);
+
+    _loadTextEditingControllers();
   }
 
   @override
