@@ -128,7 +128,7 @@ class _MyAppState extends State<MyApp> {
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
-              home: IntroScreen(themeData: _themeData, onComplete: () {}),
+              home: const HomeScreen(),
             ),
           );
   }

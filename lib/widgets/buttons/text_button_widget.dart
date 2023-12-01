@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_constants.dart';
 
@@ -8,7 +9,6 @@ class CTextButton extends StatelessWidget {
   final String loadingLabel;
   final bool loading;
   final Color? buttonColor;
-  final TextStyle? textStyle;
   final EdgeInsets? padding;
   final VisualDensity? visualDensity;
 
@@ -18,11 +18,11 @@ class CTextButton extends StatelessWidget {
       required this.label,
       this.loadingLabel = "loading",
       this.loading = false,
-      this.buttonColor = tealBlueLight,
-      this.textStyle, this.padding, this.visualDensity = VisualDensity.compact});
+      this.buttonColor = tealBlueLight, this.padding, this.visualDensity = VisualDensity.compact});
 
   @override
   Widget build(BuildContext context) {
+    final defaultTextStyle = GoogleFonts.lato(fontWeight: FontWeight.w600);
     return TextButton(
         style: ButtonStyle(
             visualDensity: visualDensity,
@@ -36,7 +36,7 @@ class CTextButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(loading ? loadingLabel : label,
-                  textAlign: TextAlign.start, style: textStyle ?? Theme.of(context).textTheme.labelLarge),
+                  textAlign: TextAlign.start, style: defaultTextStyle),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

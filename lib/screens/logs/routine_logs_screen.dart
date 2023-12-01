@@ -139,7 +139,7 @@ class _RoutineLogWidget extends StatelessWidget {
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-        title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
+        title: Text(log.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14 )),
         subtitle: Text("${log.procedures.length} exercise(s)",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
         trailing: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -201,9 +200,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   Expanded(
                     child: Text(_currentDate.formattedMonthAndYear(),
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.lato(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w900,
                         )),
                   ),
                   _hasLaterDate() ? CTextButton(onPressed: _incrementDate, label: "Next") : const SizedBox.shrink(),
@@ -360,10 +359,8 @@ class _RoutineLogWidget extends StatelessWidget {
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         dense: true,
-        title: Text(log.name, style: Theme.of(context).textTheme.labelLarge),
-        subtitle: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
-        trailing: Text(log.durationInString(),
+        title: Text(log.name, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
+        subtitle: Text("${log.procedures.length} exercise(s)",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
       ),
     );

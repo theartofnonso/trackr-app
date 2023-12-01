@@ -166,8 +166,8 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
             ),
-            title: Text(muscleGroupFamily.name, style: Theme.of(context).textTheme.labelLarge),
-            trailing: Text("$count", style: Theme.of(context).textTheme.labelLarge)),
+            title: Text(muscleGroupFamily.name, style: GoogleFonts.lato(color: Colors.white)),
+            trailing: Text("$count", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
       );
       splitList.add(widget);
     });

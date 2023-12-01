@@ -11,6 +11,11 @@ class PieChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = GoogleFonts.lato(
+      fontWeight: FontWeight.w600,
+      fontSize: 14,
+    );
+
     return Container(
       color: tealBlueDark,
       child: Row(
@@ -35,7 +40,7 @@ class PieChartWidget extends StatelessWidget {
                 children: [
                   Container(color: Colors.green, width: 10, height: 10),
                   const SizedBox(width: 5),
-                  Text(segments[0].key.name)
+                  Text(segments[0].key.name, style: style)
                 ],
               ),
               const SizedBox(
@@ -49,7 +54,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[1].key.name)
+                  Text(segments[1].key.name, style: style)
                 ],
               ),
               const SizedBox(
@@ -63,7 +68,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[2].key.name)
+                  Text(segments[2].key.name, style: style)
                 ],
               ),
               const SizedBox(
@@ -77,7 +82,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[3].key.name)
+                  Text(segments[3].key.name, style: style)
                 ],
               ),
               const SizedBox(
@@ -91,7 +96,7 @@ class PieChartWidget extends StatelessWidget {
                     height: 10,
                   ),
                   const SizedBox(width: 5),
-                  Text(segments[4].key.name)
+                  Text(segments[4].key.name, style: style)
                 ],
               )
             ],

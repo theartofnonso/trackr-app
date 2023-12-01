@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 class IntroScreen extends StatelessWidget {
@@ -15,9 +16,9 @@ class IntroScreen extends StatelessWidget {
     "Measure and gain insights on your performance across all training sessions and exercises.",
   ];
 
-  final _titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  final _titleStyle = GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 16);
 
-  final _subTitleStyle = TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.8));
+  final _subTitleStyle = GoogleFonts.lato(fontSize: 15, color: Colors.white.withOpacity(0.8));
 
   @override
   Widget build(BuildContext context) {

@@ -22,6 +22,7 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Center(
       child: AspectRatio(
         aspectRatio: 1.5,
