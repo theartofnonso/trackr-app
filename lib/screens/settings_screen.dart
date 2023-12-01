@@ -55,9 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               ListTile(
                 dense: true,
-                title: const Text(
-                  "Weight",
-                ),
+                title: Text("Weight", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                 subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70)),
                 trailing: SegmentedButton(
                   showSelectedIcon: false,
@@ -100,9 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 8),
               ListTile(
                 dense: true,
-                title: const Text(
-                  "Distance",
-                ),
+                title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                 subtitle: Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70)),
                 trailing: SegmentedButton(
                   showSelectedIcon: false,
@@ -149,12 +145,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: _navigateToExerciseLibrary,
                     dense: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                    title: Text("Exercises", style: Theme.of(context).textTheme.labelLarge),
-                    subtitle: Text("Add your favourites exercises",
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+                    title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                    subtitle: Text("Add your favourites exercises", style: GoogleFonts.lato(color: Colors.white70))),
               ),
               const Spacer(),
-              CTextButton(onPressed: _logout, label: "Logout - ${user().email}", padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),)
+              CTextButton(
+                onPressed: _logout,
+                label: "Logout - ${user().email}",
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              )
             ],
           ),
         ),
@@ -171,7 +170,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _logout() async {
-    showAlertDialog(context: context,
+    showAlertDialog(
+        context: context,
         message: "Log out?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
@@ -181,7 +181,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
-        rightActionLabel: 'Logout', isRightActionDestructive: true);
+        rightActionLabel: 'Logout',
+        isRightActionDestructive: true);
   }
 
   @override
