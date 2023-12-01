@@ -69,7 +69,7 @@ class RepsSetRow extends SetRow {
               value: reps,
               pastValue: previousSetDto?.value2.toInt(),
               onChanged: onChangedReps,
-              controller: controllers.$1,
+              controller: controllers.$2,
             ),
           ),
           if (editorType == RoutineEditorMode.log)

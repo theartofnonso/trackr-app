@@ -85,7 +85,7 @@ class DurationDistanceSetRow extends SetRow {
                 final conversion = _convertDistance(value: value);
                 onChangedDistance(conversion);
               },
-              controller: controllers.$1,
+              controller: controllers.$2,
             ),
           ),
           TableCell(

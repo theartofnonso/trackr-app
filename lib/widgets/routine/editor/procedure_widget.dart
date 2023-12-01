@@ -103,7 +103,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
-        _controllers.add((TextEditingController(), TextEditingController()));
         return WeightRepsSetRow(
           setDto: set,
           pastSetDto: pastSet,
@@ -116,7 +115,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.bodyWeightAndReps:
-        _controllers.add((TextEditingController(), TextEditingController()));
         return RepsSetRow(
           setDto: set,
           pastSetDto: pastSet,
@@ -128,7 +126,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.weightAndDistance:
-        _controllers.add((TextEditingController(), TextEditingController()));
         return WeightDistanceSetRow(
           setDto: set,
           pastSetDto: pastSet,
@@ -151,7 +148,6 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
           onChangedDuration: (Duration duration) => _updateDuration(setIndex: index, duration: duration, setDto: set),
         );
       case ExerciseType.durationAndDistance:
-        _controllers.add((TextEditingController(), TextEditingController()));
         return DurationDistanceSetRow(
           setDto: set,
           pastSetDto: pastSet,
@@ -223,9 +219,13 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   @override
   void initState() {
     super.initState();
-    for (var _ in widget.procedureDto.sets) {
-      _controllers.add((TextEditingController(), TextEditingController()));
+
+    for (var set in widget.procedureDto.sets) {
+      final value1 = set.value1.toString();
+      final value2 = set.value2.toString();
+      _controllers.add((TextEditingController(text: value1), TextEditingController(text: value2)));
     }
+
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
     _pastSets.addAll(pastSets);
