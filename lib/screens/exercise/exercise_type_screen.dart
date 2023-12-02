@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../enums/exercise_type_enums.dart';
 
@@ -32,10 +33,10 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) => ListTile(
                     onTap: () => _selectExerciseType(type: exerciseTypes[index]),
-                    trailing: _LeadingIcon(type: exerciseTypes[index]),
-                    title: Text(exerciseTypes[index].name, style: Theme.of(context).textTheme.bodyMedium),
+                    trailing: _TrailingWidget(type: exerciseTypes[index]),
+                    title: Text(exerciseTypes[index].name, style: GoogleFonts.lato(fontSize: 14)),
                     subtitle: Text(exerciseTypes[index].description,
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70)),
+                        style: GoogleFonts.lato(color: Colors.white70, fontSize: 13)),
                     dense: true),
                 separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
                 itemCount: exerciseTypes.length),
@@ -46,10 +47,10 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
   }
 }
 
-class _LeadingIcon extends StatelessWidget {
+class _TrailingWidget extends StatelessWidget {
   final ExerciseType type;
 
-  const _LeadingIcon({required this.type});
+  const _TrailingWidget({required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ class _LeadingIcon extends StatelessWidget {
     };
 
     final itemWidgets = measurements
-        .map((measurement) => Text(measurement, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)))
+        .map((measurement) => Text(measurement, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70)))
         .toList();
 
     return SizedBox(
