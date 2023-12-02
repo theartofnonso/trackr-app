@@ -158,7 +158,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if(_secondaryMuscleGroup.isNotEmpty) {
       display = _secondaryMuscleGroup.map((bodyPart) => bodyPart.name).join(", ");
     } else {
-      display = "Select secondary muscles";
+      display = "Select secondary muscle groups";
     }
     return display;
   }
