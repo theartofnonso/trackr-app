@@ -187,7 +187,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                       width: double.infinity,
                       height: double.infinity,
                       color: tealBlueDark.withOpacity(0.7),
-                      child: const Center(child: Text("Deleting workout"))))
+                      child: Center(child: Text("Deleting workout", style: GoogleFonts.lato(fontSize: 14)))))
               : const SizedBox.shrink()
         ]));
   }

@@ -32,6 +32,7 @@ class RoutineLogPreviewScreen extends StatefulWidget {
 
 class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
+  String _loadingMessage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -195,14 +196,15 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                       width: double.infinity,
                       height: double.infinity,
                       color: tealBlueDark.withOpacity(0.7),
-                      child: const Center(child: Text("Deleting log"))))
+                      child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
               : const SizedBox.shrink()
         ]));
   }
 
-  void _toggleLoadingState() {
+  void _toggleLoadingState({String message = ""}) {
     setState(() {
       _loading = !_loading;
+      _loadingMessage = message;
     });
   }
 
@@ -212,7 +214,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: ProcedureWidget(
                 procedureDto: procedure,
-                otherSuperSetProcedureDto: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                otherSuperSetProcedureDto:
+                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))
@@ -241,16 +244,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return [
       MenuItemButton(
         onPressed: () {
-          final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
-          final procedures = decodedProcedures.map((procedure) {
-            final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
-            return procedure.copyWith(sets: newSets);
-          }).toList();
-
-          Provider.of<RoutineProvider>(context, listen: false)
-              .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
+          _toggleLoadingState(message: "Saving log");
+          _saveLog(log);
         },
-        //leadingIcon: const Icon(Icons.save_alt_rounded),
         child: const Text("Save as workout"),
       ),
       MenuItemButton(
@@ -261,16 +257,40 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               leftAction: Navigator.of(context).pop,
               rightAction: () {
                 Navigator.of(context).pop();
-                _toggleLoadingState();
+                _toggleLoadingState(message: "Deleting log");
                 _deleteLog();
               },
               leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete', isRightActionDestructive: true);
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
         },
-        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
+  }
+
+  void _saveLog(RoutineLog log) async {
+    try {
+      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
+      final procedures = decodedProcedures.map((procedure) {
+        final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
+        return procedure.copyWith(sets: newSets);
+      }).toList();
+      await Provider.of<RoutineProvider>(context, listen: false)
+          .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
+      if (mounted) {
+        showSnackbar(
+            context: context, icon: const Icon(Icons.info_outline), message: "Saved ${log.name} as new workout");
+        Navigator.of(context).pop();
+      }
+    } catch (_) {
+      if (mounted) {
+        showSnackbar(
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable save as workout");
+      }
+    } finally {
+      _toggleLoadingState();
+    }
   }
 
   void _deleteLog() async {
@@ -282,9 +302,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } catch (_) {
       if (mounted) {
         showSnackbar(
-            context: context,
-            icon: const Icon(Icons.info_outline),
-            message: "Oops, we are unable delete this log");
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable delete this log");
       }
     } finally {
       _toggleLoadingState();
@@ -292,7 +310,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _navigateToRoutineEditor({required BuildContext context, required RoutineLog log}) async {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineLogId: log.id, mode: RoutineEditorMode.edit)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => RoutineEditorScreen(routineLogId: log.id, mode: RoutineEditorMode.edit)));
   }
 }
