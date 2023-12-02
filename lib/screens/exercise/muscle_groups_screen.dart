@@ -40,6 +40,8 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
   List<MuscleGroupDto> _filteredMuscleGroups = [];
 
+  final List<MuscleGroupDto> _selectedMuscleGroups = [];
+
   /// Search through the list of exercises
   void _runSearch(String searchTerm) {
     setState(() {
@@ -60,8 +62,8 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   }
 
   /// Navigate to previous screen
-  void _addSelectedMuscleGroup() {
-    final muscleGroups = _whereSelectedMuscleGroups().map((muscle) => muscle.muscleGroup).toList();
+  void _navigateBackWithSelectedMuscleGroups() {
+    final muscleGroups = _selectedMuscleGroups.map((muscle) => muscle.muscleGroup).toList();
     Navigator.of(context).pop(muscleGroups);
   }
 
@@ -69,8 +71,8 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     return _muscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.muscleGroup == muscleGroup);
   }
 
-  List<MuscleGroupDto> _whereSelectedMuscleGroups() {
-    return _muscleGroups.where((muscle) => muscle.selected).toList();
+  int _indexWhereFilteredMuscleGroup({required MuscleGroup muscleGroup}) {
+    return _filteredMuscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.muscleGroup == muscleGroup);
   }
 
   List<MuscleGroup> _difference() {
@@ -88,13 +90,18 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   /// Select up to many exercise
   void _selectCheckedMuscleGroup({required bool selected, required MuscleGroupDto muscleGroupDto}) {
     final muscleGroupIndex = _indexWhereMuscleGroup(muscleGroup: muscleGroupDto.muscleGroup);
+    final filteredMuscleGroupIndex = _indexWhereFilteredMuscleGroup(muscleGroup: muscleGroupDto.muscleGroup);
     if (selected) {
+      _selectedMuscleGroups.add(muscleGroupDto);
       setState(() {
         _muscleGroups[muscleGroupIndex] = muscleGroupDto.copyWith(selected: true);
+        _filteredMuscleGroups[filteredMuscleGroupIndex] = muscleGroupDto.copyWith(selected: true);
       });
     } else {
+      _selectedMuscleGroups.remove(muscleGroupDto);
       setState(() {
         _muscleGroups[muscleGroupIndex] = muscleGroupDto.copyWith(selected: false);
+        _filteredMuscleGroups[filteredMuscleGroupIndex] = muscleGroupDto.copyWith(selected: false);
       });
     }
   }
@@ -123,15 +130,15 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if (_whereSelectedMuscleGroups().isNotEmpty && _difference().isEmpty)
+          if (_selectedMuscleGroups.isNotEmpty && _difference().isEmpty)
             CTextButton(
-              onPressed: _addSelectedMuscleGroup,
-              label: "Add (${_whereSelectedMuscleGroups().length})",
+              onPressed: _navigateBackWithSelectedMuscleGroups,
+              label: "Add (${_selectedMuscleGroups.length})",
               buttonColor: Colors.transparent,
             ),
           if(_difference().isNotEmpty)
             CTextButton(
-              onPressed: _addSelectedMuscleGroup,
+              onPressed: _navigateBackWithSelectedMuscleGroups,
               label: "Update",
               buttonColor: Colors.transparent,
             )
@@ -162,14 +169,15 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     final muscleGroupsDtos = MuscleGroup.values.map((muscleGroup) => MuscleGroupDto(muscleGroup: muscleGroup)).toList();
     final previousMuscleGroups = widget.muscleGroups;
     if (previousMuscleGroups != null) {
+      /// Convert previous MuscleGroups ot MuscleGroupsDto
       final previousMuscleGroupsDtos = previousMuscleGroups.map((muscleGroup) {
         return MuscleGroupDto(muscleGroup: muscleGroup, selected: true);
       }).toList();
       _muscleGroups = muscleGroupsDtos.map((muscleGroup) {
-        final previousMuscleGroup = previousMuscleGroupsDtos.firstWhereOrNull(
-            (previousMuscleGroup) => previousMuscleGroup.muscleGroup.name == muscleGroup.muscleGroup.name);
+        final previousMuscleGroup = previousMuscleGroupsDtos.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup.muscleGroup.name == muscleGroup.muscleGroup.name);
         return previousMuscleGroup ?? muscleGroup;
       }).toList();
+      _selectedMuscleGroups.addAll(previousMuscleGroupsDtos);
     }
 
     _filteredMuscleGroups = _muscleGroups;
