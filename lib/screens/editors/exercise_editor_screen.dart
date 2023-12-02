@@ -98,9 +98,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   tileColor: tealBlueLight,
                   dense: true,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  title: Text("Primary Muscle", style: Theme.of(context).textTheme.labelLarge),
+                  title: Text("Primary Muscle", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                   subtitle: Text(_primaryMuscleGroup.name,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+                      style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
             ),
             const SizedBox(height: 8),
             Theme(
@@ -113,11 +113,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                       : null,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  title: Text("Secondary Muscles", style: Theme.of(context).textTheme.labelLarge),
+                  title: Text("Secondary Muscles", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                   subtitle: Padding(
                     padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
                     child: Text(_secondaryMuscleDisplay(),
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70)),
+                        style: GoogleFonts.lato(fontSize: 13, color: Colors.white70)),
                   )),
             ),
             const SizedBox(height: 8),
@@ -133,9 +133,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                           ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                           : null,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      title: Text("Exercise Type", style: Theme.of(context).textTheme.labelLarge),
+                      title: Text("Exercise Type", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                       subtitle: Text(_exerciseType.name,
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white70))),
+                          style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
