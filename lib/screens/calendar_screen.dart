@@ -361,7 +361,7 @@ class _RoutineLogWidget extends StatelessWidget {
         dense: true,
         title: Text(log.name, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text("${log.procedures.length} exercise(s)",
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12)),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
       ),
     );
   }

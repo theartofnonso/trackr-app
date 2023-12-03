@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 dense: true,
                 title: Text("Weight", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70)),
+                subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
                 trailing: SegmentedButton(
                   showSelectedIcon: false,
                   style: ButtonStyle(
@@ -99,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 dense: true,
                 title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                subtitle: Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70)),
+                subtitle: Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
                 trailing: SegmentedButton(
                   showSelectedIcon: false,
                   style: ButtonStyle(
@@ -146,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     dense: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                     title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                    subtitle: Text("Add your favourites exercises", style: GoogleFonts.lato(color: Colors.white70))),
+                    subtitle: Text("Add your favourites exercises", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
               ),
               const Spacer(),
               CTextButton(
