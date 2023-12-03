@@ -457,7 +457,7 @@ class HomeScreen extends StatelessWidget {
                   exercise: foundExercise,
                 ),
                 HistoryScreen(logs: logsForExercise),
-                NotesScreen(notes: foundExercise.notes)
+                NotesScreen(notes: foundExercise.notes ?? "")
               ],
             ),
           ),
