@@ -65,9 +65,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
             Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
-                firstProcedureId: firstProcedure.id,
-                secondProcedureId: secondProcedure.id,
-                superSetId: id);
+                firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -109,8 +107,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _removeProcedureSuperSets({required String superSetId}) {
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .removeProcedureSuperSet(superSetId: superSetId);
+    Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(superSetId: superSetId);
   }
 
   void _removeProcedure({required String procedureId}) {
@@ -530,8 +527,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                         builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
                       return _RoutineLogOverview(
                         sets: provider.completedSets().length,
-                        timer: _RoutineTimer(
-                            TemporalDateTime.now().getDateTimeInUtc().difference(_routineStartTime.getDateTimeInUtc())),
+                        timer: _RoutineTimer(startTime: _routineStartTime.getDateTimeInUtc()),
                       );
                     }),
                   if (widget.mode == RoutineEditorMode.edit)
@@ -629,7 +625,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   void _fetchRoutineLog() {
     _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLogId ?? "");
     final cachedLog = Provider.of<RoutineLogProvider>(context, listen: false).cachedLog;
-    if(cachedLog != null && widget.mode == RoutineEditorMode.log) {
+    if (cachedLog != null && widget.mode == RoutineEditorMode.log) {
       _routineLog = cachedLog;
     }
   }
@@ -700,13 +696,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     RoutineLog? routineLog = _routineLog;
     _routineNameController = TextEditingController(text: routine?.name ?? routineLog?.name);
     _routineNotesController = TextEditingController(text: routine?.notes ?? routineLog?.notes);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _loadRoutineStartTime();
-    }
   }
 
   @override
@@ -783,9 +772,9 @@ class _ProceduresPickerEmptyState extends StatelessWidget {
 }
 
 class _RoutineTimer extends StatefulWidget {
-  final Duration elapsedDuration;
+  final DateTime startTime;
 
-  const _RoutineTimer(this.elapsedDuration);
+  const _RoutineTimer({required this.startTime});
 
   @override
   State<_RoutineTimer> createState() => _RoutineTimerState();
@@ -793,24 +782,22 @@ class _RoutineTimer extends StatefulWidget {
 
 class _RoutineTimerState extends State<_RoutineTimer> {
   late Timer _timer;
-  int _elapsedSeconds = 0;
+  Duration _elapsedDuration = Duration.zero;
 
   @override
   Widget build(BuildContext context) {
-    return Text(Duration(seconds: _elapsedSeconds).secondsOrMinutesOrHours(),
+    return Text(_elapsedDuration.secondsOrMinutesOrHours(),
         style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600));
   }
 
   @override
   void initState() {
     super.initState();
-    _elapsedSeconds = widget.elapsedDuration.inSeconds;
+    _elapsedDuration = DateTime.now().difference(widget.startTime);
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) {
-        setState(() {
-          _elapsedSeconds++;
-        });
-      }
+      setState(() {
+        _elapsedDuration = DateTime.now().difference(widget.startTime);
+      });
     });
   }
 

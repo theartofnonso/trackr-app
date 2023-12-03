@@ -12,7 +12,6 @@ import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
-import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../calendar_screen.dart';
 

@@ -177,7 +177,7 @@ class RoutineLogProvider with ChangeNotifier {
         user: user());
     _cachedLog = cachedLog;
     SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
-    notifyListeners();
+    //notifyListeners();
   }
 
   void _addToLogs(RoutineLog log) {
