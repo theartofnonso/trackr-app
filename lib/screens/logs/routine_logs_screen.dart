@@ -6,14 +6,15 @@ import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 
 import '../../../app_constants.dart';
-import '../../../helper_functions/navigation/navigator_helper_functions.dart';
 import '../../../models/RoutineLog.dart';
 import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../calendar_screen.dart';
+import '../editors/routine_editor_screen.dart';
 
 Future<void> loadData(BuildContext context) async {
   await persistUserCredentials();
@@ -68,7 +69,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
             ? FloatingActionButton.extended(
                 heroTag: "fab_routine_logs_screen",
                 onPressed: () {
-                  startEmptyRoutine(context: context);
+                  navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
