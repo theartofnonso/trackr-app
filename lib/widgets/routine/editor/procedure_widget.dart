@@ -54,8 +54,8 @@ class ProcedureWidget extends StatefulWidget {
 }
 
 class _ProcedureWidgetState extends State<ProcedureWidget> {
-  final List<(TextEditingController, TextEditingController)> _controllers = [];
-  final List<SetDto> _pastSets = [];
+  List<(TextEditingController, TextEditingController)> _controllers = [];
+  List<SetDto> _pastSets = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -224,6 +224,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _loadTextEditingControllers() {
+    List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in widget.procedureDto.sets) {
       final value1 = set.value1;
       final value2 = set.value2;
@@ -233,8 +234,9 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
       TextEditingController controller1 = _getController(value1, pastSetValue1);
       TextEditingController controller2 = _getController(value2, pastSetValue2);
 
-      _controllers.add((controller1, controller2));
+      controllers.add((controller1, controller2));
     }
+    _controllers.addAll(controllers);
   }
 
   TextEditingController _getController(num currentValue, num pastSetValue) {
@@ -247,9 +249,18 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   void initState() {
     super.initState();
 
-    final pastSets =
+    _pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
-    _pastSets.addAll(pastSets);
+
+    _loadTextEditingControllers();
+  }
+
+
+  @override
+  void didUpdateWidget(ProcedureWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _pastSets =
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.procedureDto.exercise);
 
     _loadTextEditingControllers();
   }
