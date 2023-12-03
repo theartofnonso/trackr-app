@@ -328,7 +328,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _cacheRoutineLog() {
+  void _cacheRoutineLog({notifyListeners = false}) {
     if (widget.mode == RoutineEditorMode.log) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
@@ -340,7 +340,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             procedures: procedures,
             startTime: _routineStartTime,
             createdAt: widget.createdAt,
-            routine: routine);
+            routine: routine, shouldNotifyListeners: notifyListeners);
       });
     }
   }
@@ -616,6 +616,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
 
     _checkForUpdates();
+
+    _cacheRoutineLog(notifyListeners: true);
   }
 
   void _fetchRoutine() {

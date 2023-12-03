@@ -94,7 +94,6 @@ class RoutineLogProvider with ChangeNotifier {
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine? routine}) async {
-
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
     final routineProcedures = procedures
@@ -160,7 +159,8 @@ class RoutineLogProvider with ChangeNotifier {
       required List<ProcedureDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine? routine}) {
+      required Routine? routine,
+      bool shouldNotifyListeners = false}) {
     final currentTime = TemporalDateTime.now();
 
     final procedureJsons = procedures.map((procedure) => procedure.toJson()).toList();
@@ -177,7 +177,9 @@ class RoutineLogProvider with ChangeNotifier {
         user: user());
     _cachedLog = cachedLog;
     SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
-    //notifyListeners();
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   void _addToLogs(RoutineLog log) {
@@ -221,7 +223,8 @@ class RoutineLogProvider with ChangeNotifier {
   List<ProcedureDto> _pastProceduresForExercise({required Exercise exercise}) {
     final mostRecentLog = _logs.firstWhereOrNull((log) {
       final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-      List<ProcedureDto> filteredProcedures = decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
+      List<ProcedureDto> filteredProcedures =
+          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
       return filteredProcedures.isNotEmpty;
     });
 
@@ -316,7 +319,6 @@ class RoutineLogProvider with ChangeNotifier {
   RoutineLog? logWhere({required String id}) {
     return _logs.firstWhereOrNull((dto) => dto.id == id);
   }
-
 
   void reset() {
     _logs.clear();
