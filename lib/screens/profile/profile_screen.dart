@@ -9,27 +9,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';
-
-DateTimeRange thisWeekDateRange() {
-  final now = DateTime.now();
-  final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-  final endOfWeek = now.add(Duration(days: 7 - now.weekday));
-  return DateTimeRange(start: startOfWeek, end: endOfWeek);
-}
-
-DateTimeRange thisMonthDateRange() {
-  final now = DateTime.now();
-  final startOfMonth = DateTime(now.year, now.month, 1);
-  final endOfMonth = DateTime(now.year, now.month + 1, 0);
-  return DateTimeRange(start: startOfMonth, end: endOfMonth);
-}
-
-DateTimeRange thisYearDateRange() {
-  final now = DateTime.now();
-  final startOfYear = DateTime(now.year, 1, 1);
-  final endOfYear = DateTime(now.year, 12, 31);
-  return DateTimeRange(start: startOfYear, end: endOfYear);
-}
+import '../../utils/general_utils.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

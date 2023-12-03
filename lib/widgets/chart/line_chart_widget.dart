@@ -103,13 +103,14 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
+    final modifiedDateTimes = dateTimes.length == 1 ? [...dateTimes, ...dateTimes] : dateTimes;
     final style = GoogleFonts.lato(
       fontWeight: FontWeight.w600,
       fontSize: 10,
     );
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: Text(dateTimes[value.toInt()], style: style),
+      child: Text(modifiedDateTimes[value.toInt()], style: style),
     );
   }
 }

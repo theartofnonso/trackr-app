@@ -1,4 +1,5 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
@@ -88,4 +89,25 @@ Future<void> persistUserCredentials() async {
   final id = authUser.userId;
   SharedPrefs().userEmail = email;
   SharedPrefs().userId = id;
+}
+
+DateTimeRange thisWeekDateRange() {
+  final now = DateTime.now();
+  final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+  final endOfWeek = now.add(Duration(days: 7 - now.weekday));
+  return DateTimeRange(start: startOfWeek, end: endOfWeek);
+}
+
+DateTimeRange thisMonthDateRange() {
+  final now = DateTime.now();
+  final startOfMonth = DateTime(now.year, now.month, 1);
+  final endOfMonth = DateTime(now.year, now.month + 1, 0);
+  return DateTimeRange(start: startOfMonth, end: endOfMonth);
+}
+
+DateTimeRange thisYearDateRange() {
+  final now = DateTime.now();
+  final startOfYear = DateTime(now.year, 1, 1);
+  final endOfYear = DateTime(now.year, 12, 31);
+  return DateTimeRange(start: startOfYear, end: endOfYear);
 }

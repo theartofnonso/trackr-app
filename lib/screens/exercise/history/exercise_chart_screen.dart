@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ enum SummaryType {
   sessionDistance,
 }
 
-class SummaryScreen extends StatefulWidget {
+class ExerciseChartScreen extends StatefulWidget {
   final (String, double) heaviestWeight;
   final (String, SetDto) heaviestSet;
   final (String, Duration) longestDuration;
@@ -41,7 +42,7 @@ class SummaryScreen extends StatefulWidget {
   final List<RoutineLog> routineLogs;
   final Exercise exercise;
 
-  const SummaryScreen(
+  const ExerciseChartScreen(
       {super.key,
       required this.heaviestWeight,
       required this.heaviestSet,
@@ -53,10 +54,10 @@ class SummaryScreen extends StatefulWidget {
       required this.exercise});
 
   @override
-  State<SummaryScreen> createState() => _SummaryScreenState();
+  State<ExerciseChartScreen> createState() => _ExerciseChartScreenState();
 }
 
-class _SummaryScreenState extends State<SummaryScreen> {
+class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   List<RoutineLog> _routineLogs = [];
 
   List<String> _dateTimes = [];
@@ -67,7 +68,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   late SummaryType _summaryType = SummaryType.heaviestWeight;
 
-  HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.allTime;
+  ChartTimePeriod _selectedChartTimePeriod = ChartTimePeriod.allTime;
 
   void _heaviestWeightPerLog() {
     final values = _routineLogs.map((log) => heaviestWeightPerLog(log: log)).toList();
@@ -157,20 +158,29 @@ class _SummaryScreenState extends State<SummaryScreen> {
   }
 
   void _recomputeChart() {
-    switch (_selectedHistoricalDate) {
-      case HistoricalTimePeriod.lastThreeMonths:
+    switch (_selectedChartTimePeriod) {
+      case ChartTimePeriod.thisWeek:
+        final thisWeek = thisWeekDateRange();
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .logsSince(90, logs: widget.routineLogs)
+            .logsWhereDateRange(thisWeek, widget.routineLogs)
             .reversed
             .toList();
         break;
-      case HistoricalTimePeriod.lastOneYear:
+      case ChartTimePeriod.thisMonth:
+        final thisMonth = thisMonthDateRange();
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .logsSince(365, logs: widget.routineLogs)
+            .logsWhereDateRange(thisMonth, widget.routineLogs)
             .reversed
             .toList();
         break;
-      case HistoricalTimePeriod.allTime:
+      case ChartTimePeriod.thisYear:
+        final thisYear = thisYearDateRange();
+        _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
+            .logsWhereDateRange(thisYear, widget.routineLogs)
+            .reversed
+            .toList();
+        break;
+      case ChartTimePeriod.allTime:
         _routineLogs = widget.routineLogs.reversed.toList();
     }
     _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
@@ -249,6 +259,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = GoogleFonts.lato(fontSize: 14);
+
     if (widget.routineLogs.isNotEmpty) {
       final weightUnitLabel = weightLabel();
 
@@ -260,7 +272,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
       final oneRepMax = widget.routineLogs.map((log) => oneRepMaxPerLog(log: log)).toList().max;
       return SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.only(top: 12, right: 10.0, bottom: 10, left: 10),
+        padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -273,40 +285,36 @@ class _SummaryScreenState extends State<SummaryScreen> {
               "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
               style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
             ),
+            const SizedBox(height: 20),
+            CupertinoSlidingSegmentedControl<ChartTimePeriod>(
+              backgroundColor: tealBlueLight,
+              thumbColor: Colors.blue,
+              groupValue: _selectedChartTimePeriod,
+              children: {
+                ChartTimePeriod.thisWeek:
+                    SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
+                ChartTimePeriod.thisMonth:
+                    SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
+                ChartTimePeriod.thisYear:
+                    SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
+                ChartTimePeriod.allTime:
+                    SizedBox(width: 80, child: Text('All Time', style: textStyle, textAlign: TextAlign.center)),
+              },
+              onValueChanged: (ChartTimePeriod? value) {
+                if (value != null) {
+                  setState(() {
+                    _selectedChartTimePeriod = value;
+                    _recomputeChart();
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 20, bottom: 20),
+              padding: const EdgeInsets.only(right: 20, bottom: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  DropdownButton<String>(
-                    isDense: true,
-                    value: _selectedHistoricalDate.label,
-                    underline: Container(
-                      color: Colors.transparent,
-                    ),
-                    style: GoogleFonts.lato(color: Colors.white),
-                    onChanged: (String? value) {
-                      // This is called when the user selects an item.
-                      if (value != null) {
-                        setState(() {
-                          _selectedHistoricalDate = switch (value) {
-                            "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
-                            "Last 1 year" => HistoricalTimePeriod.lastOneYear,
-                            "All Time" => HistoricalTimePeriod.allTime,
-                            _ => HistoricalTimePeriod.allTime
-                          };
-                          _recomputeChart();
-                        });
-                      }
-                    },
-                    items: HistoricalTimePeriod.values
-                        .map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
-                      return DropdownMenuItem<String>(
-                        value: historicalDate.label,
-                        child: Text(historicalDate.label, style: GoogleFonts.lato(fontSize: 12)),
-                      );
-                    }).toList(),
-                  ),
                   const SizedBox(height: 16),
                   LineChartWidget(
                     chartPoints: _chartPoints,

@@ -9,7 +9,7 @@ import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
-import 'package:tracker_app/screens/exercise/history/summary_screen.dart';
+import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../../../dtos/procedure_dto.dart';
@@ -446,7 +446,7 @@ class HomeScreen extends StatelessWidget {
           body: SafeArea(
             child: TabBarView(
               children: [
-                SummaryScreen(
+                ExerciseChartScreen(
                   heaviestWeight: heaviestWeight,
                   heaviestSet: heaviestSet,
                   longestDuration: longestDuration,

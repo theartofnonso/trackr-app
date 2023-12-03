@@ -1,13 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
 import '../enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_log_provider.dart';
+import '../utils/general_utils.dart';
 
 class MuscleDistributionScreen extends StatefulWidget {
   const MuscleDistributionScreen({super.key});
@@ -16,22 +17,19 @@ class MuscleDistributionScreen extends StatefulWidget {
   State<MuscleDistributionScreen> createState() => _MuscleDistributionScreenState();
 }
 
-class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> with SingleTickerProviderStateMixin {
-
-  HistoricalTimePeriod _selectedHistoricalDate = HistoricalTimePeriod.lastThreeMonths;
-
-  CurrentTimePeriod _selectedCurrentTimePeriod = CurrentTimePeriod.thisMonth;
+class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> {
+  ChartTimePeriod _selectedChartTimePeriod = ChartTimePeriod.thisMonth;
 
   late Map<MuscleGroupFamily, int> _muscleGroupFamily;
 
   @override
   Widget build(BuildContext context) {
-
     final bodySplitWidgets = _muscleGroupSplitToWidgets();
+
+    final textStyle = GoogleFonts.lato(fontSize: 14);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Muscle Distribution", style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w600)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: _navigateBack,
@@ -39,73 +37,35 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            DropdownButton<String>(
-              isDense: true,
-              value: _selectedCurrentTimePeriod.label,
-              underline: Container(
-                color: Colors.transparent,
-              ),
-              style: GoogleFonts.lato(color: Colors.white),
-              onChanged: (String? value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedCurrentTimePeriod = switch (value) {
-                      "This Week" => CurrentTimePeriod.thisWeek,
-                      "This Month" => CurrentTimePeriod.thisMonth,
-                      "This Year" => CurrentTimePeriod.thisYear,
-                      _ => CurrentTimePeriod.allTime
-                    };
-                    _computeCurrentDatesChart();
-                  });
-                }
-              },
-              items: CurrentTimePeriod.values.map<DropdownMenuItem<String>>((CurrentTimePeriod currentTimePeriod) {
-                return DropdownMenuItem<String>(
-                  value: currentTimePeriod.label,
-                  child: Text(currentTimePeriod.label, style: GoogleFonts.lato(fontSize: 12)),
-                );
-              }).toList(),
-            ),
-            DropdownButton<String>(
-              isDense: true,
-              value: _selectedHistoricalDate.label,
-              underline: Container(
-                color: Colors.transparent,
-              ),
-              style: GoogleFonts.lato(color: Colors.white),
-              onChanged: (String? value) {
-                // This is called when the user selects an item.
-                if (value != null) {
-                  setState(() {
-                    _selectedHistoricalDate = switch (value) {
-                      "Last 3 months" => HistoricalTimePeriod.lastThreeMonths,
-                      "Last 1 year" => HistoricalTimePeriod.lastOneYear,
-                      "All Time" => HistoricalTimePeriod.allTime,
-                      _ => HistoricalTimePeriod.allTime
-                    };
-                    _computeHistoricalDatesChart();
-                  });
-                }
-              },
-              items: HistoricalTimePeriod.values.map<DropdownMenuItem<String>>((HistoricalTimePeriod historicalDate) {
-                return DropdownMenuItem<String>(
-                  value: historicalDate.label,
-                  child: Text(historicalDate.label, style: GoogleFonts.lato(fontSize: 12)),
-                );
-              }).toList(),
-            )
-          ]),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          CupertinoSlidingSegmentedControl<ChartTimePeriod>(
+            backgroundColor: tealBlueLight,
+            thumbColor: Colors.blue,
+            groupValue: _selectedChartTimePeriod,
+            children: {
+              ChartTimePeriod.thisWeek:
+                  SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.thisMonth:
+                  SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.thisYear:
+                  SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
+            },
+            onValueChanged: (ChartTimePeriod? value) {
+              if (value != null) {
+                setState(() {
+                  _selectedChartTimePeriod = value;
+                  _computeCurrentDatesChart();
+                });
+              }
+            },
+          ),
           PieChartWidget(segments: _muscleGroupFamily.entries.take(5).toList()),
-          const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) => bodySplitWidgets[index],
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(),
+                separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
                 itemCount: bodySplitWidgets.length),
           )
-          //..._MuscleGroupSplit(provider: routineLogProvider)],
         ]),
       ),
     );
@@ -115,38 +75,16 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
     Navigator.of(context).pop();
   }
 
-  void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
+  void _calculateBodySplitPercentageForDateRange({required DateTimeRange range}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
     final Map<MuscleGroupFamily, int> frequencyMap = {};
 
     // Count the occurrences of each MuscleGroup
     for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
-      frequencyMap[muscleGroupFamily] = range != null
-          ? routineLogProvider
-              .setDtosForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
-              .length
-          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroupFamily: muscleGroupFamily).length;
-    }
-
-    final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
-    setState(() {
-      _muscleGroupFamily = Map.fromEntries(sortedBodySplit);
-    });
-  }
-
-  void _calculateBodySplitPercentageSince({int? since}) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-
-    final Map<MuscleGroupFamily, int> frequencyMap = {};
-
-    // Count the occurrences of each MuscleGroup
-    for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
-      frequencyMap[muscleGroupFamily] = since != null
-          ? routineLogProvider
-              .whereSetDtosForMuscleGroupSince(muscleGroupFamily: muscleGroupFamily, since: since)
-              .length
-          : routineLogProvider.whereSetDtosForMuscleGroup(muscleGroupFamily: muscleGroupFamily).length;
+      frequencyMap[muscleGroupFamily] = routineLogProvider
+          .setDtosForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
+          .length;
     }
 
     final sortedBodySplit = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
@@ -162,11 +100,8 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
         key: Key(muscleGroupFamily.name),
         padding: const EdgeInsets.only(bottom: 8.0),
         child: ListTile(
-            tileColor: tealBlueLight,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3.0), // Adjust the border radius as needed
-            ),
-            title: Text(muscleGroupFamily.name, style: GoogleFonts.lato(color: Colors.white)),
+            dense: true,
+            title: Text(muscleGroupFamily.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
             trailing: Text("$count", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
       );
       splitList.add(widget);
@@ -175,35 +110,24 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> wit
   }
 
   void _computeCurrentDatesChart() {
-    switch (_selectedCurrentTimePeriod) {
-      case CurrentTimePeriod.thisWeek:
+    switch (_selectedChartTimePeriod) {
+      case ChartTimePeriod.thisWeek:
         final thisWeek = thisWeekDateRange();
         _calculateBodySplitPercentageForDateRange(range: thisWeek);
-      case CurrentTimePeriod.thisMonth:
+      case ChartTimePeriod.thisMonth:
         final thisMonth = thisMonthDateRange();
         _calculateBodySplitPercentageForDateRange(range: thisMonth);
-      case CurrentTimePeriod.thisYear:
+      case ChartTimePeriod.thisYear:
         final thisYear = thisYearDateRange();
         _calculateBodySplitPercentageForDateRange(range: thisYear);
-      case CurrentTimePeriod.allTime:
-        _calculateBodySplitPercentageForDateRange();
-    }
-  }
-
-  void _computeHistoricalDatesChart() {
-    switch (_selectedHistoricalDate) {
-      case HistoricalTimePeriod.lastThreeMonths:
-        _calculateBodySplitPercentageSince(since: 90);
-      case HistoricalTimePeriod.lastOneYear:
-        _calculateBodySplitPercentageSince(since: 365);
-      case HistoricalTimePeriod.allTime:
-        _calculateBodySplitPercentageSince();
+      case ChartTimePeriod.allTime:
+        // TODO: Handle this case.
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _computeHistoricalDatesChart();
+    _computeCurrentDatesChart();
   }
 }

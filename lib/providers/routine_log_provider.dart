@@ -243,8 +243,7 @@ class RoutineLogProvider with ChangeNotifier {
     return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
   }
 
-  List<SetDto> setDtosForMuscleGroupWhereDateRange(
-      {required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(String procedureJson) {
       final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
@@ -260,41 +259,6 @@ class RoutineLogProvider with ChangeNotifier {
         .toList();
   }
 
-  List<SetDto> whereSetDtosForMuscleGroupSince({required MuscleGroupFamily muscleGroupFamily, required int since}) {
-    DateTime now = DateTime.now();
-    DateTime then = now.subtract(Duration(days: since));
-    final dateRange = DateTimeRange(start: then, end: now);
-
-    bool hasMatchingBodyPart(String procedureJson) {
-      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-      return primaryMuscle.family == muscleGroupFamily;
-    }
-
-    return logs
-        .where((log) => log.procedures.any(hasMatchingBodyPart))
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange))
-        .expand((log) => log.procedures.where(hasMatchingBodyPart))
-        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-        .expand((procedure) => procedure.sets)
-        .toList();
-  }
-
-  List<SetDto> whereSetDtosForMuscleGroup({required MuscleGroupFamily muscleGroupFamily}) {
-    bool hasMatchingBodyPart(String procedureJson) {
-      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
-      return primaryMuscle.family == muscleGroupFamily;
-    }
-
-    return logs
-        .where((log) => log.procedures.any(hasMatchingBodyPart))
-        .expand((log) => log.procedures.where(hasMatchingBodyPart))
-        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-        .expand((procedure) => procedure.sets)
-        .toList();
-  }
-
   List<RoutineLog> logsWhereDate({required DateTime dateTime}) {
     return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime)).toList();
   }
@@ -303,8 +267,8 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
   }
 
-  List<RoutineLog> logsWhereDateRange(DateTimeRange range, {List<RoutineLog>? logs}) {
-    final values = logs ?? _logs;
+  List<RoutineLog> logsWhereDateRange(DateTimeRange range, List<RoutineLog> logs) {
+    final values = logs;
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
   }
 

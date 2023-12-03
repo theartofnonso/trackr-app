@@ -6,10 +6,10 @@ enum HistoricalTimePeriod {
   final String label;
 }
 
-enum CurrentTimePeriod {
+enum ChartTimePeriod {
   thisWeek("This Week"), thisMonth("This Month"), thisYear("This Year"), allTime("All Time");
 
-  const CurrentTimePeriod(this.label);
+  const ChartTimePeriod(this.label);
 
   final String label;
 }
