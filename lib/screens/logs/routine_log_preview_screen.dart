@@ -18,6 +18,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
+import '../../utils/navigation_utils.dart';
 import '../exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           heroTag: "fab_routine_log_preview_screen",
-          onPressed: () => _navigateToRoutineEditor(context: context, log: log),
+          onPressed: () => navigateToRoutineEditor(context: context, log: log, mode: RoutineEditorMode.edit),
           backgroundColor: tealBlueLighter,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: const Icon(Icons.edit),
@@ -307,10 +308,5 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } finally {
       _toggleLoadingState();
     }
-  }
-
-  void _navigateToRoutineEditor({required BuildContext context, required RoutineLog log}) async {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => RoutineEditorScreen(routineLogId: log.id, mode: RoutineEditorMode.edit)));
   }
 }

@@ -10,14 +10,9 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/list_view_empty_state.dart';
 import '../editors/routine_editor_screen.dart';
-
-void _navigateToRoutineEditor(
-    {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.edit}) {
-  Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, mode: mode)));
-}
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -37,7 +32,7 @@ class RoutinesScreen extends StatelessWidget {
           ),
           floatingActionButton: FloatingActionButton.extended(
             heroTag: "fab_routines_screen",
-            onPressed: () => _navigateToRoutineEditor(context: context),
+            onPressed: () => navigateToRoutineEditor(context: context, mode: RoutineEditorMode.edit),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             label: Text("Create Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
@@ -84,7 +79,7 @@ class _RoutineWidget extends StatelessWidget {
           leading: canStartRoutine
               ? GestureDetector(
                   onTap: () {
-                    _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+                    navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
                   },
                   child: const Icon(
                     Icons.play_arrow_rounded,
@@ -132,7 +127,7 @@ class _RoutineWidget extends StatelessWidget {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, routine: routine);
+          navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.edit);
         },
         child: Text("Edit", style: GoogleFonts.lato(color: Colors.white)),
       ),

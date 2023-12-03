@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../app_constants.dart';
 import '../../models/RoutineLog.dart';
 import '../../screens/editors/routine_editor_screen.dart';
+import '../../utils/navigation_utils.dart';
 
 class MinimisedRoutineBanner extends StatelessWidget {
   final RoutineLog log;
@@ -19,16 +20,17 @@ class MinimisedRoutineBanner extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    RoutineEditorScreen(routineLogId: log.id, routineId: log.routine?.id, mode: RoutineEditorMode.log)));
+            navigateToRoutineEditor(context: context, routine: log.routine, log: log, mode: RoutineEditorMode.log);
           },
           leading: const Icon(
             Icons.info_outline,
             color: Colors.white,
           ),
           minLeadingWidth: 0,
-          title: Text('${log.name.isNotEmpty ? log.name : "Workout"} is in progress', style: GoogleFonts.lato(color: Colors.white),)),
+          title: Text(
+            '${log.name.isNotEmpty ? log.name : "Workout"} is in progress',
+            style: GoogleFonts.lato(color: Colors.white),
+          )),
     );
   }
 }

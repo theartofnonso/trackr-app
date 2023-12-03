@@ -15,6 +15,7 @@ import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../providers/exercise_provider.dart';
+import '../../utils/navigation_utils.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
 
@@ -31,11 +32,11 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   bool _loading = false;
 
   /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context, required Routine routine}) {
+  List<Widget> _menuActionButtons({required Routine routine}) {
     return [
       MenuItemButton(
         onPressed: () {
-          _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.edit);
+          navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.edit);
         },
         //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
@@ -76,17 +77,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     }
   }
 
-  void _navigateToRoutineEditor(
-      {required BuildContext context, Routine? routine, RoutineEditorMode mode = RoutineEditorMode.edit}) {
-    if (mode == RoutineEditorMode.edit) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, mode: mode)));
-    } else {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, mode: mode)));
-    }
-  }
-
   void _toggleLoadingState() {
     setState(() {
       _loading = !_loading;
@@ -118,7 +108,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
             ? FloatingActionButton(
                 heroTag: "fab_routine_preview_screen",
                 onPressed: () {
-                  _navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+                  navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -154,7 +144,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                   tooltip: 'Show menu',
                 );
               },
-              menuChildren: _menuActionButtons(context: context, routine: routine),
+              menuChildren: _menuActionButtons(routine: routine),
             )
           ],
         ),

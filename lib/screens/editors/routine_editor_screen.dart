@@ -175,17 +175,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     showAlertDialog(
         context: context,
         message: "Finish workout?",
+        leftActionLabel: 'Discard',
         leftAction: () {
           Navigator.of(context).pop();
           _navigateBackAndClearCache();
         },
+        rightActionLabel: 'Finish',
         rightAction: () {
           Navigator.of(context).pop();
           _doCreateRoutineLog();
         },
-        leftActionLabel: 'Discard',
-        isLeftActionDestructive: true,
-        rightActionLabel: 'Finish');
+        isLeftActionDestructive: true);
   }
 
   void _doCreateRoutineLog() {
@@ -317,14 +317,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       showAlertDialog(
           context: context,
           message: "You have not completed any sets",
+          leftActionLabel: 'Discard',
           leftAction: () {
             Navigator.of(context).pop();
             _navigateBackAndClearCache();
           },
+          rightActionLabel: 'Continue',
           rightAction: Navigator.of(context).pop,
-          leftActionLabel: 'Discard',
-          isLeftActionDestructive: true,
-          rightActionLabel: 'Continue');
+          isLeftActionDestructive: true);
     }
   }
 
@@ -424,8 +424,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _navigateBackAndClearCache() {
-    Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
-    Navigator.of(context).pop();
+    Navigator.of(context).pop({"clear": true});
   }
 
   bool _canUpdate() {
