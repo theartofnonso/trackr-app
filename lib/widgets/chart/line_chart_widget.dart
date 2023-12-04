@@ -91,7 +91,6 @@ class LineChartWidget extends StatelessWidget {
     return interval;
   }
 
-
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
     final style = GoogleFonts.lato(
       fontWeight: FontWeight.w600,
