@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
+import '../empty_states/pie_chart_empty_state.dart';
+
 class PieChartWidget extends StatelessWidget {
   final List<MapEntry<MuscleGroupFamily, int>> segments;
 
@@ -112,14 +114,7 @@ class PieChartWidget extends StatelessWidget {
           )
         : const Padding(
             padding: EdgeInsets.symmetric(vertical: 50.0),
-            child: SizedBox(
-                width: 150,
-                height: 150,
-                child: CircularProgressIndicator(
-                  value: 1,
-                  strokeWidth: 10,
-                  color: tealBlueLighter,
-                )),
+            child: PieChartEmptyState(),
           );
   }
 

@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
+import 'package:tracker_app/widgets/empty_states/bar_chart_empty_state.dart';
 
 enum ChartUnitLabel {
   kg, lbs, reps, mins, hrs, yd, mi,
@@ -23,7 +24,7 @@ class LineChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Center(
+    return chartPoints.isNotEmpty ? Center(
       child: AspectRatio(
         aspectRatio: 1.5,
         child: LineChart(LineChartData(
@@ -68,7 +69,7 @@ class LineChartWidget extends StatelessWidget {
                   isCurved: true)
             ])),
       ),
-    );
+    ) : const BarChartEmptyState();
   }
 
   double _interval() {

@@ -98,7 +98,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalRepsPerLog() {
-    final values = widget.routineLogs.map((log) => totalRepsPerLog(log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => totalRepsPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;
@@ -116,7 +116,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _longestDurationPerLog() {
-    final values = widget.routineLogs.map((log) => longestDurationPerLog(log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => longestDurationPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
@@ -126,7 +126,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalTimePerLog() {
-    final values = widget.routineLogs.map((log) => totalDurationPerLog(log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => totalDurationPerLog(log: log)).toList().reversed.toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
@@ -136,7 +136,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _longestDistancePerLog() {
-    final values = widget.routineLogs.map((log) => longestDistancePerLog(log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => longestDistancePerLog(log: log)).toList().reversed.toList();
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     setState(() {
@@ -147,7 +147,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalDistancePerLog() {
-    final values = widget.routineLogs.map((log) => totalDistancePerLog(log: log)).toList().reversed.toList();
+    final values = _routineLogs.map((log) => totalDistancePerLog(log: log)).toList().reversed.toList();
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     setState(() {
@@ -162,26 +162,26 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       case ChartTimePeriod.thisWeek:
         final thisWeek = thisWeekDateRange();
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .logsWhereDateRange(thisWeek, widget.routineLogs)
+            .logsWhereDateRange(thisWeek, _routineLogs)
             .reversed
             .toList();
         break;
       case ChartTimePeriod.thisMonth:
         final thisMonth = thisMonthDateRange();
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .logsWhereDateRange(thisMonth, widget.routineLogs)
+            .logsWhereDateRange(thisMonth, _routineLogs)
             .reversed
             .toList();
         break;
       case ChartTimePeriod.thisYear:
         final thisYear = thisYearDateRange();
         _routineLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-            .logsWhereDateRange(thisYear, widget.routineLogs)
+            .logsWhereDateRange(thisYear, _routineLogs)
             .reversed
             .toList();
         break;
       case ChartTimePeriod.allTime:
-        _routineLogs = widget.routineLogs.reversed.toList();
+        _routineLogs = _routineLogs.reversed.toList();
     }
     _dateTimes = _routineLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
     switch (_summaryType) {
@@ -261,69 +261,73 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   Widget build(BuildContext context) {
     final textStyle = GoogleFonts.lato(fontSize: 14);
 
-    if (widget.routineLogs.isNotEmpty) {
-      final weightUnitLabel = weightLabel();
+    final weightUnitLabel = weightLabel();
 
-      final exerciseTypeString = widget.exercise.type;
-      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
 
-      final distanceUnitLabel = distanceLabel(type: exerciseType);
+    final distanceUnitLabel = distanceLabel(type: exerciseType);
 
-      final oneRepMax = widget.routineLogs.map((log) => oneRepMaxPerLog(log: log)).toList().max;
-      return SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Primary Muscle: ${widget.exercise.primaryMuscle}",
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+    double oneRepMax = 0;
+    if (_routineLogs.isNotEmpty) {
+      oneRepMax = _routineLogs.map((log) => oneRepMaxPerLog(log: log)).toList().max;
+    }
+
+    return SingleChildScrollView(
+        child: Padding(
+      padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Primary Muscle: ${widget.exercise.primaryMuscle}",
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+          ),
+          const SizedBox(height: 20),
+          CupertinoSlidingSegmentedControl<ChartTimePeriod>(
+            backgroundColor: tealBlueLight,
+            thumbColor: Colors.blue,
+            groupValue: _selectedChartTimePeriod,
+            children: {
+              ChartTimePeriod.thisWeek:
+                  SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.thisMonth:
+                  SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.thisYear:
+                  SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.allTime:
+                  SizedBox(width: 80, child: Text('All Time', style: textStyle, textAlign: TextAlign.center)),
+            },
+            onValueChanged: (ChartTimePeriod? value) {
+              if (value != null) {
+                setState(() {
+                  _selectedChartTimePeriod = value;
+                  _recomputeChart();
+                });
+              }
+            },
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.only(right: 20, bottom: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: 16),
+                LineChartWidget(
+                  chartPoints: _chartPoints,
+                  dateTimes: _dateTimes,
+                  unit: _chartUnit,
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-            const SizedBox(height: 20),
-            CupertinoSlidingSegmentedControl<ChartTimePeriod>(
-              backgroundColor: tealBlueLight,
-              thumbColor: Colors.blue,
-              groupValue: _selectedChartTimePeriod,
-              children: {
-                ChartTimePeriod.thisWeek:
-                    SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
-                ChartTimePeriod.thisMonth:
-                    SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
-                ChartTimePeriod.thisYear:
-                    SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
-                ChartTimePeriod.allTime:
-                    SizedBox(width: 80, child: Text('All Time', style: textStyle, textAlign: TextAlign.center)),
-              },
-              onValueChanged: (ChartTimePeriod? value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedChartTimePeriod = value;
-                    _recomputeChart();
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(right: 20, bottom: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const SizedBox(height: 16),
-                  LineChartWidget(
-                    chartPoints: _chartPoints,
-                    dateTimes: _dateTimes,
-                    unit: _chartUnit,
-                  ),
-                ],
-              ),
-            ),
+          ),
+          if (_routineLogs.isNotEmpty)
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -403,95 +407,81 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                       ),
                   ],
                 )),
-            const SizedBox(height: 10),
-            if (_proceduresWithWeights())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
-                  title: 'Heaviest weight',
-                  trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
-                  subtitle: 'Heaviest weight lifted in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-                ),
+          const SizedBox(height: 10),
+          if (_proceduresWithWeights())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
+                title: 'Heaviest weight',
+                trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
+                subtitle: 'Heaviest weight lifted in a set',
+                onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                enabled: _routineLogs.isNotEmpty,
               ),
-            if (_proceduresWithWeightsAndReps())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
+            ),
+          if (_proceduresWithWeightsAndReps())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
                   title: 'Heaviest Set Volume',
                   trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume lifted in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-                ),
-              ),
-            if (_proceduresWithWeightsAndReps())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
+                  enabled: _routineLogs.isNotEmpty),
+            ),
+          if (_proceduresWithWeightsAndReps())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
                   title: '1 Rep Max',
                   trailing: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
                   subtitle: 'Heaviest weight for one rep',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-                ),
-              ),
-            if (_proceduresDuration())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
+                  enabled: _routineLogs.isNotEmpty),
+            ),
+          if (_proceduresDuration())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
                   title: 'Best Time',
                   trailing: widget.longestDuration.$2.secondsOrMinutesOrHours(),
                   subtitle: 'Longest time for this exercise',
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
-                ),
-              ),
-            if (_proceduresWithDistance())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
+                  enabled: _routineLogs.isNotEmpty),
+            ),
+          if (_proceduresWithDistance())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
                   title: 'Longest Distance',
                   trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
                   subtitle: 'Longest distance for this exercise',
                   onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
-                ),
-              ),
-            if (_proceduresWithRepsOnly())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
+                  enabled: _routineLogs.isNotEmpty),
+            ),
+          if (_proceduresWithRepsOnly())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
                   title: 'Most Reps (Set)',
                   trailing: "${widget.mostRepsSet.$2} reps",
                   subtitle: 'Most reps in a set',
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
-                ),
-              ),
-            if (_proceduresWithRepsOnly())
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: _MetricListTile(
+                  enabled: _routineLogs.isNotEmpty),
+            ),
+          if (_proceduresWithRepsOnly())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: _MetricListTile(
                   title: 'Most Reps (Session)',
                   trailing: "${widget.mostRepsSession.$2} reps",
                   subtitle: 'Most reps in a session',
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
-                ),
-              ),
-          ],
-        ),
-      ));
-    }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Primary Muscle: ${widget.exercise.primaryMuscle}",
-          style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
-          style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-        )
-      ],
-    );
+                  enabled: _routineLogs.isNotEmpty),
+            ),
+        ],
+      ),
+    ));
   }
 
   void _loadChart() {
@@ -526,24 +516,25 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 }
 
 class _MetricListTile extends StatelessWidget {
-  const _MetricListTile({
-    required this.title,
-    required this.subtitle,
-    required this.trailing,
-    required this.onTap,
-  });
+  const _MetricListTile(
+      {required this.title,
+      required this.subtitle,
+      required this.trailing,
+      required this.onTap,
+      required this.enabled});
 
   final String title;
   final String subtitle;
   final String trailing;
   final Function()? onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
-        onTap: onTap,
+        onTap: enabled ? onTap : () {},
         tileColor: tealBlueLight,
         title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text(subtitle, style: GoogleFonts.lato(fontSize: 14, color: Colors.white.withOpacity(0.7))),
