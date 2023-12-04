@@ -10,14 +10,14 @@ import '../enums/muscle_group_enums.dart';
 import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';
 
-class MuscleDistributionScreen extends StatefulWidget {
-  const MuscleDistributionScreen({super.key});
+class MuscleInsightsScreen extends StatefulWidget {
+  const MuscleInsightsScreen({super.key});
 
   @override
-  State<MuscleDistributionScreen> createState() => _MuscleDistributionScreenState();
+  State<MuscleInsightsScreen> createState() => _MuscleInsightsScreenState();
 }
 
-class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> {
+class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
   ChartTimePeriod _selectedChartTimePeriod = ChartTimePeriod.thisMonth;
 
   late Map<MuscleGroupFamily, int> _muscleGroupFamily;
@@ -121,7 +121,7 @@ class _MuscleDistributionScreenState extends State<MuscleDistributionScreen> {
         final thisYear = thisYearDateRange();
         _calculateBodySplitPercentageForDateRange(range: thisYear);
       case ChartTimePeriod.allTime:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
     }
   }
 

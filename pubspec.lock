@@ -661,6 +661,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  sentry:
+    dependency: transitive
+    description:
+      name: sentry
+      sha256: e7ded42974bac5f69e4ca4ddc57d30499dd79381838f24b7e8fd9aa4139e7b79
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.13.2"
+  sentry_flutter:
+    dependency: "direct main"
+    description:
+      name: sentry_flutter
+      sha256: d6f55ec7a1f681784165021f749007712a72ff57eadf91e963331b6ae326f089
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.13.2"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -746,14 +762,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
-  smooth_page_indicator:
-    dependency: "direct main"
-    description:
-      name: smooth_page_indicator
-      sha256: "725bc638d5e79df0c84658e1291449996943f93bacbc2cec49963dbbab48d8ae"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   source_span:
     dependency: transitive
     description:

@@ -11,102 +11,116 @@ class PieChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSegmentsNotEmpty = segments.any((entry) => entry.value > 0);
+
     final style = GoogleFonts.lato(
       fontWeight: FontWeight.w600,
       fontSize: 14,
     );
 
-    return Container(
-      color: tealBlueDark,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: PieChart(
-                PieChartData(
-                  sectionsSpace: 5,
-                  centerSpaceRadius: 35,
-                  sections: showingSections(),
+    return isSegmentsNotEmpty
+        ? Container(
+            color: tealBlueDark,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: PieChart(
+                      PieChartData(
+                        sectionsSpace: 5,
+                        centerSpaceRadius: 35,
+                        sections: showingSections(),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Container(color: Colors.green, width: 10, height: 10),
+                        const SizedBox(width: 5),
+                        Text(segments[0].key.name, style: style)
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          color: Colors.blue,
+                          width: 10,
+                          height: 10,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(segments[1].key.name, style: style)
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          color: Colors.yellow,
+                          width: 10,
+                          height: 10,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(segments[2].key.name, style: style)
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          color: Colors.purpleAccent,
+                          width: 10,
+                          height: 10,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(segments[3].key.name, style: style)
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          color: Colors.pinkAccent,
+                          width: 10,
+                          height: 10,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(segments[4].key.name, style: style)
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  width: 28,
+                ),
+              ],
             ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: [
-                  Container(color: Colors.green, width: 10, height: 10),
-                  const SizedBox(width: 5),
-                  Text(segments[0].key.name, style: style)
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  Container(
-                    color: Colors.blue,
-                    width: 10,
-                    height: 10,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(segments[1].key.name, style: style)
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  Container(
-                    color: Colors.yellow,
-                    width: 10,
-                    height: 10,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(segments[2].key.name, style: style)
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  Container(
-                    color: Colors.purpleAccent,
-                    width: 10,
-                    height: 10,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(segments[3].key.name, style: style)
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  Container(
-                    color: Colors.pinkAccent,
-                    width: 10,
-                    height: 10,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(segments[4].key.name, style: style)
-                ],
-              )
-            ],
-          ),
-          const SizedBox(
-            width: 28,
-          ),
-        ],
-      ),
-    );
+          )
+        : const Padding(
+            padding: EdgeInsets.symmetric(vertical: 50.0),
+            child: SizedBox(
+                width: 150,
+                height: 150,
+                child: CircularProgressIndicator(
+                  value: 1,
+                  strokeWidth: 10,
+                  color: tealBlueLighter,
+                )),
+          );
   }
 
   List<PieChartSectionData> showingSections() {

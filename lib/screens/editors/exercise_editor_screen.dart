@@ -207,8 +207,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _toggleLoadingState();
     try {
       await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(
-          name: _exerciseNameController.text,
-          notes: _exerciseNotesController.text,
+          name: _exerciseNameController.text.trim(),
+          notes: _exerciseNotesController.text.trim(),
           primary: _primaryMuscleGroup,
           type: _exerciseType,
           secondary: _secondaryMuscleGroup);
@@ -234,8 +234,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         _toggleLoadingState();
         try {
           final updatedExercise = exercise.copyWith(
-              name: _exerciseNameController.text,
-              notes: _exerciseNotesController.text,
+              name: _exerciseNameController.text.trim(),
+              notes: _exerciseNotesController.text.trim(),
               primaryMuscle: _primaryMuscleGroup.name,
               secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
           await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);

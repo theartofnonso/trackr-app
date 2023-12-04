@@ -2,12 +2,14 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/procedures_provider.dart';
@@ -27,20 +29,28 @@ void main() async {
 
   await initializeDateFormatting();
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider<ExerciseProvider>(
-      create: (BuildContext context) => ExerciseProvider(),
-    ),
-    ChangeNotifierProvider<RoutineProvider>(
-      create: (BuildContext context) => RoutineProvider(),
-    ),
-    ChangeNotifierProvider<RoutineLogProvider>(
-      create: (BuildContext context) => RoutineLogProvider(),
-    ),
-    ChangeNotifierProvider<ProceduresProvider>(
-      create: (BuildContext context) => ProceduresProvider(),
-    ),
-  ], child: const MyApp()));
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://45d4468d9e461dc80082807aea326bd7@o4506338359377920.ingest.sentry.io/4506338360754176';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<ExerciseProvider>(
+        create: (BuildContext context) => ExerciseProvider(),
+      ),
+      ChangeNotifierProvider<RoutineProvider>(
+        create: (BuildContext context) => RoutineProvider(),
+      ),
+      ChangeNotifierProvider<RoutineLogProvider>(
+        create: (BuildContext context) => RoutineLogProvider(),
+      ),
+      ChangeNotifierProvider<ProceduresProvider>(
+        create: (BuildContext context) => ProceduresProvider(),
+      ),
+    ], child: const MyApp())),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -60,6 +70,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
+
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/muscle_distribution_screen.dart';
+import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
@@ -19,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _navigateToMuscleDistribution(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleDistributionScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
   int _logsForTheWeekCount({required List<RoutineLog> logs}) {

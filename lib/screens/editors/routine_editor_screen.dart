@@ -160,8 +160,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _toggleLoadingState();
     try {
       await routineProvider.saveRoutine(
-          name: _routineNameController.text,
-          notes: _routineNotesController.text,
+          name: _routineNameController.text.trim(),
+          notes: _routineNotesController.text.trim(),
           procedures: procedureProvider.mergeSetsIntoProcedures());
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
@@ -252,8 +252,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
-          name: _routineNameController.text,
-          notes: _routineNotesController.text,
+          name: _routineNameController.text.trim(),
+          notes: _routineNotesController.text.trim(),
           procedures: listOfProcedures.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
 
@@ -276,8 +276,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _toggleLoadingState();
     try {
       final updatedRoutineLog = routineLog.copyWith(
-          name: _routineNameController.text,
-          notes: _routineNotesController.text,
+          name: _routineNameController.text.trim(),
+          notes: _routineNotesController.text.trim(),
           procedures: procedures.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
       await routineLogProvider.updateLog(log: updatedRoutineLog);
