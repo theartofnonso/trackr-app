@@ -31,7 +31,7 @@ void main() async {
 
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://45d4468d9e461dc80082807aea326bd7@o4506338359377920.ingest.sentry.io/4506338360754176';
+      options.dsn = kReleaseMode ? 'https://45d4468d9e461dc80082807aea326bd7@o4506338359377920.ingest.sentry.io/4506338360754176' : "";
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 1.0;
