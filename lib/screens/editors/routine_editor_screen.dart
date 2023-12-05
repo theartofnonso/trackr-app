@@ -188,10 +188,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         isLeftActionDestructive: true);
   }
 
-  void _doCreateRoutineLog() {
+  void _doCreateRoutineLog() async {
     final routine = _routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
-    Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+    await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
         name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
         notes: routine?.notes ?? "",
