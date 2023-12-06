@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 
 import '../../enums/exercise_type_enums.dart';
 import '../helper_widgets/routine_helper.dart';
 
 class ProcedureWidget extends StatelessWidget {
-  final ProcedureDto procedureDto;
+  final ExerciseLogDto procedureDto;
 
   const ProcedureWidget({
     super.key,

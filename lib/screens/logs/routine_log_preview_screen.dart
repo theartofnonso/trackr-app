@@ -13,7 +13,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../../../app_constants.dart';
-import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
@@ -44,8 +44,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return const SizedBox.shrink();
     }
 
-    List<ProcedureDto> procedures =
-        log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+    List<ExerciseLogDto> procedures =
+        log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
           Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {
@@ -209,7 +209,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     });
   }
 
-  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+  List<Widget> _proceduresToWidgets({required List<ExerciseLogDto> procedures}) {
     return procedures
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -232,7 +232,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return interval;
   }
 
-  int _calculateCompletedSets({required List<ProcedureDto> procedures}) {
+  int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
       completedSets.addAll(procedure.sets);
@@ -272,7 +272,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _saveLog(RoutineLog log) async {
     try {
-      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
+      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json)));
       final procedures = decodedProcedures.map((procedure) {
         final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
         return procedure.copyWith(sets: newSets);

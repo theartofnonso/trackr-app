@@ -12,7 +12,7 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../models/Exercise.dart';
 import '../../../models/RoutineLog.dart';
@@ -32,7 +32,7 @@ ChartUnitLabel weightUnit() {
 /// All [SetDto] for [ExerciseType]
 
 List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
@@ -43,7 +43,7 @@ List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
 }
 
 List<SetDto> _allSetsWithReps({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
@@ -55,7 +55,7 @@ List<SetDto> _allSetsWithReps({required List<String> procedureJsons}) {
 }
 
 List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.duration ||
@@ -65,7 +65,7 @@ List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
 }
 
 List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+  final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
   return procedures
       .where((procedure) =>
           ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndDistance ||
@@ -319,11 +319,11 @@ class HomeScreen extends StatelessWidget {
   List<RoutineLog> _logsWhereExercise({required List<RoutineLog> logs}) {
     return logs
         .where((log) => log.procedures
-            .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+            .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
             .any((procedure) => procedure.exercise.id == exercise.id))
         .map((log) => log.copyWith(
             procedures: log.procedures
-                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exercise.id == exercise.id)
+                .where((procedure) => ExerciseLogDto.fromJson(jsonDecode(procedure)).exercise.id == exercise.id)
                 .toList()))
         .toList();
   }

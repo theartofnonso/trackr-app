@@ -3,23 +3,25 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:uuid/uuid.dart';
 
-class ProcedureDto {
+class ExerciseLogDto {
   final String id;
   final String superSetId;
   final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
+  final DateTime? createdAt;
 
-  const ProcedureDto(this.id, this.superSetId, this.exercise, this.notes, this.sets);
+  ExerciseLogDto(this.id, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
 
-  ProcedureDto copyWith(
-      {String? id, String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets}) {
-    return ProcedureDto(
+  ExerciseLogDto copyWith(
+      {String? id, String? superSetId, String? exerciseId, Exercise? exercise, String? notes, List<SetDto>? sets, DateTime? createdAt}) {
+    return ExerciseLogDto(
       id ?? this.id,
       superSetId ?? this.superSetId,
       exercise ?? this.exercise,
       notes ?? this.notes,
       sets ?? this.sets,
+      createdAt ?? this.createdAt,
     );
   }
 
@@ -30,22 +32,22 @@ class ProcedureDto {
       "superSetId": superSetId,
       "exercise": exercise,
       "notes": notes,
-      "sets": setJons,
+      "sets": setJons
     });
   }
 
-  factory ProcedureDto.fromJson(Map<String, dynamic> json) {
+  factory ExerciseLogDto.fromJson(Map<String, dynamic> json) {
     final superSetId = json["superSetId"];
     final exerciseString = json["exercise"];
     final exercise = Exercise.fromJson(exerciseString);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    return ProcedureDto(const Uuid().v4(), superSetId, exercise, notes, sets);
+    return ExerciseLogDto(const Uuid().v4(), superSetId, exercise, notes, sets, null);
   }
 
   @override
   String toString() {
-    return 'ProcedureDto{id: $id, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets}';
+    return 'ProcedureDto{id: $id, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
   }
 }

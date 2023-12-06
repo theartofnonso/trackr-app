@@ -9,7 +9,7 @@ import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
 
 import '../../../app_constants.dart';
-import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
@@ -91,8 +91,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       return const SizedBox.shrink();
     }
 
-    List<ProcedureDto> procedures =
-    routine.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+    List<ExerciseLogDto> procedures =
+    routine.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
       Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {
@@ -182,7 +182,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         ]));
   }
 
-  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+  List<Widget> _proceduresToWidgets({required List<ExerciseLogDto> procedures}) {
     return procedures
         .map((procedure) => Column(
               children: [

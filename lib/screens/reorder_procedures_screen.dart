@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../dtos/procedure_dto.dart';
+import '../dtos/exercise_log_dto.dart';
 
 class ReOrderProceduresScreen extends StatefulWidget {
-  final List<ProcedureDto> procedures;
+  final List<ExerciseLogDto> procedures;
 
   const ReOrderProceduresScreen({super.key, required this.procedures});
 
@@ -17,7 +17,7 @@ class ReOrderProceduresScreen extends StatefulWidget {
 
 class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
   bool _hasReOrdered = false;
-  late List<ProcedureDto> _procedures;
+  late List<ExerciseLogDto> _procedures;
 
   void _reOrderProcedures({required int oldIndex, required int newIndex}) {
     setState(() {
@@ -26,7 +26,7 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
-      final ProcedureDto item = _procedures.removeAt(oldIndex);
+      final ExerciseLogDto item = _procedures.removeAt(oldIndex);
       _procedures.insert(newIndex, item);
     });
   }

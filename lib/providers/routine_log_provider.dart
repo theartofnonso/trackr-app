@@ -13,7 +13,7 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
-import '../dtos/procedure_dto.dart';
+import '../dtos/exercise_log_dto.dart';
 import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
@@ -92,7 +92,7 @@ class RoutineLogProvider with ChangeNotifier {
       {required BuildContext context,
       required String name,
       required String notes,
-      required List<ProcedureDto> procedures,
+      required List<ExerciseLogDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine? routine}) async {
@@ -164,7 +164,7 @@ class RoutineLogProvider with ChangeNotifier {
   void cacheRoutineLog(
       {required String name,
       required String notes,
-      required List<ProcedureDto> procedures,
+      required List<ExerciseLogDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine? routine,
@@ -228,17 +228,17 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ProcedureDto> _pastProceduresForExercise({required Exercise exercise}) {
+  List<ExerciseLogDto> _pastProceduresForExercise({required Exercise exercise}) {
     final mostRecentLog = _logs.firstWhereOrNull((log) {
-      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-      List<ProcedureDto> filteredProcedures =
+      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
+      List<ExerciseLogDto> filteredProcedures =
           decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
       return filteredProcedures.isNotEmpty;
     });
 
     if (mostRecentLog != null) {
       return mostRecentLog.procedures
-          .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+          .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
           .where((procedure) => procedure.exercise.id == exercise.id)
           .toList();
     } else {
@@ -253,7 +253,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(String procedureJson) {
-      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
+      final procedure = ExerciseLogDto.fromJson(jsonDecode(procedureJson));
       final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
       return primaryMuscle.family == muscleGroupFamily;
     }
@@ -262,7 +262,7 @@ class RoutineLogProvider with ChangeNotifier {
         .where((log) => log.procedures.any(hasMatchingBodyPart))
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
         .expand((log) => log.procedures.where(hasMatchingBodyPart))
-        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
+        .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
         .expand((procedure) => procedure.sets)
         .toList();
   }

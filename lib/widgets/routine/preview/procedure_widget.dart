@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/general_utils.dart';
@@ -12,8 +12,8 @@ import '../preview/set_headers/reps_set_header.dart';
 import '../preview/set_headers/weighted_set_header.dart';
 
 class ProcedureWidget extends StatelessWidget {
-  final ProcedureDto procedureDto;
-  final ProcedureDto? otherSuperSetProcedureDto;
+  final ExerciseLogDto procedureDto;
+  final ExerciseLogDto? otherSuperSetProcedureDto;
   final bool readOnly;
 
   const ProcedureWidget({

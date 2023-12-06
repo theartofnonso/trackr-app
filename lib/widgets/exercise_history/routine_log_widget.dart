@@ -6,7 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/procedure_widget.dart';
 
-import '../../dtos/procedure_dto.dart';
+import '../../dtos/exercise_log_dto.dart';
 import '../../models/RoutineLog.dart';
 
 class RoutineLogWidget extends StatelessWidget {
@@ -37,7 +37,7 @@ class RoutineLogWidget extends StatelessWidget {
                 style: GoogleFonts.lato(color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
           ]),),
         ),
-        ...routineLog.procedures.map((procedure) => ProcedureWidget(procedureDto: ProcedureDto.fromJson(jsonDecode(procedure)))).toList()
+        ...routineLog.procedures.map((procedure) => ProcedureWidget(procedureDto: ExerciseLogDto.fromJson(jsonDecode(procedure)))).toList()
       ],
     );
   }

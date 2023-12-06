@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/providers/procedures_provider.dart';
+import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editor/set_headers/duration_distance_set_header.dart';
@@ -26,8 +26,8 @@ import '../../../utils/general_utils.dart';
 class ProcedureWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
 
-  final ProcedureDto procedureDto;
-  final ProcedureDto? otherSuperSetProcedureDto;
+  final ExerciseLogDto procedureDto;
+  final ExerciseLogDto? otherSuperSetProcedureDto;
 
   /// Procedure callbacks
   final VoidCallback onRemoveProcedure;
@@ -163,52 +163,52 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   }
 
   void _updateProcedureNotes({required String value}) {
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateProcedureNotes(procedureId: widget.procedureDto.id, value: value);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateProcedureNotes(exerciseLogId: widget.procedureDto.id, value: value);
   }
 
   void _addSet() {
     _controllers.add((TextEditingController(), TextEditingController()));
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .addSetForProcedure(procedureId: widget.procedureDto.id, pastSets: _pastSets);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .addSetForExerciseLog(exerciseLogId: widget.procedureDto.id, pastSets: _pastSets);
   }
 
   void _removeSet(int index) {
     _controllers.removeAt(index);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .removeSetForProcedure(procedureId: widget.procedureDto.id, setIndex: index, pastSets: _pastSets);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .removeSetForExerciseLog(exerciseLogId: widget.procedureDto.id, setIndex: index, pastSets: _pastSets);
   }
 
   void _updateWeight({required int setIndex, required double value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: value);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateWeight(procedureId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateWeight(exerciseLogId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateReps({required int setIndex, required num value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: value);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateReps(procedureId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateReps(exerciseLogId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateDuration({required int setIndex, required Duration duration, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateDuration(procedureId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateDuration(exerciseLogId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateDistance({required int setIndex, required double distance, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: distance);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateDistance(procedureId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateDistance(exerciseLogId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _updateSetType({required int index, required SetType type, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(type: type);
     final shouldUpdateValue1 = _controllers[index].$1.text.isEmpty;
     final shouldUpdateValue2 = _controllers[index].$2.text.isEmpty;
-    Provider.of<ProceduresProvider>(context, listen: false).updateSetType(
-        procedureId: widget.procedureDto.id,
+    Provider.of<ExerciseLogProvider>(context, listen: false).updateSetType(
+        exerciseLogId: widget.procedureDto.id,
         setIndex: index,
         setDto: updatedSet,
         pastSets: _pastSets,
@@ -219,8 +219,8 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   void _updateSetCheck({required int setIndex, required SetDto setDto}) {
     final checked = setDto.checked;
     final updatedSet = setDto.copyWith(checked: !checked);
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .updateSetCheck(procedureId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateSetCheck(exerciseLogId: widget.procedureDto.id, setIndex: setIndex, setDto: updatedSet);
   }
 
   void _loadTextEditingControllers() {
@@ -269,7 +269,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
   Widget build(BuildContext context) {
     widget.onCache();
 
-    final sets = context.select((ProceduresProvider provider) => provider.sets)[widget.procedureDto.id];
+    final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.procedureDto.id];
 
     final otherProcedureDto = widget.otherSuperSetProcedureDto;
 

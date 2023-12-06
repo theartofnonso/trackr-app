@@ -5,26 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/unsaved_changes_messages_dto.dart';
 import 'package:uuid/uuid.dart';
 
-import '../dtos/procedure_dto.dart';
+import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
 
-class ProceduresProvider extends ChangeNotifier {
-  List<ProcedureDto> _procedures = [];
+class ExerciseLogProvider extends ChangeNotifier {
+  List<ExerciseLogDto> _exerciseLogs = [];
   Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
 
-  UnmodifiableListView<ProcedureDto> get procedures => UnmodifiableListView(_procedures);
+  UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
-  void reloadProcedures({required List<ProcedureDto> procedures}) {
-    _procedures = procedures;
-    notifyListeners();
-  }
-
-  void loadProcedures({required List<ProcedureDto> procedures, bool shouldNotifyListeners = false}) {
-    _procedures = procedures;
+  void loadExerciseLogs({required List<ExerciseLogDto> logs, bool shouldNotifyListeners = false}) {
+    _exerciseLogs = logs;
     _loadSets();
     if (shouldNotifyListeners) {
       notifyListeners();
@@ -32,59 +27,59 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void _loadSets() {
-    for (var procedure in _procedures) {
+    for (var procedure in _exerciseLogs) {
       _sets[procedure.id] = procedure.sets;
     }
   }
 
-  List<ProcedureDto> mergeSetsIntoProcedures() {
-    // Create a new list to hold the merged procedures
-    List<ProcedureDto> mergedProcedures = [];
+  List<ExerciseLogDto> mergeSetsIntoExerciseLogs() {
+    // Create a new list to hold the merged exerciseLogs
+    List<ExerciseLogDto> mergedLogs = [];
 
-    for (var procedure in _procedures) {
-      // Find the matching sets based on exerciseId and add them to the new procedure
-      List<SetDto> matchingSets = _sets[procedure.id] ?? [];
+    for (var exerciseLog in _exerciseLogs) {
+      // Find the matching sets based on exerciseId and add them to the new exerciseLog
+      List<SetDto> matchingSets = _sets[exerciseLog.id] ?? [];
 
       // Create a new instance of ProcedureDto with existing data
-      ProcedureDto newProcedure = procedure.copyWith(sets: matchingSets);
+      ExerciseLogDto newLog = exerciseLog.copyWith(sets: matchingSets);
 
-      // Add the new procedure to the merged list
-      mergedProcedures.add(newProcedure);
+      // Add the new exerciseLog to the merged list
+      mergedLogs.add(newLog);
     }
 
-    return mergedProcedures;
+    return mergedLogs;
   }
 
-  void addProcedures({required List<Exercise> exercises}) {
-    final proceduresToAdd = exercises.map((exercise) => _createProcedure(exercise)).toList();
-    _procedures = [..._procedures, ...proceduresToAdd];
+  void addExerciseLogs({required List<Exercise> exercises}) {
+    final logsToAdd = exercises.map((exercise) => _createProcedure(exercise)).toList();
+    _exerciseLogs = [..._exerciseLogs, ... logsToAdd];
     notifyListeners();
   }
 
-  void removeProcedure({required String procedureId}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    if (procedureIndex != -1) {
-      final procedureToBeRemoved = _procedures[procedureIndex];
+  void removeExerciseLog({required String logId}) {
+    final logIndex = _indexWhereExerciseLog(exerciseLogId: logId);
+    if (logIndex != -1) {
+      final logToBeRemoved = _exerciseLogs[logIndex];
 
-      if (procedureToBeRemoved.superSetId.isNotEmpty) {
-        _removeSuperSet(superSetId: procedureToBeRemoved.superSetId);
+      if (logToBeRemoved.superSetId.isNotEmpty) {
+        _removeSuperSet(superSetId: logToBeRemoved.superSetId);
       }
 
-      final procedures = List.from(_procedures);
+      final exerciseLogs = List.from(_exerciseLogs);
 
-      procedures.removeAt(procedureIndex);
+      exerciseLogs.removeAt(logIndex);
 
-      _procedures = [...procedures];
+      _exerciseLogs = [...exerciseLogs];
 
-      _removeAllSetsForProcedure(procedureId: procedureId);
+      _removeAllSetsForProcedure(exerciseLogId: logId);
 
       notifyListeners();
     }
   }
 
-  void _removeAllSetsForProcedure({required String procedureId}) {
+  void _removeAllSetsForProcedure({required String exerciseLogId}) {
     // Check if the key exists in the map
-    if (!_sets.containsKey(procedureId)) {
+    if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the key does not exist
       // e.g., log an error or throw an exception
       return;
@@ -94,38 +89,38 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Remove the key-value pair from the new map
-    newMap.remove(procedureId);
+    newMap.remove(exerciseLogId);
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
   }
 
-  void updateProcedureNotes({required String procedureId, required String value}) {
-    final procedureIndex = _indexWhereProcedure(procedureId: procedureId);
-    final procedure = _procedures[procedureIndex];
-    _procedures[procedureIndex] = procedure.copyWith(notes: value);
+  void updateProcedureNotes({required String exerciseLogId, required String value}) {
+    final procedureIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+    final procedure = _exerciseLogs[procedureIndex];
+    _exerciseLogs[procedureIndex] = procedure.copyWith(notes: value);
     notifyListeners();
   }
 
-  void superSetProcedures(
-      {required String firstProcedureId, required String secondProcedureId, required String superSetId}) {
-    final firstProcedureIndex = _indexWhereProcedure(procedureId: firstProcedureId);
-    final secondProcedureIndex = _indexWhereProcedure(procedureId: secondProcedureId);
+  void superSetExerciseLogs(
+      {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
+    final firstProcedureIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
+    final secondProcedureIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
 
     if (firstProcedureIndex != -1 && secondProcedureIndex != -1) {
-      List<ProcedureDto> updatedProcedures = List<ProcedureDto>.from(_procedures);
+      List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-      updatedProcedures[firstProcedureIndex] = updatedProcedures[firstProcedureIndex].copyWith(superSetId: superSetId);
-      updatedProcedures[secondProcedureIndex] =
-          updatedProcedures[secondProcedureIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[firstProcedureIndex] = updatedExerciseLogs[firstProcedureIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[secondProcedureIndex] =
+          updatedExerciseLogs[secondProcedureIndex].copyWith(superSetId: superSetId);
 
-      _procedures = [...updatedProcedures];
+      _exerciseLogs = [...updatedExerciseLogs];
 
       notifyListeners();
     }
   }
 
-  void removeProcedureSuperSet({required String superSetId}) {
+  void removeSuperSetForLogs({required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
     notifyListeners();
   }
@@ -134,11 +129,11 @@ class ProceduresProvider extends ChangeNotifier {
     return pastSets.firstWhereOrNull((pastSet) => pastSet.id == setId);
   }
 
-  void addSetForProcedure({required String procedureId, required List<SetDto> pastSets}) {
-    int procedureIndex = _indexWhereProcedure(procedureId: procedureId);
+  void addSetForExerciseLog({required String exerciseLogId, required List<SetDto> pastSets}) {
+    int procedureIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
 
     if (procedureIndex != -1) {
-      final currentSets = _sets[procedureId] ?? [];
+      final currentSets = _sets[exerciseLogId] ?? [];
 
       int newIndex = currentSets.isNotEmpty ? currentSets.last.index + 1 : 1;
       SetDto newSet = SetDto(1, 0, 0, SetType.working, false);
@@ -154,7 +149,7 @@ class ProceduresProvider extends ChangeNotifier {
       }
 
       // Clone the old sets for the exerciseId, or create a new list if none exist
-      List<SetDto> updatedSets = _sets[procedureId] != null ? List<SetDto>.from(_sets[procedureId]!) : [];
+      List<SetDto> updatedSets = _sets[exerciseLogId] != null ? List<SetDto>.from(_sets[exerciseLogId]!) : [];
 
       // Add the new set to the cloned list
       updatedSets.add(newSet);
@@ -163,7 +158,7 @@ class ProceduresProvider extends ChangeNotifier {
       Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
       // Update the new map with the modified list of sets
-      newMap[procedureId] = updatedSets;
+      newMap[exerciseLogId] = updatedSets;
 
       // Assign the new map to _sets to maintain immutability
       _sets = newMap;
@@ -173,16 +168,16 @@ class ProceduresProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForProcedure({required String procedureId, required int setIndex, required List<SetDto> pastSets}) {
+  void removeSetForExerciseLog({required String exerciseLogId, required int setIndex, required List<SetDto> pastSets}) {
     // Check if the exercise ID exists in the map
-    if (!_sets.containsKey(procedureId)) {
+    if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the exercise ID does not exist
       // e.g., log an error or throw an exception
       return;
     }
 
     // Clone the old sets for the exercise ID
-    List<SetDto> updatedSets = List<SetDto>.from(_sets[procedureId]!);
+    List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseLogId]!);
 
     // Check if the setIndex is valid
     if (setIndex < 0 || setIndex >= updatedSets.length) {
@@ -198,7 +193,7 @@ class ProceduresProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[procedureId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
+    newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -207,8 +202,8 @@ class ProceduresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateSetForProcedure(
-      {required String procedureId,
+  void _updateSetForExerciseLog(
+      {required String exerciseLogId,
       required int setIndex,
       required SetDto updatedSet,
       List<SetDto> pastSets = const [],
@@ -217,14 +212,14 @@ class ProceduresProvider extends ChangeNotifier {
       bool updateValue1 = false,
       bool updateValue2 = false}) {
     // Check if the exercise ID exists in the map and if the setIndex is valid
-    if (!_sets.containsKey(procedureId) || setIndex < 0 || setIndex >= (_sets[procedureId]?.length ?? 0)) {
+    if (!_sets.containsKey(exerciseLogId) || setIndex < 0 || setIndex >= (_sets[exerciseLogId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
       // e.g., log an error or throw an exception
       return;
     }
 
     // Clone the old sets for the exercise ID
-    List<SetDto> updatedSets = List<SetDto>.from(_sets[procedureId]!);
+    List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseLogId]!);
 
     // Replace the set at the specified index with the updated set
     updatedSets[setIndex] = updatedSet;
@@ -234,10 +229,10 @@ class ProceduresProvider extends ChangeNotifier {
 
     // Update the new map with the modified list of sets
     if (reorder) {
-      newMap[procedureId] = _reOrderSetTypes(
+      newMap[exerciseLogId] = _reOrderSetTypes(
           currentSets: updatedSets, pastSets: pastSets, updateValue1: updateValue1, updateValue2: updateValue2);
     } else {
-      newMap[procedureId] = updatedSets;
+      newMap[exerciseLogId] = updatedSets;
     }
     _sets = newMap;
 
@@ -268,46 +263,46 @@ class ProceduresProvider extends ChangeNotifier {
     }).toList();
   }
 
-  void updateWeight({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateWeight({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateReps({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateReps({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDuration({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateDuration({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
   }
 
-  void updateDistance({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateDistance({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void updateSetType(
-      {required String procedureId,
+      {required String exerciseLogId,
       required int setIndex,
       required SetDto setDto,
       required List<SetDto> pastSets,
       required bool updateValue1,
       required bool updateValue2}) {
-    _updateSetForProcedure(
-        procedureId: procedureId, setIndex: setIndex, updatedSet: setDto, pastSets: pastSets, reorder: true);
+    _updateSetForExerciseLog(
+        exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto, pastSets: pastSets, reorder: true);
   }
 
-  void updateSetCheck({required String procedureId, required int setIndex, required SetDto setDto}) {
-    _updateSetForProcedure(procedureId: procedureId, setIndex: setIndex, updatedSet: setDto);
+  void updateSetCheck({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
   }
 
   void onClearProvider() {
-    _procedures = [];
+    _exerciseLogs = [];
     _sets = <String, List<SetDto>>{};
   }
 
   /// Helper functions
 
-  ProcedureDto _createProcedure(Exercise exercise, {String? notes}) {
-    return ProcedureDto(const Uuid().v4(), "", exercise, notes ?? "", []);
+  ExerciseLogDto _createProcedure(Exercise exercise, {String? notes}) {
+    return ExerciseLogDto(const Uuid().v4(), "", exercise, notes ?? "", [], null);
   }
 
   List<SetDto> completedSets() {
@@ -317,7 +312,7 @@ class ProceduresProvider extends ChangeNotifier {
   double totalWeight() {
     double totalWeight = 0.0;
 
-    for (var procedure in _procedures) {
+    for (var procedure in _exerciseLogs) {
       final exerciseType = ExerciseType.fromString(procedure.exercise.type);
 
       for (var set in procedure.sets) {
@@ -336,30 +331,30 @@ class ProceduresProvider extends ChangeNotifier {
 
   void _removeSuperSet({required String superSetId}) {
     // Create a new list where modifications will be made
-    List<ProcedureDto> updatedProcedures = [];
+    List<ExerciseLogDto> updatedexerciseLogs = [];
 
-    // Iterate over the original procedures list
-    for (ProcedureDto procedure in _procedures) {
+    // Iterate over the original exerciseLogs list
+    for (ExerciseLogDto procedure in _exerciseLogs) {
       if (procedure.superSetId == superSetId) {
         // Create a new ProcedureDto with an updated superSetId
-        updatedProcedures.add(procedure.copyWith(superSetId: ""));
+        updatedexerciseLogs.add(procedure.copyWith(superSetId: ""));
       } else {
         // Add the original ProcedureDto to the new list
-        updatedProcedures.add(procedure);
+        updatedexerciseLogs.add(procedure);
       }
     }
 
-    // Update the _procedures with the new list
-    _procedures = updatedProcedures;
+    // Update the _exerciseLogs with the new list
+    _exerciseLogs = updatedexerciseLogs;
   }
 
-  int _indexWhereProcedure({required String procedureId}) {
-    return _procedures.indexWhere((procedure) => procedure.id == procedureId);
+  int _indexWhereExerciseLog({required String exerciseLogId}) {
+    return _exerciseLogs.indexWhere((procedure) => procedure.id == exerciseLogId);
   }
 
-  UnsavedChangesMessageDto? hasDifferentProceduresLength(
-      {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
-    final int difference = procedures2.length - procedures1.length;
+  UnsavedChangesMessageDto? hasDifferentExerciseLogsLength(
+      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+    final int difference = exerciseLog2.length - exerciseLog1.length;
 
     if (difference > 0) {
       return UnsavedChangesMessageDto(
@@ -373,12 +368,12 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   UnsavedChangesMessageDto? hasDifferentSetsLength(
-      {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     int addedSetsCount = 0;
     int removedSetsCount = 0;
 
-    for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+    for (ExerciseLogDto proc1 in exerciseLog1) {
+      ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
 
       if (matchingProc2 == null) continue;
 
@@ -406,13 +401,13 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   UnsavedChangesMessageDto? hasSetTypeChange({
-    required List<ProcedureDto> procedures1,
-    required List<ProcedureDto> procedures2,
+    required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2,
   }) {
     int changes = 0;
 
-    for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+    for (ExerciseLogDto proc1 in exerciseLog1) {
+      ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
 
       if (matchingProc2 == null) continue;
 
@@ -430,11 +425,11 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   UnsavedChangesMessageDto? hasExercisesChanged({
-    required List<ProcedureDto> procedures1,
-    required List<ProcedureDto> procedures2,
+    required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2,
   }) {
-    Set<String> exerciseIds1 = procedures1.map((p) => p.exercise.id).toSet();
-    Set<String> exerciseIds2 = procedures2.map((p) => p.exercise.id).toSet();
+    Set<String> exerciseIds1 = exerciseLog1.map((p) => p.exercise.id).toSet();
+    Set<String> exerciseIds2 = exerciseLog2.map((p) => p.exercise.id).toSet();
 
     int changes = exerciseIds1.difference(exerciseIds2).length;
 
@@ -445,13 +440,13 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   UnsavedChangesMessageDto? hasSuperSetIdChanged({
-    required List<ProcedureDto> procedures1,
-    required List<ProcedureDto> procedures2,
+    required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2,
   }) {
     Set<String> superSetIds1 =
-        procedures1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+        exerciseLog1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
     Set<String> superSetIds2 =
-        procedures2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+        exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
 
     final changes = superSetIds2.difference(superSetIds1).length;
 
@@ -461,13 +456,13 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   UnsavedChangesMessageDto? hasSetValueChanged({
-    required List<ProcedureDto> procedures1,
-    required List<ProcedureDto> procedures2,
+    required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2,
   }) {
     int changes = 0;
 
-    for (ProcedureDto proc1 in procedures1) {
-      ProcedureDto? matchingProc2 = procedures2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+    for (ExerciseLogDto proc1 in exerciseLog1) {
+      ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
 
       if (matchingProc2 == null) continue;
 
@@ -486,7 +481,7 @@ class ProceduresProvider extends ChangeNotifier {
   }
 
   void reset() {
-    _procedures.clear();
+    _exerciseLogs.clear();
     _sets.clear();
     notifyListeners();
   }
