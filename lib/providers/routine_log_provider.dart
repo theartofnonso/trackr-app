@@ -68,15 +68,15 @@ class RoutineLogProvider with ChangeNotifier {
     for (RoutineLog log in _logs) {
       final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
       for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
-        final exerciseLogs = map[exerciseLog.id] ?? [];
+        final exerciseId = exerciseLog.exercise.id;
+        final exerciseLogs = map[exerciseId] ?? [];
         exerciseLogs.add(exerciseLog);
         exerciseLogs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        map.putIfAbsent(exerciseLog.id, () => exerciseLogs);
+        map.putIfAbsent(exerciseId, () => exerciseLogs);
       }
     }
 
     _exerciseLogs = map;
-
   }
 
   RoutineLog? lastLog(String id) {
