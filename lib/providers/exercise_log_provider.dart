@@ -27,8 +27,8 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void _loadSets() {
-    for (var procedure in _exerciseLogs) {
-      _sets[procedure.id] = procedure.sets;
+    for (var exerciseLog in _exerciseLogs) {
+      _sets[exerciseLog.id] = exerciseLog.sets;
     }
   }
 
@@ -40,7 +40,7 @@ class ExerciseLogProvider extends ChangeNotifier {
       // Find the matching sets based on exerciseId and add them to the new exerciseLog
       List<SetDto> matchingSets = _sets[exerciseLog.id] ?? [];
 
-      // Create a new instance of ProcedureDto with existing data
+      // Create a new instance of exerciseLogDto with existing data
       ExerciseLogDto newLog = exerciseLog.copyWith(sets: matchingSets);
 
       // Add the new exerciseLog to the merged list
@@ -51,7 +51,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void addExerciseLogs({required List<Exercise> exercises}) {
-    final logsToAdd = exercises.map((exercise) => _createProcedure(exercise)).toList();
+    final logsToAdd = exercises.map((exercise) => _createexerciseLog(exercise)).toList();
     _exerciseLogs = [..._exerciseLogs, ... logsToAdd];
     notifyListeners();
   }
@@ -71,13 +71,13 @@ class ExerciseLogProvider extends ChangeNotifier {
 
       _exerciseLogs = [...exerciseLogs];
 
-      _removeAllSetsForProcedure(exerciseLogId: logId);
+      _removeAllSetsForExerciseLog(exerciseLogId: logId);
 
       notifyListeners();
     }
   }
 
-  void _removeAllSetsForProcedure({required String exerciseLogId}) {
+  void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
     // Check if the key exists in the map
     if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the key does not exist
@@ -95,24 +95,24 @@ class ExerciseLogProvider extends ChangeNotifier {
     _sets = newMap;
   }
 
-  void updateProcedureNotes({required String exerciseLogId, required String value}) {
-    final procedureIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
-    final procedure = _exerciseLogs[procedureIndex];
-    _exerciseLogs[procedureIndex] = procedure.copyWith(notes: value);
+  void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
+    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+    final exerciseLog = _exerciseLogs[exerciseLogIndex];
+    _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
     notifyListeners();
   }
 
   void superSetExerciseLogs(
       {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
-    final firstProcedureIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
-    final secondProcedureIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
+    final firstexerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
+    final secondexerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
 
-    if (firstProcedureIndex != -1 && secondProcedureIndex != -1) {
+    if (firstexerciseLogIndex != -1 && secondexerciseLogIndex != -1) {
       List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-      updatedExerciseLogs[firstProcedureIndex] = updatedExerciseLogs[firstProcedureIndex].copyWith(superSetId: superSetId);
-      updatedExerciseLogs[secondProcedureIndex] =
-          updatedExerciseLogs[secondProcedureIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[firstexerciseLogIndex] = updatedExerciseLogs[firstexerciseLogIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[secondexerciseLogIndex] =
+          updatedExerciseLogs[secondexerciseLogIndex].copyWith(superSetId: superSetId);
 
       _exerciseLogs = [...updatedExerciseLogs];
 
@@ -130,9 +130,9 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void addSetForExerciseLog({required String exerciseLogId, required List<SetDto> pastSets}) {
-    int procedureIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
 
-    if (procedureIndex != -1) {
+    if (exerciseLogIndex != -1) {
       final currentSets = _sets[exerciseLogId] ?? [];
 
       int newIndex = currentSets.isNotEmpty ? currentSets.last.index + 1 : 1;
@@ -301,7 +301,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  ExerciseLogDto _createProcedure(Exercise exercise, {String? notes}) {
+  ExerciseLogDto _createexerciseLog(Exercise exercise, {String? notes}) {
     return ExerciseLogDto(const Uuid().v4(), "", exercise, notes ?? "", [], null);
   }
 
@@ -312,10 +312,10 @@ class ExerciseLogProvider extends ChangeNotifier {
   double totalWeight() {
     double totalWeight = 0.0;
 
-    for (var procedure in _exerciseLogs) {
-      final exerciseType = ExerciseType.fromString(procedure.exercise.type);
+    for (var exerciseLog in _exerciseLogs) {
+      final exerciseType = ExerciseType.fromString(exerciseLog.exercise.type);
 
-      for (var set in procedure.sets) {
+      for (var set in exerciseLog.sets) {
         if (set.checked) {
           double weightPerSet = 0.0;
           if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight) {
@@ -334,13 +334,13 @@ class ExerciseLogProvider extends ChangeNotifier {
     List<ExerciseLogDto> updatedexerciseLogs = [];
 
     // Iterate over the original exerciseLogs list
-    for (ExerciseLogDto procedure in _exerciseLogs) {
-      if (procedure.superSetId == superSetId) {
-        // Create a new ProcedureDto with an updated superSetId
-        updatedexerciseLogs.add(procedure.copyWith(superSetId: ""));
+    for (ExerciseLogDto exerciseLog in _exerciseLogs) {
+      if (exerciseLog.superSetId == superSetId) {
+        // Create a new exerciseLogDto with an updated superSetId
+        updatedexerciseLogs.add(exerciseLog.copyWith(superSetId: ""));
       } else {
-        // Add the original ProcedureDto to the new list
-        updatedexerciseLogs.add(procedure);
+        // Add the original exerciseLogDto to the new list
+        updatedexerciseLogs.add(exerciseLog);
       }
     }
 
@@ -349,7 +349,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   int _indexWhereExerciseLog({required String exerciseLogId}) {
-    return _exerciseLogs.indexWhere((procedure) => procedure.id == exerciseLogId);
+    return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
   UnsavedChangesMessageDto? hasDifferentExerciseLogsLength(
@@ -358,10 +358,10 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     if (difference > 0) {
       return UnsavedChangesMessageDto(
-          message: "Added $difference exercise(s)", type: UnsavedChangesMessageType.proceduresLength);
+          message: "Added $difference exercise(s)", type: UnsavedChangesMessageType.exerciseLogLength);
     } else if (difference < 0) {
       return UnsavedChangesMessageDto(
-          message: "Removed ${-difference} exercise(s)", type: UnsavedChangesMessageType.proceduresLength);
+          message: "Removed ${-difference} exercise(s)", type: UnsavedChangesMessageType.exerciseLogLength);
     }
 
     return null; // No change in length
@@ -435,7 +435,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     return changes > 0
         ? UnsavedChangesMessageDto(
-            message: "Changed $changes exercise(s)", type: UnsavedChangesMessageType.proceduresChange)
+            message: "Changed $changes exercise(s)", type: UnsavedChangesMessageType.exerciseLogChange)
         : null;
   }
 

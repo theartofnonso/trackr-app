@@ -164,7 +164,7 @@ class _ProcedureWidgetState extends State<ProcedureWidget> {
 
   void _updateProcedureNotes({required String value}) {
     Provider.of<ExerciseLogProvider>(context, listen: false)
-        .updateProcedureNotes(exerciseLogId: widget.procedureDto.id, value: value);
+        .updateExerciseLogNotes(exerciseLogId: widget.procedureDto.id, value: value);
   }
 
   void _addSet() {

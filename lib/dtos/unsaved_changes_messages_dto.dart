@@ -1,6 +1,6 @@
 
 enum UnsavedChangesMessageType {
-  setsLength, proceduresLength, proceduresChange, supersetId, setType, setValue,
+  setsLength, exerciseLogLength, exerciseLogChange, supersetId, setType, setValue,
 }
 
 class UnsavedChangesMessageDto {
