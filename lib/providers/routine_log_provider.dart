@@ -18,7 +18,12 @@ import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
+
+  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+
   List<RoutineLog> _logs = [];
+
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
@@ -53,6 +58,25 @@ class RoutineLogProvider with ChangeNotifier {
       _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     }
+    _loadExerciseLogs();
+  }
+
+  void _loadExerciseLogs() {
+
+    Map<String, List<ExerciseLogDto>> map = {};
+
+    for (RoutineLog log in _logs) {
+      final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
+      for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
+        final exerciseLogs = map[exerciseLog.id] ?? [];
+        exerciseLogs.add(exerciseLog);
+        exerciseLogs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        map.putIfAbsent(exerciseLog.id, () => exerciseLogs);
+      }
+    }
+
+    _exerciseLogs = map;
+
   }
 
   RoutineLog? lastLog(String id) {
@@ -278,14 +302,6 @@ class RoutineLogProvider with ChangeNotifier {
   List<RoutineLog> logsWhereDateRange(DateTimeRange range, List<RoutineLog> logs) {
     final values = logs;
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
-  }
-
-  List<RoutineLog> logsSince(int days, {List<RoutineLog>? logs}) {
-    final values = logs ?? _logs;
-    DateTime now = DateTime.now();
-    DateTime then = now.subtract(Duration(days: days));
-    final dateRange = DateTimeRange(start: then, end: now);
-    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange)).toList();
   }
 
   RoutineLog? logWhere({required String id}) {

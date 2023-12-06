@@ -11,7 +11,9 @@ import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
 
 class ExerciseLogProvider extends ChangeNotifier {
+
   List<ExerciseLogDto> _exerciseLogs = [];
+
   Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
 
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
@@ -51,7 +53,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void addExerciseLogs({required List<Exercise> exercises}) {
-    final logsToAdd = exercises.map((exercise) => _createexerciseLog(exercise)).toList();
+    final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
     _exerciseLogs = [..._exerciseLogs, ... logsToAdd];
     notifyListeners();
   }
@@ -301,8 +303,8 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  ExerciseLogDto _createexerciseLog(Exercise exercise, {String? notes}) {
-    return ExerciseLogDto(const Uuid().v4(), "", exercise, notes ?? "", [], null);
+  ExerciseLogDto _createExerciseLog(Exercise exercise, {String? notes}) {
+    return ExerciseLogDto(const Uuid().v4(), "", exercise, notes ?? "", [], DateTime.now());
   }
 
   List<SetDto> completedSets() {

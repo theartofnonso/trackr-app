@@ -9,7 +9,7 @@ class ExerciseLogDto {
   final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
-  final DateTime? createdAt;
+  final DateTime createdAt;
 
   ExerciseLogDto(this.id, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
 
@@ -43,7 +43,7 @@ class ExerciseLogDto {
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    return ExerciseLogDto(const Uuid().v4(), superSetId, exercise, notes, sets, null);
+    return ExerciseLogDto(const Uuid().v4(), superSetId, exercise, notes, sets, DateTime.now());
   }
 
   @override
