@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
-import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -186,9 +186,9 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     return procedures
         .map((procedure) => Column(
               children: [
-                ProcedureWidget(
-                  procedureDto: procedure,
-                  otherSuperSetProcedureDto: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                ExerciseLogWidget(
+                  exerciseLog: procedure,
+                  superSet: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                 ),
                 const SizedBox(height: 18)
               ],

@@ -257,20 +257,19 @@ class RoutineLogProvider with ChangeNotifier {
     return exerciseLogs.reversed.expand((log) => log.sets).toList();
   }
 
-  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
-    bool hasMatchingBodyPart(ExerciseLogDto exerciseLogDto) {
-      final primaryMuscle = MuscleGroup.fromString(exerciseLogDto.exercise.primaryMuscle);
+  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+    bool hasMatchingBodyPart(ExerciseLogDto log) {
+      final primaryMuscle = MuscleGroup.fromString(log.exercise.primaryMuscle);
       return primaryMuscle.family == muscleGroupFamily;
     }
 
-    // return _exerciseLogs
-    //     .where((log) => logany(hasMatchingBodyPart))
-    //     .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
-    //     .expand((log) => log.procedures.where(hasMatchingBodyPart))
-    //     .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
-    //     .expand((procedure) => procedure.sets)
-    //     .toList();
-    return [];
+    List<List<ExerciseLogDto>> allLogs = _exerciseLogs.values.toList();
+
+    return allLogs.flattened
+        .where((log) => hasMatchingBodyPart(log))
+        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
+        .expand((log) => log.sets)
+        .toList();
   }
 
   List<RoutineLog> logsWhereDate({required DateTime dateTime}) {

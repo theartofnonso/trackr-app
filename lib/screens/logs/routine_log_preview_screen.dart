@@ -9,7 +9,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -204,9 +204,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return procedures
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: ProcedureWidget(
-                procedureDto: procedure,
-                otherSuperSetProcedureDto:
+              child: ExerciseLogWidget(
+                exerciseLog: procedure,
+                superSet:
                     whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),

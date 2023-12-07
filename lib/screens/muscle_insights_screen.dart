@@ -83,7 +83,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
     // Count the occurrences of each MuscleGroup
     for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
       frequencyMap[muscleGroupFamily] = routineLogProvider
-          .setDtosForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
+          .setsForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
           .length;
     }
 

@@ -11,23 +11,23 @@ import '../preview/set_headers/duration_set_header.dart';
 import '../preview/set_headers/reps_set_header.dart';
 import '../preview/set_headers/weighted_set_header.dart';
 
-class ProcedureWidget extends StatelessWidget {
-  final ExerciseLogDto procedureDto;
-  final ExerciseLogDto? otherSuperSetProcedureDto;
+class ExerciseLogWidget extends StatelessWidget {
+  final ExerciseLogDto exerciseLog;
+  final ExerciseLogDto? superSet;
   final bool readOnly;
 
-  const ProcedureWidget({
+  const ExerciseLogWidget({
     super.key,
-    required this.procedureDto,
-    required this.otherSuperSetProcedureDto,
+    required this.exerciseLog,
+    required this.superSet,
     this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final otherProcedureDto = otherSuperSetProcedureDto;
+    final otherSuperSet = superSet;
 
-    final exerciseString = procedureDto.exercise.type;
+    final exerciseString = exerciseLog.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseString);
 
     return Column(
@@ -41,23 +41,23 @@ class ProcedureWidget extends StatelessWidget {
             onTap: () {
               if (!readOnly) {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => HomeScreen(exercise: procedureDto.exercise)));
+                    MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
               }
             },
-            title: Text(procedureDto.exercise.name, style: Theme.of(context).textTheme.labelLarge),
-            subtitle: otherProcedureDto != null
+            title: Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.labelLarge),
+            subtitle: otherSuperSet != null
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text("with ${otherProcedureDto.exercise.name}",
+                        child: Text("with ${otherSuperSet.exercise.name}",
                             style: GoogleFonts.lato(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
                       )
                     : null,
           ),
         ),
-        procedureDto.notes.isNotEmpty
+        exerciseLog.notes.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(procedureDto.notes,
+                child: Text(exerciseLog.notes,
                     style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontSize: 15)),
               )
             : const SizedBox.shrink(),
@@ -71,7 +71,7 @@ class ProcedureWidget extends StatelessWidget {
           ExerciseType.durationAndDistance => const DurationDistanceSetHeader(),
         },
         const SizedBox(height: 8),
-        ...setsToWidgets(type: ExerciseType.fromString(procedureDto.exercise.type), sets: procedureDto.sets),
+        ...setsToWidgets(type: ExerciseType.fromString(exerciseLog.exercise.type), sets: exerciseLog.sets),
       ],
     );
   }
