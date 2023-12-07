@@ -4,6 +4,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/profile/profile_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../providers/routine_log_provider.dart';
 import '../shared_prefs.dart';
@@ -58,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    SharedPrefs().firstLaunch = false;
     WidgetsBinding.instance.addObserver(this);
+    loadAppData(context);
   }
 
   @override
