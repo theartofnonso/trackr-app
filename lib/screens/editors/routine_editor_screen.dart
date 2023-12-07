@@ -23,7 +23,7 @@ import '../../dtos/unsaved_changes_messages_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
-import '../../widgets/routine/editor/procedure_widget.dart';
+import '../../widgets/routine/editor/exercise_log_widget.dart';
 import '../exercise/exercise_library_screen.dart';
 
 enum RoutineEditorMode { edit, log }
@@ -577,17 +577,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                           itemBuilder: (BuildContext context, int index) {
                             final procedure = procedures[index];
                             final procedureId = procedure.id;
-                            return ProcedureWidget(
-                                procedureDto: procedure,
+                            return ExerciseLogWidget(
+                                exerciseLogDto: procedure,
                                 editorType: widget.mode,
-                                otherSuperSetProcedureDto:
+                                superSet:
                                     whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
-                                onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
+                                onRemoveLog: () => _removeProcedure(procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                                 onCache: _cacheRoutineLog,
-                                onReOrderProcedures: _reOrderProcedures);
+                                onReOrderLogs: _reOrderProcedures);
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
                           itemCount: procedures.length)),
