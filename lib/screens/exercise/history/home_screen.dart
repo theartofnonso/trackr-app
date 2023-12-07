@@ -12,7 +12,6 @@ import 'package:tracker_app/screens/settings_screen.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../models/Exercise.dart';
-import '../../../models/RoutineLog.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/snackbar_utils.dart';
@@ -157,11 +156,17 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 /// Highest value across all [RoutineLogDto]
+///
+
+List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required Exercise exercise}) {
+  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  return pastLogs.reversed.toList();
+}
 
 (String, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
   SetDto heaviestSet = SetDto(0, 0, 0, SetType.working, false);
   String logId = "";
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   for (var log in pastLogs) {
     for (var set in log.sets) {
       final volume = set.value1 * set.value2;
@@ -180,7 +185,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 (String, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
   double heaviestWeight = 0;
   String logId = "";
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   for (var log in pastLogs) {
     for (var set in log.sets) {
       final weight = set.value1.toDouble();
@@ -196,12 +201,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 (String, int) _highestReps({required BuildContext context, required Exercise exercise}) {
   int highestReps = 0;
   String logId = "";
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   for (var log in pastLogs) {
     final reps = highestRepsForLog(exerciseLog: log);
     if (reps > highestReps) {
       highestReps = reps;
-      logId = log.id;
+      logId = log.routineLogId;
     }
   }
   return (logId, highestReps);
@@ -210,12 +215,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 (String, int) _totalReps({required BuildContext context, required Exercise exercise}) {
   int mostReps = 0;
   String logId = "";
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   for (var log in pastLogs) {
     final reps = totalRepsForLog(exerciseLog: log);
     if (reps > mostReps) {
       mostReps = reps;
-      logId = log.id;
+      logId = log.routineLogId;
     }
   }
   return (logId, mostReps);
@@ -224,12 +229,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 (String, Duration) _longestDuration({required BuildContext context, required Exercise exercise}) {
   Duration longestDuration = Duration.zero;
   String logId = "";
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   for (var log in pastLogs) {
     final duration = longestDurationPerLog(exerciseLog: log);
     if (duration > longestDuration) {
       longestDuration = duration;
-      logId = "log.id";
+      logId = log.routineLogId;
     }
   }
   return (logId, longestDuration);
@@ -238,12 +243,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 (String, double) _longestDistance({required BuildContext context, required Exercise exercise}) {
   double longestDistance = 0;
   String logId = "";
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   for (var log in pastLogs) {
     final distance = longestDistancePerLog(exerciseLog: log);
     if (distance > longestDistance) {
       longestDistance = distance;
-      logId = "log.id";
+      logId = log.routineLogId;
     }
   }
   return (logId, longestDistance);
