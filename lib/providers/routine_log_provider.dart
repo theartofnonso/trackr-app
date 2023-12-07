@@ -77,6 +77,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
 
     _exerciseLogs = map;
+
   }
 
   RoutineLog? lastLog(String id) {

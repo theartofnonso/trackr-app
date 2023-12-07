@@ -107,15 +107,15 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   void superSetExerciseLogs(
       {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
-    final firstexerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
-    final secondexerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
+    final firstExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
+    final secondExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
 
-    if (firstexerciseLogIndex != -1 && secondexerciseLogIndex != -1) {
+    if (firstExerciseLogIndex != -1 && secondExerciseLogIndex != -1) {
       List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-      updatedExerciseLogs[firstexerciseLogIndex] = updatedExerciseLogs[firstexerciseLogIndex].copyWith(superSetId: superSetId);
-      updatedExerciseLogs[secondexerciseLogIndex] =
-          updatedExerciseLogs[secondexerciseLogIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[firstExerciseLogIndex] = updatedExerciseLogs[firstExerciseLogIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[secondExerciseLogIndex] =
+          updatedExerciseLogs[secondExerciseLogIndex].copyWith(superSetId: superSetId);
 
       _exerciseLogs = [...updatedExerciseLogs];
 
@@ -255,10 +255,10 @@ class ExerciseLogProvider extends ChangeNotifier {
       final pastSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets);
       SetDto newSet = set;
       if (updateValue1 && pastSet != null) {
-        newSet = pastSet.copyWith(value2: set.value2);
+        newSet = pastSet.copyWith(value1: set.value1);
       }
       if (updateValue2 && pastSet != null) {
-        newSet = pastSet.copyWith(value1: set.value1);
+        newSet = pastSet.copyWith(value2: set.value2);
       }
 
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
