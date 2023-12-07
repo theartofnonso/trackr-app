@@ -15,6 +15,7 @@ void navigateToRoutineEditor({required BuildContext context, Routine? routine, R
     if (mode == RoutineEditorMode.log) {
       final shouldClearCache = result?["clear"] ?? false;
       if (shouldClearCache) {
+        print(shouldClearCache);
         Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
       }
     }

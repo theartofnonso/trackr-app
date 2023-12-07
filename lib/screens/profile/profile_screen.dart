@@ -6,6 +6,9 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';
@@ -82,7 +85,8 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
                   cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
-                  RichText(
+                  if(logs.isNotEmpty)
+                    RichText(
                     text: TextSpan(
                       style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
                       // This gets the default style
@@ -101,10 +105,13 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
+                    const SizedBox(height: 10),
+                  if(logs.isNotEmpty)
+                    Text(
                       "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
                       style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                  if(logs.isEmpty)
+                    const ListTileEmptyState(),
                   const SizedBox(height: 20),
                   Theme(
                     data: ThemeData(splashColor: tealBlueLight),

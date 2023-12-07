@@ -201,53 +201,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _navigateBackAndClearCache();
   }
 
-  void _updateRoutine({required Routine routine}) {
+  void _updateRoutine() {
     if (!_validateRoutineInputs()) return;
-
-    showAlertDialog(
-        context: context,
-        message: "Update workout?",
-        leftAction: Navigator.of(context).pop,
-        rightAction: () {
-          Navigator.of(context).pop();
-          _doUpdateRoutine(routine: routine);
-        },
-        leftActionLabel: 'Cancel',
-        rightActionLabel: 'Update');
-  }
-
-  void _updateRoutineLog({required RoutineLog routineLog}) {
-    if (!_validateRoutineInputs()) return;
-
-    showAlertDialog(
-        context: context,
-        message: "Update log?",
-        leftAction: Navigator.of(context).pop,
-        rightAction: () {
-          Navigator.of(context).pop();
-          _doUpdateRoutineLog(routineLog: routineLog);
-        },
-        leftActionLabel: 'Cancel',
-        rightActionLabel: 'Update');
-  }
-
-  void _doUpdate() {
-    final previousRoutine = _routine;
-    final previousRoutineLog = _routineLog;
-
-    if (previousRoutine != null) {
-      _updateRoutine(routine: previousRoutine);
-    } else {
-      if (previousRoutineLog != null) {
-        _updateRoutineLog(routineLog: previousRoutineLog);
-      }
+    final routine = _routine;
+    if(routine != null) {
+      showAlertDialog(
+          context: context,
+          message: "Update workout?",
+          leftAction: Navigator.of(context).pop,
+          rightAction: () {
+            Navigator.of(context).pop();
+            _doUpdateRoutine(routine: routine);
+          },
+          leftActionLabel: 'Cancel',
+          rightActionLabel: 'Update');
     }
   }
 
-  void _doUpdateRoutine({required Routine routine, List<ExerciseLogDto>? procedures}) async {
+  void _doUpdateRoutine({required Routine routine}) async {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final listOfProcedures = procedureProvider.mergeSetsIntoExerciseLogs();
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-    final listOfProcedures = procedures ?? procedureProvider.mergeSetsIntoExerciseLogs();
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
@@ -260,29 +234,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to update workout");
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final procedures = procedureProvider
-        .mergeSetsIntoExerciseLogs()
-        .map((procedure) => procedure.copyWith(sets: procedure.sets.map((set) => set.copyWith(checked: true)).toList()))
-        .toList();
-    _toggleLoadingState();
-    try {
-      final updatedRoutineLog = routineLog.copyWith(
-          name: _routineNameController.text.trim(),
-          notes: _routineNotesController.text.trim(),
-          procedures: procedures.map((procedure) => procedure.toJson()).toList(),
-          updatedAt: TemporalDateTime.now());
-      await routineLogProvider.updateLog(log: updatedRoutineLog);
-      if (mounted) Navigator.of(context).pop();
-    } catch (e) {
-      _handleRoutineCreationError("Unable to update log");
     } finally {
       _toggleLoadingState();
     }
@@ -471,7 +422,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                 leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
                 actions: [
                   CTextButton(
-                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                      onPressed: _canUpdate() ? _updateRoutine : _createRoutine,
                       label: _canUpdate() ? "Update" : "Save",
                       buttonColor: Colors.transparent,
                       loading: _loading,
@@ -659,13 +610,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
     final changes = _checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (changes.isNotEmpty) {
-      _displayNotificationsDialog(exerciseLog2, changes);
+      _displayNotificationsDialog(changes);
     } else {
       _doCreateRoutineLog();
     }
   }
 
-  void _displayNotificationsDialog(List<ExerciseLogDto> exerciseLog2, List<UnsavedChangesMessageDto> changes) {
+  void _displayNotificationsDialog(List<UnsavedChangesMessageDto> changes) {
     displayBottomSheet(
         context: context,
         child: _NotificationsDialog(

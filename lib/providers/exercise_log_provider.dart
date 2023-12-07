@@ -43,7 +43,7 @@ class ExerciseLogProvider extends ChangeNotifier {
       List<SetDto> matchingSets = _sets[exerciseLog.id] ?? [];
 
       // Create a new instance of exerciseLogDto with existing data
-      ExerciseLogDto newLog = exerciseLog.copyWith(sets: matchingSets);
+      ExerciseLogDto newLog = exerciseLog.copyWith(sets: matchingSets.map((set) => set.copyWith(checked: false)).toList());
 
       // Add the new exerciseLog to the merged list
       mergedLogs.add(newLog);

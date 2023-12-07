@@ -50,7 +50,6 @@ class RoutineProvider with ChangeNotifier {
     final response = await Amplify.API.mutate(request: request).response;
     final updatedRoutine = response.data;
     if (updatedRoutine != null) {
-      print(updatedRoutine);
       final index = _indexWhereRoutine(id: routine.id);
       _routines[index] = routine;
       notifyListeners();
