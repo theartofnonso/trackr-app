@@ -672,6 +672,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             onUpdate: () {
               final routine = _routine;
               if (routine != null) {
+                Navigator.of(context).pop();
                 _doUpdateRoutine(routine: routine);
               }
             },

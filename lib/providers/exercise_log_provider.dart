@@ -12,7 +12,6 @@ import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
 
 class ExerciseLogProvider extends ChangeNotifier {
-
   List<ExerciseLogDto> _exerciseLogs = [];
 
   Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
@@ -55,7 +54,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   void addExerciseLogs({required List<Exercise> exercises}) {
     final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
-    _exerciseLogs = [..._exerciseLogs, ... logsToAdd];
+    _exerciseLogs = [..._exerciseLogs, ...logsToAdd];
     notifyListeners();
   }
 
@@ -113,7 +112,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     if (firstExerciseLogIndex != -1 && secondExerciseLogIndex != -1) {
       List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-      updatedExerciseLogs[firstExerciseLogIndex] = updatedExerciseLogs[firstExerciseLogIndex].copyWith(superSetId: superSetId);
+      updatedExerciseLogs[firstExerciseLogIndex] =
+          updatedExerciseLogs[firstExerciseLogIndex].copyWith(superSetId: superSetId);
       updatedExerciseLogs[secondExerciseLogIndex] =
           updatedExerciseLogs[secondExerciseLogIndex].copyWith(superSetId: superSetId);
 
