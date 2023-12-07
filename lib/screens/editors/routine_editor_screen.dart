@@ -9,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/exercise_log_dto_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -183,7 +182,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         rightActionLabel: 'Finish',
         rightAction: () {
           Navigator.of(context).pop();
-          _doCreateRoutineLog();
+          _checkForUpdates();
         },
         isLeftActionDestructive: true);
   }
@@ -340,7 +339,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             procedures: procedures,
             startTime: _routineStartTime,
             createdAt: widget.createdAt,
-            routine: routine, shouldNotifyListeners: notifyListeners);
+            routine: routine,
+            shouldNotifyListeners: notifyListeners);
       });
     }
   }
@@ -398,7 +398,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     if (widget.mode == RoutineEditorMode.edit) {
       final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
       final oldProcedures = _routineLog?.procedures ?? _routine?.procedures;
-      final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json))).toList();
+      final exerciseLog1 = oldProcedures
+          ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
+          .toList();
       final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
       final unsavedChangesMessage = _checkForChanges(exerciseLog1: exerciseLog1 ?? [], exerciseLog2: exerciseLog2);
       if (unsavedChangesMessage.isNotEmpty) {
@@ -614,8 +616,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
     _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
 
-    _checkForUpdates();
-
     _cacheRoutineLog(notifyListeners: true);
   }
 
@@ -624,7 +624,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _fetchRoutineLog() {
-    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: widget.routineLogId ?? "");
+    _routineLog =
+        Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: widget.routineLogId ?? "");
     final cachedLog = Provider.of<RoutineLogProvider>(context, listen: false).cachedLog;
     if (cachedLog != null && widget.mode == RoutineEditorMode.log) {
       _routineLog = cachedLog;
@@ -640,56 +641,41 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _initializeProcedureData() {
     final procedureJsons = _routineLog?.procedures ?? _routine?.procedures;
-    final procedures = procedureJsons?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json))).toList();
+    final procedures = procedureJsons
+        ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
+        .toList();
     if (procedures != null) {
       Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
     }
   }
 
-  void _checkForUpdates() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final routine = _routine;
-      if (routine == null) return;
+  void _checkForUpdates() async {
+    final oldProcedures = _routine?.procedures;
+    final exerciseLog1 = oldProcedures
+            ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
+            .toList() ??
+        [];
+    final exerciseLog2 = Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs();
 
-      final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
-      if (lastLog == null) return;
-
-      final exerciseLog1 = Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs();
-      final exerciseLog2 = await _decodeAndRefreshProcedures(lastLog.procedures);
-
-      final changes = _checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-      if (changes.isNotEmpty) {
-        _displayNotificationsDialog(routine, exerciseLog2, changes);
-      }
-    });
+    final changes = _checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    if (changes.isNotEmpty) {
+      _displayNotificationsDialog(exerciseLog2, changes);
+    } else {
+      _doCreateRoutineLog();
+    }
   }
 
-  Future<List<ExerciseLogDto>> _decodeAndRefreshProcedures(List<String> procedureJsons) async {
-    return procedureJsons
-        .map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
-        .map((procedure) => procedure.refreshSets())
-        .toList();
-  }
-
-  void _displayNotificationsDialog(
-      Routine routine, List<ExerciseLogDto> exerciseLog2, List<UnsavedChangesMessageDto> changes) {
+  void _displayNotificationsDialog(List<ExerciseLogDto> exerciseLog2, List<UnsavedChangesMessageDto> changes) {
     displayBottomSheet(
         context: context,
         child: _NotificationsDialog(
-            workoutName: routine.name,
             onUpdate: () {
-              _updateRoutineAndData(routine, exerciseLog2);
+              final routine = _routine;
+              if (routine != null) {
+                _doUpdateRoutine(routine: routine);
+              }
             },
             messages: changes));
-  }
-
-  void _updateRoutineAndData(Routine routine, List<ExerciseLogDto> exerciseLog2) {
-    _doUpdateRoutine(routine: routine, procedures: exerciseLog2);
-    _initializeProcedureData();
-    Provider.of<ExerciseLogProvider>(context, listen: false)
-        .loadExerciseLogs(logs: exerciseLog2, shouldNotifyListeners: true);
-    final procedureJsons = exerciseLog2.map((procedure) => procedure.toJson()).toList();
-    _routine = routine.copyWith(procedures: procedureJsons);
   }
 
   void _initializeTextControllers() {
@@ -840,11 +826,10 @@ class _RoutineLogOverview extends StatelessWidget {
 }
 
 class _NotificationsDialog extends StatelessWidget {
-  final String workoutName;
   final List<UnsavedChangesMessageDto> messages;
   final VoidCallback onUpdate;
 
-  const _NotificationsDialog({required this.workoutName, required this.onUpdate, required this.messages});
+  const _NotificationsDialog({required this.onUpdate, required this.messages});
 
   @override
   Widget build(BuildContext context) {
@@ -864,7 +849,7 @@ class _NotificationsDialog extends StatelessWidget {
           ...listTiles,
           CTextButton(
             onPressed: onUpdate,
-            label: "Update $workoutName from last log",
+            label: "Update workout",
             visualDensity: VisualDensity.standard,
           )
         ],

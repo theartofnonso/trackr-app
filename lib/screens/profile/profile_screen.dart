@@ -10,6 +10,8 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../utils/general_utils.dart';
+import '../../widgets/banners/minimised_routine_banner.dart';
+import '../../widgets/banners/pending_routines_banner.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -40,6 +42,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RoutineLogProvider>(context, listen: true);
+
+    final cachedRoutineLog = provider.cachedLog;
+    final cachedPendingLogs = provider.cachedPendingLogs;
+
     final logs = provider.logs;
     final earliestLog = logs.lastOrNull;
     final logsForTheWeek = _logsForTheWeekCount(logs: logs);
@@ -69,35 +75,33 @@ class ProfileScreen extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                        // This gets the default style
-                        children: <TextSpan>[
-                          const TextSpan(text: 'You have logged '),
-                          TextSpan(
-                              text: '$logsForTheWeek workout(s) this week,',
-                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                          TextSpan(
-                              text: ' $logsForTheMonth this month',
-                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                              text: '$logsForTheYear this year',
-                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                        "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                  ],
+                cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
+                cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
+                RichText(
+                  text: TextSpan(
+                    style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                    // This gets the default style
+                    children: <TextSpan>[
+                      const TextSpan(text: 'You have logged '),
+                      TextSpan(
+                          text: '$logsForTheWeek workout(s) this week,',
+                          style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                      TextSpan(
+                          text: ' $logsForTheMonth this month',
+                          style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                      const TextSpan(text: ' and '),
+                      TextSpan(
+                          text: '$logsForTheYear this year',
+                          style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
+                    ],
+                  ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                    "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                    style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
                 const SizedBox(height: 20),
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
