@@ -16,19 +16,6 @@ import '../../utils/navigation_utils.dart';
 import '../calendar_screen.dart';
 import '../editors/routine_editor_screen.dart';
 
-Future<void> loadData(BuildContext context) async {
-  await persistUserCredentials();
-  if (context.mounted) {
-    Provider.of<ExerciseProvider>(context, listen: false).listExercises().then((_) {
-      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
-      final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-      routineLogProvider.listRoutineLogs();
-      routineLogProvider.retrieveCachedRoutineLog(context);
-      routineLogProvider.retrieveCachedPendingRoutineLog(context);
-    });
-  }
-}
-
 class RoutineLogsScreen extends StatefulWidget {
   const RoutineLogsScreen({super.key});
 
@@ -36,7 +23,7 @@ class RoutineLogsScreen extends StatefulWidget {
   State<RoutineLogsScreen> createState() => _RoutineLogsScreenState();
 }
 
-class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindingObserver {
+class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
   void _navigateToCalendarScreen() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CalendarScreen()));
   }
@@ -86,7 +73,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                 provider.logs.isNotEmpty
                     ? Expanded(
                         child: RefreshIndicator(
-                          onRefresh: () => loadData(context),
+                          onRefresh: () => loadAppData(context),
                           child: ListView.separated(
                               padding: const EdgeInsets.only(bottom: 150),
                               itemBuilder: (BuildContext context, int index) =>
@@ -96,34 +83,13 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> with WidgetsBindi
                               itemCount: provider.logs.length),
                         ),
                       )
-                    : ListViewEmptyState(onRefresh: () => loadData(context)),
+                    : ListViewEmptyState(onRefresh: () => loadAppData(context)),
               ],
             ),
           ),
         ),
       );
     }));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    loadData(context);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs());
-    }
   }
 }
 

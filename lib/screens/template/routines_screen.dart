@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import '../../../models/Routine.dart';
@@ -10,6 +9,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/list_view_empty_state.dart';
 import '../editors/routine_editor_screen.dart';
@@ -45,7 +45,7 @@ class RoutinesScreen extends StatelessWidget {
                     routineProvider.routines.isNotEmpty
                         ? Expanded(
                             child: RefreshIndicator(
-                              onRefresh: () => loadData(context),
+                              onRefresh: () => loadAppData(context),
                               child: ListView.separated(
                                   padding: const EdgeInsets.only(bottom: 150),
                                   itemBuilder: (BuildContext context, int index) => _RoutineWidget(
@@ -56,7 +56,7 @@ class RoutinesScreen extends StatelessWidget {
                                   itemCount: routineProvider.routines.length),
                             ),
                           )
-                        : ListViewEmptyState(onRefresh: () => loadData(context)),
+                        : ListViewEmptyState(onRefresh: () => loadAppData(context)),
                   ]))));
     });
   }
