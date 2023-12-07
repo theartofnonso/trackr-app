@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,17 @@ class MuscleInsightsScreen extends StatefulWidget {
 
   @override
   State<MuscleInsightsScreen> createState() => _MuscleInsightsScreenState();
+}
+
+Color generateDecoration({required int index}) {
+  return switch(index) {
+    0 => Colors.blue,
+    1 => Colors.red,
+    2 => Colors.green,
+    3 => Colors.orange,
+    4 => Colors.purple,
+    _ => Colors.transparent,
+  };
 }
 
 class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
@@ -95,14 +107,16 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
 
   List<Widget> _muscleGroupSplitToWidgets() {
     final splitList = <Widget>[];
-    _muscleGroupFamily.forEach((muscleGroupFamily, count) {
-      final widget = Padding(
-        key: Key(muscleGroupFamily.name),
+    _muscleGroupFamily.entries.forEachIndexed((index, muscleGroupFamilyMap) {
+      final widget = Container(
         padding: const EdgeInsets.only(bottom: 8.0),
+        decoration: BoxDecoration(
+          border: Border(left: BorderSide(color: generateDecoration(index: index), width: 5.0)),
+        ),
         child: ListTile(
             dense: true,
-            title: Text(muscleGroupFamily.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-            trailing: Text("$count", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+            title: Text(muscleGroupFamilyMap.key.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+            trailing: Text("${muscleGroupFamilyMap.value}", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
       );
       splitList.add(widget);
     });
