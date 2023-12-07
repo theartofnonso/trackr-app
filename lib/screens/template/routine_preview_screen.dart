@@ -92,7 +92,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     }
 
     List<ExerciseLogDto> procedures =
-    routine.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).map((procedure) {
+    routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
       Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {

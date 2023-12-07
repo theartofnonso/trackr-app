@@ -398,7 +398,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     if (widget.mode == RoutineEditorMode.edit) {
       final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
       final oldProcedures = _routineLog?.procedures ?? _routine?.procedures;
-      final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
+      final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json))).toList();
       final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
       final unsavedChangesMessage = _checkForChanges(exerciseLog1: exerciseLog1 ?? [], exerciseLog2: exerciseLog2);
       if (unsavedChangesMessage.isNotEmpty) {
@@ -624,7 +624,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _fetchRoutineLog() {
-    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLogId ?? "");
+    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: widget.routineLogId ?? "");
     final cachedLog = Provider.of<RoutineLogProvider>(context, listen: false).cachedLog;
     if (cachedLog != null && widget.mode == RoutineEditorMode.log) {
       _routineLog = cachedLog;
@@ -640,7 +640,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _initializeProcedureData() {
     final procedureJsons = _routineLog?.procedures ?? _routine?.procedures;
-    final procedures = procedureJsons?.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
+    final procedures = procedureJsons?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json))).toList();
     if (procedures != null) {
       Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
     }
@@ -666,7 +666,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   Future<List<ExerciseLogDto>> _decodeAndRefreshProcedures(List<String> procedureJsons) async {
     return procedureJsons
-        .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
+        .map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
         .map((procedure) => procedure.refreshSets())
         .toList();
   }

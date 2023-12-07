@@ -66,12 +66,12 @@ class RoutineLogProvider with ChangeNotifier {
     Map<String, List<ExerciseLogDto>> map = {};
 
     for (RoutineLog log in _logs) {
-      final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
+      final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
       for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
         final exerciseId = exerciseLog.exercise.id;
         final exerciseLogs = map[exerciseId] ?? [];
         exerciseLogs.add(exerciseLog);
-        exerciseLogs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        exerciseLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
         map.putIfAbsent(exerciseId, () => exerciseLogs);
       }
     }
@@ -252,43 +252,25 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ExerciseLogDto> _pastProceduresForExercise({required Exercise exercise}) {
-    final mostRecentLog = _logs.firstWhereOrNull((log) {
-      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).toList();
-      List<ExerciseLogDto> filteredProcedures =
-          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
-      return filteredProcedures.isNotEmpty;
-    });
-
-    if (mostRecentLog != null) {
-      return mostRecentLog.procedures
-          .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
-          .where((procedure) => procedure.exercise.id == exercise.id)
-          .toList();
-    } else {
-      return [];
-    }
-  }
-
   List<SetDto> wherePastSets({required Exercise exercise}) {
-    final procedures = _pastProceduresForExercise(exercise: exercise);
+    final procedures = _exerciseLogs[exercise.id] ?? [];
     return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
   }
 
   List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
-    bool hasMatchingBodyPart(String procedureJson) {
-      final procedure = ExerciseLogDto.fromJson(jsonDecode(procedureJson));
-      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
+    bool hasMatchingBodyPart(ExerciseLogDto exerciseLogDto) {
+      final primaryMuscle = MuscleGroup.fromString(exerciseLogDto.exercise.primaryMuscle);
       return primaryMuscle.family == muscleGroupFamily;
     }
 
-    return logs
-        .where((log) => log.procedures.any(hasMatchingBodyPart))
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
-        .expand((log) => log.procedures.where(hasMatchingBodyPart))
-        .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
-        .expand((procedure) => procedure.sets)
-        .toList();
+    // return _exerciseLogs
+    //     .where((log) => logany(hasMatchingBodyPart))
+    //     .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
+    //     .expand((log) => log.procedures.where(hasMatchingBodyPart))
+    //     .map((json) => ExerciseLogDto.fromJson(jsonDecode(json)))
+    //     .expand((procedure) => procedure.sets)
+    //     .toList();
+    return [];
   }
 
   List<RoutineLog> logsWhereDate({required DateTime dateTime}) {
@@ -299,13 +281,9 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
   }
 
-  List<RoutineLog> logsWhereDateRange(DateTimeRange range, List<RoutineLog> logs) {
-    final values = logs;
+  List<ExerciseLogDto> logsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
+    final values = _exerciseLogs[exercise.id] ?? [];
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
-  }
-
-  RoutineLog? logWhere({required String id}) {
-    return _logs.firstWhereOrNull((dto) => dto.id == id);
   }
 
   void reset() {

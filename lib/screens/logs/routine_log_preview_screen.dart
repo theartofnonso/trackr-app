@@ -45,7 +45,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
 
     List<ExerciseLogDto> procedures =
-        log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json))).map((procedure) {
+        log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
           Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {
@@ -272,7 +272,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _saveLog(RoutineLog log) async {
     try {
-      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(jsonDecode(json)));
+      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)));
       final procedures = decodedProcedures.map((procedure) {
         final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
         return procedure.copyWith(sets: newSets);
