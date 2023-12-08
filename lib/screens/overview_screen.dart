@@ -8,13 +8,14 @@ import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 
-import '../../models/RoutineLog.dart';
-import '../../providers/routine_log_provider.dart';
-import '../../utils/general_utils.dart';
-import '../../widgets/banners/pending_routines_banner.dart';
+import '../models/RoutineLog.dart';
+import '../providers/routine_log_provider.dart';
+import '../providers/routine_provider.dart';
+import '../utils/general_utils.dart';
+import '../widgets/banners/pending_routines_banner.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class OverviewScreen extends StatelessWidget {
+  const OverviewScreen({super.key});
 
   void _navigateBack(BuildContext context) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
@@ -41,11 +42,13 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineLogProvider>(context, listen: true);
+    final routineProvider = Provider.of<RoutineProvider>(context, listen: true);
+    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final cachedPendingLogs = provider.cachedPendingLogs;
+    final cachedPendingRoutines = routineProvider.cachedPendingRoutines;
+    final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
-    final logs = provider.logs;
+    final logs = routineLogProvider.logs;
     final earliestLog = logs.lastOrNull;
     final logsForTheWeek = _logsForTheWeekCount(logs: logs);
     final logsForTheMonth = _logsForTheMonthCount(logs: logs);
@@ -75,38 +78,39 @@ class ProfileScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(), // Enable scrolling even when the content is smaller than the screen
+              physics: const AlwaysScrollableScrollPhysics(),
+              // Enable scrolling even when the content is smaller than the screen
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
-                  if(logs.isNotEmpty)
+                  if(cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty)
+                    const PendingRoutinesBanner(),
+                  if (logs.isNotEmpty)
                     RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                      // This gets the default style
-                      children: <TextSpan>[
-                        const TextSpan(text: 'You have logged '),
-                        TextSpan(
-                            text: '$logsForTheWeek workout(s) this week,',
-                            style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                        TextSpan(
-                            text: ' $logsForTheMonth this month',
-                            style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                        const TextSpan(text: ' and '),
-                        TextSpan(
-                            text: '$logsForTheYear this year',
-                            style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
-                      ],
+                      text: TextSpan(
+                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                        // This gets the default style
+                        children: <TextSpan>[
+                          const TextSpan(text: 'You have logged '),
+                          TextSpan(
+                              text: '$logsForTheWeek workout(s) this week,',
+                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                          TextSpan(
+                              text: ' $logsForTheMonth this month',
+                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                          const TextSpan(text: ' and '),
+                          TextSpan(
+                              text: '$logsForTheYear this year',
+                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
+                        ],
+                      ),
                     ),
-                  ),
-                    const SizedBox(height: 10),
-                  if(logs.isNotEmpty)
+                  const SizedBox(height: 10),
+                  if (logs.isNotEmpty)
                     Text(
-                      "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                      style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                  if(logs.isEmpty)
-                    const ListTileEmptyState(),
+                        "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                  if (logs.isEmpty) const ListTileEmptyState(),
                   const SizedBox(height: 20),
                   Theme(
                     data: ThemeData(splashColor: tealBlueLight),

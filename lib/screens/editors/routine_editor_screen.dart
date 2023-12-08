@@ -173,7 +173,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   void _doCreateRoutineLog() async {
     final routine = _routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
-    await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+    Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
         name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
         notes: routine?.notes ?? "",
@@ -181,7 +181,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         startTime: _routineStartTime,
         createdAt: widget.createdAt,
         routine: routine);
-    _navigateBackAndClearCache();
   }
 
   void _updateRoutine() {
@@ -195,6 +194,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
           rightAction: () {
             Navigator.of(context).pop();
             _doUpdateRoutine(routine: routine);
+            Navigator.of(context).pop();
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update');
@@ -212,9 +212,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
           notes: _routineNotesController.text.trim(),
           procedures: exerciseLogs.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
-
       await routineProvider.updateRoutine(routine: updatedRoutine);
-      if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to update workout");
     } finally {
@@ -346,10 +344,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         Navigator.of(context).pop();
       }
     }
-  }
-
-  void _navigateBackAndClearCache() {
-    Navigator.of(context).pop();
   }
 
   bool _canUpdate() {
@@ -571,6 +565,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
     } else {
       _doCreateRoutineLog();
+      Navigator.of(context).pop();
     }
   }
 
@@ -583,7 +578,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               final routine = _routine;
               if (routine != null) {
                 Navigator.of(context).pop();
+                _doCreateRoutineLog();
                 _doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
+                Navigator.of(context).pop();
               }
             },
             messages: changes));

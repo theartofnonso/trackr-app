@@ -117,13 +117,15 @@ DateTimeRange thisYearDateRange() {
 }
 
 Future<void> loadAppData(BuildContext context) async {
-  await persistUserCredentials();
-  if (context.mounted) {
-    Provider.of<ExerciseProvider>(context, listen: false).listExercises().then((_) {
-      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
-      final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-      routineLogProvider.listRoutineLogs();
-      routineLogProvider.retrieveCachedPendingRoutineLog(context);
-    });
-  }
+  final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+  final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
+  final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+
+  /// Retrieve pending logs
+  routineLogProvider.retrieveCachedPendingRoutineLogs(context);
+  routineProvider.retrieveCachedPendingRoutines(context);
+  exerciseProvider.listExercises().then((_) {
+    routineProvider.listRoutines();
+    routineLogProvider.listRoutineLogs();
+  });
 }

@@ -17,7 +17,7 @@ class RoutinesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RoutineProvider>(builder: (_, routineProvider, __) {
+    return Consumer<RoutineProvider>(builder: (_, provider, __) {
       return Scaffold(
           appBar: AppBar(
             title: Image.asset(
@@ -38,17 +38,17 @@ class RoutinesScreen extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                   child: Column(children: [
-                    routineProvider.routines.isNotEmpty
+                    provider.routines.isNotEmpty
                         ? Expanded(
                             child: RefreshIndicator(
                               onRefresh: () => loadAppData(context),
                               child: ListView.separated(
                                   padding: const EdgeInsets.only(bottom: 150),
                                   itemBuilder: (BuildContext context, int index) =>
-                                      _RoutineWidget(routine: routineProvider.routines[index]),
+                                      _RoutineWidget(routine: provider.routines[index]),
                                   separatorBuilder: (BuildContext context, int index) =>
                                       Divider(color: Colors.white70.withOpacity(0.1)),
-                                  itemCount: routineProvider.routines.length),
+                                  itemCount: provider.routines.length),
                             ),
                           )
                         : ListViewEmptyState(onRefresh: () => loadAppData(context)),

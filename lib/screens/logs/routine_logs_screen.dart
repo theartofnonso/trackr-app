@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
-import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 
 import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
@@ -28,7 +27,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
-      final cachedPendingLogs = provider.cachedPendingLogs;
 
       return Scaffold(
         appBar: AppBar(
@@ -62,7 +60,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
             child: Column(
               children: [
-                cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
                 provider.logs.isNotEmpty
                     ? Expanded(
                         child: RefreshIndicator(

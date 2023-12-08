@@ -267,7 +267,7 @@ class _CalendarHeader extends StatelessWidget {
                     width: 40,
                     child: Center(
                       child: Text(day,
-                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                   ))
               .toList()
@@ -338,7 +338,7 @@ class _DateWidget extends StatelessWidget {
           child: Center(
             child: Text("${dateTime.day}",
                 style:
-                    GoogleFonts.poppins(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                    GoogleFonts.lato(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),

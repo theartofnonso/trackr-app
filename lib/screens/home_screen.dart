@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/profile/profile_screen.dart';
+import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const ProfileScreen(), const RoutinesScreen(), const RoutineLogsScreen()];
+    final screens = [const OverviewScreen(), const RoutinesScreen(), const RoutineLogsScreen()];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
@@ -59,8 +59,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    SharedPrefs().firstLaunch = false;
     WidgetsBinding.instance.addObserver(this);
+    SharedPrefs().firstLaunch = false;
+    persistUserCredentials();
     loadAppData(context);
   }
 
