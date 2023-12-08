@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../../screens/muscle_insights_screen.dart';
@@ -16,30 +15,19 @@ class PieChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSegmentsNotEmpty = segments.any((entry) => entry.value > 0);
 
-    return isSegmentsNotEmpty
-        ? Container(
-            color: tealBlueDark,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1.8,
-                    child: PieChart(
-                      PieChartData(
-                        sectionsSpace: 5,
-                        centerSpaceRadius: 35,
-                        sections: showingSections(),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        : const Padding(
-            padding: EdgeInsets.symmetric(vertical: 50.0),
-            child: PieChartEmptyState(),
-          );
+    return isSegmentsNotEmpty ? AspectRatio(
+      aspectRatio: 1.8,
+      child: PieChart(
+        PieChartData(
+          sectionsSpace: 5,
+          centerSpaceRadius: 35,
+          sections: showingSections(),
+        ),
+      ),
+    ) : Container(
+      padding: isSegmentsNotEmpty ? const EdgeInsets.only(top: 22.0) : null,
+      child: const PieChartEmptyState(),
+    );
   }
 
   List<PieChartSectionData> showingSections() {
