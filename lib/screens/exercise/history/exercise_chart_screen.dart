@@ -66,7 +66,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   late SummaryType _summaryType = SummaryType.heaviestWeight;
 
-  ChartTimePeriod _selectedChartTimePeriod = ChartTimePeriod.allTime;
+  ChartTimePeriod _selectedChartTimePeriod = ChartTimePeriod.thisMonth;
 
   void _heaviestWeightPerLog() {
     final values =
@@ -167,7 +167,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     });
   }
 
-  void _recomputeChart() {
+  void _computeChart() {
     switch (_selectedChartTimePeriod) {
       case ChartTimePeriod.thisWeek:
         final thisWeek = thisWeekDateRange();
@@ -187,8 +187,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             .logsWhereDateRange(range: thisYear, exercise: widget.exercise)
             .toList();
         break;
-      case ChartTimePeriod.allTime:
-        _exerciseLogs = _exerciseLogs.toList();
     }
     _dateTimes = _exerciseLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
     switch (_summaryType) {
@@ -200,6 +198,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
       case SummaryType.oneRepMax:
         _oneRepMaxPerLog();
+        break;
+      case SummaryType.mostReps:
+        _highestRepsForLog();
         break;
       case SummaryType.sessionReps:
         _totalRepsForLog();
@@ -215,8 +216,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
       case SummaryType.sessionDistance:
         _totalDistancePerLog();
-      case SummaryType.mostReps:
-      // TODO: Handle this case.
     }
   }
 
@@ -296,28 +295,28 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 20),
-          CupertinoSlidingSegmentedControl<ChartTimePeriod>(
-            backgroundColor: tealBlueLight,
-            thumbColor: Colors.blue,
-            groupValue: _selectedChartTimePeriod,
-            children: {
-              ChartTimePeriod.thisWeek:
-                  SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
-              ChartTimePeriod.thisMonth:
-                  SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
-              ChartTimePeriod.thisYear:
-                  SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
-              ChartTimePeriod.allTime:
-                  SizedBox(width: 80, child: Text('All Time', style: textStyle, textAlign: TextAlign.center)),
-            },
-            onValueChanged: (ChartTimePeriod? value) {
-              if (value != null) {
-                setState(() {
-                  _selectedChartTimePeriod = value;
-                  _recomputeChart();
-                });
-              }
-            },
+          Center(
+            child: CupertinoSlidingSegmentedControl<ChartTimePeriod>(
+              backgroundColor: tealBlueLight,
+              thumbColor: Colors.blue,
+              groupValue: _selectedChartTimePeriod,
+              children: {
+                ChartTimePeriod.thisWeek:
+                    SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
+                ChartTimePeriod.thisMonth:
+                    SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
+                ChartTimePeriod.thisYear:
+                    SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
+              },
+              onValueChanged: (ChartTimePeriod? value) {
+                if (value != null) {
+                  setState(() {
+                    _selectedChartTimePeriod = value;
+                    _computeChart();
+                  });
+                }
+              },
+            ),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -491,34 +490,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     ));
   }
 
-  void _loadChart() {
-    _exerciseLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[widget.exercise.id] ?? [];
-
-    _dateTimes = _exerciseLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
-
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
-
-    switch (exerciseType) {
-      case ExerciseType.weightAndReps:
-      case ExerciseType.weightedBodyWeight:
-      case ExerciseType.weightAndDistance:
-        _heaviestWeightPerLog();
-        break;
-      case ExerciseType.bodyWeightAndReps:
-      case ExerciseType.assistedBodyWeight:
-        _totalRepsForLog();
-        break;
-      case ExerciseType.duration:
-      case ExerciseType.durationAndDistance:
-        _longestDurationPerLog();
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    _loadChart();
+    _computeChart();
   }
 }
 

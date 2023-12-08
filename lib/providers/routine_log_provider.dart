@@ -98,6 +98,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   void retrieveCachedRoutineLog(BuildContext context) {
     final cachedLog = SharedPrefs().cachedRoutineLog;
+    print(cachedLog);
     if (cachedLog.isNotEmpty) {
       final json = _fixJson(cachedLog);
       _cachedLog = RoutineLog.fromJson(json);

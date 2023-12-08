@@ -141,9 +141,19 @@ class _MyAppState extends State<MyApp> {
               builder: Authenticator.builder(),
               theme: _themeData,
               initialRoute: '/',
-              routes: {
-                '/': (context) => const HomeScreen(),
-                '/editor': (context) => const RoutineEditorScreen(),
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/':
+                    return MaterialPageRoute(builder: (context) => const HomeScreen());
+                  case '/editor':
+                    final args = settings.arguments as Map<String, dynamic>;
+                    final routineId = args["routineId"];
+                    final routineLogId = args["routineLogId"];
+                    final mode = args["mode"];
+                    final createdAt = args["createdAt"];
+                    return MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routineId, routineLogId: routineLogId, mode: mode, createdAt: createdAt));
+                }
+                return null;
               },
             ),
           );

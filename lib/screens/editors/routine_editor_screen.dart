@@ -409,6 +409,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
+
     _cacheRoutineLog();
 
     final procedures = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);

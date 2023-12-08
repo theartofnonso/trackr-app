@@ -66,7 +66,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
               if (value != null) {
                 setState(() {
                   _selectedChartTimePeriod = value;
-                  _computeCurrentDatesChart();
+                  _computeChart();
                 });
               }
             },
@@ -124,7 +124,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
     return splitList;
   }
 
-  void _computeCurrentDatesChart() {
+  void _computeChart() {
     switch (_selectedChartTimePeriod) {
       case ChartTimePeriod.thisWeek:
         final thisWeek = thisWeekDateRange();
@@ -135,14 +135,12 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
       case ChartTimePeriod.thisYear:
         final thisYear = thisYearDateRange();
         _calculateBodySplitPercentageForDateRange(range: thisYear);
-      case ChartTimePeriod.allTime:
-      // TODO: Handle this case.
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _computeCurrentDatesChart();
+    _computeChart();
   }
 }

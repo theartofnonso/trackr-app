@@ -9,8 +9,15 @@ import '../screens/editors/routine_editor_screen.dart';
 import '../screens/logs/routine_log_preview_screen.dart';
 
 void navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineLog? log, required RoutineEditorMode mode, TemporalDateTime? createdAt}) async {
-  final result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, routineLogId: log?.id, mode: mode, createdAt: createdAt))) as Map<String, bool>?;
-print(result);
+  //final result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, routineLogId: log?.id, mode: mode, createdAt: createdAt))) as Map<String, bool>?;
+  final result = await Navigator.of(context).pushNamed("/editor", arguments: {
+    "routineId": routine?.id,
+    "routineLogId": log?.id,
+    "mode": mode,
+    "createdAt": createdAt
+  }) as Map<String, bool>?;
+
+  print(result);
   if (context.mounted) {
     if (mode == RoutineEditorMode.log) {
       final shouldClearCache = result?["clear"] ?? false;
