@@ -171,16 +171,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _doCreateRoutineLog() async {
-    final routine = _routine;
-    final completedProcedures = _totalCompletedProceduresAndSets();
+    final completedExerciseLogs = _completedExerciseLogsAndSets();
+
     Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
-        name: routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
-        notes: routine?.notes ?? "",
-        procedures: completedProcedures,
+        name: _routine?.name ?? "${DateTime.now().timeOfDay()} Workout",
+        notes: _routine?.notes ?? "",
+        procedures: completedExerciseLogs,
         startTime: _routineStartTime,
         createdAt: widget.createdAt,
-        routine: routine);
+        routine: _routine);
   }
 
   void _updateRoutine() {
@@ -221,23 +221,23 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   bool _isRoutinePartiallyComplete() {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
-    return procedures.any((procedure) => procedure.sets.any((set) => set.checked));
+    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
   }
 
-  List<ExerciseLogDto> _totalCompletedProceduresAndSets() {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
-    final completedProcedures = <ExerciseLogDto>[];
-    for (var procedure in procedures) {
-      final completedSets = procedure.sets.where((set) => set.isNotEmpty() && set.checked).toList();
+  List<ExerciseLogDto> _completedExerciseLogsAndSets() {
+    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    final completedExerciseLogs = <ExerciseLogDto>[];
+    for (var log in exerciseLogs) {
+      final completedSets = log.sets.where((set) => set.isNotEmpty() && set.checked).toList();
       if (completedSets.isNotEmpty) {
-        final completedProcedure = procedure.copyWith(sets: completedSets);
-        completedProcedures.add(completedProcedure);
+        final completedExerciseLog = log.copyWith(sets: completedSets);
+        completedExerciseLogs.add(completedExerciseLog);
       }
     }
-    return completedProcedures;
+    return completedExerciseLogs;
   }
 
   void _cancelRoutineLog() {
@@ -256,7 +256,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   void _endRoutineLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _checkForUpdates();
+      final routine = _routine;
+      if(routine != null) {
+        _checkForUpdates();
+      } else {
+        _doCreateRoutineLog();
+        Navigator.of(context).pop();
+      }
     } else {
       showAlertDialogWithSingleAction(
           context: context,
