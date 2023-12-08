@@ -8,17 +8,15 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
-import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/routine/preview/procedure_widget.dart';
+import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../../app_constants.dart';
-import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
-import '../../utils/navigation_utils.dart';
 import '../exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
@@ -44,8 +42,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return const SizedBox.shrink();
     }
 
-    List<ProcedureDto> procedures =
-        log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).map((procedure) {
+    List<ExerciseLogDto> procedures =
+        log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
           Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {
@@ -58,13 +56,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          heroTag: "fab_routine_log_preview_screen",
-          onPressed: () => navigateToRoutineEditor(context: context, log: log, mode: RoutineEditorMode.edit),
-          backgroundColor: tealBlueLighter,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          child: const Icon(Icons.edit),
-        ),
         backgroundColor: tealBlueDark,
         appBar: AppBar(
           leading: IconButton(
@@ -209,13 +200,13 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     });
   }
 
-  List<Widget> _proceduresToWidgets({required List<ProcedureDto> procedures}) {
+  List<Widget> _proceduresToWidgets({required List<ExerciseLogDto> procedures}) {
     return procedures
         .map((procedure) => Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: ProcedureWidget(
-                procedureDto: procedure,
-                otherSuperSetProcedureDto:
+              child: ExerciseLogWidget(
+                exerciseLog: procedure,
+                superSet:
                     whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
@@ -232,7 +223,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return interval;
   }
 
-  int _calculateCompletedSets({required List<ProcedureDto> procedures}) {
+  int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
     List<SetDto> completedSets = [];
     for (var procedure in procedures) {
       completedSets.addAll(procedure.sets);
@@ -272,7 +263,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _saveLog(RoutineLog log) async {
     try {
-      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json)));
+      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)));
       final procedures = decodedProcedures.map((procedure) {
         final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
         return procedure.copyWith(sets: newSets);

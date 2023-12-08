@@ -13,28 +13,23 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
-import '../dtos/procedure_dto.dart';
+import '../dtos/exercise_log_dto.dart';
 import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
+
+  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+
   List<RoutineLog> _logs = [];
 
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
+
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
-
-  RoutineLog? _cachedLog;
-
-  RoutineLog? get cachedLog => _cachedLog;
 
   List<RoutineLog> _cachedPendingLogs = [];
 
   List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
-
-  void clearCachedLog() {
-    _cachedLog = null;
-    SharedPrefs().cachedRoutineLog = "";
-    notifyListeners();
-  }
 
   void clearCachedPendingLogs() {
     _cachedPendingLogs = [];
@@ -53,6 +48,26 @@ class RoutineLogProvider with ChangeNotifier {
       _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     }
+    _loadExerciseLogs();
+  }
+
+  void _loadExerciseLogs() {
+
+    Map<String, List<ExerciseLogDto>> map = {};
+
+    for (RoutineLog log in _logs) {
+      final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
+      for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
+        final exerciseId = exerciseLog.exercise.id;
+        final exerciseLogs = map[exerciseId] ?? [];
+        exerciseLogs.add(exerciseLog);
+        exerciseLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        map.putIfAbsent(exerciseId, () => exerciseLogs);
+      }
+    }
+
+    _exerciseLogs = map;
+
   }
 
   RoutineLog? lastLog(String id) {
@@ -70,14 +85,6 @@ class RoutineLogProvider with ChangeNotifier {
     return json;
   }
 
-  void retrieveCachedRoutineLog(BuildContext context) {
-    final cachedLog = SharedPrefs().cachedRoutineLog;
-    if (cachedLog.isNotEmpty) {
-      final json = _fixJson(cachedLog);
-      _cachedLog = RoutineLog.fromJson(json);
-    }
-  }
-
   void retrieveCachedPendingRoutineLog(BuildContext context) {
     final cachedLogs = SharedPrefs().cachedPendingRoutineLogs;
     if (cachedLogs.isNotEmpty) {
@@ -92,7 +99,7 @@ class RoutineLogProvider with ChangeNotifier {
       {required BuildContext context,
       required String name,
       required String notes,
-      required List<ProcedureDto> procedures,
+      required List<ExerciseLogDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
       required Routine? routine}) async {
@@ -161,50 +168,10 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  void cacheRoutineLog(
-      {required String name,
-      required String notes,
-      required List<ProcedureDto> procedures,
-      required TemporalDateTime startTime,
-      TemporalDateTime? createdAt,
-      required Routine? routine,
-      bool shouldNotifyListeners = false}) {
-    final currentTime = TemporalDateTime.now();
-
-    final procedureJsons = procedures.map((procedure) => procedure.toJson()).toList();
-
-    final cachedLog = RoutineLog(
-        name: name,
-        notes: notes,
-        routine: routine,
-        procedures: procedureJsons,
-        startTime: startTime,
-        endTime: currentTime,
-        createdAt: createdAt ?? currentTime,
-        updatedAt: currentTime,
-        user: user());
-    _cachedLog = cachedLog;
-    SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
-    if (shouldNotifyListeners) {
-      notifyListeners();
-    }
-  }
-
   void _addToLogs(RoutineLog log) {
     _logs.add(log);
     _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     notifyListeners();
-  }
-
-  Future<void> updateLog({required RoutineLog log}) async {
-    final request = ModelMutations.update(log);
-    final response = await Amplify.API.mutate(request: request).response;
-    final updatedLog = response.data;
-    if (updatedLog != null) {
-      final index = _indexWhereRoutineLog(id: log.id);
-      _logs[index] = log;
-      notifyListeners();
-    }
   }
 
   Future<void> removeLog({required String id}) async {
@@ -228,42 +195,23 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<ProcedureDto> _pastProceduresForExercise({required Exercise exercise}) {
-    final mostRecentLog = _logs.firstWhereOrNull((log) {
-      final decodedProcedures = log.procedures.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-      List<ProcedureDto> filteredProcedures =
-          decodedProcedures.where((procedure) => procedure.exercise.id == exercise.id).toList();
-      return filteredProcedures.isNotEmpty;
-    });
-
-    if (mostRecentLog != null) {
-      return mostRecentLog.procedures
-          .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-          .where((procedure) => procedure.exercise.id == exercise.id)
-          .toList();
-    } else {
-      return [];
-    }
-  }
-
   List<SetDto> wherePastSets({required Exercise exercise}) {
-    final procedures = _pastProceduresForExercise(exercise: exercise);
-    return procedures.expand((procedure) => procedure.sets).where((set) => set.isNotEmpty()).toList();
+    final exerciseLogs = _exerciseLogs[exercise.id] ?? [];
+    return exerciseLogs.reversed.expand((log) => log.sets).toList();
   }
 
-  List<SetDto> setDtosForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
-    bool hasMatchingBodyPart(String procedureJson) {
-      final procedure = ProcedureDto.fromJson(jsonDecode(procedureJson));
-      final primaryMuscle = MuscleGroup.fromString(procedure.exercise.primaryMuscle);
+  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+    bool hasMatchingBodyPart(ExerciseLogDto log) {
+      final primaryMuscle = MuscleGroup.fromString(log.exercise.primaryMuscle);
       return primaryMuscle.family == muscleGroupFamily;
     }
 
-    return logs
-        .where((log) => log.procedures.any(hasMatchingBodyPart))
+    List<List<ExerciseLogDto>> allLogs = _exerciseLogs.values.toList();
+
+    return allLogs.flattened
+        .where((log) => hasMatchingBodyPart(log))
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
-        .expand((log) => log.procedures.where(hasMatchingBodyPart))
-        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-        .expand((procedure) => procedure.sets)
+        .expand((log) => log.sets)
         .toList();
   }
 
@@ -275,21 +223,9 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
   }
 
-  List<RoutineLog> logsWhereDateRange(DateTimeRange range, List<RoutineLog> logs) {
-    final values = logs;
+  List<ExerciseLogDto> logsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
+    final values = _exerciseLogs[exercise.id] ?? [];
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
-  }
-
-  List<RoutineLog> logsSince(int days, {List<RoutineLog>? logs}) {
-    final values = logs ?? _logs;
-    DateTime now = DateTime.now();
-    DateTime then = now.subtract(Duration(days: days));
-    final dateRange = DateTimeRange(start: then, end: now);
-    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: dateRange)).toList();
-  }
-
-  RoutineLog? logWhere({required String id}) {
-    return _logs.firstWhereOrNull((dto) => dto.id == id);
   }
 
   void reset() {

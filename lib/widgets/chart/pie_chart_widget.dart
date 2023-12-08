@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 
+import '../../screens/muscle_insights_screen.dart';
 import '../empty_states/pie_chart_empty_state.dart';
 
 class PieChartWidget extends StatelessWidget {
@@ -15,11 +16,6 @@ class PieChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSegmentsNotEmpty = segments.any((entry) => entry.value > 0);
 
-    final style = GoogleFonts.lato(
-      fontWeight: FontWeight.w600,
-      fontSize: 14,
-    );
-
     return isSegmentsNotEmpty
         ? Container(
             color: tealBlueDark,
@@ -27,7 +23,7 @@ class PieChartWidget extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: AspectRatio(
-                    aspectRatio: 1,
+                    aspectRatio: 1.8,
                     child: PieChart(
                       PieChartData(
                         sectionsSpace: 5,
@@ -36,78 +32,6 @@ class PieChartWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Container(color: Colors.green, width: 10, height: 10),
-                        const SizedBox(width: 5),
-                        Text(segments[0].key.name, style: style)
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          color: Colors.blue,
-                          width: 10,
-                          height: 10,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(segments[1].key.name, style: style)
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          color: Colors.yellow,
-                          width: 10,
-                          height: 10,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(segments[2].key.name, style: style)
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          color: Colors.purpleAccent,
-                          width: 10,
-                          height: 10,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(segments[3].key.name, style: style)
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          color: Colors.pinkAccent,
-                          width: 10,
-                          height: 10,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(segments[4].key.name, style: style)
-                      ],
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  width: 28,
                 ),
               ],
             ),
@@ -126,11 +50,11 @@ class PieChartWidget extends StatelessWidget {
       shadows: [const Shadow(color: Colors.white60, blurRadius: 1)],
     );
 
-    return List.generate(5, (i) {
-      switch (i) {
+    return List.generate(5, (index) {
+      switch (index) {
         case 0:
           return PieChartSectionData(
-            color: Colors.green,
+            color: generateDecoration(index: index),
             value: segments[0].value.toDouble(),
             title: '${segments[0].value}',
             radius: 70,
@@ -138,7 +62,7 @@ class PieChartWidget extends StatelessWidget {
           );
         case 1:
           return PieChartSectionData(
-            color: Colors.blue,
+            color: generateDecoration(index: index),
             value: segments[1].value.toDouble(),
             title: '${segments[1].value}',
             radius: 60,
@@ -146,7 +70,7 @@ class PieChartWidget extends StatelessWidget {
           );
         case 2:
           return PieChartSectionData(
-            color: Colors.amber,
+            color: generateDecoration(index: index),
             value: segments[2].value.toDouble(),
             title: '${segments[2].value}',
             radius: 50,
@@ -154,7 +78,7 @@ class PieChartWidget extends StatelessWidget {
           );
         case 3:
           return PieChartSectionData(
-            color: Colors.purpleAccent,
+            color: generateDecoration(index: index),
             value: segments[3].value.toDouble(),
             title: '${segments[3].value}',
             radius: 40,
@@ -162,7 +86,7 @@ class PieChartWidget extends StatelessWidget {
           );
         case 4:
           return PieChartSectionData(
-            color: Colors.pinkAccent,
+            color: generateDecoration(index: index),
             value: segments[4].value.toDouble(),
             title: '${segments[4].value}',
             radius: 30,

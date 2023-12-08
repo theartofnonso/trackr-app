@@ -17,7 +17,7 @@ class PendingRoutinesBanner extends StatelessWidget {
     final provider = Provider.of<RoutineLogProvider>(context, listen: false);
 
     return MaterialBanner(
-      padding: const EdgeInsets.only(left: 12, top: 12),
+      padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
       margin: const EdgeInsets.symmetric(vertical: 12),
       dividerColor: Colors.transparent,
       content: Text('${logs.length} workout(s) pending upload'),

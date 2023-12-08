@@ -3,7 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/Routine.dart';
-import '../dtos/procedure_dto.dart';
+import '../dtos/exercise_log_dto.dart';
 import '../utils/general_utils.dart';
 
 const emptyRoutineId = "empty_routine_id";
@@ -26,7 +26,7 @@ class RoutineProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveRoutine({required String name, required String notes, required List<ProcedureDto> procedures}) async {
+  Future<void> saveRoutine({required String name, required String notes, required List<ExerciseLogDto> procedures}) async {
 
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
     final routineToCreate = Routine(

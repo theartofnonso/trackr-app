@@ -177,7 +177,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          routineLogProvider.cachedLog == null && !_isFutureDate()
+          !_isFutureDate()
               ? GestureDetector(
                   onTap: _logRoutine,
                   child: const Padding(
@@ -232,7 +232,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                         itemCount: logs.length),
                   )
-                : routineLogProvider.cachedLog == null && !_isFutureDate()
+                : !_isFutureDate()
                     ? Expanded(
                         child: Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
                     : const SizedBox.shrink()

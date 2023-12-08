@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
@@ -12,10 +9,9 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../../../dtos/procedure_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../models/Exercise.dart';
-import '../../../models/RoutineLog.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/snackbar_utils.dart';
@@ -29,60 +25,13 @@ ChartUnitLabel weightUnit() {
   return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
 }
 
-/// All [SetDto] for [ExerciseType]
-
-List<SetDto> _allSetsWithWeight({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-  return procedures
-      .where((procedure) =>
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndDistance)
-      .expand((procedure) => procedure.sets)
-      .toList();
-}
-
-List<SetDto> _allSetsWithReps({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-  return procedures
-      .where((procedure) =>
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndReps ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightedBodyWeight ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.assistedBodyWeight ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.bodyWeightAndReps)
-      .expand((procedure) => procedure.sets)
-      .toList();
-}
-
-List<SetDto> _allSetsWithDuration({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-  return procedures
-      .where((procedure) =>
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.duration ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.durationAndDistance)
-      .expand((procedure) => procedure.sets)
-      .toList();
-}
-
-List<SetDto> _allSetsWithDistance({required List<String> procedureJsons}) {
-  final procedures = procedureJsons.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-  return procedures
-      .where((procedure) =>
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.weightAndDistance ||
-          ExerciseType.fromString(procedure.exercise.type) == ExerciseType.durationAndDistance)
-      .expand((procedure) => procedure.sets)
-      .toList();
-}
-
 /// Highest value per [RoutineLogDto]
 
-SetDto _heaviestSetPerLog({required RoutineLog log}) {
+SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
   double heaviestWeight = 0;
   SetDto setWithHeaviestWeight = SetDto(0, 0, 0, SetType.working, false);
 
-  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (SetDto set in exerciseLog.sets) {
     final weight = set.value1.toDouble();
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
@@ -92,12 +41,10 @@ SetDto _heaviestSetPerLog({required RoutineLog log}) {
   return setWithHeaviestWeight;
 }
 
-double heaviestWeightPerLog({required RoutineLog log}) {
+double heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
   double heaviestWeight = 0;
 
-  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (SetDto set in exerciseLog.sets) {
     final weight = set.value1.toDouble();
     if (weight > heaviestWeight) {
       heaviestWeight = weight.toDouble();
@@ -109,12 +56,10 @@ double heaviestWeightPerLog({required RoutineLog log}) {
   return weight;
 }
 
-Duration longestDurationPerLog({required RoutineLog log}) {
+Duration longestDurationPerLog({required ExerciseLogDto exerciseLog}) {
   Duration longestDuration = Duration.zero;
 
-  final sets = _allSetsWithDuration(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (var set in exerciseLog.sets) {
     final duration = Duration(milliseconds: set.value1.toInt());
     if (duration > longestDuration) {
       longestDuration = duration;
@@ -123,24 +68,20 @@ Duration longestDurationPerLog({required RoutineLog log}) {
   return longestDuration;
 }
 
-Duration totalDurationPerLog({required RoutineLog log}) {
+Duration totalDurationPerLog({required ExerciseLogDto exerciseLog}) {
   Duration totalDuration = Duration.zero;
 
-  final sets = _allSetsWithDuration(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (var set in exerciseLog.sets) {
     final duration = Duration(milliseconds: set.value1.toInt());
     totalDuration += duration;
   }
   return totalDuration;
 }
 
-double longestDistancePerLog({required RoutineLog log}) {
+double longestDistancePerLog({required ExerciseLogDto exerciseLog}) {
   double longestDistance = 0;
 
-  final sets = _allSetsWithDistance(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (var set in exerciseLog.sets) {
     final distance = set.value2.toDouble();
     if (distance > longestDistance) {
       longestDistance = distance;
@@ -149,22 +90,20 @@ double longestDistancePerLog({required RoutineLog log}) {
   return longestDistance;
 }
 
-double totalDistancePerLog({required RoutineLog log}) {
+double totalDistancePerLog({required ExerciseLogDto exerciseLog}) {
   double totalDistance = 0;
 
-  final sets = _allSetsWithDistance(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (var set in exerciseLog.sets) {
     final distance = set.value2.toDouble();
     totalDistance += distance;
   }
   return totalDistance;
 }
 
-int totalRepsPerLog({required RoutineLog log}) {
+int totalRepsForLog({required ExerciseLogDto exerciseLog}) {
   int totalReps = 0;
 
-  final sets = _allSetsWithReps(procedureJsons: log.procedures);
+  final sets = exerciseLog.sets;
 
   for (var set in sets) {
     totalReps += set.value2.toInt();
@@ -172,27 +111,25 @@ int totalRepsPerLog({required RoutineLog log}) {
   return totalReps;
 }
 
-int mostRepsPerLog({required RoutineLog log}) {
-  int mostReps = 0;
+int highestRepsForLog({required ExerciseLogDto exerciseLog}) {
+  int highestReps = 0;
 
-  final sets = _allSetsWithReps(procedureJsons: log.procedures);
+  final sets = exerciseLog.sets;
 
   for (var set in sets) {
     final reps = set.value2;
-    if (reps > mostReps) {
-      mostReps = reps.toInt();
+    if (reps > highestReps) {
+      highestReps = reps.toInt();
     }
   }
 
-  return mostReps;
+  return highestReps;
 }
 
-double heaviestSetVolumePerLog({required RoutineLog log}) {
+double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
   double heaviestVolume = 0;
 
-  final sets = _allSetsWithWeight(procedureJsons: log.procedures);
-
-  for (var set in sets) {
+  for (var set in exerciseLog.sets) {
     final volume = set.value1 * set.value2;
     if (volume > heaviestVolume) {
       heaviestVolume = volume.toDouble();
@@ -204,8 +141,8 @@ double heaviestSetVolumePerLog({required RoutineLog log}) {
   return volume;
 }
 
-double oneRepMaxPerLog({required RoutineLog log}) {
-  final heaviestWeightInSet = _heaviestSetPerLog(log: log);
+double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
+  final heaviestWeightInSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
 
   final max = (heaviestWeightInSet.value1 * (1 + 0.0333 * heaviestWeightInSet.value2));
 
@@ -214,29 +151,27 @@ double oneRepMaxPerLog({required RoutineLog log}) {
   return maxWeight;
 }
 
-DateTime dateTimePerLog({required RoutineLog log}) {
+DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt.getDateTimeInUtc();
-}
-
-Duration sessionDurationPerLog({required RoutineLog log}) {
-  final startTime = log.startTime.getDateTimeInUtc();
-  final endTime = log.endTime.getDateTimeInUtc();
-  final difference = endTime.difference(startTime);
-  return difference;
 }
 
 /// Highest value across all [RoutineLogDto]
 
-(String, SetDto) _heaviestSet({required List<RoutineLog> logs}) {
+List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required Exercise exercise}) {
+  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  return pastLogs.reversed.toList();
+}
+
+(String, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
   SetDto heaviestSet = SetDto(0, 0, 0, SetType.working, false);
   String logId = "";
-  for (var log in logs) {
-    final sets = _allSetsWithWeight(procedureJsons: log.procedures);
-    for (var set in sets) {
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  for (var log in pastLogs) {
+    for (var set in log.sets) {
       final volume = set.value1 * set.value2;
       if (volume > (heaviestSet.value1 * heaviestSet.value2)) {
         heaviestSet = set;
-        logId = log.id;
+        logId = log.routineLogId;
       }
     }
   }
@@ -246,66 +181,73 @@ Duration sessionDurationPerLog({required RoutineLog log}) {
   return (logId, heaviestSet.copyWith(value1: weight));
 }
 
-(String, double) _heaviestWeight({required List<RoutineLog> logs}) {
+(String, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
   double heaviestWeight = 0;
   String logId = "";
-  for (var log in logs) {
-    final weight = heaviestWeightPerLog(log: log);
-    if (weight > heaviestWeight) {
-      heaviestWeight = weight;
-      logId = log.id;
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  for (var log in pastLogs) {
+    for (var set in log.sets) {
+      final weight = set.value1.toDouble();
+      if (weight > heaviestWeight) {
+        heaviestWeight = weight;
+        logId = log.routineLogId;
+      }
     }
   }
   return (logId, heaviestWeight);
 }
 
-(String, int) _mostRepsSet({required List<RoutineLog> logs}) {
+(String, int) _highestReps({required BuildContext context, required Exercise exercise}) {
+  int highestReps = 0;
+  String logId = "";
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  for (var log in pastLogs) {
+    final reps = highestRepsForLog(exerciseLog: log);
+    if (reps > highestReps) {
+      highestReps = reps;
+      logId = log.routineLogId;
+    }
+  }
+  return (logId, highestReps);
+}
+
+(String, int) _totalReps({required BuildContext context, required Exercise exercise}) {
   int mostReps = 0;
   String logId = "";
-  for (var log in logs) {
-    final reps = mostRepsPerLog(log: log);
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  for (var log in pastLogs) {
+    final reps = totalRepsForLog(exerciseLog: log);
     if (reps > mostReps) {
       mostReps = reps;
-      logId = log.id;
+      logId = log.routineLogId;
     }
   }
   return (logId, mostReps);
 }
 
-(String, int) _mostRepsSession({required List<RoutineLog> logs}) {
-  int mostReps = 0;
-  String logId = "";
-  for (var log in logs) {
-    final reps = totalRepsPerLog(log: log);
-    if (reps > mostReps) {
-      mostReps = reps;
-      logId = log.id;
-    }
-  }
-  return (logId, mostReps);
-}
-
-(String, Duration) _longestDuration({required List<RoutineLog> logs}) {
+(String, Duration) _longestDuration({required BuildContext context, required Exercise exercise}) {
   Duration longestDuration = Duration.zero;
   String logId = "";
-  for (var log in logs) {
-    final duration = longestDurationPerLog(log: log);
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  for (var log in pastLogs) {
+    final duration = longestDurationPerLog(exerciseLog: log);
     if (duration > longestDuration) {
       longestDuration = duration;
-      logId = log.id;
+      logId = log.routineLogId;
     }
   }
   return (logId, longestDuration);
 }
 
-(String, double) _longestDistance({required List<RoutineLog> logs}) {
+(String, double) _longestDistance({required BuildContext context, required Exercise exercise}) {
   double longestDistance = 0;
   String logId = "";
-  for (var log in logs) {
-    final distance = longestDistancePerLog(log: log);
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  for (var log in pastLogs) {
+    final distance = longestDistancePerLog(exerciseLog: log);
     if (distance > longestDistance) {
       longestDistance = distance;
-      logId = log.id;
+      logId = log.routineLogId;
     }
   }
   return (logId, longestDistance);
@@ -316,18 +258,6 @@ class HomeScreen extends StatelessWidget {
 
   const HomeScreen({super.key, required this.exercise});
 
-  List<RoutineLog> _logsWhereExercise({required List<RoutineLog> logs}) {
-    return logs
-        .where((log) => log.procedures
-            .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-            .any((procedure) => procedure.exercise.id == exercise.id))
-        .map((log) => log.copyWith(
-            procedures: log.procedures
-                .where((procedure) => ProcedureDto.fromJson(jsonDecode(procedure)).exercise.id == exercise.id)
-                .toList()))
-        .toList();
-  }
-
   /// [MenuItemButton]
   List<Widget> _menuActionButtons({required BuildContext context, required Exercise exercise}) {
     return [
@@ -335,7 +265,6 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
         },
-        //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
       MenuItemButton(
@@ -346,9 +275,9 @@ class HomeScreen extends StatelessWidget {
               leftAction: Navigator.of(context).pop,
               rightAction: () => _deleteExercise(context),
               leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete', isRightActionDestructive: true);
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
         },
-        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
@@ -376,21 +305,17 @@ class HomeScreen extends StatelessWidget {
     final foundExercise =
         Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
 
-    final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+    final heaviestSet = _heaviestSet(context: context, exercise: foundExercise);
 
-    final logsForExercise = _logsWhereExercise(logs: logs);
+    final heaviestWeight = _heaviestWeight(context: context, exercise: foundExercise);
 
-    final heaviestSet = _heaviestSet(logs: logsForExercise);
+    final longestDuration = _longestDuration(context: context, exercise: foundExercise);
 
-    final heaviestWeight = _heaviestWeight(logs: logsForExercise);
+    final longestDistance = _longestDistance(context: context, exercise: foundExercise);
 
-    final longestDuration = _longestDuration(logs: logsForExercise);
+    final mostRepsSet = _highestReps(context: context, exercise: foundExercise);
 
-    final longestDistance = _longestDistance(logs: logsForExercise);
-
-    final mostRepsSet = _mostRepsSet(logs: logsForExercise);
-
-    final mostRepsSession = _mostRepsSession(logs: logsForExercise);
+    final mostRepsSession = _totalReps(context: context, exercise: foundExercise);
 
     return DefaultTabController(
         length: 3,
@@ -453,10 +378,9 @@ class HomeScreen extends StatelessWidget {
                   longestDistance: longestDistance,
                   mostRepsSet: mostRepsSet,
                   mostRepsSession: mostRepsSession,
-                  routineLogs: logsForExercise,
                   exercise: foundExercise,
                 ),
-                HistoryScreen(logs: logsForExercise),
+                HistoryScreen(exercise: foundExercise),
                 NotesScreen(notes: foundExercise.notes ?? "")
               ],
             ),

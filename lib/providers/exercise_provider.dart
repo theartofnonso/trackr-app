@@ -19,7 +19,7 @@ class ExerciseProvider with ChangeNotifier {
     final response = await Amplify.API.query(request: request).response;
     final routines = response.data?.items;
     if (routines != null) {
-     _exercises = routines.whereType<Exercise>().toList();
+      _exercises = routines.whereType<Exercise>().toList();
       notifyListeners();
     }
   }

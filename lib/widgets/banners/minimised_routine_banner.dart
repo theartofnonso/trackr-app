@@ -15,22 +15,25 @@ class MinimisedRoutineBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
-      child: ListTile(
-          tileColor: tealBlueLight,
-          dense: true,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-          onTap: () {
-            navigateToRoutineEditor(context: context, routine: log.routine, log: log, mode: RoutineEditorMode.log);
-          },
-          leading: const Icon(
-            Icons.info_outline,
-            color: Colors.white,
-          ),
-          minLeadingWidth: 0,
-          title: Text(
-            '${log.name.isNotEmpty ? log.name : "Workout"} is in progress',
-            style: GoogleFonts.lato(color: Colors.white),
-          )),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12.0),
+        child: ListTile(
+            tileColor: tealBlueLight,
+            dense: true,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+            onTap: () {
+              navigateToRoutineEditor(context: context, routine: log.routine, log: log, mode: RoutineEditorMode.log);
+            },
+            leading: const Icon(
+              Icons.info_outline,
+              color: Colors.white,
+            ),
+            minLeadingWidth: 0,
+            title: Text(
+              '${log.name.isNotEmpty ? log.name : "Workout"} is in progress',
+              style: GoogleFonts.lato(color: Colors.white),
+            )),
+      ),
     );
   }
 }

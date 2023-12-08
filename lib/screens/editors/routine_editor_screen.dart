@@ -7,11 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/procedure_dto.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/procedure_dto_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/providers/procedures_provider.dart';
+import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
@@ -23,7 +22,7 @@ import '../../dtos/unsaved_changes_messages_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
-import '../../widgets/routine/editor/procedure_widget.dart';
+import '../../widgets/routine/editor/exercise_log_widget.dart';
 import '../exercise/exercise_library_screen.dart';
 
 enum RoutineEditorMode { edit, log }
@@ -55,17 +54,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   late Function _onDisposeCallback;
 
-  void _showProceduresPicker({required ProcedureDto firstProcedure}) {
+  void _showProceduresPicker({required ExerciseLogDto firstProcedure}) {
     final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
     displayBottomSheet(
         context: context,
         child: _ProceduresPicker(
           procedures: procedures,
-          onSelect: (ProcedureDto secondProcedure) {
+          onSelect: (ExerciseLogDto secondProcedure) {
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
             Navigator.of(context).pop();
-            Provider.of<ProceduresProvider>(context, listen: false).superSetProcedures(
-                firstProcedureId: firstProcedure.id, secondProcedureId: secondProcedure.id, superSetId: id);
+            Provider.of<ExerciseLogProvider>(context, listen: false).superSetExerciseLogs(
+                firstExerciseLogId: firstProcedure.id, secondExerciseLogId: secondProcedure.id, superSetId: id);
           },
           onSelectExercisesInLibrary: () {
             Navigator.of(context).pop();
@@ -76,8 +75,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   /// Navigate to [ExerciseLibraryScreen]
   void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ProceduresProvider>(context, listen: false);
-    final preSelectedExercises = provider.procedures.map((procedure) => procedure.exercise).toList();
+    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
@@ -85,38 +84,38 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
     if (exercises != null && exercises.isNotEmpty) {
       if (mounted) {
-        provider.addProcedures(exercises: exercises);
+        provider.addExerciseLogs(exercises: exercises);
       }
     }
   }
 
   void _reOrderProcedures() async {
-    final provider = Provider.of<ProceduresProvider>(context, listen: false);
+    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final reOrderedList = await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
-        return ReOrderProceduresScreen(procedures: List.from(provider.procedures));
+        return ReOrderProceduresScreen(procedures: List.from(provider.exerciseLogs));
       },
-    ) as List<ProcedureDto>?;
+    ) as List<ExerciseLogDto>?;
 
     if (reOrderedList != null) {
       if (mounted) {
-        provider.reloadProcedures(procedures: reOrderedList);
+        provider.loadExerciseLogs(logs: reOrderedList, shouldNotifyListeners: true);
       }
     }
   }
 
   void _removeProcedureSuperSets({required String superSetId}) {
-    Provider.of<ProceduresProvider>(context, listen: false).removeProcedureSuperSet(superSetId: superSetId);
+    Provider.of<ExerciseLogProvider>(context, listen: false).removeSuperSetForLogs(superSetId: superSetId);
   }
 
   void _removeProcedure({required String procedureId}) {
-    Provider.of<ProceduresProvider>(context, listen: false).removeProcedure(procedureId: procedureId);
+    Provider.of<ExerciseLogProvider>(context, listen: false).removeExerciseLog(logId: procedureId);
   }
 
-  List<ProcedureDto> _whereOtherProceduresExcept({required ProcedureDto firstProcedure}) {
-    return Provider.of<ProceduresProvider>(context, listen: false)
-        .procedures
+  List<ExerciseLogDto> _whereOtherProceduresExcept({required ExerciseLogDto firstProcedure}) {
+    return Provider.of<ExerciseLogProvider>(context, listen: false)
+        .exerciseLogs
         .where((procedure) => procedure.id != firstProcedure.id && procedure.superSetId.isEmpty)
         .toList();
   }
@@ -129,8 +128,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   bool _validateRoutineInputs() {
-    final procedureProviders = Provider.of<ProceduresProvider>(context, listen: false);
-    final procedures = procedureProviders.procedures;
+    final procedureProviders = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedures = procedureProviders.exerciseLogs;
 
     if (_routineNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this workout');
@@ -154,7 +153,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _createRoutine() async {
-    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
     if (!_validateRoutineInputs()) return;
     _toggleLoadingState();
@@ -162,7 +161,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       await routineProvider.saveRoutine(
           name: _routineNameController.text.trim(),
           notes: _routineNotesController.text.trim(),
-          procedures: procedureProvider.mergeSetsIntoProcedures());
+          procedures: procedureProvider.mergeSetsIntoExerciseLogs());
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       _handleRoutineCreationError("Unable to create workout");
@@ -183,7 +182,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         rightActionLabel: 'Finish',
         rightAction: () {
           Navigator.of(context).pop();
-          _doCreateRoutineLog();
+          _checkForUpdates();
         },
         isLeftActionDestructive: true);
   }
@@ -202,59 +201,33 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _navigateBackAndClearCache();
   }
 
-  void _updateRoutine({required Routine routine}) {
+  void _updateRoutine() {
     if (!_validateRoutineInputs()) return;
-
-    showAlertDialog(
-        context: context,
-        message: "Update workout?",
-        leftAction: Navigator.of(context).pop,
-        rightAction: () {
-          Navigator.of(context).pop();
-          _doUpdateRoutine(routine: routine);
-        },
-        leftActionLabel: 'Cancel',
-        rightActionLabel: 'Update');
-  }
-
-  void _updateRoutineLog({required RoutineLog routineLog}) {
-    if (!_validateRoutineInputs()) return;
-
-    showAlertDialog(
-        context: context,
-        message: "Update log?",
-        leftAction: Navigator.of(context).pop,
-        rightAction: () {
-          Navigator.of(context).pop();
-          _doUpdateRoutineLog(routineLog: routineLog);
-        },
-        leftActionLabel: 'Cancel',
-        rightActionLabel: 'Update');
-  }
-
-  void _doUpdate() {
-    final previousRoutine = _routine;
-    final previousRoutineLog = _routineLog;
-
-    if (previousRoutine != null) {
-      _updateRoutine(routine: previousRoutine);
-    } else {
-      if (previousRoutineLog != null) {
-        _updateRoutineLog(routineLog: previousRoutineLog);
-      }
+    final routine = _routine;
+    if(routine != null) {
+      showAlertDialog(
+          context: context,
+          message: "Update workout?",
+          leftAction: Navigator.of(context).pop,
+          rightAction: () {
+            Navigator.of(context).pop();
+            _doUpdateRoutine(routine: routine);
+          },
+          leftActionLabel: 'Cancel',
+          rightActionLabel: 'Update');
     }
   }
 
-  void _doUpdateRoutine({required Routine routine, List<ProcedureDto>? procedures}) async {
-    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+  void _doUpdateRoutine({required Routine routine, List<ExerciseLogDto>? updatedExerciseLogs}) async {
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs();
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-    final listOfProcedures = procedures ?? procedureProvider.mergeSetsIntoProcedures();
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
           name: _routineNameController.text.trim(),
           notes: _routineNotesController.text.trim(),
-          procedures: listOfProcedures.map((procedure) => procedure.toJson()).toList(),
+          procedures: exerciseLogs.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
 
       await routineProvider.updateRoutine(routine: updatedRoutine);
@@ -266,39 +239,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _doUpdateRoutineLog({required RoutineLog routineLog}) async {
-    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final procedures = procedureProvider
-        .mergeSetsIntoProcedures()
-        .map((procedure) => procedure.copyWith(sets: procedure.sets.map((set) => set.copyWith(checked: true)).toList()))
-        .toList();
-    _toggleLoadingState();
-    try {
-      final updatedRoutineLog = routineLog.copyWith(
-          name: _routineNameController.text.trim(),
-          notes: _routineNotesController.text.trim(),
-          procedures: procedures.map((procedure) => procedure.toJson()).toList(),
-          updatedAt: TemporalDateTime.now());
-      await routineLogProvider.updateLog(log: updatedRoutineLog);
-      if (mounted) Navigator.of(context).pop();
-    } catch (e) {
-      _handleRoutineCreationError("Unable to update log");
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
   bool _isRoutinePartiallyComplete() {
-    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoProcedures();
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
     return procedures.any((procedure) => procedure.sets.any((set) => set.checked));
   }
 
-  List<ProcedureDto> _totalCompletedProceduresAndSets() {
-    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoProcedures();
-    final completedProcedures = <ProcedureDto>[];
+  List<ExerciseLogDto> _totalCompletedProceduresAndSets() {
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
+    final completedProcedures = <ExerciseLogDto>[];
     for (var procedure in procedures) {
       final completedSets = procedure.sets.where((set) => set.isNotEmpty() && set.checked).toList();
       if (completedSets.isNotEmpty) {
@@ -328,66 +278,49 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _cacheRoutineLog({notifyListeners = false}) {
-    if (widget.mode == RoutineEditorMode.log) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
-        final procedures = procedureProvider.mergeSetsIntoProcedures();
-        final routine = _routine;
-        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-            name: routine?.name ?? "",
-            notes: routine?.notes ?? "",
-            procedures: procedures,
-            startTime: _routineStartTime,
-            createdAt: widget.createdAt,
-            routine: routine, shouldNotifyListeners: notifyListeners);
-      });
-    }
-  }
-
   List<UnsavedChangesMessageDto> _checkForChanges(
-      {required List<ProcedureDto> procedures1, required List<ProcedureDto> procedures2}) {
+      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
-    final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
 
     /// Check if [ProcedureDto]'s have been added or removed
     final differentProceduresChangeMessage =
-        procedureProvider.hasDifferentProceduresLength(procedures1: procedures1, procedures2: procedures2);
+        procedureProvider.hasDifferentExerciseLogsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (differentProceduresChangeMessage != null) {
       unsavedChangesMessage.add(differentProceduresChangeMessage);
     }
 
     /// Check if [SetDto]'s have been added or removed
     final differentSetsChangeMessage =
-        procedureProvider.hasDifferentSetsLength(procedures1: procedures1, procedures2: procedures2);
+        procedureProvider.hasDifferentSetsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (differentSetsChangeMessage != null) {
       unsavedChangesMessage.add(differentSetsChangeMessage);
     }
 
     /// Check if [SetType] for [SetDto] has been changed
     final differentSetTypesChangeMessage =
-        procedureProvider.hasSetTypeChange(procedures1: procedures1, procedures2: procedures2);
+        procedureProvider.hasSetTypeChange(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (differentSetTypesChangeMessage != null) {
       unsavedChangesMessage.add(differentSetTypesChangeMessage);
     }
 
     /// Check if [ExerciseType] for [Exercise] in [ProcedureDto] has been changed
     final differentExerciseTypesChangeMessage =
-        procedureProvider.hasExercisesChanged(procedures1: procedures1, procedures2: procedures2);
+        procedureProvider.hasExercisesChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (differentExerciseTypesChangeMessage != null) {
       unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
     }
 
     /// Check if superset in [ProcedureDto] has been changed
     final differentSuperSetIdsChangeMessage =
-        procedureProvider.hasSuperSetIdChanged(procedures1: procedures1, procedures2: procedures2);
+        procedureProvider.hasSuperSetIdChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (differentSuperSetIdsChangeMessage != null) {
       unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
     }
 
     /// Check if [SetDto] value has been changed
     final differentSetValueChangeMessage =
-        procedureProvider.hasSetValueChanged(procedures1: procedures1, procedures2: procedures2);
+        procedureProvider.hasSetValueChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (differentSetValueChangeMessage != null) {
       unsavedChangesMessage.add(differentSetValueChangeMessage);
     }
@@ -396,11 +329,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _checkForUnsavedChanges() {
     if (widget.mode == RoutineEditorMode.edit) {
-      final procedureProvider = Provider.of<ProceduresProvider>(context, listen: false);
+      final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
       final oldProcedures = _routineLog?.procedures ?? _routine?.procedures;
-      final procedures1 = oldProcedures?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
-      final procedures2 = procedureProvider.mergeSetsIntoProcedures();
-      final unsavedChangesMessage = _checkForChanges(procedures1: procedures1 ?? [], procedures2: procedures2);
+      final exerciseLog1 = oldProcedures
+          ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
+          .toList();
+      final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
+      final unsavedChangesMessage = _checkForChanges(exerciseLog1: exerciseLog1 ?? [], exerciseLog2: exerciseLog2);
       if (unsavedChangesMessage.isNotEmpty) {
         showAlertDialog(
             context: context,
@@ -424,7 +359,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _navigateBackAndClearCache() {
-    Navigator.of(context).pop({"clear": true});
+    Navigator.pop(context, {"clear": true});
   }
 
   bool _canUpdate() {
@@ -456,9 +391,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
-    _cacheRoutineLog();
 
-    final procedures = context.select((ProceduresProvider provider) => provider.procedures);
+    final procedures = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -469,7 +403,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                 leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
                 actions: [
                   CTextButton(
-                      onPressed: _canUpdate() ? _doUpdate : _createRoutine,
+                      onPressed: _canUpdate() ? _updateRoutine : _createRoutine,
                       label: _canUpdate() ? "Update" : "Save",
                       buttonColor: Colors.transparent,
                       loading: _loading,
@@ -522,8 +456,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               child: Column(
                 children: [
                   if (widget.mode == RoutineEditorMode.log)
-                    Consumer<ProceduresProvider>(
-                        builder: (BuildContext context, ProceduresProvider provider, Widget? child) {
+                    Consumer<ExerciseLogProvider>(
+                        builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
                       return _RoutineLogOverview(
                         sets: provider.completedSets().length,
                         timer: _RoutineTimer(startTime: _routineStartTime.getDateTimeInUtc()),
@@ -577,17 +511,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                           itemBuilder: (BuildContext context, int index) {
                             final procedure = procedures[index];
                             final procedureId = procedure.id;
-                            return ProcedureWidget(
-                                procedureDto: procedure,
+                            return ExerciseLogWidget(
+                                exerciseLogDto: procedure,
                                 editorType: widget.mode,
-                                otherSuperSetProcedureDto:
+                                superSet:
                                     whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
-                                onRemoveProcedure: () => _removeProcedure(procedureId: procedureId),
+                                onRemoveLog: () => _removeProcedure(procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onCache: _cacheRoutineLog,
-                                onReOrderProcedures: _reOrderProcedures);
+                                onReOrderLogs: _reOrderProcedures);
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
                           itemCount: procedures.length)),
@@ -605,30 +538,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     WidgetsBinding.instance.addObserver(this);
 
     _fetchRoutine();
-    _fetchRoutineLog();
 
     _initializeProcedureData();
     _initializeTextControllers();
 
     _loadRoutineStartTime();
 
-    _onDisposeCallback = Provider.of<ProceduresProvider>(context, listen: false).onClearProvider;
-
-    _checkForUpdates();
-
-    _cacheRoutineLog(notifyListeners: true);
+    _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
   }
 
   void _fetchRoutine() {
     _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routineId ?? "");
-  }
-
-  void _fetchRoutineLog() {
-    _routineLog = Provider.of<RoutineLogProvider>(context, listen: false).logWhere(id: widget.routineLogId ?? "");
-    final cachedLog = Provider.of<RoutineLogProvider>(context, listen: false).cachedLog;
-    if (cachedLog != null && widget.mode == RoutineEditorMode.log) {
-      _routineLog = cachedLog;
-    }
   }
 
   void _loadRoutineStartTime() {
@@ -640,56 +560,42 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _initializeProcedureData() {
     final procedureJsons = _routineLog?.procedures ?? _routine?.procedures;
-    final procedures = procedureJsons?.map((json) => ProcedureDto.fromJson(jsonDecode(json))).toList();
+    final procedures = procedureJsons
+        ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
+        .toList();
     if (procedures != null) {
-      Provider.of<ProceduresProvider>(context, listen: false).loadProcedures(procedures: procedures);
+      Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
     }
   }
 
-  void _checkForUpdates() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final routine = _routine;
-      if (routine == null) return;
+  void _checkForUpdates() async {
+    final oldProcedures = _routine?.procedures;
+    final exerciseLog1 = oldProcedures
+            ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
+            .toList() ??
+        [];
+    final exerciseLog2 = Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs(updateRoutineSets: true);
 
-      final lastLog = Provider.of<RoutineLogProvider>(context, listen: false).lastLog(routine.id);
-      if (lastLog == null) return;
-
-      final procedures1 = Provider.of<ProceduresProvider>(context, listen: false).mergeSetsIntoProcedures();
-      final procedures2 = await _decodeAndRefreshProcedures(lastLog.procedures);
-
-      final changes = _checkForChanges(procedures1: procedures1, procedures2: procedures2);
-      if (changes.isNotEmpty) {
-        _displayNotificationsDialog(routine, procedures2, changes);
-      }
-    });
+    final changes = _checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    if (changes.isNotEmpty) {
+      _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
+    } else {
+      _doCreateRoutineLog();
+    }
   }
 
-  Future<List<ProcedureDto>> _decodeAndRefreshProcedures(List<String> procedureJsons) async {
-    return procedureJsons
-        .map((json) => ProcedureDto.fromJson(jsonDecode(json)))
-        .map((procedure) => procedure.refreshSets())
-        .toList();
-  }
-
-  void _displayNotificationsDialog(
-      Routine routine, List<ProcedureDto> procedures2, List<UnsavedChangesMessageDto> changes) {
+  void _displayNotificationsDialog({required List<UnsavedChangesMessageDto> changes, required List<ExerciseLogDto> exerciseLogs}) {
     displayBottomSheet(
         context: context,
         child: _NotificationsDialog(
-            workoutName: routine.name,
             onUpdate: () {
-              _updateRoutineAndData(routine, procedures2);
+              final routine = _routine;
+              if (routine != null) {
+                Navigator.of(context).pop();
+                _doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
+              }
             },
             messages: changes));
-  }
-
-  void _updateRoutineAndData(Routine routine, List<ProcedureDto> procedures2) {
-    _doUpdateRoutine(routine: routine, procedures: procedures2);
-    _initializeProcedureData();
-    Provider.of<ProceduresProvider>(context, listen: false)
-        .loadProcedures(procedures: procedures2, shouldNotifyListeners: true);
-    final procedureJsons = procedures2.map((procedure) => procedure.toJson()).toList();
-    _routine = routine.copyWith(procedures: procedureJsons);
   }
 
   void _initializeTextControllers() {
@@ -712,8 +618,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 }
 
 class _ProceduresPicker extends StatelessWidget {
-  final List<ProcedureDto> procedures;
-  final void Function(ProcedureDto procedure) onSelect;
+  final List<ExerciseLogDto> procedures;
+  final void Function(ExerciseLogDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
   const _ProceduresPicker({required this.procedures, required this.onSelect, required this.onSelectExercisesInLibrary});
@@ -840,11 +746,10 @@ class _RoutineLogOverview extends StatelessWidget {
 }
 
 class _NotificationsDialog extends StatelessWidget {
-  final String workoutName;
   final List<UnsavedChangesMessageDto> messages;
   final VoidCallback onUpdate;
 
-  const _NotificationsDialog({required this.workoutName, required this.onUpdate, required this.messages});
+  const _NotificationsDialog({required this.onUpdate, required this.messages});
 
   @override
   Widget build(BuildContext context) {
@@ -864,7 +769,7 @@ class _NotificationsDialog extends StatelessWidget {
           ...listTiles,
           CTextButton(
             onPressed: onUpdate,
-            label: "Update $workoutName from last log",
+            label: "Update workout",
             visualDensity: VisualDensity.standard,
           )
         ],

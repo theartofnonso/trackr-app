@@ -1,9 +1,13 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../models/User.dart';
+import '../providers/exercise_provider.dart';
+import '../providers/routine_log_provider.dart';
+import '../providers/routine_provider.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
@@ -110,4 +114,16 @@ DateTimeRange thisYearDateRange() {
   final startOfYear = DateTime(now.year, 1, 1);
   final endOfYear = DateTime(now.year, 12, 31);
   return DateTimeRange(start: startOfYear, end: endOfYear);
+}
+
+Future<void> loadAppData(BuildContext context) async {
+  await persistUserCredentials();
+  if (context.mounted) {
+    Provider.of<ExerciseProvider>(context, listen: false).listExercises().then((_) {
+      Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
+      final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+      routineLogProvider.listRoutineLogs();
+      routineLogProvider.retrieveCachedPendingRoutineLog(context);
+    });
+  }
 }
