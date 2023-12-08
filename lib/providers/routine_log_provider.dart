@@ -38,6 +38,7 @@ class RoutineLogProvider with ChangeNotifier {
   void clearCachedLog() {
     _cachedLog = null;
     SharedPrefs().cachedRoutineLog = "";
+    print("_cachedLog: $_cachedLog");
     notifyListeners();
   }
 

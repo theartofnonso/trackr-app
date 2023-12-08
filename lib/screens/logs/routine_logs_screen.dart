@@ -7,9 +7,7 @@ import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 
 import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
-import '../../../providers/exercise_provider.dart';
 import '../../../providers/routine_log_provider.dart';
-import '../../../providers/routine_provider.dart';
 import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';

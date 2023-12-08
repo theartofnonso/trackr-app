@@ -218,16 +218,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _doUpdateRoutine({required Routine routine}) async {
+  void _doUpdateRoutine({required Routine routine, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final listOfProcedures = procedureProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs();
     final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
     _toggleLoadingState();
     try {
       final updatedRoutine = routine.copyWith(
           name: _routineNameController.text.trim(),
           notes: _routineNotesController.text.trim(),
-          procedures: listOfProcedures.map((procedure) => procedure.toJson()).toList(),
+          procedures: exerciseLogs.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
 
       await routineProvider.updateRoutine(routine: updatedRoutine);
@@ -377,7 +377,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _navigateBackAndClearCache() {
-    Navigator.of(context).pop({"clear": true});
+    Navigator.pop(context, {"clear": true});
   }
 
   bool _canUpdate() {
@@ -606,17 +606,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
             .toList() ??
         [];
-    final exerciseLog2 = Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs();
+    final exerciseLog2 = Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs(updateRoutineSets: true);
 
     final changes = _checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (changes.isNotEmpty) {
-      _displayNotificationsDialog(changes);
+      _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
     } else {
       _doCreateRoutineLog();
     }
   }
 
-  void _displayNotificationsDialog(List<UnsavedChangesMessageDto> changes) {
+  void _displayNotificationsDialog({required List<UnsavedChangesMessageDto> changes, required List<ExerciseLogDto> exerciseLogs}) {
     displayBottomSheet(
         context: context,
         child: _NotificationsDialog(
@@ -624,7 +624,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               final routine = _routine;
               if (routine != null) {
                 Navigator.of(context).pop();
-                _doUpdateRoutine(routine: routine);
+                _doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
               }
             },
             messages: changes));

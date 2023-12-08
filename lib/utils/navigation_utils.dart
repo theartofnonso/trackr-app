@@ -10,7 +10,7 @@ import '../screens/logs/routine_log_preview_screen.dart';
 
 void navigateToRoutineEditor({required BuildContext context, Routine? routine, RoutineLog? log, required RoutineEditorMode mode, TemporalDateTime? createdAt}) async {
   final result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, routineLogId: log?.id, mode: mode, createdAt: createdAt))) as Map<String, bool>?;
-
+print(result);
   if (context.mounted) {
     if (mode == RoutineEditorMode.log) {
       final shouldClearCache = result?["clear"] ?? false;
@@ -19,6 +19,9 @@ void navigateToRoutineEditor({required BuildContext context, Routine? routine, R
         Provider.of<RoutineLogProvider>(context, listen: false).clearCachedLog();
       }
     }
+  } else {
+
+    print("not mounted");
   }
 }
 

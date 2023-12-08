@@ -34,7 +34,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  List<ExerciseLogDto> mergeSetsIntoExerciseLogs() {
+  List<ExerciseLogDto> mergeSetsIntoExerciseLogs({updateRoutineSets = false}) {
     // Create a new list to hold the merged exerciseLogs
     List<ExerciseLogDto> mergedLogs = [];
 
@@ -43,7 +43,13 @@ class ExerciseLogProvider extends ChangeNotifier {
       List<SetDto> matchingSets = _sets[exerciseLog.id] ?? [];
 
       // Create a new instance of exerciseLogDto with existing data
-      ExerciseLogDto newLog = exerciseLog.copyWith(sets: matchingSets.map((set) => set.copyWith(checked: false)).toList());
+      ExerciseLogDto newLog;
+
+      if(updateRoutineSets) {
+        newLog = exerciseLog.copyWith(sets: matchingSets.map((set) => set.copyWith(checked: false)).toList());
+      } else {
+        newLog = exerciseLog.copyWith(sets: matchingSets);
+      }
 
       // Add the new exerciseLog to the merged list
       mergedLogs.add(newLog);

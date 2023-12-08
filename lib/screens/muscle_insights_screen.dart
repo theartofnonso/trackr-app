@@ -72,6 +72,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
             },
           ),
           PieChartWidget(segments: _muscleGroupFamily.entries.take(5).toList()),
+          const SizedBox(height: 12),
           Expanded(
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) => bodySplitWidgets[index],
