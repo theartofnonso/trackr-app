@@ -123,7 +123,6 @@ Future<void> loadAppData(BuildContext context) async {
       Provider.of<RoutineProvider>(context, listen: false).listRoutines(context);
       final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
       routineLogProvider.listRoutineLogs();
-      routineLogProvider.retrieveCachedRoutineLog(context);
       routineLogProvider.retrieveCachedPendingRoutineLog(context);
     });
   }

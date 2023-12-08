@@ -5,9 +5,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import '../../../models/Routine.dart';
-import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
-import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -19,8 +17,7 @@ class RoutinesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RoutineProvider, RoutineLogProvider>(builder: (_, routineProvider, routineLogProvider, __) {
-      final cachedRoutineLog = routineLogProvider.cachedLog;
+    return Consumer<RoutineProvider>(builder: (_, routineProvider, __) {
       return Scaffold(
           appBar: AppBar(
             title: Image.asset(
@@ -41,16 +38,14 @@ class RoutinesScreen extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                   child: Column(children: [
-                    cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                     routineProvider.routines.isNotEmpty
                         ? Expanded(
                             child: RefreshIndicator(
                               onRefresh: () => loadAppData(context),
                               child: ListView.separated(
                                   padding: const EdgeInsets.only(bottom: 150),
-                                  itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                      routine: routineProvider.routines[index],
-                                      canStartRoutine: cachedRoutineLog == null),
+                                  itemBuilder: (BuildContext context, int index) =>
+                                      _RoutineWidget(routine: routineProvider.routines[index]),
                                   separatorBuilder: (BuildContext context, int index) =>
                                       Divider(color: Colors.white70.withOpacity(0.1)),
                                   itemCount: routineProvider.routines.length),
@@ -64,9 +59,8 @@ class RoutinesScreen extends StatelessWidget {
 
 class _RoutineWidget extends StatelessWidget {
   final Routine routine;
-  final bool canStartRoutine;
 
-  const _RoutineWidget({required this.routine, required this.canStartRoutine});
+  const _RoutineWidget({required this.routine});
 
   @override
   Widget build(BuildContext context) {
@@ -76,17 +70,15 @@ class _RoutineWidget extends StatelessWidget {
           onTap: () => _navigateToRoutinePreview(context: context),
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-          leading: canStartRoutine
-              ? GestureDetector(
-                  onTap: () {
-                    navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
-                  },
-                  child: const Icon(
-                    Icons.play_arrow_rounded,
-                    color: Colors.white,
-                    size: 35,
-                  ))
-              : null,
+          leading: GestureDetector(
+              onTap: () {
+                navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+              },
+              child: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white,
+                size: 35,
+              )),
           title: Text(routine.name, style: Theme.of(context).textTheme.labelLarge),
           subtitle: Row(children: [
             const Icon(

@@ -8,7 +8,6 @@ import 'package:tracker_app/widgets/banners/pending_routines_banner.dart';
 import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
 import '../../../providers/routine_log_provider.dart';
-import '../../../widgets/banners/minimised_routine_banner.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../calendar_screen.dart';
@@ -29,7 +28,6 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
-      final cachedRoutineLog = provider.cachedLog;
       final cachedPendingLogs = provider.cachedPendingLogs;
 
       return Scaffold(
@@ -50,8 +48,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
             )
           ],
         ),
-        floatingActionButton: cachedRoutineLog == null
-            ? FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton.extended(
                 heroTag: "fab_routine_logs_screen",
                 onPressed: () {
                   navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
@@ -59,15 +56,13 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 label: Text("Empty Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-              )
-            : null,
+              ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
             child: Column(
               children: [
                 cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
-                cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                 provider.logs.isNotEmpty
                     ? Expanded(
                         child: RefreshIndicator(

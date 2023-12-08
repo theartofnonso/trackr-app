@@ -27,20 +27,9 @@ class RoutineLogProvider with ChangeNotifier {
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
-  RoutineLog? _cachedLog;
-
-  RoutineLog? get cachedLog => _cachedLog;
-
   List<RoutineLog> _cachedPendingLogs = [];
 
   List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
-
-  void clearCachedLog() {
-    _cachedLog = null;
-    SharedPrefs().cachedRoutineLog = "";
-    print("_cachedLog: $_cachedLog");
-    notifyListeners();
-  }
 
   void clearCachedPendingLogs() {
     _cachedPendingLogs = [];
@@ -94,15 +83,6 @@ class RoutineLogProvider with ChangeNotifier {
     //   return {"serializedData": value};
     // });
     return json;
-  }
-
-  void retrieveCachedRoutineLog(BuildContext context) {
-    final cachedLog = SharedPrefs().cachedRoutineLog;
-    print(cachedLog);
-    if (cachedLog.isNotEmpty) {
-      final json = _fixJson(cachedLog);
-      _cachedLog = RoutineLog.fromJson(json);
-    }
   }
 
   void retrieveCachedPendingRoutineLog(BuildContext context) {
@@ -185,35 +165,6 @@ class RoutineLogProvider with ChangeNotifier {
         /// Add to logs
         _addToLogs(createdLog);
       }
-    }
-  }
-
-  void cacheRoutineLog(
-      {required String name,
-      required String notes,
-      required List<ExerciseLogDto> procedures,
-      required TemporalDateTime startTime,
-      TemporalDateTime? createdAt,
-      required Routine? routine,
-      bool shouldNotifyListeners = false}) {
-    final currentTime = TemporalDateTime.now();
-
-    final procedureJsons = procedures.map((procedure) => procedure.toJson()).toList();
-
-    final cachedLog = RoutineLog(
-        name: name,
-        notes: notes,
-        routine: routine,
-        procedures: procedureJsons,
-        startTime: startTime,
-        endTime: currentTime,
-        createdAt: createdAt ?? currentTime,
-        updatedAt: currentTime,
-        user: user());
-    _cachedLog = cachedLog;
-    SharedPrefs().cachedRoutineLog = jsonEncode(cachedLog);
-    if (shouldNotifyListeners) {
-      notifyListeners();
     }
   }
 

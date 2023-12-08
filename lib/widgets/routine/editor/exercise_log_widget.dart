@@ -35,8 +35,6 @@ class ExerciseLogWidget extends StatefulWidget {
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback onReOrderLogs;
 
-  final VoidCallback onCache;
-
   const ExerciseLogWidget({
     super.key,
     this.editorType = RoutineEditorMode.edit,
@@ -45,8 +43,7 @@ class ExerciseLogWidget extends StatefulWidget {
     required this.onSuperSet,
     required this.onRemoveSuperSet,
     required this.onRemoveLog,
-    required this.onReOrderLogs,
-    required this.onCache,
+    required this.onReOrderLogs
   });
 
   @override
@@ -255,7 +252,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    widget.onCache();
 
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id];
 

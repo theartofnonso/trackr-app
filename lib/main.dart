@@ -15,7 +15,6 @@ import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
-import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -140,21 +139,7 @@ class _MyAppState extends State<MyApp> {
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
-              initialRoute: '/',
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case '/':
-                    return MaterialPageRoute(builder: (context) => const HomeScreen());
-                  case '/editor':
-                    final args = settings.arguments as Map<String, dynamic>;
-                    final routineId = args["routineId"];
-                    final routineLogId = args["routineLogId"];
-                    final mode = args["mode"];
-                    final createdAt = args["createdAt"];
-                    return MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routineId, routineLogId: routineLogId, mode: mode, createdAt: createdAt));
-                }
-                return null;
-              },
+              home: const HomeScreen(),
             ),
           );
   }

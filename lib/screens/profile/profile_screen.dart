@@ -7,13 +7,10 @@ import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
-import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
-import 'package:tracker_app/widgets/empty_states/screen_empty_state.dart';
 
 import '../../models/RoutineLog.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../utils/general_utils.dart';
-import '../../widgets/banners/minimised_routine_banner.dart';
 import '../../widgets/banners/pending_routines_banner.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -46,7 +43,6 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final cachedRoutineLog = provider.cachedLog;
     final cachedPendingLogs = provider.cachedPendingLogs;
 
     final logs = provider.logs;
@@ -84,7 +80,6 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   cachedPendingLogs.isNotEmpty ? PendingRoutinesBanner(logs: cachedPendingLogs) : const SizedBox.shrink(),
-                  cachedRoutineLog != null ? MinimisedRoutineBanner(log: cachedRoutineLog) : const SizedBox.shrink(),
                   if(logs.isNotEmpty)
                     RichText(
                     text: TextSpan(

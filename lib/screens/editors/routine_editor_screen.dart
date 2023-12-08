@@ -278,24 +278,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _cacheRoutineLog({notifyListeners = false}) {
-    if (widget.mode == RoutineEditorMode.log) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-        final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
-        final routine = _routine;
-        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-            name: routine?.name ?? "",
-            notes: routine?.notes ?? "",
-            procedures: procedures,
-            startTime: _routineStartTime,
-            createdAt: widget.createdAt,
-            routine: routine,
-            shouldNotifyListeners: notifyListeners);
-      });
-    }
-  }
-
   List<UnsavedChangesMessageDto> _checkForChanges(
       {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
@@ -409,8 +391,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
-
-    _cacheRoutineLog();
 
     final procedures = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
 
@@ -540,7 +520,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
                                 onRemoveLog: () => _removeProcedure(procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onCache: _cacheRoutineLog,
                                 onReOrderLogs: _reOrderProcedures);
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -559,7 +538,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     WidgetsBinding.instance.addObserver(this);
 
     _fetchRoutine();
-    _fetchRoutineLog();
 
     _initializeProcedureData();
     _initializeTextControllers();
@@ -567,21 +545,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     _loadRoutineStartTime();
 
     _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
-
-    _cacheRoutineLog(notifyListeners: true);
   }
 
   void _fetchRoutine() {
     _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routineId ?? "");
-  }
-
-  void _fetchRoutineLog() {
-    _routineLog =
-        Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: widget.routineLogId ?? "");
-    final cachedLog = Provider.of<RoutineLogProvider>(context, listen: false).cachedLog;
-    if (cachedLog != null && widget.mode == RoutineEditorMode.log) {
-      _routineLog = cachedLog;
-    }
   }
 
   void _loadRoutineStartTime() {

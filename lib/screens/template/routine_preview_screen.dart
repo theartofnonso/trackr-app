@@ -10,7 +10,6 @@ import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
-import '../../../providers/routine_log_provider.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
@@ -91,7 +90,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       return const SizedBox.shrink();
     }
 
-    List<ExerciseLogDto> procedures =
+    List<ExerciseLogDto> exerciseLogs =
     routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
       Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
@@ -101,19 +100,15 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       return procedure;
     }).toList();
 
-    final cachedRoutineLogDto = Provider.of<RoutineLogProvider>(context, listen: true).cachedLog;
-
     return Scaffold(
-        floatingActionButton: cachedRoutineLogDto == null
-            ? FloatingActionButton(
+        floatingActionButton: FloatingActionButton(
                 heroTag: "fab_routine_preview_screen",
                 onPressed: () {
                   navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
                 },
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(Icons.play_arrow))
-            : null,
+                child: const Icon(Icons.play_arrow)),
         backgroundColor: tealBlueDark,
         appBar: AppBar(
           leading: IconButton(
@@ -164,7 +159,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                             ))
                         : const SizedBox.shrink(),
                     const SizedBox(height: 5),
-                    ..._proceduresToWidgets(procedures: procedures)
+                    ..._proceduresToWidgets(procedures: exerciseLogs)
                   ],
                 ),
               ),
