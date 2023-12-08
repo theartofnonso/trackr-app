@@ -226,23 +226,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _loadTextEditingControllers() {
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in widget.exerciseLogDto.sets) {
-      final value1 = set.value1;
-      final value2 = set.value2;
-      final pastSet = _pastSets.firstWhereOrNull((pastSet) => pastSet.id == set.id);
-      final pastSetValue1 = pastSet?.value1 ?? 0;
-      final pastSetValue2 = pastSet?.value2 ?? 0;
-      TextEditingController controller1 = _getController(value1, pastSetValue1);
-      TextEditingController controller2 = _getController(value2, pastSetValue2);
-
-      controllers.add((controller1, controller2));
+      final value1Controller = TextEditingController(text: set.value1.toString());
+      final value2Controller = TextEditingController(text: set.value2.toString());
+      controllers.add((value1Controller, value2Controller));
     }
     _controllers.addAll(controllers);
-  }
-
-  TextEditingController _getController(num currentValue, num pastSetValue) {
-    return currentValue == pastSetValue
-        ? TextEditingController()
-        : TextEditingController(text: currentValue.toString());
   }
 
   @override

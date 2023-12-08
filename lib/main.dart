@@ -15,6 +15,7 @@ import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
+import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -139,7 +140,11 @@ class _MyAppState extends State<MyApp> {
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
-              home: const HomeScreen(),
+              initialRoute: '/',
+              routes: {
+                '/': (context) => const HomeScreen(),
+                '/editor': (context) => const RoutineEditorScreen(),
+              },
             ),
           );
   }
