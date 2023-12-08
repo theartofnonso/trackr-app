@@ -170,7 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _logout() async {
-    showAlertDialog(
+    showAlertDialogWithMultiActions(
         context: context,
         message: "Log out?",
         leftAction: Navigator.of(context).pop,

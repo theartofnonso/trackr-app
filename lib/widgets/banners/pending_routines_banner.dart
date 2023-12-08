@@ -29,7 +29,7 @@ class PendingRoutinesBanner extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            showAlertDialog(
+            showAlertDialogWithMultiActions(
                 context: context,
                 message: "Discard workout(s)?",
                 leftAction: Navigator.of(context).pop,

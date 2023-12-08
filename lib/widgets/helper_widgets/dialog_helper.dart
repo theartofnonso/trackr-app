@@ -23,7 +23,7 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
       ));
 }
 
-void showAlertDialog(
+void showAlertDialogWithMultiActions(
     {required BuildContext context,
     required String message,
     required void Function() leftAction,
@@ -32,7 +32,7 @@ void showAlertDialog(
     required String rightActionLabel,
     bool isLeftActionDestructive = false,
     bool isRightActionDestructive = false}) {
-  final actions = <Widget>[
+  final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
       child: Text(leftActionLabel, style: GoogleFonts.lato(color: isLeftActionDestructive ? Colors.red : Colors.white)),
@@ -57,7 +57,37 @@ void showAlertDialog(
           textAlign: TextAlign.center,
         ),
         contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
-        actions: actions,
+        actions: alertActions,
+        actionsAlignment: MainAxisAlignment.center,
+        actionsPadding: const EdgeInsets.only(bottom: 8),
+      );
+    },
+  );
+}
+
+void showAlertDialogWithSingleAction({required BuildContext context, required String message, required void Function() action, required String actionLabel}) {
+
+  final alertActions = <Widget>[
+    TextButton(
+      onPressed: action,
+      child: Text(actionLabel, style: GoogleFonts.lato(color: Colors.white)),
+    ),
+  ];
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        icon: const Icon(Icons.info_outline),
+        backgroundColor: tealBlueDark,
+        content: Text(
+          message,
+          style: GoogleFonts.lato(fontSize: 14),
+          textAlign: TextAlign.center,
+        ),
+        contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+        actions: alertActions,
         actionsAlignment: MainAxisAlignment.center,
         actionsPadding: const EdgeInsets.only(bottom: 8),
       );

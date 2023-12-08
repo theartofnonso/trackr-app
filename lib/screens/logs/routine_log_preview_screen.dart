@@ -243,7 +243,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       ),
       MenuItemButton(
         onPressed: () {
-          showAlertDialog(
+          showAlertDialogWithMultiActions(
               context: context,
               message: "Delete log?",
               leftAction: Navigator.of(context).pop,

@@ -170,23 +170,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _createRoutineLog() {
-    showAlertDialog(
-        context: context,
-        message: "Finish workout?",
-        leftActionLabel: 'Discard',
-        leftAction: () {
-          Navigator.of(context).pop();
-          _navigateBackAndClearCache();
-        },
-        rightActionLabel: 'Finish',
-        rightAction: () {
-          Navigator.of(context).pop();
-          _checkForUpdates();
-        },
-        isLeftActionDestructive: true);
-  }
-
   void _doCreateRoutineLog() async {
     final routine = _routine;
     final completedProcedures = _totalCompletedProceduresAndSets();
@@ -204,8 +187,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   void _updateRoutine() {
     if (!_validateRoutineInputs()) return;
     final routine = _routine;
-    if(routine != null) {
-      showAlertDialog(
+    if (routine != null) {
+      showAlertDialogWithMultiActions(
           context: context,
           message: "Update workout?",
           leftAction: Navigator.of(context).pop,
@@ -259,22 +242,29 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     return completedProcedures;
   }
 
+  void _cancelRoutineLog() {
+    showAlertDialogWithMultiActions(
+        context: context,
+        message: "Do you want to discard workout?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        },
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Discard', isRightActionDestructive: true);
+  }
+
   void _endRoutineLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _createRoutineLog();
+      _checkForUpdates();
     } else {
-      showAlertDialog(
+      showAlertDialogWithSingleAction(
           context: context,
           message: "You have not completed any sets",
-          leftActionLabel: 'Discard',
-          leftAction: () {
-            Navigator.of(context).pop();
-            _navigateBackAndClearCache();
-          },
-          rightActionLabel: 'Continue',
-          rightAction: Navigator.of(context).pop,
-          isLeftActionDestructive: true);
+          actionLabel: 'Ok',
+          action: Navigator.of(context).pop);
     }
   }
 
@@ -337,7 +327,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
       final unsavedChangesMessage = _checkForChanges(exerciseLog1: exerciseLog1 ?? [], exerciseLog2: exerciseLog2);
       if (unsavedChangesMessage.isNotEmpty) {
-        showAlertDialog(
+        showAlertDialogWithMultiActions(
             context: context,
             message: "You have unsaved changes",
             leftAction: Navigator.of(context).pop,
@@ -359,7 +349,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _navigateBackAndClearCache() {
-    Navigator.pop(context, {"clear": true});
+    Navigator.of(context).pop();
   }
 
   bool _canUpdate() {
@@ -391,7 +381,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
-
     final procedures = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -412,7 +401,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               )
             : AppBar(
                 leading: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: _cancelRoutineLog,
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
@@ -574,7 +563,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             ?.map((json) => ExerciseLogDto.fromJson(routineLog: _routineLog, json: jsonDecode(json)))
             .toList() ??
         [];
-    final exerciseLog2 = Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs(updateRoutineSets: true);
+    final exerciseLog2 =
+        Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs(updateRoutineSets: true);
 
     final changes = _checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (changes.isNotEmpty) {
@@ -584,7 +574,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     }
   }
 
-  void _displayNotificationsDialog({required List<UnsavedChangesMessageDto> changes, required List<ExerciseLogDto> exerciseLogs}) {
+  void _displayNotificationsDialog(
+      {required List<UnsavedChangesMessageDto> changes, required List<ExerciseLogDto> exerciseLogs}) {
     displayBottomSheet(
         context: context,
         child: _NotificationsDialog(

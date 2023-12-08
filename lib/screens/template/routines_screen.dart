@@ -125,7 +125,7 @@ class _RoutineWidget extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          showAlertDialog(
+          showAlertDialogWithMultiActions(
               context: context,
               message: 'Delete workout?',
               leftAction: Navigator.of(context).pop,
