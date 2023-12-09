@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/calendar_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 

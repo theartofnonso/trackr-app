@@ -11,13 +11,13 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
-import '../../../app_constants.dart';
-import '../../../dtos/exercise_log_dto.dart';
-import '../../../providers/routine_log_provider.dart';
-import '../../../utils/snackbar_utils.dart';
-import '../../../widgets/helper_widgets/dialog_helper.dart';
-import '../../../widgets/helper_widgets/routine_helper.dart';
-import '../exercise/history/home_screen.dart';
+import '../app_constants.dart';
+import '../dtos/exercise_log_dto.dart';
+import '../providers/routine_log_provider.dart';
+import '../utils/snackbar_utils.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
+import '../widgets/helper_widgets/routine_helper.dart';
+import 'screens/exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final String routineLogId;
