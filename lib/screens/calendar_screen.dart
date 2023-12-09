@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -352,7 +353,18 @@ class _RoutineLogWidget extends StatelessWidget {
         title: Text(log.name, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text("${log.procedures.length} exercise(s)",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+        trailing: Text(_logDuration(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
       ),
     );
+  }
+
+  String _logDuration() {
+    String interval = "";
+    final startTime = log.startTime.getDateTimeInUtc();
+    final endTime = log.endTime.getDateTimeInUtc();
+    final difference = endTime.difference(startTime);
+    interval = difference.secondsOrMinutesOrHours();
+    return interval;
   }
 }
