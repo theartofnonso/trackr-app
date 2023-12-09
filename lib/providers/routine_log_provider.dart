@@ -156,6 +156,30 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void cacheRoutineLog(
+      {required String name,
+        required String notes,
+        required List<ExerciseLogDto> procedures,
+        required TemporalDateTime startTime,
+        TemporalDateTime? createdAt,
+        required Routine? routine}) {
+    final currentTime = TemporalDateTime.now();
+
+    final exerciseLogJson = procedures.map((procedure) => procedure.toJson()).toList();
+
+    final logToCache = RoutineLog(
+        name: name,
+        notes: notes,
+        routine: routine,
+        procedures: exerciseLogJson,
+        startTime: startTime,
+        endTime: currentTime,
+        createdAt: createdAt ?? currentTime,
+        updatedAt: currentTime,
+        user: user());
+    SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
+  }
+
   Future<void> removeLog({required String id}) async {
     final index = _indexWhereRoutineLog(id: id);
     final logToBeRemoved = _logs[index];

@@ -4,16 +4,25 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
+import 'package:tracker_app/widgets/banners/minimised_routine_banner.dart';
 import '../../../models/Routine.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/list_view_empty_state.dart';
 import '../editors/routine_editor_screen.dart';
 
-class RoutinesScreen extends StatelessWidget {
+class RoutinesScreen extends StatefulWidget {
   const RoutinesScreen({super.key});
+
+  @override
+  State<RoutinesScreen> createState() => _RoutinesScreenState();
+}
+
+class _RoutinesScreenState extends State<RoutinesScreen> {
+  bool _showRoutineLogBanner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,25 +36,29 @@ class RoutinesScreen extends StatelessWidget {
             ),
             centerTitle: false,
           ),
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineEditor(context: context, mode: RoutineEditorMode.edit),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            label: Text("Create Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+            child: const Icon(Icons.add, size: 28),
           ),
           body: SafeArea(
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                   child: Column(children: [
+                    MinimisedRoutineBanner(visible: _showRoutineLogBanner),
                     provider.routines.isNotEmpty
                         ? Expanded(
                             child: RefreshIndicator(
                               onRefresh: () => loadAppData(context),
                               child: ListView.separated(
                                   padding: const EdgeInsets.only(bottom: 150),
-                                  itemBuilder: (BuildContext context, int index) =>
-                                      _RoutineWidget(routine: provider.routines[index]),
+                                  itemBuilder: (BuildContext context, int index) => _RoutineWidget(
+                                        routine: provider.routines[index],
+                                        onShowRoutineBanner: () => _toggleRoutineLogBanner(visible: true),
+                                        onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false),
+                                      ),
                                   separatorBuilder: (BuildContext context, int index) =>
                                       Divider(color: Colors.white70.withOpacity(0.1)),
                                   itemCount: provider.routines.length),
@@ -55,12 +68,33 @@ class RoutinesScreen extends StatelessWidget {
                   ]))));
     });
   }
+
+  void _toggleRoutineLogBanner({required bool visible}) {
+    setState(() {
+      _showRoutineLogBanner = visible;
+    });
+  }
+
+  void _checkForCachedRoutineLog() {
+    final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
+    if (cachedRoutineLog.isNotEmpty) {
+      _toggleRoutineLogBanner(visible: true);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForCachedRoutineLog();
+  }
 }
 
 class _RoutineWidget extends StatelessWidget {
   final Routine routine;
+  final VoidCallback onShowRoutineBanner;
+  final VoidCallback onCloseRoutineBanner;
 
-  const _RoutineWidget({required this.routine});
+  const _RoutineWidget({required this.routine, required this.onShowRoutineBanner, required this.onCloseRoutineBanner});
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +105,7 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
           leading: GestureDetector(
-              onTap: () {
-                navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
-              },
+              onTap: () => _navigateToRoutineEditor(context),
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,
@@ -146,6 +178,21 @@ class _RoutineWidget extends StatelessWidget {
     Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id).onError((_, __) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, unable to delete workout");
     });
+  }
+
+  void _navigateToRoutineEditor(BuildContext context) async {
+    final result = await navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+    if (result != null) {
+      final mode = result["mode"] ?? RoutineEditorMode.edit;
+      final shouldClearCache = result["clearCache"] ?? false;
+      if (mode == RoutineEditorMode.log) {
+        if (shouldClearCache) {
+          onCloseRoutineBanner();
+        } else {
+          onShowRoutineBanner();
+        }
+      }
+    }
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {

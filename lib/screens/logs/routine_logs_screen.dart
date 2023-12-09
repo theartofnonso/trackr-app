@@ -7,8 +7,10 @@ import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
 import '../../../providers/routine_log_provider.dart';
+import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../widgets/banners/minimised_routine_banner.dart';
 import '../calendar_screen.dart';
 import '../editors/routine_editor_screen.dart';
 
@@ -20,14 +22,11 @@ class RoutineLogsScreen extends StatefulWidget {
 }
 
 class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
-  void _navigateToCalendarScreen() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CalendarScreen()));
-  }
+  bool _showRoutineLogBanner = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<RoutineLogProvider>(builder: (_, provider, __) {
-
       return Scaffold(
         appBar: AppBar(
           title: Image.asset(
@@ -46,20 +45,21 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
             )
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-                heroTag: "fab_routine_logs_screen",
-                onPressed: () {
-                  navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
-                },
-                backgroundColor: tealBlueLighter,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                label: Text("Empty Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
-              ),
+        floatingActionButton: FloatingActionButton(
+          heroTag: "fab_routine_logs_screen",
+          onPressed: () {
+            navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
+          },
+          backgroundColor: tealBlueLighter,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: const Icon(Icons.play_arrow_rounded, size: 32),
+        ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
             child: Column(
               children: [
+                MinimisedRoutineBanner(visible: _showRoutineLogBanner),
                 provider.logs.isNotEmpty
                     ? Expanded(
                         child: RefreshIndicator(
@@ -81,6 +81,29 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
       );
     }));
   }
+
+  void _navigateToCalendarScreen() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CalendarScreen()));
+  }
+
+  void _toggleRoutineLogBanner({required bool visible}) {
+    setState(() {
+      _showRoutineLogBanner = visible;
+    });
+  }
+
+  void _checkForCachedRoutineLog() {
+    final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
+    if (cachedRoutineLog.isNotEmpty) {
+      _toggleRoutineLogBanner(visible: true);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForCachedRoutineLog();
+  }
 }
 
 class _RoutineLogWidget extends StatelessWidget {
@@ -96,7 +119,7 @@ class _RoutineLogWidget extends StatelessWidget {
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-        title: Text(log.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14 )),
+        title: Text(log.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
         subtitle: Text("${log.procedures.length} exercise(s)",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
         trailing: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),

@@ -34,6 +34,7 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback onReOrderLogs;
+  final VoidCallback onCache;
 
   const ExerciseLogWidget({
     super.key,
@@ -43,7 +44,7 @@ class ExerciseLogWidget extends StatefulWidget {
     required this.onSuperSet,
     required this.onRemoveSuperSet,
     required this.onRemoveLog,
-    required this.onReOrderLogs
+    required this.onReOrderLogs, required this.onCache
   });
 
   @override
@@ -253,9 +254,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   Widget build(BuildContext context) {
 
+    widget.onCache();
+
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id];
 
-    final otherProcedureDto = widget.superSet;
+    final superSetExerciseDto = widget.superSet;
 
     final exerciseString = widget.exerciseLogDto.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseString);
@@ -303,8 +306,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   menuChildren: _menuActionButtons())
             ],
           ),
-          otherProcedureDto != null
-              ? Text("with ${otherProcedureDto.exercise.name}",
+          superSetExerciseDto != null
+              ? Text("with ${superSetExerciseDto.exercise.name}",
                   style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12))
               : const SizedBox.shrink(),
           const SizedBox(height: 10),

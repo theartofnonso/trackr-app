@@ -20,6 +20,7 @@ import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
 import '../../dtos/unsaved_changes_messages_dto.dart';
 import '../../providers/routine_log_provider.dart';
+import '../../utils/general_utils.dart';
 import '../../widgets/empty_states/list_tile_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editor/exercise_log_widget.dart';
@@ -29,12 +30,10 @@ enum RoutineEditorMode { edit, log }
 
 class RoutineEditorScreen extends StatefulWidget {
   final String? routineId;
-  final String? routineLogId;
   final RoutineEditorMode mode;
   final TemporalDateTime? createdAt;
 
-  const RoutineEditorScreen(
-      {super.key, this.routineId, this.routineLogId, this.mode = RoutineEditorMode.edit, this.createdAt});
+  const RoutineEditorScreen({super.key, this.routineId, this.mode = RoutineEditorMode.edit, this.createdAt});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -61,13 +60,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         child: _ProceduresPicker(
           procedures: procedures,
           onSelect: (ExerciseLogDto secondProcedure) {
+            _closeDialog();
             final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
-            Navigator.of(context).pop();
             Provider.of<ExerciseLogProvider>(context, listen: false).superSetExerciseLogs(
                 firstExerciseLogId: firstProcedure.id, secondExerciseLogId: secondProcedure.id, superSetId: id);
           },
           onSelectExercisesInLibrary: () {
-            Navigator.of(context).pop();
+            _closeDialog();
             _selectExercisesInLibrary();
           },
         ));
@@ -162,7 +161,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
           name: _routineNameController.text.trim(),
           notes: _routineNotesController.text.trim(),
           procedures: procedureProvider.mergeSetsIntoExerciseLogs());
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) _navigateBack();
     } catch (e) {
       _handleRoutineCreationError("Unable to create workout");
     } finally {
@@ -190,11 +189,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       showAlertDialogWithMultiActions(
           context: context,
           message: "Update workout?",
-          leftAction: Navigator.of(context).pop,
+          leftAction: _closeDialog,
           rightAction: () {
-            Navigator.of(context).pop();
+            _closeDialog();
             _doUpdateRoutine(routine: routine);
-            Navigator.of(context).pop();
+            _navigateBack();
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update');
@@ -244,31 +243,46 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     showAlertDialogWithMultiActions(
         context: context,
         message: "Do you want to discard workout?",
-        leftAction: Navigator.of(context).pop,
+        leftAction: _closeDialog,
         rightAction: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
+          _closeDialog();
+          _navigateBack(clearCache: true);
         },
         leftActionLabel: 'Cancel',
-        rightActionLabel: 'Discard', isRightActionDestructive: true);
+        rightActionLabel: 'Discard',
+        isRightActionDestructive: true);
   }
 
   void _endRoutineLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
       final routine = _routine;
-      if(routine != null) {
+      if (routine != null) {
         _checkForUpdates();
       } else {
         _doCreateRoutineLog();
-        Navigator.of(context).pop();
+        _navigateBack(clearCache: true);
       }
     } else {
       showAlertDialogWithSingleAction(
-          context: context,
-          message: "You have not completed any sets",
-          actionLabel: 'Ok',
-          action: Navigator.of(context).pop);
+          context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
+    }
+  }
+
+  void _cacheRoutineLog() {
+    if (widget.mode == RoutineEditorMode.log) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+        final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
+        final routine = _routine;
+        Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
+            name: routine?.name ?? "",
+            notes: routine?.notes ?? "",
+            procedures: procedures,
+            startTime: _routineStartTime,
+            createdAt: widget.createdAt,
+            routine: routine);
+      });
     }
   }
 
@@ -334,20 +348,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         showAlertDialogWithMultiActions(
             context: context,
             message: "You have unsaved changes",
-            leftAction: Navigator.of(context).pop,
+            leftAction: _closeDialog,
             leftActionLabel: 'Cancel',
             rightAction: () {
-              Navigator.of(context).pop();
-
-              /// Close dialog
-              Navigator.of(context).pop();
-
-              /// Navigate back
+              _closeDialog();
+              _navigateBack();
             },
             rightActionLabel: 'Discard',
             isRightActionDestructive: true);
       } else {
-        Navigator.of(context).pop();
+        _navigateBack();
       }
     }
   }
@@ -379,9 +389,23 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     FocusScope.of(context).unfocus();
   }
 
+  void _closeDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _navigateBack({clearCache = false}) {
+    if (widget.mode == RoutineEditorMode.log) {
+      Navigator.of(context).pop({"mode": widget.mode, "clearCache": clearCache, });
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final procedures = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
+    _cacheRoutineLog();
+
+    final exerciseLogs = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -401,7 +425,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               )
             : AppBar(
                 leading: GestureDetector(
-                  onTap: _cancelRoutineLog,
+                  onTap: _navigateBack,
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
@@ -414,22 +438,39 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                 ),
                 actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
               ),
+        //floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterTop,
         floatingActionButton: isKeyboardOpen
             ? null
             : widget.mode == RoutineEditorMode.log
-                ? FloatingActionButton.extended(
-                    heroTag: "fab_routine_log_editor_screen",
-                    onPressed: _endRoutineLog,
-                    backgroundColor: tealBlueLighter,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    label: Text("End Workout", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      FloatingActionButton(
+                        heroTag: "fab_end_routine_log_screen",
+                        onPressed: _endRoutineLog,
+                        backgroundColor: tealBlueLighter,
+                        enableFeedback: true,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
+                      ),
+                      const SizedBox(height: 12),
+                      FloatingActionButton(
+                        heroTag: "fab_cancel_routine_log_screen",
+                        onPressed: _cancelRoutineLog,
+                        backgroundColor: tealBlueDark,
+                        enableFeedback: true,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        child: const Icon(Icons.close, size: 32, color: Colors.red),
+                      )
+                    ],
                   )
-                : FloatingActionButton.extended(
-                    heroTag: "fab_routine_template_editor_screen",
+                : FloatingActionButton(
+                    heroTag: "fab_select_exercise_log_screen",
                     onPressed: _selectExercisesInLibrary,
                     backgroundColor: tealBlueLighter,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    label: Text("Add Exercises", style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+                    child: const Icon(Icons.add, size: 28,),
                   ),
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
@@ -498,21 +539,22 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                       child: ListView.separated(
                           padding: const EdgeInsets.only(bottom: 150),
                           itemBuilder: (BuildContext context, int index) {
-                            final procedure = procedures[index];
+                            final procedure = exerciseLogs[index];
                             final procedureId = procedure.id;
                             return ExerciseLogWidget(
                                 exerciseLogDto: procedure,
                                 editorType: widget.mode,
                                 superSet:
-                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
                                 onRemoveSuperSet: (String superSetId) =>
                                     _removeProcedureSuperSets(superSetId: procedure.superSetId),
                                 onRemoveLog: () => _removeProcedure(procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                                onCache: _cacheRoutineLog,
                                 onReOrderLogs: _reOrderProcedures);
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
-                          itemCount: procedures.length)),
+                          itemCount: exerciseLogs.length)),
                 ],
               ),
             ),
@@ -527,6 +569,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     WidgetsBinding.instance.addObserver(this);
 
     _fetchRoutine();
+    _fetchRoutineLog();
 
     _initializeProcedureData();
     _initializeTextControllers();
@@ -538,6 +581,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _fetchRoutine() {
     _routine = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: widget.routineId ?? "");
+  }
+
+  void _fetchRoutineLog() {
+    if (widget.mode == RoutineEditorMode.log) {
+      _routineLog = retrieveCachedRoutineLog();
+    }
   }
 
   void _loadRoutineStartTime() {
@@ -571,7 +620,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
     } else {
       _doCreateRoutineLog();
-      Navigator.of(context).pop();
+      _navigateBack(clearCache: true);
     }
   }
 
@@ -583,10 +632,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             onUpdate: () {
               final routine = _routine;
               if (routine != null) {
-                Navigator.of(context).pop();
+                _closeDialog();
                 _doCreateRoutineLog();
                 _doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
-                Navigator.of(context).pop();
+                _navigateBack(clearCache: true);
               }
             },
             messages: changes));

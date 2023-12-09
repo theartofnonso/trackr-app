@@ -15,12 +15,16 @@ import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
+import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,6 +133,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     //debugPaintSizeEnabled = true;
+
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
 
@@ -136,10 +141,23 @@ class _MyAppState extends State<MyApp> {
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp(
+              navigatorObservers: [routeObserver],
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
-              home: const HomeScreen(),
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/':
+                    return MaterialPageRoute(builder: (context) => const HomeScreen());
+                  case '/editor':
+                    final args = settings.arguments as Map<String, dynamic>;
+                    final routineId = args["routineId"];
+                    final mode = args["mode"];
+                    final createdAt = args["createdAt"];
+                    return MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routineId, mode: mode, createdAt: createdAt));
+                }
+                return null;
+              },
             ),
           );
   }

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../models/User.dart';
@@ -128,4 +131,22 @@ Future<void> loadAppData(BuildContext context) async {
     routineProvider.listRoutines();
     routineLogProvider.listRoutineLogs();
   });
+}
+
+Map<String, dynamic> _fixRoutineLogJson(String jsonString) {
+  final json = jsonDecode(jsonString) as Map<String, dynamic>;
+  json.update("routine", (value) {
+    return {"serializedData": value};
+  });
+  return json;
+}
+
+RoutineLog? retrieveCachedRoutineLog() {
+  RoutineLog? routineLog;
+  final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
+  if(cachedRoutineLog.isNotEmpty) {
+    final routineLogJson = _fixRoutineLogJson(cachedRoutineLog);
+    routineLog = RoutineLog.fromJson(routineLogJson);
+  }
+  return routineLog;
 }
