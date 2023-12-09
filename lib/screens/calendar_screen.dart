@@ -159,9 +159,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void _logEmptyRoutine() {
     final log = cachedRoutineLog();
     if (log == null) {
-      navigateToRoutineEditor(
-          context: context,
-          mode: RoutineEditorMode.log);
+      navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
     } else {
       showSnackbar(
           context: context,
@@ -176,13 +174,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate);
 
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          heroTag: "fab_routine_logs_screen",
-          onPressed: _logEmptyRoutine,
-          backgroundColor: tealBlueLighter,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          child: const Icon(Icons.play_arrow_rounded, size: 32),
-        ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "fab_routine_logs_screen",
+        onPressed: _logEmptyRoutine,
+        backgroundColor: tealBlueLighter,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: const Icon(Icons.play_arrow_rounded, size: 32),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
@@ -220,12 +218,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 color: tealBlueDark,
                 height: 10,
               ),
-              logs.isNotEmpty ? Expanded(
-                child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                    separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                    itemCount: logs.length),
-              ): const ListViewEmptyState()
+              logs.isNotEmpty
+                  ? Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                          separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                          itemCount: logs.length),
+                    )
+                  : const ListViewEmptyState()
             ],
           ),
         ),

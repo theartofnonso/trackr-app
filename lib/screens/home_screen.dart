@@ -62,11 +62,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RoutineLog? log = cachedRoutineLog();
-      if(log != null) {
-        navigateToRoutineEditor(
-            context: context,
-            routine: log.routine,
-            mode: RoutineEditorMode.log);
+      if (log != null) {
+        navigateToRoutineEditor(context: context, routine: log.routine, mode: RoutineEditorMode.log);
       }
     });
   }
@@ -90,8 +87,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback(
-              (_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs());
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs());
     }
   }
 }

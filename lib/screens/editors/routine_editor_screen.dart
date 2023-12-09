@@ -13,6 +13,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
@@ -391,6 +392,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   }
 
   void _navigateBack() {
+    if(widget.mode == RoutineEditorMode.log) {
+      SharedPrefs().cachedRoutineLog = "";
+    }
     Navigator.of(context).pop();
   }
 
