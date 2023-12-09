@@ -17,34 +17,40 @@ class DurationDistanceSetRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final distance = isDefaultDistanceUnit() ? setDto.value2 : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 
-    return Table(
-        border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
-        columnWidths: const <int, TableColumnWidth>{
-      0: FixedColumnWidth(50),
-      1: FlexColumnWidth(1),
-      2: FlexColumnWidth(1),
-    }, children: <TableRow>[
-      TableRow(children: [
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SizedBox(
-                height: 50,
-                child: Align(
-                    alignment: Alignment.center, child: SetTypeIcon(type: setDto.type, label: setDto.id)))),
-        TableCell(
+    return Container(
+      decoration: BoxDecoration(
+        color: tealBlueLight, // Container color
+        borderRadius: BorderRadius.circular(5.0), // Radius for rounded corners
+      ),
+      child: Table(
+          border: TableBorder.all(color: tealBlueDark, borderRadius: BorderRadius.circular(5)),
+          columnWidths: const <int, TableColumnWidth>{
+        0: FixedColumnWidth(60),
+        1: FlexColumnWidth(1),
+        2: FlexColumnWidth(1),
+      }, children: <TableRow>[
+        TableRow(children: [
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: SizedBox(
+                  height: 50,
+                  child: Align(
+                      alignment: Alignment.center, child: SetTypeIcon(type: setDto.type, label: setDto.id)))),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Text(
+                "$distance",
+                style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
+              )),
+          TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(
-              "$distance",
+              Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours(),
               style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-            )),
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: Text(
-            Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours(),
-            style: GoogleFonts.lato(color: Colors.white), textAlign: TextAlign.center,
-          ),
-        )
+            ),
+          )
+        ]),
       ]),
-    ]);
+    );
   }
 }

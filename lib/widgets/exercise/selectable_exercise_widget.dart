@@ -23,6 +23,7 @@ class SelectableExerciseWidget extends StatelessWidget {
         splashColor: Colors.transparent,
       ),
       child: ListTile(
+        tileColor: tealBlueLight,
         onTap: _onTap,
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,

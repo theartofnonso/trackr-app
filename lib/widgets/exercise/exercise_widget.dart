@@ -18,6 +18,7 @@ class ExerciseWidget extends StatelessWidget {
         splashColor: tealBlueLight
       ),
       child: ListTile(
+          tileColor: tealBlueLight,
         leading: IconButton(
           onPressed: onNavigateToExercise,
           icon: const Icon(
