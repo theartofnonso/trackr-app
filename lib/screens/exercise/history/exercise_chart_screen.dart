@@ -17,7 +17,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../../utils/general_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
-import '../../../routine_log_preview_screen.dart';
+import '../../routine_log_preview_screen.dart';
 import 'home_screen.dart';
 
 enum SummaryType {
