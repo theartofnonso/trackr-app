@@ -438,7 +438,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                 ),
                 actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
               ),
-        //floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterTop,
         floatingActionButton: isKeyboardOpen
             ? null
             : widget.mode == RoutineEditorMode.log
