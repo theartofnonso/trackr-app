@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -20,21 +19,8 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  late DateTime _earliestLogDate;
 
   DateTime _currentDate = DateTime.now();
-
-  bool _hasEarlierDate() {
-    int earliestMonth = _earliestLogDate.month;
-    int earliestYear = _earliestLogDate.year;
-    if (earliestYear == _currentDate.year) {
-      return earliestMonth < _currentDate.month;
-    } else if (earliestYear < _currentDate.year) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   bool _hasLaterDate() {
     final laterDate = DateTime.now();
@@ -50,20 +36,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _decrementDate() {
-    if (_hasEarlierDate()) {
-      int month = _currentDate.month - 1;
-      int year = _currentDate.year;
+    int month = _currentDate.month - 1;
+    int year = _currentDate.year;
 
-      /// We need to go to previous year
-      if (month == 0) {
-        month = 12;
-        year = year - 1;
-      }
-
-      setState(() {
-        _currentDate = DateTime(year, month);
-      });
+    /// We need to go to previous year
+    if (month == 0) {
+      month = 12;
+      year = year - 1;
     }
+
+    setState(() {
+      _currentDate = DateTime(year, month);
+    });
   }
 
   void _incrementDate() {
@@ -207,15 +191,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         if (logs.isEmpty) const Column(children: [ListTileEmptyState(), SizedBox(height: 8), ListTileEmptyState()])
       ],
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final earliestRoutineLog = Provider.of<RoutineLogProvider>(context, listen: false).logs.lastOrNull;
-    final earliestDateTime =
-        earliestRoutineLog != null ? earliestRoutineLog.createdAt.getDateTimeInUtc() : _currentDate;
-    _earliestLogDate = DateTime(earliestDateTime.year, earliestDateTime.month);
   }
 }
 

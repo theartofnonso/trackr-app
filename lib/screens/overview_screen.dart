@@ -98,58 +98,58 @@ class OverviewScreen extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () => loadAppData(context),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
+          child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 150),
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
-                  if (logs.isNotEmpty)
-                    RichText(
-                      text: TextSpan(
-                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                        // This gets the default style
-                        children: <TextSpan>[
-                          const TextSpan(text: 'You have logged '),
-                          TextSpan(
-                              text: '$logsForTheWeek workout(s) this week,',
-                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                          TextSpan(
-                              text: ' $logsForTheMonth this month',
-                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                              text: '$logsForTheYear this year',
-                              style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
-                        ],
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
+                    if (logs.isNotEmpty)
+                      RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                          // This gets the default style
+                          children: <TextSpan>[
+                            const TextSpan(text: 'You have logged '),
+                            TextSpan(
+                                text: '$logsForTheWeek workout(s) this week,',
+                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                            TextSpan(
+                                text: ' $logsForTheMonth this month',
+                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                            const TextSpan(text: ' and '),
+                            TextSpan(
+                                text: '$logsForTheYear this year',
+                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
+                          ],
+                        ),
                       ),
+                    const SizedBox(height: 10),
+                    if (logs.isNotEmpty)
+                      Text(
+                          "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                          style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                    if (logs.isEmpty) const ListTileEmptyState(),
+                    const SizedBox(height: 20),
+                    Theme(
+                      data: ThemeData(splashColor: tealBlueLight),
+                      child: ListTile(
+                          onTap: () => _navigateToMuscleDistribution(context),
+                          tileColor: tealBlueLight,
+                          dense: true,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                          title: Text("Muscle insights", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+                          subtitle: Text("Number of sets logged for each muscle group",
+                              style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
                     ),
-                  const SizedBox(height: 10),
-                  if (logs.isNotEmpty)
-                    Text(
-                        "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                  if (logs.isEmpty) const ListTileEmptyState(),
-                  const SizedBox(height: 20),
-                  Theme(
-                    data: ThemeData(splashColor: tealBlueLight),
-                    child: ListTile(
-                        onTap: () => _navigateToMuscleDistribution(context),
-                        tileColor: tealBlueLight,
-                        dense: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                        title: Text("Muscle insights", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                        subtitle: Text("Number of sets logged for each muscle group",
-                            style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                  ),
-                  const SizedBox(height: 20),
-                  const CalendarScreen()
-                ],
-              ),
-            ),
-          ),
+                    const SizedBox(height: 20),
+                    const CalendarScreen()
+                  ],
+                ),
+              )),
         ),
       ),
     );
