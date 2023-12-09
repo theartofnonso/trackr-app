@@ -138,7 +138,7 @@ class OverviewScreen extends StatelessWidget {
                       data: ThemeData(splashColor: tealBlueLight),
                       child: ListTile(
                           onTap: () => _navigateToMuscleDistribution(context),
-                          tileColor: tealBlueLighter,
+                          tileColor: tealBlueLight,
                           dense: true,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                           title: Text("Muscle insights", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),

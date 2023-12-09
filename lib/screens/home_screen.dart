@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         height: 60,
         indicatorColor: Colors.transparent,
         backgroundColor: tealBlueDark,
+        surfaceTintColor: tealBlueLighter,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home, color: Colors.grey, size: 28),
