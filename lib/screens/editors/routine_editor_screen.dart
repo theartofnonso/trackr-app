@@ -31,9 +31,8 @@ enum RoutineEditorMode { edit, log }
 class RoutineEditorScreen extends StatefulWidget {
   final String? routineId;
   final RoutineEditorMode mode;
-  final TemporalDateTime? createdAt;
 
-  const RoutineEditorScreen({super.key, this.routineId, this.mode = RoutineEditorMode.edit, this.createdAt});
+  const RoutineEditorScreen({super.key, this.routineId, this.mode = RoutineEditorMode.edit});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -178,7 +177,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         notes: _routine?.notes ?? "",
         procedures: completedExerciseLogs,
         startTime: _routineStartTime,
-        createdAt: widget.createdAt,
         routine: _routine);
   }
 
@@ -280,7 +278,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             notes: routine?.notes ?? "",
             procedures: procedures,
             startTime: _routineStartTime,
-            createdAt: widget.createdAt,
             routine: routine);
       });
     }

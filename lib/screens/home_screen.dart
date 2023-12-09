@@ -62,10 +62,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RoutineLog? log = cachedRoutineLog();
-      navigateToRoutineEditor(
-          context: context,
-          routine: log?.routine,
-          mode: RoutineEditorMode.log);
+      if(log != null) {
+        navigateToRoutineEditor(
+            context: context,
+            routine: log.routine,
+            mode: RoutineEditorMode.log);
+      }
     });
   }
 

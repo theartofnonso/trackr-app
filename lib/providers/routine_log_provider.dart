@@ -95,7 +95,6 @@ class RoutineLogProvider with ChangeNotifier {
       required String notes,
       required List<ExerciseLogDto> procedures,
       required TemporalDateTime startTime,
-      TemporalDateTime? createdAt,
       required Routine? routine}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
 
@@ -105,7 +104,7 @@ class RoutineLogProvider with ChangeNotifier {
         procedures: proceduresJson,
         startTime: startTime,
         endTime: TemporalDateTime.now(),
-        createdAt: createdAt ?? TemporalDateTime.now(),
+        createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now(),
         routine: routine,
         user: user());
