@@ -179,7 +179,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    Provider.of<ExerciseProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
