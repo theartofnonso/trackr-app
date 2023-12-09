@@ -36,16 +36,16 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onReOrderLogs;
   final VoidCallback onCache;
 
-  const ExerciseLogWidget({
-    super.key,
-    this.editorType = RoutineEditorMode.edit,
-    required this.exerciseLogDto,
-    required this.superSet,
-    required this.onSuperSet,
-    required this.onRemoveSuperSet,
-    required this.onRemoveLog,
-    required this.onReOrderLogs, required this.onCache
-  });
+  const ExerciseLogWidget(
+      {super.key,
+      this.editorType = RoutineEditorMode.edit,
+      required this.exerciseLogDto,
+      required this.superSet,
+      required this.onSuperSet,
+      required this.onRemoveSuperSet,
+      required this.onRemoveLog,
+      required this.onReOrderLogs,
+      required this.onCache});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -86,8 +86,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   List<Widget> _displaySets({required ExerciseType exerciseType, required List<SetDto> sets}) {
-    if (sets.isEmpty) return [];
-
     return sets.mapIndexed((index, setDto) {
       Widget setWidget = _createSetWidget(index: index, set: setDto, exerciseType: exerciseType);
 
@@ -241,7 +239,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _loadTextEditingControllers();
   }
 
-
   @override
   void didUpdateWidget(ExerciseLogWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -253,10 +250,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     widget.onCache();
 
-    final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id];
+    final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
 
     final superSetExerciseDto = widget.superSet;
 
@@ -306,11 +302,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   menuChildren: _menuActionButtons())
             ],
           ),
-          superSetExerciseDto != null
-              ? Text("with ${superSetExerciseDto.exercise.name}",
-                  style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12))
-              : const SizedBox.shrink(),
-          const SizedBox(height: 10),
+          if (superSetExerciseDto != null)
+            Column(
+              children: [
+                Text("with ${superSetExerciseDto.exercise.name}",
+                    style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
+                const SizedBox(height: 10),
+              ],
+            ),
           TextField(
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
             onChanged: (value) => _updateProcedureNotes(value: value),
@@ -352,7 +351,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ExerciseType.durationAndDistance => DurationDistanceSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),
-          ..._displaySets(exerciseType: exerciseType, sets: sets ?? []),
+          if (sets.isNotEmpty) Column(children: [..._displaySets(exerciseType: exerciseType, sets: sets)]),
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.bottomRight,
