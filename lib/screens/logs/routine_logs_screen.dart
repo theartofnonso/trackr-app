@@ -58,7 +58,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
             child: Column(
               children: [
-                MinimisedRoutineBanner(visible: _showRoutineLogBanner),
+                MinimisedRoutineBanner(onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false)),
                 provider.logs.isNotEmpty
                     ? Expanded(
                         child: RefreshIndicator(
@@ -103,7 +103,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
 
   void _toggleRoutineLogBanner({required bool visible}) {
     setState(() {
-      _showRoutineLogBanner = visible;
+      // _showRoutineLogBanner = visible;
     });
   }
 

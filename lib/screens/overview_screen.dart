@@ -92,7 +92,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MinimisedRoutineBanner(visible: _showRoutineLogBanner),
+                  MinimisedRoutineBanner(onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false)),
                   if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
                   if (logs.isNotEmpty)
                     RichText(
@@ -143,7 +143,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _toggleRoutineLogBanner({required bool visible}) {
     setState(() {
-      _showRoutineLogBanner = visible;
+      // _showRoutineLogBanner = visible;
     });
   }
 

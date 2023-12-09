@@ -395,7 +395,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _navigateBack({clearCache = false}) {
     if (widget.mode == RoutineEditorMode.log) {
-      Navigator.of(context).pop({"mode": widget.mode, "clearCache": clearCache, });
+      Navigator.of(context).pop({"mode": widget.mode, "clearCache": clearCache});
     } else {
       Navigator.of(context).pop();
     }

@@ -10,6 +10,9 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../models/RoutineLog.dart';
+import '../utils/general_utils.dart';
+import '../utils/snackbar_utils.dart';
+import 'editors/routine_editor_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -152,61 +155,79 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return widgets;
   }
 
+  void _logEmptyRoutine() {
+    final log = cachedRoutineLog();
+    if (log == null) {
+      navigateToRoutineEditor(
+          context: context,
+          mode: RoutineEditorMode.log);
+    } else {
+      showSnackbar(
+          context: context,
+          icon: const Icon(Icons.info_outline_rounded),
+          message: "${log.routine?.name ?? "Workout"} is running");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate);
 
     return Scaffold(
-      appBar: AppBar(
-          leading: IconButton(
-        icon: const Icon(Icons.arrow_back_outlined),
-        onPressed: Navigator.of(context).pop,
-      )),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: tealBlueDark,
-              child: Row(
-                children: [
-                  _hasEarlierDate() ? CTextButton(onPressed: _decrementDate, label: "Prev") : const SizedBox.shrink(),
-                  Expanded(
-                    child: Text(_currentDate.formattedMonthAndYear(),
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.lato(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                        )),
-                  ),
-                  _hasLaterDate() ? CTextButton(onPressed: _incrementDate, label: "Next") : const SizedBox.shrink(),
-                ],
+        floatingActionButton: FloatingActionButton(
+          heroTag: "fab_routine_logs_screen",
+          onPressed: _logEmptyRoutine,
+          backgroundColor: tealBlueLighter,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: const Icon(Icons.play_arrow_rounded, size: 32),
+        ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: tealBlueDark,
+                child: Row(
+                  children: [
+                    _hasEarlierDate() ? CTextButton(onPressed: _decrementDate, label: "Prev") : const SizedBox.shrink(),
+                    Expanded(
+                      child: Text(_currentDate.formattedMonthAndYear(),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    _hasLaterDate() ? CTextButton(onPressed: _incrementDate, label: "Next") : const SizedBox.shrink(),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              color: tealBlueDark,
-              height: 15,
-            ),
-            _CalendarHeader(),
-            Container(
-              color: tealBlueDark,
-              child: Column(
-                children: [..._dateToRows()],
+              Container(
+                color: tealBlueDark,
+                height: 15,
               ),
-            ),
-            Container(
-              color: tealBlueDark,
-              height: 10,
-            ),
-            logs.isNotEmpty ? Expanded(
-              child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                  itemCount: logs.length),
-            ): const ListViewEmptyState()
-          ],
+              _CalendarHeader(),
+              Container(
+                color: tealBlueDark,
+                child: Column(
+                  children: [..._dateToRows()],
+                ),
+              ),
+              Container(
+                color: tealBlueDark,
+                height: 10,
+              ),
+              logs.isNotEmpty ? Expanded(
+                child: ListView.separated(
+                    itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                    separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                    itemCount: logs.length),
+              ): const ListViewEmptyState()
+            ],
+          ),
         ),
       ),
     );

@@ -28,14 +28,6 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
   Widget build(BuildContext context) {
     return Consumer<RoutineProvider>(builder: (_, provider, __) {
       return Scaffold(
-          appBar: AppBar(
-            title: Image.asset(
-              'assets/trackr.png',
-              fit: BoxFit.contain,
-              height: 14, // Adjust the height as needed
-            ),
-            centerTitle: false,
-          ),
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineEditor(context: context, mode: RoutineEditorMode.edit),
@@ -47,7 +39,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                   child: Column(children: [
-                    MinimisedRoutineBanner(visible: _showRoutineLogBanner),
+                    MinimisedRoutineBanner(onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false)),
                     provider.routines.isNotEmpty
                         ? Expanded(
                             child: RefreshIndicator(
@@ -71,7 +63,6 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
 
   void _toggleRoutineLogBanner({required bool visible}) {
     setState(() {
-      _showRoutineLogBanner = visible;
     });
   }
 

@@ -21,6 +21,7 @@ Future<void> navigateToRoutineEditor(
       if (shouldClearCache) {
         SharedPrefs().cachedRoutineLog = "";
         if (onCloseRoutineBanner != null) {
+          print(result);
           onCloseRoutineBanner();
         }
       } else {

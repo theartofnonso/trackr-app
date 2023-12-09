@@ -7,17 +7,10 @@ import '../../screens/editors/routine_editor_screen.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 
-class MinimisedRoutineBanner extends StatefulWidget {
-  final bool visible;
+class MinimisedRoutineBanner extends StatelessWidget {
+  final VoidCallback onCloseRoutineBanner;
 
-  const MinimisedRoutineBanner({super.key, required this.visible});
-
-  @override
-  State<MinimisedRoutineBanner> createState() => _MinimisedRoutineBannerState();
-}
-
-class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
-  bool _hideBanner = false;
+  const MinimisedRoutineBanner({super.key, required this.onCloseRoutineBanner});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +18,7 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
 
     Widget banner = const SizedBox.shrink();
 
-    if (widget.visible && !_hideBanner) {
+    if (log != null) {
       banner = Theme(
         data: ThemeData(splashColor: tealBlueLight),
         child: Padding(
@@ -37,9 +30,9 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
               onTap: () {
                 navigateToRoutineEditor(
                     context: context,
-                    routine: log?.routine,
+                    routine: log.routine,
                     mode: RoutineEditorMode.log,
-                    onCloseRoutineBanner: _closeBanner);
+                    onCloseRoutineBanner: onCloseRoutineBanner);
               },
               leading: const Icon(
                 Icons.info_outline,
@@ -47,7 +40,7 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
               ),
               minLeadingWidth: 0,
               title: Text(
-                '${log?.routine?.name ?? "Workout"} is in progress',
+                '${log.routine?.name ?? "Workout"} is in progress',
                 style: GoogleFonts.lato(color: Colors.white),
               )),
         ),
@@ -55,11 +48,5 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
     }
 
     return banner;
-  }
-
-  void _closeBanner() {
-    setState(() {
-      _hideBanner = true;
-    });
   }
 }
