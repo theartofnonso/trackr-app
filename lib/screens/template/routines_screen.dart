@@ -105,7 +105,12 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
           leading: GestureDetector(
-              onTap: () => _navigateToRoutineEditor(context),
+              onTap: () => navigateToRoutineEditor(
+                  context: context,
+                  routine: routine,
+                  mode: RoutineEditorMode.log,
+                  onShowRoutineBanner: onShowRoutineBanner,
+                  onCloseRoutineBanner: onCloseRoutineBanner),
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,
@@ -178,21 +183,6 @@ class _RoutineWidget extends StatelessWidget {
     Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: routine.id).onError((_, __) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, unable to delete workout");
     });
-  }
-
-  void _navigateToRoutineEditor(BuildContext context) async {
-    final result = await navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
-    if (result != null) {
-      final mode = result["mode"] ?? RoutineEditorMode.edit;
-      final shouldClearCache = result["clearCache"] ?? false;
-      if (mode == RoutineEditorMode.log) {
-        if (shouldClearCache) {
-          onCloseRoutineBanner();
-        } else {
-          onShowRoutineBanner();
-        }
-      }
-    }
   }
 
   void _navigateToRoutinePreview({required BuildContext context}) async {

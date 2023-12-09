@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
 import '../../app_constants.dart';
-import '../../models/Routine.dart';
 import '../../models/RoutineLog.dart';
 import '../../screens/editors/routine_editor_screen.dart';
 import '../../utils/general_utils.dart';
@@ -11,6 +9,7 @@ import '../../utils/navigation_utils.dart';
 
 class MinimisedRoutineBanner extends StatefulWidget {
   final bool visible;
+
   const MinimisedRoutineBanner({super.key, required this.visible});
 
   @override
@@ -18,7 +17,6 @@ class MinimisedRoutineBanner extends StatefulWidget {
 }
 
 class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
-
   bool _hideBanner = false;
 
   @override
@@ -27,7 +25,7 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
 
     Widget banner = const SizedBox.shrink();
 
-    if(widget.visible && !_hideBanner) {
+    if (widget.visible && !_hideBanner) {
       banner = Theme(
         data: ThemeData(splashColor: tealBlueLight),
         child: Padding(
@@ -37,7 +35,12 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
               dense: true,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
               onTap: () {
-                _navigateToRoutineEditor(context: context, routine: log?.routine);
+                navigateToRoutineEditor(
+                    context: context,
+                    routine: log?.routine,
+                    mode: RoutineEditorMode.log,
+                    onShowRoutineBanner: () {},
+                    onCloseRoutineBanner: _closeBanner);
               },
               leading: const Icon(
                 Icons.info_outline,
@@ -53,23 +56,11 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
     }
 
     return banner;
-
   }
 
-  void _navigateToRoutineEditor({required BuildContext context, Routine? routine}) async {
-    final result = await navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
-    if (result != null) {
-      final mode = result["mode"] ?? RoutineEditorMode.edit;
-      final shouldClearCache = result["clearCache"] ?? false;
-      if (mode == RoutineEditorMode.log) {
-        if (shouldClearCache) {
-          SharedPrefs().cachedRoutineLog = "";
-          setState(() {
-            _hideBanner = true;
-          });
-        }
-      }
-    }
+  void _closeBanner() {
+    setState(() {
+      _hideBanner = true;
+    });
   }
-
 }
