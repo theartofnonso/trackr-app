@@ -6,7 +6,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../models/RoutineLog.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
@@ -161,14 +160,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CTextButton(onPressed: _decrementDate, label: "Prev"),
+              IconButton(onPressed: _decrementDate, icon: const Icon(Icons.arrow_back_ios_new_rounded)),
               Text(_currentDate.formattedMonthAndYear(),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   )),
-              CTextButton(onPressed: _incrementDate, label: "Next"),
+              IconButton(onPressed: _incrementDate, icon: const Icon(Icons.arrow_forward_ios_rounded)),
             ],
           ),
         ),
