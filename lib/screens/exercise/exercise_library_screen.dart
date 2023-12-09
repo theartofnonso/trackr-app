@@ -223,7 +223,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                         child: ListView.separated(
                             itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
                             separatorBuilder: (BuildContext context, int index) =>
-                            const SizedBox(height: 8),
+                            const Divider(thickness: 1.0, color: tealBlueLight,),
                             itemCount: _filteredExercises.length),
                       ))
                   : ListViewEmptyState(onRefresh: () => loadAppData(context)),
