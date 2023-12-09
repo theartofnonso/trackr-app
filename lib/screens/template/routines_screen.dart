@@ -52,7 +52,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                                         onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false),
                                       ),
                                   separatorBuilder: (BuildContext context, int index) =>
-                                      Divider(color: Colors.white70.withOpacity(0.1)),
+                                  const SizedBox(height: 8),
                                   itemCount: provider.routines.length),
                             ),
                           )
@@ -92,6 +92,7 @@ class _RoutineWidget extends StatelessWidget {
     return Theme(
         data: ThemeData(splashColor: tealBlueLight),
         child: ListTile(
+          tileColor: tealBlueLight,
           onTap: () => _navigateToRoutinePreview(context: context),
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),

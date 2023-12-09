@@ -142,6 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Theme(
                 data: ThemeData(splashColor: tealBlueLight),
                 child: ListTile(
+                    tileColor: tealBlueLight,
                     onTap: _navigateToExerciseLibrary,
                     dense: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
