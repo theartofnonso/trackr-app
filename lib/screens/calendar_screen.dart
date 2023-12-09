@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../models/RoutineLog.dart';
-import '../utils/general_utils.dart';
-import '../utils/snackbar_utils.dart';
-import 'editors/routine_editor_screen.dart';
+import '../widgets/empty_states/list_tile_empty_state.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -155,18 +153,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return widgets;
   }
 
-  void _logEmptyRoutine() {
-    final log = cachedRoutineLog();
-    if (log == null) {
-      navigateToRoutineEditor(
-          context: context,
-          mode: RoutineEditorMode.log);
-    } else {
-      showSnackbar(
-          context: context,
-          icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.routine?.name ?? "Workout"} is running");
-    }
+  List<Widget> _logsToWidgets(List<RoutineLog> logs) {
+    return logs
+        .map((log) => Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: _RoutineLogWidget(
+                log: log,
+              ),
+            ))
+        .toList();
   }
 
   @override
@@ -174,61 +169,43 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate);
 
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          heroTag: "fab_routine_logs_screen",
-          onPressed: _logEmptyRoutine,
-          backgroundColor: tealBlueLighter,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          child: const Icon(Icons.play_arrow_rounded, size: 32),
-        ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          color: tealBlueDark,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                color: tealBlueDark,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CTextButton(onPressed: _decrementDate, label: "Prev"),
-                    Text(_currentDate.formattedMonthAndYear(),
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.lato(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                        )),
-                    CTextButton(onPressed: _incrementDate, label: "Next"),
-                  ],
-                ),
-              ),
-              Container(
-                color: tealBlueDark,
-                height: 15,
-              ),
-              _CalendarHeader(),
-              Container(
-                color: tealBlueDark,
-                child: Column(
-                  children: [..._dateToRows()],
-                ),
-              ),
-              Container(
-                color: tealBlueDark,
-                height: 10,
-              ),
-              logs.isNotEmpty ? Expanded(
-                child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                    separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                    itemCount: logs.length),
-              ): const ListViewEmptyState()
+              CTextButton(onPressed: _decrementDate, label: "Prev"),
+              Text(_currentDate.formattedMonthAndYear(),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.lato(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  )),
+              CTextButton(onPressed: _incrementDate, label: "Next"),
             ],
           ),
         ),
-      ),
+        Container(
+          color: tealBlueDark,
+          height: 15,
+        ),
+        _CalendarHeader(),
+        Container(
+          color: tealBlueDark,
+          child: Column(
+            children: [..._dateToRows()],
+          ),
+        ),
+        Container(
+          color: tealBlueDark,
+          height: 10,
+        ),
+        if (logs.isNotEmpty) ..._logsToWidgets(logs),
+        if (logs.isEmpty) const Column(children: [ListTileEmptyState(), SizedBox(height: 8), ListTileEmptyState()])
+      ],
     );
   }
 
@@ -276,7 +253,7 @@ class _DateWidget extends StatelessWidget {
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
-      return Colors.white;
+      return Colors.green;
     }
     return Colors.transparent;
   }
@@ -284,7 +261,7 @@ class _DateWidget extends StatelessWidget {
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
     if (selectedDate.isSameDateAs(dateTime)) {
-      return Border.all(color: Colors.white, width: 1.0);
+      return Border.all(color: Colors.green, width: 2.0);
     } else {
       return null;
     }
@@ -292,7 +269,7 @@ class _DateWidget extends StatelessWidget {
 
   Color _getTextColor(bool hasLog) {
     if (hasLog) {
-      return Colors.black;
+      return Colors.white;
     }
     if (dateTime.isSameDateAs(DateTime.now())) {
       return Colors.white;
@@ -352,7 +329,18 @@ class _RoutineLogWidget extends StatelessWidget {
         title: Text(log.name, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text("${log.procedures.length} exercise(s)",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+        trailing: Text(_logDuration(),
+            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
       ),
     );
+  }
+
+  String _logDuration() {
+    String interval = "";
+    final startTime = log.startTime.getDateTimeInUtc();
+    final endTime = log.endTime.getDateTimeInUtc();
+    final difference = endTime.difference(startTime);
+    interval = difference.secondsOrMinutesOrHours();
+    return interval;
   }
 }

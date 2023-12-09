@@ -13,6 +13,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
@@ -31,9 +32,8 @@ enum RoutineEditorMode { edit, log }
 class RoutineEditorScreen extends StatefulWidget {
   final String? routineId;
   final RoutineEditorMode mode;
-  final TemporalDateTime? createdAt;
 
-  const RoutineEditorScreen({super.key, this.routineId, this.mode = RoutineEditorMode.edit, this.createdAt});
+  const RoutineEditorScreen({super.key, this.routineId, this.mode = RoutineEditorMode.edit});
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -178,7 +178,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         notes: _routine?.notes ?? "",
         procedures: completedExerciseLogs,
         startTime: _routineStartTime,
-        createdAt: widget.createdAt,
         routine: _routine);
   }
 
@@ -246,7 +245,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
-          _navigateBack(clearCache: true);
+          _navigateBack();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Discard',
@@ -261,7 +260,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         _checkForUpdates();
       } else {
         _doCreateRoutineLog();
-        _navigateBack(clearCache: true);
+        _navigateBack();
       }
     } else {
       showAlertDialogWithSingleAction(
@@ -280,7 +279,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             notes: routine?.notes ?? "",
             procedures: procedures,
             startTime: _routineStartTime,
-            createdAt: widget.createdAt,
             routine: routine);
       });
     }
@@ -393,12 +391,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     Navigator.of(context).pop();
   }
 
-  void _navigateBack({clearCache = false}) {
-    if (widget.mode == RoutineEditorMode.log) {
-      Navigator.of(context).pop({"mode": widget.mode, "clearCache": clearCache});
-    } else {
-      Navigator.of(context).pop();
+  void _navigateBack() {
+    if(widget.mode == RoutineEditorMode.log) {
+      SharedPrefs().cachedRoutineLog = "";
     }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -425,7 +422,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               )
             : AppBar(
                 leading: GestureDetector(
-                  onTap: _navigateBack,
+                  onTap: _cancelRoutineLog,
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
@@ -441,28 +438,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         floatingActionButton: isKeyboardOpen
             ? null
             : widget.mode == RoutineEditorMode.log
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      FloatingActionButton(
-                        heroTag: "fab_end_routine_log_screen",
-                        onPressed: _endRoutineLog,
-                        backgroundColor: tealBlueLighter,
-                        enableFeedback: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
-                      ),
-                      const SizedBox(height: 12),
-                      FloatingActionButton(
-                        heroTag: "fab_cancel_routine_log_screen",
-                        onPressed: _cancelRoutineLog,
-                        backgroundColor: tealBlueDark,
-                        enableFeedback: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        child: const Icon(Icons.close, size: 32, color: Colors.red),
-                      )
-                    ],
+                ? FloatingActionButton(
+                    heroTag: "fab_end_routine_log_screen",
+                    onPressed: _endRoutineLog,
+                    backgroundColor: tealBlueLighter,
+                    enableFeedback: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
                   )
                 : FloatingActionButton(
                     heroTag: "fab_select_exercise_log_screen",
@@ -619,7 +601,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
     } else {
       _doCreateRoutineLog();
-      _navigateBack(clearCache: true);
+      _navigateBack();
     }
   }
 
@@ -634,7 +616,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                 _closeDialog();
                 _doCreateRoutineLog();
                 _doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
-                _navigateBack(clearCache: true);
+                _navigateBack();
               }
             },
             messages: changes));

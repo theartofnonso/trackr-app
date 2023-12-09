@@ -11,20 +11,15 @@ import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
-import '../widgets/banners/minimised_routine_banner.dart';
+import '../utils/navigation_utils.dart';
+import '../utils/snackbar_utils.dart';
 import '../widgets/banners/pending_routines_banner.dart';
+import 'calendar_screen.dart';
+import 'editors/routine_editor_screen.dart';
 
-class OverviewScreen extends StatefulWidget {
+class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
-
-  @override
-  State<OverviewScreen> createState() => _OverviewScreenState();
-}
-
-class _OverviewScreenState extends State<OverviewScreen> {
-  bool _showRoutineLogBanner = false;
 
   void _navigateBack(BuildContext context) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
@@ -49,6 +44,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear)).toList().length;
   }
 
+  void _logEmptyRoutine(BuildContext context) {
+    final log = cachedRoutineLog();
+    if (log == null) {
+      navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
+    } else {
+      showSnackbar(
+          context: context,
+          icon: const Icon(Icons.info_outline_rounded),
+          message: "${log.routine?.name ?? "Workout"} is running");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final routineProvider = Provider.of<RoutineProvider>(context, listen: true);
@@ -64,6 +71,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsForTheYear = _logsForTheYearCount(logs: logs);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: "fab_routine_logs_screen",
+        onPressed: () => _logEmptyRoutine(context),
+        backgroundColor: tealBlueLighter,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: const Icon(Icons.play_arrow_rounded, size: 32),
+      ),
       appBar: AppBar(
         title: Image.asset(
           'assets/trackr.png',
@@ -88,11 +102,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
             padding: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              // Enable scrolling even when the content is smaller than the screen
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MinimisedRoutineBanner(onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false)),
                   if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
                   if (logs.isNotEmpty)
                     RichText(
@@ -132,6 +144,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         subtitle: Text("Number of sets logged for each muscle group",
                             style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
                   ),
+                  const SizedBox(height: 20),
+                  const CalendarScreen()
                 ],
               ),
             ),
@@ -139,24 +153,5 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
       ),
     );
-  }
-
-  void _toggleRoutineLogBanner({required bool visible}) {
-    setState(() {
-      // _showRoutineLogBanner = visible;
-    });
-  }
-
-  void _checkForCachedRoutineLog() {
-    final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
-    if (cachedRoutineLog.isNotEmpty) {
-      _toggleRoutineLogBanner(visible: true);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _checkForCachedRoutineLog();
   }
 }
