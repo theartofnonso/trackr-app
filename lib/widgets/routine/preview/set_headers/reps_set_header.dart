@@ -8,7 +8,7 @@ class RepsSetHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Table(
       columnWidths: const <int, TableColumnWidth>{
-        0: FixedColumnWidth(50),
+        0: FixedColumnWidth(60),
         1: FlexColumnWidth(),
       },
       children: <TableRow>[
