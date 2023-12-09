@@ -5,9 +5,12 @@ import 'package:tracker_app/screens/calendar_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 
+import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../shared_prefs.dart';
+import 'editors/routine_editor_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -56,11 +59,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
   }
 
+  void _loadCachedLog() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      RoutineLog? log = cachedRoutineLog();
+      navigateToRoutineEditor(
+          context: context,
+          routine: log?.routine,
+          mode: RoutineEditorMode.log);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SharedPrefs().firstLaunch = false;
+    _loadCachedLog();
     persistUserCredentials();
     loadAppData(context);
   }

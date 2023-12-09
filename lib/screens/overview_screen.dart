@@ -11,20 +11,11 @@ import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
-import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
-import '../widgets/banners/minimised_routine_banner.dart';
 import '../widgets/banners/pending_routines_banner.dart';
 
-class OverviewScreen extends StatefulWidget {
+class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
-
-  @override
-  State<OverviewScreen> createState() => _OverviewScreenState();
-}
-
-class _OverviewScreenState extends State<OverviewScreen> {
-  bool _showRoutineLogBanner = false;
 
   void _navigateBack(BuildContext context) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
@@ -92,7 +83,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MinimisedRoutineBanner(onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false)),
                   if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
                   if (logs.isNotEmpty)
                     RichText(
@@ -139,24 +129,5 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
       ),
     );
-  }
-
-  void _toggleRoutineLogBanner({required bool visible}) {
-    setState(() {
-      // _showRoutineLogBanner = visible;
-    });
-  }
-
-  void _checkForCachedRoutineLog() {
-    final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
-    if (cachedRoutineLog.isNotEmpty) {
-      _toggleRoutineLogBanner(visible: true);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _checkForCachedRoutineLog();
   }
 }

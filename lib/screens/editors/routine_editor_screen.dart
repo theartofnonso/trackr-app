@@ -246,7 +246,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
-          _navigateBack(clearCache: true);
+          _navigateBack();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Discard',
@@ -261,7 +261,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         _checkForUpdates();
       } else {
         _doCreateRoutineLog();
-        _navigateBack(clearCache: true);
+        _navigateBack();
       }
     } else {
       showAlertDialogWithSingleAction(
@@ -393,12 +393,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
     Navigator.of(context).pop();
   }
 
-  void _navigateBack({clearCache = false}) {
-    if (widget.mode == RoutineEditorMode.log) {
-      Navigator.of(context).pop({"mode": widget.mode, "clearCache": clearCache});
-    } else {
-      Navigator.of(context).pop();
-    }
+  void _navigateBack() {
+    Navigator.of(context).pop();
   }
 
   @override
@@ -425,7 +421,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
               )
             : AppBar(
                 leading: GestureDetector(
-                  onTap: _navigateBack,
+                  onTap: _cancelRoutineLog,
                   child: const Icon(
                     Icons.arrow_back_outlined,
                     color: Colors.white,
@@ -441,28 +437,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
         floatingActionButton: isKeyboardOpen
             ? null
             : widget.mode == RoutineEditorMode.log
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      FloatingActionButton(
-                        heroTag: "fab_end_routine_log_screen",
-                        onPressed: _endRoutineLog,
-                        backgroundColor: tealBlueLighter,
-                        enableFeedback: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
-                      ),
-                      const SizedBox(height: 12),
-                      FloatingActionButton(
-                        heroTag: "fab_cancel_routine_log_screen",
-                        onPressed: _cancelRoutineLog,
-                        backgroundColor: tealBlueDark,
-                        enableFeedback: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        child: const Icon(Icons.close, size: 32, color: Colors.red),
-                      )
-                    ],
+                ? FloatingActionButton(
+                    heroTag: "fab_end_routine_log_screen",
+                    onPressed: _endRoutineLog,
+                    backgroundColor: tealBlueLighter,
+                    enableFeedback: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
                   )
                 : FloatingActionButton(
                     heroTag: "fab_select_exercise_log_screen",
@@ -619,7 +600,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
       _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
     } else {
       _doCreateRoutineLog();
-      _navigateBack(clearCache: true);
+      _navigateBack();
     }
   }
 
@@ -634,7 +615,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                 _closeDialog();
                 _doCreateRoutineLog();
                 _doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
-                _navigateBack(clearCache: true);
+                _navigateBack();
               }
             },
             messages: changes));

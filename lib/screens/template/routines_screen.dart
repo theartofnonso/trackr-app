@@ -4,25 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/template/routine_preview_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
-import 'package:tracker_app/widgets/banners/minimised_routine_banner.dart';
 import '../../../models/Routine.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
-import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/list_view_empty_state.dart';
 import '../editors/routine_editor_screen.dart';
 
-class RoutinesScreen extends StatefulWidget {
+class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
-
-  @override
-  State<RoutinesScreen> createState() => _RoutinesScreenState();
-}
-
-class _RoutinesScreenState extends State<RoutinesScreen> {
-  bool _showRoutineLogBanner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +30,6 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                   child: Column(children: [
-                    MinimisedRoutineBanner(onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false)),
                     provider.routines.isNotEmpty
                         ? Expanded(
                             child: RefreshIndicator(
@@ -48,11 +38,8 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                                   padding: const EdgeInsets.only(bottom: 150),
                                   itemBuilder: (BuildContext context, int index) => _RoutineWidget(
                                         routine: provider.routines[index],
-                                        onShowRoutineBanner: () => _toggleRoutineLogBanner(visible: true),
-                                        onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false),
                                       ),
-                                  separatorBuilder: (BuildContext context, int index) =>
-                                  const SizedBox(height: 8),
+                                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
                                   itemCount: provider.routines.length),
                             ),
                           )
@@ -60,32 +47,12 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                   ]))));
     });
   }
-
-  void _toggleRoutineLogBanner({required bool visible}) {
-    setState(() {
-    });
-  }
-
-  void _checkForCachedRoutineLog() {
-    final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
-    if (cachedRoutineLog.isNotEmpty) {
-      _toggleRoutineLogBanner(visible: true);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _checkForCachedRoutineLog();
-  }
 }
 
 class _RoutineWidget extends StatelessWidget {
   final Routine routine;
-  final VoidCallback onShowRoutineBanner;
-  final VoidCallback onCloseRoutineBanner;
 
-  const _RoutineWidget({required this.routine, required this.onShowRoutineBanner, required this.onCloseRoutineBanner});
+  const _RoutineWidget({required this.routine});
 
   @override
   Widget build(BuildContext context) {
@@ -142,12 +109,7 @@ class _RoutineWidget extends StatelessWidget {
   void _logRoutineLog({required BuildContext context}) {
     final log = cachedRoutineLog();
     if (log == null) {
-      navigateToRoutineEditor(
-          context: context,
-          routine: routine,
-          mode: RoutineEditorMode.log,
-          onShowRoutineBanner: onShowRoutineBanner,
-          onCloseRoutineBanner: onCloseRoutineBanner);
+      navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
     } else {
       showSnackbar(
           context: context,
