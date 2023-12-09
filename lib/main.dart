@@ -145,19 +145,7 @@ class _MyAppState extends State<MyApp> {
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case '/':
-                    return MaterialPageRoute(builder: (context) => const HomeScreen());
-                  case '/editor':
-                    final args = settings.arguments as Map<String, dynamic>;
-                    final routineId = args["routineId"];
-                    final mode = args["mode"];
-                    final createdAt = args["createdAt"];
-                    return MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routineId, mode: mode, createdAt: createdAt));
-                }
-                return null;
-              },
+              home: const HomeScreen(),
             ),
           );
   }
