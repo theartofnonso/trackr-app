@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../models/Routine.dart';
 import '../screens/editors/routine_editor_screen.dart';
-import '../screens/logs/routine_log_preview_screen.dart';
+import '../routine_log_preview_screen.dart';
 import '../shared_prefs.dart';
 
 Future<void> navigateToRoutineEditor(
