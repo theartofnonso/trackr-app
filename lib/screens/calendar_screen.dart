@@ -184,24 +184,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 color: tealBlueDark,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _hasEarlierDate() ? CTextButton(onPressed: _decrementDate, label: "Prev") : const SizedBox.shrink(),
-                    Expanded(
-                      child: Text(_currentDate.formattedMonthAndYear(),
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          )),
-                    ),
-                    _hasLaterDate() ? CTextButton(onPressed: _incrementDate, label: "Next") : const SizedBox.shrink(),
+                    CTextButton(onPressed: _decrementDate, label: "Prev"),
+                    Text(_currentDate.formattedMonthAndYear(),
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.lato(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        )),
+                    CTextButton(onPressed: _incrementDate, label: "Next"),
                   ],
                 ),
               ),
