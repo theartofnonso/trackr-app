@@ -105,12 +105,7 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
           leading: GestureDetector(
-              onTap: () => navigateToRoutineEditor(
-                  context: context,
-                  routine: routine,
-                  mode: RoutineEditorMode.log,
-                  onShowRoutineBanner: onShowRoutineBanner,
-                  onCloseRoutineBanner: onCloseRoutineBanner),
+              onTap: () => _logRoutineLog(context: context),
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,
@@ -150,6 +145,23 @@ class _RoutineWidget extends StatelessWidget {
             menuChildren: _menuActionButtons(context: context, routine: routine),
           ),
         ));
+  }
+
+  void _logRoutineLog({required BuildContext context}) {
+    final log = cachedRoutineLog();
+    if (log == null) {
+      navigateToRoutineEditor(
+          context: context,
+          routine: routine,
+          mode: RoutineEditorMode.log,
+          onShowRoutineBanner: onShowRoutineBanner,
+          onCloseRoutineBanner: onCloseRoutineBanner);
+    } else {
+      showSnackbar(
+          context: context,
+          icon: const Icon(Icons.info_outline_rounded),
+          message: "${log.routine?.name ?? "Workout"} is running");
+    }
   }
 
   List<Widget> _menuActionButtons({required BuildContext context, required Routine routine}) {

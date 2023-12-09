@@ -141,7 +141,7 @@ Map<String, dynamic> _fixRoutineLogJson(String jsonString) {
   return json;
 }
 
-RoutineLog? retrieveCachedRoutineLog() {
+RoutineLog? cachedRoutineLog() {
   RoutineLog? routineLog;
   final cachedRoutineLog = SharedPrefs().cachedRoutineLog;
   if(cachedRoutineLog.isNotEmpty) {

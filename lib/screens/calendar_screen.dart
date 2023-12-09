@@ -1,15 +1,13 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/messages.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../models/RoutineLog.dart';
 
@@ -90,17 +88,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  void _logRoutine() {
-    final createdAt = _currentDate.isSameDateAs(DateTime.now())
-        ? TemporalDateTime.now()
-        : TemporalDateTime.fromString("${_currentDate.toLocal().toIso8601String()}Z");
-    navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log, createdAt: createdAt);
-  }
-
-  bool _isFutureDate() {
-    return _currentDate.isAfter(DateTime.now());
-  }
-
   List<Widget> _generateDates() {
     int year = _currentDate.year;
     int month = _currentDate.month;
@@ -172,22 +159,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_outlined),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          !_isFutureDate()
-              ? GestureDetector(
-                  onTap: _logRoutine,
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 14.0),
-                    child: Icon(Icons.add),
-                  ),
-                )
-              : const SizedBox.shrink()
-        ],
-      ),
+          leading: IconButton(
+        icon: const Icon(Icons.arrow_back_outlined),
+        onPressed: Navigator.of(context).pop,
+      )),
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
@@ -225,17 +200,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
               color: tealBlueDark,
               height: 10,
             ),
-            logs.isNotEmpty
-                ? Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                        itemCount: logs.length),
-                  )
-                : !_isFutureDate()
-                    ? Expanded(
-                        child: Center(child: CTextButton(onPressed: _logRoutine, label: " $startTrackingPerformance ")))
-                    : const SizedBox.shrink()
+            logs.isNotEmpty ? Expanded(
+              child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                  itemCount: logs.length),
+            ): const ListViewEmptyState()
           ],
         ),
       ),
@@ -337,8 +307,7 @@ class _DateWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style:
-                    GoogleFonts.lato(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                style: GoogleFonts.lato(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),

@@ -13,19 +13,18 @@ Future<void> navigateToRoutineEditor(
     TemporalDateTime? createdAt,
     VoidCallback? onShowRoutineBanner,
     VoidCallback? onCloseRoutineBanner}) async {
-  final result = await Navigator.of(context).pushNamed("/editor",
-      arguments: {"routineId": routine?.id, "mode": mode, "createdAt": createdAt}) as Map<String, dynamic>?;
+  final result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routineId: routine?.id, mode: mode, createdAt: createdAt))) as Map<String, dynamic>?;
   if (result != null) {
     final mode = result["mode"] ?? RoutineEditorMode.edit;
     final shouldClearCache = result["clearCache"] ?? false;
     if (mode == RoutineEditorMode.log) {
       if (shouldClearCache) {
         SharedPrefs().cachedRoutineLog = "";
-        if(onCloseRoutineBanner != null) {
+        if (onCloseRoutineBanner != null) {
           onCloseRoutineBanner();
         }
       } else {
-        if(onShowRoutineBanner != null) {
+        if (onShowRoutineBanner != null) {
           onShowRoutineBanner();
         }
       }

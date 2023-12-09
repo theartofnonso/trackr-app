@@ -470,7 +470,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                     onPressed: _selectExercisesInLibrary,
                     backgroundColor: tealBlueLighter,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const Icon(Icons.add, size: 28,),
+                    child: const Icon(Icons.add, size: 28),
                   ),
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scrollNotification) {
@@ -537,7 +537,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                   const SizedBox(height: 20),
                   Expanded(
                       child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 150),
+                          padding: const EdgeInsets.only(bottom: 250),
                           itemBuilder: (BuildContext context, int index) {
                             final procedure = exerciseLogs[index];
                             final procedureId = procedure.id;
@@ -585,7 +585,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   void _fetchRoutineLog() {
     if (widget.mode == RoutineEditorMode.log) {
-      _routineLog = retrieveCachedRoutineLog();
+      _routineLog = cachedRoutineLog();
     }
   }
 

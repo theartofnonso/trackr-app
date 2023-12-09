@@ -14,6 +14,7 @@ import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../providers/exercise_provider.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
@@ -82,6 +83,18 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     });
   }
 
+  void _logRoutineLog({required Routine routine}) {
+    final log = cachedRoutineLog();
+    if (log == null) {
+      navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+    } else {
+      showSnackbar(
+          context: context,
+          icon: const Icon(Icons.info_outline_rounded),
+          message: "${log.routine?.name ?? "Workout"} is running");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final routine = Provider.of<RoutineProvider>(context, listen: true).routineWhere(id: widget.routineId);
@@ -103,9 +116,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
                 heroTag: "fab_routine_preview_screen",
-                onPressed: () {
-                  navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
-                },
+                onPressed: () => _logRoutineLog(routine: routine),
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(Icons.play_arrow)),

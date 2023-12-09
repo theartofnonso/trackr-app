@@ -10,6 +10,7 @@ import '../../../providers/routine_log_provider.dart';
 import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../utils/snackbar_utils.dart';
 import '../../widgets/banners/minimised_routine_banner.dart';
 import '../calendar_screen.dart';
 import '../editors/routine_editor_screen.dart';
@@ -47,9 +48,7 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           heroTag: "fab_routine_logs_screen",
-          onPressed: () {
-            navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
-          },
+          onPressed: _logEmptyRoutine,
           backgroundColor: tealBlueLighter,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: const Icon(Icons.play_arrow_rounded, size: 32),
@@ -84,6 +83,22 @@ class _RoutineLogsScreenState extends State<RoutineLogsScreen> {
 
   void _navigateToCalendarScreen() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CalendarScreen()));
+  }
+
+  void _logEmptyRoutine() {
+    final log = cachedRoutineLog();
+    if (log == null) {
+      navigateToRoutineEditor(
+          context: context,
+          mode: RoutineEditorMode.log,
+          onShowRoutineBanner: () => _toggleRoutineLogBanner(visible: true),
+          onCloseRoutineBanner: () => _toggleRoutineLogBanner(visible: false));
+    } else {
+      showSnackbar(
+          context: context,
+          icon: const Icon(Icons.info_outline_rounded),
+          message: "${log.routine?.name ?? "Workout"} is running");
+    }
   }
 
   void _toggleRoutineLogBanner({required bool visible}) {

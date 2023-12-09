@@ -21,7 +21,7 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
 
   @override
   Widget build(BuildContext context) {
-    RoutineLog? log = retrieveCachedRoutineLog();
+    RoutineLog? log = cachedRoutineLog();
 
     Widget banner = const SizedBox.shrink();
 
@@ -39,7 +39,6 @@ class _MinimisedRoutineBannerState extends State<MinimisedRoutineBanner> {
                     context: context,
                     routine: log?.routine,
                     mode: RoutineEditorMode.log,
-                    onShowRoutineBanner: () {},
                     onCloseRoutineBanner: _closeBanner);
               },
               leading: const Icon(
