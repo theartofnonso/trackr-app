@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/routine_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
@@ -85,7 +86,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   void _logRoutineLog({required Routine routine}) {
     final log = cachedRoutineLog();
     if (log == null) {
-      navigateToRoutineEditor(context: context, routine: routine);
+      navigateToRoutineLogEditor(context: context, log: routine.log());
     } else {
       showSnackbar(
           context: context,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/routine_extension.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import '../../../models/Routine.dart';
 import '../../../providers/routine_provider.dart';
@@ -107,7 +108,7 @@ class _RoutineWidget extends StatelessWidget {
   void _logRoutineLog({required BuildContext context}) {
     final log = cachedRoutineLog();
     if (log == null) {
-      navigateToRoutineEditor(context: context, routine: routine);
+      navigateToRoutineLogEditor(context: context, log: routine.log());
     } else {
       showSnackbar(
           context: context,

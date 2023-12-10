@@ -122,11 +122,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
       final log = widget.log;
       Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-          name: log.name,
-          notes: log.notes,
-          procedures: procedures,
-          startTime: log.startTime,
-          routine: null);
+          name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: null);
     });
   }
 
@@ -241,17 +237,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _initializeProcedureData() {
     final procedureJsons = widget.log.procedures;
-    final procedures =
-        procedureJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+    final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
     Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
   }
 
   void _checkForUpdates() async {
     final oldProcedures = null?.procedures;
-    final exerciseLog1 = oldProcedures
-            ?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)))
-            .toList() ??
-        [];
+    final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList() ?? [];
     final exerciseLog2 =
         Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs(updateRoutineSets: true);
 
