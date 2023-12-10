@@ -242,7 +242,7 @@ class _DateWidget extends StatelessWidget {
   }
 
   Color _getTextColor(bool hasLog) {
-    if (hasLog || dateTime.isSameDateAs(DateTime.now())) {
+    if (hasLog) {
       return tealBlueDark;
     }
     return Colors.white70;
