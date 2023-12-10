@@ -14,12 +14,10 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
-import 'package:tracker_app/screens/reorder_procedures_screen.dart';
 import '../../app_constants.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/procedures_picker.dart';
-import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
 class RoutineEditorScreen extends StatefulWidget {
@@ -31,7 +29,7 @@ class RoutineEditorScreen extends StatefulWidget {
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
 }
 
-class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsBindingObserver {
+class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late TextEditingController _routineNameController;
   late TextEditingController _routineNotesController;
 
@@ -41,7 +39,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   late Function _onDisposeCallback;
 
   void _showProceduresPicker({required ExerciseLogDto firstProcedure}) {
-    final procedures = _whereOtherProceduresExcept(firstProcedure: firstProcedure);
+    final procedures = whereOtherProceduresExcept(context: context, firstProcedure: firstProcedure);
     displayBottomSheet(
         context: context,
         child: ProceduresPicker(
@@ -54,56 +52,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
           },
           onSelectExercisesInLibrary: () {
             _closeDialog();
-            _selectExercisesInLibrary();
+            selectExercisesInLibrary(context: context);
           },
         ));
-  }
-
-  /// Navigate to [ExerciseLibraryScreen]
-  void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
-
-    final exercises = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<Exercise>?;
-
-    if (exercises != null && exercises.isNotEmpty) {
-      if (mounted) {
-        provider.addExerciseLogs(exercises: exercises);
-      }
-    }
-  }
-
-  void _reOrderProcedures() async {
-    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final reOrderedList = await showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return ReOrderProceduresScreen(procedures: List.from(provider.exerciseLogs));
-      },
-    ) as List<ExerciseLogDto>?;
-
-    if (reOrderedList != null) {
-      if (mounted) {
-        provider.loadExerciseLogs(logs: reOrderedList, shouldNotifyListeners: true);
-      }
-    }
-  }
-
-  void _removeProcedureSuperSets({required String superSetId}) {
-    Provider.of<ExerciseLogProvider>(context, listen: false).removeSuperSetForLogs(superSetId: superSetId);
-  }
-
-  void _removeProcedure({required String procedureId}) {
-    Provider.of<ExerciseLogProvider>(context, listen: false).removeExerciseLog(logId: procedureId);
-  }
-
-  List<ExerciseLogDto> _whereOtherProceduresExcept({required ExerciseLogDto firstProcedure}) {
-    return Provider.of<ExerciseLogProvider>(context, listen: false)
-        .exerciseLogs
-        .where((procedure) => procedure.id != firstProcedure.id && procedure.superSetId.isEmpty)
-        .toList();
   }
 
   void _toggleLoadingState() {
@@ -255,7 +206,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
             ? null
             : FloatingActionButton(
                 heroTag: "fab_select_exercise_log_screen",
-                onPressed: _selectExercisesInLibrary,
+                onPressed: () => selectExercisesInLibrary(context: context),
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(Icons.add, size: 28),
@@ -322,14 +273,14 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
                             final procedureId = procedure.id;
                             return ExerciseLogWidget(
                                 exerciseLogDto: procedure,
-                                editorType: RoutineEditorMode.edit,
+                                editorType: RoutineEditorMode.log,
                                 superSet:
                                     whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
                                 onRemoveSuperSet: (String superSetId) =>
-                                    _removeProcedureSuperSets(superSetId: procedure.superSetId),
-                                onRemoveLog: () => _removeProcedure(procedureId: procedureId),
+                                    removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
+                                onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
                                 onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onReOrderLogs: _reOrderProcedures);
+                                onReOrderLogs: () => reOrderProcedures(context: context));
                           },
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
                           itemCount: exerciseLogs.length)),
@@ -343,8 +294,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addObserver(this);
 
     _initializeProcedureData();
     _initializeTextControllers();
@@ -368,7 +317,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> with WidgetsB
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
     _routineNameController.dispose();
     _routineNotesController.dispose();

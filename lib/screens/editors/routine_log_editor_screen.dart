@@ -10,10 +10,8 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
-import '../../dtos/unsaved_changes_messages_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -30,7 +28,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
 }
 
-class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with WidgetsBindingObserver {
+class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   late Function _onDisposeCallback;
 
   void _showProceduresPicker({required ExerciseLogDto firstProcedure}) {
@@ -103,13 +101,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _endRoutineLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      final routine = null;
-      if (routine != null) {
-        _checkForUpdates();
-      } else {
-        _doCreateRoutineLog();
-        _navigateBack();
-      }
+      _doCreateRoutineLog();
+      _navigateBack();
     } else {
       showAlertDialogWithSingleAction(
           context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
@@ -122,7 +115,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
       final log = widget.log;
       Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-          name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: null);
+          name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
     });
   }
 
@@ -228,8 +221,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
-
     _initializeProcedureData();
 
     _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
@@ -241,41 +232,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
   }
 
-  void _checkForUpdates() async {
-    final oldProcedures = null?.procedures;
-    final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList() ?? [];
-    final exerciseLog2 =
-        Provider.of<ExerciseLogProvider>(context, listen: false).mergeSetsIntoExerciseLogs(updateRoutineSets: true);
-
-    final changes = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-    if (changes.isNotEmpty) {
-      _displayNotificationsDialog(changes: changes, exerciseLogs: exerciseLog2);
-    } else {
-      _doCreateRoutineLog();
-      _navigateBack();
-    }
-  }
-
-  void _displayNotificationsDialog(
-      {required List<UnsavedChangesMessageDto> changes, required List<ExerciseLogDto> exerciseLogs}) {
-    displayBottomSheet(
-        context: context,
-        child: _NotificationsDialog(
-            onUpdate: () {
-              final routine = null;
-              if (routine != null) {
-                _closeDialog();
-                _doCreateRoutineLog();
-                //_doUpdateRoutine(routine: routine, updatedExerciseLogs: exerciseLogs);
-                _navigateBack();
-              }
-            },
-            messages: changes));
-  }
-
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
     super.dispose();
   }
@@ -345,38 +303,5 @@ class _RoutineLogOverview extends StatelessWidget {
             ])
           ],
         ));
-  }
-}
-
-class _NotificationsDialog extends StatelessWidget {
-  final List<UnsavedChangesMessageDto> messages;
-  final VoidCallback onUpdate;
-
-  const _NotificationsDialog({required this.onUpdate, required this.messages});
-
-  @override
-  Widget build(BuildContext context) {
-    final listTiles = messages
-        .map((item) => ListTile(
-            leading: const Icon(Icons.info_outline),
-            dense: true,
-            title: Text(item.message, style: GoogleFonts.lato(color: Colors.white))))
-        .toList();
-
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 8),
-          ...listTiles,
-          CTextButton(
-            onPressed: onUpdate,
-            label: "Update workout",
-            visualDensity: VisualDensity.standard,
-          )
-        ],
-      ),
-    );
   }
 }
