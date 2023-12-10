@@ -49,7 +49,7 @@ class OverviewScreen extends StatelessWidget {
     if (log == null) {
       final log = RoutineLog(
           user: user(),
-          name: timeOfDay(),
+          name: "${timeOfDay()} Session",
           procedures: [],
           notes: "",
           startTime: TemporalDateTime.now(),
