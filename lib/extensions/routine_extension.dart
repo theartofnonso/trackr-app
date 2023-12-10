@@ -9,6 +9,7 @@ extension RoutineExtension on Routine {
         name: name,
         procedures: procedures,
         notes: notes,
+        routine: this,
         startTime: TemporalDateTime.now(),
         endTime: TemporalDateTime.now(),
         createdAt: TemporalDateTime.now(),
