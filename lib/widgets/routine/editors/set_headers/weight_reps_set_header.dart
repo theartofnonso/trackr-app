@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../../../enums/exercise_type_enums.dart';
-import '../../../../screens/editors/routine_editor_screen.dart';
+import '../../../../enums/routine_editor_type_enums.dart';
 
-class WeightDistanceSetHeader extends StatelessWidget {
+class WeightRepsSetHeader extends StatelessWidget {
   final RoutineEditorMode editorType;
+  final String firstLabel;
+  final String secondLabel;
 
-  const WeightDistanceSetHeader({super.key, required this.editorType});
+  const WeightRepsSetHeader({super.key, required this.editorType, required this.firstLabel, required this.secondLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,14 @@ class WeightDistanceSetHeader extends StatelessWidget {
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(1),
-              2: const FlexColumnWidth(1),
-              3: const FlexColumnWidth(1),
+              1: const FlexColumnWidth(3),
+              2: const FlexColumnWidth(3),
+              3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(2),
-              2: const FlexColumnWidth(2),
+              1: const FlexColumnWidth(3),
+              2: const FlexColumnWidth(3),
               3: const FlexColumnWidth(2),
               4: const FixedColumnWidth(50),
             },
@@ -43,13 +43,13 @@ class WeightDistanceSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(weightLabel().toUpperCase(),
+            child: Text(firstLabel,
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle(type: ExerciseType.weightAndDistance).toUpperCase(),
+            child: Text(secondLabel,
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

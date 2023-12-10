@@ -1,54 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/set_row.dart';
 
-import '../../../../screens/editors/routine_editor_screen.dart';
+import '../../../../app_constants.dart';
+import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
+import '../textfields/double_textfield.dart';
+import '../timer_widget.dart';
 
-class WeightRepsSetRow extends SetRow {
-  final void Function(int value) onChangedReps;
-  final void Function(double value) onChangedWeight;
+class DurationDistanceSetRow extends SetRow {
+  final void Function(Duration duration) onChangedDuration;
+  final void Function(double distance) onChangedDistance;
   final (TextEditingController, TextEditingController) controllers;
 
-  const WeightRepsSetRow(
+  const DurationDistanceSetRow(
       {super.key,
       required this.controllers,
-      required this.onChangedReps,
-      required this.onChangedWeight,
+      required this.onChangedDuration,
+      required this.onChangedDistance,
       required super.setDto,
       required super.pastSetDto,
       required super.editorType,
-      required super.onChangedType,
       required super.onRemoved,
+      required super.onChangedType,
       required super.onCheck});
 
   @override
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    double weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
-    int reps = setDto.value2.toInt();
+    Duration duration = Duration(milliseconds: setDto.value1.toInt());
+    double distance = isDefaultDistanceUnit()
+        ? setDto.value2.toDouble()
+        : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(3),
-              2: const FlexColumnWidth(3),
-              3: const FlexColumnWidth(2),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+              3: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(3),
-              2: const FlexColumnWidth(3),
-              3: const FlexColumnWidth(2),
-              4: const FixedColumnWidth(50),
+              2: const FlexColumnWidth(2),
+              3: const FlexColumnWidth(3),
+              4: const FixedColumnWidth(40),
             },
       children: [
         TableRow(children: [
@@ -64,7 +68,7 @@ class WeightRepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value1.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
+                    "${previousSetDto.value2.toDouble()}${distanceLabel(type: ExerciseType.durationAndDistance)} \n ${Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -75,22 +79,20 @@ class WeightRepsSetRow extends SetRow {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
-              value: weight,
-              pastValue: previousSetDto?.value1.toDouble(),
+              value: distance,
+              pastValue: previousSetDto?.value2.toDouble(),
               onChanged: (value) {
-                final conversion = _convertWeight(value: value);
-                onChangedWeight(conversion);
+                final conversion = _convertDistance(value: value);
+                onChangedDistance(conversion);
               },
-              controller: controllers.$1,
+              controller: controllers.$2,
             ),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: IntTextField(
-              value: reps,
-              pastValue: previousSetDto?.value2.toInt(),
-              onChanged: onChangedReps,
-              controller: controllers.$2,
+            child: TimerWidget(
+              duration: duration,
+              onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
           if (editorType == RoutineEditorMode.log)
@@ -102,7 +104,7 @@ class WeightRepsSetRow extends SetRow {
     );
   }
 
-  double _convertWeight({required double value}) {
-    return isDefaultWeightUnit() ? value : toKg(value);
+  double _convertDistance({required double value}) {
+    return isDefaultDistanceUnit() ? value : toMI(value, type: ExerciseType.durationAndDistance);
   }
 }

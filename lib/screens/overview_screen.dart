@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,7 +17,6 @@ import '../utils/navigation_utils.dart';
 import '../utils/snackbar_utils.dart';
 import '../widgets/banners/pending_routines_banner.dart';
 import 'calendar_screen.dart';
-import 'editors/routine_editor_screen.dart';
 
 class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
@@ -47,12 +47,21 @@ class OverviewScreen extends StatelessWidget {
   void _logEmptyRoutine(BuildContext context) {
     final log = cachedRoutineLog();
     if (log == null) {
-      navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
+      final log = RoutineLog(
+          user: user(),
+          name: timeOfDay(),
+          procedures: [],
+          notes: "",
+          startTime: TemporalDateTime.now(),
+          endTime: TemporalDateTime.now(),
+          createdAt: TemporalDateTime.now(),
+          updatedAt: TemporalDateTime.now());
+      navigateToRoutineLogEditor(context: context, log: log);
     } else {
       showSnackbar(
           context: context,
           icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.routine?.name ?? "Workout"} is running");
+          message: "${log.name} is running");
     }
   }
 

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/double_textfield.dart';
+import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
+import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
-import '../../../../app_constants.dart';
-import '../../../../enums/exercise_type_enums.dart';
-import '../../../../screens/editors/routine_editor_screen.dart';
+import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
 
-class WeightDistanceSetRow extends SetRow {
+class WeightRepsSetRow extends SetRow {
+  final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
-  final void Function(double value) onChangedDistance;
   final (TextEditingController, TextEditingController) controllers;
 
-  const WeightDistanceSetRow(
+  const WeightRepsSetRow(
       {super.key,
       required this.controllers,
-      required this.onChangedDistance,
+      required this.onChangedReps,
       required this.onChangedWeight,
       required super.setDto,
       required super.pastSetDto,
@@ -32,24 +32,22 @@ class WeightDistanceSetRow extends SetRow {
     final previousSetDto = pastSetDto;
 
     double weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
-    double distance = isDefaultDistanceUnit()
-        ? setDto.value2.toDouble()
-        : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
+    int reps = setDto.value2.toInt();
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(1),
-              2: const FlexColumnWidth(1),
-              3: const FlexColumnWidth(1),
+              1: const FlexColumnWidth(3),
+              2: const FlexColumnWidth(3),
+              3: const FlexColumnWidth(2),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(1),
-              2: const FlexColumnWidth(1),
-              3: const FlexColumnWidth(1),
+              1: const FlexColumnWidth(3),
+              2: const FlexColumnWidth(3),
+              3: const FlexColumnWidth(2),
               4: const FixedColumnWidth(50),
             },
       children: [
@@ -66,7 +64,7 @@ class WeightDistanceSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "${previousSetDto.value1.toDouble()}${weightLabel()}\n${previousSetDto.value2.toDouble()}${distanceLabel(type: ExerciseType.weightAndDistance)}",
+                    "${previousSetDto.value1.toDouble()}${weightLabel()} x ${previousSetDto.value2.toInt()}",
                     style: GoogleFonts.lato(
                       color: Colors.white70,
                     ),
@@ -88,13 +86,10 @@ class WeightDistanceSetRow extends SetRow {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: DoubleTextField(
-              value: distance,
-              pastValue: previousSetDto?.value2.toDouble(),
-              onChanged: (value) {
-                final conversion = _convertDistance(value: value);
-                onChangedDistance(conversion);
-              },
+            child: IntTextField(
+              value: reps,
+              pastValue: previousSetDto?.value2.toInt(),
+              onChanged: onChangedReps,
               controller: controllers.$2,
             ),
           ),
@@ -109,9 +104,5 @@ class WeightDistanceSetRow extends SetRow {
 
   double _convertWeight({required double value}) {
     return isDefaultWeightUnit() ? value : toKg(value);
-  }
-
-  double _convertDistance({required double value}) {
-    return isDefaultDistanceUnit() ? value : toMI(value, type: ExerciseType.weightAndDistance);
   }
 }

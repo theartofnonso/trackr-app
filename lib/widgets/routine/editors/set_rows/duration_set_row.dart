@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/textfields/int_textfield.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/set_row.dart';
 
 import '../../../../app_constants.dart';
-import '../../../../screens/editors/routine_editor_screen.dart';
+import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_type_icon.dart';
+import '../timer_widget.dart';
 
-class RepsSetRow extends SetRow {
-  final (TextEditingController, TextEditingController) controllers;
-  final void Function(num value) onChangedReps;
+class DurationSetRow extends SetRow {
+  final void Function(Duration duration) onChangedDuration;
 
-  const RepsSetRow(
+  const DurationSetRow(
       {super.key,
-      required this.controllers,
-      required this.onChangedReps,
+      required this.onChangedDuration,
       required super.setDto,
       required super.pastSetDto,
       required super.editorType,
@@ -27,7 +26,7 @@ class RepsSetRow extends SetRow {
   Widget build(BuildContext context) {
     final previousSetDto = pastSetDto;
 
-    int reps = setDto.value2.toInt();
+    Duration duration = Duration(milliseconds: setDto.value1.toInt());
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
@@ -57,19 +56,19 @@ class RepsSetRow extends SetRow {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: previousSetDto != null
                 ? Text(
-                    "x${previousSetDto.value2.toInt()}",
-                    style: GoogleFonts.lato(color: Colors.white70),
+                    Duration(milliseconds: previousSetDto.value1.toInt()).digitalTime(),
+                    style: GoogleFonts.lato(
+                      color: Colors.white70,
+                    ),
                     textAlign: TextAlign.center,
                   )
                 : Text("-", textAlign: TextAlign.center, style: GoogleFonts.lato(color: Colors.white70)),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: IntTextField(
-              value: reps,
-              pastValue: previousSetDto?.value2.toInt(),
-              onChanged: onChangedReps,
-              controller: controllers.$2,
+            child: TimerWidget(
+              duration: duration,
+              onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
           if (editorType == RoutineEditorMode.log)

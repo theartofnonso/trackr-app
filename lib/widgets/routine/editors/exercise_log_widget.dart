@@ -6,21 +6,21 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/duration_distance_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/duration_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/weight_distance_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_headers/weight_reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/duration_distance_set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/reps_set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/duration_set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/weight_distance_set_row.dart';
-import 'package:tracker_app/widgets/routine/editor/set_rows/weight_reps_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/duration_distance_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/weight_distance_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/duration_distance_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/weight_distance_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/weight_reps_set_row.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
-import '../../../screens/editors/routine_editor_screen.dart';
 import '../../../utils/general_utils.dart';
 
 class ExerciseLogWidget extends StatefulWidget {
@@ -34,7 +34,7 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback onReOrderLogs;
-  final VoidCallback onCache;
+  final VoidCallback? onCache;
 
   const ExerciseLogWidget(
       {super.key,
@@ -44,8 +44,7 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      required this.onReOrderLogs,
-      required this.onCache});
+      required this.onReOrderLogs, this.onCache});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -248,9 +247,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _loadTextEditingControllers();
   }
 
+  void _cacheLog() {
+    final cacheLog = widget.onCache;
+    if(cacheLog != null) {
+      cacheLog();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    widget.onCache();
+
+    _cacheLog();
 
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
 

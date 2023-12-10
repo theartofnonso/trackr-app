@@ -9,7 +9,6 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
 import '../shared_prefs.dart';
-import 'editors/routine_editor_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RoutineLog? log = cachedRoutineLog();
       if (log != null) {
-        navigateToRoutineEditor(context: context, routine: log.routine, mode: RoutineEditorMode.log);
+        navigateToRoutineLogEditor(context: context, log: log);
       }
     });
   }

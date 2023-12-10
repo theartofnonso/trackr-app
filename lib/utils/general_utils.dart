@@ -98,6 +98,17 @@ Future<void> persistUserCredentials() async {
   SharedPrefs().userId = id;
 }
 
+String timeOfDay() {
+  var hour = DateTime.now().hour;
+  if (hour < 12) {
+    return 'Morning';
+  }
+  if (hour < 17) {
+    return 'Afternoon';
+  }
+  return 'Evening';
+}
+
 DateTimeRange thisWeekDateRange() {
   final now = DateTime.now();
   final startOfWeek = now.subtract(Duration(days: now.weekday - 1));

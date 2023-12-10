@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
@@ -36,7 +35,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     return [
       MenuItemButton(
         onPressed: () {
-          navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.edit);
+          navigateToRoutineEditor(context: context, routine: routine);
         },
         //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
@@ -86,12 +85,12 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   void _logRoutineLog({required Routine routine}) {
     final log = cachedRoutineLog();
     if (log == null) {
-      navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
+      navigateToRoutineEditor(context: context, routine: routine);
     } else {
       showSnackbar(
           context: context,
           icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.routine?.name ?? "Workout"} is running");
+          message: "${log.name} is running");
     }
   }
 
