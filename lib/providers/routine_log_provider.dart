@@ -25,12 +25,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
-  RoutineLog? _cachedRoutineLog;
-
-  RoutineLog? get cachedRoutineLog => _cachedRoutineLog;
-  set cachedRoutineLog(RoutineLog? value) {
-    _cachedRoutineLog = value;
-  }
+  RoutineLog? cachedRoutineLog;
 
   List<RoutineLog> _cachedPendingLogs = [];
 
@@ -183,7 +178,7 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? currentTime,
         updatedAt: currentTime,
         user: user());
-    _cachedRoutineLog = logToCache;
+    cachedRoutineLog = logToCache;
     SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
   }
 
