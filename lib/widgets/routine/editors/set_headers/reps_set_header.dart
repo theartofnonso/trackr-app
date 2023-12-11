@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 
-import '../../../../screens/editors/routine_editor_screen.dart';
-import '../../../../utils/general_utils.dart';
+import '../../../../enums/routine_editor_type_enums.dart';
 
-class DurationDistanceSetHeader extends StatelessWidget {
+class RepsSetHeader extends StatelessWidget {
   final RoutineEditorMode editorType;
 
-  const DurationDistanceSetHeader({super.key, required this.editorType});
+  const RepsSetHeader({super.key, required this.editorType});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +16,12 @@ class DurationDistanceSetHeader extends StatelessWidget {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(3),
-              2: const FlexColumnWidth(2),
-              3: const FlexColumnWidth(3),
-              4: const FixedColumnWidth(40),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+              3: const FixedColumnWidth(50),
             },
       children: <TableRow>[
         TableRow(children: [
@@ -43,13 +39,7 @@ class DurationDistanceSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle(type: ExerciseType.durationAndDistance),
-                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                textAlign: TextAlign.center),
-          ),
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("TIME",
+            child: Text("REPS",
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

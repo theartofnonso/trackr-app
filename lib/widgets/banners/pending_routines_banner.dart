@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../../../app_constants.dart';
-import '../../providers/routine_provider.dart';
 import '../helper_widgets/dialog_helper.dart';
 
 class PendingRoutinesBanner extends StatelessWidget {
@@ -14,7 +13,6 @@ class PendingRoutinesBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
 
     return MaterialBanner(
       padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
@@ -36,7 +34,6 @@ class PendingRoutinesBanner extends StatelessWidget {
                 rightAction: () {
                   Navigator.of(context).pop();
                   routineLogProvider.clearCachedPendingLogs();
-                  routineProvider.clearCachedPendingRoutines();
                 },
                 leftActionLabel: 'Cancel',
                 rightActionLabel: 'Discard', isRightActionDestructive: true);
@@ -44,10 +41,7 @@ class PendingRoutinesBanner extends StatelessWidget {
           child: Text('Discard', style: GoogleFonts.lato(color: Colors.red)),
         ),
         TextButton(
-          onPressed: () {
-            routineLogProvider.retryPendingRoutineLogs(context);
-            routineProvider.retryPendingRoutines(context);
-          },
+          onPressed: routineLogProvider.retryPendingRoutineLogs,
           child: Text('Retry', style: GoogleFonts.lato(color: Colors.white)),
         ),
       ],

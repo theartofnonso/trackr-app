@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 
 import '../app_constants.dart';
-import '../enums.dart';
+import '../enums/charts_time_period.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 
-import '../../../../screens/editors/routine_editor_screen.dart';
+import '../../../../enums/routine_editor_type_enums.dart';
+import '../../../../utils/general_utils.dart';
 
-class RepsSetHeader extends StatelessWidget {
+class DurationDistanceSetHeader extends StatelessWidget {
   final RoutineEditorMode editorType;
 
-  const RepsSetHeader({super.key, required this.editorType});
+  const DurationDistanceSetHeader({super.key, required this.editorType});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +18,14 @@ class RepsSetHeader extends StatelessWidget {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
+              3: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(1),
-              2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(3),
+              2: const FlexColumnWidth(2),
+              3: const FlexColumnWidth(3),
+              4: const FixedColumnWidth(40),
             },
       children: <TableRow>[
         TableRow(children: [
@@ -39,7 +43,13 @@ class RepsSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("REPS",
+            child: Text(distanceTitle(type: ExerciseType.durationAndDistance),
+                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center),
+          ),
+          TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Text("TIME",
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),

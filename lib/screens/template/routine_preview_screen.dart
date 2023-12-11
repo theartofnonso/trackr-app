@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/screens/editors/routine_editor_screen.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
@@ -14,8 +13,8 @@ import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../providers/exercise_provider.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
+import 'helper_utils.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
 
@@ -36,9 +35,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     return [
       MenuItemButton(
         onPressed: () {
-          navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.edit);
+          navigateToRoutineEditor(context: context, routine: routine);
         },
-        //leadingIcon: const Icon(Icons.edit),
         child: const Text("Edit"),
       ),
       MenuItemButton(
@@ -56,7 +54,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        //leadingIcon: const Icon(Icons.delete_sweep, color: Colors.red),
         child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
       )
     ];
@@ -83,18 +80,6 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     });
   }
 
-  void _logRoutineLog({required Routine routine}) {
-    final log = cachedRoutineLog();
-    if (log == null) {
-      navigateToRoutineEditor(context: context, routine: routine, mode: RoutineEditorMode.log);
-    } else {
-      showSnackbar(
-          context: context,
-          icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.routine?.name ?? "Workout"} is running");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final routine = Provider.of<RoutineProvider>(context, listen: true).routineWhere(id: widget.routineId);
@@ -104,9 +89,9 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     }
 
     List<ExerciseLogDto> exerciseLogs =
-    routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
+        routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
-      Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {
         return procedure.copyWith(exercise: exerciseFromLibrary);
       }
@@ -115,11 +100,11 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-                heroTag: "fab_routine_preview_screen",
-                onPressed: () => _logRoutineLog(routine: routine),
-                backgroundColor: tealBlueLighter,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(Icons.play_arrow)),
+            heroTag: "fab_routine_preview_screen",
+            onPressed: () => logRoutine(context: context, routine: routine),
+            backgroundColor: tealBlueLighter,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: const Icon(Icons.play_arrow)),
         backgroundColor: tealBlueDark,
         appBar: AppBar(
           leading: IconButton(

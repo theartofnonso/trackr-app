@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,13 +11,11 @@ import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../utils/snackbar_utils.dart';
 import '../widgets/banners/pending_routines_banner.dart';
 import 'calendar_screen.dart';
-import 'editors/routine_editor_screen.dart';
 
 class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
@@ -44,24 +43,30 @@ class OverviewScreen extends StatelessWidget {
     return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear)).toList().length;
   }
 
-  void _logEmptyRoutine(BuildContext context) {
-    final log = cachedRoutineLog();
-    if (log == null) {
-      navigateToRoutineEditor(context: context, mode: RoutineEditorMode.log);
-    } else {
-      showSnackbar(
-          context: context,
-          icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.routine?.name ?? "Workout"} is running");
+  void _logEmptyRoutine(BuildContext context) async {
+    final log = await cachedRoutineLog();
+    if (context.mounted) {
+      if (log == null) {
+        final log = RoutineLog(
+            user: user(),
+            name: "${timeOfDay()} Session",
+            procedures: [],
+            notes: "",
+            startTime: TemporalDateTime.now(),
+            endTime: TemporalDateTime.now(),
+            createdAt: TemporalDateTime.now(),
+            updatedAt: TemporalDateTime.now());
+        navigateToRoutineLogEditor(context: context, log: log);
+      } else {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final routineProvider = Provider.of<RoutineProvider>(context, listen: true);
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final cachedPendingRoutines = routineProvider.cachedPendingRoutines;
     final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
     final logs = routineLogProvider.logs;
@@ -106,7 +111,7 @@ class OverviewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
+                    if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
                     if (logs.isNotEmpty)
                       RichText(
                         text: TextSpan(
