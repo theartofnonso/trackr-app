@@ -7,7 +7,6 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../models/User.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
