@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../app_constants.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
