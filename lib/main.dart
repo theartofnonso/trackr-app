@@ -24,7 +24,6 @@ import 'models/ModelProvider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -34,7 +33,9 @@ void main() async {
 
   await SentryFlutter.init(
     (options) {
-      options.dsn = kReleaseMode ? 'https://45d4468d9e461dc80082807aea326bd7@o4506338359377920.ingest.sentry.io/4506338360754176' : "";
+      options.dsn = kReleaseMode
+          ? 'https://45d4468d9e461dc80082807aea326bd7@o4506338359377920.ingest.sentry.io/4506338360754176'
+          : "";
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 1.0;
@@ -73,13 +74,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
-
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
-      print('Could not configure Amplify: $e');
+      debugPrint('Could not configure Amplify: $e');
     }
   }
 

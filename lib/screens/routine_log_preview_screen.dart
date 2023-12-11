@@ -9,6 +9,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../app_constants.dart';
@@ -43,7 +44,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
 
     List<ExerciseLogDto> procedures =
-        log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).map((procedure) {
+        log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
           Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
       if (exerciseFromLibrary != null) {
@@ -206,8 +207,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: ExerciseLogWidget(
                 exerciseLog: procedure,
-                superSet:
-                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                superSet: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))
@@ -234,12 +234,21 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   /// [MenuItemButton]
   List<Widget> _menuActionButtons({required BuildContext context, required RoutineLog log}) {
     return [
+      log.routine?.id != null
+          ? MenuItemButton(
+              onPressed: () {
+                _toggleLoadingState(message: "Updating template from log");
+                _updateRoutine(log);
+              },
+              child: const Text("Update template"),
+            )
+          : const SizedBox.shrink(),
       MenuItemButton(
         onPressed: () {
-          _toggleLoadingState(message: "Saving log");
-          _saveLog(log);
+          _toggleLoadingState(message: "Creating template from log");
+          _createRoutine(log);
         },
-        child: const Text("Save as workout"),
+        child: const Text("Create template"),
       ),
       MenuItemButton(
         onPressed: () {
@@ -261,24 +270,53 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     ];
   }
 
-  void _saveLog(RoutineLog log) async {
+  void _createRoutine(RoutineLog log) async {
     try {
-      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)));
+      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)));
       final procedures = decodedProcedures.map((procedure) {
         final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
         return procedure.copyWith(sets: newSets);
       }).toList();
-      await Provider.of<RoutineProvider>(context, listen: false)
+      final routineId = await Provider.of<RoutineProvider>(context, listen: false)
           .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
       if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Saved ${log.name} as new workout");
-        Navigator.of(context).pop();
+        navigateToRoutinePreview(context: context, routineId: routineId);
       }
     } catch (_) {
       if (mounted) {
         showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable save as workout");
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable create template");
+      }
+    } finally {
+      _toggleLoadingState();
+    }
+  }
+
+  void _updateRoutine(RoutineLog log) async {
+    try {
+      final routineId = log.routine?.id;
+      if (routineId != null) {
+        final routineToUpdate = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: routineId);
+        if (routineToUpdate != null) {
+          final exerciseLogJsons = log.procedures
+              .map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)))
+              .map((exerciseLog) {
+                final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+                return exerciseLog.copyWith(sets: newSets);
+              })
+              .map((exerciseLog) => exerciseLog.toJson())
+              .toList();
+          await Provider.of<RoutineProvider>(context, listen: false)
+              .updateRoutine(routine: routineToUpdate.copyWith(procedures: exerciseLogJsons));
+          if (mounted) {
+            navigateToRoutinePreview(context: context, routineId: routineId);
+          }
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are update template");
       }
     } finally {
       _toggleLoadingState();
