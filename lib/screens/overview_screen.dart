@@ -11,7 +11,6 @@ import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../utils/snackbar_utils.dart';
@@ -66,10 +65,8 @@ class OverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineProvider = Provider.of<RoutineProvider>(context, listen: true);
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final cachedPendingRoutines = routineProvider.cachedPendingRoutines;
     final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
     final logs = routineLogProvider.logs;
@@ -114,7 +111,7 @@ class OverviewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (cachedPendingLogs.isNotEmpty || cachedPendingRoutines.isNotEmpty) const PendingRoutinesBanner(),
+                    if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
                     if (logs.isNotEmpty)
                       RichText(
                         text: TextSpan(

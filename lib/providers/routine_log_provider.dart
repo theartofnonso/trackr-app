@@ -131,7 +131,7 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void retryPendingRoutineLogs(BuildContext context) async {
+  void retryPendingRoutineLogs() async {
     final cachedPendingRoutineLogs = SharedPrefs().cachedPendingRoutineLogs;
     for (int index = 0; index < _cachedPendingLogs.length; index++) {
       final pendingLog = _cachedPendingLogs[index];

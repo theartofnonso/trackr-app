@@ -138,7 +138,6 @@ Future<void> loadAppData(BuildContext context) async {
 
   /// Retrieve pending logs
   routineLogProvider.retrieveCachedPendingRoutineLogs(context);
-  routineProvider.retrieveCachedPendingRoutines(context);
   exerciseProvider.listExercises().then((_) {
     routineProvider.listRoutines();
     routineLogProvider.listRoutineLogs();

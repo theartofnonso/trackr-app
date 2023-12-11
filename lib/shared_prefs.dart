@@ -17,13 +17,6 @@ class SharedPrefs {
     _sharedPrefs?.clear();
   }
 
-  /// Routines that are yet to be updated
-  final String _cachedPendingRoutinesKey = "cached_pending_routine_key";
-  List<String> get cachedPendingRoutines => _sharedPrefs?.getStringList(_cachedPendingRoutinesKey) ?? <String>[];
-  set cachedPendingRoutines(List<String> value) {
-    _sharedPrefs?.setStringList(_cachedPendingRoutinesKey, value);
-  }
-
   /// RoutineLogs that are yet to be updated
   final String _cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
   List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(_cachedPendingRoutineLogsKey) ?? <String>[];
