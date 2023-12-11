@@ -25,7 +25,7 @@ class RoutineProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveRoutine(
+  Future<String> saveRoutine(
       {required String name, required String notes, required List<ExerciseLogDto> procedures}) async {
     final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
     final routineToCreate = Routine(
@@ -43,6 +43,7 @@ class RoutineProvider with ChangeNotifier {
       _routines.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     }
+    return routineToCreate.id;
   }
 
   Future<void> updateRoutine({required Routine routine}) async {
