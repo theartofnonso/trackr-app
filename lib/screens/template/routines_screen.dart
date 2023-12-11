@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/extensions/routine_extension.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
 import '../../../models/Routine.dart';
 import '../../../providers/routine_provider.dart';
@@ -10,6 +9,7 @@ import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/empty_states/list_view_empty_state.dart';
+import 'helper_utils.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -63,7 +63,7 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
           leading: GestureDetector(
-              onTap: () => _logRoutineLog(context: context),
+              onTap: () => logRoutine(context: context, routine: routine),
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,
@@ -103,18 +103,6 @@ class _RoutineWidget extends StatelessWidget {
             menuChildren: _menuActionButtons(context: context, routine: routine),
           ),
         ));
-  }
-
-  void _logRoutineLog({required BuildContext context}) {
-    final log = cachedRoutineLog();
-    if (log == null) {
-      navigateToRoutineLogEditor(context: context, log: routine.log());
-    } else {
-      showSnackbar(
-          context: context,
-          icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.name} is running");
-    }
   }
 
   List<Widget> _menuActionButtons({required BuildContext context, required Routine routine}) {

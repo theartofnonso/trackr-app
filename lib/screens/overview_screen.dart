@@ -46,6 +46,7 @@ class OverviewScreen extends StatelessWidget {
 
   void _logEmptyRoutine(BuildContext context) {
     final log = cachedRoutineLog();
+    print(log);
     if (log == null) {
       final log = RoutineLog(
           user: user(),

@@ -50,18 +50,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         ));
   }
 
-  void _doCreateRoutineLog() async {
+  Future<void> _doCreateRoutineLog() async {
     final log = widget.log;
 
     final completedExerciseLogs = _completedExerciseLogsAndSets();
 
-    Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+    return Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
         name: log.name,
         notes: log.notes,
         procedures: completedExerciseLogs,
         startTime: log.startTime,
-        routine: null);
+        routine: log.routine);
   }
 
   bool _isRoutinePartiallyComplete() {
@@ -84,7 +84,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     return completedExerciseLogs;
   }
 
-  void _cancelRoutineLog() {
+  void _discardLog() {
     showAlertDialogWithMultiActions(
         context: context,
         message: "Do you want to discard workout?",
@@ -98,10 +98,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         isRightActionDestructive: true);
   }
 
-  void _endRoutineLog() {
+  void _saveLog() async {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _doCreateRoutineLog();
+      await _doCreateRoutineLog();
       _navigateBack();
     } else {
       showAlertDialogWithSingleAction(
@@ -129,6 +129,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _navigateBack() {
     SharedPrefs().cachedRoutineLog = "";
+    print(SharedPrefs().cachedRoutineLog);
     Navigator.of(context).pop();
   }
 
@@ -144,7 +145,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         backgroundColor: tealBlueDark,
         appBar: AppBar(
           leading: GestureDetector(
-            onTap: _cancelRoutineLog,
+            onTap: _discardLog,
             child: const Icon(
               Icons.arrow_back_outlined,
               color: Colors.white,
@@ -163,7 +164,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             ? null
             : FloatingActionButton(
                 heroTag: "fab_end_routine_log_screen",
-                onPressed: _endRoutineLog,
+                onPressed: _saveLog,
                 backgroundColor: tealBlueLighter,
                 enableFeedback: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
