@@ -153,6 +153,7 @@ Map<String, dynamic> _fixRoutineLogJson(String jsonString) {
 Future<RoutineLog?> cachedRoutineLog() async {
   RoutineLog? routineLog;
   // print("Does cached_routine_log_key exist: ${sharedPref.containsKey(cachedRoutineLogKey)}");
+  await SharedPrefs().reload();
   final cache = SharedPrefs().cachedRoutineLog;
   if(cache.isNotEmpty) {
     final routineLogJson = _fixRoutineLogJson(cache);
