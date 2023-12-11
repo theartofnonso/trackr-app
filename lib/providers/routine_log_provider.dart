@@ -4,8 +4,6 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
@@ -26,6 +24,10 @@ class RoutineLogProvider with ChangeNotifier {
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
+
+  RoutineLog? _cachedRoutineLog;
+
+  RoutineLog? get cachedRoutineLog => _cachedRoutineLog;
 
   List<RoutineLog> _cachedPendingLogs = [];
 
@@ -178,9 +180,8 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? currentTime,
         updatedAt: currentTime,
         user: user());
+    _cachedRoutineLog = logToCache;
     SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
-    // final sharedPref = await SharedPreferences.getInstance();
-    // sharedPref.setString(cachedRoutineLogKey, jsonEncode(logToCache));
   }
 
   Future<void> removeLog({required String id}) async {
