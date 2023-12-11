@@ -10,7 +10,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../enums.dart';
+import '../../../enums/charts_time_period.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../models/Exercise.dart';
 import '../../../providers/routine_log_provider.dart';
