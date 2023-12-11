@@ -142,81 +142,84 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    return Scaffold(
-        backgroundColor: tealBlueDark,
-        appBar: AppBar(
-          leading: GestureDetector(
-            onTap: _discardLog,
-            child: const Icon(
-              Icons.arrow_back_outlined,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          title: Text(
-            widget.log.name,
-            style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          actions: [
-            IconButton(onPressed: () => selectExercisesInLibrary(context: context), icon: const Icon(Icons.add))
-          ],
-        ),
-        floatingActionButton: isKeyboardOpen
-            ? null
-            : FloatingActionButton(
-                heroTag: "fab_end_routine_log_screen",
-                onPressed: _saveLog,
-                backgroundColor: tealBlueLighter,
-                enableFeedback: true,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
-              ),
-        body: NotificationListener<UserScrollNotification>(
-          onNotification: (scrollNotification) {
-            if (scrollNotification.direction != ScrollDirection.idle) {
-              _dismissKeyboard();
-            }
-            return false;
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-            child: GestureDetector(
-              onTap: _dismissKeyboard,
-              child: Column(
-                children: [
-                  Consumer<ExerciseLogProvider>(
-                      builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
-                    return _RoutineLogOverview(
-                      sets: provider.completedSets().length,
-                      timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
-                    );
-                  }),
-                  const SizedBox(height: 20),
-                  Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 250),
-                          itemBuilder: (BuildContext context, int index) {
-                            final procedure = exerciseLogs[index];
-                            final procedureId = procedure.id;
-                            return ExerciseLogWidget(
-                                exerciseLogDto: procedure,
-                                editorType: RoutineEditorMode.log,
-                                superSet:
-                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
-                                onRemoveSuperSet: (String superSetId) =>
-                                    removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
-                                onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
-                                onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onCache: _cacheLog,
-                                onReOrderLogs: () => reOrderProcedures(context: context));
-                          },
-                          separatorBuilder: (_, __) => const SizedBox(height: 10),
-                          itemCount: exerciseLogs.length)),
-                ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+          backgroundColor: tealBlueDark,
+          appBar: AppBar(
+            leading: GestureDetector(
+              onTap: _discardLog,
+              child: const Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+                size: 24,
               ),
             ),
+            title: Text(
+              widget.log.name,
+              style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            actions: [
+              IconButton(onPressed: () => selectExercisesInLibrary(context: context), icon: const Icon(Icons.add))
+            ],
           ),
-        ));
+          floatingActionButton: isKeyboardOpen
+              ? null
+              : FloatingActionButton(
+                  heroTag: "fab_end_routine_log_screen",
+                  onPressed: _saveLog,
+                  backgroundColor: tealBlueLighter,
+                  enableFeedback: true,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
+                ),
+          body: NotificationListener<UserScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification.direction != ScrollDirection.idle) {
+                _dismissKeyboard();
+              }
+              return false;
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+              child: GestureDetector(
+                onTap: _dismissKeyboard,
+                child: Column(
+                  children: [
+                    Consumer<ExerciseLogProvider>(
+                        builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
+                      return _RoutineLogOverview(
+                        sets: provider.completedSets().length,
+                        timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
+                      );
+                    }),
+                    const SizedBox(height: 20),
+                    Expanded(
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 250),
+                            itemBuilder: (BuildContext context, int index) {
+                              final procedure = exerciseLogs[index];
+                              final procedureId = procedure.id;
+                              return ExerciseLogWidget(
+                                  exerciseLogDto: procedure,
+                                  editorType: RoutineEditorMode.log,
+                                  superSet:
+                                      whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
+                                  onRemoveSuperSet: (String superSetId) =>
+                                      removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
+                                  onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
+                                  onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                                  onCache: _cacheLog,
+                                  onReOrderLogs: () => reOrderProcedures(context: context));
+                            },
+                            separatorBuilder: (_, __) => const SizedBox(height: 10),
+                            itemCount: exerciseLogs.length)),
+                  ],
+                ),
+              ),
+            ),
+          )),
+    );
   }
 
   @override
