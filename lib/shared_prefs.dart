@@ -21,21 +21,22 @@ class SharedPrefs {
     _sharedPrefs?.remove(key);
   }
 
+  Future<void> reload() async {
+    await _sharedPrefs?.reload();
+  }
+
   /// RoutineLog that is currently running
   final String cachedRoutineLogKey = "cached_routine_log_key";
-  Future<String?> getCachedRoutineLog() async {
-    await _sharedPrefs?.reload();
-    return _sharedPrefs?.getString(cachedRoutineLogKey);
-  }
+  String get cachedRoutineLog => _sharedPrefs?.getString(cachedRoutineLogKey) ?? "";
   set cachedRoutineLog(String value) {
     _sharedPrefs?.setString(cachedRoutineLogKey, value);
   }
 
   /// RoutineLogs that are yet to be updated
-  final String _cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
-  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(_cachedPendingRoutineLogsKey) ?? <String>[];
+  final String cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
+  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(cachedPendingRoutineLogsKey) ?? <String>[];
   set cachedPendingRoutineLogs(List<String> value) {
-    _sharedPrefs?.setStringList(_cachedPendingRoutineLogsKey, value);
+    _sharedPrefs?.setStringList(cachedPendingRoutineLogsKey, value);
   }
 
   /// Weight Unit Type

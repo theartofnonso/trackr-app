@@ -129,7 +129,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _navigateBack() {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
+    SharedPrefs().reload();
     //print("Does cached_routine_log_key exist Editor: ${sharedPref.containsKey(cachedRoutineLogKey)}");
     Navigator.of(context).pop();
   }
