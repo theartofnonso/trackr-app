@@ -44,25 +44,23 @@ class OverviewScreen extends StatelessWidget {
     return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear)).toList().length;
   }
 
-  void _logEmptyRoutine(BuildContext context) {
-    final log = cachedRoutineLog();
-    print(log);
-    if (log == null) {
-      final log = RoutineLog(
-          user: user(),
-          name: "${timeOfDay()} Session",
-          procedures: [],
-          notes: "",
-          startTime: TemporalDateTime.now(),
-          endTime: TemporalDateTime.now(),
-          createdAt: TemporalDateTime.now(),
-          updatedAt: TemporalDateTime.now());
-      navigateToRoutineLogEditor(context: context, log: log);
-    } else {
-      showSnackbar(
-          context: context,
-          icon: const Icon(Icons.info_outline_rounded),
-          message: "${log.name} is running");
+  void _logEmptyRoutine(BuildContext context) async {
+    final log = await cachedRoutineLog();
+    if (context.mounted) {
+      if (log == null) {
+        final log = RoutineLog(
+            user: user(),
+            name: "${timeOfDay()} Session",
+            procedures: [],
+            notes: "",
+            startTime: TemporalDateTime.now(),
+            endTime: TemporalDateTime.now(),
+            createdAt: TemporalDateTime.now(),
+            updatedAt: TemporalDateTime.now());
+        navigateToRoutineLogEditor(context: context, log: log);
+      } else {
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
+      }
     }
   }
 

@@ -17,13 +17,6 @@ class SharedPrefs {
     _sharedPrefs?.clear();
   }
 
-  /// RoutineLog that is currently running
-  final String _cachedRoutineLogKey = "cached_routine_log_key";
-  String get cachedRoutineLog => _sharedPrefs?.getString(_cachedRoutineLogKey) ?? "";
-  set cachedRoutineLog(String value) {
-    _sharedPrefs?.setString(_cachedRoutineLogKey, value);
-  }
-
   /// Routines that are yet to be updated
   final String _cachedPendingRoutinesKey = "cached_pending_routine_key";
   List<String> get cachedPendingRoutines => _sharedPrefs?.getStringList(_cachedPendingRoutinesKey) ?? <String>[];

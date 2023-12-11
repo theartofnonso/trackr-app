@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -127,10 +127,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  void _navigateBack() {
-    SharedPrefs().cachedRoutineLog = "";
-    print(SharedPrefs().cachedRoutineLog);
-    Navigator.of(context).pop();
+  void _navigateBack() async {
+    final sharedPref = await SharedPreferences.getInstance();
+    await sharedPref.remove(cachedRoutineLogKey);
+    print("Does cached_routine_log_key exist: ${sharedPref.containsKey(cachedRoutineLogKey)}");
+    if(mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

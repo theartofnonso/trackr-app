@@ -4,6 +4,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/models/Exercise.dart';
@@ -161,7 +162,7 @@ class RoutineLogProvider with ChangeNotifier {
         required List<ExerciseLogDto> procedures,
         required TemporalDateTime startTime,
         TemporalDateTime? createdAt,
-        required Routine? routine}) {
+        required Routine? routine}) async {
     final currentTime = TemporalDateTime.now();
 
     final exerciseLogJson = procedures.map((procedure) => procedure.toJson()).toList();
@@ -176,7 +177,8 @@ class RoutineLogProvider with ChangeNotifier {
         createdAt: createdAt ?? currentTime,
         updatedAt: currentTime,
         user: user());
-    SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
+    final sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setString("cached_routine_log_key", jsonEncode(logToCache));
   }
 
   Future<void> removeLog({required String id}) async {
