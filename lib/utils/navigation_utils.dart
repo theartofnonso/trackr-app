@@ -14,10 +14,10 @@ void navigateToRoutineLogEditor({required BuildContext context, required Routine
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogEditorScreen(log: log)));
 }
 
-void navigateToRoutinePreview({required BuildContext context, required String routineId}) async {
+void navigateToRoutinePreview({required BuildContext context, required String routineId}) {
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineId)));
 }
 
-void navigateToRoutineLogPreview({required BuildContext context, required String logId}) async {
+void navigateToRoutineLogPreview({required BuildContext context, required String logId}) {
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(routineLogId: logId)));
 }
