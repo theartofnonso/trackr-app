@@ -130,7 +130,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _navigateBack() async {
     final sharedPref = await SharedPreferences.getInstance();
     await sharedPref.remove(cachedRoutineLogKey);
-    print("Does cached_routine_log_key exist: ${sharedPref.containsKey(cachedRoutineLogKey)}");
+    //print("Does cached_routine_log_key exist: ${sharedPref.containsKey(cachedRoutineLogKey)}");
     if(mounted) {
       Navigator.of(context).pop();
     }

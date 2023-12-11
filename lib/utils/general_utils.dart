@@ -157,7 +157,7 @@ Future<RoutineLog?> cachedRoutineLog() async {
   final sharedPref = await SharedPreferences.getInstance();
   await sharedPref.reload();
   final cache = sharedPref.getString(cachedRoutineLogKey);
-  print("Does cached_routine_log_key exist: ${sharedPref.containsKey(cachedRoutineLogKey)}");
+  //print("Does cached_routine_log_key exist: ${sharedPref.containsKey(cachedRoutineLogKey)}");
   if(cache != null) {
     final routineLogJson = _fixRoutineLogJson(cache);
     routineLog = RoutineLog.fromJson(routineLogJson);
