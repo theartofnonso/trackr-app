@@ -28,6 +28,9 @@ class RoutineLogProvider with ChangeNotifier {
   RoutineLog? _cachedRoutineLog;
 
   RoutineLog? get cachedRoutineLog => _cachedRoutineLog;
+  set cachedRoutineLog(RoutineLog? value) {
+    _cachedRoutineLog = value;
+  }
 
   List<RoutineLog> _cachedPendingLogs = [];
 
