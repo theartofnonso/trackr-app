@@ -281,8 +281,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               onRemoveSuperSet: (String superSetId) =>
                                   removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
                               onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
-                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                              onReOrderLogs: () => reOrderProcedures(context: context)),
+                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure)),
                         );
                       }).toList(),
                   ],

@@ -45,21 +45,20 @@ class OverviewScreen extends StatelessWidget {
 
   void _logEmptyRoutine(BuildContext context) async {
     final log = Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog;
-    if (context.mounted) {
-      if (log == null) {
-        final log = RoutineLog(
-            user: user(),
-            name: "${timeOfDay()} Session",
-            procedures: [],
-            notes: "",
-            startTime: TemporalDateTime.now(),
-            endTime: TemporalDateTime.now(),
-            createdAt: TemporalDateTime.now(),
-            updatedAt: TemporalDateTime.now());
-        navigateToRoutineLogEditor(context: context, log: log);
-      } else {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
-      }
+    print(log);
+    if (log == null) {
+      final log = RoutineLog(
+          user: user(),
+          name: "${timeOfDay()} Session",
+          procedures: [],
+          notes: "",
+          startTime: TemporalDateTime.now(),
+          endTime: TemporalDateTime.now(),
+          createdAt: TemporalDateTime.now(),
+          updatedAt: TemporalDateTime.now());
+      navigateToRoutineLogEditor(context: context, log: log);
+    } else {
+      showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
   }
 

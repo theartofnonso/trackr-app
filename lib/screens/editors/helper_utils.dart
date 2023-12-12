@@ -7,7 +7,6 @@ import '../../dtos/unsaved_changes_messages_dto.dart';
 import '../../models/Exercise.dart';
 import '../../providers/exercise_log_provider.dart';
 import '../exercise/exercise_library_screen.dart';
-import '../reorder_procedures_screen.dart';
 
 void selectExercisesInLibrary({required BuildContext context}) async {
   final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
@@ -20,22 +19,6 @@ void selectExercisesInLibrary({required BuildContext context}) async {
   if (exercises != null && exercises.isNotEmpty) {
     if (context.mounted) {
       provider.addExerciseLogs(exercises: exercises);
-    }
-  }
-}
-
-void reOrderProcedures({required BuildContext context}) async {
-  final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
-  final reOrderedList = await showCupertinoModalPopup(
-    context: context,
-    builder: (BuildContext context) {
-      return ReOrderProceduresScreen(procedures: List.from(provider.exerciseLogs));
-    },
-  ) as List<ExerciseLogDto>?;
-
-  if (reOrderedList != null) {
-    if (context.mounted) {
-      provider.loadExerciseLogs(logs: reOrderedList, shouldNotifyListeners: true);
     }
   }
 }

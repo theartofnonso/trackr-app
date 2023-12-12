@@ -47,6 +47,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
           onSelectExercisesInLibrary: () {
             _closeDialog();
             selectExercisesInLibrary(context: context);
+            _cacheLog();
           },
         ));
   }
@@ -131,13 +132,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _navigateBack() {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog = null;
-    //print("Does cached_routine_log_key exist Editor: ${sharedPref.containsKey(cachedRoutineLogKey)}");
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    _cacheLog();
 
     final exerciseLogs = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
 
@@ -212,8 +211,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                       removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
                                   onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
                                   onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                  onCache: _cacheLog,
-                                  onReOrderLogs: () => reOrderProcedures(context: context)),
+                                  onCache: _cacheLog),
                             );
                           }).toList(),
                       ],
