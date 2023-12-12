@@ -141,6 +141,21 @@ double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
   return volume;
 }
 
+double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
+  double lightestVolume = 0;
+
+  for (var set in exerciseLog.sets) {
+    final volume = set.value1 * set.value2;
+    if (lightestVolume < volume) {
+      lightestVolume = volume.toDouble();
+    }
+  }
+
+  final volume = isDefaultWeightUnit() ? lightestVolume : toLbs(lightestVolume);
+
+  return volume;
+}
+
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
   final heaviestWeightInSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
 
@@ -163,9 +178,9 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 (String, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
-  SetDto heaviestSet = SetDto(0, 0, 0, SetType.working, false);
-  String logId = "";
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  SetDto heaviestSet = pastLogs.first.sets.first;
+  String logId = pastLogs.first.routineLogId;
   for (var log in pastLogs) {
     for (var set in log.sets) {
       final volume = set.value1 * set.value2;
@@ -181,10 +196,29 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (logId, heaviestSet.copyWith(value1: weight));
 }
 
-(String, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
-  double heaviestWeight = 0;
-  String logId = "";
+(String, SetDto) _lightestSet({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  SetDto lightestSet = pastLogs.first.sets.first;
+  String logId = pastLogs.first.routineLogId;
+  for (var log in pastLogs) {
+    for (var set in log.sets) {
+      final volume = set.value1 * set.value2;
+      if ((lightestSet.value1 * lightestSet.value2) > volume) {
+        lightestSet = set;
+        logId = log.routineLogId;
+      }
+    }
+  }
+
+  final weight = isDefaultWeightUnit() ? lightestSet.value1 : toLbs(lightestSet.value1.toDouble());
+
+  return (logId, lightestSet.copyWith(value1: weight));
+}
+
+(String, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  double heaviestWeight = pastLogs.first.sets.first.value1.toDouble();
+  String logId = pastLogs.first.routineLogId;
   for (var log in pastLogs) {
     for (var set in log.sets) {
       final weight = set.value1.toDouble();
@@ -197,10 +231,26 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (logId, heaviestWeight);
 }
 
-(String, int) _highestReps({required BuildContext context, required Exercise exercise}) {
-  int highestReps = 0;
-  String logId = "";
+(String, double) _lightestWeight({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  double lightestWeight = pastLogs.first.sets.first.value1.toDouble();
+  String logId = pastLogs.first.routineLogId;
+  for (var log in pastLogs) {
+    for (var set in log.sets) {
+      final weight = set.value1.toDouble();
+      if (lightestWeight > weight) {
+        lightestWeight = weight;
+        logId = log.routineLogId;
+      }
+    }
+  }
+  return (logId, lightestWeight);
+}
+
+(String, int) _highestReps({required BuildContext context, required Exercise exercise}) {
+  final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  int highestReps = pastLogs.first.sets.first.value2.toInt();
+  String logId = pastLogs.first.routineLogId;
   for (var log in pastLogs) {
     final reps = highestRepsForLog(exerciseLog: log);
     if (reps > highestReps) {
@@ -212,9 +262,9 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 (String, int) _totalReps({required BuildContext context, required Exercise exercise}) {
-  int mostReps = 0;
-  String logId = "";
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  int mostReps = pastLogs.first.sets.first.value2.toInt();
+  String logId = pastLogs.first.routineLogId;
   for (var log in pastLogs) {
     final reps = totalRepsForLog(exerciseLog: log);
     if (reps > mostReps) {
@@ -226,9 +276,9 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 (String, Duration) _longestDuration({required BuildContext context, required Exercise exercise}) {
-  Duration longestDuration = Duration.zero;
-  String logId = "";
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  Duration longestDuration = Duration(milliseconds: pastLogs.first.sets.first.value1.toInt());
+  String logId = pastLogs.first.routineLogId;
   for (var log in pastLogs) {
     final duration = longestDurationPerLog(exerciseLog: log);
     if (duration > longestDuration) {
@@ -240,9 +290,9 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 (String, double) _longestDistance({required BuildContext context, required Exercise exercise}) {
-  double longestDistance = 0;
-  String logId = "";
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
+  double longestDistance = pastLogs.first.sets.first.value2.toDouble();
+  String logId = pastLogs.first.routineLogId;
   for (var log in pastLogs) {
     final distance = longestDistancePerLog(exerciseLog: log);
     if (distance > longestDistance) {
@@ -307,7 +357,11 @@ class HomeScreen extends StatelessWidget {
 
     final heaviestSet = _heaviestSet(context: context, exercise: foundExercise);
 
+    final lightestSet = _lightestSet(context: context, exercise: foundExercise);
+
     final heaviestWeight = _heaviestWeight(context: context, exercise: foundExercise);
+
+    final lightestWeight = _lightestWeight(context: context, exercise: foundExercise);
 
     final longestDuration = _longestDuration(context: context, exercise: foundExercise);
 
@@ -373,7 +427,9 @@ class HomeScreen extends StatelessWidget {
               children: [
                 ExerciseChartScreen(
                   heaviestWeight: heaviestWeight,
+                  lightestWeight: lightestWeight,
                   heaviestSet: heaviestSet,
+                  lightestSet: lightestSet,
                   longestDuration: longestDuration,
                   longestDistance: longestDistance,
                   mostRepsSet: mostRepsSet,
