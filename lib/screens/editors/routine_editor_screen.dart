@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -218,73 +219,74 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             }
             return false;
           },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-            child: GestureDetector(
-              onTap: _dismissKeyboard,
-              child: Column(
-                children: [
-                  Column(
-                    children: [
-                      TextField(
-                        controller: _routineNameController,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
-                                borderSide: const BorderSide(color: tealBlueLighter)),
-                            filled: true,
-                            fillColor: tealBlueLighter,
-                            hintText: "New workout",
-                            hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        style: GoogleFonts.lato(
-                            fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _routineNotesController,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
-                                borderSide: const BorderSide(color: tealBlueLighter)),
-                            filled: true,
-                            fillColor: tealBlueLighter,
-                            hintText: "Notes",
-                            hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-                        maxLines: null,
-                        cursorColor: Colors.white,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                        style: GoogleFonts.lato(
-                            fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 250),
-                          itemBuilder: (BuildContext context, int index) {
-                            final procedure = exerciseLogs[index];
-                            final procedureId = procedure.id;
-                            return ExerciseLogWidget(
-                                exerciseLogDto: procedure,
-                                editorType: RoutineEditorMode.log,
-                                superSet:
-                                    whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
-                                onRemoveSuperSet: (String superSetId) =>
-                                    removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
-                                onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
-                                onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
-                                onReOrderLogs: () => reOrderProcedures(context: context));
-                          },
-                          separatorBuilder: (_, __) => const SizedBox(height: 10),
-                          itemCount: exerciseLogs.length)),
-                ],
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 250),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+              child: GestureDetector(
+                onTap: _dismissKeyboard,
+                child: Column(
+                  children: [
+                    Column(
+                      children: [
+                        TextField(
+                          controller: _routineNameController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "New workout",
+                              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          controller: _routineNotesController,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                              filled: true,
+                              fillColor: tealBlueLighter,
+                              hintText: "Notes",
+                              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                          maxLines: null,
+                          cursorColor: Colors.white,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    if (exerciseLogs.isNotEmpty)
+                      ...exerciseLogs.mapIndexed((index, procedure) {
+                        final procedureId = procedure.id;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: ExerciseLogWidget(
+                              exerciseLogDto: procedure,
+                              editorType: RoutineEditorMode.log,
+                              superSet:
+                                  whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
+                              onRemoveSuperSet: (String superSetId) =>
+                                  removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
+                              onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
+                              onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                              onReOrderLogs: () => reOrderProcedures(context: context)),
+                        );
+                      }).toList(),
+                  ],
+                ),
               ),
             ),
           ),

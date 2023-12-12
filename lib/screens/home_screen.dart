@@ -69,9 +69,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SharedPrefs().firstLaunch = false;
-    _loadCachedLog();
     persistUserCredentials();
     loadAppData(context);
+    _loadCachedLog();
   }
 
   @override
