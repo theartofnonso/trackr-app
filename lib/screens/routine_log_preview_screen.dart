@@ -313,8 +313,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           }
         }
       }
-    } catch (e) {
-      print(e);
+    } catch (_) {
       if (mounted) {
         showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are update template");
       }

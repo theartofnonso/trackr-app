@@ -4,7 +4,6 @@ import 'package:tracker_app/extensions/routine_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../providers/routine_log_provider.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/snackbar_utils.dart';
 
