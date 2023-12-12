@@ -46,9 +46,9 @@ class RoutineLogProvider with ChangeNotifier {
     if (routineLogs != null) {
       _logs = routineLogs.whereType<RoutineLog>().toList();
       _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      _loadExerciseLogs();
       notifyListeners();
     }
-    _loadExerciseLogs();
   }
 
   void _loadExerciseLogs() {
