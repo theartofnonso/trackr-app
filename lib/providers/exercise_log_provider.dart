@@ -177,7 +177,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
+  void removeSetForExerciseLog({required String exerciseLogId, required int index, required List<SetDto> pastSets}) {
     // Check if the exercise ID exists in the map
     if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the exercise ID does not exist
@@ -202,7 +202,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[exerciseLogId] = updatedSets;//_reOrderSetTypes(currentSets: updatedSets);
+    newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -235,11 +235,11 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    // if (reorder) {
-    //   newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets);
-    // } else {
+    if (reorder) {
+      newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
+    } else {
       newMap[exerciseLogId] = updatedSets;
-   // }
+    }
     _sets = newMap;
 
     if (shouldNotifyListeners) {
@@ -247,12 +247,14 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets}) {
+  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets}) {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
     return currentSets.mapIndexed((index, set) {
       final newIndex = setTypeCounts[set.type]! + 1;
+      final pastSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets);
+      final newSet = pastSet != null ? pastSet.copyWith(index: newIndex, checked: set.checked) : set.copyWith(index: newIndex, checked: set.checked);
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-      return set.copyWith(index: newIndex, checked: set.checked);
+      return newSet;
     }).toList();
   }
 
@@ -272,7 +274,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateSetType({required String exerciseLogId, required int index, required SetDto setDto, required List<SetDto> pastSets}) {
+  void updateSetType(
+      {required String exerciseLogId, required int index, required SetDto setDto, required List<SetDto> pastSets}) {
     _updateSetForExerciseLog(
         exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, pastSets: pastSets, reorder: true);
   }
