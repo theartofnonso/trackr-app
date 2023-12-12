@@ -319,21 +319,21 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   void _removeSuperSet({required String superSetId}) {
     // Create a new list where modifications will be made
-    List<ExerciseLogDto> updatedexerciseLogs = [];
+    List<ExerciseLogDto> updatedExerciseLogs = [];
 
     // Iterate over the original exerciseLogs list
     for (ExerciseLogDto exerciseLog in _exerciseLogs) {
       if (exerciseLog.superSetId == superSetId) {
         // Create a new exerciseLogDto with an updated superSetId
-        updatedexerciseLogs.add(exerciseLog.copyWith(superSetId: ""));
+        updatedExerciseLogs.add(exerciseLog.copyWith(superSetId: ""));
       } else {
         // Add the original exerciseLogDto to the new list
-        updatedexerciseLogs.add(exerciseLog);
+        updatedExerciseLogs.add(exerciseLog);
       }
     }
 
     // Update the _exerciseLogs with the new list
-    _exerciseLogs = updatedexerciseLogs;
+    _exerciseLogs = updatedExerciseLogs;
   }
 
   int _indexWhereExerciseLog({required String exerciseLogId}) {
