@@ -251,9 +251,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
     return currentSets.mapIndexed((index, set) {
       final newIndex = setTypeCounts[set.type]! + 1;
-      SetDto newSet = set;
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-      return newSet.copyWith(index: newIndex, checked: set.checked);
+      return set.copyWith(index: newIndex, checked: set.checked);
     }).toList();
   }
 
