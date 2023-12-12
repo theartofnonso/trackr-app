@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+class _HomeScreenState extends State<HomeScreen> {
   int _currentScreenIndex = 0;
 
   @override
@@ -67,24 +67,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     SharedPrefs().firstLaunch = false;
     persistUserCredentials();
     loadAppData(context);
     _loadCachedLog();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => Provider.of<RoutineLogProvider>(context, listen: false).listRoutineLogs());
-    }
   }
 }
