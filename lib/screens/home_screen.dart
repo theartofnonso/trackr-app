@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
@@ -7,7 +6,6 @@ import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../models/RoutineLog.dart';
-import '../providers/routine_log_provider.dart';
 import '../shared_prefs.dart';
 
 class HomeScreen extends StatefulWidget {
