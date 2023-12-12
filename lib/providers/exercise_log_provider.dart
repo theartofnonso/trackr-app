@@ -202,7 +202,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets);
+    newMap[exerciseLogId] = updatedSets;//_reOrderSetTypes(currentSets: updatedSets);
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -235,11 +235,11 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    if (reorder) {
-      newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets);
-    } else {
+    // if (reorder) {
+    //   newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets);
+    // } else {
       newMap[exerciseLogId] = updatedSets;
-    }
+   // }
     _sets = newMap;
 
     if (shouldNotifyListeners) {

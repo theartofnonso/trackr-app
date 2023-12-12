@@ -216,8 +216,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _loadTextEditingControllers() {
+    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
     List<(TextEditingController, TextEditingController)> controllers = [];
-    for (var set in widget.exerciseLogDto.sets) {
+    for (var set in sets) {
       final value1Controller = TextEditingController(text: set.value1.toString());
       final value2Controller = TextEditingController(text: set.value2.toString());
       controllers.add((value1Controller, value2Controller));
