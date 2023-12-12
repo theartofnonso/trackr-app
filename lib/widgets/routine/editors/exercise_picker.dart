@@ -6,23 +6,23 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../buttons/text_button_widget.dart';
 import '../../empty_states/list_tile_empty_state.dart';
 
-class ProceduresPicker extends StatelessWidget {
-  final List<ExerciseLogDto> procedures;
+class ExercisePicker extends StatelessWidget {
+  final List<ExerciseLogDto> exercises;
   final void Function(ExerciseLogDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const ProceduresPicker({super.key, required this.procedures, required this.onSelect, required this.onSelectExercisesInLibrary});
+  const ExercisePicker({super.key, required this.exercises, required this.onSelect, required this.onSelectExercisesInLibrary});
 
   @override
   Widget build(BuildContext context) {
-    final listTiles = procedures
+    final listTiles = exercises
         .map((procedure) => ListTile(
         onTap: () => onSelect(procedure),
         dense: true,
         title: Text(procedure.exercise.name, style: GoogleFonts.lato(color: Colors.white))))
         .toList();
 
-    return procedures.isNotEmpty
+    return exercises.isNotEmpty
         ? SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,15 +22,15 @@ void selectExercisesInLibrary({required BuildContext context}) async {
   }
 }
 
-void removeProcedureSuperSets({required BuildContext context, required String superSetId}) {
+void removeExerciseFromSuperSet({required BuildContext context, required String superSetId}) {
   Provider.of<ExerciseLogProvider>(context, listen: false).removeSuperSetForLogs(superSetId: superSetId);
 }
 
-void removeProcedure({required BuildContext context, required String procedureId}) {
-  Provider.of<ExerciseLogProvider>(context, listen: false).removeExerciseLog(logId: procedureId);
+void removeExercise({required BuildContext context, required String exerciseId}) {
+  Provider.of<ExerciseLogProvider>(context, listen: false).removeExerciseLog(logId: exerciseId);
 }
 
-List<ExerciseLogDto> whereOtherProceduresExcept(
+List<ExerciseLogDto> whereOtherExerciseLogsExcept(
     {required BuildContext context, required ExerciseLogDto firstProcedure}) {
   return Provider.of<ExerciseLogProvider>(context, listen: false)
       .exerciseLogs

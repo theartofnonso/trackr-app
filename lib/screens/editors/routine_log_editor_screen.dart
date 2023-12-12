@@ -17,7 +17,7 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../../widgets/routine/editors/procedures_picker.dart';
+import '../../widgets/routine/editors/exercise_picker.dart';
 import 'helper_utils.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
@@ -32,17 +32,18 @@ class RoutineLogEditorScreen extends StatefulWidget {
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   late Function _onDisposeCallback;
 
-  void _showProceduresPicker({required ExerciseLogDto firstProcedure}) {
-    final procedures = whereOtherProceduresExcept(context: context, firstProcedure: firstProcedure);
+  void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+    final exercises = whereOtherExerciseLogsExcept(context: context, firstProcedure: firstExerciseLog);
     displayBottomSheet(
         context: context,
-        child: ProceduresPicker(
-          procedures: procedures,
-          onSelect: (ExerciseLogDto secondProcedure) {
+        child: ExercisePicker(
+          exercises: exercises,
+          onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
-            final id = "superset_id_${firstProcedure.exercise.id}_${secondProcedure.exercise.id}";
+            final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
             Provider.of<ExerciseLogProvider>(context, listen: false).superSetExerciseLogs(
-                firstExerciseLogId: firstProcedure.id, secondExerciseLogId: secondProcedure.id, superSetId: id);
+                firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
+            _cacheLog();
           },
           onSelectExercisesInLibrary: () {
             _closeDialog();
@@ -198,19 +199,23 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                         }),
                         const SizedBox(height: 20),
                         if (exerciseLogs.isNotEmpty)
-                          ...exerciseLogs.mapIndexed((index, procedure) {
-                            final procedureId = procedure.id;
+                          ...exerciseLogs.mapIndexed((index, log) {
+                            final exerciseId = log.id;
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 10.0),
                               child: ExerciseLogWidget(
-                                  exerciseLogDto: procedure,
+                                  exerciseLogDto: log,
                                   editorType: RoutineEditorMode.log,
-                                  superSet:
-                                      whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: exerciseLogs),
-                                  onRemoveSuperSet: (String superSetId) =>
-                                      removeProcedureSuperSets(context: context, superSetId: procedure.superSetId),
-                                  onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
-                                  onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
+                                  superSet: whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
+                                  onRemoveSuperSet: (String superSetId) {
+                                    removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
+                                    _cacheLog();
+                                  },
+                                  onRemoveLog: () {
+                                    removeExercise(context: context, exerciseId: exerciseId);
+                                    _cacheLog();
+                                  },
+                                  onSuperSet: () => _showExercisePicker(firstExerciseLog: log),
                                   onCache: _cacheLog),
                             );
                           }).toList(),

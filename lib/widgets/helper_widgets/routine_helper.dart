@@ -10,7 +10,7 @@ import '../routine/preview/set_rows/weight_distance_set_row.dart';
 import '../routine/preview/set_rows/reps_set_row.dart';
 import '../routine/preview/set_rows/weight_reps_set_row.dart';
 
-ExerciseLogDto? whereOtherSuperSetProcedure(
+ExerciseLogDto? whereOtherExerciseInSuperSet(
     {required ExerciseLogDto firstProcedure, required List<ExerciseLogDto> procedures}) {
   for (var procedure in procedures) {
     bool isSameSuperset = procedure.superSetId.isNotEmpty && procedure.superSetId == firstProcedure.superSetId;

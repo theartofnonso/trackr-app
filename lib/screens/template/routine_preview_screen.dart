@@ -179,7 +179,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
               children: [
                 ExerciseLogWidget(
                   exerciseLog: procedure,
-                  superSet: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                  superSet: whereOtherExerciseInSuperSet(firstProcedure: procedure, procedures: procedures),
                 ),
                 const SizedBox(height: 18)
               ],

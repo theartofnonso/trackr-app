@@ -207,7 +207,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: ExerciseLogWidget(
                 exerciseLog: procedure,
-                superSet: whereOtherSuperSetProcedure(firstProcedure: procedure, procedures: procedures),
+                superSet: whereOtherExerciseInSuperSet(firstProcedure: procedure, procedures: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))

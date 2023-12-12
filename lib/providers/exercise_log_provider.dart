@@ -177,7 +177,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForExerciseLog({required String exerciseLogId, required int setIndex}) {
+  void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
     // Check if the exercise ID exists in the map
     if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the exercise ID does not exist
@@ -188,15 +188,15 @@ class ExerciseLogProvider extends ChangeNotifier {
     // Clone the old sets for the exercise ID
     List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseLogId]!);
 
-    // Check if the setIndex is valid
-    if (setIndex < 0 || setIndex >= updatedSets.length) {
+    // Check if the index is valid
+    if (index < 0 || index >= updatedSets.length) {
       // Handle the invalid index
       // e.g., log an error or throw an exception
       return;
     }
 
     // Remove the set at the specified index
-    updatedSets.removeAt(setIndex);
+    updatedSets.removeAt(index);
 
     // Create a new map by copying all key-value pairs from the original map
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
@@ -213,13 +213,13 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   void _updateSetForExerciseLog(
       {required String exerciseLogId,
-      required int setIndex,
+      required int index,
       required SetDto updatedSet,
       List<SetDto> pastSets = const [],
       bool shouldNotifyListeners = true,
       bool reorder = false}) {
-    // Check if the exercise ID exists in the map and if the setIndex is valid
-    if (!_sets.containsKey(exerciseLogId) || setIndex < 0 || setIndex >= (_sets[exerciseLogId]?.length ?? 0)) {
+    // Check if the exercise ID exists in the map and if the index is valid
+    if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
       // e.g., log an error or throw an exception
       return;
@@ -229,7 +229,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseLogId]!);
 
     // Replace the set at the specified index with the updated set
-    updatedSets[setIndex] = updatedSet;
+    updatedSets[index] = updatedSet;
 
     // Create a new map by copying all key-value pairs from the original map
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
@@ -257,29 +257,29 @@ class ExerciseLogProvider extends ChangeNotifier {
     }).toList();
   }
 
-  void updateWeight({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
+  void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateReps({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
+  void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateDuration({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
+  void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateDistance({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
+  void updateDistance({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateSetType({required String exerciseLogId, required int setIndex, required SetDto setDto, required List<SetDto> pastSets}) {
+  void updateSetType({required String exerciseLogId, required int index, required SetDto setDto, required List<SetDto> pastSets}) {
     _updateSetForExerciseLog(
-        exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto, pastSets: pastSets, reorder: true);
+        exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, pastSets: pastSets, reorder: true);
   }
 
-  void updateSetCheck({required String exerciseLogId, required int setIndex, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, setIndex: setIndex, updatedSet: setDto);
+  void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void onClearProvider() {
