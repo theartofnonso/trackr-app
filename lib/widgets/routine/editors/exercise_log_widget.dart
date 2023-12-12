@@ -236,15 +236,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
 
     _loadTextEditingControllers();
-  }
 
-  @override
-  void didUpdateWidget(ExerciseLogWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
-
-    _loadTextEditingControllers();
   }
 
   void _cacheLog() {

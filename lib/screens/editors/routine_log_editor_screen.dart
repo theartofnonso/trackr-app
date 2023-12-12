@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -180,27 +181,29 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
               }
               return false;
             },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-              child: GestureDetector(
-                onTap: _dismissKeyboard,
-                child: Column(
-                  children: [
-                    Consumer<ExerciseLogProvider>(
-                        builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
-                      return _RoutineLogOverview(
-                        sets: provider.completedSets().length,
-                        timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
-                      );
-                    }),
-                    const SizedBox(height: 20),
-                    Expanded(
-                        child: ListView.separated(
-                            padding: const EdgeInsets.only(bottom: 250),
-                            itemBuilder: (BuildContext context, int index) {
-                              final procedure = exerciseLogs[index];
-                              final procedureId = procedure.id;
-                              return ExerciseLogWidget(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 250),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+                  child: GestureDetector(
+                    onTap: _dismissKeyboard,
+                    child: Column(
+                      children: [
+                        Consumer<ExerciseLogProvider>(
+                            builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
+                          return _RoutineLogOverview(
+                            sets: provider.completedSets().length,
+                            timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
+                          );
+                        }),
+                        const SizedBox(height: 20),
+                        if (exerciseLogs.isNotEmpty)
+                          ...exerciseLogs.mapIndexed((index, procedure) {
+                            final procedureId = procedure.id;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: ExerciseLogWidget(
                                   exerciseLogDto: procedure,
                                   editorType: RoutineEditorMode.log,
                                   superSet:
@@ -210,11 +213,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                   onRemoveLog: () => removeProcedure(context: context, procedureId: procedureId),
                                   onSuperSet: () => _showProceduresPicker(firstProcedure: procedure),
                                   onCache: _cacheLog,
-                                  onReOrderLogs: () => reOrderProcedures(context: context));
-                            },
-                            separatorBuilder: (_, __) => const SizedBox(height: 10),
-                            itemCount: exerciseLogs.length)),
-                  ],
+                                  onReOrderLogs: () => reOrderProcedures(context: context)),
+                            );
+                          }).toList(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
