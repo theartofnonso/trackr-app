@@ -117,6 +117,7 @@ class RoutineLogProvider with ChangeNotifier {
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
+        _loadExerciseLogs();
       }
     } catch (_) {
       _cachePendingLogs(logToCreate);
