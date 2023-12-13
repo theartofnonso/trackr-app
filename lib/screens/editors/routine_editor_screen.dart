@@ -285,7 +285,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               },
                               separatorBuilder: (_, __) => const SizedBox(height: 10),
                               itemCount: exerciseLogs.length))
-                      : const EmptyStateExerciseLog(
+                      : const ExerciseLogEmptyState(
                           mode: RoutineEditorMode.edit,
                           message: "Tap the + button to start adding exercises to your workout"),
                 ],

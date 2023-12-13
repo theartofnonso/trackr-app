@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../app_constants.dart';
 import '../../models/Exercise.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
-import '../../widgets/empty_states/list_view_empty_state.dart';
-import '../../widgets/empty_states/text_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
 import 'history/home_screen.dart';
@@ -179,7 +177,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ExerciseProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -210,33 +207,27 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           }
           return false;
         },
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-          child: Column(
-            children: [
-              CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
-              const SizedBox(height: 12),
-              _filteredExercises.isNotEmpty
-                  ? Expanded(
-                      child: RefreshIndicator(
-                      onRefresh: () => loadAppData(context),
-                      child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
-                          separatorBuilder: (BuildContext context, int index) => const Divider(
-                                thickness: 1.0,
-                                color: tealBlueLight,
-                              ),
-                          itemCount: _filteredExercises.length),
-                    ))
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListViewEmptyState(onRefresh: () => loadAppData(context)),
-                        const SizedBox(height: 8),
-                        const TextEmptyState(message: 'Tap the + button to add exercises')
-                      ],
-                    ),
-            ],
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            child: Column(
+              children: [
+                CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
+                const SizedBox(height: 12),
+                _filteredExercises.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (BuildContext context, int index) =>
+                                _exerciseWidget(_filteredExercises[index]),
+                            separatorBuilder: (BuildContext context, int index) => const Divider(
+                                  thickness: 1.0,
+                                  color: tealBlueLight,
+                                ),
+                            itemCount: _filteredExercises.length),
+                      )
+                    : const ExerciseEmptyState(),
+              ],
+            ),
           ),
         ),
       ),

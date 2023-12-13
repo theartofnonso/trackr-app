@@ -220,7 +220,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                 },
                                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                                 itemCount: exerciseLogs.length))
-                        : const EmptyStateExerciseLog(
+                        : const ExerciseLogEmptyState(
                             mode: RoutineEditorMode.log,
                             message: "Tap the + button to start adding exercises to your log"),
                   ],

@@ -113,10 +113,10 @@ class OverviewScreen extends StatelessWidget {
                               },
                               children: [
                                 TableRow(children: [
-                                  Text("Weekly",
+                                  Text("This Week",
                                       style: GoogleFonts.lato(
                                           fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-                                  Text("Monthly",
+                                  Text("This Month",
                                       style: GoogleFonts.lato(
                                           fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500))
                                 ]),

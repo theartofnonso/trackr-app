@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/backgrounds/gradient_background.dart';
 import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
 import '../../app_constants.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../routine/editors/set_headers/weight_reps_set_header.dart';
 
-class EmptyStateExerciseLog extends StatelessWidget {
+class ExerciseLogEmptyState extends StatelessWidget {
   final RoutineEditorMode mode;
   final String message;
 
-  const EmptyStateExerciseLog({
+  const ExerciseLogEmptyState({
     super.key,
     required this.mode,
     required this.message,
@@ -21,8 +22,7 @@ class EmptyStateExerciseLog extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Opacity(
-          opacity: 0.7,
+        GradientBackground(
           child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -51,9 +51,8 @@ class EmptyStateExerciseLog extends StatelessWidget {
               ])),
         ),
         const SizedBox(height: 10),
-        TextEmptyState(message: message)
+        const TextEmptyState(message: 'Tap the + button to create workouts')
       ],
     );
   }
 }
-
