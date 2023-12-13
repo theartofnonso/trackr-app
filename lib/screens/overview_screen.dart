@@ -113,6 +113,7 @@ class OverviewScreen extends StatelessWidget {
                     if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
                     logs.isNotEmpty ?
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           RichText(
                             text: TextSpan(
@@ -133,7 +134,7 @@ class OverviewScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 6),
                           Text(
                               "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
                               style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
