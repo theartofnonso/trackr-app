@@ -1,5 +1,4 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +6,6 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
@@ -38,11 +36,6 @@ class OverviewScreen extends StatelessWidget {
     return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth)).toList().length;
   }
 
-  int _logsForTheYearCount({required List<RoutineLog> logs}) {
-    final thisYear = thisYearDateRange();
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear)).toList().length;
-  }
-
   void _logEmptyRoutine(BuildContext context) async {
     final log = Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog;
     if (log == null) {
@@ -68,10 +61,8 @@ class OverviewScreen extends StatelessWidget {
     final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
     final logs = routineLogProvider.logs;
-    final earliestLog = logs.lastOrNull;
     final logsForTheWeek = _logsForTheWeekCount(logs: logs);
     final logsForTheMonth = _logsForTheMonthCount(logs: logs);
-    final logsForTheYear = _logsForTheYearCount(logs: logs);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -110,32 +101,37 @@ class OverviewScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
-                    if (logs.isNotEmpty)
-                      RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                          // This gets the default style
-                          children: <TextSpan>[
-                            const TextSpan(text: 'You have logged '),
-                            TextSpan(
-                                text: '$logsForTheWeek workout(s) this week,',
-                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                            TextSpan(
-                                text: ' $logsForTheMonth this month',
-                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                            const TextSpan(text: ' and '),
-                            TextSpan(
-                                text: '$logsForTheYear this year',
-                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
-                          ],
-                        ),
-                      ),
-                    const SizedBox(height: 10),
-                    if (logs.isNotEmpty)
-                      Text(
-                          "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                          style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                    if (logs.isEmpty) const ListTileEmptyState(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Table(
+                              columnWidths: const <int, TableColumnWidth>{
+                                0: FlexColumnWidth(),
+                                1: FlexColumnWidth(),
+                              },
+                              children: [
+                                TableRow(children: [
+                                  Text("This Week",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
+                                  Text("This Month",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500))
+                                ]),
+                                TableRow(children: [
+                                  Text("$logsForTheWeek sessions",
+                                      style: GoogleFonts.lato(
+                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                                  Text("$logsForTheMonth sessions",
+                                      style: GoogleFonts.lato(
+                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
+                                ])
+                              ],
+                            )),
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     Theme(
                       data: ThemeData(splashColor: tealBlueLight),

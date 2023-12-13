@@ -18,7 +18,6 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-
   DateTime _currentDate = DateTime.now();
 
   bool _hasLaterDate() {
@@ -187,7 +186,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
           height: 10,
         ),
         if (logs.isNotEmpty) ..._logsToWidgets(logs),
-        if (logs.isEmpty) const Column(children: [ListTileEmptyState(), SizedBox(height: 8), ListTileEmptyState()])
+        if (logs.isEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ListTileEmptyState(),
+              const SizedBox(height: 8),
+              const ListTileEmptyState(),
+              const SizedBox(height: 8),
+              RichText(
+                  text: TextSpan(
+                      style: GoogleFonts.lato(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70),
+                      children: const [
+                    TextSpan(text: 'Tap'),
+                    WidgetSpan(child: Icon(Icons.play_arrow_rounded, color: Colors.white70), alignment: PlaceholderAlignment.middle),
+                    TextSpan(text: 'to start logging or visit the + tab to create new workouts'),
+                  ]))
+            ],
+          )
       ],
     );
   }

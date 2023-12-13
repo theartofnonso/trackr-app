@@ -91,7 +91,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveRoutineLog(
+  void saveRoutineLog(
       {required BuildContext context,
       required String name,
       required String notes,

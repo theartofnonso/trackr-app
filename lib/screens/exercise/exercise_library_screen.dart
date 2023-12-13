@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../app_constants.dart';
 import '../../models/Exercise.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
-import '../../widgets/empty_states/list_view_empty_state.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
 import 'history/home_screen.dart';
@@ -31,21 +30,21 @@ class ExerciseInLibraryDto {
   String toString() {
     return 'ExerciseInLibraryDto{selected: $selected, exercise: ${exercise.name}}';
   }
-
 }
 
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool multiSelect;
   final bool readOnly;
   final List<Exercise> preSelectedExercises;
-  const ExerciseLibraryScreen({super.key, this.multiSelect = true, this.readOnly = false, this.preSelectedExercises = const []});
+
+  const ExerciseLibraryScreen(
+      {super.key, this.multiSelect = true, this.readOnly = false, this.preSelectedExercises = const []});
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-
   late TextEditingController _searchController;
 
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
@@ -76,9 +75,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Navigate to previous screen
   void _navigateBackWithSelectedExercises() {
-    final exercisesFromLibrary = _selectedExercises
-        .map((exerciseInLibrary) => exerciseInLibrary.exercise)
-        .toList();
+    final exercisesFromLibrary = _selectedExercises.map((exerciseInLibrary) => exerciseInLibrary.exercise).toList();
     Navigator.of(context).pop(exercisesFromLibrary);
   }
 
@@ -89,9 +86,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Select up to many exercise
   void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final exerciseIndex =
-        _exercisesInLibrary.indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
-    final filteredIndex = _filteredExercises.indexWhere((filteredInLibrary) => filteredInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
+    final exerciseIndex = _exercisesInLibrary
+        .indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
+    final filteredIndex = _filteredExercises
+        .indexWhere((filteredInLibrary) => filteredInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
     if (selected) {
       _selectedExercises.add(exerciseInLibraryDto);
       setState(() {
@@ -112,7 +110,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       return SelectableExerciseWidget(
           exerciseInLibraryDto: exerciseInLibraryDto,
           onTap: (selected) {
-            if(!widget.readOnly) {
+            if (!widget.readOnly) {
               _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto);
             }
           },
@@ -123,7 +121,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     return ExerciseWidget(
         exerciseInLibraryDto: exerciseInLibraryDto,
         onTap: () {
-          if(!widget.readOnly) {
+          if (!widget.readOnly) {
             _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto);
           }
         },
@@ -147,8 +145,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseHistory(ExerciseInLibraryDto exerciseInLibraryDto) async {
-    await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseInLibraryDto.exercise)));
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseInLibraryDto.exercise)));
     if (mounted) {
       setState(() {
         _exercisesInLibrary = _updateSelections();
@@ -179,7 +177,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ExerciseProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -210,24 +207,27 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           }
           return false;
         },
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-          child: Column(
-            children: [
-              CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
-              const SizedBox(height: 12),
-              _filteredExercises.isNotEmpty
-                  ? Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () => loadAppData(context),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            child: Column(
+              children: [
+                CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
+                const SizedBox(height: 12),
+                _filteredExercises.isNotEmpty
+                    ? Expanded(
                         child: ListView.separated(
-                            itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
-                            separatorBuilder: (BuildContext context, int index) =>
-                            const Divider(thickness: 1.0, color: tealBlueLight,),
+                            itemBuilder: (BuildContext context, int index) =>
+                                _exerciseWidget(_filteredExercises[index]),
+                            separatorBuilder: (BuildContext context, int index) => const Divider(
+                                  thickness: 1.0,
+                                  color: tealBlueLight,
+                                ),
                             itemCount: _filteredExercises.length),
-                      ))
-                  : ListViewEmptyState(onRefresh: () => loadAppData(context)),
-            ],
+                      )
+                    : const ExerciseEmptyState(),
+              ],
+            ),
           ),
         ),
       ),

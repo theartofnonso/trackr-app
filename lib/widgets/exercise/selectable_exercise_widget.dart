@@ -9,7 +9,8 @@ class SelectableExerciseWidget extends StatelessWidget {
   final void Function(bool selected) onTap;
   final void Function() onNavigateToExercise;
 
-  const SelectableExerciseWidget({super.key, required this.exerciseInLibraryDto, required this.onTap, required this.onNavigateToExercise});
+  const SelectableExerciseWidget(
+      {super.key, required this.exerciseInLibraryDto, required this.onTap, required this.onNavigateToExercise});
 
   void _onTap() {
     final isSelected = !exerciseInLibraryDto.selected;
@@ -27,8 +28,7 @@ class SelectableExerciseWidget extends StatelessWidget {
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         dense: true,
-        title: Text(exerciseInLibraryDto.exercise.name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,15 +36,13 @@ class SelectableExerciseWidget extends StatelessWidget {
                 width: 300,
                 child: Text(
                   "Primary: ${exerciseInLibraryDto.exercise.primaryMuscle}",
-                  style: GoogleFonts.lato(
-                      color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                  style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                 )),
             SizedBox(
                 width: 300,
                 child: Text(
                   "Secondary: ${exerciseInLibraryDto.exercise.secondaryMuscles.isNotEmpty ? exerciseInLibraryDto.exercise.secondaryMuscles.join(", ") : "None"}",
-                  style: GoogleFonts.lato(
-                      color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                  style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                 )),
           ],
         ),
@@ -55,7 +53,9 @@ class SelectableExerciseWidget extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        trailing: exerciseInLibraryDto.selected ? const Icon(Icons.check_box_rounded, color: Colors.green) : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
+        trailing: exerciseInLibraryDto.selected
+            ? const Icon(Icons.check_box_rounded, color: Colors.green)
+            : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
       ),
     );
   }

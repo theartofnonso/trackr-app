@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/models/Exercise.dart';
-import 'package:tracker_app/models/RoutineLog.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:uuid/uuid.dart';
 
 class ExerciseLogDto {
