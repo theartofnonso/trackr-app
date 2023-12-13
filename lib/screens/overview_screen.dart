@@ -144,7 +144,7 @@ class OverviewScreen extends StatelessWidget {
                       children: [
                         ListTileEmptyState(),
                         SizedBox(height: 8),
-                        TextEmptyState(message: "You haven't logged any workouts")
+                        TextEmptyState(message: "You haven't logged any sessions")
                       ],
                     ),
                     const SizedBox(height: 20),
