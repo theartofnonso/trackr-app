@@ -58,7 +58,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final completedExerciseLogs = _completedExerciseLogsAndSets();
 
-    return Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+    Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
         name: log.name,
         notes: log.notes,
@@ -104,7 +104,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _saveLog() async {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      await _doCreateRoutineLog();
+      _doCreateRoutineLog();
       _navigateBack();
     } else {
       showAlertDialogWithSingleAction(
