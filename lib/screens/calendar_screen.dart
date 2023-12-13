@@ -9,7 +9,6 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../models/RoutineLog.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
-import '../widgets/empty_states/text_empty_state.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});

@@ -1,5 +1,4 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +6,6 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/list_tile_empty_state.dart';
 
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
@@ -15,7 +13,6 @@ import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../utils/snackbar_utils.dart';
 import '../widgets/banners/pending_routines_banner.dart';
-import '../widgets/empty_states/text_empty_state.dart';
 import 'calendar_screen.dart';
 
 class OverviewScreen extends StatelessWidget {
@@ -37,11 +34,6 @@ class OverviewScreen extends StatelessWidget {
   int _logsForTheMonthCount({required List<RoutineLog> logs}) {
     final thisMonth = thisMonthDateRange();
     return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth)).toList().length;
-  }
-
-  int _logsForTheYearCount({required List<RoutineLog> logs}) {
-    final thisYear = thisYearDateRange();
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisYear)).toList().length;
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -69,10 +61,8 @@ class OverviewScreen extends StatelessWidget {
     final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
     final logs = routineLogProvider.logs;
-    final earliestLog = logs.lastOrNull;
     final logsForTheWeek = _logsForTheWeekCount(logs: logs);
     final logsForTheMonth = _logsForTheMonthCount(logs: logs);
-    final logsForTheYear = _logsForTheYearCount(logs: logs);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -111,43 +101,37 @@ class OverviewScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
-                    logs.isNotEmpty
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  style: GoogleFonts.lato(
-                                      color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                                  // This gets the default style
-                                  children: <TextSpan>[
-                                    const TextSpan(text: 'You have logged '),
-                                    TextSpan(text: '$logsForTheWeek workout(s) this week,'),
-                                    TextSpan(
-                                      text: ' $logsForTheMonth this month',
-                                    ),
-                                    const TextSpan(text: ' and '),
-                                    TextSpan(
-                                      text: '$logsForTheYear this year',
-                                    )
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                  "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                                  style: GoogleFonts.lato(
-                                      color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                            ],
-                          )
-                        : const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTileEmptyState(),
-                              SizedBox(height: 8),
-                              TextEmptyState(message: "You haven't logged any sessions")
-                            ],
-                          ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Table(
+                              columnWidths: const <int, TableColumnWidth>{
+                                0: FlexColumnWidth(),
+                                1: FlexColumnWidth(),
+                              },
+                              children: [
+                                TableRow(children: [
+                                  Text("Weekly",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500)),
+                                  Text("Monthly",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500))
+                                ]),
+                                TableRow(children: [
+                                  Text("$logsForTheWeek sessions",
+                                      style: GoogleFonts.lato(
+                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                                  Text("$logsForTheMonth sessions",
+                                      style: GoogleFonts.lato(
+                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))
+                                ])
+                              ],
+                            )),
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     Theme(
                       data: ThemeData(splashColor: tealBlueLight),
