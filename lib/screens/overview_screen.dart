@@ -115,18 +115,18 @@ class OverviewScreen extends StatelessWidget {
                                 TableRow(children: [
                                   Text("Weekly",
                                       style: GoogleFonts.lato(
-                                          fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500)),
+                                          fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
                                   Text("Monthly",
                                       style: GoogleFonts.lato(
-                                          fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500))
+                                          fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500))
                                 ]),
                                 TableRow(children: [
                                   Text("$logsForTheWeek sessions",
                                       style: GoogleFonts.lato(
-                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
                                   Text("$logsForTheMonth sessions",
                                       style: GoogleFonts.lato(
-                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))
+                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
                                 ])
                               ],
                             )),
