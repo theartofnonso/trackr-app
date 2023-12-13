@@ -14,6 +14,7 @@ import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
+import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_picker.dart';
@@ -264,24 +265,29 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 250),
-                          itemBuilder: (BuildContext context, int index) {
-                            final log = exerciseLogs[index];
-                            final logId = log.id;
-                            return ExerciseLogWidget(
-                                key: ValueKey(logId),
-                                exerciseLogDto: log,
-                                editorType: RoutineEditorMode.log,
-                                superSet: whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
-                                onRemoveSuperSet: (String superSetId) =>
-                                    removeExerciseFromSuperSet(context: context, superSetId: log.superSetId),
-                                onRemoveLog: () => removeExercise(context: context, exerciseId: logId),
-                                onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
-                          },
-                          separatorBuilder: (_, __) => const SizedBox(height: 10),
-                          itemCount: exerciseLogs.length)),
+                  exerciseLogs.isNotEmpty
+                      ? Expanded(
+                          child: ListView.separated(
+                              padding: const EdgeInsets.only(bottom: 250),
+                              itemBuilder: (BuildContext context, int index) {
+                                final log = exerciseLogs[index];
+                                final logId = log.id;
+                                return ExerciseLogWidget(
+                                    key: ValueKey(logId),
+                                    exerciseLogDto: log,
+                                    editorType: RoutineEditorMode.log,
+                                    superSet:
+                                        whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
+                                    onRemoveSuperSet: (String superSetId) =>
+                                        removeExerciseFromSuperSet(context: context, superSetId: log.superSetId),
+                                    onRemoveLog: () => removeExercise(context: context, exerciseId: logId),
+                                    onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
+                              },
+                              separatorBuilder: (_, __) => const SizedBox(height: 10),
+                              itemCount: exerciseLogs.length))
+                      : const EmptyStateExerciseLog(
+                          mode: RoutineEditorMode.edit,
+                          message: "Click the + button to start adding exercises to your workout"),
                 ],
               ),
             ),

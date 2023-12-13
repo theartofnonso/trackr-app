@@ -8,16 +8,13 @@ class ListViewEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: RefreshIndicator(
-        onRefresh: onRefresh ?? () => Future(() => null),
-        child: ListView.separated(
-            padding: const EdgeInsets.only(bottom: 150),
-            itemBuilder: (BuildContext context, int index) => const ListTileEmptyState(),
-            separatorBuilder: (BuildContext context, int index) =>
-                Divider(color: Colors.white70.withOpacity(0.1)),
-            itemCount: 3),
-      ),
+    return RefreshIndicator(
+      onRefresh: onRefresh ?? () => Future(() => null),
+      child: const Column(children: [
+        ListTileEmptyState(),
+        SizedBox(height: 8),
+        ListTileEmptyState(),
+      ]),
     );
   }
 }

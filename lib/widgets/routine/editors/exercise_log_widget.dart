@@ -38,12 +38,7 @@ class ExerciseLogWidget extends StatefulWidget {
   const ExerciseLogWidget(
       {super.key,
       this.editorType = RoutineEditorMode.edit,
-      required this.exerciseLogDto,
-      required this.superSet,
-      required this.onSuperSet,
-      required this.onRemoveSuperSet,
-      required this.onRemoveLog,
-      this.onCache});
+      required this.exerciseLogDto, this.superSet, required this.onSuperSet, required this.onRemoveSuperSet, required this.onRemoveLog, this.onCache});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -76,7 +71,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   SetDto? _wherePastSetOrNull({required String id}) {
     final pastSets =
-    Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     return pastSets.firstWhereOrNull((pastSet) => pastSet.id == id);
   }
 
@@ -162,7 +157,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _addSet() {
     _controllers.add((TextEditingController(), TextEditingController()));
     final pastSets =
-    Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
     _cacheLog();
@@ -171,7 +166,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _removeSet(int index) {
     _controllers.removeAt(index);
     final pastSets =
-    Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index, pastSets: pastSets);
     _cacheLog();
@@ -207,10 +202,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _updateSetType({required int index, required SetType type, required SetDto setDto}) {
     final pastSets =
-    Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
+        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     final updatedSet = setDto.copyWith(type: type);
-    Provider.of<ExerciseLogProvider>(context, listen: false).updateSetType(
-        exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, pastSets: pastSets);
+    Provider.of<ExerciseLogProvider>(context, listen: false)
+        .updateSetType(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, pastSets: pastSets);
     _cacheLog();
   }
 

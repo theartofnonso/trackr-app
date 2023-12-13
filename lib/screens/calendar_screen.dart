@@ -9,6 +9,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../models/RoutineLog.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
+import '../widgets/empty_states/text_empty_state.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -18,7 +19,6 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-
   DateTime _currentDate = DateTime.now();
 
   bool _hasLaterDate() {
@@ -187,7 +187,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
           height: 10,
         ),
         if (logs.isNotEmpty) ..._logsToWidgets(logs),
-        if (logs.isEmpty) const Column(children: [ListTileEmptyState(), SizedBox(height: 8), ListTileEmptyState()])
+        if (logs.isEmpty)
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTileEmptyState(),
+              SizedBox(height: 8),
+              ListTileEmptyState(),
+              SizedBox(height: 8),
+              Wrap(
+                //crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  TextEmptyState(message: 'You have no logs, click'),
+                  Icon(Icons.play_arrow_rounded, color: Colors.white70),
+                  TextEmptyState(message: 'to start logging'),
+                  TextEmptyState(message: 'or visit the + tab to create new workouts')
+                ],
+              )
+            ],
+          )
       ],
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../widgets/empty_states/screen_empty_state.dart';
+import '../../../widgets/empty_states/text_empty_state.dart';
 
 class NotesScreen extends StatelessWidget {
   final String notes;
@@ -11,6 +11,6 @@ class NotesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return notes.isNotEmpty
         ? Padding(padding: const EdgeInsets.only(top: 12, right: 10, bottom: 10, left: 10), child: Text(notes))
-        : const Center(child: ScreenEmptyState(message: "You have no notes"));
+        : const Center(child: TextEmptyState(message: "You have no notes"));
   }
 }

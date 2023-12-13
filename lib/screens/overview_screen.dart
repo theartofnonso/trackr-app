@@ -15,6 +15,7 @@ import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../utils/snackbar_utils.dart';
 import '../widgets/banners/pending_routines_banner.dart';
+import '../widgets/empty_states/text_empty_state.dart';
 import 'calendar_screen.dart';
 
 class OverviewScreen extends StatelessWidget {
@@ -110,32 +111,41 @@ class OverviewScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
-                    if (logs.isNotEmpty)
-                      RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                          // This gets the default style
-                          children: <TextSpan>[
-                            const TextSpan(text: 'You have logged '),
-                            TextSpan(
-                                text: '$logsForTheWeek workout(s) this week,',
-                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                            TextSpan(
-                                text: ' $logsForTheMonth this month',
-                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                            const TextSpan(text: ' and '),
-                            TextSpan(
-                                text: '$logsForTheYear this year',
-                                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
-                          ],
-                        ),
-                      ),
-                    const SizedBox(height: 10),
-                    if (logs.isNotEmpty)
-                      Text(
-                          "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                          style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                    if (logs.isEmpty) const ListTileEmptyState(),
+                    logs.isNotEmpty ?
+                      Column(
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                              // This gets the default style
+                              children: <TextSpan>[
+                                const TextSpan(text: 'You have logged '),
+                                TextSpan(
+                                    text: '$logsForTheWeek workout(s) this week,',
+                                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                                TextSpan(
+                                    text: ' $logsForTheMonth this month',
+                                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                                const TextSpan(text: ' and '),
+                                TextSpan(
+                                    text: '$logsForTheYear this year',
+                                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                              "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                        ],
+                      ) : const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTileEmptyState(),
+                        SizedBox(height: 8),
+                        TextEmptyState(message: "You haven't logged any workouts")
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     Theme(
                       data: ThemeData(splashColor: tealBlueLight),

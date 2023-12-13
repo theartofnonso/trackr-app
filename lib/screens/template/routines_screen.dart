@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/utils/snackbar_utils.dart';
+import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 import '../../../models/Routine.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
@@ -42,7 +43,14 @@ class RoutinesScreen extends StatelessWidget {
                                   itemCount: provider.routines.length),
                             ),
                           )
-                        : ListViewEmptyState(onRefresh: () => loadAppData(context)),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListViewEmptyState(onRefresh: () => loadAppData(context)),
+                              const SizedBox(height: 8),
+                              const TextEmptyState(message: 'Click the + button to create workouts')
+                            ],
+                          ),
                   ]))));
     });
   }
