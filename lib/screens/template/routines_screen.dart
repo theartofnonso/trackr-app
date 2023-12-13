@@ -48,7 +48,7 @@ class RoutinesScreen extends StatelessWidget {
                             children: [
                               ListViewEmptyState(onRefresh: () => loadAppData(context)),
                               const SizedBox(height: 8),
-                              const TextEmptyState(message: 'Click the + button to create workouts')
+                              const TextEmptyState(message: 'Tap the + button to create workouts')
                             ],
                           ),
                   ]))));

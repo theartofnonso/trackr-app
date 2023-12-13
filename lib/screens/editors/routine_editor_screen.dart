@@ -287,7 +287,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                               itemCount: exerciseLogs.length))
                       : const EmptyStateExerciseLog(
                           mode: RoutineEditorMode.edit,
-                          message: "Click the + button to start adding exercises to your workout"),
+                          message: "Tap the + button to start adding exercises to your workout"),
                 ],
               ),
             ),

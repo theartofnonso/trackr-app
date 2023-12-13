@@ -222,7 +222,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                 itemCount: exerciseLogs.length))
                         : const EmptyStateExerciseLog(
                             mode: RoutineEditorMode.log,
-                            message: "Click the + button to start adding exercises to your log"),
+                            message: "Tap the + button to start adding exercises to your log"),
                   ],
                 ),
               ),

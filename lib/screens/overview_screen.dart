@@ -111,42 +111,43 @@ class OverviewScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
-                    logs.isNotEmpty ?
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
-                              // This gets the default style
-                              children: <TextSpan>[
-                                const TextSpan(text: 'You have logged '),
-                                TextSpan(
-                                    text: '$logsForTheWeek workout(s) this week,',
-                                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                                TextSpan(
-                                    text: ' $logsForTheMonth this month',
-                                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
-                                const TextSpan(text: ' and '),
-                                TextSpan(
-                                    text: '$logsForTheYear this year',
-                                    style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white))
-                              ],
-                            ),
+                    logs.isNotEmpty
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.lato(
+                                      color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15),
+                                  // This gets the default style
+                                  children: <TextSpan>[
+                                    const TextSpan(text: 'You have logged '),
+                                    TextSpan(text: '$logsForTheWeek workout(s) this week,'),
+                                    TextSpan(
+                                      text: ' $logsForTheMonth this month',
+                                    ),
+                                    const TextSpan(text: ' and '),
+                                    TextSpan(
+                                      text: '$logsForTheYear this year',
+                                    )
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                  "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
+                                  style: GoogleFonts.lato(
+                                      color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
+                            ],
+                          )
+                        : const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTileEmptyState(),
+                              SizedBox(height: 8),
+                              TextEmptyState(message: "You haven't logged any sessions")
+                            ],
                           ),
-                          const SizedBox(height: 6),
-                          Text(
-                              "${logs.length} workouts since ${earliestLog?.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear()}",
-                              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 15)),
-                        ],
-                      ) : const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTileEmptyState(),
-                        SizedBox(height: 8),
-                        TextEmptyState(message: "You haven't logged any sessions")
-                      ],
-                    ),
                     const SizedBox(height: 20),
                     Theme(
                       data: ThemeData(splashColor: tealBlueLight),

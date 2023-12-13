@@ -233,7 +233,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                       children: [
                         ListViewEmptyState(onRefresh: () => loadAppData(context)),
                         const SizedBox(height: 8),
-                        const TextEmptyState(message: 'Click the + button to add exercises')
+                        const TextEmptyState(message: 'Tap the + button to add exercises')
                       ],
                     ),
             ],
