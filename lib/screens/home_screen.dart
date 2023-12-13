@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     SharedPrefs().firstLaunch = false;
     persistUserCredentials();
-    loadAppData(context);
-    _loadCachedLog();
+    // loadAppData(context);
+    // _loadCachedLog();
   }
 }
