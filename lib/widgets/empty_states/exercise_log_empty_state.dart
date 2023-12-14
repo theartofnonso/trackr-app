@@ -51,7 +51,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
               ])),
         ),
         const SizedBox(height: 10),
-        const TextEmptyState(message: 'Tap the + button to create workouts')
+        TextEmptyState(message: message)
       ],
     );
   }
