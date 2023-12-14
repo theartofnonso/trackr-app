@@ -275,7 +275,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                 return ExerciseLogWidget(
                                     key: ValueKey(logId),
                                     exerciseLogDto: log,
-                                    editorType: RoutineEditorMode.log,
+                                    editorType: RoutineEditorMode.edit,
                                     superSet:
                                         whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
                                     onRemoveSuperSet: (String superSetId) =>
