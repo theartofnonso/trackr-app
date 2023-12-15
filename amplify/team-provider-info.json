@@ -24,7 +24,38 @@
         "postAuthentication": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
           "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
-        }
+        },
+        "trackerapp": {},
+        "trackerapp648183fb": {}
+      }
+    }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-trackerapp-prod-223531-authRole",
+      "UnauthRoleArn": "arn:aws:iam::937702890068:role/amplify-trackerapp-prod-223531-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::937702890068:role/amplify-trackerapp-prod-223531-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+      "UnauthRoleName": "amplify-trackerapp-prod-223531-unauthRole",
+      "StackName": "amplify-trackerapp-prod-223531",
+      "StackId": "arn:aws:cloudformation:eu-west-2:937702890068:stack/amplify-trackerapp-prod-223531/17676b00-9ad1-11ee-83df-0a4ab10bda78",
+      "AmplifyAppId": "dykpoii7mca2u"
+    },
+    "categories": {
+      "auth": {
+        "trackerapp648183fb": {}
+      },
+      "function": {
+        "postAuthentication": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
+        },
+        "trackerapp": {},
+        "trackerapp648183fb": {}
+      },
+      "api": {
+        "trackerapp": {}
       }
     }
   }
