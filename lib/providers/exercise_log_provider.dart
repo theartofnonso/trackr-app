@@ -64,6 +64,11 @@ class ExerciseLogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reOrderExerciseLogs({required List<ExerciseLogDto> reOrderedList}) {
+    _exerciseLogs = reOrderedList;
+    notifyListeners();
+  }
+
   void removeExerciseLog({required String logId}) {
     final logIndex = _indexWhereExerciseLog(exerciseLogId: logId);
     if (logIndex != -1) {

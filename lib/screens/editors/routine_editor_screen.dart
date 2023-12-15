@@ -281,6 +281,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                     onRemoveSuperSet: (String superSetId) =>
                                         removeExerciseFromSuperSet(context: context, superSetId: log.superSetId),
                                     onRemoveLog: () => removeExercise(context: context, exerciseId: logId),
+                                    onReOrder: () => reOrderExercises(context: context),
                                     onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
                               },
                               separatorBuilder: (_, __) => const SizedBox(height: 10),

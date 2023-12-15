@@ -113,13 +113,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _cacheLog() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-      final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
-      final log = widget.log;
-      Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-          name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
-    });
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
+    final log = widget.log;
+    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
+        name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
   }
 
   void _dismissKeyboard() {
@@ -213,6 +211,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                       },
                                       onRemoveLog: () {
                                         removeExercise(context: context, exerciseId: exerciseId);
+                                        _cacheLog();
+                                      },
+                                      onReOrder: () {
+                                        reOrderExercises(context: context);
                                         _cacheLog();
                                       },
                                       onSuperSet: () => _showExercisePicker(firstExerciseLog: log),

@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/screens/reorder_exercises_screen.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/unsaved_changes_messages_dto.dart';
@@ -18,6 +20,18 @@ void selectExercisesInLibrary({required BuildContext context}) async {
   if (exercises != null && exercises.isNotEmpty) {
     if (context.mounted) {
       provider.addExerciseLogs(exercises: exercises);
+    }
+  }
+}
+
+void reOrderExercises({required BuildContext context}) async {
+  final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+  final exercises = List<ExerciseLogDto>.from(provider.exerciseLogs);
+  final reOrderedList = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exercises))) as List<ExerciseLogDto>?;
+
+  if (reOrderedList != null) {
+    if (context.mounted) {
+      provider.reOrderExerciseLogs(reOrderedList: reOrderedList);
     }
   }
 }
