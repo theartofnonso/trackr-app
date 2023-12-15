@@ -33,12 +33,19 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onRemoveLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
+  final VoidCallback onReOrder;
   final VoidCallback? onCache;
 
   const ExerciseLogWidget(
       {super.key,
       this.editorType = RoutineEditorMode.edit,
-      required this.exerciseLogDto, this.superSet, required this.onSuperSet, required this.onRemoveSuperSet, required this.onRemoveLog, this.onCache});
+      required this.exerciseLogDto,
+      this.superSet,
+      required this.onSuperSet,
+      required this.onRemoveSuperSet,
+      required this.onReOrder,
+      required this.onRemoveLog,
+      this.onCache});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -50,6 +57,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
+      MenuItemButton(
+        onPressed: widget.onReOrder,
+        child: Text("Re-order", style: GoogleFonts.lato()),
+      ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
@@ -57,7 +68,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             )
           : MenuItemButton(
               onPressed: widget.onSuperSet,
-              child: const Text("Super-set"),
+              child: Text("Super-set", style: GoogleFonts.lato()),
             ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,

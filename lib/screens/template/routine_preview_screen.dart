@@ -37,7 +37,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         onPressed: () {
           navigateToRoutineEditor(context: context, routine: routine);
         },
-        child: const Text("Edit"),
+        child: Text("Edit", style: GoogleFonts.lato())
       ),
       MenuItemButton(
         onPressed: () {

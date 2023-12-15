@@ -64,6 +64,11 @@ class ExerciseLogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reOrderExerciseLogs({required List<ExerciseLogDto> reOrderedList}) {
+    _exerciseLogs = reOrderedList;
+    notifyListeners();
+  }
+
   void removeExerciseLog({required String logId}) {
     final logIndex = _indexWhereExerciseLog(exerciseLogId: logId);
     if (logIndex != -1) {
@@ -252,7 +257,9 @@ class ExerciseLogProvider extends ChangeNotifier {
     return currentSets.mapIndexed((index, set) {
       final newIndex = setTypeCounts[set.type]! + 1;
       final pastSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets);
-      final newSet = pastSet != null ? pastSet.copyWith(index: newIndex, checked: set.checked) : set.copyWith(index: newIndex, checked: set.checked);
+      final newSet = pastSet != null
+          ? pastSet.copyWith(index: newIndex, checked: set.checked)
+          : set.copyWith(index: newIndex, checked: set.checked);
       setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
       return newSet;
     }).toList();
@@ -355,6 +362,17 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
 
     return null; // No change in length
+  }
+
+  UnsavedChangesMessageDto? hasReOrderedExercises(
+      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+    for (int i = 0; i < exerciseLog1.length; i++) {
+      if (exerciseLog1[i] != exerciseLog2[i]) {
+        return UnsavedChangesMessageDto(
+            message: "Exercises have been re-ordered", type: UnsavedChangesMessageType.exerciseOrder); // Re-orderedList
+      }
+    }
+    return null;
   }
 
   UnsavedChangesMessageDto? hasDifferentSetsLength(
