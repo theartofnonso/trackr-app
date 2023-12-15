@@ -10,69 +10,66 @@ class ExerciseEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GradientBackground(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                    leading: const Icon(
-                      Icons.timeline_rounded,
-                      color: Colors.white,
-                    ),
-                    title: Text("Squat", style: GoogleFonts.lato(color: Colors.white)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                            width: 300,
-                            child: Text(
-                              "Primary: Quadriceps",
-                              style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                            )),
-                        SizedBox(
-                            width: 300,
-                            child: Text(
-                              "Secondary: Glutes, Hamstrings, Calves",
-                              style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                            )),
-                      ],
-                    )),
-                const Divider(thickness: 1.0, color: tealBlueLight),
-                ListTile(
-                    leading: const Icon(
-                      Icons.timeline_rounded,
-                      color: Colors.white,
-                    ),
-                    title: Text("Romanian Deadlift", style: GoogleFonts.lato(color: Colors.white)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                            width: 300,
-                            child: Text(
-                              "Primary: Hamstrings",
-                              style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                            )),
-                        SizedBox(
-                            width: 300,
-                            child: Text(
-                              "Secondary: Glutes",
-                              style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                            )),
-                      ],
-                    )),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GradientBackground(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                  leading: const Icon(
+                    Icons.timeline_rounded,
+                    color: Colors.white,
+                  ),
+                  title: Text("Squat", style: GoogleFonts.lato(color: Colors.white)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          width: 300,
+                          child: Text(
+                            "Primary: Quadriceps",
+                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                          )),
+                      SizedBox(
+                          width: 300,
+                          child: Text(
+                            "Secondary: Glutes, Hamstrings, Calves",
+                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                          )),
+                    ],
+                  )),
+              const Divider(thickness: 1.0, color: tealBlueLight),
+              ListTile(
+                  leading: const Icon(
+                    Icons.timeline_rounded,
+                    color: Colors.white,
+                  ),
+                  title: Text("Romanian Deadlift", style: GoogleFonts.lato(color: Colors.white)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          width: 300,
+                          child: Text(
+                            "Primary: Hamstrings",
+                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                          )),
+                      SizedBox(
+                          width: 300,
+                          child: Text(
+                            "Secondary: Glutes",
+                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                          )),
+                    ],
+                  )),
+            ],
           ),
-          const SizedBox(height: 10),
-          const TextEmptyState(message: "Tap the + button to add exercises"),
-        ],
-      ),
+        ),
+        const SizedBox(height: 10),
+        const TextEmptyState(message: "Tap the + button to add exercises"),
+      ],
     );
   }
 }
