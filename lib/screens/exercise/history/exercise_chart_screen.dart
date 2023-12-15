@@ -190,7 +190,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     final thisYear = thisYearDateRange();
     _exerciseLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-        .logsWhereDateRange(range: thisYear, exercise: widget.exercise)
+        .exerciseLogsWhereDateRange(range: thisYear, exercise: widget.exercise)
         .toList();
 
     _dateTimes = _exerciseLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();

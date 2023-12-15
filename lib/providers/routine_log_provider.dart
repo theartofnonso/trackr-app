@@ -232,9 +232,13 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
   }
 
-  List<ExerciseLogDto> logsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
+  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
     final values = _exerciseLogs[exercise.id] ?? [];
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
+  }
+
+  List<RoutineLog> logsWhereDateRange({required DateTimeRange range}) {
+    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
   }
 
   void reset() {

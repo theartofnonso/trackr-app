@@ -43,6 +43,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     displayBottomSheet(
         context: context,
         child: ExercisePicker(
+          selectedExercise: firstExerciseLog,
           exercises: exercises,
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();

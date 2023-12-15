@@ -7,11 +7,12 @@ import '../../buttons/text_button_widget.dart';
 import '../../empty_states/list_tile_empty_state.dart';
 
 class ExercisePicker extends StatelessWidget {
+  final ExerciseLogDto selectedExercise;
   final List<ExerciseLogDto> exercises;
   final void Function(ExerciseLogDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const ExercisePicker({super.key, required this.exercises, required this.onSelect, required this.onSelectExercisesInLibrary});
+  const ExercisePicker({super.key, required this.selectedExercise, required this.exercises, required this.onSelect, required this.onSelectExercisesInLibrary});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +26,14 @@ class ExercisePicker extends StatelessWidget {
     return exercises.isNotEmpty
         ? SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: [...listTiles],
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 15, top: 10.0),
+            child: Text("Superset ${selectedExercise.exercise.name} with", style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500)),
+          ),
+          ...listTiles],
       ),
     )
         : _ProceduresPickerEmptyState(onPressed: onSelectExercisesInLibrary);

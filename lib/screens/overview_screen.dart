@@ -113,20 +113,32 @@ class OverviewScreen extends StatelessWidget {
                               },
                               children: [
                                 TableRow(children: [
-                                  Text("This Week",
-                                      style: GoogleFonts.lato(
-                                          fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-                                  Text("This Month",
-                                      style: GoogleFonts.lato(
-                                          fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500))
+                                  GestureDetector(
+                                    onTap: () => navigateToRoutineLogs(context: context, range: thisWeekDateRange()),
+                                    child: Text("This Week",
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => navigateToRoutineLogs(context: context, range: thisMonthDateRange()),
+                                    child: Text("This Month",
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
+                                  )
                                 ]),
                                 TableRow(children: [
-                                  Text("$logsForTheWeek sessions",
-                                      style: GoogleFonts.lato(
-                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                                  Text("$logsForTheMonth sessions",
-                                      style: GoogleFonts.lato(
-                                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
+                                  GestureDetector(
+                                    onTap: () => navigateToRoutineLogs(context: context, range: thisWeekDateRange()),
+                                    child: Text("$logsForTheWeek sessions",
+                                        style: GoogleFonts.lato(
+                                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => navigateToRoutineLogs(context: context, range: thisMonthDateRange()),
+                                    child: Text("$logsForTheMonth sessions",
+                                        style: GoogleFonts.lato(
+                                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                                  )
                                 ])
                               ],
                             )),
