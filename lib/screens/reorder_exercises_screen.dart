@@ -37,7 +37,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
               key: Key("$index"),
               title: Text(exercise.exercise.name, style: GoogleFonts.lato()),
               trailing: const Icon(
-                Icons.reorder_rounded,
+                Icons.drag_handle,
                 color: Colors.white,
               ),
             ))
