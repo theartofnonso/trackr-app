@@ -107,7 +107,7 @@ class _MyAppState extends State<MyApp> {
       backgroundColor: tealBlueDark,
       surfaceTintColor: tealBlueDark,
     ),
-    snackBarTheme: const SnackBarThemeData(backgroundColor: tealBlueDark, actionBackgroundColor: tealBlueLighter),
+    snackBarTheme: const SnackBarThemeData(backgroundColor: tealBlueDark, actionBackgroundColor: tealBlueLighter, contentTextStyle: TextStyle(color: tealBlueDark)),
     tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
