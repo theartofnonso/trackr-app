@@ -299,7 +299,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             Column(
               children: [
                 Text("with ${superSetExerciseDto.exercise.name}",
-                    style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12)),
+                    style: GoogleFonts.lato(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
                 const SizedBox(height: 10),
               ],
             ),

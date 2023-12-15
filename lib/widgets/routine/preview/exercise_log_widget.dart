@@ -44,7 +44,7 @@ class ExerciseLogWidget extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
               }
             },
-            title: Text(exerciseLog.exercise.name, style: Theme.of(context).textTheme.labelLarge),
+            title: Text(exerciseLog.exercise.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
             subtitle: otherSuperSet != null
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
