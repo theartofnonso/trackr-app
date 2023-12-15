@@ -57,11 +57,15 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          "Reorder",
-          style: GoogleFonts.lato(color: Colors.white),
-        ),
-        actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save", buttonColor: Colors.transparent,) : const SizedBox.shrink()],
+        actions: [
+          _hasReOrdered
+              ? CTextButton(
+                  onPressed: _saveReOrdering,
+                  label: "Save",
+                  buttonColor: Colors.transparent,
+                )
+              : const SizedBox.shrink()
+        ],
       ),
       body: ReorderableListView(
           buildDefaultDragHandles: true,
