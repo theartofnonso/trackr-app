@@ -35,7 +35,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
     return _exercises
         .mapIndexed((index, exercise) => ListTile(
               key: Key("$index"),
-              title: Text(exercise.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
+              title: Text(exercise.exercise.name, style: GoogleFonts.lato()),
               trailing: const Icon(
                 Icons.reorder_rounded,
                 color: Colors.white,
