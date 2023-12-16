@@ -243,6 +243,8 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     newMap[exerciseLogId] = updatedSets;
 
+    print(newMap[exerciseLogId]);
+
     _sets = newMap;
 
     if (shouldNotifyListeners) {
@@ -265,11 +267,6 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void updateDistance({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
-  }
-
-  void updateSetType(
-      {required String exerciseLogId, required int index, required SetDto setDto, required List<SetDto> pastSets}) {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 

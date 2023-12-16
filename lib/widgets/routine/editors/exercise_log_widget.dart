@@ -230,6 +230,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   Widget build(BuildContext context) {
     Provider.of<RoutineLogProvider>(context, listen: true);
 
+    print("ExerciseLogWidget.build()");
+
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
 
     final superSetExerciseDto = widget.superSet;
