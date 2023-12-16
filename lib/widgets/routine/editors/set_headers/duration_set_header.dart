@@ -15,13 +15,11 @@ class DurationSetHeader extends StatelessWidget {
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
-              2: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
-              2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(50),
+              2: const FixedColumnWidth(50),
             },
       children: <TableRow>[
         TableRow(children: [

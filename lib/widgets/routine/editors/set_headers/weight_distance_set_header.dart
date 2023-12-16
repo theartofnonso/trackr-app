@@ -18,13 +18,11 @@ class WeightDistanceSetHeader extends StatelessWidget {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
-              1: const FlexColumnWidth(2),
-              2: const FlexColumnWidth(2),
-              3: const FlexColumnWidth(2),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
               4: const FixedColumnWidth(50),
             },
       children: <TableRow>[

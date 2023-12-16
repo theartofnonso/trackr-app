@@ -139,8 +139,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  SetDto? _wherePastSetOrNull({required String setId, required List<SetDto> pastSets}) {
-    return pastSets.firstWhereOrNull((pastSet) => pastSet.id == setId);
+  SetDto? _wherePastSetOrNull({required int index, required List<SetDto> pastSets}) {
+    return pastSets.firstWhereIndexedOrNull((i, set) => index == i);
   }
 
   void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
@@ -149,15 +149,17 @@ class ExerciseLogProvider extends ChangeNotifier {
     if (exerciseLogIndex != -1) {
       final currentSets = _sets[exerciseLogId] ?? [];
 
-      int newIndex = currentSets.isNotEmpty ? currentSets.last.index + 1 : 1;
-      SetDto newSet = SetDto(1, 0, 0, SetType.working, false);
+      int newIndex = currentSets.length;
+
+      SetDto newSet = SetDto(0, 0, false);
 
       SetDto? nextSet = currentSets.lastOrNull;
       if (nextSet != null) {
-        newSet = nextSet.copyWith(index: newIndex, checked: false);
+        newSet = nextSet.copyWith(checked: false);
       }
 
-      SetDto? pastSet = _wherePastSetOrNull(setId: newSet.id, pastSets: pastSets);
+      SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
+
       if (pastSet != null) {
         newSet = pastSet.copyWith(checked: false);
       }
@@ -207,7 +209,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
+    newMap[exerciseLogId] = updatedSets;
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
@@ -220,8 +222,7 @@ class ExerciseLogProvider extends ChangeNotifier {
       {required String exerciseLogId,
       required int index,
       required SetDto updatedSet,
-      List<SetDto> pastSets = const [],
-      bool reorder = false}) {
+      bool shouldNotifyListeners = true}) {
     // Check if the exercise ID exists in the map and if the index is valid
     if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -239,35 +240,24 @@ class ExerciseLogProvider extends ChangeNotifier {
     Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
 
     // Update the new map with the modified list of sets
-    if (reorder) {
-      newMap[exerciseLogId] = _reOrderSetTypes(currentSets: updatedSets, pastSets: pastSets);
-    } else {
-      newMap[exerciseLogId] = updatedSets;
-    }
+
+    newMap[exerciseLogId] = updatedSets;
+
     _sets = newMap;
 
-    notifyListeners();
-  }
-
-  List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets}) {
-    Map<SetType, int> setTypeCounts = {SetType.warmUp: 0, SetType.working: 0, SetType.failure: 0, SetType.drop: 0};
-    return currentSets.mapIndexed((index, set) {
-      final newIndex = setTypeCounts[set.type]! + 1;
-      final pastSet = _wherePastSetOrNull(setId: "${set.type.label}$newIndex", pastSets: pastSets);
-      final newSet = pastSet != null
-          ? pastSet.copyWith(index: newIndex, checked: set.checked)
-          : set.copyWith(index: newIndex, checked: set.checked);
-      setTypeCounts[set.type] = setTypeCounts[set.type]! + 1;
-      return newSet;
-    }).toList();
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSetForExerciseLog(
+        exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, shouldNotifyListeners: false);
   }
 
   void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSetForExerciseLog(
+        exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, shouldNotifyListeners: false);
   }
 
   void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
@@ -280,8 +270,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   void updateSetType(
       {required String exerciseLogId, required int index, required SetDto setDto, required List<SetDto> pastSets}) {
-    _updateSetForExerciseLog(
-        exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, pastSets: pastSets, reorder: true);
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
@@ -411,18 +400,18 @@ class ExerciseLogProvider extends ChangeNotifier {
   }) {
     int changes = 0;
 
-    for (ExerciseLogDto proc1 in exerciseLog1) {
-      ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
-
-      if (matchingProc2 == null) continue;
-
-      int minSetLength = min(proc1.sets.length, matchingProc2.sets.length);
-      for (int i = 0; i < minSetLength; i++) {
-        if (proc1.sets[i].type != matchingProc2.sets[i].type) {
-          changes += 1;
-        }
-      }
-    }
+    // for (ExerciseLogDto proc1 in exerciseLog1) {
+    //   ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+    //
+    //   if (matchingProc2 == null) continue;
+    //
+    //   int minSetLength = min(proc1.sets.length, matchingProc2.sets.length);
+    //   for (int i = 0; i < minSetLength; i++) {
+    //     if (proc1.sets[i].type != matchingProc2.sets[i].type) {
+    //       changes += 1;
+    //     }
+    //   }
+    // }
 
     return changes > 0
         ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)", type: UnsavedChangesMessageType.setType)
