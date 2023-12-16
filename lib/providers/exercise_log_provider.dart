@@ -221,7 +221,6 @@ class ExerciseLogProvider extends ChangeNotifier {
       required int index,
       required SetDto updatedSet,
       List<SetDto> pastSets = const [],
-      bool shouldNotifyListeners = true,
       bool reorder = false}) {
     // Check if the exercise ID exists in the map and if the index is valid
     if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
@@ -247,9 +246,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
     _sets = newMap;
 
-    if (shouldNotifyListeners) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   List<SetDto> _reOrderSetTypes({required List<SetDto> currentSets, required List<SetDto> pastSets}) {
