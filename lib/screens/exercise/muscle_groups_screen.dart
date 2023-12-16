@@ -130,7 +130,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if (_selectedMuscleGroups.isNotEmpty && _difference().isEmpty)
+          if (_selectedMuscleGroups.isNotEmpty && _difference().isEmpty && widget.multiSelect)
             CTextButton(
               onPressed: _navigateBackWithSelectedMuscleGroups,
               label: "Add (${_selectedMuscleGroups.length})",

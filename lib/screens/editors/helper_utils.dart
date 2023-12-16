@@ -4,24 +4,7 @@ import 'package:tracker_app/screens/reorder_exercises_screen.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/unsaved_changes_messages_dto.dart';
-import '../../models/Exercise.dart';
 import '../../providers/exercise_log_provider.dart';
-import '../exercise/exercise_library_screen.dart';
-
-void selectExercisesInLibrary({required BuildContext context}) async {
-  final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
-  final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
-
-  final exercises = await Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-      as List<Exercise>?;
-
-  if (exercises != null && exercises.isNotEmpty) {
-    if (context.mounted) {
-      provider.addExerciseLogs(exercises: exercises);
-    }
-  }
-}
 
 void reOrderExercises({required BuildContext context}) async {
   final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
@@ -62,7 +45,7 @@ List<UnsavedChangesMessageDto> checkForChanges({required BuildContext context, r
     unsavedChangesMessage.add(differentExercisesChangeMessage);
   }
 
-  /// Check if [ExerciseLogDto] have been added or removed
+  /// Check if [ExerciseLogDto] has been re-ordered
   final differentExercisesOrderMessage =
   procedureProvider.hasReOrderedExercises(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
   if (differentExercisesOrderMessage != null) {

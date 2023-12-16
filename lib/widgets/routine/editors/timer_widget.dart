@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
@@ -14,13 +16,16 @@ class TimerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CTextButton(
-        onPressed: () => _showRestIntervalTimePicker(context: context), label: duration.digitalTime());
+      onPressed: () => _showRestIntervalTimePicker(context: context),
+      label: duration.digitalTime(),
+      textStyle: GoogleFonts.lato(fontSize: 15, color: Colors.white),
+    );
   }
 
   void _showRestIntervalTimePicker({required BuildContext context}) {
     FocusScope.of(context).unfocus();
     displayBottomSheet(
-      height: 216,
+        height: 216,
         context: context,
         child: TimePicker(
           mode: CupertinoTimerPickerMode.hms,
