@@ -1,24 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
-enum SetType {
-  warmUp("Warm Up", "WM", Colors.orange),
-  working("Working", "WK", Colors.white),
-  failure("Failure", "FL", Colors.red),
-  drop("Drop", "DP", Colors.green);
-
-  const SetType(this.name, this.label, this.color);
-
-  final String name;
-  final String label;
-  final Color color;
-
-  static SetType fromString(String string) {
-    return SetType.values.firstWhere((value) => value.label == string);
-  }
-}
-
 class SetDto {
   final num value1;
   final num value2;
@@ -26,7 +7,7 @@ class SetDto {
 
    SetDto(this.value1, this.value2, this.checked);
 
-  SetDto copyWith({num? value1, num? value2, SetType? type, bool? checked}) {
+  SetDto copyWith({num? value1, num? value2, bool? checked}) {
     return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
   }
 
