@@ -15,8 +15,9 @@ class SingleSetRow extends StatelessWidget {
         color: tealBlueLight, // Container color
         borderRadius: BorderRadius.circular(5.0), // Radius for rounded corners
       ),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Table(
-          border: TableBorder.all(color: tealBlueDark, borderRadius: BorderRadius.circular(3)),
+          border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(),
           },
