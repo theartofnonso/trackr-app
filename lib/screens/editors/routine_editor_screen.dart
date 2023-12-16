@@ -139,7 +139,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             _navigateBack();
           },
           leftActionLabel: 'Cancel',
-          rightActionLabel: 'Update');
+          rightActionLabel: 'Update', isRightActionDestructive: true);
     }
   }
 
