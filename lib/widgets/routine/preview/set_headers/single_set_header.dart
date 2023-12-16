@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DurationSetHeader extends StatelessWidget {
-
-  const DurationSetHeader({super.key});
+class SingleSetHeader extends StatelessWidget {
+  final String label;
+  const SingleSetHeader({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,10 @@ class DurationSetHeader extends StatelessWidget {
         TableRow(children: [
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("TIME",
+            child: Text(label,
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
-          )
+          ),
         ]),
       ],
     );

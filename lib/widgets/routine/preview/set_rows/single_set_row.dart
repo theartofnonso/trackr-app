@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
 
 import '../../../../app_constants.dart';
 
-class RepsSetRow extends StatelessWidget {
-  const RepsSetRow({super.key, required this.setDto});
+class SingleSetRow extends StatelessWidget {
+  final String label;
 
-  final SetDto setDto;
+  const SingleSetRow({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: tealBlueLight, // Container color
-        borderRadius: BorderRadius.circular(3.0), // Radius for rounded corners
+        borderRadius: BorderRadius.circular(5.0), // Radius for rounded corners
       ),
       child: Table(
           border: TableBorder.all(color: tealBlueDark, borderRadius: BorderRadius.circular(3)),
@@ -26,7 +25,7 @@ class RepsSetRow extends StatelessWidget {
               TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Text(
-                  "${setDto.value2}",
+                  label,
                   style: GoogleFonts.lato(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),

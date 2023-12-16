@@ -278,7 +278,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                     exerciseLogDto: log,
                                     editorType: RoutineEditorMode.edit,
                                     superSet:
-                                        whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
+                                        whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                     onRemoveSuperSet: (String superSetId) =>
                                         removeExerciseFromSuperSet(context: context, superSetId: log.superSetId),
                                     onRemoveLog: () => removeExercise(context: context, exerciseId: logId),

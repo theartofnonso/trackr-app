@@ -205,7 +205,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                       exerciseLogDto: log,
                                       editorType: RoutineEditorMode.log,
                                       superSet:
-                                          whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
+                                          whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                       onRemoveSuperSet: (String superSetId) {
                                         removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
                                         _cacheLog();

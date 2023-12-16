@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../enums/exercise_type_enums.dart';
-import '../../../../utils/general_utils.dart';
+class DoubleSetHeader extends StatelessWidget {
+  final String firstLabel;
+  final String secondLabel;
 
-class DurationDistanceSetHeader extends StatelessWidget {
-  const DurationDistanceSetHeader({super.key});
+  const DoubleSetHeader({super.key, required this.firstLabel, required this.secondLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,13 @@ class DurationDistanceSetHeader extends StatelessWidget {
         TableRow(children: [
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(distanceTitle(type: ExerciseType.durationAndDistance),
+            child: Text(firstLabel,
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("TIME",
+            child: Text(secondLabel,
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
