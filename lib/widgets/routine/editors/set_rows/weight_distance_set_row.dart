@@ -7,6 +7,7 @@ import '../../../../enums/exercise_type_enums.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
+import '../set_delete_button.dart';
 
 class WeightDistanceSetRow extends SetRow {
   final void Function(double value) onChangedWeight;
@@ -42,10 +43,12 @@ class WeightDistanceSetRow extends SetRow {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(50),
+              3: const FixedColumnWidth(60),
             },
       children: [
         TableRow(children: [
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle, child: SetDeleteButton(onDelete: super.onRemoved)),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(

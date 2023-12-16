@@ -23,21 +23,13 @@ class DurationDistanceSetHeader extends StatelessWidget {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(50),
+              3: const FixedColumnWidth(60),
             },
       children: <TableRow>[
         TableRow(children: [
-          TableCell(
+          const TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("SET",
-                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                textAlign: TextAlign.center),
-          ),
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("PREVIOUS",
-                style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                textAlign: TextAlign.center),
+            child: SizedBox.shrink(),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,

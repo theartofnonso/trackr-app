@@ -23,7 +23,7 @@ class WeightRepsSetHeader extends StatelessWidget {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(50),
+              3: const FixedColumnWidth(60),
             },
       children: <TableRow>[
         TableRow(children: [

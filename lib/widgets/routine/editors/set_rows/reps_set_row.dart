@@ -5,6 +5,7 @@ import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dar
 import '../../../../app_constants.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
+import '../set_delete_button.dart';
 
 class RepsSetRow extends SetRow {
   final (TextEditingController, TextEditingController) controllers;
@@ -33,10 +34,12 @@ class RepsSetRow extends SetRow {
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
-              2: const FixedColumnWidth(50),
+              2: const FixedColumnWidth(60),
             },
       children: [
         TableRow(children: [
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle, child: SetDeleteButton(onDelete: super.onRemoved)),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: IntTextField(

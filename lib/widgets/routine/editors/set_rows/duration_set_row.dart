@@ -4,6 +4,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/set_row.dart';
 import '../../../../app_constants.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
+import '../set_delete_button.dart';
 import '../timer_widget.dart';
 
 class DurationSetRow extends SetRow {
@@ -32,10 +33,12 @@ class DurationSetRow extends SetRow {
           : <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
-              2: const FixedColumnWidth(50),
+              2: const FixedColumnWidth(60),
             },
       children: [
         TableRow(children: [
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle, child: SetDeleteButton(onDelete: super.onRemoved)),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: TimerWidget(

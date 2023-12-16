@@ -6,6 +6,7 @@ import '../../../../app_constants.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
+import '../set_delete_button.dart';
 import '../textfields/double_textfield.dart';
 import '../timer_widget.dart';
 
@@ -43,10 +44,12 @@ class DurationDistanceSetRow extends SetRow {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(50),
+              3: const FixedColumnWidth(60),
             },
       children: [
         TableRow(children: [
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle, child: SetDeleteButton(onDelete: super.onRemoved)),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
