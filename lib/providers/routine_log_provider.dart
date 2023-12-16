@@ -192,6 +192,7 @@ class RoutineLogProvider with ChangeNotifier {
     if (deletedLog != null) {
       final index = _indexWhereRoutineLog(id: id);
       _logs.removeAt(index);
+      _loadExerciseLogs();
       notifyListeners();
     }
   }
