@@ -210,7 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _delete() async {
     showAlertDialogWithMultiActions(
         context: context,
-        message: "Request Account Deletion?",
+        message: "Request Deletion?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
