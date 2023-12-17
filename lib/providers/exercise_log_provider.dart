@@ -218,11 +218,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateSetForExerciseLog(
-      {required String exerciseLogId,
-      required int index,
-      required SetDto updatedSet,
-      bool shouldNotifyListeners = true}) {
+  void _updateSetForExerciseLog({required String exerciseLogId, required int index, required SetDto updatedSet}) {
     // Check if the exercise ID exists in the map and if the index is valid
     if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -243,23 +239,29 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     newMap[exerciseLogId] = updatedSets;
 
-    print(newMap[exerciseLogId]);
-
     _sets = newMap;
 
-    if (shouldNotifyListeners) {
-      notifyListeners();
+    notifyListeners();
+  }
+
+  void _updateSet({required String exerciseLogId, required int index, required SetDto updatedSet}) {
+    // Check if the exercise ID exists in the map and if the index is valid
+    if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
+      // Handle the case where the exercise ID does not exist or index is invalid
+      // e.g., log an error or throw an exception
+      return;
     }
+
+    // Replace the set at the specified index with the updated set
+    _sets[exerciseLogId]?[index] = updatedSet;
   }
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(
-        exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, shouldNotifyListeners: false);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(
-        exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, shouldNotifyListeners: false);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
@@ -267,7 +269,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void updateDistance({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
