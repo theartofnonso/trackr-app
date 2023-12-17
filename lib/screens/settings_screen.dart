@@ -191,6 +191,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             )));
   }
 
+  void _clearAppData() {
+    SharedPrefs().clear();
+    AppProviders.resetProviders(context);
+  }
+
   void _logout() async {
     showAlertDialogWithMultiActions(
         context: context,
@@ -198,8 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          SharedPrefs().clear();
-          AppProviders.resetProviders(context);
+          _clearAppData();
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
@@ -214,6 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
+          _clearAppData();
           await Amplify.Auth.deleteUser();
         },
         leftActionLabel: 'Cancel',
