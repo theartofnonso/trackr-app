@@ -173,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     title: Text("Delete Account", style: GoogleFonts.lato(color: Colors.red, fontSize: 16)),
                     subtitle: Text(
-                        "Delete all exercises and logs. Your account will be removed after your request has been received",
+                        "Including all exercises and logs. Your account will be removed after your request has been received",
                         style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
               ),
             ],
