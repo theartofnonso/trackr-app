@@ -159,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: _logout,
                     dense: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    title: Text("Logout", style: GoogleFonts.lato(color: Colors.orange, fontSize: 16)),
+                    title: Text("Logout", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
                     subtitle: Text("Logout of your ${user().email} Trackr account",
                         style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
               ),
@@ -214,7 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          //await Amplify.Auth.deleteUser();
+          await Amplify.Auth.deleteUser();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
