@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../providers/app_provider.dart';
 import '../utils/general_utils.dart';
@@ -52,6 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
                 dense: true,
@@ -99,7 +99,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 dense: true,
                 title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                subtitle: Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
+                subtitle:
+                    Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
                 trailing: SegmentedButton(
                   showSelectedIcon: false,
                   style: ButtonStyle(
@@ -145,16 +146,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     tileColor: tealBlueLight,
                     onTap: _navigateToExerciseLibrary,
                     dense: true,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                    title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                    subtitle: Text("Add your favourites exercises", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+                    subtitle: Text("Add your favourites exercises",
+                        style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
               ),
-              const Spacer(),
-              CTextButton(
-                onPressed: _logout,
-                label: "Logout - ${user().email}",
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-              )
+              const Divider(height: 40, color: tealBlueLight, thickness: 3, indent: 12, endIndent: 12),
+              Theme(
+                data: ThemeData(splashColor: tealBlueLight),
+                child: ListTile(
+                    tileColor: tealBlueLight,
+                    onTap: _logout,
+                    dense: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    title: Text("Logout", style: GoogleFonts.lato(color: Colors.orange, fontSize: 16)),
+                    subtitle: Text("Logout of your ${user().email} Trackr account",
+                        style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+              ),
+              const SizedBox(height: 10),
+              Theme(
+                data: ThemeData(splashColor: tealBlueLight),
+                child: ListTile(
+                    tileColor: tealBlueLight,
+                    onTap: _delete,
+                    dense: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    title: Text("Delete Account", style: GoogleFonts.lato(color: Colors.red, fontSize: 16)),
+                    subtitle: Text(
+                        "Delete all exercises and logs. Your account will be removed after your request has been received",
+                        style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+              ),
             ],
           ),
         ),
@@ -183,6 +204,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Logout',
+        isRightActionDestructive: true);
+  }
+
+  void _delete() async {
+    showAlertDialogWithMultiActions(
+        context: context,
+        message: "Request Account Deletion?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () async {
+          Navigator.of(context).pop();
+          //await Amplify.Auth.deleteUser();
+        },
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Delete',
         isRightActionDestructive: true);
   }
 
