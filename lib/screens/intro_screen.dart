@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/empty_states/exercise_log_empty_state.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
@@ -27,7 +29,7 @@ class IntroScreen extends StatelessWidget {
       home: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
             child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
               const SizedBox(height: 10),
               Image.asset(
@@ -36,6 +38,7 @@ class IntroScreen extends StatelessWidget {
                 height: 16, // Adjust the height as needed
               ),
               const SizedBox(height: 20),
+              const ExerciseLogEmptyState(mode: RoutineEditorMode.log, message: ""),
               ListTile(
                   leading: const Icon(Icons.add),
                   title: Padding(
@@ -66,11 +69,16 @@ class IntroScreen extends StatelessWidget {
                   titleTextStyle: _titleStyle,
                   subtitleTextStyle: _subTitleStyle),
               const Spacer(),
-              CTextButton(
-                onPressed: onComplete,
-                label: "Start Tracking",
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                buttonColor: Colors.green,
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: CTextButton(
+                  onPressed: onComplete,
+                  label: "Start Tracking",
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                  buttonColor: Colors.green,
+                  textStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 10),
             ]),
