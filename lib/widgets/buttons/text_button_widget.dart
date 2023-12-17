@@ -28,7 +28,7 @@ class CTextButton extends StatelessWidget {
         style: ButtonStyle(
             visualDensity: visualDensity,
             backgroundColor: MaterialStateProperty.all(buttonColor),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
         onPressed: loading ? () {} : onPressed,
         child: Container(
           padding: padding,

@@ -50,7 +50,7 @@ class _RoutineLogWidget extends StatelessWidget {
       child: ListTile(
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
         dense: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         title: Text(log.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
         subtitle: Text("${log.procedures.length} exercise(s)",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),

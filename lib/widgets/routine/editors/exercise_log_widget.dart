@@ -294,7 +294,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
               filled: true,
               fillColor: tealBlueLighter,
               hintText: "Enter notes",
@@ -339,7 +339,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 style: ButtonStyle(
                     visualDensity: VisualDensity.compact,
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
           )
         ],
       ),

@@ -279,13 +279,13 @@ class _DateWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           border: _getBorder(),
-          borderRadius: BorderRadius.circular(3),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Container(
           margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: _getBackgroundColor(log != null),
-            borderRadius: BorderRadius.circular(3),
+            borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
             child: Text("${dateTime.day}",
@@ -309,7 +309,7 @@ class _RoutineLogWidget extends StatelessWidget {
       child: ListTile(
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         dense: true,
         title: Text(log.name, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
         subtitle: Text("${log.procedures.length} exercise(s)",

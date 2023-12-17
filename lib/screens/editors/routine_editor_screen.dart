@@ -248,7 +248,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(color: tealBlueLighter)),
                             filled: true,
                             fillColor: tealBlueLighter,
@@ -266,7 +266,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(color: tealBlueLighter)),
                             filled: true,
                             fillColor: tealBlueLighter,

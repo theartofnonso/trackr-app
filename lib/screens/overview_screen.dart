@@ -151,7 +151,7 @@ class OverviewScreen extends StatelessWidget {
                           onTap: () => _navigateToMuscleDistribution(context),
                           tileColor: tealBlueLight,
                           dense: true,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                           title: Text("Muscle insights", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
                           subtitle: Text("Number of sets logged for each muscle group",
                               style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
