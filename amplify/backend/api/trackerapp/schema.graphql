@@ -83,6 +83,10 @@ type Exercise
   updatedAt: AWSDateTime!
 }
 
+type Mutation {
+  deleteUserExerciseData: Boolean! @function(name: "deleteUserExerciseData-${env}")
+}
+
 enum Gender {
   Male
   Female

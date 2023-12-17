@@ -54,6 +54,20 @@
     }
   },
   "function": {
+    "deleteUserExerciseData": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "postAuthentication": {
       "build": true,
       "dependsOn": [
@@ -70,6 +84,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_deleteUserExerciseData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserExerciseData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserExerciseData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserExerciseData"
+        }
+      ]
+    },
     "AMPLIFY_function_postAuthentication_deploymentBucketName": {
       "usedBy": [
         {

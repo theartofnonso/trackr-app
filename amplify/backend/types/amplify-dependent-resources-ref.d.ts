@@ -17,6 +17,13 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
+    "deleteUserExerciseData": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "postAuthentication": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

@@ -1,7 +1,9 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../providers/app_provider.dart';
@@ -217,9 +219,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         message: "Request Deletion?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
-          Navigator.of(context).pop();
-          _clearAppData();
-          await Amplify.Auth.deleteUser();
+          // Navigator.of(context).pop();
+          // _clearAppData();
+          // await Amplify.Auth.deleteUser();
+          await Provider.of<ExerciseProvider>(context, listen: false).deleteExercises();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',

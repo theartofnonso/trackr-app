@@ -26,7 +26,11 @@
           "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
         },
         "trackerapp": {},
-        "trackerapp648183fb": {}
+        "trackerapp648183fb": {},
+        "deleteUserExerciseData": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/deleteUserExerciseData-6679546d51336b4b5371-build.zip"
+        }
       }
     }
   },
