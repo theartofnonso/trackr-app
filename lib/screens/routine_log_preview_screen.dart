@@ -182,15 +182,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               ),
             ),
           ),
-          _loading
-              ? Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: tealBlueDark.withOpacity(0.7),
-                      child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
-              : const SizedBox.shrink()
+          if (_loading)
+            Align(
+                alignment: Alignment.center,
+                child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: tealBlueDark.withOpacity(0.7),
+                    child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
         ]));
   }
 

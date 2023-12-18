@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "storage": {
+      "Exercise:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

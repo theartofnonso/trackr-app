@@ -61,7 +61,7 @@ class _RoutineWidget extends StatelessWidget {
           tileColor: tealBlueLight,
           onTap: () => navigateToRoutinePreview(context: context, routineId: routine.id),
           dense: true,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           leading: GestureDetector(
               onTap: () => logRoutine(context: context, routine: routine),
               child: const Icon(
