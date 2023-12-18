@@ -6,10 +6,8 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/routine_helper.dart';
-import '../preview/set_headers/duration_distance_set_header.dart';
-import '../preview/set_headers/duration_set_header.dart';
-import '../preview/set_headers/reps_set_header.dart';
-import '../preview/set_headers/weighted_set_header.dart';
+import '../preview/set_headers/single_set_header.dart';
+import '../preview/set_headers/double_set_header.dart';
 
 class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
@@ -62,13 +60,13 @@ class ExerciseLogWidget extends StatelessWidget {
               )
             : const SizedBox.shrink(),
         switch (exerciseType) {
-          ExerciseType.weightAndReps => WeightedSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS',),
-          ExerciseType.weightedBodyWeight => WeightedSetHeader(firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS',),
-          ExerciseType.assistedBodyWeight => WeightedSetHeader(firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS',),
-          ExerciseType.weightAndDistance => WeightedSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: distanceTitle(type: ExerciseType.weightAndDistance)),
-          ExerciseType.bodyWeightAndReps => const RepsSetHeader(),
-          ExerciseType.duration => const DurationSetHeader(),
-          ExerciseType.durationAndDistance => const DurationDistanceSetHeader(),
+          ExerciseType.weightAndReps => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS'),
+          ExerciseType.weightedBodyWeight => DoubleSetHeader(firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS'),
+          ExerciseType.assistedBodyWeight => DoubleSetHeader(firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS'),
+          ExerciseType.weightAndDistance => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: distanceTitle(type: ExerciseType.weightAndDistance)),
+          ExerciseType.bodyWeightAndReps => const SingleSetHeader(label: 'REPS'),
+          ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
+          ExerciseType.durationAndDistance => DoubleSetHeader(firstLabel: 'TIME', secondLabel: distanceTitle(type: ExerciseType.durationAndDistance)),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(type: ExerciseType.fromString(exerciseLog.exercise.type), sets: exerciseLog.sets),

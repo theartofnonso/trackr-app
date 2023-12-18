@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/routine/preview/set_rows/duration_distance_set_row.dart';
-import 'package:tracker_app/widgets/routine/preview/set_rows/duration_set_row.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
+import '../../utils/general_utils.dart';
 import '../empty_states/list_tile_empty_state.dart';
-import '../routine/preview/set_rows/weight_distance_set_row.dart';
-import '../routine/preview/set_rows/reps_set_row.dart';
-import '../routine/preview/set_rows/weight_reps_set_row.dart';
+import '../routine/preview/set_rows/single_set_row.dart';
+import '../routine/preview/set_rows/double_set_row.dart';
 
 ExerciseLogDto? whereOtherExerciseInSuperSet(
-    {required ExerciseLogDto firstProcedure, required List<ExerciseLogDto> procedures}) {
-  for (var procedure in procedures) {
-    bool isSameSuperset = procedure.superSetId.isNotEmpty && procedure.superSetId == firstProcedure.superSetId;
-    bool isDifferentProcedure = procedure.exercise.id != firstProcedure.exercise.id;
+    {required ExerciseLogDto firstExercise, required List<ExerciseLogDto> exercises}) {
+  for (var exercise in exercises) {
+    bool isSameSuperset = exercise.superSetId.isNotEmpty && exercise.superSetId == firstExercise.superSetId;
+    bool isDifferentProcedure = exercise.exercise.id != firstExercise.exercise.id;
 
     if (isSameSuperset && isDifferentProcedure) {
-      return procedure;
+      return exercise;
     }
   }
 
@@ -26,21 +25,47 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 
 List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets}) {
   final widgets = sets.map(((setDto) {
-    final widget = Padding(
-      padding: const EdgeInsets.only(bottom: 6.0),
-      child: switch (type) {
-        ExerciseType.weightAndReps ||
-        ExerciseType.weightedBodyWeight ||
-        ExerciseType.assistedBodyWeight =>
-          WeightRepsSetRow(setDto: setDto),
-        ExerciseType.bodyWeightAndReps => RepsSetRow(setDto: setDto),
-        ExerciseType.duration => DurationSetRow(setDto: setDto),
-        ExerciseType.durationAndDistance => DurationDistanceSetRow(setDto: setDto),
-        ExerciseType.weightAndDistance => WeightDistanceSetRow(setDto: setDto),
-      },
-    );
-
-    return widget;
+    switch (type) {
+      case ExerciseType.weightAndReps:
+      case ExerciseType.assistedBodyWeight:
+      case ExerciseType.weightedBodyWeight:
+        final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
+        final secondLabel = setDto.value2;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel"),
+        );
+      case ExerciseType.bodyWeightAndReps:
+        final label = setDto.value2;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: SingleSetRow(label: "$label"),
+        );
+      case ExerciseType.duration:
+        final label = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: SingleSetRow(label: label),
+        );
+      case ExerciseType.durationAndDistance:
+        final firstLabel = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
+        final secondLabel = isDefaultDistanceUnit()
+            ? setDto.value2
+            : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: DoubleSetRow(first: firstLabel, second: "$secondLabel"),
+        );
+      case ExerciseType.weightAndDistance:
+        final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
+        final secondLabel = isDefaultDistanceUnit()
+            ? setDto.value2
+            : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel"),
+        );
+    }
   })).toList();
 
   return widgets.isNotEmpty ? widgets : [const ListTileEmptyState()];

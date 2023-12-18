@@ -5,21 +5,13 @@ import '../../../../app_constants.dart';
 
 class DoubleTextField extends StatelessWidget {
   final double value;
-  final double? pastValue;
   final TextEditingController controller;
   final void Function(double value) onChanged;
 
-  const DoubleTextField({super.key, required this.value, required this.pastValue, required this.controller, required this.onChanged});
+  const DoubleTextField({super.key, required this.value, required this.controller, required this.onChanged});
 
   double _parseDoubleOrDefault({required String value}) {
-    final parsedOrZero = double.tryParse(value) ?? 0;
-    final pastOrZero = pastValue ?? 0;
-    return parsedOrZero > 0 ? parsedOrZero : pastOrZero;
-  }
-
-  String _value() {
-    double valueOrPast = pastValue ?? value;
-    return valueOrPast > 0 ? valueOrPast.toString() : "-";
+    return double.tryParse(value) ?? 0;
   }
 
   @override
@@ -32,7 +24,7 @@ class DoubleTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           fillColor: tealBlueLight,
-          hintText: _value(),
+          hintText: "${value > 0 ? value : '-'}",
           hintStyle: GoogleFonts.lato(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,

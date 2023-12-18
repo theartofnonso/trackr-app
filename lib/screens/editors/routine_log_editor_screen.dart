@@ -18,6 +18,7 @@ import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_picker.dart';
+import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
@@ -32,11 +33,28 @@ class RoutineLogEditorScreen extends StatefulWidget {
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   late Function _onDisposeCallback;
 
+  void _selectExercisesInLibrary() async {
+    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
+
+    final exercises = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
+    as List<Exercise>?;
+
+    if (exercises != null && exercises.isNotEmpty) {
+      if (context.mounted) {
+        provider.addExerciseLogs(exercises: exercises);
+        _cacheLog();
+      }
+    }
+  }
+
   void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final exercises = whereOtherExerciseLogsExcept(context: context, firstProcedure: firstExerciseLog);
     displayBottomSheet(
         context: context,
         child: ExercisePicker(
+          selectedExercise: firstExerciseLog,
           exercises: exercises,
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
@@ -47,8 +65,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
           },
           onSelectExercisesInLibrary: () {
             _closeDialog();
-            selectExercisesInLibrary(context: context);
-            _cacheLog();
+            _selectExercisesInLibrary();
           },
         ));
   }
@@ -113,13 +130,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _cacheLog() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-      final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
-      final log = widget.log;
-      Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-          name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
-    });
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
+    final log = widget.log;
+    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
+        name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
   }
 
   void _dismissKeyboard() {
@@ -160,7 +175,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
               style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
             ),
             actions: [
-              IconButton(onPressed: () => selectExercisesInLibrary(context: context), icon: const Icon(Icons.add))
+              IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))
             ],
           ),
           floatingActionButton: isKeyboardOpen
@@ -206,13 +221,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                       exerciseLogDto: log,
                                       editorType: RoutineEditorMode.log,
                                       superSet:
-                                          whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
+                                          whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                       onRemoveSuperSet: (String superSetId) {
                                         removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
                                         _cacheLog();
                                       },
                                       onRemoveLog: () {
                                         removeExercise(context: context, exerciseId: exerciseId);
+                                        _cacheLog();
+                                      },
+                                      onReOrder: () {
+                                        reOrderExercises(context: context);
                                         _cacheLog();
                                       },
                                       onSuperSet: () => _showExercisePicker(firstExerciseLog: log),

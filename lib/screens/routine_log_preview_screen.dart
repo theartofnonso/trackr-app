@@ -182,15 +182,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               ),
             ),
           ),
-          _loading
-              ? Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: tealBlueDark.withOpacity(0.7),
-                      child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
-              : const SizedBox.shrink()
+          if (_loading)
+            Align(
+                alignment: Alignment.center,
+                child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: tealBlueDark.withOpacity(0.7),
+                    child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
         ]));
   }
 
@@ -207,7 +206,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: ExerciseLogWidget(
                 exerciseLog: procedure,
-                superSet: whereOtherExerciseInSuperSet(firstProcedure: procedure, procedures: procedures),
+                superSet: whereOtherExerciseInSuperSet(firstExercise: procedure, exercises: procedures),
                 readOnly: widget.previousRouteName == exerciseRouteName,
               ),
             ))
@@ -237,8 +236,18 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       log.routine?.id != null
           ? MenuItemButton(
               onPressed: () {
-                _toggleLoadingState(message: "Updating template from log");
-                _updateRoutine(log);
+                showAlertDialogWithMultiActions(
+                    context: context,
+                    message: "Update template?",
+                    leftAction: Navigator.of(context).pop,
+                    rightAction: () {
+                      Navigator.of(context).pop();
+                      _toggleLoadingState(message: "Creating template from log");
+                      _updateRoutine(log);
+                    },
+                    leftActionLabel: 'Cancel',
+                    rightActionLabel: 'Update',
+                    isRightActionDestructive: true);
               },
               child: const Text("Update template"),
             )

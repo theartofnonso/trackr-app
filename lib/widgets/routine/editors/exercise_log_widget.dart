@@ -33,12 +33,19 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onRemoveLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
+  final VoidCallback onReOrder;
   final VoidCallback? onCache;
 
   const ExerciseLogWidget(
       {super.key,
       this.editorType = RoutineEditorMode.edit,
-      required this.exerciseLogDto, this.superSet, required this.onSuperSet, required this.onRemoveSuperSet, required this.onRemoveLog, this.onCache});
+      required this.exerciseLogDto,
+      this.superSet,
+      required this.onSuperSet,
+      required this.onRemoveSuperSet,
+      required this.onReOrder,
+      required this.onRemoveLog,
+      this.onCache});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -50,6 +57,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
+      MenuItemButton(
+        onPressed: widget.onReOrder,
+        child: Text("Re-order", style: GoogleFonts.lato()),
+      ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
@@ -57,7 +68,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             )
           : MenuItemButton(
               onPressed: widget.onSuperSet,
-              child: const Text("Super-set"),
+              child: Text("Super-set", style: GoogleFonts.lato()),
             ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
@@ -69,12 +80,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     ];
   }
 
-  SetDto? _wherePastSetOrNull({required String id}) {
-    final pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
-    return pastSets.firstWhereOrNull((pastSet) => pastSet.id == id);
-  }
-
   List<Widget> _displaySets({required ExerciseType exerciseType, required List<SetDto> sets}) {
     return sets.mapIndexed((index, setDto) {
       Widget setWidget = _createSetWidget(index: index, set: setDto, exerciseType: exerciseType);
@@ -84,18 +89,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   Widget _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
-    SetDto? pastSet = _wherePastSetOrNull(id: set.id);
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
       case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
         return WeightRepsSetRow(
           setDto: set,
-          pastSetDto: pastSet,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedReps: (num value) => _updateReps(index: index, value: value, setDto: set),
           onChangedWeight: (double value) => _updateWeight(index: index, value: value, setDto: set),
           controllers: _controllers[index],
@@ -103,22 +105,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       case ExerciseType.bodyWeightAndReps:
         return RepsSetRow(
           setDto: set,
-          pastSetDto: pastSet,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedReps: (num value) => _updateReps(index: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
       case ExerciseType.weightAndDistance:
         return WeightDistanceSetRow(
           setDto: set,
-          pastSetDto: pastSet,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedDistance: (double value) => _updateDistance(index: index, distance: value, setDto: set),
           onChangedWeight: (double value) => _updateWeight(index: index, value: value, setDto: set),
           controllers: _controllers[index],
@@ -126,21 +124,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       case ExerciseType.duration:
         return DurationSetRow(
           setDto: set,
-          pastSetDto: pastSet,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
         );
       case ExerciseType.durationAndDistance:
         return DurationDistanceSetRow(
           setDto: set,
-          pastSetDto: pastSet,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedType: (SetType type) => _updateSetType(index: index, type: type, setDto: set),
           onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
           onChangedDistance: (double distance) => _updateDistance(index: index, distance: distance, setDto: set),
           controllers: _controllers[index],
@@ -197,15 +191,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final updatedSet = setDto.copyWith(value2: distance);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .updateDistance(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-    _cacheLog();
-  }
-
-  void _updateSetType({required int index, required SetType type, required SetDto setDto}) {
-    final pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
-    final updatedSet = setDto.copyWith(type: type);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
-        .updateSetType(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, pastSets: pastSets);
     _cacheLog();
   }
 
@@ -309,7 +294,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
               filled: true,
               fillColor: tealBlueLighter,
               hintText: "Enter notes",
@@ -354,7 +339,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 style: ButtonStyle(
                     visualDensity: VisualDensity.compact,
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
           )
         ],
       ),

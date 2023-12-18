@@ -75,13 +75,13 @@ extension DateTimeExtension on DateTime {
     final date = this;
     final duration = DateTime.now().difference(date);
 
-    if(duration.inDays > 30) {
+    if(duration.inDays > 29) {
       display = date.formattedDayAndMonthAndYear();
-    } else if(duration.inDays > 21) {
+    } else if(duration.inDays > 20) {
       display = "3 weeks ago";
-    } else if(duration.inDays > 14) {
+    } else if(duration.inDays > 13) {
       display = "2 weeks ago";
-    } else if(duration.inDays > 7) {
+    } else if(duration.inDays > 6) {
       display = "1 week ago";
     } else if(duration.inDays == 1) {
       display = "Yesterday";

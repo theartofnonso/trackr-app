@@ -63,7 +63,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                      borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
                   filled: true,
                   fillColor: tealBlueLighter,
                   hintText: "New Exercise",
@@ -79,7 +79,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
               decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLighter)),
+                      borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
                   filled: true,
                   fillColor: tealBlueLighter,
                   hintText: "Notes",
@@ -97,7 +97,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   onTap: _navigateToMuscleGroupsScreen,
                   tileColor: tealBlueLight,
                   dense: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   title: Text("Primary Muscle", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                   subtitle: Text(_primaryMuscleGroup.name,
                       style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
@@ -112,7 +112,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   contentPadding: _secondaryMuscleGroup.length > 6
                       ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                       : null,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   title: Text("Secondary Muscles", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                   subtitle: Padding(
                     padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
@@ -132,7 +132,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       contentPadding: _secondaryMuscleGroup.length > 6
                           ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                           : null,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       title: Text("Exercise Type", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                       subtitle: Text(_exerciseType.name,
                           style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
@@ -142,6 +142,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   width: double.infinity,
                   child: CTextButton(
                       onPressed: _createExercise,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       label: "Create exercise",
                       loading: _loading,
                       loadingLabel: _loadingLabel),

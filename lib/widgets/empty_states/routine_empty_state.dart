@@ -22,7 +22,7 @@ class RoutineEmptyState extends StatelessWidget {
                 ListTile(
                   tileColor: tealBlueLight,
                   dense: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   leading: const Icon(
                     Icons.play_arrow_rounded,
                     color: Colors.white,

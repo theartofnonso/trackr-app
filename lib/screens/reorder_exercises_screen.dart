@@ -6,18 +6,18 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/exercise_log_dto.dart';
 
-class ReOrderProceduresScreen extends StatefulWidget {
-  final List<ExerciseLogDto> procedures;
+class ReOrderExercisesScreen extends StatefulWidget {
+  final List<ExerciseLogDto> exercises;
 
-  const ReOrderProceduresScreen({super.key, required this.procedures});
+  const ReOrderExercisesScreen({super.key, required this.exercises});
 
   @override
-  State<ReOrderProceduresScreen> createState() => _ReOrderProceduresScreenState();
+  State<ReOrderExercisesScreen> createState() => _ReOrderExercisesScreenState();
 }
 
-class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
+class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
   bool _hasReOrdered = false;
-  late List<ExerciseLogDto> _procedures;
+  late List<ExerciseLogDto> _exercises;
 
   void _reOrderProcedures({required int oldIndex, required int newIndex}) {
     setState(() {
@@ -26,18 +26,18 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
-      final ExerciseLogDto item = _procedures.removeAt(oldIndex);
-      _procedures.insert(newIndex, item);
+      final ExerciseLogDto item = _exercises.removeAt(oldIndex);
+      _exercises.insert(newIndex, item);
     });
   }
 
-  List<Widget> _proceduresToWidgets() {
-    return _procedures
-        .mapIndexed((index, procedure) => ListTile(
+  List<Widget> _exercisesToWidgets() {
+    return _exercises
+        .mapIndexed((index, exercise) => ListTile(
               key: Key("$index"),
-              title: Text(procedure.exercise.name, style: Theme.of(context).textTheme.bodyLarge),
+              title: Text(exercise.exercise.name, style: GoogleFonts.lato()),
               trailing: const Icon(
-                Icons.reorder_rounded,
+                Icons.drag_handle,
                 color: Colors.white,
               ),
             ))
@@ -46,7 +46,7 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
 
   /// Navigate to previous screen
   void _saveReOrdering() {
-    Navigator.of(context).pop(_procedures);
+    Navigator.of(context).pop(_exercises);
   }
 
   @override
@@ -57,15 +57,19 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          "Reorder",
-          style: GoogleFonts.lato(color: Colors.white),
-        ),
-        actions: [_hasReOrdered ? CTextButton(onPressed: _saveReOrdering, label: "Save", buttonColor: Colors.transparent,) : const SizedBox.shrink()],
+        actions: [
+          _hasReOrdered
+              ? CTextButton(
+                  onPressed: _saveReOrdering,
+                  label: "Save",
+                  buttonColor: Colors.transparent,
+                )
+              : const SizedBox.shrink()
+        ],
       ),
       body: ReorderableListView(
           buildDefaultDragHandles: true,
-          children: _proceduresToWidgets(),
+          children: _exercisesToWidgets(),
           onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
     );
   }
@@ -73,6 +77,6 @@ class _ReOrderProceduresScreenState extends State<ReOrderProceduresScreen> {
   @override
   void initState() {
     super.initState();
-    _procedures = widget.procedures;
+    _exercises = widget.exercises;
   }
 }

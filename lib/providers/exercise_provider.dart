@@ -28,9 +28,8 @@ class ExerciseProvider with ChangeNotifier {
       {required String name,
       required String notes,
       required MuscleGroup primary,
-        required ExerciseType type,
+      required ExerciseType type,
       required List<MuscleGroup> secondary}) async {
-
     final exerciseToCreate = Exercise(
         user: user(),
         name: name,

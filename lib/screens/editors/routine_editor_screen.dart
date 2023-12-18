@@ -18,6 +18,7 @@ import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_picker.dart';
+import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
 class RoutineEditorScreen extends StatefulWidget {
@@ -38,11 +39,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   late Function _onDisposeCallback;
 
+  void _selectExercisesInLibrary() async {
+    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
+
+    final exercises = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
+    as List<Exercise>?;
+
+    if (exercises != null && exercises.isNotEmpty) {
+      if (context.mounted) {
+        provider.addExerciseLogs(exercises: exercises);
+      }
+    }
+  }
+
   void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final exercises = whereOtherExerciseLogsExcept(context: context, firstProcedure: firstExerciseLog);
     displayBottomSheet(
         context: context,
         child: ExercisePicker(
+          selectedExercise: firstExerciseLog,
           exercises: exercises,
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
@@ -52,7 +69,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
           },
           onSelectExercisesInLibrary: () {
             _closeDialog();
-            selectExercisesInLibrary(context: context);
+            _selectExercisesInLibrary();
           },
         ));
   }
@@ -122,7 +139,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             _navigateBack();
           },
           leftActionLabel: 'Cancel',
-          rightActionLabel: 'Update');
+          rightActionLabel: 'Update', isRightActionDestructive: true);
     }
   }
 
@@ -206,7 +223,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             ? null
             : FloatingActionButton(
                 heroTag: "fab_select_exercise_log_screen",
-                onPressed: () => selectExercisesInLibrary(context: context),
+                onPressed: _selectExercisesInLibrary,
                 backgroundColor: tealBlueLighter,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: const Icon(Icons.add, size: 28),
@@ -231,7 +248,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(color: tealBlueLighter)),
                             filled: true,
                             fillColor: tealBlueLighter,
@@ -249,7 +266,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(color: tealBlueLighter)),
                             filled: true,
                             fillColor: tealBlueLighter,
@@ -277,10 +294,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                                     exerciseLogDto: log,
                                     editorType: RoutineEditorMode.edit,
                                     superSet:
-                                        whereOtherExerciseInSuperSet(firstProcedure: log, procedures: exerciseLogs),
+                                        whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                     onRemoveSuperSet: (String superSetId) =>
                                         removeExerciseFromSuperSet(context: context, superSetId: log.superSetId),
                                     onRemoveLog: () => removeExercise(context: context, exerciseId: logId),
+                                    onReOrder: () => reOrderExercises(context: context),
                                     onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
                               },
                               separatorBuilder: (_, __) => const SizedBox(height: 10),

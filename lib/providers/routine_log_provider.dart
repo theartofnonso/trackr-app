@@ -192,6 +192,7 @@ class RoutineLogProvider with ChangeNotifier {
     if (deletedLog != null) {
       final index = _indexWhereRoutineLog(id: id);
       _logs.removeAt(index);
+      _loadExerciseLogs();
       notifyListeners();
     }
   }
@@ -206,7 +207,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   List<SetDto> wherePastSets({required Exercise exercise}) {
     final exerciseLogs = _exerciseLogs[exercise.id] ?? [];
-    return exerciseLogs.reversed.expand((log) => log.sets).toList();
+    return exerciseLogs.isNotEmpty ? exerciseLogs.reversed.first.sets : [];
   }
 
   List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
@@ -232,9 +233,13 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
   }
 
-  List<ExerciseLogDto> logsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
+  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
     final values = _exerciseLogs[exercise.id] ?? [];
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
+  }
+
+  List<RoutineLog> logsWhereDateRange({required DateTimeRange range}) {
+    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
   }
 
   void reset() {

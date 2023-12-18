@@ -15,7 +15,7 @@ class SetCheckButton extends StatelessWidget {
       child: Icon(
         setDto.checked ? Icons.check_box_rounded : Icons.check_box_rounded,
         color: setDto.checked ? Colors.green : tealBlueLighter,
-        size: 35,
+        size: 40,
       ),
     );
   }
