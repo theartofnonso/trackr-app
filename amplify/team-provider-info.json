@@ -68,7 +68,23 @@
           "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
         },
         "trackerapp": {},
-        "trackerapp648183fb": {}
+        "trackerapp648183fb": {},
+        "deleteUserData": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/deleteUserData-305a62454d68786e5a47-build.zip"
+        },
+        "deleteUserExerciseData": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/deleteUserExerciseData-65724d7a466475796137-build.zip"
+        },
+        "deleteUserRoutineData": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/deleteUserRoutineData-574a4f37415045716c50-build.zip"
+        },
+        "deleteUserRoutineLogData": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/deleteUserRoutineLogData-5a6e537a4f4b59647164-build.zip"
+        }
       },
       "api": {
         "trackerapp": {}

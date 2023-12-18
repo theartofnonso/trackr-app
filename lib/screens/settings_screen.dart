@@ -158,7 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         subtitle: Text("Add your favourites exercises",
                             style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
                   ),
-                  const Divider(height: 40, color: tealBlueLight, thickness: 3, indent: 12, endIndent: 12),
+                  const Divider(height: 40, color: tealBlueLight, thickness: 1, indent: 12, endIndent: 12),
                   Theme(
                     data: ThemeData(splashColor: tealBlueLight),
                     child: ListTile(
