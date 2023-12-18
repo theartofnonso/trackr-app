@@ -29,7 +29,7 @@ ChartUnitLabel weightUnit() {
 
 SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
   double heaviestWeight = 0;
-  SetDto setWithHeaviestWeight = SetDto(0, 0, false);
+  SetDto setWithHeaviestWeight = const SetDto(0, 0, false);
 
   for (SetDto set in exerciseLog.sets) {
     final weight = set.value1.toDouble();
@@ -179,7 +179,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 
 (String, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
-  SetDto heaviestSet = SetDto(0, 0, false);
+  SetDto heaviestSet = const SetDto(0, 0, false);
   String logId = "";
   if (pastLogs.isNotEmpty) {
     heaviestSet = pastLogs.first.sets.first;
@@ -202,7 +202,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 
 (String, SetDto) _lightestSet({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
-  SetDto lightestSet = SetDto(0, 0, false);
+  SetDto lightestSet = const SetDto(0, 0, false);
   String logId = "";
   if (pastLogs.isNotEmpty) {
     lightestSet = pastLogs.first.sets.first;
