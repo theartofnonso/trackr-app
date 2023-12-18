@@ -9,7 +9,9 @@ import '../../providers/exercise_log_provider.dart';
 void reOrderExercises({required BuildContext context}) async {
   final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
   final exercises = List<ExerciseLogDto>.from(provider.exerciseLogs);
-  final reOrderedList = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exercises))) as List<ExerciseLogDto>?;
+  final reOrderedList = await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exercises)))
+      as List<ExerciseLogDto>?;
 
   if (reOrderedList != null) {
     if (context.mounted) {
@@ -34,7 +36,10 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
       .toList();
 }
 
-List<UnsavedChangesMessageDto> checkForChanges({required BuildContext context, required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+List<UnsavedChangesMessageDto> checkForChanges(
+    {required BuildContext context,
+    required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2}) {
   List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
   final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
 
@@ -47,7 +52,7 @@ List<UnsavedChangesMessageDto> checkForChanges({required BuildContext context, r
 
   /// Check if [ExerciseLogDto] has been re-ordered
   final differentExercisesOrderMessage =
-  procedureProvider.hasReOrderedExercises(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+      procedureProvider.hasReOrderedExercises(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
   if (differentExercisesOrderMessage != null) {
     unsavedChangesMessage.add(differentExercisesOrderMessage);
   }
@@ -57,13 +62,6 @@ List<UnsavedChangesMessageDto> checkForChanges({required BuildContext context, r
       procedureProvider.hasDifferentSetsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
   if (differentSetsChangeMessage != null) {
     unsavedChangesMessage.add(differentSetsChangeMessage);
-  }
-
-  /// Check if [SetType] for [SetDto] has been changed
-  final differentSetTypesChangeMessage =
-      procedureProvider.hasSetTypeChange(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentSetTypesChangeMessage != null) {
-    unsavedChangesMessage.add(differentSetTypesChangeMessage);
   }
 
   /// Check if [ExerciseType] for [Exercise] in [ExerciseLogDto] has been changed
