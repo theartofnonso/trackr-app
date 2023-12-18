@@ -5,7 +5,7 @@ class SetDto {
   final num value2;
   final bool checked;
 
-   SetDto(this.value1, this.value2, this.checked);
+  const SetDto(this.value1, this.value2, this.checked);
 
   SetDto copyWith({num? value1, num? value2, bool? checked}) {
     return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);

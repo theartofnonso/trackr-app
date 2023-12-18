@@ -13,21 +13,6 @@ class ExerciseProvider with ChangeNotifier {
 
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
 
-  final deleteUserExerciseData = '''mutation BatchDeleteExerciseData {
-    deleteUserExerciseData
-}''';
-
-  Future<void> deleteExercises() async {
-    final operation = Amplify.API.mutate(
-      request: GraphQLRequest<dynamic>(
-        document: deleteUserExerciseData
-      ),
-    );
-    final response = await operation.response;
-    final data = response.data;
-    print(data);
-  }
-
   Future<void> listExercises() async {
     final exerciseOwner = user();
     final request = ModelQueries.list(Exercise.classType, where: Exercise.USER.eq(exerciseOwner.id));
@@ -43,9 +28,8 @@ class ExerciseProvider with ChangeNotifier {
       {required String name,
       required String notes,
       required MuscleGroup primary,
-        required ExerciseType type,
+      required ExerciseType type,
       required List<MuscleGroup> secondary}) async {
-
     final exerciseToCreate = Exercise(
         user: user(),
         name: name,

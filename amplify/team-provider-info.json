@@ -29,7 +29,19 @@
         "trackerapp648183fb": {},
         "deleteUserExerciseData": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/deleteUserExerciseData-6679546d51336b4b5371-build.zip"
+          "s3Key": "amplify-builds/deleteUserExerciseData-65724d7a466475796137-build.zip"
+        },
+        "deleteUserRoutineData": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/deleteUserRoutineData-574a4f37415045716c50-build.zip"
+        },
+        "deleteUserRoutineLogData": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/deleteUserRoutineLogData-5a6e537a4f4b59647164-build.zip"
+        },
+        "deleteUserData": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/deleteUserData-305a62454d68786e5a47-build.zip"
         }
       }
     }

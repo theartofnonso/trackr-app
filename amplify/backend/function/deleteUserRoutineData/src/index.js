@@ -1,7 +1,7 @@
 /* Amplify Params - DO NOT EDIT
-	API_TRACKERAPP_EXERCISETABLE_ARN
-	API_TRACKERAPP_EXERCISETABLE_NAME
 	API_TRACKERAPP_GRAPHQLAPIIDOUTPUT
+	API_TRACKERAPP_ROUTINETABLE_ARN
+	API_TRACKERAPP_ROUTINETABLE_NAME
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
@@ -11,7 +11,7 @@ const dynamoDBClient = new DynamoDBClient({region: "eu-west-2"});
 
 exports.handler = async (event) => {
 
-    const tableName = process.env.API_TRACKERAPP_EXERCISETABLE_NAME;
+    const tableName = process.env.API_TRACKERAPP_ROUTINETABLE_NAME;
 
     let scanInput = {
         TableName: tableName,
@@ -26,7 +26,7 @@ exports.handler = async (event) => {
         const result = await dynamoDBClient.send(command);
         const items = result.Items;
         if (items.length > 0) {
-            console.log(`Exercises to be deleted: ${items.length}`);
+            console.log(`Routines to be deleted: ${items.length}`);
             let batchWriteInput = {
                 RequestItems: {
                     [tableName]: items.map(item => {

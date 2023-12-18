@@ -54,7 +54,49 @@
     }
   },
   "function": {
+    "deleteUserData": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "deleteUserExerciseData": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "deleteUserRoutineData": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "deleteUserRoutineLogData": {
       "build": true,
       "dependsOn": [
         {
@@ -84,6 +126,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_deleteUserData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserData"
+        }
+      ]
+    },
     "AMPLIFY_function_deleteUserExerciseData_deploymentBucketName": {
       "usedBy": [
         {
@@ -97,6 +155,38 @@
         {
           "category": "function",
           "resourceName": "deleteUserExerciseData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserRoutineData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserRoutineData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserRoutineData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserRoutineData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserRoutineLogData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserRoutineLogData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserRoutineLogData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserRoutineLogData"
         }
       ]
     },
