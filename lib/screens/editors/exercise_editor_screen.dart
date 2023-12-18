@@ -142,6 +142,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   width: double.infinity,
                   child: CTextButton(
                       onPressed: _createExercise,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       label: "Create exercise",
                       loading: _loading,
                       loadingLabel: _loadingLabel),
