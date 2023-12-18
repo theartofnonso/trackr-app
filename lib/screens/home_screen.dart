@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../models/RoutineLog.dart';
-import '../shared_prefs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -60,12 +60,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _runSetUp() async {
+    if(SharedPrefs().firstLaunch){
+      SharedPrefs().firstLaunch = false;
+    }
+    await persistUserCredentials();
+    if(mounted) {
+      loadAppData(context);
+      _loadCachedLog();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    SharedPrefs().firstLaunch = false;
-    persistUserCredentials();
-    loadAppData(context);
-    _loadCachedLog();
+    _runSetUp();
   }
 }

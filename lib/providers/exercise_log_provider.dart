@@ -34,28 +34,12 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  List<ExerciseLogDto> mergeSetsIntoExerciseLogs({updateRoutineSets = false}) {
-    // Create a new list to hold the merged exerciseLogs
-    List<ExerciseLogDto> mergedLogs = [];
+  List<ExerciseLogDto> mergeSetsIntoExerciseLogs() {
+    return _exerciseLogs.map((exercise) {
+      List<SetDto> matchingSets = _sets[exercise.id] ?? [];
 
-    for (var exerciseLog in _exerciseLogs) {
-      // Find the matching sets based on exerciseId and add them to the new exerciseLog
-      List<SetDto> matchingSets = _sets[exerciseLog.id] ?? [];
-
-      // Create a new instance of exerciseLogDto with existing data
-      ExerciseLogDto newLog;
-
-      if (updateRoutineSets) {
-        newLog = exerciseLog.copyWith(sets: matchingSets.map((set) => set.copyWith(checked: false)).toList());
-      } else {
-        newLog = exerciseLog.copyWith(sets: matchingSets);
-      }
-
-      // Add the new exerciseLog to the merged list
-      mergedLogs.add(newLog);
-    }
-
-    return mergedLogs;
+      return exercise.copyWith(sets: matchingSets);
+    }).toList();
   }
 
   void addExerciseLogs({required List<Exercise> exercises}) {
@@ -340,7 +324,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   UnsavedChangesMessageDto? hasReOrderedExercises(
       {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     for (int i = 0; i < exerciseLog1.length; i++) {
-      if (exerciseLog1[i] != exerciseLog2[i]) {
+      if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
         return UnsavedChangesMessageDto(
             message: "Exercises have been re-ordered", type: UnsavedChangesMessageType.exerciseOrder); // Re-orderedList
       }
@@ -378,30 +362,6 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     return message.isNotEmpty
         ? UnsavedChangesMessageDto(message: message, type: UnsavedChangesMessageType.setsLength)
-        : null;
-  }
-
-  UnsavedChangesMessageDto? hasSetTypeChange({
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2,
-  }) {
-    int changes = 0;
-
-    // for (ExerciseLogDto proc1 in exerciseLog1) {
-    //   ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
-    //
-    //   if (matchingProc2 == null) continue;
-    //
-    //   int minSetLength = min(proc1.sets.length, matchingProc2.sets.length);
-    //   for (int i = 0; i < minSetLength; i++) {
-    //     if (proc1.sets[i].type != matchingProc2.sets[i].type) {
-    //       changes += 1;
-    //     }
-    //   }
-    // }
-
-    return changes > 0
-        ? UnsavedChangesMessageDto(message: "Changed $changes set type(s)", type: UnsavedChangesMessageType.setType)
         : null;
   }
 
