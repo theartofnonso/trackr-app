@@ -34,6 +34,7 @@ class AchievementScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(children: [
                   svg,
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text("50% Strong".toUpperCase(),
