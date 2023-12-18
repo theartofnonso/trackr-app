@@ -282,7 +282,7 @@ class _DateWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Container(
-          margin: const EdgeInsets.all(5),
+          margin: const EdgeInsets.all(3),
           decoration: BoxDecoration(
             color: _getBackgroundColor(log != null),
             borderRadius: BorderRadius.circular(5),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routines_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const OverviewScreen(), const RoutinesScreen()];
+    final screens = [const OverviewScreen(), const RoutinesScreen(), const AchievementsScreen()];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
@@ -39,6 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.add, color: Colors.grey, size: 28),
             selectedIcon: Icon(Icons.add, color: Colors.white, size: 32),
             label: 'Workouts',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.gamepad_rounded, color: Colors.grey, size: 28),
+            selectedIcon: Icon(Icons.gamepad_rounded, color: Colors.white, size: 32),
+            label: 'Achievements',
           )
         ],
         onDestinationSelected: (int index) {

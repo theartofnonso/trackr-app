@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/backgrounds/gradient_background.dart';
+import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
 import '../../app_constants.dart';
@@ -13,7 +13,7 @@ class ExerciseEmptyState extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GradientBackground(
+        GradientWidget(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
