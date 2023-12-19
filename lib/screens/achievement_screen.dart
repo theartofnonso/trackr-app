@@ -41,7 +41,7 @@ class AchievementScreen extends StatelessWidget {
                           style: GoogleFonts.lato(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                       SizedBox(
                           width: double.infinity,
-                          child: Text("Increase weight lifted by 50% to unlock this badge.",
+                          child: Text("Increase weight lifted by 50% for any exercise to unlock.",
                               style:
                                   GoogleFonts.lato(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600))),
                       const SizedBox(height: 10),
@@ -98,10 +98,11 @@ class _CListTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0), // Set the border radius here
       ),
       child: ListTile(
-          title: Text(title, style: GoogleFonts.lato(color: Colors.white, fontSize: 15)),
-          //subtitle: Text(subtitle, style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
-          trailing:
-              Text(trailing, style: GoogleFonts.lato(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))),
+          title: Text(title, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+          subtitle: Text("5 personal bests since Tues 24 No 2023", style: GoogleFonts.lato(color: Colors.white70, fontSize: 15)),
+          leading:
+              Text(trailing, style: GoogleFonts.lato(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          trailing: const Icon(Icons.ios_share_rounded)),
     );
   }
 }
