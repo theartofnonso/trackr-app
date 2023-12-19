@@ -28,17 +28,17 @@ ChartUnitLabel weightUnit() {
 /// Highest value per [RoutineLogDto]
 
 SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
-  double heaviestWeight = 0;
-  SetDto setWithHeaviestWeight = const SetDto(0, 0, false);
+  SetDto heaviestSet = const SetDto(0, 0, false);
+  double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
 
   for (SetDto set in exerciseLog.sets) {
-    final weight = set.value1.toDouble();
-    if (weight > heaviestWeight) {
-      heaviestWeight = weight.toDouble();
-      setWithHeaviestWeight = set;
+    final volume = set.value1.toDouble() * set.value2.toInt();
+    if (volume > heaviestVolume) {
+      heaviestSet = set;
+      heaviestVolume = volume;
     }
   }
-  return setWithHeaviestWeight;
+  return heaviestSet;
 }
 
 double heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
@@ -157,9 +157,9 @@ double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
 }
 
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestWeightInSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
+  final heaviestSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
 
-  final max = (heaviestWeightInSet.value1 * (1 + 0.0333 * heaviestWeightInSet.value2));
+  final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
   final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
 
@@ -476,3 +476,4 @@ class HomeScreen extends StatelessWidget {
         ));
   }
 }
+
