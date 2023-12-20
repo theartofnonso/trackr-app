@@ -31,21 +31,69 @@ class AchievementsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const _CListTile(
-                title: "36 Days Trackd",
-                subtitle: "Log 3 sessions per week for 3 months",
+                title: "30 Days Trackd",
+                subtitle: "Log 30 sessions",
                 value: 0.5,
               ),
               const SizedBox(height: 10),
               const _CListTile(
-                title: "72 Days Trackd",
-                subtitle: "Log 3 sessions per week for 6 months",
+                title: "75 Days Trackd",
+                subtitle: "Log 75 sessions",
                 value: 0.3,
               ),
               const SizedBox(height: 10),
               const _CListTile(
-                title: "144 Days Trackd",
-                subtitle: "Log 3 sessions per week for 1 year",
+                title: "100 Days Trackd",
+                subtitle: "Log 100 sessions",
                 value: 0.1,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Superset Specialist",
+                subtitle: "Log 10 sessions with supersets",
+                value: 0.7,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Stronger than ever",
+                subtitle: "Log 10 sessions with a PB",
+                value: 0.1,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "One More Rep",
+                subtitle: "Set a goal to increase the number of reps in a specific exercise",
+                value: 0.1,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Time under tension",
+                subtitle: "Set a goal to increase the duration in a specific exercise",
+                value: 0.2,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Max Out Madness",
+                subtitle: "Set a goal to increase the maximum weight lifted in a specific compound exercise",
+                value: 0.6,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Obsessed",
+                subtitle: "Log sessions for 12 consecutive weeks",
+                value: 0.9,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Never Skip a Monday",
+                subtitle: "Log sessions for 12 consecutive mondays",
+                value: 0.3,
+              ),
+              const SizedBox(height: 10),
+              const _CListTile(
+                title: "Never Skip a Leg Day",
+                subtitle: "Log sessions with at least one leg exercise for 12 consecutive weeks",
+                value: 0.6,
               ),
             ]),
           ),
@@ -65,34 +113,37 @@ class _CListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0), //
             border: Border.all(color: tealBlueLighter, width: 2) // Set the border radius here
             ),
-        child: ListTile(
-            title: Text(title.toUpperCase(),
-                style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 4.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(subtitle, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(
-                          child: LinearProgressIndicator(
-                        value: value,
-                        borderRadius: const BorderRadius.all(Radius.circular(5)),
-                        backgroundColor: tealBlueLighter,
-                      )),
-                      const SizedBox(width: 12),
-                      Text("3 days left", style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                      Text(title.toUpperCase(),
+                          style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                     ],
+                  ),
+                  Text(subtitle, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                  const SizedBox(height: 10),
+                  LinearProgressIndicator(
+                    value: value,
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    backgroundColor: tealBlueLighter,
                   ),
                 ],
               ),
-            )));
+            ),
+            const SizedBox(width: 10),
+            Text("3 days left", style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+          ],
+        ));
   }
 }
