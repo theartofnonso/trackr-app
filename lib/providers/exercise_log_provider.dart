@@ -256,7 +256,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(Exercise exercise, {String? notes}) {
-    return ExerciseLogDto(const Uuid().v4(), "", "", exercise, notes ?? "", [], TemporalDateTime.now());
+    return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], TemporalDateTime.now());
   }
 
   List<SetDto> completedSets() {

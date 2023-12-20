@@ -59,7 +59,7 @@ class _RoutineLogWidget extends StatelessWidget {
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
-        onTap: () => navigateToRoutineLogPreview(context: context, logId: log.id),
+        onTap: () => navigateToRoutineLogPreview(context: context, log: log),
         dense: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         title: Text(log.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),

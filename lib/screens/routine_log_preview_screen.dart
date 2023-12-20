@@ -10,6 +10,7 @@ import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../app_constants.dart';
@@ -21,10 +22,10 @@ import '../../widgets/helper_widgets/routine_helper.dart';
 import 'exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
-  final String routineLogId;
+  final RoutineLog log;
   final String previousRouteName;
 
-  const RoutineLogPreviewScreen({super.key, required this.routineLogId, this.previousRouteName = ""});
+  const RoutineLogPreviewScreen({super.key, required this.log, this.previousRouteName = ""});
 
   @override
   State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
@@ -37,11 +38,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   @override
   Widget build(BuildContext context) {
     Provider.of<ExerciseProvider>(context, listen: true);
-    final log = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.routineLogId);
-
-    if (log == null) {
-      return const SizedBox.shrink();
-    }
+    final log = widget.log;
 
     List<ExerciseLogDto> procedures =
         log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
@@ -182,14 +179,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               ),
             ),
           ),
-          if (_loading)
-            Align(
-                alignment: Alignment.center,
-                child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: tealBlueDark.withOpacity(0.7),
-                    child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
+          if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
         ]));
   }
 
@@ -324,7 +314,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       }
     } catch (_) {
       if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to update template");
+        showSnackbar(
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to update template");
       }
     } finally {
       _toggleLoadingState();
@@ -333,7 +324,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _deleteLog() async {
     try {
-      await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.routineLogId);
+      await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.log.id);
       if (mounted) {
         Navigator.of(context).pop();
       }

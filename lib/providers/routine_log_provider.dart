@@ -91,7 +91,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  void saveRoutineLog(
+  Future<RoutineLog> saveRoutineLog(
       {required BuildContext context,
       required String name,
       required String notes,
@@ -122,6 +122,8 @@ class RoutineLogProvider with ChangeNotifier {
     } catch (_) {
       _cachePendingLogs(logToCreate);
     }
+
+    return logToCreate;
   }
 
   void _cachePendingLogs(RoutineLog pendingLog) {

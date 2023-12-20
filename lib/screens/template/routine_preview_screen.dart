@@ -14,6 +14,7 @@ import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../providers/exercise_provider.dart';
 import '../../utils/navigation_utils.dart';
+import '../../widgets/backgrounds/overlay_background.dart';
 import 'helper_utils.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
@@ -34,11 +35,10 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   List<Widget> _menuActionButtons({required Routine routine}) {
     return [
       MenuItemButton(
-        onPressed: () {
-          navigateToRoutineEditor(context: context, routine: routine);
-        },
-        child: Text("Edit", style: GoogleFonts.lato())
-      ),
+          onPressed: () {
+            navigateToRoutineEditor(context: context, routine: routine);
+          },
+          child: Text("Edit", style: GoogleFonts.lato())),
       MenuItemButton(
         onPressed: () {
           showAlertDialogWithMultiActions(
@@ -161,15 +161,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
               ),
             ),
           ),
-          _loading
-              ? Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: tealBlueDark.withOpacity(0.7),
-                      child: Center(child: Text("Deleting workout", style: GoogleFonts.lato(fontSize: 14)))))
-              : const SizedBox.shrink()
+          if (_loading) const OverlayBackground(loadingMessage: "Deleting workout...")
         ]));
   }
 
