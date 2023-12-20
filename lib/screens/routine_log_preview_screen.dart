@@ -19,6 +19,7 @@ import '../../providers/routine_log_provider.dart';
 import '../../utils/snackbar_utils.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
+import 'editors/helper_utils.dart';
 import 'exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
@@ -336,5 +337,44 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } finally {
       _toggleLoadingState();
     }
+  }
+
+  void _checkForUpdate() {
+    final routine = widget.log.routine;
+    if (routine == null) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final routineTemplate = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: routine.id);
+      final routineTemplateExerciseLogs =
+          routineTemplate?.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+      final exerciseLog1 = routineTemplateExerciseLogs ?? [];
+      final exerciseLog2 =
+          widget.log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+      final unsavedChangesMessage =
+          checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+      if (unsavedChangesMessage.isNotEmpty) {
+        print(unsavedChangesMessage);
+        // showAlertDialogWithMultiActions(
+        //     context: context,
+        //     message: "Update template?",
+        //     leftAction: Navigator.of(context).pop,
+        //     rightAction: () {
+        //       Navigator.of(context).pop();
+        //       _toggleLoadingState(message: "Updating template from log");
+        //       _updateRoutine(widget.log);
+        //     },
+        //     leftActionLabel: 'Cancel',
+        //     rightActionLabel: 'Update',
+        //     isRightActionDestructive: true);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdate();
   }
 }

@@ -166,10 +166,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final oldProcedures = widget.routine?.procedures;
-    final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+    final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList() ?? [];
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
     final unsavedChangesMessage =
-        checkForChanges(context: context, exerciseLog1: exerciseLog1 ?? [], exerciseLog2: exerciseLog2);
+        checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showAlertDialogWithMultiActions(
           context: context,
