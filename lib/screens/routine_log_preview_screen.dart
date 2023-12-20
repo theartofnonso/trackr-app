@@ -242,7 +242,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     leftAction: Navigator.of(context).pop,
                     rightAction: () {
                       Navigator.of(context).pop();
-                      _toggleLoadingState(message: "Creating template from log");
+                      _toggleLoadingState(message: "Updating template from log");
                       _updateRoutine(log);
                     },
                     leftActionLabel: 'Cancel',
@@ -294,7 +294,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } catch (_) {
       if (mounted) {
         showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable create template");
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to create template");
       }
     } finally {
       _toggleLoadingState();
@@ -324,7 +324,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       }
     } catch (_) {
       if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are update template");
+        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to update template");
       }
     } finally {
       _toggleLoadingState();
@@ -340,7 +340,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } catch (_) {
       if (mounted) {
         showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable delete this log");
+            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to delete this log");
       }
     } finally {
       _toggleLoadingState();
