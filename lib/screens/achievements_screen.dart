@@ -11,12 +11,6 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String assetName = 'assets/badge.svg';
-    final Widget svg = SvgPicture.asset(
-      assetName,
-      width: 30,
-      height: 30,
-    );
 
     return Scaffold(
         body: Stack(children: [
@@ -31,7 +25,7 @@ class AchievementsScreen extends StatelessWidget {
                   style: GoogleFonts.lato(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w500)),
               const SizedBox(height: 6),
               Text("Keep logging your sessions to achieve milestones and unlock badges.",
-                  style: GoogleFonts.lato(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
+                  style: GoogleFonts.lato(color: Colors.white70, fontSize: 16)),
               const SizedBox(height: 20),
               const _CListTile(title: "12 Days Trackd", subtitle: "Log 3 sessions per week for 1 month", value: 0.8,),
               const SizedBox(height: 10),
