@@ -32,36 +32,9 @@ class AchievementScreen extends StatelessWidget {
                   )
                 ]),
                 const SizedBox(height: 10),
-                Row(children: [
-                  svg,
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text("50% Strong".toUpperCase(),
-                          style: GoogleFonts.lato(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                      SizedBox(
-                          width: double.infinity,
-                          child: Text("Increase weight lifted by 50% for any exercise to unlock.",
-                              style:
-                                  GoogleFonts.lato(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600))),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 200, child: LinearProgressIndicator(value: 0.5)),
-                            const SizedBox(width: 10),
-                            Text("x5",
-                                style:
-                                    GoogleFonts.lato(color: Colors.white70, fontSize: 18, fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                    ]),
-                  ),
-                ]),
+                _AchievementTile(svg: svg, title: "12 Days TRACKd", subtitle: "Log 3 sessions per week for 1 month"),
                 const SizedBox(height: 20),
-                _CListTile(
+                const _CListTile(
                   title: 'Leg Extension',
                   trailing: 'x5',
                 ),
@@ -84,6 +57,45 @@ class AchievementScreen extends StatelessWidget {
   }
 }
 
+class _AchievementTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const _AchievementTile({required this.svg, required this.title, required this.subtitle});
+
+  final Widget svg;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      svg,
+      const SizedBox(width: 10),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title.toUpperCase(),
+              style: GoogleFonts.lato(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
+          SizedBox(
+              width: double.infinity,
+              child: Text(subtitle,
+                  style: GoogleFonts.lato(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600))),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(width: 200, child: LinearProgressIndicator(value: 0.5)),
+                const SizedBox(height: 4),
+                Text("3 days left", style: GoogleFonts.lato(color: Colors.white70, fontSize: 16)),
+              ],
+            ),
+          ),
+        ]),
+      ),
+    ]);
+  }
+}
+
 class _CListTile extends StatelessWidget {
   final String title;
   final String trailing;
@@ -99,7 +111,8 @@ class _CListTile extends StatelessWidget {
       ),
       child: ListTile(
           title: Text(title, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-          subtitle: Text("5 personal bests since Tues 24 No 2023", style: GoogleFonts.lato(color: Colors.white70, fontSize: 15)),
+          subtitle: Text("5 personal bests since Tues 24 No 2023",
+              style: GoogleFonts.lato(color: Colors.white70, fontSize: 15)),
           leading:
               Text(trailing, style: GoogleFonts.lato(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
           trailing: const Icon(Icons.ios_share_rounded)),
