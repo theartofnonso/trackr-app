@@ -254,6 +254,15 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
+  bool _exerciseLogsWithReps() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.weightAndReps ||
+        exerciseType == ExerciseType.assistedBodyWeight ||
+        exerciseType == ExerciseType.weightedBodyWeight ||
+        exerciseType == ExerciseType.bodyWeightAndReps;
+  }
+
   bool _exerciseLogsWithRepsOnly() {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
@@ -364,7 +373,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             label: "1RM",
                             buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
-                    if (_exerciseLogsWithRepsOnly())
+                    if (_exerciseLogsWithReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -487,7 +496,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
-          if (_exerciseLogsWithRepsOnly())
+          if (_exerciseLogsWithReps())
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
