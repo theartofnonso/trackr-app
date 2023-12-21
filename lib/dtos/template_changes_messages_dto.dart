@@ -1,7 +1,5 @@
 
-enum TemplateChangesMessageType {
-  setsLength, exerciseLogLength, exerciseOrder, exerciseLogChange, supersetId,
-}
+import '../enums/template_changes_type_message_enums.dart';
 
 class TemplateChangesMessageDto {
   final String message;
