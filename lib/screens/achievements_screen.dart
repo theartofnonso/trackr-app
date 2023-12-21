@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../app_constants.dart';
+import '../dtos/exercise_log_dto.dart';
 import '../enums/achievement_type_enums.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 
@@ -15,6 +18,7 @@ class AchievementsScreen extends StatelessWidget {
       AchievementType.days30 => _calculateDaysProgress(context: context, type: type),
       AchievementType.days75 => _calculateDaysProgress(context: context, type: type),
       AchievementType.days100 => _calculateDaysProgress(context: context, type: type),
+      AchievementType.supersetSpecialist => _calculateSuperSetSpecialistProgress(context: context),
       _ => (progress: 0, difference: 0)
     };
   }
@@ -32,6 +36,28 @@ class AchievementsScreen extends StatelessWidget {
     final difference = targetDays - logs.length;
 
     final progress = logs.length / targetDays;
+
+    return (progress: progress, difference: difference < 0 ? 0 : difference);
+  }
+
+  ({int difference, double progress}) _calculateSuperSetSpecialistProgress({required BuildContext context}) {
+    final logs = Provider.of<RoutineLogProvider>(context, listen: false).logs;
+    // Count RoutineLogs with at least two exercises that have a non-null superSetId
+    int target = 20;
+    int count = 0;
+
+    for (var log in logs) {
+      int exercisesWithSuperSetId = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)))
+          .where((exerciseLog) => exerciseLog.superSetId.isNotEmpty)
+          .length;
+
+      if (exercisesWithSuperSetId >= 2) {
+        count++;
+      }
+    }
+
+    final progress = count / target;
+    final difference = target - count;
 
     return (progress: progress, difference: difference < 0 ? 0 : difference);
   }
