@@ -106,6 +106,7 @@ class _CListTile extends StatelessWidget {
                   Text(subtitle, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
                   const SizedBox(height: 10),
                   LinearProgressIndicator(
+                    color: progressRemainder == 0 ? Colors.green : Colors.white,
                     value: progressValue,
                     borderRadius: const BorderRadius.all(Radius.circular(5)),
                     backgroundColor: tealBlueLighter,
