@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/utils/snackbar_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import '../../../models/Routine.dart';
 import '../../../providers/routine_provider.dart';

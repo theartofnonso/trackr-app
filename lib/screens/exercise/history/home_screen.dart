@@ -12,10 +12,8 @@ import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../models/Exercise.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
-import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import 'notes_screen.dart';

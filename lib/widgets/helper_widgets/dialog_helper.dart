@@ -3,24 +3,49 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_constants.dart';
 
+void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: tealBlueLighter,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      content: Row(
+        children: [
+          icon,
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.poppins(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      )));
+}
+
 void displayBottomSheet({required BuildContext context, required Widget child, double? height}) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: height,
-            margin: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            color: tealBlueLight,
-            child: SafeArea(
-              child: child,
-            ),
-          ),
-        ],
-      ));
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: height,
+                margin: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                color: tealBlueLight,
+                child: SafeArea(
+                  child: child,
+                ),
+              ),
+            ],
+          ));
 }
 
 void showAlertDialogWithMultiActions(
@@ -65,8 +90,11 @@ void showAlertDialogWithMultiActions(
   );
 }
 
-void showAlertDialogWithSingleAction({required BuildContext context, required String message, required void Function() action, required String actionLabel}) {
-
+void showAlertDialogWithSingleAction(
+    {required BuildContext context,
+    required String message,
+    required void Function() action,
+    required String actionLabel}) {
   final alertActions = <Widget>[
     TextButton(
       onPressed: action,

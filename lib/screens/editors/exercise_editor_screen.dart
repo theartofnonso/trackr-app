@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
-import 'package:tracker_app/utils/snackbar_utils.dart';
+import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../../app_constants.dart';
 import '../../enums/exercise_type_enums.dart';

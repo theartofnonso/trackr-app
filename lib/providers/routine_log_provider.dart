@@ -16,7 +16,6 @@ import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-
   Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
 
   List<RoutineLog> _logs = [];
@@ -52,11 +51,11 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void _loadExerciseLogs() {
-
     Map<String, List<ExerciseLogDto>> map = {};
 
     for (RoutineLog log in _logs) {
-      final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
+      final decodedExerciseLogs =
+          log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
       for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
         final exerciseId = exerciseLog.exercise.id;
         final exerciseLogs = map[exerciseId] ?? [];
@@ -67,7 +66,6 @@ class RoutineLogProvider with ChangeNotifier {
     }
 
     _exerciseLogs = map;
-
   }
 
   Map<String, dynamic> _fixJson(String jsonString) {
@@ -162,11 +160,11 @@ class RoutineLogProvider with ChangeNotifier {
 
   void cacheRoutineLog(
       {required String name,
-        required String notes,
-        required List<ExerciseLogDto> procedures,
-        required TemporalDateTime startTime,
-        TemporalDateTime? createdAt,
-        required Routine? routine}) async {
+      required String notes,
+      required List<ExerciseLogDto> procedures,
+      required TemporalDateTime startTime,
+      TemporalDateTime? createdAt,
+      required Routine? routine}) async {
     final currentTime = TemporalDateTime.now();
 
     final exerciseLogJson = procedures.map((procedure) => procedure.toJson()).toList();
@@ -212,7 +210,8 @@ class RoutineLogProvider with ChangeNotifier {
     return exerciseLogs.isNotEmpty ? exerciseLogs.reversed.first.sets : [];
   }
 
-  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+  List<SetDto> setsForMuscleGroupWhereDateRange(
+      {required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(ExerciseLogDto log) {
       final primaryMuscle = MuscleGroup.fromString(log.exercise.primaryMuscle);
       return primaryMuscle.family == muscleGroupFamily;
@@ -225,6 +224,15 @@ class RoutineLogProvider with ChangeNotifier {
         .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
         .expand((log) => log.sets)
         .toList();
+  }
+
+  bool isLatestLogForTemplate({required String templateId, required logId}) {
+    final logsForTemplate = _logs.where((log) => log.routine?.id == templateId);
+    if(logsForTemplate.isEmpty) {
+      return false;
+    } else {
+      return logsForTemplate.first.id == logId;
+    }
   }
 
   List<RoutineLog> logsWhereDate({required DateTime dateTime}) {

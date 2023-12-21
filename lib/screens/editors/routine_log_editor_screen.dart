@@ -77,15 +77,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   Future<void> _doCreateRoutineLog() async {
     _toggleLoadingState(message: "Saving log...");
 
-    final log = widget.log;
+    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
 
-    final completedExerciseLogs = _completedExerciseLogsAndSets();
+    final log = widget.log;
 
     final createdLog = await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
         name: log.name,
         notes: log.notes,
-        exerciseLogs: completedExerciseLogs,
+        exerciseLogs: exerciseLogs,
         startTime: log.startTime,
         routine: log.routine);
 
@@ -98,20 +99,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
     return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
-  }
-
-  List<ExerciseLogDto> _completedExerciseLogsAndSets() {
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
-    final completedExerciseLogs = <ExerciseLogDto>[];
-    for (var log in exerciseLogs) {
-      final completedSets = log.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-      if (completedSets.isNotEmpty) {
-        final completedExerciseLog = log.copyWith(sets: completedSets);
-        completedExerciseLogs.add(completedExerciseLog);
-      }
-    }
-    return completedExerciseLogs;
   }
 
   void _discardLog() {
