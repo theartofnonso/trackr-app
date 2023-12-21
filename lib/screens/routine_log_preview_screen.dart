@@ -26,8 +26,9 @@ import 'exercise/history/home_screen.dart';
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLog log;
   final String previousRouteName;
+  final bool finishedLogging;
 
-  const RoutineLogPreviewScreen({super.key, required this.log, this.previousRouteName = ""});
+  const RoutineLogPreviewScreen({super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
 
   @override
   State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
@@ -337,8 +338,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _checkForTemplateUpdates() {
-    _isLatestLogForTemplate = Provider.of<RoutineLogProvider>(context, listen: false)
+    _isLatestLogForTemplate = widget.finishedLogging || Provider.of<RoutineLogProvider>(context, listen: false)
         .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
+
+    print(_isLatestLogForTemplate);
 
     if (!_isLatestLogForTemplate) {
       return;
