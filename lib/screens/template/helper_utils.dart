@@ -5,7 +5,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../providers/routine_log_provider.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/snackbar_utils.dart';
+import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 void logRoutine({required BuildContext context, required Routine routine}) async {
   final log = Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog;
