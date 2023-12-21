@@ -26,7 +26,7 @@ class AchievementsScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const _CListTile(
                 title: "12 Days Trackd",
-                subtitle: "Log 3 sessions per week for 1 month",
+                subtitle: "Log at least 3 sessions per week for a month",
                 value: 0.8,
               ),
               const SizedBox(height: 10),
@@ -50,7 +50,7 @@ class AchievementsScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const _CListTile(
                 title: "Superset Specialist",
-                subtitle: "Log 10 sessions with supersets",
+                subtitle: "Log 20 sessions with at least one superset",
                 value: 0.7,
               ),
               const SizedBox(height: 10),
@@ -80,7 +80,7 @@ class AchievementsScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const _CListTile(
                 title: "Obsessed",
-                subtitle: "Log sessions for 12 consecutive weeks",
+                subtitle: "Log at least one session for 12 consecutive weeks",
                 value: 0.9,
               ),
               const SizedBox(height: 10),
