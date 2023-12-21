@@ -97,8 +97,8 @@ class AchievementsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const _CListTile(
-                title: "Drip it like it's hot",
-                subtitle: "Accumulate 20 hours of strength training over a month",
+                title: "Sweat Equity",
+                subtitle: "Accumulate 20 hours of strength training",
                 value: 0.4,
               ),
               const SizedBox(height: 10),
