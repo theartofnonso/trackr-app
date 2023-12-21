@@ -33,7 +33,7 @@ class AchievementsScreen extends StatelessWidget {
 
     final progress = logs.length / targetDays;
 
-    return (progress: progress, difference: difference);
+    return (progress: progress, difference: difference < 0 ? 0 : difference);
   }
 
   const AchievementsScreen({super.key});
