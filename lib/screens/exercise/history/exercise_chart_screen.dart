@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
@@ -31,14 +32,14 @@ enum SummaryType {
 }
 
 class ExerciseChartScreen extends StatefulWidget {
-  final (String, double) heaviestWeight;
-  final (String, double) lightestWeight;
-  final (String, SetDto) heaviestSet;
-  final (String, SetDto) lightestSet;
-  final (String, Duration) longestDuration;
-  final (String, double) longestDistance;
-  final (String, int) mostRepsSet;
-  final (String, int) mostRepsSession;
+  final (RoutineLog?, double) heaviestWeight;
+  final (RoutineLog?, double) lightestWeight;
+  final (RoutineLog?, SetDto) heaviestSet;
+  final (RoutineLog?, SetDto) lightestSet;
+  final (RoutineLog?, Duration) longestDuration;
+  final (RoutineLog?, double) longestDistance;
+  final (RoutineLog?, int) mostRepsSet;
+  final (RoutineLog?, int) mostRepsSession;
   final Exercise exercise;
 
   const ExerciseChartScreen(
@@ -228,10 +229,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
-  void _navigateTo({required String routineLogId}) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            RoutineLogPreviewScreen(routineLogId: routineLogId, previousRouteName: exerciseRouteName)));
+  void _navigateTo({required RoutineLog? routineLog}) {
+    if (routineLog != null) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
+    }
   }
 
   bool _exerciseLogsWithWeights() {
@@ -252,6 +254,15 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final exerciseTypeString = widget.exercise.type;
     final exerciseType = ExerciseType.fromString(exerciseTypeString);
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
+  }
+
+  bool _exerciseLogsWithReps() {
+    final exerciseTypeString = widget.exercise.type;
+    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    return exerciseType == ExerciseType.weightAndReps ||
+        exerciseType == ExerciseType.assistedBodyWeight ||
+        exerciseType == ExerciseType.weightedBodyWeight ||
+        exerciseType == ExerciseType.bodyWeightAndReps;
   }
 
   bool _exerciseLogsWithRepsOnly() {
@@ -364,7 +375,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             label: "1RM",
                             buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
-                    if (_exerciseLogsWithRepsOnly())
+                    if (_exerciseLogsWithReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -422,7 +433,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 title: 'Heaviest Weight',
                 trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
                 subtitle: 'Heaviest weight in a set',
-                onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                onTap: () => _navigateTo(routineLog: widget.heaviestWeight.$1),
                 enabled: _exerciseLogs.isNotEmpty,
               ),
             ),
@@ -433,7 +444,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 title: 'Lightest Weight',
                 trailing: "${widget.lightestWeight.$2}$weightUnitLabel",
                 subtitle: 'Lightest weight in a set',
-                onTap: () => _navigateTo(routineLogId: widget.lightestWeight.$1),
+                onTap: () => _navigateTo(routineLog: widget.lightestWeight.$1),
                 enabled: _exerciseLogs.isNotEmpty,
               ),
             ),
@@ -444,7 +455,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Heaviest Set Volume',
                   trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
+                  onTap: () => _navigateTo(routineLog: widget.heaviestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithAssistedWeights())
@@ -454,7 +465,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Lightest Set Volume',
                   trailing: "${widget.lightestSet.$2.value1}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
                   subtitle: 'Lightest volume in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.lightestSet.$1),
+                  onTap: () => _navigateTo(routineLog: widget.lightestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithWeightsAndReps())
@@ -464,7 +475,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: '1 Rep Max',
                   trailing: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
                   subtitle: 'Heaviest weight for one rep',
-                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
+                  onTap: () => _navigateTo(routineLog: widget.heaviestWeight.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsDuration())
@@ -474,7 +485,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Best Time',
                   trailing: widget.longestDuration.$2.secondsOrMinutesOrHours(),
                   subtitle: 'Longest time for this exercise',
-                  onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
+                  onTap: () => _navigateTo(routineLog: widget.longestDuration.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithDistance())
@@ -484,17 +495,17 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Longest Distance',
                   trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
                   subtitle: 'Longest distance for this exercise',
-                  onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
+                  onTap: () => _navigateTo(routineLog: widget.longestDistance.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
-          if (_exerciseLogsWithRepsOnly())
+          if (_exerciseLogsWithReps())
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Most Reps (Set)',
                   trailing: "${widget.mostRepsSet.$2} reps",
                   subtitle: 'Most reps in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
+                  onTap: () => _navigateTo(routineLog: widget.mostRepsSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithRepsOnly())
@@ -504,7 +515,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Most Reps (Session)',
                   trailing: "${widget.mostRepsSession.$2} reps",
                   subtitle: 'Most reps in a session',
-                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
+                  onTap: () => _navigateTo(routineLog: widget.mostRepsSession.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
         ],

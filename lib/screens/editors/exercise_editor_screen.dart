@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
-import 'package:tracker_app/utils/snackbar_utils.dart';
+import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../../app_constants.dart';
 import '../../enums/exercise_type_enums.dart';
@@ -37,118 +37,123 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   Widget build(BuildContext context) {
     final exercise = widget.exercise;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_outlined),
-          onPressed: () => Navigator.of(context).pop(),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_outlined),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            exercise != null
+                ? CTextButton(
+                    onPressed: _updateExercise,
+                    label: "Update",
+                    buttonColor: Colors.transparent,
+                    loading: _loading,
+                    loadingLabel: _loadingLabel)
+                : const SizedBox.shrink()
+          ],
         ),
-        actions: [
-          exercise != null
-              ? CTextButton(
-                  onPressed: _updateExercise,
-                  label: "Update",
-                  buttonColor: Colors.transparent,
-                  loading: _loading,
-                  loadingLabel: _loadingLabel)
-              : const SizedBox.shrink()
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-          child: Column(children: [
-            TextField(
-              controller: _exerciseNameController,
-              decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
-                  filled: true,
-                  fillColor: tealBlueLighter,
-                  hintText: "New Exercise",
-                  hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-              cursorColor: Colors.white,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.words,
-              style: GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _exerciseNotesController,
-              decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
-                  filled: true,
-                  fillColor: tealBlueLighter,
-                  hintText: "Notes",
-                  hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
-              maxLines: null,
-              cursorColor: Colors.white,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.sentences,
-              style: GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-            ),
-            const SizedBox(height: 10),
-            Theme(
-              data: ThemeData(splashColor: tealBlueLight),
-              child: ListTile(
-                  onTap: _navigateToMuscleGroupsScreen,
-                  tileColor: tealBlueLight,
-                  dense: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  title: Text("Primary Muscle", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                  subtitle: Text(_primaryMuscleGroup.name,
-                      style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
-            ),
-            const SizedBox(height: 8),
-            Theme(
-              data: ThemeData(splashColor: tealBlueLight),
-              child: ListTile(
-                  onTap: () => _navigateToMuscleGroupsScreen(multiSelect: true),
-                  tileColor: tealBlueLight,
-                  dense: true,
-                  contentPadding: _secondaryMuscleGroup.length > 6
-                      ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
-                      : null,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  title: Text("Secondary Muscles", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                  subtitle: Padding(
-                    padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
-                    child: Text(_secondaryMuscleDisplay(),
-                        style: GoogleFonts.lato(fontSize: 13, color: Colors.white70)),
-                  )),
-            ),
-            const SizedBox(height: 8),
-            if (widget.exercise == null)
-              Column(children: [
-                Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
-                  child: ListTile(
-                      onTap: () => _navigateToExerciseTypeScreen(),
-                      tileColor: tealBlueLight,
-                      dense: true,
-                      contentPadding: _secondaryMuscleGroup.length > 6
-                          ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
-                          : null,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      title: Text("Exercise Type", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                      subtitle: Text(_exerciseType.name,
-                          style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: CTextButton(
-                      onPressed: _createExercise,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      label: "Create exercise",
-                      loading: _loading,
-                      loadingLabel: _loadingLabel),
-                )
-              ])
-          ]),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            child: Column(children: [
+              TextField(
+                controller: _exerciseNameController,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                    filled: true,
+                    fillColor: tealBlueLighter,
+                    hintText: "New Exercise",
+                    hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                cursorColor: Colors.white,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
+                style:
+                    GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _exerciseNotesController,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                    filled: true,
+                    fillColor: tealBlueLighter,
+                    hintText: "Notes",
+                    hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                maxLines: null,
+                cursorColor: Colors.white,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.sentences,
+                style:
+                    GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+              ),
+              const SizedBox(height: 10),
+              Theme(
+                data: ThemeData(splashColor: tealBlueLight),
+                child: ListTile(
+                    onTap: _navigateToMuscleGroupsScreen,
+                    tileColor: tealBlueLight,
+                    dense: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    title: Text("Primary Muscle", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                    subtitle:
+                        Text(_primaryMuscleGroup.name, style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
+              ),
+              const SizedBox(height: 8),
+              Theme(
+                data: ThemeData(splashColor: tealBlueLight),
+                child: ListTile(
+                    onTap: () => _navigateToMuscleGroupsScreen(multiSelect: true),
+                    tileColor: tealBlueLight,
+                    dense: true,
+                    contentPadding: _secondaryMuscleGroup.length > 6
+                        ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+                        : null,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    title: Text("Secondary Muscles", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                    subtitle: Padding(
+                      padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
+                      child:
+                          Text(_secondaryMuscleDisplay(), style: GoogleFonts.lato(fontSize: 13, color: Colors.white70)),
+                    )),
+              ),
+              const SizedBox(height: 8),
+              if (widget.exercise == null)
+                Column(children: [
+                  Theme(
+                    data: ThemeData(splashColor: tealBlueLight),
+                    child: ListTile(
+                        onTap: () => _navigateToExerciseTypeScreen(),
+                        tileColor: tealBlueLight,
+                        dense: true,
+                        contentPadding: _secondaryMuscleGroup.length > 6
+                            ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+                            : null,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        title: Text("Exercise Type", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                        subtitle:
+                            Text(_exerciseType.name, style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: CTextButton(
+                        onPressed: _createExercise,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        label: "Create exercise",
+                        loading: _loading,
+                        loadingLabel: _loadingLabel),
+                  )
+                ])
+            ]),
+          ),
         ),
       ),
     );
@@ -156,7 +161,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   String _secondaryMuscleDisplay() {
     String display;
-    if(_secondaryMuscleGroup.isNotEmpty) {
+    if (_secondaryMuscleGroup.isNotEmpty) {
       display = _secondaryMuscleGroup.map((bodyPart) => bodyPart.name).join(", ");
     } else {
       display = "Select secondary muscle groups";
@@ -268,8 +273,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNameController = TextEditingController(text: previousExercise?.name);
     _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
 
-    _primaryMuscleGroup = previousExercise != null ? MuscleGroup.fromString(previousExercise.primaryMuscle) : MuscleGroup.values.first;
-    _secondaryMuscleGroup = previousExercise?.secondaryMuscles.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList() ?? [];
+    _primaryMuscleGroup =
+        previousExercise != null ? MuscleGroup.fromString(previousExercise.primaryMuscle) : MuscleGroup.values.first;
+    _secondaryMuscleGroup =
+        previousExercise?.secondaryMuscles.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList() ?? [];
     _exerciseType =
         previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
   }

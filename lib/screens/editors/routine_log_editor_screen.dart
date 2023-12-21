@@ -14,6 +14,7 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
+import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -31,6 +32,9 @@ class RoutineLogEditorScreen extends StatefulWidget {
 }
 
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
+  bool _loading = false;
+  String _loadingMessage = "";
+
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
@@ -38,8 +42,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-    as List<Exercise>?;
+            MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
+        as List<Exercise>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (context.mounted) {
@@ -71,37 +75,30 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   Future<void> _doCreateRoutineLog() async {
+    _toggleLoadingState(message: "Saving log...");
+
+    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+
     final log = widget.log;
 
-    final completedExerciseLogs = _completedExerciseLogsAndSets();
-
-    Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
+    final createdLog = await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
         context: context,
         name: log.name,
         notes: log.notes,
-        exerciseLogs: completedExerciseLogs,
+        exerciseLogs: exerciseLogs,
         startTime: log.startTime,
         routine: log.routine);
+
+    _toggleLoadingState();
+
+    _navigateBack(log: createdLog);
   }
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
     return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
-  }
-
-  List<ExerciseLogDto> _completedExerciseLogsAndSets() {
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
-    final completedExerciseLogs = <ExerciseLogDto>[];
-    for (var log in exerciseLogs) {
-      final completedSets = log.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-      if (completedSets.isNotEmpty) {
-        final completedExerciseLog = log.copyWith(sets: completedSets);
-        completedExerciseLogs.add(completedExerciseLog);
-      }
-    }
-    return completedExerciseLogs;
   }
 
   void _discardLog() {
@@ -118,11 +115,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         isRightActionDestructive: true);
   }
 
-  void _saveLog() async {
+  void _saveLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
       _doCreateRoutineLog();
-      _navigateBack();
     } else {
       showAlertDialogWithSingleAction(
           context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
@@ -145,10 +141,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  void _navigateBack() {
+  void _navigateBack({RoutineLog? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog = null;
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(log);
+  }
+
+  void _toggleLoadingState({String message = ""}) {
+    setState(() {
+      _loading = !_loading;
+      _loadingMessage = message;
+    });
   }
 
   @override
@@ -158,96 +161,98 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
     return PopScope(
-      canPop: false,
-      child: Scaffold(
-          backgroundColor: tealBlueDark,
-          appBar: AppBar(
-            leading: GestureDetector(
-              onTap: _discardLog,
-              child: const Icon(
-                Icons.arrow_back_outlined,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            title: Text(
-              widget.log.name,
-              style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            actions: [
-              IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))
-            ],
-          ),
-          floatingActionButton: isKeyboardOpen
-              ? null
-              : FloatingActionButton(
-                  heroTag: "fab_end_routine_log_screen",
-                  onPressed: _saveLog,
-                  backgroundColor: tealBlueLighter,
-                  enableFeedback: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
-                ),
-          body: NotificationListener<UserScrollNotification>(
-            onNotification: (scrollNotification) {
-              if (scrollNotification.direction != ScrollDirection.idle) {
-                _dismissKeyboard();
-              }
-              return false;
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-              child: GestureDetector(
-                onTap: _dismissKeyboard,
-                child: Column(
-                  children: [
-                    Consumer<ExerciseLogProvider>(
-                        builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
-                      return _RoutineLogOverview(
-                        sets: provider.completedSets().length,
-                        timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
-                      );
-                    }),
-                    const SizedBox(height: 20),
-                    exerciseLogs.isNotEmpty
-                        ? Expanded(
-                            child: ListView.separated(
-                                padding: const EdgeInsets.only(bottom: 250),
-                                itemBuilder: (BuildContext context, int index) {
-                                  final log = exerciseLogs[index];
-                                  final exerciseId = log.id;
-                                  return ExerciseLogWidget(
-                                      key: ValueKey(exerciseId),
-                                      exerciseLogDto: log,
-                                      editorType: RoutineEditorMode.log,
-                                      superSet:
-                                          whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
-                                      onRemoveSuperSet: (String superSetId) {
-                                        removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
-                                        _cacheLog();
-                                      },
-                                      onRemoveLog: () {
-                                        removeExercise(context: context, exerciseId: exerciseId);
-                                        _cacheLog();
-                                      },
-                                      onReOrder: () {
-                                        reOrderExercises(context: context);
-                                        _cacheLog();
-                                      },
-                                      onSuperSet: () => _showExercisePicker(firstExerciseLog: log),
-                                      onCache: _cacheLog);
-                                },
-                                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                itemCount: exerciseLogs.length))
-                        : const ExerciseLogEmptyState(
-                            mode: RoutineEditorMode.log,
-                            message: "Tap the + button to start adding exercises to your log"),
-                  ],
+        canPop: false,
+        child: Scaffold(
+            backgroundColor: tealBlueDark,
+            appBar: AppBar(
+              leading: GestureDetector(
+                onTap: _discardLog,
+                child: const Icon(
+                  Icons.arrow_back_outlined,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ),
+              title: Text(
+                widget.log.name,
+                style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
             ),
-          )),
-    );
+            floatingActionButton: isKeyboardOpen || _loading
+                ? null
+                : FloatingActionButton(
+                    heroTag: "fab_end_routine_log_screen",
+                    onPressed: _saveLog,
+                    backgroundColor: tealBlueLighter,
+                    enableFeedback: true,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    child: const Icon(Icons.check_box_rounded, size: 32, color: Colors.green),
+                  ),
+            body: Stack(children: [
+              SafeArea(
+                child: NotificationListener<UserScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification.direction != ScrollDirection.idle) {
+                      _dismissKeyboard();
+                    }
+                    return false;
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+                    child: GestureDetector(
+                      onTap: _dismissKeyboard,
+                      child: Column(
+                        children: [
+                          Consumer<ExerciseLogProvider>(
+                              builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
+                            return _RoutineLogOverview(
+                              sets: provider.completedSets().length,
+                              timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
+                            );
+                          }),
+                          const SizedBox(height: 20),
+                          exerciseLogs.isNotEmpty
+                              ? Expanded(
+                                  child: ListView.separated(
+                                      padding: const EdgeInsets.only(bottom: 250),
+                                      itemBuilder: (BuildContext context, int index) {
+                                        final log = exerciseLogs[index];
+                                        final exerciseId = log.id;
+                                        return ExerciseLogWidget(
+                                            key: ValueKey(exerciseId),
+                                            exerciseLogDto: log,
+                                            editorType: RoutineEditorMode.log,
+                                            superSet: whereOtherExerciseInSuperSet(
+                                                firstExercise: log, exercises: exerciseLogs),
+                                            onRemoveSuperSet: (String superSetId) {
+                                              removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
+                                              _cacheLog();
+                                            },
+                                            onRemoveLog: () {
+                                              removeExercise(context: context, exerciseId: exerciseId);
+                                              _cacheLog();
+                                            },
+                                            onReOrder: () {
+                                              reOrderExercises(context: context);
+                                              _cacheLog();
+                                            },
+                                            onSuperSet: () => _showExercisePicker(firstExerciseLog: log),
+                                            onCache: _cacheLog);
+                                      },
+                                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                      itemCount: exerciseLogs.length))
+                              : const ExerciseLogEmptyState(
+                                  mode: RoutineEditorMode.log,
+                                  message: "Tap the + button to start adding exercises to your log"),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
+            ])));
   }
 
   @override

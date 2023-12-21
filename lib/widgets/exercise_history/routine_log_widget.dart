@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../enums/exercise_type_enums.dart';
@@ -23,7 +24,12 @@ class RoutineLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLogId)!;
+    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLog?.id ?? "");
+
+    if(routineLog == null) {
+      return const ListViewEmptyState();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
