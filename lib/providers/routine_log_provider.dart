@@ -227,11 +227,11 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   bool isLatestLogForTemplate({required String templateId, required logId}) {
-    final logsForTemplate = _logs.where((log) => log.routine?.id == templateId);
-    if(logsForTemplate.isEmpty) {
+    final logsForTemplate = _logs.firstWhereOrNull((log) => log.routine?.id == templateId);
+    if(logsForTemplate == null) {
       return false;
     } else {
-      return logsForTemplate.first.id == logId;
+      return logsForTemplate.id == logId;
     }
   }
 
