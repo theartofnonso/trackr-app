@@ -22,14 +22,21 @@ import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import 'editors/helper_utils.dart';
-import 'exercise/history/home_screen.dart';
+
+class _ExerciseLogViewModel {
+  final ExerciseLogDto exerciseLog;
+  final ExerciseLogDto? superSet;
+
+  _ExerciseLogViewModel({required this.exerciseLog, required this.superSet});
+}
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLog log;
   final String previousRouteName;
   final bool finishedLogging;
 
-  const RoutineLogPreviewScreen({super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
+  const RoutineLogPreviewScreen(
+      {super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
 
   @override
   State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
@@ -46,7 +53,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     Provider.of<ExerciseProvider>(context, listen: true);
     final log = widget.log;
 
-    List<ExerciseLogDto> procedures =
+    List<ExerciseLogDto> exerciseLogs =
         log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
           Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
@@ -56,7 +63,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return procedure;
     }).toList();
 
-    final numberOfCompletedSets = _calculateCompletedSets(procedures: procedures);
+    final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
     return Scaffold(
@@ -179,7 +186,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ],
                       ),
                     ),
-                    ..._exerciseLogsToWidgets(exerciseLogs: procedures)
+                    _ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
               ),
@@ -196,20 +203,19 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     });
   }
 
-  List<Widget> _exerciseLogsToWidgets({required List<ExerciseLogDto> exerciseLogs}) {
-    return exerciseLogs.map((exerciseLog) {
-      final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-      if (completedSets.isNotEmpty) {
-        exerciseLog = exerciseLog.copyWith(sets: completedSets);
-        return ExerciseLogWidget(
-          padding: const EdgeInsets.only(bottom: 8),
-          exerciseLog: exerciseLog.copyWith(sets: completedSets),
-          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-          readOnly: widget.previousRouteName == exerciseRouteName,
-        );
-      }
-      return const SizedBox.shrink();
-    }).toList();
+  List<_ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+    return exerciseLogs
+        .map((exerciseLog) {
+          final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
+          if (completedSets.isNotEmpty) {
+            return _ExerciseLogViewModel(
+                exerciseLog: exerciseLog = exerciseLog.copyWith(sets: completedSets),
+                superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+          }
+          return null;
+        })
+        .whereType<_ExerciseLogViewModel>()
+        .toList();
   }
 
   int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
@@ -330,8 +336,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _checkForTemplateUpdates() {
-    _isLatestLogForTemplate = widget.finishedLogging || Provider.of<RoutineLogProvider>(context, listen: false)
-        .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
+    _isLatestLogForTemplate = widget.finishedLogging ||
+        Provider.of<RoutineLogProvider>(context, listen: false)
+            .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
 
     if (!_isLatestLogForTemplate) {
       return;
@@ -372,6 +379,24 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void initState() {
     super.initState();
     _checkForTemplateUpdates();
+  }
+}
+
+class _ExerciseLogListView extends StatelessWidget {
+  final List<_ExerciseLogViewModel> exerciseLogs;
+
+  const _ExerciseLogListView({required this.exerciseLogs});
+
+  @override
+  Widget build(BuildContext context) {
+    final widgets = exerciseLogs.map((exerciseLog) {
+      return ExerciseLogWidget(
+        padding: const EdgeInsets.only(bottom: 8),
+        exerciseLog: exerciseLog.exerciseLog,
+        superSet: exerciseLog.superSet,
+      );
+    }).toList();
+    return Column(children: widgets);
   }
 }
 

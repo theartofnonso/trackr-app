@@ -12,16 +12,9 @@ import '../preview/set_headers/double_set_header.dart';
 class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
   final ExerciseLogDto? superSet;
-  final bool readOnly;
   final EdgeInsetsGeometry? padding;
 
-  const ExerciseLogWidget({
-    super.key,
-    required this.exerciseLog,
-    required this.superSet,
-    this.readOnly = false,
-    this.padding,
-  });
+  const ExerciseLogWidget({super.key, required this.exerciseLog, required this.superSet, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +34,8 @@ class ExerciseLogWidget extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               dense: true,
               onTap: () {
-                if (!readOnly) {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
-                }
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
               },
               title: Text(exerciseLog.exercise.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
               subtitle: otherSuperSet != null
