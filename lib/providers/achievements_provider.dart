@@ -198,7 +198,7 @@ bool _loggedOnWeekend(RoutineLog log) {
 
 /// AchievementType.sweatEquity
 ({int difference, double progress}) _calculateSweatEquityAchievement({required List<RoutineLog> logs}) {
-  const targetHours = Duration(hours: 90);
+  const targetHours = Duration(hours: 100);
 
   final duration = logs.map((log) => log.duration()).reduce((total, duration) => total + duration);
 
