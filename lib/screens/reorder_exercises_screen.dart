@@ -31,8 +31,14 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
     });
   }
 
-  List<Widget> _exercisesToWidgets() {
-    return _exercises
+  /// Navigate to previous screen
+  void _saveReOrdering() {
+    Navigator.of(context).pop(_exercises);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final widgets = _exercises
         .mapIndexed((index, exercise) => ListTile(
               key: Key("$index"),
               title: Text(exercise.exercise.name, style: GoogleFonts.lato()),
@@ -42,15 +48,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
               ),
             ))
         .toList();
-  }
 
-  /// Navigate to previous screen
-  void _saveReOrdering() {
-    Navigator.of(context).pop(_exercises);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -69,7 +67,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
       ),
       body: ReorderableListView(
           buildDefaultDragHandles: true,
-          children: _exercisesToWidgets(),
+          children: widgets,
           onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
     );
   }
