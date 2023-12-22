@@ -100,23 +100,29 @@ extension DateTimeExtension on DateTime {
 
   DateTime lastWeekDay() {
 
-    // Calculate the number of days remaining until the end of the week (Sunday)
-    int remainingDays = 7 - weekday;
+    // Calculate the last day of the current week (Sunday)
+    int daysToAdd = DateTime.sunday - weekday;
 
-    // Add the remaining days to the current date
-    DateTime lastDayOfCurrentWeek = add(Duration(days: remainingDays));
+    // Create a DateTime object representing the last moment of the current week
+    DateTime endOfWeek = DateTime(year, month, day + daysToAdd, 23, 59, 59);
 
-    // Set the time to the end of the day (23:59:59)
-    lastDayOfCurrentWeek = DateTime(
-      lastDayOfCurrentWeek.year,
-      lastDayOfCurrentWeek.month,
-      lastDayOfCurrentWeek.day,
-      23,
-      59,
-      59,
-    );
+    return endOfWeek;
+  }
 
-    return lastDayOfCurrentWeek;
+  DateTime lastMonthDay() {
+
+    // Calculate the first day of the next month
+    DateTime firstDayNextMonth = (month < 12) ?
+    DateTime(year, month + 1, 1) :
+    DateTime(year + 1, 1, 1);
+
+    // Subtract one day to get the last day of the current month
+    DateTime lastDayCurrentMonth = firstDayNextMonth.subtract(const Duration(days: 1));
+
+    // Create a DateTime object representing the last moment of the current month
+    DateTime endOfMonth = DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
+
+    return endOfMonth;
   }
 }
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../screens/editors/routine_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
@@ -28,7 +26,7 @@ void navigateToRoutineLogPreview({required BuildContext context, required Routin
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogPreviewScreen(log: log, finishedLogging: finishedLogging)));
 }
 
-void navigateToRoutineLogs({required BuildContext context, required DateTimeRange range}) {
-  final logs = Provider.of<RoutineLogProvider>(context, listen: false).logsWhereDateRange(range: range);
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogsScreen(logs: logs)));
+void navigateToRoutineLogs({required BuildContext context, required List<RoutineLog> logs}) {
+  final descendingLogs = logs.reversed.toList();
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogsScreen(logs: descendingLogs)));
 }

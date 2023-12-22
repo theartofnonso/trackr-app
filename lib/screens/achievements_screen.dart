@@ -13,18 +13,17 @@ import '../widgets/backgrounds/gradient_background.dart';
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
 
-  List<AchievementDto> _achievements({required List<RoutineLog> logs}) {
+  List<AchievementDto> _achievements({required BuildContext context}) {
     return AchievementType.values.map((achievementType) {
-      final progress = calculateProgress(logs: logs, type: achievementType);
+      final progress = calculateProgress(context: context, type: achievementType);
       return AchievementDto(type: achievementType, progress: progress);
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs.reversed.toList();
 
-    final achievements = _achievements(logs: logs);
+    final achievements = _achievements(context: context);
 
     return Scaffold(
         body: Stack(children: [

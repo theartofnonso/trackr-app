@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../enums/achievement_type_enums.dart';
@@ -9,15 +11,19 @@ import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
-({int difference, double progress}) calculateProgress({required List<RoutineLog> logs, required AchievementType type}) {
+({int difference, double progress}) calculateProgress({required BuildContext context, required AchievementType type}) {
+  final provider = Provider.of<RoutineLogProvider>(context, listen: false);
+  final logs = provider.logs;
+  final weekToLogs = provider.weekToLogs;
   return switch (type) {
     AchievementType.days12 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days30 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days75 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days100 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: logs),
-    AchievementType.obsessed => _calculateObsessedAchievement(logs: logs),
-    AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(logs: logs),
+    AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 12),
+    //AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(logs: logs, target: 12),
+    //AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(logs: logs, target: 12),
     _ => (progress: 0, difference: 0)
   };
 }
@@ -67,37 +73,21 @@ import '../utils/general_utils.dart';
 }
 
 /// AchievementType.obsessed
-Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogs(
-    List<RoutineLog> routineLogs, List<DateTimeRange> weekRanges) {
-  Map<DateTimeRange, List<RoutineLog>> result = {};
-
-  for (var weekRange in weekRanges) {
-    List<RoutineLog> routinesInWeek = routineLogs
-        .where((log) =>
-            log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
-            log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))))
-        .toList();
-
-    result[weekRange] = routinesInWeek;
-  }
-
-  return result;
-}
 
 Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogsWhere(
     {required List<RoutineLog> logs,
     required List<DateTimeRange> weekRanges,
-    required bool Function(RoutineLog log) evaluation}) {
+    bool Function(RoutineLog log)? evaluation}) {
   Map<DateTimeRange, List<RoutineLog>> result = {};
 
   for (var weekRange in weekRanges) {
     List<RoutineLog> routinesInWeek = logs
-        .where((log) =>
-            log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
-            log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))) &&
-            evaluation(log))
+        .where((log) => log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
+                log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))) &&
+                evaluation != null
+            ? evaluation(log)
+            : true)
         .toList();
-    print("routinesInWeek: ${routinesInWeek.length}");
     result[weekRange] = routinesInWeek;
   }
 
@@ -129,16 +119,8 @@ Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogsWhere(
   return (occurrences: occurrences, consecutiveWeeks: consecutiveWeeks);
 }
 
-({int difference, double progress}) _calculateObsessedAchievement({required List<RoutineLog> logs}) {
-
-  DateTime startDate = logs.first.createdAt.getDateTimeInUtc(); // Replace with your desired start date
-  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
-
-  // Map each DateTimeRange to RoutineLogs falling within it
-  Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs = _mapWeeksToRoutineLogs(logs, weekRanges);
-
-  int target = 12;
-  
+({int difference, double progress}) _consecutiveAchievementProgress(
+    Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs, int target) {
   final result = _findConsecutiveWeeksWithRoutineLogs(weekToRoutineLogs, target);
 
   if (weekToRoutineLogs.length < target) {
@@ -150,6 +132,11 @@ Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogsWhere(
   final progress = result.occurrences.isNotEmpty ? 1 : result.consecutiveWeeks / target;
 
   return (progress: progress.toDouble(), difference: difference <= 0 ? 0 : difference);
+}
+
+({int difference, double progress}) _calculateObsessedAchievement(
+    {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
+  return _consecutiveAchievementProgress(weekToLogs, target);
 }
 
 bool _hasLegExercise(RoutineLog log) {
@@ -162,25 +149,34 @@ bool _hasLegExercise(RoutineLog log) {
   });
 }
 
-({int difference, double progress}) _calculateNeverSkipALegDayAchievement({required List<RoutineLog> logs}) {
-  int target = 12;
-
-  DateTime startDate = logs.first.createdAt.getDateTimeInUtc(); // Replace with your desired start date
+({int difference, double progress}) _calculateNeverSkipALegDayAchievement(
+    {required List<RoutineLog> logs, required int target}) {
+  DateTime startDate = logs.first.createdAt.getDateTimeInUtc();
   List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
 
   // Map each DateTimeRange to RoutineLogs falling within it
   Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs =
       _mapWeeksToRoutineLogsWhere(logs: logs, weekRanges: weekRanges, evaluation: _hasLegExercise);
 
-  final result = _findConsecutiveWeeksWithRoutineLogs(weekToRoutineLogs, target);
+  return _consecutiveAchievementProgress(weekToRoutineLogs, target);
+}
 
-  if (weekToRoutineLogs.length < target) {
-    return (progress: result.consecutiveWeeks / target, difference: target - result.consecutiveWeeks);
-  }
+/// AchievementType.neverSkipAMonday
+bool _loggedOnMonday(RoutineLog log) {
+  //print(log.createdAt.getDateTimeInUtc().day);
+  return log.createdAt.getDateTimeInUtc().weekday == 1;
+}
 
-  final difference = target - result.consecutiveWeeks;
+({int difference, double progress}) _calculateNeverSkipAMondayAchievement(
+    {required List<RoutineLog> logs, required int target}) {
+  DateTime startDate = logs.first.createdAt.getDateTimeInUtc();
+  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
 
-  final progress = result.occurrences.isNotEmpty ? 1 : result.consecutiveWeeks / target;
+  // Map each DateTimeRange to RoutineLogs falling within it
+  Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs =
+      _mapWeeksToRoutineLogsWhere(logs: logs, weekRanges: weekRanges, evaluation: _loggedOnMonday);
 
-  return (progress: progress.toDouble(), difference: difference <= 0 ? 0 : difference);
+  print(weekToRoutineLogs);
+
+  return _consecutiveAchievementProgress(weekToRoutineLogs, target);
 }
