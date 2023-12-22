@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../dtos/exercise_log_dto.dart';
@@ -24,6 +25,7 @@ import '../models/RoutineLog.dart';
     AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 12),
     AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 12),
     AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 4),
+    AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: logs),
     _ => (progress: 0, difference: 0)
   };
 }
@@ -93,7 +95,7 @@ import '../models/RoutineLog.dart';
         consecutiveWeeks = 0;
       }
     } else {
-      if(occurrences.isEmpty) {
+      if (occurrences.isEmpty) {
         occurrences = [];
       }
     }
@@ -116,7 +118,7 @@ import '../models/RoutineLog.dart';
 
   final progress = occurrences.isNotEmpty ? 1 : consecutiveWeeks / target;
 
-  if(occurrences.isNotEmpty || difference <= 0 ) {
+  if (occurrences.isNotEmpty || difference <= 0) {
     difference = 0;
   }
 
@@ -192,4 +194,17 @@ bool _loggedOnWeekend(RoutineLog log) {
       occurrences: result.occurrences,
       target: target,
       hasSufficientLogs: weekToLogs.length < target);
+}
+
+/// AchievementType.sweatEquity
+({int difference, double progress}) _calculateSweatEquityAchievement({required List<RoutineLog> logs}) {
+  const targetHours = Duration(hours: 90);
+
+  final duration = logs.map((log) => log.duration()).reduce((total, duration) => total + duration);
+
+  final progress = duration.inHours / targetHours.inHours;
+
+  final difference = targetHours - duration;
+
+  return (progress: progress, difference: difference < Duration.zero ? 0 : difference.inHours);
 }

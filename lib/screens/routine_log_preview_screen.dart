@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/routine_provider.dart';
@@ -169,7 +170,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text(_logDuration(log: log),
+                                child: Text(log.duration().secondsOrMinutesOrHours(),
                                     style: GoogleFonts.lato(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
@@ -209,15 +210,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       }
       return const SizedBox.shrink();
     }).toList();
-  }
-
-  String _logDuration({required RoutineLog log}) {
-    String interval = "";
-    final startTime = log.startTime.getDateTimeInUtc();
-    final endTime = log.endTime.getDateTimeInUtc();
-    final difference = endTime.difference(startTime);
-    interval = difference.secondsOrMinutesOrHours();
-    return interval;
   }
 
   int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
