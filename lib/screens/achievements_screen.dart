@@ -1,6 +1,4 @@
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -71,8 +69,30 @@ class AchievementsScreen extends StatelessWidget {
     return (progress: progress, difference: difference < 0 ? 0 : difference);
   }
 
-  List<DateTimeRange> generateWeekRanges(DateTime startDate) {
+  DateTime getLastDayOfCurrentWeek() {
     DateTime currentDate = DateTime.now();
+
+    // Calculate the number of days remaining until the end of the week (Sunday)
+    int remainingDays = 7 - currentDate.weekday;
+
+    // Add the remaining days to the current date
+    DateTime lastDayOfCurrentWeek = currentDate.add(Duration(days: remainingDays));
+
+    // Set the time to the end of the day (23:59:59)
+    lastDayOfCurrentWeek = DateTime(
+      lastDayOfCurrentWeek.year,
+      lastDayOfCurrentWeek.month,
+      lastDayOfCurrentWeek.day,
+      23,
+      59,
+      59,
+    );
+
+    return lastDayOfCurrentWeek;
+  }
+
+  List<DateTimeRange> generateWeekRanges(DateTime startDate) {
+    DateTime currentDate = getLastDayOfCurrentWeek();
     List<DateTimeRange> weekRanges = [];
 
     // Find the first day of the week for the given start date
@@ -91,12 +111,15 @@ class AchievementsScreen extends StatelessWidget {
     return weekRanges;
   }
 
-  Map<DateTimeRange, List<RoutineLog>> mapWeeksToRoutineLogs(List<RoutineLog> routineLogs, List<DateTimeRange> weekRanges) {
+  Map<DateTimeRange, List<RoutineLog>> mapWeeksToRoutineLogs(
+      List<RoutineLog> routineLogs, List<DateTimeRange> weekRanges) {
     Map<DateTimeRange, List<RoutineLog>> result = {};
 
     for (var weekRange in weekRanges) {
-      List<RoutineLog> routinesInWeek = routineLogs.where((log) =>
-      log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) && log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))))
+      List<RoutineLog> routinesInWeek = routineLogs
+          .where((log) =>
+              log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
+              log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))))
           .toList();
 
       result[weekRange] = routinesInWeek;
@@ -105,8 +128,34 @@ class AchievementsScreen extends StatelessWidget {
     return result;
   }
 
+  ({List<DateTimeRange> occurrences, int consecutiveWeeks}) findConsecutiveWeeksWithRoutineLogs(Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs, int n) {
+    List<DateTimeRange> occurrences = [];
+    int consecutiveWeeks = 0;
+    int index = 0;
+
+    for (var entry in weekToRoutineLogs.entries) {
+      if (entry.value.isNotEmpty) {
+        consecutiveWeeks++;
+
+        if (consecutiveWeeks % n == 0) {
+          final previousWeek = weekToRoutineLogs.entries.elementAt(index - 1);
+          final DateTimeRange range = DateTimeRange(start: previousWeek.key.start, end: entry.key.end);
+          occurrences.add(range);
+        }
+      } else {
+        consecutiveWeeks = 0;
+        occurrences = [];
+      }
+      index++;
+    }
+
+    return (occurrences: occurrences, consecutiveWeeks: consecutiveWeeks);
+  }
+
   ({int difference, double progress}) _calculateObsessedProgress({required BuildContext context}) {
     final logs = Provider.of<RoutineLogProvider>(context, listen: false).logs.reversed.toList();
+
+    int target = 12;
 
     DateTime startDate = logs.first.createdAt.getDateTimeInUtc(); // Replace with your desired start date
     List<DateTimeRange> weekRanges = generateWeekRanges(startDate);
@@ -114,19 +163,16 @@ class AchievementsScreen extends StatelessWidget {
     // Map each DateTimeRange to RoutineLogs falling within it
     Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs = mapWeeksToRoutineLogs(logs, weekRanges);
 
-    weekToRoutineLogs.forEach((key, value) {
-      print("Week: ${key.start} - ${key.end}");
-      print("Routines: ${value.length}");
-    });
+    final result = findConsecutiveWeeksWithRoutineLogs(weekToRoutineLogs, target);
 
-    int target = 12;
-    // Count routine logs within 12 consecutive weeks
-    int count = weekToRoutineLogs.length;
+    if(weekToRoutineLogs.length < target) {
+      return (progress: 0, difference: target - result.consecutiveWeeks);
+    }
 
-    final progress = count / target;
-    final difference = target - count;
+    final progress = result.occurrences.isNotEmpty ? 1 : 0;
+    final difference = target - result.consecutiveWeeks;
 
-    return (progress: progress, difference: difference < 0 ? 0 : difference);
+    return (progress: progress.toDouble(), difference: difference < 0 ? 0 : difference);
   }
 
   List<Widget> _achievementToWidgets({required BuildContext context}) {
