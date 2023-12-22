@@ -134,11 +134,12 @@ DateTimeRange thisYearDateRange() {
 
 List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
   DateTime lastDayOfCurrentWeek = DateTime.now().lastWeekDay();
+
   List<DateTimeRange> weekRanges = [];
 
   // Find the first day of the week for the given start date
-  startDate = startDate.subtract(Duration(days: startDate.weekday - 1));
-
+  startDate = startDate.subtract(Duration(days: startDate.weekday - 1)).toLocal();
+  
   while (startDate.isBefore(lastDayOfCurrentWeek)) {
     DateTime endDate = startDate.add(const Duration(days: 6));
     endDate = endDate.isBefore(lastDayOfCurrentWeek) ? endDate : lastDayOfCurrentWeek;
@@ -148,7 +149,6 @@ List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
     // Move to the next week
     startDate = endDate.add(const Duration(days: 1));
   }
-
   return weekRanges;
 }
 
