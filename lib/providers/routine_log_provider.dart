@@ -16,13 +16,21 @@ import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+  final Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
 
   List<RoutineLog> _logs = [];
+
+  final Map<DateTimeRange, List<RoutineLog>> _weekToLogs = {};
+
+  final Map<DateTimeRange, List<RoutineLog>> _monthToLogs = {};
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
+
+  UnmodifiableMapView<DateTimeRange, List<RoutineLog>> get weekToLogs => UnmodifiableMapView(_weekToLogs);
+
+  UnmodifiableMapView<DateTimeRange, List<RoutineLog>> get monthToLogs => UnmodifiableMapView(_monthToLogs);
 
   RoutineLog? cachedRoutineLog;
 
@@ -44,28 +52,75 @@ class RoutineLogProvider with ChangeNotifier {
     final routineLogs = response.data?.items;
     if (routineLogs != null) {
       _logs = routineLogs.whereType<RoutineLog>().toList();
-      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      _loadExerciseLogs();
+      _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      _normaliseLogs();
       notifyListeners();
     }
   }
 
   void _loadExerciseLogs() {
-    Map<String, List<ExerciseLogDto>> map = {};
-
+    /// Clear previous list of exercise logs
+    _exerciseLogs.clear();
     for (RoutineLog log in _logs) {
       final decodedExerciseLogs =
           log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
       for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
         final exerciseId = exerciseLog.exercise.id;
-        final exerciseLogs = map[exerciseId] ?? [];
+        final exerciseLogs = _exerciseLogs[exerciseId] ?? [];
         exerciseLogs.add(exerciseLog);
-        exerciseLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-        map.putIfAbsent(exerciseId, () => exerciseLogs);
+        _exerciseLogs.putIfAbsent(exerciseId, () => exerciseLogs);
       }
     }
+  }
 
-    _exerciseLogs = map;
+  void _loadWeekToLogs() {
+    if (_logs.isEmpty) {
+      return;
+    }
+
+    /// Clear previous list of week to logs
+    _weekToLogs.clear();
+
+    DateTime startDate = logs.first.createdAt.getDateTimeInUtc();
+    List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
+
+    // Map each DateTimeRange to RoutineLogs falling within it
+    for (var weekRange in weekRanges) {
+      List<RoutineLog> routinesInWeek = logs
+          .where((log) =>
+              log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
+              log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))))
+          .toList();
+      _weekToLogs[weekRange] = routinesInWeek;
+    }
+  }
+
+  void _loadMonthToLogs() {
+    if (_logs.isEmpty) {
+      return;
+    }
+
+    /// Clear previous list of month to logs
+    _monthToLogs.clear();
+
+    DateTime startDate = logs.first.createdAt.getDateTimeInUtc();
+    List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
+
+    // Map each DateTimeRange to RoutineLogs falling within it
+    for (var monthRange in monthRanges) {
+      List<RoutineLog> routinesInMonth = logs
+          .where((log) =>
+              log.createdAt.getDateTimeInUtc().isAfter(monthRange.start) &&
+              log.createdAt.getDateTimeInUtc().isBefore(monthRange.end.add(const Duration(days: 1))))
+          .toList();
+      _monthToLogs[monthRange] = routinesInMonth;
+    }
+  }
+
+  void _normaliseLogs() {
+    _loadExerciseLogs();
+    _loadWeekToLogs();
+    _loadMonthToLogs();
   }
 
   Map<String, dynamic> _fixJson(String jsonString) {
@@ -115,7 +170,7 @@ class RoutineLogProvider with ChangeNotifier {
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
-        _loadExerciseLogs();
+        _normaliseLogs();
       }
     } catch (_) {
       _cachePendingLogs(logToCreate);
@@ -192,7 +247,7 @@ class RoutineLogProvider with ChangeNotifier {
     if (deletedLog != null) {
       final index = _indexWhereRoutineLog(id: id);
       _logs.removeAt(index);
-      _loadExerciseLogs();
+      _normaliseLogs();
       notifyListeners();
     }
   }
@@ -206,8 +261,8 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<SetDto> wherePastSets({required Exercise exercise}) {
-    final exerciseLogs = _exerciseLogs[exercise.id] ?? [];
-    return exerciseLogs.isNotEmpty ? exerciseLogs.reversed.first.sets : [];
+    final exerciseLogs = _exerciseLogs[exercise.id]?.reversed.toList() ?? [];
+    return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
   List<SetDto> setsForMuscleGroupWhereDateRange(
@@ -228,7 +283,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   bool isLatestLogForTemplate({required String templateId, required logId}) {
     final logsForTemplate = _logs.firstWhereOrNull((log) => log.routine?.id == templateId);
-    if(logsForTemplate == null) {
+    if (logsForTemplate == null) {
       return false;
     } else {
       return logsForTemplate.id == logId;

@@ -97,5 +97,32 @@ extension DateTimeExtension on DateTime {
 
     return display;
   }
+
+  DateTime lastWeekDay() {
+
+    // Calculate the last day of the current week (Sunday)
+    int daysToAdd = DateTime.sunday - weekday;
+
+    // Create a DateTime object representing the last moment of the current week
+    DateTime endOfWeek = DateTime(year, month, day + daysToAdd, 23, 59, 59);
+
+    return endOfWeek;
+  }
+
+  DateTime lastMonthDay() {
+
+    // Calculate the first day of the next month
+    DateTime firstDayNextMonth = (month < 12) ?
+    DateTime(year, month + 1, 1) :
+    DateTime(year + 1, 1, 1);
+
+    // Subtract one day to get the last day of the current month
+    DateTime lastDayCurrentMonth = firstDayNextMonth.subtract(const Duration(days: 1));
+
+    // Create a DateTime object representing the last moment of the current month
+    DateTime endOfMonth = DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
+
+    return endOfMonth;
+  }
 }
 

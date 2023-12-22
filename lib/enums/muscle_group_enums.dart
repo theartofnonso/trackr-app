@@ -12,6 +12,7 @@ enum MuscleGroupFamily {
   const MuscleGroupFamily(this.name);
 
   final String name;
+
 }
 
 enum MuscleGroup {

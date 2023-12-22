@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
+import '../enums/template_changes_type_message_enums.dart';
 import '../models/Exercise.dart';
 
 class ExerciseLogProvider extends ChangeNotifier {

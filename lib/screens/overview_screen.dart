@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../models/RoutineLog.dart';
 import '../providers/routine_log_provider.dart';
@@ -24,16 +23,6 @@ class OverviewScreen extends StatelessWidget {
 
   void _navigateToMuscleDistribution(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
-  }
-
-  int _logsForTheWeekCount({required List<RoutineLog> logs}) {
-    final thisWeek = thisWeekDateRange();
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisWeek)).toList().length;
-  }
-
-  int _logsForTheMonthCount({required List<RoutineLog> logs}) {
-    final thisMonth = thisMonthDateRange();
-    return logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: thisMonth)).toList().length;
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -60,9 +49,8 @@ class OverviewScreen extends StatelessWidget {
 
     final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
-    final logs = routineLogProvider.logs;
-    final logsForTheWeek = _logsForTheWeekCount(logs: logs);
-    final logsForTheMonth = _logsForTheMonthCount(logs: logs);
+    final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
+    final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -113,32 +101,14 @@ class OverviewScreen extends StatelessWidget {
                               },
                               children: [
                                 TableRow(children: [
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, range: thisWeekDateRange()),
-                                    child: Text("This Week",
-                                        style: GoogleFonts.lato(
-                                            fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, range: thisMonthDateRange()),
-                                    child: Text("This Month",
-                                        style: GoogleFonts.lato(
-                                            fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-                                  )
-                                ]),
-                                TableRow(children: [
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, range: thisWeekDateRange()),
-                                    child: Text("$logsForTheWeek sessions",
-                                        style: GoogleFonts.lato(
-                                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, range: thisMonthDateRange()),
-                                    child: Text("$logsForTheMonth sessions",
-                                        style: GoogleFonts.lato(
-                                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                                  )
+                                  _CTableCell(
+                                      title: "This Week",
+                                      subtitle: "${logsForTheWeek.length} sessions",
+                                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
+                                  _CTableCell(
+                                      title: "This Month",
+                                      subtitle: "${logsForTheMonth.length} sessions",
+                                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                                 ])
                               ],
                             )),
@@ -163,6 +133,25 @@ class OverviewScreen extends StatelessWidget {
               )),
         ),
       ),
+    );
+  }
+}
+
+class _CTableCell extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final void Function() onTap;
+
+  const _CTableCell({required this.title, required this.subtitle, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title, style: GoogleFonts.lato(fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
+        Text(subtitle, style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
+      ]),
     );
   }
 }
