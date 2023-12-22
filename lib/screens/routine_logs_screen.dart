@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
-import '../../../app_constants.dart';
 import '../../../models/RoutineLog.dart';
 import '../../utils/navigation_utils.dart';
+import '../widgets/c_list_title.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
   final List<RoutineLog> logs;
@@ -56,18 +56,10 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
-      child: ListTile(
-        onTap: () => navigateToRoutineLogPreview(context: context, log: log),
-        dense: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        title: Text(log.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-        subtitle: Text("${log.procedures.length} exercise(s)",
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
-        trailing: Text(log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
-      ),
-    );
+    return CListTile(
+        title: log.name,
+        subtitle: "${log.procedures.length} exercise(s)",
+        trailing: log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
+        onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }

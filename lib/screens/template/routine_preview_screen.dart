@@ -3,17 +3,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
+import '../../dtos/graph/exercise_log_view_model.dart';
 import '../../providers/exercise_provider.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'helper_utils.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
@@ -29,34 +29,6 @@ class RoutinePreviewScreen extends StatefulWidget {
 
 class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   bool _loading = false;
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required Routine routine}) {
-    return [
-      MenuItemButton(
-          onPressed: () {
-            navigateToRoutineEditor(context: context, routine: routine);
-          },
-          child: Text("Edit", style: GoogleFonts.lato())),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete workout?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _toggleLoadingState();
-                _deleteRoutine();
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
-  }
 
   void _deleteRoutine() async {
     try {
@@ -86,6 +58,31 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     if (routine == null) {
       return const SizedBox.shrink();
     }
+
+    final menuActions = [
+      MenuItemButton(
+          onPressed: () {
+            navigateToRoutineEditor(context: context, routine: routine);
+          },
+          child: Text("Edit", style: GoogleFonts.lato())),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Delete workout?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {
+                Navigator.of(context).pop();
+                _toggleLoadingState();
+                _deleteRoutine();
+              },
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
 
     List<ExerciseLogDto> exerciseLogs =
         routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
@@ -134,7 +131,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                   tooltip: 'Show menu',
                 );
               },
-              menuChildren: _menuActionButtons(routine: routine),
+              menuChildren: menuActions,
             )
           ],
         ),
@@ -154,7 +151,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                             ))
                         : const SizedBox.shrink(),
                     const SizedBox(height: 5),
-                    ..._proceduresToWidgets(procedures: exerciseLogs)
+                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
               ),
@@ -164,17 +161,11 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         ]));
   }
 
-  List<Widget> _proceduresToWidgets({required List<ExerciseLogDto> procedures}) {
-    return procedures
-        .map((procedure) => Column(
-              children: [
-                ExerciseLogWidget(
-                  exerciseLog: procedure,
-                  superSet: whereOtherExerciseInSuperSet(firstExercise: procedure, exercises: procedures),
-                ),
-                const SizedBox(height: 18)
-              ],
-            ))
-        .toList();
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+    return exerciseLogs.map((exerciseLog) {
+      return ExerciseLogViewModel(
+          exerciseLog: exerciseLog,
+          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+    }).toList();
   }
 }

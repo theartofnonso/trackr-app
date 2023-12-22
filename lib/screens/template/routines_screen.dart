@@ -54,6 +54,31 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final menuActions = [
+      MenuItemButton(
+        onPressed: () {
+          navigateToRoutineEditor(context: context, routine: routine);
+        },
+        child: Text("Edit", style: GoogleFonts.lato(color: Colors.white)),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: 'Delete workout?',
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {
+                Navigator.of(context).pop();
+                _deleteRoutine(context);
+              },
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
+
     return Theme(
         data: ThemeData(splashColor: tealBlueLight),
         child: ListTile(
@@ -99,36 +124,9 @@ class _RoutineWidget extends StatelessWidget {
                 tooltip: 'Show menu',
               );
             },
-            menuChildren: _menuActionButtons(context: context, routine: routine),
+            menuChildren: menuActions,
           ),
         ));
-  }
-
-  List<Widget> _menuActionButtons({required BuildContext context, required Routine routine}) {
-    return [
-      MenuItemButton(
-        onPressed: () {
-          navigateToRoutineEditor(context: context, routine: routine);
-        },
-        child: Text("Edit", style: GoogleFonts.lato(color: Colors.white)),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: 'Delete workout?',
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _deleteRoutine(context);
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
   }
 
   void _deleteRoutine(BuildContext context) {

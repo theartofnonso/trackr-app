@@ -14,22 +14,23 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
+import '../dtos/graph/exercise_log_view_model.dart';
+import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
-import 'exercise/history/home_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLog log;
   final String previousRouteName;
   final bool finishedLogging;
 
-  const RoutineLogPreviewScreen({super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
+  const RoutineLogPreviewScreen(
+      {super.key, required this.log, this.previousRouteName = "", this.finishedLogging = false});
 
   @override
   State<RoutineLogPreviewScreen> createState() => _RoutineLogPreviewScreenState();
@@ -46,7 +47,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     Provider.of<ExerciseProvider>(context, listen: true);
     final log = widget.log;
 
-    List<ExerciseLogDto> procedures =
+    List<ExerciseLogDto> exerciseLogs =
         log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
       final exerciseFromLibrary =
           Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
@@ -56,8 +57,41 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return procedure;
     }).toList();
 
-    final numberOfCompletedSets = _calculateCompletedSets(procedures: procedures);
+    final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
+
+    final menuActions = [
+      _isLatestLogForTemplate
+          ? MenuItemButton(
+              onPressed: _checkForTemplateUpdates,
+              child: const Text("Update template"),
+            )
+          : const SizedBox.shrink(),
+      MenuItemButton(
+        onPressed: () {
+          _toggleLoadingState(message: "Creating template from log");
+          _createTemplate();
+        },
+        child: const Text("Create template"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Delete log?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {
+                Navigator.of(context).pop();
+                _toggleLoadingState(message: "Deleting log");
+                _deleteLog();
+              },
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -90,7 +124,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                   tooltip: 'Show menu',
                 );
               },
-              menuChildren: _menuActionButtons(),
+              menuChildren: menuActions,
             )
           ],
         ),
@@ -179,7 +213,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ],
                       ),
                     ),
-                    ..._exerciseLogsToWidgets(exerciseLogs: procedures)
+                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
               ),
@@ -196,20 +230,19 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     });
   }
 
-  List<Widget> _exerciseLogsToWidgets({required List<ExerciseLogDto> exerciseLogs}) {
-    return exerciseLogs.map((exerciseLog) {
-      final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-      if (completedSets.isNotEmpty) {
-        exerciseLog = exerciseLog.copyWith(sets: completedSets);
-        return ExerciseLogWidget(
-          padding: const EdgeInsets.only(bottom: 8),
-          exerciseLog: exerciseLog.copyWith(sets: completedSets),
-          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-          readOnly: widget.previousRouteName == exerciseRouteName,
-        );
-      }
-      return const SizedBox.shrink();
-    }).toList();
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+    return exerciseLogs
+        .map((exerciseLog) {
+          final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
+          if (completedSets.isNotEmpty) {
+            return ExerciseLogViewModel(
+                exerciseLog: exerciseLog = exerciseLog.copyWith(sets: completedSets),
+                superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+          }
+          return null;
+        })
+        .whereType<ExerciseLogViewModel>()
+        .toList();
   }
 
   int _calculateCompletedSets({required List<ExerciseLogDto> procedures}) {
@@ -218,42 +251,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       completedSets.addAll(procedure.sets);
     }
     return completedSets.length;
-  }
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons() {
-    return [
-      _isLatestLogForTemplate
-          ? MenuItemButton(
-              onPressed: _checkForTemplateUpdates,
-              child: const Text("Update template"),
-            )
-          : const SizedBox.shrink(),
-      MenuItemButton(
-        onPressed: () {
-          _toggleLoadingState(message: "Creating template from log");
-          _createTemplate();
-        },
-        child: const Text("Create template"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete log?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _toggleLoadingState(message: "Deleting log");
-                _deleteLog();
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
   }
 
   void _createTemplate() async {
@@ -330,8 +327,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _checkForTemplateUpdates() {
-    _isLatestLogForTemplate = widget.finishedLogging || Provider.of<RoutineLogProvider>(context, listen: false)
-        .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
+    _isLatestLogForTemplate = widget.finishedLogging ||
+        Provider.of<RoutineLogProvider>(context, listen: false)
+            .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
 
     if (!_isLatestLogForTemplate) {
       return;
