@@ -101,32 +101,14 @@ class OverviewScreen extends StatelessWidget {
                               },
                               children: [
                                 TableRow(children: [
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek),
-                                    child: Text("This Week",
-                                        style: GoogleFonts.lato(
-                                            fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                                    child: Text("This Month",
-                                        style: GoogleFonts.lato(
-                                            fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-                                  )
-                                ]),
-                                TableRow(children: [
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek),
-                                    child: Text("${logsForTheWeek.length} sessions",
-                                        style: GoogleFonts.lato(
-                                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                                    child: Text("${logsForTheMonth.length} sessions",
-                                        style: GoogleFonts.lato(
-                                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                                  )
+                                  _CTableCell(
+                                      title: "This Week",
+                                      subtitle: "${logsForTheWeek.length} sessions",
+                                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
+                                  _CTableCell(
+                                      title: "This Month",
+                                      subtitle: "${logsForTheMonth.length} sessions",
+                                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                                 ])
                               ],
                             )),
@@ -151,6 +133,25 @@ class OverviewScreen extends StatelessWidget {
               )),
         ),
       ),
+    );
+  }
+}
+
+class _CTableCell extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final void Function() onTap;
+
+  const _CTableCell({required this.title, required this.subtitle, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title, style: GoogleFonts.lato(fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
+        Text(subtitle, style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
+      ]),
     );
   }
 }
