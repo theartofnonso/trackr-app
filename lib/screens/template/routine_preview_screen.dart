@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../providers/routine_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
+import '../../dtos/graph/exercise_log_view_model.dart';
 import '../../providers/exercise_provider.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'helper_utils.dart';
 
 enum RoutineSummaryType { volume, reps, duration }
@@ -154,7 +155,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                             ))
                         : const SizedBox.shrink(),
                     const SizedBox(height: 5),
-                    ..._proceduresToWidgets(procedures: exerciseLogs)
+                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
               ),
@@ -164,17 +165,11 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
         ]));
   }
 
-  List<Widget> _proceduresToWidgets({required List<ExerciseLogDto> procedures}) {
-    return procedures
-        .map((procedure) => Column(
-              children: [
-                ExerciseLogWidget(
-                  exerciseLog: procedure,
-                  superSet: whereOtherExerciseInSuperSet(firstExercise: procedure, exercises: procedures),
-                ),
-                const SizedBox(height: 18)
-              ],
-            ))
-        .toList();
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+    return exerciseLogs.map((exerciseLog) {
+      return ExerciseLogViewModel(
+          exerciseLog: exerciseLog,
+          superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+    }).toList();
   }
 }

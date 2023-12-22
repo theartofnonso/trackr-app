@@ -14,21 +14,15 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
+import '../dtos/graph/exercise_log_view_model.dart';
+import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
-
-class _ExerciseLogViewModel {
-  final ExerciseLogDto exerciseLog;
-  final ExerciseLogDto? superSet;
-
-  _ExerciseLogViewModel({required this.exerciseLog, required this.superSet});
-}
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLog log;
@@ -186,7 +180,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ],
                       ),
                     ),
-                    _ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
+                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
               ),
@@ -203,18 +197,18 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     });
   }
 
-  List<_ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
     return exerciseLogs
         .map((exerciseLog) {
           final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
           if (completedSets.isNotEmpty) {
-            return _ExerciseLogViewModel(
+            return ExerciseLogViewModel(
                 exerciseLog: exerciseLog = exerciseLog.copyWith(sets: completedSets),
                 superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
           }
           return null;
         })
-        .whereType<_ExerciseLogViewModel>()
+        .whereType<ExerciseLogViewModel>()
         .toList();
   }
 
@@ -379,24 +373,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void initState() {
     super.initState();
     _checkForTemplateUpdates();
-  }
-}
-
-class _ExerciseLogListView extends StatelessWidget {
-  final List<_ExerciseLogViewModel> exerciseLogs;
-
-  const _ExerciseLogListView({required this.exerciseLogs});
-
-  @override
-  Widget build(BuildContext context) {
-    final widgets = exerciseLogs.map((exerciseLog) {
-      return ExerciseLogWidget(
-        padding: const EdgeInsets.only(bottom: 8),
-        exerciseLog: exerciseLog.exerciseLog,
-        superSet: exerciseLog.superSet,
-      );
-    }).toList();
-    return Column(children: widgets);
   }
 }
 
