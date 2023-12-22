@@ -21,10 +21,10 @@ import '../models/RoutineLog.dart';
     AchievementType.days75 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days100 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: logs),
-    AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 12),
-    AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 12),
-    AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 12),
-    AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 4),
+    AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 16),
+    AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 16),
+    AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 16),
+    AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 8),
     AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: logs),
     _ => (progress: 0, difference: 0)
   };
