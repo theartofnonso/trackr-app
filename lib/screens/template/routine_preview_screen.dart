@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -30,34 +29,6 @@ class RoutinePreviewScreen extends StatefulWidget {
 
 class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
   bool _loading = false;
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required Routine routine}) {
-    return [
-      MenuItemButton(
-          onPressed: () {
-            navigateToRoutineEditor(context: context, routine: routine);
-          },
-          child: Text("Edit", style: GoogleFonts.lato())),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete workout?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _toggleLoadingState();
-                _deleteRoutine();
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
-  }
 
   void _deleteRoutine() async {
     try {
@@ -87,6 +58,31 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
     if (routine == null) {
       return const SizedBox.shrink();
     }
+
+    final menuActions = [
+      MenuItemButton(
+          onPressed: () {
+            navigateToRoutineEditor(context: context, routine: routine);
+          },
+          child: Text("Edit", style: GoogleFonts.lato())),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Delete workout?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {
+                Navigator.of(context).pop();
+                _toggleLoadingState();
+                _deleteRoutine();
+              },
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
 
     List<ExerciseLogDto> exerciseLogs =
         routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
@@ -135,7 +131,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                   tooltip: 'Show menu',
                 );
               },
-              menuChildren: _menuActionButtons(routine: routine),
+              menuChildren: menuActions,
             )
           ],
         ),

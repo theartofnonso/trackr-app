@@ -60,6 +60,39 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
+    final menuActions = [
+      _isLatestLogForTemplate
+          ? MenuItemButton(
+              onPressed: _checkForTemplateUpdates,
+              child: const Text("Update template"),
+            )
+          : const SizedBox.shrink(),
+      MenuItemButton(
+        onPressed: () {
+          _toggleLoadingState(message: "Creating template from log");
+          _createTemplate();
+        },
+        child: const Text("Create template"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Delete log?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {
+                Navigator.of(context).pop();
+                _toggleLoadingState(message: "Deleting log");
+                _deleteLog();
+              },
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
+
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: AppBar(
@@ -91,7 +124,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                   tooltip: 'Show menu',
                 );
               },
-              menuChildren: _menuActionButtons(),
+              menuChildren: menuActions,
             )
           ],
         ),
@@ -218,42 +251,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       completedSets.addAll(procedure.sets);
     }
     return completedSets.length;
-  }
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons() {
-    return [
-      _isLatestLogForTemplate
-          ? MenuItemButton(
-              onPressed: _checkForTemplateUpdates,
-              child: const Text("Update template"),
-            )
-          : const SizedBox.shrink(),
-      MenuItemButton(
-        onPressed: () {
-          _toggleLoadingState(message: "Creating template from log");
-          _createTemplate();
-        },
-        child: const Text("Create template"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete log?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _toggleLoadingState(message: "Deleting log");
-                _deleteLog();
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
   }
 
   void _createTemplate() async {

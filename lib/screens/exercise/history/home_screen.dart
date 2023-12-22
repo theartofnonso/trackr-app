@@ -187,7 +187,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final volume = set.value1 * set.value2;
         if (volume > (heaviestSet.value1 * heaviestSet.value2)) {
           heaviestSet = set;
-         log = log;
+          log = log;
         }
       }
     }
@@ -210,7 +210,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final volume = set.value1 * set.value2;
         if ((lightestSet.value1 * lightestSet.value2) > volume) {
           lightestSet = set;
-         log = log;
+          log = log;
         }
       }
     }
@@ -253,7 +253,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final weight = set.value1.toDouble();
         if (lightestWeight > weight) {
           lightestWeight = weight;
-         log = log;
+          log = log;
         }
       }
     }
@@ -272,7 +272,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final reps = highestRepsForLog(exerciseLog: log);
       if (reps > highestReps) {
         highestReps = reps;
-       log = log;
+        log = log;
       }
     }
   }
@@ -290,7 +290,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final reps = totalRepsForLog(exerciseLog: log);
       if (reps > mostReps) {
         mostReps = reps;
-       log = log;
+        log = log;
       }
     }
   }
@@ -308,7 +308,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final duration = longestDurationPerLog(exerciseLog: log);
       if (duration > longestDuration) {
         longestDuration = duration;
-       log = log;
+        log = log;
       }
     }
   }
@@ -326,7 +326,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final distance = longestDistancePerLog(exerciseLog: log);
       if (distance > longestDistance) {
         longestDistance = distance;
-       log = log;
+        log = log;
       }
     }
   }
@@ -337,31 +337,6 @@ class HomeScreen extends StatelessWidget {
   final Exercise exercise;
 
   const HomeScreen({super.key, required this.exercise});
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context, required Exercise exercise}) {
-    return [
-      MenuItemButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
-        },
-        child: const Text("Edit"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete exercise?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () => _deleteExercise(context),
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
-  }
 
   void _deleteExercise(BuildContext context) async {
     Navigator.pop(context);
@@ -400,6 +375,28 @@ class HomeScreen extends StatelessWidget {
     final mostRepsSet = _highestReps(context: context, exercise: foundExercise);
 
     final mostRepsSession = _totalReps(context: context, exercise: foundExercise);
+
+    final menuActions = [
+      MenuItemButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
+        },
+        child: const Text("Edit"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Delete exercise?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () => _deleteExercise(context),
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
 
     return DefaultTabController(
         length: 3,
@@ -448,7 +445,7 @@ class HomeScreen extends StatelessWidget {
                     tooltip: 'Show menu',
                   );
                 },
-                menuChildren: _menuActionButtons(context: context, exercise: foundExercise),
+                menuChildren: menuActions,
               )
             ],
           ),
@@ -474,4 +471,3 @@ class HomeScreen extends StatelessWidget {
         ));
   }
 }
-
