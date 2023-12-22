@@ -97,5 +97,26 @@ extension DateTimeExtension on DateTime {
 
     return display;
   }
+
+  DateTime lastWeekDay() {
+
+    // Calculate the number of days remaining until the end of the week (Sunday)
+    int remainingDays = 7 - weekday;
+
+    // Add the remaining days to the current date
+    DateTime lastDayOfCurrentWeek = add(Duration(days: remainingDays));
+
+    // Set the time to the end of the day (23:59:59)
+    lastDayOfCurrentWeek = DateTime(
+      lastDayOfCurrentWeek.year,
+      lastDayOfCurrentWeek.month,
+      lastDayOfCurrentWeek.day,
+      23,
+      59,
+      59,
+    );
+
+    return lastDayOfCurrentWeek;
+  }
 }
 
