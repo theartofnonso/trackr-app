@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../enums/achievement_type_enums.dart';
+import '../enums/muscle_group_enums.dart';
+import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
@@ -15,6 +17,7 @@ import '../utils/general_utils.dart';
     AchievementType.days100 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: logs),
     AchievementType.obsessed => _calculateObsessedAchievement(logs: logs),
+    AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(logs: logs),
     _ => (progress: 0, difference: 0)
   };
 }
@@ -81,6 +84,26 @@ Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogs(
   return result;
 }
 
+Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogsWhere(
+    {required List<RoutineLog> logs,
+    required List<DateTimeRange> weekRanges,
+    required bool Function(RoutineLog log) evaluation}) {
+  Map<DateTimeRange, List<RoutineLog>> result = {};
+
+  for (var weekRange in weekRanges) {
+    List<RoutineLog> routinesInWeek = logs
+        .where((log) =>
+            log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
+            log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))) &&
+            evaluation(log))
+        .toList();
+    print("routinesInWeek: ${routinesInWeek.length}");
+    result[weekRange] = routinesInWeek;
+  }
+
+  return result;
+}
+
 ({List<DateTimeRange> occurrences, int consecutiveWeeks}) _findConsecutiveWeeksWithRoutineLogs(
     Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs, int n) {
   List<DateTimeRange> occurrences = [];
@@ -107,13 +130,47 @@ Map<DateTimeRange, List<RoutineLog>> _mapWeeksToRoutineLogs(
 }
 
 ({int difference, double progress}) _calculateObsessedAchievement({required List<RoutineLog> logs}) {
-  int target = 12;
 
   DateTime startDate = logs.first.createdAt.getDateTimeInUtc(); // Replace with your desired start date
   List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
 
   // Map each DateTimeRange to RoutineLogs falling within it
   Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs = _mapWeeksToRoutineLogs(logs, weekRanges);
+
+  int target = 12;
+  
+  final result = _findConsecutiveWeeksWithRoutineLogs(weekToRoutineLogs, target);
+
+  if (weekToRoutineLogs.length < target) {
+    return (progress: result.consecutiveWeeks / target, difference: target - result.consecutiveWeeks);
+  }
+
+  final difference = target - result.consecutiveWeeks;
+
+  final progress = result.occurrences.isNotEmpty ? 1 : result.consecutiveWeeks / target;
+
+  return (progress: progress.toDouble(), difference: difference <= 0 ? 0 : difference);
+}
+
+bool _hasLegExercise(RoutineLog log) {
+  return log.procedures.any((procedure) {
+    final json = jsonDecode(procedure);
+    final exerciseString = json["exercise"];
+    final exercise = Exercise.fromJson(exerciseString);
+    final muscleGroup = MuscleGroup.fromString(exercise.primaryMuscle);
+    return muscleGroup.family == MuscleGroupFamily.legs;
+  });
+}
+
+({int difference, double progress}) _calculateNeverSkipALegDayAchievement({required List<RoutineLog> logs}) {
+  int target = 12;
+
+  DateTime startDate = logs.first.createdAt.getDateTimeInUtc(); // Replace with your desired start date
+  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
+
+  // Map each DateTimeRange to RoutineLogs falling within it
+  Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs =
+      _mapWeeksToRoutineLogsWhere(logs: logs, weekRanges: weekRanges, evaluation: _hasLegExercise);
 
   final result = _findConsecutiveWeeksWithRoutineLogs(weekToRoutineLogs, target);
 
