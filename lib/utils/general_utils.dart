@@ -149,8 +149,6 @@ List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
     startDate = endDate.add(const Duration(days: 1));
   }
 
-  print(weekRanges);
-
   return weekRanges;
 }
 
@@ -172,31 +170,8 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
     startDate = DateTime(startDate.year, startDate.month + 1, 1);
   }
 
-  print(monthRanges);
-
   return monthRanges;
 }
-
-// List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
-//   List<DateTimeRange> ranges = [];
-//   DateTime currentDate = DateTime.now().toUtc();
-//
-//   // Adjust the startDate to the first day of the month
-//   DateTime firstDayOfMonth = DateTime.utc(startDate.year, startDate.month, 1);
-//
-//   while (firstDayOfMonth.isBefore(currentDate) || firstDayOfMonth.isAtSameMomentAs(currentDate)) {
-//     // Find the last day of the month
-//     DateTime lastDayOfMonth = DateTime.utc(firstDayOfMonth.year, firstDayOfMonth.month + 1, 0);
-//
-//     // Create a DateTimeRange for the month
-//     ranges.add(DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth));
-//
-//     // Move to the first day of the next month
-//     firstDayOfMonth = DateTime.utc(firstDayOfMonth.year, firstDayOfMonth.month + 1, 1);
-//   }
-//
-//   return ranges;
-// }
 
 Future<void> loadAppData(BuildContext context) async {
   final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);

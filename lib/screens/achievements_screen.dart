@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../app_constants.dart';
 import '../enums/achievement_type_enums.dart';
