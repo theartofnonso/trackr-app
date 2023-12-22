@@ -20,10 +20,10 @@ import '../models/RoutineLog.dart';
     AchievementType.days75 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days100 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: logs),
-    //AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 12),
-    //AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 12),
-    //AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 12),
-    AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 1),
+    AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 12),
+    AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 12),
+    AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 12),
+    AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 4),
     _ => (progress: 0, difference: 0)
   };
 }
@@ -90,12 +90,12 @@ import '../models/RoutineLog.dart';
         final startWeek = weekToRoutineLogs.entries.elementAt(index - (targetWeeks - 1));
         final DateTimeRange range = DateTimeRange(start: startWeek.key.start, end: entry.key.end);
         occurrences.add(range);
-        print("Found consecutive weeks: $range");
-        break;
+        consecutiveWeeks = 0;
       }
     } else {
-      consecutiveWeeks = 0;
-      occurrences = [];
+      if(occurrences.isEmpty) {
+        occurrences = [];
+      }
     }
     index++;
   }
@@ -112,11 +112,15 @@ import '../models/RoutineLog.dart';
     return (progress: consecutiveWeeks / target, difference: target - consecutiveWeeks);
   }
 
-  final difference = target - consecutiveWeeks;
+  int difference = target - consecutiveWeeks;
 
   final progress = occurrences.isNotEmpty ? 1 : consecutiveWeeks / target;
 
-  return (progress: progress.toDouble(), difference: difference <= 0 ? 0 : difference);
+  if(occurrences.isNotEmpty || difference <= 0 ) {
+    difference = 0;
+  }
+
+  return (progress: progress.toDouble(), difference: difference);
 }
 
 ({int difference, double progress}) _calculateObsessedAchievement(
