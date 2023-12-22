@@ -37,7 +37,7 @@ class AchievementsScreen extends StatelessWidget {
             Text("Keep logging your sessions to achieve milestones and unlock badges.",
                 style: GoogleFonts.lato(color: Colors.white70, fontSize: 16)),
             const SizedBox(height: 20),
-            _CListView(children: achievements)
+            _AchievementListView(children: achievements)
           ]),
         ),
       ))
@@ -45,15 +45,15 @@ class AchievementsScreen extends StatelessWidget {
   }
 }
 
-class _CListView extends StatelessWidget {
+class _AchievementListView extends StatelessWidget {
   final List<AchievementDto> children;
 
-  const _CListView({required this.children});
+  const _AchievementListView({required this.children});
 
   @override
   Widget build(BuildContext context) {
     final widgets = children.map((achievement) {
-      return _CListTile(
+      return _AchievementTile(
         title: achievement.type.title,
         subtitle: achievement.type.description,
         progressValue: achievement.progress.progress,
@@ -66,14 +66,14 @@ class _CListView extends StatelessWidget {
   }
 }
 
-class _CListTile extends StatelessWidget {
+class _AchievementTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final double progressValue;
   final int progressRemainder;
   final EdgeInsets margin;
 
-  const _CListTile(
+  const _AchievementTile(
       {required this.title,
       required this.subtitle,
       required this.progressValue,

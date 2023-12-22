@@ -3,12 +3,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/widgets/c_list_title.dart';
 
 import '../models/RoutineLog.dart';
 import '../widgets/empty_states/list_tile_empty_state.dart';
+
+class _DateViewModel {
+  DateTime dateTime;
+  DateTime selectedDateTime;
+
+  _DateViewModel({required this.dateTime, required this.selectedDateTime});
+}
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -71,7 +80,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  List<Widget> _generateDates() {
+  List<_DateViewModel?> _generateDates() {
     int year = _currentDate.year;
     int month = _currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -79,77 +88,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
     DateTime firstDayOfMonth = DateTime(year, month, 1);
     DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
 
-    List<Widget> datesInMonths = [];
+    List<_DateViewModel?> datesInMonths = [];
 
     // Add padding to start of month
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyWidgets = List.filled(precedingDays, const SizedBox(width: 40, height: 40));
-      datesInMonths.addAll(emptyWidgets);
+      final emptyDated = List.filled(precedingDays, null);
+      datesInMonths.addAll(emptyDated);
     }
 
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      datesInMonths.add(_DateWidget(
-        dateTime: date,
-        onTap: (DateTime dateTime) => _selectDate(dateTime),
-        selectedDateTime: _currentDate,
-      ));
+      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate));
     }
 
     // Add padding to end of month
     final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
     if (isLastDayNotSunday) {
       final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyWidgets = List.filled(succeedingDays, const SizedBox(width: 40, height: 40));
-      datesInMonths.addAll(emptyWidgets);
+      final emptyDated = List.filled(succeedingDays, null);
+      datesInMonths.addAll(emptyDated);
     }
 
     return datesInMonths;
-  }
-
-  List<Widget> _dateToRows() {
-    List<Widget> widgets = [];
-    final dates = _generateDates();
-    int iterationCount = 6;
-    int numbersPerIteration = 7;
-
-    for (int i = 0; i < iterationCount; i++) {
-      int startIndex = i * numbersPerIteration;
-      int endIndex = (i + 1) * numbersPerIteration;
-
-      if (endIndex > dates.length) {
-        endIndex = dates.length;
-      }
-
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [...dates.sublist(startIndex, endIndex)],
-        ),
-      ));
-    }
-    return widgets;
-  }
-
-  List<Widget> _logsToWidgets(List<RoutineLog> logs) {
-    return logs
-        .map((log) => Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: _RoutineLogWidget(
-                log: log,
-              ),
-            ))
-        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate);
+
+    final dates = _generateDates();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,17 +146,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
           height: 15,
         ),
         _CalendarHeader(),
-        Container(
-          color: tealBlueDark,
-          child: Column(
-            children: [..._dateToRows()],
-          ),
-        ),
-        Container(
-          color: tealBlueDark,
-          height: 10,
-        ),
-        if (logs.isNotEmpty) ..._logsToWidgets(logs),
+        _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
+        if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
         if (logs.isEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +159,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       style: GoogleFonts.lato(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70),
                       children: const [
                     TextSpan(text: 'Tap'),
-                    WidgetSpan(child: Icon(Icons.play_arrow_rounded, color: Colors.white70), alignment: PlaceholderAlignment.middle),
+                    WidgetSpan(
+                        child: Icon(Icons.play_arrow_rounded, color: Colors.white70),
+                        alignment: PlaceholderAlignment.middle),
                     TextSpan(text: 'to start logging or visit the + tab to create new workouts'),
                   ]))
             ],
@@ -297,6 +261,68 @@ class _DateWidget extends StatelessWidget {
   }
 }
 
+class _CalenderDates extends StatelessWidget {
+  final List<_DateViewModel?> dates;
+  final DateTime selectedDateTime;
+  final void Function(DateTime dateTime) onTap;
+
+  const _CalenderDates({required this.dates, required this.selectedDateTime, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    int iterationCount = 6;
+    int numbersPerIteration = 7;
+
+    final datesWidgets = dates.map((date) {
+      if (date == null) {
+        return const SizedBox(width: 40, height: 40);
+      } else {
+        return _DateWidget(
+          dateTime: date.dateTime,
+          onTap: onTap,
+          selectedDateTime: selectedDateTime,
+        );
+      }
+    }).toList();
+
+    List<Widget> widgets = [];
+
+    for (int i = 0; i < iterationCount; i++) {
+      int startIndex = i * numbersPerIteration;
+      int endIndex = (i + 1) * numbersPerIteration;
+
+      if (endIndex > dates.length) {
+        endIndex = dates.length;
+      }
+
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [...datesWidgets.sublist(startIndex, endIndex)],
+        ),
+      ));
+    }
+
+    return Column(children: widgets);
+  }
+}
+
+class _RoutineLogListView extends StatelessWidget {
+  final List<RoutineLog> logs;
+
+  const _RoutineLogListView({required this.logs});
+
+  @override
+  Widget build(BuildContext context) {
+    final widgets = logs.map((log) {
+      return _RoutineLogWidget(log: log);
+    }).toList();
+
+    return Column(children: widgets);
+  }
+}
+
 class _RoutineLogWidget extends StatelessWidget {
   final RoutineLog log;
 
@@ -304,28 +330,12 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
-      child: ListTile(
+    return CListTile(
+        title: log.name,
+        subtitle: "${log.procedures.length} exercise(s)",
+        trailing: log.duration().secondsOrMinutesOrHours(),
+        margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,
-        onTap: () => navigateToRoutineLogPreview(context: context, log: log),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        dense: true,
-        title: Text(log.name, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
-        subtitle: Text("${log.procedures.length} exercise(s)",
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
-        trailing: Text(_logDuration(),
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
-      ),
-    );
-  }
-
-  String _logDuration() {
-    String interval = "";
-    final startTime = log.startTime.getDateTimeInUtc();
-    final endTime = log.endTime.getDateTimeInUtc();
-    final difference = endTime.difference(startTime);
-    interval = difference.secondsOrMinutesOrHours();
-    return interval;
+        onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }
