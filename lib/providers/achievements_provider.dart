@@ -195,5 +195,8 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs}) {
 
   final remainder = targetHours - duration;
 
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: {});
+  final dates = logs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: datesByMonth);
 }
