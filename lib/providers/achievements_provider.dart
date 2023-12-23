@@ -120,7 +120,7 @@ ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> l
   return (occurrences: occurrences, consecutiveWeeks: consecutiveWeeks);
 }
 
-ProgressDto _achievementProgress(
+ProgressDto _consecutiveAchievementProgress(
     {required int consecutiveWeeks,
     required List<DateTimeRange> occurrences,
     required int target,
@@ -144,7 +144,7 @@ ProgressDto _calculateObsessedAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final result = _consecutiveWeeksWithLogsWhere(
       weekToRoutineLogs: weekToLogs, targetWeeks: target, evaluation: (entry) => entry.value.isNotEmpty);
-  return _achievementProgress(
+  return _consecutiveAchievementProgress(
       consecutiveWeeks: result.consecutiveWeeks,
       occurrences: result.occurrences,
       target: target,
@@ -168,7 +168,7 @@ ProgressDto _calculateNeverSkipALegDayAchievement(
       weekToRoutineLogs: weekToLogs,
       targetWeeks: target,
       evaluation: (entry) => entry.value.any((log) => _hasLegExercise(log)));
-  return _achievementProgress(
+  return _consecutiveAchievementProgress(
       consecutiveWeeks: result.consecutiveWeeks,
       occurrences: result.occurrences,
       target: target,
@@ -186,7 +186,7 @@ ProgressDto _calculateNeverSkipAMondayAchievement(
       weekToRoutineLogs: weekToLogs,
       targetWeeks: target,
       evaluation: (entry) => entry.value.any((log) => _loggedOnMonday(log)));
-  return _achievementProgress(
+  return _consecutiveAchievementProgress(
       consecutiveWeeks: result.consecutiveWeeks,
       occurrences: result.occurrences,
       target: target,
@@ -204,7 +204,7 @@ ProgressDto _calculateWeekendWarriorAchievement(
       weekToRoutineLogs: weekToLogs,
       targetWeeks: target,
       evaluation: (entry) => entry.value.where((log) => _loggedOnWeekend(log)).length == 2);
-  return _achievementProgress(
+  return _consecutiveAchievementProgress(
       consecutiveWeeks: result.consecutiveWeeks,
       occurrences: result.occurrences,
       target: target,
