@@ -56,15 +56,16 @@ class CalendarHeatMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final datesForMonth = _generateDates();
 
     return Container(
       margin: margin,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(firstDate.abbreviatedMonth().toUpperCase(), style: GoogleFonts.lato(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+          Text(firstDate.abbreviatedMonth().toUpperCase(),
+              style: GoogleFonts.lato(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           _Dates(dates: datesForMonth),
         ],
       ),
@@ -85,7 +86,7 @@ class _Date extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: date.active ? Colors.green : tealBlueLighter,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(1),
         ),
       ),
     );
@@ -120,15 +121,13 @@ class _Dates extends StatelessWidget {
         endIndex = dates.length;
       }
 
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [...datesWidgets.sublist(startIndex, endIndex)],
-        ),
+      widgets.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [...datesWidgets.sublist(startIndex, endIndex)],
       ));
     }
 
-    return SizedBox(width: 110, height: 110, child: Column(children: widgets));
+    return SizedBox(
+        width: 100, height: 80, child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: widgets));
   }
 }

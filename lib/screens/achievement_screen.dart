@@ -19,7 +19,6 @@ class AchievementScreen extends StatefulWidget {
 class _AchievementScreenState extends State<AchievementScreen> {
   @override
   Widget build(BuildContext context) {
-
     final monthsHeatMap = widget.achievementDto.progress.dates.values.map((dates) {
       return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8), firstDate: dates.first);
     }).toList();
@@ -39,9 +38,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
             child: Padding(
               padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back_outlined),
                     onPressed: () => Navigator.of(context).pop(),
@@ -75,12 +72,15 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Wrap(children: monthsHeatMap),
+                monthsHeatMap.length >= 3
+                    ? Center(child: Wrap(children: monthsHeatMap))
+                    : Wrap(children: monthsHeatMap),
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
                       color: tealBlue,
-                      borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: tealBlueLighter, width: 2.0)),
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
