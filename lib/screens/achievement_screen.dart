@@ -24,13 +24,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
     }).toList();
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: "fab_achievement_screen",
-        onPressed: () {},
-        backgroundColor: tealBlueLighter,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const Icon(Icons.send_rounded, size: 28),
-      ),
       body: Stack(children: [
         const Positioned.fill(child: GradientBackground()),
         SafeArea(
