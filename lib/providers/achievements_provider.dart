@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/progress_dto.dart';
@@ -29,7 +30,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     // AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 16),
     // AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 8),
     // AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: logs),
-    _ => ProgressDto(value: 0.0, remainder: 0, dates: []),
+    _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
 }
 
@@ -63,8 +64,9 @@ ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required 
   };
 
   final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
 
-  return ProgressDto(value: progress, remainder: remainder < 0 ? 0 : remainder, dates: dates);
+  return ProgressDto(value: progress, remainder: remainder < 0 ? 0 : remainder, dates: datesByMonth);
 
 }
 

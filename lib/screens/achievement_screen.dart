@@ -19,6 +19,11 @@ class AchievementScreen extends StatefulWidget {
 class _AchievementScreenState extends State<AchievementScreen> {
   @override
   Widget build(BuildContext context) {
+
+    final monthsHeatMap = widget.achievementDto.progress.dates.values.map((dates) {
+      return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8));
+    }).toList();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_achievement_screen",
@@ -70,7 +75,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                CalendarHeatMap(dates: widget.achievementDto.progress.dates),
+                Wrap(children: monthsHeatMap),
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(

@@ -9,9 +9,10 @@ class _DateViewModel {
 }
 
 class CalendarHeatMap extends StatelessWidget {
+  final EdgeInsetsGeometry? margin;
   final List<DateTime> dates;
 
-  const CalendarHeatMap({super.key, required this.dates});
+  const CalendarHeatMap({super.key, required this.margin, required this.dates});
 
   List<_DateViewModel?> _generateDates() {
     final firstDate = dates.isNotEmpty ? dates.first : DateTime.now();
@@ -55,11 +56,14 @@ class CalendarHeatMap extends StatelessWidget {
 
     final datesForMonth = _generateDates();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _Dates(dates: datesForMonth),
-      ],
+    return Container(
+      margin: margin,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Dates(dates: datesForMonth),
+        ],
+      ),
     );
   }
 }

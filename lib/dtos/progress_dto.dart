@@ -1,7 +1,7 @@
 class ProgressDto {
   final double value;
   final int remainder;
-  final List<DateTime> dates;
+  final Map<int, List<DateTime>> dates;
 
   ProgressDto({required this.value, required this.remainder, required this.dates});
 
