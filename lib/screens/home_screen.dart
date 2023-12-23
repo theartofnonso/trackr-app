@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
@@ -30,20 +31,20 @@ class _HomeScreenState extends State<HomeScreen> {
         indicatorColor: Colors.transparent,
         backgroundColor: tealBlueDark,
         surfaceTintColor: tealBlueLighter,
-        destinations: const [
+        destinations:  const [
           NavigationDestination(
-            icon: Icon(Icons.home, color: Colors.grey, size: 28),
-            selectedIcon: Icon(Icons.home, color: Colors.white, size: 32),
+            icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
+            selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.add, color: Colors.grey, size: 28),
-            selectedIcon: Icon(Icons.add, color: Colors.white, size: 32),
+            icon: FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.grey, size: 28),
+            selectedIcon: FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white, size: 28),
             label: 'Workouts',
           ),
           NavigationDestination(
-            icon: Icon(Icons.gamepad_rounded, color: Colors.grey, size: 28),
-            selectedIcon: Icon(Icons.gamepad_rounded, color: Colors.white, size: 32),
+            icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
+            selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
             label: 'Achievements',
           )
         ],

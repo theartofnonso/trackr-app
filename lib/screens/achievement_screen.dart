@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/calendar_heatmap.dart';
 
@@ -31,31 +32,61 @@ class _AchievementScreenState extends State<AchievementScreen> {
         child: const Icon(Icons.send_rounded, size: 28),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(widget.achievementDto.type.title, style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
-            Text(widget.achievementDto.type.description, style: GoogleFonts.lato(fontSize: 16, color: Colors.white70)),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: LinearProgressIndicator(
-                    minHeight: 8,
-                    color: widget.achievementDto.progress.progressRemainder == 0 ? Colors.green : Colors.white,
-                    value: widget.achievementDto.progress.progressValue,
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    backgroundColor: tealBlueLighter,
-                  ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(widget.achievementDto.type.title,
+                  style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
+              Text(widget.achievementDto.type.description,
+                  style: GoogleFonts.lato(fontSize: 16, color: Colors.white70)),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: LinearProgressIndicator(
+                        minHeight: 8,
+                        color: widget.achievementDto.progress.progressRemainder == 0 ? Colors.green : Colors.white,
+                        value: widget.achievementDto.progress.progressValue,
+                        borderRadius: const BorderRadius.all(Radius.circular(2)),
+                        backgroundColor: tealBlueLighter,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text("${widget.achievementDto.progress.progressRemainder} left",
+                        style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Text("${widget.achievementDto.progress.progressRemainder} left",
-                    style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const CalendarHeatMap()
-          ]),
+              ),
+              const SizedBox(height: 10),
+              const CalendarHeatMap(),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: tealBlue,
+                    borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                      const SizedBox(width: 6),
+                      Text("Tips", style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w700)),
+                    ]),
+                    const SizedBox(height: 8),
+                    Text(
+                        "Embark on a fitness journey that fits seamlessly into your busy life. With our expertly designed program, training just three days a week is enough to see significant improvements in strength, endurance, and overall health",
+                        style: GoogleFonts.lato(fontSize: 16)),
+                  ],
+                ),
+              )
+            ]),
+          ),
         ),
       ),
     );

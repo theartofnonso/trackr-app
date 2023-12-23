@@ -56,15 +56,12 @@ class _CalendarHeatMapState extends State<CalendarHeatMap> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
-    final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate);
-
     final dates = _generateDates();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _CalenderDates(dates: dates, selectedDateTime: _currentDate),
+        _CalenderDates(dates: dates),
       ],
     );
   }
@@ -72,9 +69,8 @@ class _CalendarHeatMapState extends State<CalendarHeatMap> {
 
 class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
-  final DateTime selectedDateTime;
 
-  const _DateWidget({required this.dateTime, required this.selectedDateTime});
+  const _DateWidget({required this.dateTime});
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
@@ -105,9 +101,8 @@ class _DateWidget extends StatelessWidget {
 
 class _CalenderDates extends StatelessWidget {
   final List<_DateViewModel?> dates;
-  final DateTime selectedDateTime;
 
-  const _CalenderDates({required this.dates, required this.selectedDateTime});
+  const _CalenderDates({required this.dates});
 
   @override
   Widget build(BuildContext context) {
@@ -118,10 +113,7 @@ class _CalenderDates extends StatelessWidget {
       if (date == null) {
         return const SizedBox(width: 40, height: 40);
       } else {
-        return _DateWidget(
-          dateTime: date.dateTime,
-          selectedDateTime: selectedDateTime,
-        );
+        return _DateWidget(dateTime: date.dateTime);
       }
     }).toList();
 
