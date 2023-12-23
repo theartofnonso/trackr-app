@@ -57,20 +57,20 @@ class _AchievementScreenState extends State<AchievementScreen> {
                       Expanded(
                         child: LinearProgressIndicator(
                           minHeight: 8,
-                          color: widget.achievementDto.progress.progressRemainder == 0 ? Colors.green : Colors.white,
-                          value: widget.achievementDto.progress.progressValue,
+                          color: widget.achievementDto.progress.remainder == 0 ? Colors.green : Colors.white,
+                          value: widget.achievementDto.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(2)),
                           backgroundColor: tealBlueLighter,
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Text("${widget.achievementDto.progress.progressRemainder} left",
+                      Text("${widget.achievementDto.progress.remainder} left",
                           style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
                     ],
                   ),
                 ),
                 const SizedBox(height: 10),
-                CalendarHeatMap(),
+                CalendarHeatMap(dates: widget.achievementDto.progress.dates),
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(

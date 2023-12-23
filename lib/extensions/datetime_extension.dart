@@ -124,5 +124,9 @@ extension DateTimeExtension on DateTime {
 
     return endOfMonth;
   }
+
+  DateTime localDate() {
+    return DateTime(year, month, day, 0, 0, 0);
+  }
 }
 

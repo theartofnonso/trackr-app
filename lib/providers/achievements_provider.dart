@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/progress_dto.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../dtos/exercise_log_dto.dart';
@@ -11,8 +14,7 @@ import '../enums/muscle_group_enums.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
 
-({int progressRemainder, double progressValue}) calculateProgress(
-    {required BuildContext context, required AchievementType type}) {
+ProgressDto calculateProgress({required BuildContext context, required AchievementType type}) {
   final provider = Provider.of<RoutineLogProvider>(context, listen: false);
   final logs = provider.logs;
   final weekToLogs = provider.weekToLogs;
@@ -21,13 +23,13 @@ import '../models/RoutineLog.dart';
     AchievementType.days30 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days75 => _calculateDaysAchievement(logs: logs, type: type),
     AchievementType.days100 => _calculateDaysAchievement(logs: logs, type: type),
-    AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: logs),
-    AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 16),
-    AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 16),
-    AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 16),
-    AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 8),
-    AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: logs),
-    _ => (progressValue: 0, progressRemainder: 0)
+    // AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: logs),
+    // AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: 16),
+    // AchievementType.neverSkipAMonday => _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: 16),
+    // AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 16),
+    // AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 8),
+    // AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: logs),
+    _ => ProgressDto(value: 0.0, remainder: 0, dates: []),
   };
 }
 
@@ -35,21 +37,35 @@ import '../models/RoutineLog.dart';
 /// AchievementType.days30
 /// AchievementType.days75
 /// AchievementType.days100
-({int progressRemainder, double progressValue}) _calculateDaysAchievement(
-    {required List<RoutineLog> logs, required AchievementType type}) {
-  final targetDays = switch (type) {
-    AchievementType.days12 => 12,
-    AchievementType.days30 => 30,
-    AchievementType.days75 => 75,
-    AchievementType.days100 => 100,
+ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required AchievementType type}) {
+  Iterable<RoutineLog> achievedLogs = switch (type) {
+    AchievementType.days12 => logs.take(12),
+    AchievementType.days30 => logs.take(30),
+    AchievementType.days75 => logs.take(75),
+    AchievementType.days100 => logs.take(100),
+    _ => [],
+  };
+
+  double progress = switch (type) {
+    AchievementType.days12 => achievedLogs.length / 12,
+    AchievementType.days30 => achievedLogs.length / 30,
+    AchievementType.days75 => achievedLogs.length / 75,
+    AchievementType.days100 => achievedLogs.length / 100,
+    _ => 0.0,
+  };
+
+  int remainder = switch (type) {
+    AchievementType.days12 => 12 - achievedLogs.length,
+    AchievementType.days30 => 30 - achievedLogs.length,
+    AchievementType.days75 => 75 - achievedLogs.length,
+    AchievementType.days100 => 100 - achievedLogs.length,
     _ => 0,
   };
 
-  final progressRemainder = targetDays - logs.length;
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
 
-  final progressValue = logs.length / targetDays;
+  return ProgressDto(value: progress, remainder: remainder < 0 ? 0 : remainder, dates: dates);
 
-  return (progressValue: progressValue, progressRemainder: progressRemainder < 0 ? 0 : progressRemainder);
 }
 
 /// AchievementType.supersetSpecialist
