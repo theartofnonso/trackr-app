@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/calendar_heatmap.dart';
 
 import '../app_constants.dart';
 import '../dtos/achievement_dto.dart';
@@ -49,9 +50,11 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 ),
                 const SizedBox(width: 10),
                 Text("${widget.achievementDto.progress.progressRemainder} left",
-                    style: GoogleFonts.lato(color: Colors.white70, fontSize: 12))
+                    style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
               ],
             ),
+            const SizedBox(height: 10),
+            const CalendarHeatMap()
           ]),
         ),
       ),
