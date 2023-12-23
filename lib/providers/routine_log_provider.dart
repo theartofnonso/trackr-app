@@ -16,13 +16,13 @@ import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-  final Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
 
   List<RoutineLog> _logs = [];
 
-  final Map<DateTimeRange, List<RoutineLog>> _weekToLogs = {};
+  Map<DateTimeRange, List<RoutineLog>> _weekToLogs = {};
 
-  final Map<DateTimeRange, List<RoutineLog>> _monthToLogs = {};
+  Map<DateTimeRange, List<RoutineLog>> _monthToLogs = {};
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
 
@@ -59,18 +59,18 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void _loadExerciseLogs() {
-    /// Clear previous list of exercise logs
-    _exerciseLogs.clear();
+    final exerciseLogs = <String, List<ExerciseLogDto>>{};
     for (RoutineLog log in _logs) {
       final decodedExerciseLogs =
           log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
       for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
         final exerciseId = exerciseLog.exercise.id;
-        final exerciseLogs = _exerciseLogs[exerciseId] ?? [];
-        exerciseLogs.add(exerciseLog);
-        _exerciseLogs.putIfAbsent(exerciseId, () => exerciseLogs);
+        final logs = exerciseLogs[exerciseId] ?? [];
+        logs.add(exerciseLog);
+        exerciseLogs.putIfAbsent(exerciseId, () => logs);
       }
     }
+    _exerciseLogs = exerciseLogs;
   }
 
   void _loadWeekToLogs() {
@@ -78,8 +78,7 @@ class RoutineLogProvider with ChangeNotifier {
       return;
     }
 
-    /// Clear previous list of week to logs
-    _weekToLogs.clear();
+    final weekToLogs = <DateTimeRange, List<RoutineLog>>{};
 
     DateTime startDate = logs.first.createdAt.getDateTimeInUtc();
     List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
@@ -91,8 +90,10 @@ class RoutineLogProvider with ChangeNotifier {
               log.createdAt.getDateTimeInUtc().isAfter(weekRange.start) &&
               log.createdAt.getDateTimeInUtc().isBefore(weekRange.end.add(const Duration(days: 1))))
           .toList();
-      _weekToLogs[weekRange] = routinesInWeek;
+      weekToLogs[weekRange] = routinesInWeek;
     }
+
+    _weekToLogs = weekToLogs;
   }
 
   void _loadMonthToLogs() {
@@ -100,8 +101,7 @@ class RoutineLogProvider with ChangeNotifier {
       return;
     }
 
-    /// Clear previous list of month to logs
-    _monthToLogs.clear();
+    final monthToLogs = <DateTimeRange, List<RoutineLog>>{};
 
     DateTime startDate = logs.first.createdAt.getDateTimeInUtc();
     List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
@@ -113,8 +113,9 @@ class RoutineLogProvider with ChangeNotifier {
               log.createdAt.getDateTimeInUtc().isAfter(monthRange.start) &&
               log.createdAt.getDateTimeInUtc().isBefore(monthRange.end.add(const Duration(days: 1))))
           .toList();
-      _monthToLogs[monthRange] = routinesInMonth;
+      monthToLogs[monthRange] = routinesInMonth;
     }
+    _monthToLogs = monthToLogs;
   }
 
   void _normaliseLogs() {

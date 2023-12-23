@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
+
+  /// Get datetime format
+  String abbreviatedMonth() {
+    return DateFormat("LLL", "en").format(this);
+  }
+
   /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);
@@ -123,6 +129,10 @@ extension DateTimeExtension on DateTime {
     DateTime endOfMonth = DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
 
     return endOfMonth;
+  }
+
+  DateTime localDate() {
+    return DateTime(year, month, day, 0, 0, 0);
   }
 }
 
