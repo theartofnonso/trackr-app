@@ -45,29 +45,28 @@ int _adjustRemainder({required int remainder}) {
 /// AchievementType.days75
 /// AchievementType.days100
 ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required AchievementType type}) {
-  Iterable<RoutineLog> achievedLogs = switch (type) {
-    AchievementType.days12 => logs.take(12),
-    AchievementType.days30 => logs.take(30),
-    AchievementType.days75 => logs.take(75),
-    AchievementType.days100 => logs.take(100),
-    _ => [],
-  };
+  int targetDays;
+  switch (type) {
+    case AchievementType.days12:
+      targetDays = 12;
+      break;
+    case AchievementType.days30:
+      targetDays = 30;
+      break;
+    case AchievementType.days75:
+      targetDays = 75;
+      break;
+    case AchievementType.days100:
+      targetDays = 100;
+      break;
+    default:
+      return ProgressDto(value: 0, remainder: 0, dates: {});
+  }
 
-  double progress = switch (type) {
-    AchievementType.days12 => achievedLogs.length / 12,
-    AchievementType.days30 => achievedLogs.length / 30,
-    AchievementType.days75 => achievedLogs.length / 75,
-    AchievementType.days100 => achievedLogs.length / 100,
-    _ => 0.0,
-  };
+  final achievedLogs = logs.take(targetDays);
 
-  int remainder = switch (type) {
-    AchievementType.days12 => 12 - achievedLogs.length,
-    AchievementType.days30 => 30 - achievedLogs.length,
-    AchievementType.days75 => 75 - achievedLogs.length,
-    AchievementType.days100 => 100 - achievedLogs.length,
-    _ => 0,
-  };
+  final progress = achievedLogs.length / targetDays;
+  final remainder = targetDays - achievedLogs.length;
 
   final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
   final datesByMonth = groupBy(dates, (date) => date.month);
@@ -78,24 +77,24 @@ ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required 
 /// AchievementType.supersetSpecialist
 ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> logs}) {
   int target = 20;
-  // Count RoutineLogs with at least two exercises that have a non-null superSetId
-  int count = 0;
 
-  for (var log in logs) {
-    int exercisesWithSuperSetId = log.procedures
+  // Count RoutineLogs with at least two exercises that have a non-null superSetId
+  final achievedLogs = logs.where((log) {
+    var exercisesWithSuperSetId = log.procedures
         .map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)))
         .where((exerciseLog) => exerciseLog.superSetId.isNotEmpty)
         .length;
 
-    if (exercisesWithSuperSetId >= 2) {
-      count++;
-    }
-  }
+    return exercisesWithSuperSetId >= 2;
+  }).toList();
 
-  final progress = count / target;
-  final remainder = target - count;
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
 
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: {});
+  final progress = achievedLogs.length / target;
+  final remainder = target - achievedLogs.length;
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
 }
 
 /// AchievementType.obsessed
