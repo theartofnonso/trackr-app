@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
+
+  /// Get datetime format
+  String abbreviatedMonth() {
+    return DateFormat("LLL", "en").format(this);
+  }
+
   /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);

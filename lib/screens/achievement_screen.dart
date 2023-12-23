@@ -21,7 +21,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
   Widget build(BuildContext context) {
 
     final monthsHeatMap = widget.achievementDto.progress.dates.values.map((dates) {
-      return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8));
+      return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8), firstDate: dates.first,);
     }).toList();
 
     return Scaffold(

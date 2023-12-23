@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
@@ -10,14 +12,15 @@ class _DateViewModel {
 
 class CalendarHeatMap extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
+  final DateTime firstDate;
   final List<DateTime> dates;
 
-  const CalendarHeatMap({super.key, required this.margin, required this.dates});
+  const CalendarHeatMap({super.key, required this.firstDate, required this.margin, required this.dates});
 
   List<_DateViewModel?> _generateDates() {
-    final firstDate = dates.isNotEmpty ? dates.first : DateTime.now();
-    int year = firstDate.year;
-    int month = firstDate.month;
+    final initialDate = firstDate;
+    int year = initialDate.year;
+    int month = initialDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
 
     DateTime firstDayOfMonth = DateTime(year, month, 1);
@@ -61,6 +64,7 @@ class CalendarHeatMap extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(firstDate.abbreviatedMonth().toUpperCase(), style: GoogleFonts.lato(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           _Dates(dates: datesForMonth),
         ],
       ),
@@ -68,10 +72,10 @@ class CalendarHeatMap extends StatelessWidget {
   }
 }
 
-class _DateWidget extends StatelessWidget {
+class _Date extends StatelessWidget {
   final _DateViewModel date;
 
-  const _DateWidget({required this.date});
+  const _Date({required this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +106,7 @@ class _Dates extends StatelessWidget {
       if (date == null) {
         return const SizedBox(width: 12, height: 12);
       } else {
-        return _DateWidget(date: date);
+        return _Date(date: date);
       }
     }).toList();
 
