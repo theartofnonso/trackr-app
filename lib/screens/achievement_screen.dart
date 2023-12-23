@@ -72,8 +72,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 Container(
                   decoration: BoxDecoration(
                       color: tealBlue,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: tealBlueLighter, width: 2.0)),
+                      borderRadius: BorderRadius.circular(5)),
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

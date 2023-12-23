@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 class _DateViewModel {
@@ -85,7 +84,7 @@ class _Date extends StatelessWidget {
       height: 12,
       child: Container(
         decoration: BoxDecoration(
-          color: date.active ? Colors.green : tealBlueLighter,
+          color: date.active ? Colors.green : Colors.green.withOpacity(0.1),
           borderRadius: BorderRadius.circular(1),
         ),
       ),
