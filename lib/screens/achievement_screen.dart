@@ -70,7 +70,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const CalendarHeatMap(),
+                CalendarHeatMap(),
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(

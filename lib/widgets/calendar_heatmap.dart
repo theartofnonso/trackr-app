@@ -9,15 +9,11 @@ class _DateViewModel {
   _DateViewModel({required this.dateTime});
 }
 
-class CalendarHeatMap extends StatefulWidget {
-  const CalendarHeatMap({super.key});
+class CalendarHeatMap extends StatelessWidget {
 
-  @override
-  State<CalendarHeatMap> createState() => _CalendarHeatMapState();
-}
+  final DateTime _currentDate = DateTime.now();
 
-class _CalendarHeatMapState extends State<CalendarHeatMap> {
-  DateTime _currentDate = DateTime.now();
+  CalendarHeatMap({super.key});
 
   List<_DateViewModel?> _generateDates() {
     int year = _currentDate.year;
