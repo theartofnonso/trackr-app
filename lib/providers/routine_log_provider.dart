@@ -16,7 +16,7 @@ import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-  final Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
 
   List<RoutineLog> _logs = [];
 
@@ -59,18 +59,18 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void _loadExerciseLogs() {
-    /// Clear previous list of exercise logs
-    _exerciseLogs.clear();
+    final exerciseLogs = <String, List<ExerciseLogDto>>{};
     for (RoutineLog log in _logs) {
       final decodedExerciseLogs =
           log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
       for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
         final exerciseId = exerciseLog.exercise.id;
-        final exerciseLogs = _exerciseLogs[exerciseId] ?? [];
-        exerciseLogs.add(exerciseLog);
-        _exerciseLogs.putIfAbsent(exerciseId, () => exerciseLogs);
+        final logs = exerciseLogs[exerciseId] ?? [];
+        logs.add(exerciseLog);
+        exerciseLogs.putIfAbsent(exerciseId, () => logs);
       }
     }
+    _exerciseLogs = exerciseLogs;
   }
 
   void _loadWeekToLogs() {
