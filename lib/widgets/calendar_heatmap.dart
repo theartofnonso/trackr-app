@@ -10,7 +10,6 @@ class _DateViewModel {
 }
 
 class CalendarHeatMap extends StatelessWidget {
-
   final DateTime _currentDate = DateTime.now();
 
   CalendarHeatMap({super.key});
@@ -78,17 +77,13 @@ class _DateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-      ),
+    return SizedBox(
+      width: 16,
+      height: 16,
       child: Container(
-        margin: const EdgeInsets.all(3),
         decoration: BoxDecoration(
           color: _getBackgroundColor(log != null),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(2),
         ),
       ),
     );
@@ -107,7 +102,7 @@ class _CalenderDates extends StatelessWidget {
 
     final datesWidgets = dates.map((date) {
       if (date == null) {
-        return const SizedBox(width: 40, height: 40);
+        return const SizedBox(width: 16, height: 16);
       } else {
         return _DateWidget(dateTime: date.dateTime);
       }
@@ -132,6 +127,6 @@ class _CalenderDates extends StatelessWidget {
       ));
     }
 
-    return Column(children: widgets);
+    return SizedBox(width: 140, height: 140, child: Column(children: widgets));
   }
 }
