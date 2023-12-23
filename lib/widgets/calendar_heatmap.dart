@@ -76,8 +76,8 @@ class _DateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 16,
-      height: 16,
+      width: 12,
+      height: 12,
       child: Container(
         decoration: BoxDecoration(
           color: date.active ? Colors.green : tealBlueLighter,
@@ -100,7 +100,7 @@ class _Dates extends StatelessWidget {
 
     final datesWidgets = dates.map((date) {
       if (date == null) {
-        return const SizedBox(width: 16, height: 16);
+        return const SizedBox(width: 12, height: 12);
       } else {
         return _DateWidget(date: date);
       }
@@ -125,6 +125,6 @@ class _Dates extends StatelessWidget {
       ));
     }
 
-    return SizedBox(width: 140, height: 140, child: Column(children: widgets));
+    return SizedBox(width: 110, height: 110, child: Column(children: widgets));
   }
 }
