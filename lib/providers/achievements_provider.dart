@@ -11,7 +11,8 @@ import '../enums/muscle_group_enums.dart';
 import '../models/Exercise.dart';
 import '../models/RoutineLog.dart';
 
-({int difference, double progress}) calculateProgress({required BuildContext context, required AchievementType type}) {
+({int progressRemainder, double progressValue}) calculateProgress(
+    {required BuildContext context, required AchievementType type}) {
   final provider = Provider.of<RoutineLogProvider>(context, listen: false);
   final logs = provider.logs;
   final weekToLogs = provider.weekToLogs;
@@ -26,7 +27,7 @@ import '../models/RoutineLog.dart';
     AchievementType.neverSkipALegDay => _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: 16),
     AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: 8),
     AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: logs),
-    _ => (progress: 0, difference: 0)
+    _ => (progressValue: 0, progressRemainder: 0)
   };
 }
 
@@ -34,7 +35,7 @@ import '../models/RoutineLog.dart';
 /// AchievementType.days30
 /// AchievementType.days75
 /// AchievementType.days100
-({int difference, double progress}) _calculateDaysAchievement(
+({int progressRemainder, double progressValue}) _calculateDaysAchievement(
     {required List<RoutineLog> logs, required AchievementType type}) {
   final targetDays = switch (type) {
     AchievementType.days12 => 12,
@@ -44,15 +45,16 @@ import '../models/RoutineLog.dart';
     _ => 0,
   };
 
-  final difference = targetDays - logs.length;
+  final progressRemainder = targetDays - logs.length;
 
-  final progress = logs.length / targetDays;
+  final progressValue = logs.length / targetDays;
 
-  return (progress: progress, difference: difference < 0 ? 0 : difference);
+  return (progressValue: progressValue, progressRemainder: progressRemainder < 0 ? 0 : progressRemainder);
 }
 
 /// AchievementType.supersetSpecialist
-({int difference, double progress}) _calculateSuperSetSpecialistAchievement({required List<RoutineLog> logs}) {
+({int progressRemainder, double progressValue}) _calculateSuperSetSpecialistAchievement(
+    {required List<RoutineLog> logs}) {
   int target = 20;
   // Count RoutineLogs with at least two exercises that have a non-null superSetId
   int count = 0;
@@ -68,10 +70,10 @@ import '../models/RoutineLog.dart';
     }
   }
 
-  final progress = count / target;
-  final difference = target - count;
+  final progressValue = count / target;
+  final progressRemainder = target - count;
 
-  return (progress: progress, difference: difference < 0 ? 0 : difference);
+  return (progressValue: progressValue, progressRemainder: progressRemainder < 0 ? 0 : progressRemainder);
 }
 
 /// AchievementType.obsessed
@@ -105,27 +107,27 @@ import '../models/RoutineLog.dart';
   return (occurrences: occurrences, consecutiveWeeks: consecutiveWeeks);
 }
 
-({int difference, double progress}) _achievementProgress(
+({int progressRemainder, double progressValue}) _achievementProgress(
     {required int consecutiveWeeks,
     required List<DateTimeRange> occurrences,
     required int target,
     required hasSufficientLogs}) {
   if (hasSufficientLogs) {
-    return (progress: consecutiveWeeks / target, difference: target - consecutiveWeeks);
+    return (progressValue: consecutiveWeeks / target, progressRemainder: target - consecutiveWeeks);
   }
 
-  int difference = target - consecutiveWeeks;
+  int progressRemainder = target - consecutiveWeeks;
 
-  final progress = occurrences.isNotEmpty ? 1 : consecutiveWeeks / target;
+  final progressValue = occurrences.isNotEmpty ? 1 : consecutiveWeeks / target;
 
-  if (occurrences.isNotEmpty || difference <= 0) {
-    difference = 0;
+  if (occurrences.isNotEmpty || progressRemainder <= 0) {
+    progressRemainder = 0;
   }
 
-  return (progress: progress.toDouble(), difference: difference);
+  return (progressValue: progressValue.toDouble(), progressRemainder: progressRemainder);
 }
 
-({int difference, double progress}) _calculateObsessedAchievement(
+({int progressRemainder, double progressValue}) _calculateObsessedAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final result = _consecutiveWeeksWithLogsWhere(
       weekToRoutineLogs: weekToLogs, targetWeeks: target, evaluation: (entry) => entry.value.isNotEmpty);
@@ -147,7 +149,7 @@ bool _hasLegExercise(RoutineLog log) {
 }
 
 /// AchievementType.neverSkipAMonday
-({int difference, double progress}) _calculateNeverSkipALegDayAchievement(
+({int progressRemainder, double progressValue}) _calculateNeverSkipALegDayAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final result = _consecutiveWeeksWithLogsWhere(
       weekToRoutineLogs: weekToLogs,
@@ -165,7 +167,7 @@ bool _loggedOnMonday(RoutineLog log) {
   return log.createdAt.getDateTimeInUtc().weekday == 1;
 }
 
-({int difference, double progress}) _calculateNeverSkipAMondayAchievement(
+({int progressRemainder, double progressValue}) _calculateNeverSkipAMondayAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final result = _consecutiveWeeksWithLogsWhere(
       weekToRoutineLogs: weekToLogs,
@@ -183,7 +185,7 @@ bool _loggedOnWeekend(RoutineLog log) {
   return log.createdAt.getDateTimeInUtc().weekday == 6 || log.createdAt.getDateTimeInUtc().weekday == 7;
 }
 
-({int difference, double progress}) _calculateWeekendWarriorAchievement(
+({int progressRemainder, double progressValue}) _calculateWeekendWarriorAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final result = _consecutiveWeeksWithLogsWhere(
       weekToRoutineLogs: weekToLogs,
@@ -197,14 +199,17 @@ bool _loggedOnWeekend(RoutineLog log) {
 }
 
 /// AchievementType.sweatEquity
-({int difference, double progress}) _calculateSweatEquityAchievement({required List<RoutineLog> logs}) {
+({int progressRemainder, double progressValue}) _calculateSweatEquityAchievement({required List<RoutineLog> logs}) {
   const targetHours = Duration(hours: 100);
 
   final duration = logs.map((log) => log.duration()).reduce((total, duration) => total + duration);
 
-  final progress = duration.inHours / targetHours.inHours;
+  final progressValue = duration.inHours / targetHours.inHours;
 
-  final difference = targetHours - duration;
+  final progressRemainder = targetHours - duration;
 
-  return (progress: progress, difference: difference < Duration.zero ? 0 : difference.inHours);
+  return (
+    progressValue: progressValue,
+    progressRemainder: progressRemainder < Duration.zero ? 0 : progressRemainder.inHours
+  );
 }

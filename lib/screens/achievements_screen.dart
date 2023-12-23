@@ -6,6 +6,7 @@ import '../app_constants.dart';
 import '../enums/achievement_type_enums.dart';
 import '../providers/achievements_provider.dart';
 import '../widgets/backgrounds/gradient_background.dart';
+import 'achievement_screen.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
@@ -19,7 +20,6 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final achievements = _achievements(context: context);
 
     return Scaffold(
@@ -54,10 +54,7 @@ class _AchievementListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final widgets = children.map((achievement) {
       return _AchievementTile(
-        title: achievement.type.title,
-        subtitle: achievement.type.description,
-        progressValue: achievement.progress.progress,
-        progressRemainder: achievement.progress.difference,
+        achievement: achievement,
         margin: const EdgeInsets.only(bottom: 10),
       );
     }).toList();
@@ -67,55 +64,60 @@ class _AchievementListView extends StatelessWidget {
 }
 
 class _AchievementTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final double progressValue;
-  final int progressRemainder;
+  final AchievementDto achievement;
   final EdgeInsets margin;
 
-  const _AchievementTile(
-      {required this.title,
-      required this.subtitle,
-      required this.progressValue,
-      required this.progressRemainder,
-      required this.margin});
+  const _AchievementTile({required this.achievement, required this.margin});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(8),
-        margin: margin,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0), //
-            border: Border.all(color: tealBlueLighter, width: 2) // Set the border radius here
-            ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(title.toUpperCase(),
-                          style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  Text(subtitle, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
-                  const SizedBox(height: 10),
-                  LinearProgressIndicator(
-                    color: progressRemainder == 0 ? Colors.green : Colors.white,
-                    value: progressValue,
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    backgroundColor: tealBlueLighter,
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () {
+        _navigateToAchievement(context);
+      },
+      child: Container(
+          padding: const EdgeInsets.all(8),
+          margin: margin,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0), //
+              border: Border.all(color: tealBlueLighter, width: 2) // Set the border radius here
               ),
-            ),
-            const SizedBox(width: 10),
-            Text("$progressRemainder left", style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
-          ],
-        ));
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(achievement.type.title.toUpperCase(),
+                            style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    Text(achievement.type.description, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                    const SizedBox(height: 10),
+                    LinearProgressIndicator(
+                      color: achievement.progress.progressRemainder == 0 ? Colors.green : Colors.white,
+                      value: achievement.progress.progressValue,
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      backgroundColor: tealBlueLighter,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text("${achievement.progress.progressRemainder} left",
+                  style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+            ],
+          )),
+    );
+  }
+
+  void _navigateToAchievement(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AchievementScreen(achievementDto: achievement)));
   }
 }
