@@ -11,7 +11,6 @@ import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise_type_enums.dart';
-import '../../../models/Exercise.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/general_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
