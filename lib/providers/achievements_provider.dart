@@ -120,9 +120,11 @@ ProgressDto _consecutiveAchievementProgress(
     required int target,
     required Map<DateTimeRange, List<RoutineLog>> weekToLogs}) {
   final dates = dateTimeRanges
-      .map((range) => weekToLogs[range] ?? [])
-      .expand((log) => log)
-      .map((log) => log.createdAt.getDateTimeInUtc().localDate())
+      .map((DateTimeRange range) => weekToLogs[range] ?? <RoutineLog>[])
+      .expand((List<RoutineLog> logs) => logs)
+      .map((RoutineLog log) => log.createdAt
+          .getDateTimeInUtc()
+          .localDate())
       .toList();
   final datesByMonth = groupBy(dates, (date) => date.month);
 
