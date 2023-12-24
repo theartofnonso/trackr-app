@@ -172,7 +172,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 /// Highest value across all [RoutineLogDto]
 
 List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required Exercise exercise}) {
-  return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+  return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 }
 
 (RoutineLog?, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {

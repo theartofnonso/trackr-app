@@ -12,11 +12,14 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../dtos/exercise_log_dto.dart';
+import '../enums/exercise_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogProvider with ChangeNotifier {
-  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+  Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
+
+  Map<ExerciseType, List<ExerciseLogDto>> _exerciseLogsByType = {};
 
   List<RoutineLog> _logs = [];
 
@@ -24,7 +27,9 @@ class RoutineLogProvider with ChangeNotifier {
 
   Map<DateTimeRange, List<RoutineLog>> _monthToLogs = {};
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
+
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => UnmodifiableMapView(_exerciseLogsByType);
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
@@ -58,19 +63,17 @@ class RoutineLogProvider with ChangeNotifier {
     }
   }
 
-  void _loadExerciseLogs() {
-    final exerciseLogs = <String, List<ExerciseLogDto>>{};
-    for (RoutineLog log in _logs) {
-      final decodedExerciseLogs =
-          log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
-      for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
-        final exerciseId = exerciseLog.exercise.id;
-        final logs = exerciseLogs[exerciseId] ?? [];
-        logs.add(exerciseLog);
-        exerciseLogs.putIfAbsent(exerciseId, () => logs);
-      }
-    }
-    _exerciseLogs = exerciseLogs;
+  void _orderExercises() {
+    List<ExerciseLogDto> exerciseLogs = _logs
+        .map((log) => log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))))
+        .expand((exerciseLogs) => exerciseLogs)
+        .toList();
+    _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.id);
+    _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) {
+      final exerciseTypeString = exerciseLog.exercise.type;
+      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+      return exerciseType;
+    });
   }
 
   void _loadWeekToLogs() {
@@ -119,7 +122,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void _normaliseLogs() {
-    _loadExerciseLogs();
+    _orderExercises();
     _loadWeekToLogs();
     _loadMonthToLogs();
   }
@@ -262,7 +265,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<SetDto> wherePastSets({required Exercise exercise}) {
-    final exerciseLogs = _exerciseLogs[exercise.id]?.reversed.toList() ?? [];
+    final exerciseLogs = _exerciseLogsById[exercise.id]?.reversed.toList() ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
@@ -273,7 +276,7 @@ class RoutineLogProvider with ChangeNotifier {
       return primaryMuscle.family == muscleGroupFamily;
     }
 
-    List<List<ExerciseLogDto>> allLogs = _exerciseLogs.values.toList();
+    List<List<ExerciseLogDto>> allLogs = _exerciseLogsById.values.toList();
 
     return allLogs.flattened
         .where((log) => hasMatchingBodyPart(log))
@@ -300,7 +303,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
-    final values = _exerciseLogs[exercise.id] ?? [];
+    final values = _exerciseLogsById[exercise.id] ?? [];
     return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
   }
 

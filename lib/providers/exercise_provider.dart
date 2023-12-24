@@ -9,6 +9,7 @@ import '../models/Exercise.dart';
 import '../utils/general_utils.dart';
 
 class ExerciseProvider with ChangeNotifier {
+
   List<Exercise> _exercises = [];
 
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
