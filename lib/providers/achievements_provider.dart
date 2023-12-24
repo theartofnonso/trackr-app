@@ -48,10 +48,10 @@ int _adjustRemainder({required int remainder}) {
   return remainder;
 }
 
-/// AchievementType.days12
-/// AchievementType.days30
-/// AchievementType.days75
-/// AchievementType.days100
+/// [AchievementType.days12]
+/// [AchievementType.days30]
+/// [AchievementType.days75]
+/// [AchievementType.days100]
 ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required AchievementType type}) {
   final achievedLogs = logs.take(type.target);
 
@@ -64,7 +64,7 @@ ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required 
   return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
 }
 
-/// AchievementType.supersetSpecialist
+/// [AchievementType.supersetSpecialist]
 ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> logs}) {
   int target = 20;
 
@@ -87,7 +87,7 @@ ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> l
   return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
 }
 
-/// AchievementType.obsessed
+/// [AchievementType.obsessed]
 List<DateTimeRange> _consecutiveWeeksWithLogsWhere(
     {required Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs,
     required bool Function(MapEntry<DateTimeRange, List<RoutineLog>> week) evaluation}) {
@@ -140,7 +140,7 @@ bool _hasLegExercise(RoutineLog log) {
   });
 }
 
-/// AchievementType.neverSkipAMonday
+/// [AchievementType.neverSkipAMonday]
 ProgressDto _calculateNeverSkipALegDayAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final dateTimeRanges = _consecutiveWeeksWithLogsWhere(
@@ -148,7 +148,7 @@ ProgressDto _calculateNeverSkipALegDayAchievement(
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
-/// AchievementType.neverSkipAMonday
+/// [AchievementType.neverSkipAMonday]
 bool _loggedOnMonday(RoutineLog log) {
   return log.createdAt.getDateTimeInUtc().weekday == 1;
 }
@@ -160,7 +160,7 @@ ProgressDto _calculateNeverSkipAMondayAchievement(
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
-/// AchievementType.weekendWarrior
+/// [AchievementType.weekendWarrior]
 bool _loggedOnWeekend(RoutineLog log) {
   return log.createdAt.getDateTimeInUtc().weekday == 6 || log.createdAt.getDateTimeInUtc().weekday == 7;
 }
@@ -173,7 +173,7 @@ ProgressDto _calculateWeekendWarriorAchievement(
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
-/// AchievementType.sweatEquity
+/// [AchievementType.sweatEquity]
 ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, required int target}) {
   final targetHours = Duration(hours: target);
 
@@ -189,10 +189,10 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, re
   return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: datesByMonth);
 }
 
-/// AchievementType.fiveMinutesToGo
-/// AchievementType.tenMinutesToGo
-/// AchievementType.fifteenMinutesToGo
-/// AchievementType.timeUnderTension
+/// [AchievementType.fiveMinutesToGo]
+/// [AchievementType.tenMinutesToGo]
+/// [AchievementType.fifteenMinutesToGo]
+/// [AchievementType.timeUnderTension]
 ProgressDto _calculateTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
 
