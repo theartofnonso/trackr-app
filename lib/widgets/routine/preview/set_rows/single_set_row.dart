@@ -5,12 +5,14 @@ import '../../../../app_constants.dart';
 
 class SingleSetRow extends StatelessWidget {
   final String label;
+  final EdgeInsets? margin;
 
-  const SingleSetRow({super.key, required this.label});
+  const SingleSetRow({super.key, required this.label, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       decoration: BoxDecoration(
         color: tealBlueLight, // Container color
         borderRadius: BorderRadius.circular(5.0), // Radius for rounded corners

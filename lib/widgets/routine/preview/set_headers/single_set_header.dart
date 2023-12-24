@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class SingleSetHeader extends StatelessWidget {
   final String label;
-  const SingleSetHeader({super.key, required this.label});
+  final TextAlign textAlign;
+
+  const SingleSetHeader({super.key, required this.label, this.textAlign = TextAlign.center});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class SingleSetHeader extends StatelessWidget {
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(label,
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12),
-                textAlign: TextAlign.center),
+                textAlign: textAlign),
           ),
         ]),
       ],
