@@ -166,7 +166,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   @override
   void initState() {
     super.initState();
-    final muscleGroupsDtos = MuscleGroup.values.map((muscleGroup) => MuscleGroupDto(muscleGroup: muscleGroup)).toList();
+    final muscleGroupsDtos = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).map((muscleGroup) => MuscleGroupDto(muscleGroup: muscleGroup)).toList();
     final previousMuscleGroups = widget.muscleGroups;
     if (previousMuscleGroups != null) {
       /// Convert previous MuscleGroups ot MuscleGroupsDto

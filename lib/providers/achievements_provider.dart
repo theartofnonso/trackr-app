@@ -39,6 +39,8 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.bodyweightChampion => _calculateBodyWeightAchievement(logs: exerciseLogs, type: type),
     AchievementType.strongerThanEver => _calculateStrongerThanEverAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.timeUnderTension => _calculateTimeUnderTensionAchievement(logs: exerciseLogs, target: type.target),
+    AchievementType.assistedToUnAssisted =>
+      _calculateAssistedToUnAssistedAchievement(logs: exerciseLogs, target: type.target),
     _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
 }
@@ -294,4 +296,20 @@ ProgressDto _calculateTimeUnderTensionAchievement(
   final datesByMonth = groupBy(dates, (date) => date.month);
 
   return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: datesByMonth);
+}
+
+/// [AchievementType.assistedToUnAssisted]
+ProgressDto _calculateAssistedToUnAssistedAchievement(
+    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
+  final assistedBodyWeight = logs[ExerciseType.assistedBodyWeight] ?? [];
+
+  final achievedLogs = assistedBodyWeight.where((log) => log.sets.any((set) => set.value1 == target));
+
+  final progress = achievedLogs.length / assistedBodyWeight.length;
+  final remainder = assistedBodyWeight.length - achievedLogs.length;
+
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress.isNaN ? 0 : progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
 }
