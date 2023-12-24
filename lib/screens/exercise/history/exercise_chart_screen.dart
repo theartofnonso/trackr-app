@@ -7,7 +7,6 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
-import 'package:tracker_app/widgets/exercise_history/set_record_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
