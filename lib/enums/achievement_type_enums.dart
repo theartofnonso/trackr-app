@@ -11,15 +11,16 @@ enum AchievementType {
   fifteenMinutesToGo("15 Minutes To Go", "Log 50 sessions, each with at least a duration of 15 minutes in a single set.", 15),
   templeRun("Temple Run", "Log 50 ThreadMill sessions, each with at least a duration of 30 minutes in a single set.", 30),
   timeUnderTension("Time Under Tension", "Accumulate 100 hours of strength training for duration-based exercises", 100),
-  maxOutMadness("Max Out Madness", "Set a goal to increase the maximum weight lifted in a specific compound exercise", 0),
   obsessed("Obsessed", "Log at least one session for 16 consecutive weeks", 16),
   neverSkipAMonday("Never Skip a Monday", "Log a session for 16 consecutive mondays", 16),
   neverSkipALegDay("Never Skip a Leg Day", "Log at least one leg exercise in a session for 16 consecutive weeks", 16),
   sweatEquity("Sweat Equity", "Accumulate 20 hours of strength training", 100),
   weekendWarrior("Weekend Warrior", "Log a session on both Saturday and Sunday for eight consecutive weeks", 8),
   bodyweightChampion("Bodyweight Champion", "Accumulate 100 bodyweight exercises", 100),
-  twiceAsStrong("Twice as Strong", "Achieve a 2x body weight deadlift", 0),
-  twiceAsLow("Twice as Low", "Achieve a 2x body weight squat", 0);
+  // maxOutMadness("Max Out Madness", "Set a goal to increase the maximum weight lifted in a specific compound exercise", 0),
+  // twiceAsStrong("Twice as Strong", "Achieve a 2x body weight deadlift", 0),
+  // twiceAsLow("Twice as Low", "Achieve a 2x body weight squat", 0)
+  ;
 
   const AchievementType(this.title, this.description, this.target);
 

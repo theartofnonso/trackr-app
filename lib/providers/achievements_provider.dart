@@ -218,10 +218,8 @@ ProgressDto _calculateTimeAchievement(
 /// [AchievementType.templeRun]
 ProgressDto _calculateRunningTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-  final exerciseLogsWithDurationOnly = logs[ExerciseType.durationAndDistance] ?? [];
-  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance] ?? [];
-  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly, ...exerciseLogsWithDurationAndDistanceOnly];
-  List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
+  final exerciseLogsWithDistanceAndDuration = logs[ExerciseType.durationAndDistance] ?? [];
+  List<ExerciseLogDto> achievedLogs = exerciseLogsWithDistanceAndDuration.where((log) {
     return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
   }).toList();
 
@@ -249,8 +247,8 @@ ProgressDto _calculateBodyWeightAchievement(
 }
 
 /// [AchievementType.strongerThanEver]
-ProgressDto _calculateStrongerThanEverAchievement({required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-
+ProgressDto _calculateStrongerThanEverAchievement(
+    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
   final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
   final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
   final weightAndDistance = logs[ExerciseType.weightAndDistance] ?? [];
@@ -275,8 +273,8 @@ ProgressDto _calculateStrongerThanEverAchievement({required Map<ExerciseType, Li
 }
 
 /// [AchievementType.timeUnderTension]
-ProgressDto _calculateTimeUnderTensionAchievement({required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-
+ProgressDto _calculateTimeUnderTensionAchievement(
+    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
   final targetHours = Duration(hours: target);
 
   final achievedLogs = logs[ExerciseType.duration] ?? [];
