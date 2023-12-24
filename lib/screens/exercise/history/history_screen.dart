@@ -14,7 +14,7 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<ExerciseLogDto> pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
+    List<ExerciseLogDto> pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
     pastLogs = pastLogs.reversed.toList();
     return Padding(
       padding: const EdgeInsets.all(10.0),

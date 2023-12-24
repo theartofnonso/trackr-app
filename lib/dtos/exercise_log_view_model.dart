@@ -1,4 +1,4 @@
-import '../exercise_log_dto.dart';
+import 'exercise_log_dto.dart';
 
 class ExerciseLogViewModel {
   final ExerciseLogDto exerciseLog;

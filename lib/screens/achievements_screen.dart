@@ -21,6 +21,7 @@ class AchievementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final achievements = _achievements(context: context);
+    achievements.sort((a, b) => a.progress.remainder.compareTo(b.progress.remainder));
 
     return Scaffold(
         body: Stack(children: [

@@ -20,7 +20,7 @@ import '../../dtos/exercise_log_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
-import '../dtos/graph/exercise_log_view_model.dart';
+import '../dtos/exercise_log_view_model.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
 
