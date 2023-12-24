@@ -68,7 +68,7 @@ class RoutineLogProvider with ChangeNotifier {
         .map((log) => log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))))
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
-    _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.id);
+    _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
     _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) {
       final exerciseTypeString = exerciseLog.exercise.type;
       final exerciseType = ExerciseType.fromString(exerciseTypeString);

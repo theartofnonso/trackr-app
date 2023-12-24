@@ -36,6 +36,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
       _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: routineLogs, target: type.target),
+    AchievementType.bodyweightChampion => _calculateBodyWeightAchievement(logs: exerciseLogs, type: type),
     _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
 }
@@ -195,16 +196,29 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, re
 /// [AchievementType.timeUnderTension]
 ProgressDto _calculateTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-
-  final exerciseLogsWithDurationOnly = logs[ExerciseType.duration];
-  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance];
-  final exerciseLogsWithDuration = [...?exerciseLogsWithDurationOnly, ...?exerciseLogsWithDurationAndDistanceOnly];
+  final exerciseLogsWithDurationOnly = logs[ExerciseType.duration] ?? [];
+  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance] ?? [];
+  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly, ...exerciseLogsWithDurationAndDistanceOnly];
   List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
     return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
   }).toList();
 
   final progress = achievedLogs.length / 50;
   final remainder = 50 - achievedLogs.length;
+
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+}
+
+/// [AchievementType.bodyweightChampion]
+ProgressDto _calculateBodyWeightAchievement(
+    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
+  final achievedLogs = logs[ExerciseType.bodyWeightAndReps] ?? [];
+
+  final progress = achievedLogs.length / type.target;
+  final remainder = type.target - achievedLogs.length;
 
   final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
   final datesByMonth = groupBy(dates, (date) => date.month);

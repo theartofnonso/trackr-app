@@ -41,7 +41,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 Text(widget.achievementDto.type.title,
                     style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
                 Text(widget.achievementDto.type.description,
-                    style: GoogleFonts.lato(fontSize: 16, color: Colors.white70)),
+                    style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -70,9 +70,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     : Wrap(children: monthsHeatMap),
                 const SizedBox(height: 10),
                 Container(
-                  decoration: BoxDecoration(
-                      color: tealBlue,
-                      borderRadius: BorderRadius.circular(5)),
+                  decoration: BoxDecoration(color: tealBlue, borderRadius: BorderRadius.circular(5)),
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

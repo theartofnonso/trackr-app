@@ -16,7 +16,7 @@ enum AchievementType {
   neverSkipALegDay("Never Skip a Leg Day", "Log at least one leg exercise in a session for 16 consecutive weeks", 16),
   sweatEquity("Sweat Equity", "Accumulate 20 hours of strength training", 100),
   weekendWarrior("Weekend Warrior", "Log a session on both Saturday and Sunday for eight consecutive weeks", 8),
-  bodyweightChampion("Bodyweight Champion", "Log 20 sessions with at least one bodyweight exercise", 20),
+  bodyweightChampion("Bodyweight Champion", "Accumulate 100 bodyweight exercises", 100),
   twiceAsStrong("Twice as Strong", "Achieve a 2x body weight deadlift", 0),
   twiceAsLow("Twice as Low", "Achieve a 2x body weight squat", 0);
 

@@ -116,9 +116,6 @@ class _AchievementTile extends StatelessWidget {
   }
 
   void _navigateToAchievement(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AchievementScreen(achievementDto: achievement)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AchievementScreen(achievementDto: achievement)));
   }
 }
