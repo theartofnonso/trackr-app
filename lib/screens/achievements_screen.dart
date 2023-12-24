@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
 
 import '../app_constants.dart';
 import '../enums/achievement_type_enums.dart';
 import '../providers/achievements_provider.dart';
+import '../providers/routine_log_provider.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import 'achievement_screen.dart';
 
@@ -20,6 +22,7 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<RoutineLogProvider>(context, listen: true);
     final achievements = _achievements(context: context);
     achievements.sort((a, b) => b.progress.value.compareTo(a.progress.value));
 
