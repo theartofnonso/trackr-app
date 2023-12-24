@@ -196,9 +196,9 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, re
 ProgressDto _calculateTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
 
-  final exerciseLogsWithDurationOnly = logs[ExerciseType.duration] ??= [];
-  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance] ??= [];
-  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly, ...exerciseLogsWithDurationAndDistanceOnly];
+  final exerciseLogsWithDurationOnly = logs[ExerciseType.duration];
+  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance];
+  final exerciseLogsWithDuration = [...?exerciseLogsWithDurationOnly, ...?exerciseLogsWithDurationAndDistanceOnly];
   List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
     return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
   }).toList();
