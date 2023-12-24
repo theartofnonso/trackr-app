@@ -152,8 +152,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ListTileEmptyState(),
-              const SizedBox(height: 8),
               RichText(
                   text: TextSpan(
                       style: GoogleFonts.lato(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70),
