@@ -44,7 +44,7 @@ class SetRecordWidget extends StatelessWidget {
     }
 
     // Sort by value2
-    setsWithHeaviestWeight.sort((a, b) => b.value2.compareTo(a.value2));
+    setsWithHeaviestWeight.sort((a, b) => a.value2.compareTo(b.value2));
 
     return setsWithHeaviestWeight;
   }
