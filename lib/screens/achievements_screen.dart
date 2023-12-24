@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
+import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
-import '../app_constants.dart';
 import '../enums/achievement_type_enums.dart';
 import '../providers/achievements_provider.dart';
 import '../providers/routine_log_provider.dart';
+import '../widgets/achievements/achievement_tile.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import 'achievement_screen.dart';
 
@@ -22,9 +23,14 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<RoutineLogProvider>(context, listen: true);
-    final achievements = _achievements(context: context);
-    achievements.sort((a, b) => b.progress.value.compareTo(a.progress.value));
+    final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+
+    List<AchievementDto> achievements = [];
+
+    if (logs.isNotEmpty) {
+      achievements = _achievements(context: context);
+      achievements.sort((a, b) => b.progress.value.compareTo(a.progress.value));
+    }
 
     return Scaffold(
         body: Stack(children: [
@@ -41,7 +47,7 @@ class AchievementsScreen extends StatelessWidget {
             Text("Keep logging your sessions to achieve milestones and unlock badges.",
                 style: GoogleFonts.lato(color: Colors.white70, fontSize: 16)),
             const SizedBox(height: 20),
-            _AchievementListView(children: achievements)
+            logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
           ]),
         ),
       ))
@@ -57,68 +63,19 @@ class _AchievementListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgets = children.map((achievement) {
-      return _AchievementTile(
+      return AchievementTile(
         achievement: achievement,
         margin: const EdgeInsets.only(bottom: 10),
+        onTap: () {
+          _navigateToAchievement(context: context, achievement: achievement);
+        },
       );
     }).toList();
 
     return Column(children: widgets);
   }
-}
 
-class _AchievementTile extends StatelessWidget {
-  final AchievementDto achievement;
-  final EdgeInsets margin;
-
-  const _AchievementTile({required this.achievement, required this.margin});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _navigateToAchievement(context);
-      },
-      child: Container(
-          padding: const EdgeInsets.all(8),
-          margin: margin,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0), //
-              border: Border.all(color: tealBlueLighter, width: 2) // Set the border radius here
-              ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(achievement.type.title.toUpperCase(),
-                            style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    Text(achievement.type.description, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
-                    const SizedBox(height: 10),
-                    LinearProgressIndicator(
-                      color: achievement.progress.remainder == 0 ? Colors.green : Colors.white,
-                      value: achievement.progress.value,
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      backgroundColor: tealBlueLighter,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text("${achievement.progress.remainder} left",
-                  style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
-            ],
-          )),
-    );
-  }
-
-  void _navigateToAchievement(BuildContext context) {
+  void _navigateToAchievement({required BuildContext context, required AchievementDto achievement}) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => AchievementScreen(achievementDto: achievement)));
   }
 }
