@@ -10,7 +10,6 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/c_list_title.dart';
 
 import '../models/RoutineLog.dart';
-import '../widgets/empty_states/list_tile_empty_state.dart';
 
 class _DateViewModel {
   DateTime dateTime;
