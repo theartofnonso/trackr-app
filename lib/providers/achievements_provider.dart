@@ -27,7 +27,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.fifteenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
-    AchievementType.timeUnderTension => _calculateTimeAchievement(logs: exerciseLogs, type: type),
+    AchievementType.templeRun => _calculateRunningTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: routineLogs),
     AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.neverSkipAMonday =>
@@ -37,6 +37,8 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: routineLogs, target: type.target),
     AchievementType.bodyweightChampion => _calculateBodyWeightAchievement(logs: exerciseLogs, type: type),
+    AchievementType.strongerThanEver => _calculateStrongerThanEverAchievement(logs: exerciseLogs, target: type.target),
+    AchievementType.timeUnderTension => _calculateTimeUnderTensionAchievement(logs: exerciseLogs, target: type.target),
     _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
 }
@@ -178,7 +180,9 @@ ProgressDto _calculateWeekendWarriorAchievement(
 ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, required int target}) {
   final targetHours = Duration(hours: target);
 
-  final duration = logs.map((log) => log.duration()).reduce((total, duration) => total + duration);
+  final durations = logs.map((log) => log.duration());
+
+  final duration = durations.isNotEmpty ? durations.reduce((total, duration) => total + duration) : Duration.zero;
 
   final progress = duration.inHours / targetHours.inHours;
 
@@ -193,10 +197,28 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, re
 /// [AchievementType.fiveMinutesToGo]
 /// [AchievementType.tenMinutesToGo]
 /// [AchievementType.fifteenMinutesToGo]
-/// [AchievementType.timeUnderTension]
 ProgressDto _calculateTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
   final exerciseLogsWithDurationOnly = logs[ExerciseType.duration] ?? [];
+  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance] ?? [];
+  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly, ...exerciseLogsWithDurationAndDistanceOnly];
+  List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
+    return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
+  }).toList();
+
+  final progress = achievedLogs.length / 50;
+  final remainder = 50 - achievedLogs.length;
+
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+}
+
+/// [AchievementType.templeRun]
+ProgressDto _calculateRunningTimeAchievement(
+    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
+  final exerciseLogsWithDurationOnly = logs[ExerciseType.durationAndDistance] ?? [];
   final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance] ?? [];
   final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly, ...exerciseLogsWithDurationAndDistanceOnly];
   List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
@@ -224,4 +246,54 @@ ProgressDto _calculateBodyWeightAchievement(
   final datesByMonth = groupBy(dates, (date) => date.month);
 
   return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+}
+
+/// [AchievementType.strongerThanEver]
+ProgressDto _calculateStrongerThanEverAchievement({required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
+
+  final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
+  final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
+  final weightAndDistance = logs[ExerciseType.weightAndDistance] ?? [];
+
+  final achievedLogs = [...weightAndReps, ...weightedBodyWeight, ...weightAndDistance];
+
+  final tonnages = achievedLogs.map((log) {
+    final volume = log.sets.map((set) => set.value1 * set.value2).reduce((total, tonnage) => total + tonnage);
+    return volume;
+  });
+
+  final tonnage = tonnages.isNotEmpty ? tonnages.reduce((total, tonnage) => total + tonnage) : 0;
+
+  final progress = tonnage / target;
+
+  final remainder = target - tonnage;
+
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.toInt()), dates: datesByMonth);
+}
+
+/// [AchievementType.timeUnderTension]
+ProgressDto _calculateTimeUnderTensionAchievement({required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
+
+  final targetHours = Duration(hours: target);
+
+  final achievedLogs = logs[ExerciseType.duration] ?? [];
+
+  final durations = achievedLogs.map((log) {
+    final duration = log.sets.map((set) => set.value1).reduce((total, tonnage) => total + tonnage);
+    return Duration(milliseconds: duration.toInt());
+  });
+
+  final duration = durations.isNotEmpty ? durations.reduce((total, duration) => total + duration) : Duration.zero;
+
+  final progress = duration.inHours / targetHours.inHours;
+
+  final remainder = targetHours - duration;
+
+  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: datesByMonth);
 }
