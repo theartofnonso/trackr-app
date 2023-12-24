@@ -8,6 +8,7 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
+import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../../../dtos/exercise_log_dto.dart';
@@ -464,7 +465,7 @@ class HomeScreen extends StatelessWidget {
                   exercise: foundExercise,
                 ),
                 HistoryScreen(exercise: foundExercise),
-                NotesScreen(notes: foundExercise.notes ?? "")
+                NotesScreen(notes: foundExercise.notes ?? ""),
               ],
             ),
           ),

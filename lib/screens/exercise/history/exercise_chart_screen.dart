@@ -6,6 +6,8 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
+import 'package:tracker_app/widgets/exercise_history/set_record_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
@@ -517,6 +519,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLog: widget.mostRepsSession.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
+          if(_exerciseLogsWithWeightsAndReps() || _exerciseLogsWithAssistedWeights())
+            PersonalBestWidget(exercise: widget.exercise),
         ],
       ),
     ));

@@ -24,6 +24,8 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 }
 
 List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets}) {
+  const margin = EdgeInsets.only(bottom: 6.0);
+
   final widgets = sets.map(((setDto) {
     switch (type) {
       case ExerciseType.weightAndReps:
@@ -31,40 +33,25 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
       case ExerciseType.weightedBodyWeight:
         final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
         final secondLabel = setDto.value2;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel"),
-        );
+        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin);
       case ExerciseType.bodyWeightAndReps:
         final label = setDto.value2;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: SingleSetRow(label: "$label"),
-        );
+        return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
         final label = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: SingleSetRow(label: label),
-        );
+        return SingleSetRow(label: label, margin: margin);
       case ExerciseType.durationAndDistance:
         final firstLabel = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
         final secondLabel = isDefaultDistanceUnit()
             ? setDto.value2
             : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: DoubleSetRow(first: firstLabel, second: "$secondLabel"),
-        );
+        return DoubleSetRow(first: firstLabel, second: "$secondLabel", margin: margin);
       case ExerciseType.weightAndDistance:
         final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
         final secondLabel = isDefaultDistanceUnit()
             ? setDto.value2
             : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: DoubleSetRow(first: "$firstLabel", second: "$secondLabel"),
-        );
+        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin);
     }
   })).toList();
 
