@@ -19,7 +19,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
   final routineLogs = routineLogsProvider.logs;
   final exerciseLogs = routineLogsProvider.exerciseLogsByType;
   final weekToLogs = routineLogsProvider.weekToLogs;
-  return switch (type) {
+  final progress = switch (type) {
     AchievementType.days12 => _calculateDaysAchievement(logs: routineLogs, type: type),
     AchievementType.days30 => _calculateDaysAchievement(logs: routineLogs, type: type),
     AchievementType.days75 => _calculateDaysAchievement(logs: routineLogs, type: type),
@@ -43,6 +43,8 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
       _calculateAssistedToUnAssistedAchievement(logs: exerciseLogs, target: type.target),
     _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
+
+  return progress;
 }
 
 int _adjustRemainder({required int remainder}) {
@@ -52,6 +54,22 @@ int _adjustRemainder({required int remainder}) {
 
   return remainder;
 }
+
+ProgressDto generateProgress<T>(
+    {required Iterable<T> achievedLogs,
+    required double progress,
+    required int remainder,
+    required DateTime Function(T) dateSelector}) {
+  final dates = achievedLogs.map(dateSelector).toList();
+  final datesByMonth = groupBy(dates, (date) => date.month);
+
+  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+}
+
+/// Date Extractors
+DateTime dateExtractorForExerciseLog(ExerciseLogDto log) => log.createdAt.getDateTimeInUtc().localDate();
+
+DateTime dateExtractorForRoutineLog(RoutineLog log) => log.createdAt.getDateTimeInUtc().localDate();
 
 /// [AchievementType.days12]
 /// [AchievementType.days30]
@@ -63,10 +81,8 @@ ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required 
   final progress = achievedLogs.length / type.target;
   final remainder = type.target - achievedLogs.length;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
 }
 
 /// [AchievementType.supersetSpecialist]
@@ -83,17 +99,15 @@ ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> l
     return exercisesWithSuperSetId >= 2;
   }).toList();
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
   final progress = achievedLogs.length / target;
   final remainder = target - achievedLogs.length;
 
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
 }
 
 /// [AchievementType.obsessed]
-List<DateTimeRange> _consecutiveWeeksWithLogsWhere(
+List<DateTimeRange> _consecutiveDatesWhere(
     {required Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs,
     required bool Function(MapEntry<DateTimeRange, List<RoutineLog>> week) evaluation}) {
   List<DateTimeRange> dateRanges = [];
@@ -114,24 +128,22 @@ ProgressDto _consecutiveAchievementProgress(
     {required List<DateTimeRange> dateTimeRanges,
     required int target,
     required Map<DateTimeRange, List<RoutineLog>> weekToLogs}) {
-  final dates = dateTimeRanges
+  final achievedLogs = dateTimeRanges
       .map((DateTimeRange range) => weekToLogs[range] ?? <RoutineLog>[])
-      .expand((List<RoutineLog> logs) => logs)
-      .map((RoutineLog log) => log.createdAt.getDateTimeInUtc().localDate())
-      .toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
+      .expand((List<RoutineLog> logs) => logs);
 
   int remainder = target - dateTimeRanges.length;
 
   final progress = dateTimeRanges.length / target;
 
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
 }
 
 ProgressDto _calculateObsessedAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
   final dateTimeRanges =
-      _consecutiveWeeksWithLogsWhere(weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.isNotEmpty);
+      _consecutiveDatesWhere(weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.isNotEmpty);
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
@@ -148,7 +160,7 @@ bool _hasLegExercise(RoutineLog log) {
 /// [AchievementType.neverSkipAMonday]
 ProgressDto _calculateNeverSkipALegDayAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
-  final dateTimeRanges = _consecutiveWeeksWithLogsWhere(
+  final dateTimeRanges = _consecutiveDatesWhere(
       weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _hasLegExercise(log)));
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
@@ -160,7 +172,7 @@ bool _loggedOnMonday(RoutineLog log) {
 
 ProgressDto _calculateNeverSkipAMondayAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
-  final dateTimeRanges = _consecutiveWeeksWithLogsWhere(
+  final dateTimeRanges = _consecutiveDatesWhere(
       weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnMonday(log)));
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
@@ -172,7 +184,7 @@ bool _loggedOnWeekend(RoutineLog log) {
 
 ProgressDto _calculateWeekendWarriorAchievement(
     {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
-  final dateTimeRanges = _consecutiveWeeksWithLogsWhere(
+  final dateTimeRanges = _consecutiveDatesWhere(
       weekToRoutineLogs: weekToLogs,
       evaluation: (entry) => entry.value.where((log) => _loggedOnWeekend(log)).length == 2);
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
@@ -190,10 +202,8 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, re
 
   final remainder = targetHours - duration;
 
-  final dates = logs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: logs, progress: progress, remainder: remainder.inHours, dateSelector: dateExtractorForRoutineLog);
 }
 
 /// [AchievementType.fiveMinutesToGo]
@@ -211,10 +221,8 @@ ProgressDto _calculateTimeAchievement(
   final progress = achievedLogs.length / 50;
   final remainder = 50 - achievedLogs.length;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForExerciseLog);
 }
 
 /// [AchievementType.templeRun]
@@ -228,10 +236,8 @@ ProgressDto _calculateRunningTimeAchievement(
   final progress = achievedLogs.length / 50;
   final remainder = 50 - achievedLogs.length;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForExerciseLog);
 }
 
 /// [AchievementType.bodyweightChampion]
@@ -242,10 +248,8 @@ ProgressDto _calculateBodyWeightAchievement(
   final progress = achievedLogs.length / type.target;
   final remainder = type.target - achievedLogs.length;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForExerciseLog);
 }
 
 /// [AchievementType.strongerThanEver]
@@ -268,10 +272,11 @@ ProgressDto _calculateStrongerThanEverAchievement(
 
   final remainder = target - tonnage;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.toInt()), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs,
+      progress: progress,
+      remainder: remainder.toInt(),
+      dateSelector: dateExtractorForExerciseLog);
 }
 
 /// [AchievementType.timeUnderTension]
@@ -292,10 +297,11 @@ ProgressDto _calculateTimeUnderTensionAchievement(
 
   final remainder = targetHours - duration;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress, remainder: _adjustRemainder(remainder: remainder.inHours), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs,
+      progress: progress,
+      remainder: remainder.inHours,
+      dateSelector: dateExtractorForExerciseLog);
 }
 
 /// [AchievementType.assistedToUnAssisted]
@@ -308,8 +314,9 @@ ProgressDto _calculateAssistedToUnAssistedAchievement(
   final progress = achievedLogs.length / assistedBodyWeight.length;
   final remainder = assistedBodyWeight.length - achievedLogs.length;
 
-  final dates = achievedLogs.map((log) => log.createdAt.getDateTimeInUtc().localDate()).toList();
-  final datesByMonth = groupBy(dates, (date) => date.month);
-
-  return ProgressDto(value: progress.isNaN ? 0 : progress, remainder: _adjustRemainder(remainder: remainder), dates: datesByMonth);
+  return generateProgress(
+      achievedLogs: achievedLogs,
+      progress: progress.isNaN ? 0 : progress,
+      remainder: remainder,
+      dateSelector: dateExtractorForExerciseLog);
 }

@@ -6,6 +6,7 @@ import 'package:tracker_app/widgets/calendar_heatmap.dart';
 import '../app_constants.dart';
 import '../dtos/achievement_dto.dart';
 import '../widgets/backgrounds/gradient_background.dart';
+import '../widgets/information_container.dart';
 
 class AchievementScreen extends StatefulWidget {
   final AchievementDto achievementDto;
@@ -69,24 +70,17 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     ? Center(child: Wrap(children: monthsHeatMap))
                     : Wrap(children: monthsHeatMap),
                 const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(color: tealBlue, borderRadius: BorderRadius.circular(5)),
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                        const SizedBox(width: 6),
-                        Text("Tips", style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w700)),
-                      ]),
-                      const SizedBox(height: 8),
-                      Text(
-                          "Embark on a fitness journey that fits seamlessly into your busy life. With our expertly designed program, training just three days a week is enough to see significant improvements in strength, endurance, and overall health",
-                          style: GoogleFonts.lato(fontSize: 16)),
-                    ],
-                  ),
-                )
+                InformationContainer(
+                    icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                    title: '',
+                    description: '',
+                    color: tealBlueLighter),
+                const SizedBox(height: 10),
+                InformationContainer(
+                    icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                    title: 'Tips',
+                    description: '',
+                    color: tealBlue),
               ]),
             ),
           ),
