@@ -330,7 +330,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     _isLatestLogForTemplate = widget.finishedLogging ||
         Provider.of<RoutineLogProvider>(context, listen: false)
             .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
-
     if (!_isLatestLogForTemplate) {
       return;
     }

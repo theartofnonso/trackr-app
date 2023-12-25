@@ -97,6 +97,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
 
     _weekToLogs = weekToLogs;
+    print(_weekToLogs);
   }
 
   void _loadMonthToLogs() {
@@ -174,7 +175,6 @@ class RoutineLogProvider with ChangeNotifier {
       final createdLog = response.data;
       if (createdLog != null) {
         _addToLogs(createdLog);
-        _normaliseLogs();
       }
     } catch (_) {
       _cachePendingLogs(logToCreate);
@@ -213,7 +213,8 @@ class RoutineLogProvider with ChangeNotifier {
 
   void _addToLogs(RoutineLog log) {
     _logs.add(log);
-    _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    _normaliseLogs();
     notifyListeners();
   }
 
@@ -286,7 +287,8 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   bool isLatestLogForTemplate({required String templateId, required logId}) {
-    final logsForTemplate = _logs.firstWhereOrNull((log) => log.routine?.id == templateId);
+    final logsForTemplate = _logs.lastWhereOrNull((log) => log.routine?.id == templateId);
+    print(logsForTemplate);
     if (logsForTemplate == null) {
       return false;
     } else {
