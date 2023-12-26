@@ -117,7 +117,9 @@ List<DateTimeRange> _consecutiveDatesWhere(
     if (evaluated) {
       dateRanges.add(entry.key);
     } else {
-      dateRanges = [];
+      if(DateTime.now().weekday == 7) {
+        dateRanges = [];
+      }
     }
   }
 
