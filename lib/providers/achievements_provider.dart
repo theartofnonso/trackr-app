@@ -117,6 +117,8 @@ List<DateTimeRange> _consecutiveDatesWhere(
     if (evaluated) {
       dateRanges.add(entry.key);
     } else {
+      /// Only restart when we are at the end of the week
+      /// This means that if we are at the end of the week and there has been no logs then this week is not consecutive
       if(DateTime.now().weekday == 7) {
         dateRanges = [];
       }
