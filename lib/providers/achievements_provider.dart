@@ -42,7 +42,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.assistedToUnAssisted =>
       _calculateAssistedToUnAssistedAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogs, target: type.target),
-    _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
+    // _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
 
   return progress;
