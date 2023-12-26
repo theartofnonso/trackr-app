@@ -16,9 +16,11 @@ class AchievementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final monthsHeatMap = achievementDto.progress.dates.values.map((dates) {
-      return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8), firstDate: dates.first);
-    }).toList();
+    final monthsHeatMap = achievementDto.progress.dates.isNotEmpty
+        ? achievementDto.progress.dates.values.map((dates) {
+            return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8));
+          }).toList()
+        : [const CalendarHeatMap(dates: [], margin: EdgeInsets.all(8))];
 
     return Scaffold(
       body: Stack(children: [
@@ -35,10 +37,8 @@ class AchievementScreen extends StatelessWidget {
                   )
                 ]),
                 const SizedBox(height: 10),
-                Text(achievementDto.type.title,
-                    style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
-                Text(achievementDto.type.description,
-                    style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
+                Text(achievementDto.type.title, style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
+                Text(achievementDto.type.description, style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

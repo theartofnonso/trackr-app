@@ -11,13 +11,12 @@ class _DateViewModel {
 
 class CalendarHeatMap extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
-  final DateTime firstDate;
   final List<DateTime> dates;
 
-  const CalendarHeatMap({super.key, required this.firstDate, required this.margin, required this.dates});
+  const CalendarHeatMap({super.key, required this.margin, required this.dates});
 
   List<_DateViewModel?> _generateDates() {
-    final initialDate = firstDate;
+    final initialDate = dates.isNotEmpty ? dates.first : DateTime.now();
     int year = initialDate.year;
     int month = initialDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -56,6 +55,8 @@ class CalendarHeatMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
+
+    final firstDate = dates.isNotEmpty ? dates.first : DateTime.now();
 
     return Container(
       margin: margin,
