@@ -73,7 +73,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 InformationContainer(
                     icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                     title: '',
-                    description: '',
+                    description: 'Coloured squares represent days you logged your routine.',
                     color: tealBlueLighter),
                 const SizedBox(height: 10),
                 InformationContainer(
