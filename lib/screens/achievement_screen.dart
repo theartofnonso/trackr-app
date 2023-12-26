@@ -7,20 +7,16 @@ import '../app_constants.dart';
 import '../dtos/achievement_dto.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/information_container.dart';
+import '../widgets/information_container_lite.dart';
 
-class AchievementScreen extends StatefulWidget {
+class AchievementScreen extends StatelessWidget {
   final AchievementDto achievementDto;
 
   const AchievementScreen({super.key, required this.achievementDto});
 
   @override
-  State<AchievementScreen> createState() => _AchievementScreenState();
-}
-
-class _AchievementScreenState extends State<AchievementScreen> {
-  @override
   Widget build(BuildContext context) {
-    final monthsHeatMap = widget.achievementDto.progress.dates.values.map((dates) {
+    final monthsHeatMap = achievementDto.progress.dates.values.map((dates) {
       return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8), firstDate: dates.first);
     }).toList();
 
@@ -39,9 +35,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   )
                 ]),
                 const SizedBox(height: 10),
-                Text(widget.achievementDto.type.title,
+                Text(achievementDto.type.title,
                     style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
-                Text(widget.achievementDto.type.description,
+                Text(achievementDto.type.description,
                     style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
                 const SizedBox(height: 10),
                 Container(
@@ -53,14 +49,14 @@ class _AchievementScreenState extends State<AchievementScreen> {
                       Expanded(
                         child: LinearProgressIndicator(
                           minHeight: 8,
-                          color: widget.achievementDto.progress.remainder == 0 ? Colors.green : Colors.white,
-                          value: widget.achievementDto.progress.value,
+                          color: achievementDto.progress.remainder == 0 ? Colors.green : Colors.white,
+                          value: achievementDto.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(2)),
                           backgroundColor: tealBlueLighter,
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Text("${widget.achievementDto.progress.remainder} left",
+                      Text("${achievementDto.progress.remainder} left",
                           style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
                     ],
                   ),
@@ -70,16 +66,14 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     ? Center(child: Wrap(children: monthsHeatMap))
                     : Wrap(children: monthsHeatMap),
                 const SizedBox(height: 10),
-                InformationContainer(
-                    icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                    title: '',
-                    description: 'Coloured squares represent days you logged your routine.',
-                    color: tealBlueLighter),
+                const InformationContainerLite(
+                    content: 'Brightly-coloured squares represent days you logged a session for this achievement',
+                    color: tealBlueLight),
                 const SizedBox(height: 10),
                 InformationContainer(
-                    icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                    title: 'Tips',
-                    description: '',
+                    icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                    title: 'Tip',
+                    description: achievementDto.type.tip,
                     color: tealBlue),
               ]),
             ),

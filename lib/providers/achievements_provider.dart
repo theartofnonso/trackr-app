@@ -36,11 +36,12 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
       _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: routineLogs, target: type.target),
-    AchievementType.bodyweightChampion => _calculateBodyWeightAchievement(logs: exerciseLogs, type: type),
+    AchievementType.bodyweightChampion => _calculateBodyWeightChampionAchievement(logs: exerciseLogs, type: type),
     AchievementType.strongerThanEver => _calculateStrongerThanEverAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.timeUnderTension => _calculateTimeUnderTensionAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.assistedToUnAssisted =>
       _calculateAssistedToUnAssistedAchievement(logs: exerciseLogs, target: type.target),
+    AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogs, target: type.target),
     _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
 
@@ -120,7 +121,7 @@ List<DateTimeRange> _consecutiveDatesWhere(
       /// Only restart when we are at the end of the week
       /// This means that if we are at the end of the week
       /// and there has been no logs then this week is not consecutive
-      if(DateTime.now().weekday == 7) {
+      if (DateTime.now().weekday == 7) {
         dateRanges = [];
       }
     }
@@ -246,7 +247,7 @@ ProgressDto _calculateRunningTimeAchievement(
 }
 
 /// [AchievementType.bodyweightChampion]
-ProgressDto _calculateBodyWeightAchievement(
+ProgressDto _calculateBodyWeightChampionAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
   final achievedLogs = logs[ExerciseType.bodyWeightAndReps] ?? [];
 
@@ -323,5 +324,33 @@ ProgressDto _calculateAssistedToUnAssistedAchievement(
       achievedLogs: achievedLogs,
       progress: progress.isNaN ? 0 : progress,
       remainder: remainder,
+      dateSelector: dateExtractorForExerciseLog);
+}
+
+/// [AchievementType.oneMoreRep]
+ProgressDto _calculateOneMoreRepAchievement(
+    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
+  final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
+  final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
+  final weightAndDistance = logs[ExerciseType.bodyWeightAndReps] ?? [];
+  final assistedBodyWeight = logs[ExerciseType.assistedBodyWeight] ?? [];
+
+  final achievedLogs = [...weightAndReps, ...weightedBodyWeight, ...weightAndDistance, ...assistedBodyWeight];
+
+  final reps = achievedLogs.map((log) {
+    final reps = log.sets.map((set) => set.value2).reduce((total, reps) => total + reps);
+    return reps;
+  });
+
+  final totalReps = reps.isNotEmpty ? reps.reduce((total, rep) => total + rep) : 0;
+
+  final progress = totalReps / target;
+
+  final remainder = target - totalReps;
+
+  return generateProgress(
+      achievedLogs: achievedLogs,
+      progress: progress,
+      remainder: remainder.toInt(),
       dateSelector: dateExtractorForExerciseLog);
 }
