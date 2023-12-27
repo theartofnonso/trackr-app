@@ -36,6 +36,7 @@ type Routine
   notes: String!
   startTime: AWSDateTime
   endTime: AWSDateTime
+  owner: String
   logs: [RoutineLog] @hasMany(indexName: "byRoutine", fields: ["id"])
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -59,6 +60,7 @@ type RoutineLog
   notes: String!
   startTime: AWSDateTime!
   endTime: AWSDateTime!
+  owner: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -78,6 +80,7 @@ type Exercise
   secondaryMuscles: [String]!
   type: String!
   notes: String
+  owner: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }

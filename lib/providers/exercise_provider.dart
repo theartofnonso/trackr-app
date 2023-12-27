@@ -39,13 +39,14 @@ class ExerciseProvider with ChangeNotifier {
         secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(),
         createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now());
-    final request = ModelMutations.create(exerciseToCreate);
-    final response = await Amplify.API.mutate(request: request).response;
-    final createdExercise = response.data;
-    if (createdExercise != null) {
-      _exercises.add(exerciseToCreate);
-      notifyListeners();
-    }
+    await Amplify.DataStore.save(exerciseToCreate);
+    // final request = ModelMutations.create(exerciseToCreate);
+    // final response = await Amplify.API.mutate(request: request).response;
+    // final createdExercise = response.data;
+    // if (createdExercise != null) {
+    //   _exercises.add(exerciseToCreate);
+    //   notifyListeners();
+    // }
   }
 
   Future<void> updateExercise({required Exercise exercise}) async {

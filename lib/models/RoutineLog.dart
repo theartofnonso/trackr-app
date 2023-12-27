@@ -35,6 +35,7 @@ class RoutineLog extends amplify_core.Model {
   final String? _notes;
   final amplify_core.TemporalDateTime? _startTime;
   final amplify_core.TemporalDateTime? _endTime;
+  final String? _owner;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -133,6 +134,10 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
+  String? get owner {
+    return _owner;
+  }
+  
   amplify_core.TemporalDateTime get createdAt {
     try {
       return _createdAt!;
@@ -159,9 +164,9 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, required user, routine, required name, required procedures, required notes, required startTime, required endTime, required createdAt, required updatedAt}): _user = user, _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineLog._internal({required this.id, required user, routine, required name, required procedures, required notes, required startTime, required endTime, owner, required createdAt, required updatedAt}): _user = user, _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _owner = owner, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineLog({String? id, required User user, Routine? routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineLog({String? id, required User user, Routine? routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, String? owner, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user: user,
@@ -171,6 +176,7 @@ class RoutineLog extends amplify_core.Model {
       notes: notes,
       startTime: startTime,
       endTime: endTime,
+      owner: owner,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -191,6 +197,7 @@ class RoutineLog extends amplify_core.Model {
       _notes == other._notes &&
       _startTime == other._startTime &&
       _endTime == other._endTime &&
+      _owner == other._owner &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -211,6 +218,7 @@ class RoutineLog extends amplify_core.Model {
     buffer.write("notes=" + "$_notes" + ", ");
     buffer.write("startTime=" + (_startTime != null ? _startTime!.format() : "null") + ", ");
     buffer.write("endTime=" + (_endTime != null ? _endTime!.format() : "null") + ", ");
+    buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -218,7 +226,7 @@ class RoutineLog extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineLog copyWith({User? user, Routine? routine, String? name, List<String>? procedures, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineLog copyWith({User? user, Routine? routine, String? name, List<String>? procedures, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, String? owner, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineLog._internal(
       id: id,
       user: user ?? this.user,
@@ -228,6 +236,7 @@ class RoutineLog extends amplify_core.Model {
       notes: notes ?? this.notes,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      owner: owner ?? this.owner,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
@@ -240,6 +249,7 @@ class RoutineLog extends amplify_core.Model {
     ModelFieldValue<String>? notes,
     ModelFieldValue<amplify_core.TemporalDateTime>? startTime,
     ModelFieldValue<amplify_core.TemporalDateTime>? endTime,
+    ModelFieldValue<String?>? owner,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
@@ -252,6 +262,7 @@ class RoutineLog extends amplify_core.Model {
       notes: notes == null ? this.notes : notes.value,
       startTime: startTime == null ? this.startTime : startTime.value,
       endTime: endTime == null ? this.endTime : endTime.value,
+      owner: owner == null ? this.owner : owner.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
@@ -270,11 +281,12 @@ class RoutineLog extends amplify_core.Model {
       _notes = json['notes'],
       _startTime = json['startTime'] != null ? amplify_core.TemporalDateTime.fromString(json['startTime']) : null,
       _endTime = json['endTime'] != null ? amplify_core.TemporalDateTime.fromString(json['endTime']) : null,
+      _owner = json['owner'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'routine': _routine?.toJson(), 'name': _name, 'procedures': _procedures, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'routine': _routine?.toJson(), 'name': _name, 'procedures': _procedures, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'owner': _owner, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -286,6 +298,7 @@ class RoutineLog extends amplify_core.Model {
     'notes': _notes,
     'startTime': _startTime,
     'endTime': _endTime,
+    'owner': _owner,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -303,6 +316,7 @@ class RoutineLog extends amplify_core.Model {
   static final NOTES = amplify_core.QueryField(fieldName: "notes");
   static final STARTTIME = amplify_core.QueryField(fieldName: "startTime");
   static final ENDTIME = amplify_core.QueryField(fieldName: "endTime");
+  static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -378,6 +392,12 @@ class RoutineLog extends amplify_core.Model {
       key: RoutineLog.ENDTIME,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: RoutineLog.OWNER,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

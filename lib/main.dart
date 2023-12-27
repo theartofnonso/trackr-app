@@ -18,6 +18,7 @@ import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
@@ -74,10 +75,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
+
+    final syncExpressions = [
+      DataStoreSyncExpression(Exercise.classType, () => Exercise.USER.eq(user().id)),
+      DataStoreSyncExpression(Routine.classType, () => Routine.USER.eq(user().id)),
+      DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.USER.eq(user().id)),
+    ];
+
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: syncExpressions));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');

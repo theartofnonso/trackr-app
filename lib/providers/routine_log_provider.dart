@@ -29,7 +29,8 @@ class RoutineLogProvider with ChangeNotifier {
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
 
-  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => UnmodifiableMapView(_exerciseLogsByType);
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
+      UnmodifiableMapView(_exerciseLogsByType);
 
   UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
 
@@ -50,17 +51,14 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void listRoutineLogs() async {
-    final routineLogOwner = user();
-    final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.USER.eq(routineLogOwner.id));
-    final response = await Amplify.API.query(request: request).response;
-
-    final routineLogs = response.data?.items;
-    if (routineLogs != null) {
-      _logs = routineLogs.whereType<RoutineLog>().toList();
-      _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      _normaliseLogs();
-      notifyListeners();
-    }
+    //final routineLogOwner = user();
+    //final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.USER.eq(routineLogOwner.id));
+    //final response = await Amplify.API.query(request: request).response;
+    final routineLogs = await Amplify.DataStore.query(RoutineLog.classType);
+    _logs = routineLogs.whereType<RoutineLog>().toList();
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    _normaliseLogs();
+    notifyListeners();
   }
 
   void _orderExercises() {
