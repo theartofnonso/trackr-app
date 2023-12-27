@@ -8,7 +8,7 @@ enum AchievementType {
   days100("100 Days Trackd", "Log 100 sessions", 100,
       "100 Days Trackd is designed to help you establish a consistent workout routine. It is a great way to round up your first 100 days with Trackr"),
   supersetSpecialist("Superset Specialist", "Log 20 sessions with at least one superset", 20,
-      "Superset Specialist focuses on incorporating supersets into your workout routine. Supersets are a great way to increase the intensity of your workout and saved time as well"),
+      "Superset Specialist focuses on incorporating supersets into your workout routine. Supersets are a great way to increase the intensity of your workout and save time as well"),
   strongerThanEver("Stronger than ever", "Accumulate 1 million kg of strength training for weight exercises", 1000000,
       "Stronger than ever focuses on strength training. You exercising consistently and lifting heavy weights"),
   fiveMinutesToGo("5 Minutes To Go", "Log 50 sessions, each with at least a duration of 5 minutes in a single set", 5,
