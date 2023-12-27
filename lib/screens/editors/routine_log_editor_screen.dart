@@ -88,7 +88,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         notes: log.notes,
         exerciseLogs: exerciseLogs,
         startTime: log.startTime,
-        routine: log.routine);
+        template: log.template);
 
     _toggleLoadingState();
 
@@ -130,7 +130,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
     final log = widget.log;
     Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-        name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
+        context: context,
+        name: log.name,
+        notes: log.notes,
+        procedures: procedures,
+        startTime: log.startTime,
+        template: log.template);
   }
 
   void _dismissKeyboard() {
@@ -143,7 +148,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _navigateBack({RoutineLog? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog = null;
     Navigator.of(context).pop(log);
   }
 
@@ -265,7 +269,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _initializeProcedureData() {
-    final procedureJsons = widget.log.procedures;
+    final procedureJsons = widget.log.exerciseLogs;
     final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
     Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
   }

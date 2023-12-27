@@ -1,15 +1,15 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
-extension RoutineExtension on Routine {
+extension RoutineExtension on RoutineTemplate {
 
   RoutineLog log() {
     return RoutineLog(
         user: user,
         name: name,
-        procedures: procedures,
+        exerciseLogs: exercises,
         notes: notes,
-        routine: this,
+        template: this,
         startTime: TemporalDateTime.now(),
         endTime: TemporalDateTime.now(),
         createdAt: TemporalDateTime.now(),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
-import '../screens/editors/routine_editor_screen.dart';
+import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
-import '../screens/routine_log_preview_screen.dart';
+import '../screens/routine_log_screen.dart';
 import '../screens/routine_logs_screen.dart';
-import '../screens/template/routine_preview_screen.dart';
+import '../screens/template/routine_template_screen.dart';
 
-void navigateToRoutineEditor({required BuildContext context, Routine? routine}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineEditorScreen(routine: routine)));
+void navigateToRoutineEditor({required BuildContext context, RoutineTemplate? template}) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateEditorScreen(template: template)));
 }
 
 void navigateToRoutineLogEditor({required BuildContext context, required RoutineLog log}) async {
@@ -18,8 +18,8 @@ void navigateToRoutineLogEditor({required BuildContext context, required Routine
   }
 }
 
-void navigateToRoutinePreview({required BuildContext context, required String routineId}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutinePreviewScreen(routineId: routineId)));
+void navigateToRoutinePreview({required BuildContext context, required String templateId}) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateScreen(templateId: templateId)));
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLog log, bool finishedLogging = false}) {

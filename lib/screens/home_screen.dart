@@ -1,9 +1,12 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
-import 'package:tracker_app/screens/template/routines_screen.dart';
+import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -71,8 +74,22 @@ class _HomeScreenState extends State<HomeScreen> {
   void _runSetUp() async {
     if(SharedPrefs().firstLaunch){
       SharedPrefs().firstLaunch = false;
+      try {
+        await Amplify.DataStore.stop();
+      } catch(error) {
+        print('Error stopping DataStore: $error');
+      }
+
+      if(context.mounted) {
+        await Provider.of<UserProvider>(context, listen: false).createUser();
+      }
+
+      try {
+        await Amplify.DataStore.start();
+      } on Exception catch (error) {
+        print('Error starting DataStore: $error');
+      }
     }
-    await persistUserCredentials();
     if(mounted) {
       loadAppData(context);
       _loadCachedLog();

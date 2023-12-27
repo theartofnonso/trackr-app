@@ -1,8 +1,10 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/graphQL/queries.dart';
+import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../providers/app_provider.dart';
@@ -45,6 +47,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -167,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         dense: true,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                         title: Text("Logout", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                        subtitle: Text("Logout of your ${user().email} Trackr account",
+                        subtitle: Text("Logout of your ${user?.email} Trackr account",
                             style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
                   ),
                   const SizedBox(height: 10),

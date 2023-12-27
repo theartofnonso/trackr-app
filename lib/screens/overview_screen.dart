@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
@@ -11,7 +12,6 @@ import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
-import '../widgets/banners/pending_routines_banner.dart';
 import 'calendar_screen.dart';
 
 class OverviewScreen extends StatelessWidget {
@@ -26,12 +26,18 @@ class OverviewScreen extends StatelessWidget {
   }
 
   void _logEmptyRoutine(BuildContext context) async {
-    final log = Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog;
+
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if(user == null) {
+      return;
+    }
+
+    final log = cachedRoutineLog();
     if (log == null) {
       final log = RoutineLog(
-          user: user(),
+          user: user,
           name: "${timeOfDay()} Session",
-          procedures: [],
+          exerciseLogs: [],
           notes: "",
           startTime: TemporalDateTime.now(),
           endTime: TemporalDateTime.now(),
@@ -46,8 +52,6 @@ class OverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
-
-    final cachedPendingLogs = routineLogProvider.cachedPendingLogs;
 
     final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
     final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
@@ -88,7 +92,6 @@ class OverviewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (cachedPendingLogs.isNotEmpty) const PendingRoutinesBanner(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -6,23 +6,16 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
-import '../utils/general_utils.dart';
+import '../models/User.dart';
 
 class ExerciseProvider with ChangeNotifier {
-
   List<Exercise> _exercises = [];
 
   UnmodifiableListView<Exercise> get exercises => UnmodifiableListView(_exercises);
 
   Future<void> listExercises() async {
-    final exerciseOwner = user();
-    final request = ModelQueries.list(Exercise.classType, where: Exercise.USER.eq(exerciseOwner.id));
-    final response = await Amplify.API.query(request: request).response;
-    final routines = response.data?.items;
-    if (routines != null) {
-      _exercises = routines.whereType<Exercise>().toList();
-      notifyListeners();
-    }
+    _exercises = await Amplify.DataStore.query(Exercise.classType);
+    notifyListeners();
   }
 
   Future<void> saveExercise(
@@ -31,22 +24,19 @@ class ExerciseProvider with ChangeNotifier {
       required MuscleGroup primary,
       required ExerciseType type,
       required List<MuscleGroup> secondary}) async {
+    final users = await Amplify.DataStore.query(User.classType);
+
     final exerciseToCreate = Exercise(
-        user: user(),
+        user: users.last,
         name: name,
         primaryMuscle: primary.name,
         type: type.name,
         secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(),
         createdAt: TemporalDateTime.now(),
         updatedAt: TemporalDateTime.now());
-    await Amplify.DataStore.save(exerciseToCreate);
-    // final request = ModelMutations.create(exerciseToCreate);
-    // final response = await Amplify.API.mutate(request: request).response;
-    // final createdExercise = response.data;
-    // if (createdExercise != null) {
-    //   _exercises.add(exerciseToCreate);
-    //   notifyListeners();
-    // }
+    await Amplify.DataStore.save<Exercise>(exerciseToCreate);
+    _exercises.add(exerciseToCreate);
+    notifyListeners();
   }
 
   Future<void> updateExercise({required Exercise exercise}) async {

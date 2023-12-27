@@ -1,9 +1,5 @@
 /* Amplify Params - DO NOT EDIT
-	API_TRACKERAPP_GRAPHQLAPIIDOUTPUT
-	API_TRACKERAPP_ROUTINETABLE_ARN
-	API_TRACKERAPP_ROUTINETABLE_NAME
-	ENV
-	REGION
+	
 Amplify Params - DO NOT EDIT */
 
 const {DynamoDBClient, ScanCommand, BatchWriteItemCommand} = require("@aws-sdk/client-dynamodb");

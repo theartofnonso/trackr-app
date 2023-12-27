@@ -6,21 +6,21 @@ type User
      @model
      @auth(
         rules: [
-          { allow: private, operations: [read, update] }
+          { allow: owner }
+          { allow: private, operations: [read] }
         ]
      ) {
   id: ID!
   name: String
   email: AWSEmail!
-  age: Int
   exercises: [Exercise] @hasMany(indexName: "byUser", fields: ["id"])
-  routines: [Routine] @hasMany(indexName: "byUser", fields: ["id"])
+  templates: [RoutineTemplate] @hasMany(indexName: "byUser", fields: ["id"])
   routineLogs: [RoutineLog] @hasMany(indexName: "byUser", fields: ["id"])
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
 
-type Routine
+type RoutineTemplate
      @model
      @auth(
         rules: [
@@ -32,12 +32,11 @@ type Routine
   userID: ID! @index(name: "byUser")
   user: User! @belongsTo(fields: ["userID"])
   name: String!
-  procedures: [AWSJSON]!
+  exercises: [AWSJSON]!
   notes: String!
   startTime: AWSDateTime
   endTime: AWSDateTime
-  owner: String
-  logs: [RoutineLog] @hasMany(indexName: "byRoutine", fields: ["id"])
+  logs: [RoutineLog] @hasMany(indexName: "byRoutineTemplate", fields: ["id"])
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -53,14 +52,13 @@ type RoutineLog
   id: ID!
   userID: ID! @index(name: "byUser")
   user: User! @belongsTo(fields: ["userID"])
-  routineID: ID @index(name: "byRoutine")
-  routine: Routine @belongsTo(fields: ["routineID"])
+  templateID: ID @index(name: "byRoutineTemplate")
+  template: RoutineTemplate @belongsTo(fields: ["templateID"])
   name: String!
-  procedures: [AWSJSON]!
+  exerciseLogs: [AWSJSON]!
   notes: String!
   startTime: AWSDateTime!
   endTime: AWSDateTime!
-  owner: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -80,7 +78,6 @@ type Exercise
   secondaryMuscles: [String]!
   type: String!
   notes: String
-  owner: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -88,6 +85,6 @@ type Exercise
 type Mutation {
   deleteUserData: Boolean! @function(name: "deleteUserData-${env}")
   deleteUserExerciseData: Boolean! @function(name: "deleteUserExerciseData-${env}")
-  deleteUserRoutineData: Boolean! @function(name: "deleteUserRoutineData-${env}")
+  deleteUserRoutineTemplateData: Boolean! @function(name: "deleteUserRoutineTemplateData-${env}")
   deleteUserRoutineLogData: Boolean! @function(name: "deleteUserRoutineLogData-${env}")
 }

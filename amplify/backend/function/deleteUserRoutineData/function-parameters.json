@@ -1,13 +1,4 @@
 {
-  "permissions": {
-    "storage": {
-      "Routine:@model(appsync)": [
-        "create",
-        "read",
-        "update",
-        "delete"
-      ]
-    }
-  },
+  "permissions": {},
   "lambdaLayers": []
 }

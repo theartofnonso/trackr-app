@@ -329,7 +329,7 @@ class _RoutineLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CListTile(
         title: log.name,
-        subtitle: "${log.procedures.length} exercise(s)",
+        subtitle: "${log.exerciseLogs.length} exercise(s)",
         trailing: log.duration().secondsOrMinutesOrHours(),
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,

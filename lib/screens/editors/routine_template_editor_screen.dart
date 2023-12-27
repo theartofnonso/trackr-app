@@ -6,13 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
-import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
+import '../../enums/routine_editor_type_enums.dart';
+import '../../providers/routine_provider.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -20,18 +20,18 @@ import '../../widgets/routine/editors/exercise_picker.dart';
 import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
-class RoutineEditorScreen extends StatefulWidget {
-  final Routine? routine;
+class RoutineTemplateEditorScreen extends StatefulWidget {
+  final RoutineTemplate? template;
 
-  const RoutineEditorScreen({super.key, this.routine});
+  const RoutineTemplateEditorScreen({super.key, this.template});
 
   @override
-  State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
+  State<RoutineTemplateEditorScreen> createState() => _RoutineTemplateEditorScreenState();
 }
 
-class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
-  late TextEditingController _routineNameController;
-  late TextEditingController _routineNotesController;
+class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScreen> {
+  late TextEditingController _templateNameController;
+  late TextEditingController _templateNotesController;
 
   bool _loading = false;
   String _loadingLabel = "";
@@ -74,18 +74,18 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _toggleLoadingState() {
-    final routine = widget.routine;
+    final template = widget.template;
     setState(() {
       _loading = !_loading;
-      _loadingLabel = routine != null ? "Updating" : "Creating";
+      _loadingLabel = template != null ? "Updating" : "Creating";
     });
   }
 
-  bool _validateRoutineInputs() {
+  bool _validateRoutineTemplateInputs() {
     final procedureProviders = Provider.of<ExerciseLogProvider>(context, listen: false);
     final procedures = procedureProviders.exerciseLogs;
 
-    if (_routineNameController.text.isEmpty) {
+    if (_templateNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this workout');
       return false;
     }
@@ -100,41 +100,42 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _handleRoutineCreationError(String message) {
+  void _handleRoutineTemplateCreationError(String message) {
     if (mounted) {
       _showSnackbar(message);
     }
   }
 
-  void _createRoutine() async {
+  void _createRoutineTemplate() async {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-    if (!_validateRoutineInputs()) return;
+    final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
+    if (!_validateRoutineTemplateInputs()) return;
     _toggleLoadingState();
     try {
-      await routineProvider.saveRoutine(
-          name: _routineNameController.text.trim(),
-          notes: _routineNotesController.text.trim(),
+      await templateProvider.saveTemplate(
+          context: context,
+          name: _templateNameController.text.trim(),
+          notes: _templateNotesController.text.trim(),
           procedures: procedureProvider.mergeSetsIntoExerciseLogs());
       if (mounted) _navigateBack();
     } catch (e) {
-      _handleRoutineCreationError("Unable to create workout");
+      _handleRoutineTemplateCreationError("Unable to create workout");
     } finally {
       _toggleLoadingState();
     }
   }
 
-  void _updateRoutine() {
-    if (!_validateRoutineInputs()) return;
-    final routine = widget.routine;
-    if (routine != null) {
+  void _updateRoutineTemplate() {
+    if (!_validateRoutineTemplateInputs()) return;
+    final template = widget.template;
+    if (template != null) {
       showAlertDialogWithMultiActions(
           context: context,
           message: "Update workout?",
           leftAction: _closeDialog,
           rightAction: () {
             _closeDialog();
-            _doUpdateRoutine(routine: routine);
+            _doUpdateRoutineTemplate(template: template);
             _navigateBack();
           },
           leftActionLabel: 'Cancel',
@@ -143,20 +144,20 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     }
   }
 
-  void _doUpdateRoutine({required Routine routine, List<ExerciseLogDto>? updatedExerciseLogs}) async {
+  void _doUpdateRoutineTemplate({required RoutineTemplate template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs();
-    final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
+    final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
     _toggleLoadingState();
     try {
-      final updatedRoutine = routine.copyWith(
-          name: _routineNameController.text.trim(),
-          notes: _routineNotesController.text.trim(),
-          procedures: exerciseLogs.map((procedure) => procedure.toJson()).toList(),
+      final updatedRoutineTemplate = template.copyWith(
+          name: _templateNameController.text.trim(),
+          notes: _templateNotesController.text.trim(),
+          exercises: exerciseLogs.map((procedure) => procedure.toJson()).toList(),
           updatedAt: TemporalDateTime.now());
-      await routineProvider.updateRoutine(routine: updatedRoutine);
+      await templateProvider.updateTemplate(template: updatedRoutineTemplate);
     } catch (e) {
-      _handleRoutineCreationError("Unable to update workout");
+      _handleRoutineTemplateCreationError("Unable to update workout");
     } finally {
       _toggleLoadingState();
     }
@@ -164,7 +165,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final oldProcedures = widget.routine?.procedures;
+    final oldProcedures = widget.template?.exercises;
     final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList() ?? [];
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
     final unsavedChangesMessage =
@@ -200,7 +201,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routine = widget.routine;
+    final template = widget.template;
 
     final exerciseLogs = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
 
@@ -214,8 +215,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
             actions: [
               CTextButton(
-                  onPressed: routine != null ? _updateRoutine : _createRoutine,
-                  label: routine != null ? "Update" : "Save",
+                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
+                  label: template != null ? "Update" : "Save",
                   buttonColor: Colors.transparent,
                   loading: _loading,
                   loadingLabel: _loadingLabel)
@@ -247,7 +248,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                       Column(
                         children: [
                           TextField(
-                            controller: _routineNameController,
+                            controller: _templateNameController,
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                 enabledBorder: OutlineInputBorder(
@@ -265,7 +266,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                           ),
                           const SizedBox(height: 10),
                           TextField(
-                            controller: _routineNotesController,
+                            controller: _templateNotesController,
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                 enabledBorder: OutlineInputBorder(
@@ -329,7 +330,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _initializeProcedureData() {
-    final procedureJsons = widget.routine?.procedures;
+    final procedureJsons = widget.template?.exercises;
     final procedures = procedureJsons?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
     if (procedures != null) {
       Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
@@ -337,16 +338,16 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _initializeTextControllers() {
-    Routine? routine = widget.routine;
-    _routineNameController = TextEditingController(text: routine?.name);
-    _routineNotesController = TextEditingController(text: routine?.notes);
+    RoutineTemplate? template = widget.template;
+    _templateNameController = TextEditingController(text: template?.name);
+    _templateNotesController = TextEditingController(text: template?.notes);
   }
 
   @override
   void dispose() {
     _onDisposeCallback();
-    _routineNameController.dispose();
-    _routineNotesController.dispose();
+    _templateNameController.dispose();
+    _templateNotesController.dispose();
     super.dispose();
   }
 }

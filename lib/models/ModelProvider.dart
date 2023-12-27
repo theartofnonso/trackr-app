@@ -21,20 +21,20 @@
 
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'Exercise.dart';
-import 'Routine.dart';
 import 'RoutineLog.dart';
+import 'RoutineTemplate.dart';
 import 'User.dart';
 
 export 'Exercise.dart';
-export 'Routine.dart';
 export 'RoutineLog.dart';
+export 'RoutineTemplate.dart';
 export 'User.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "18d861d45604c73c46ad54f094b5d7b6";
+  String version = "11c88be576116f70df59e8592f7949df";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [Exercise.schema, Routine.schema, RoutineLog.schema, User.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [Exercise.schema, RoutineLog.schema, RoutineTemplate.schema, User.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -45,10 +45,10 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
     switch(modelName) {
       case "Exercise":
         return Exercise.classType;
-      case "Routine":
-        return Routine.classType;
       case "RoutineLog":
         return RoutineLog.classType;
+      case "RoutineTemplate":
+        return RoutineTemplate.classType;
       case "User":
         return User.classType;
       default:

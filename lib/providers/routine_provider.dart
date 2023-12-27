@@ -2,83 +2,81 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/models/Routine.dart';
+import 'package:provider/provider.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/models/RoutineTemplate.dart';
+import 'package:tracker_app/providers/user_provider.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../utils/general_utils.dart';
 
-const emptyRoutineId = "empty_routine_id";
+class RoutineTemplateProvider with ChangeNotifier {
+  List<RoutineTemplate> _templates = [];
 
-class RoutineProvider with ChangeNotifier {
-  List<Routine> _routines = [];
+  UnmodifiableListView<RoutineTemplate> get templates => UnmodifiableListView(_templates);
 
-  UnmodifiableListView<Routine> get routines => UnmodifiableListView(_routines);
-
-  void listRoutines() async {
-    final routineOwner = user();
-    final request = ModelQueries.list(Routine.classType, where: Routine.USER.eq(routineOwner.id));
-    final response = await Amplify.API.query(request: request).response;
-    final routines = response.data?.items;
-    if (routines != null) {
-      _routines = routines.whereType<Routine>().toList();
-      _routines.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      notifyListeners();
-    }
+  void listTemplates() async {
+    _templates = await Amplify.DataStore.query(RoutineTemplate.classType);
+    _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    notifyListeners();
   }
 
-  Future<String> saveRoutine(
-      {required String name, required String notes, required List<ExerciseLogDto> procedures}) async {
-    final proceduresJson = procedures.map((procedure) => procedure.toJson()).toList();
-    final routineToCreate = Routine(
-        name: name,
-        procedures: proceduresJson,
-        notes: notes,
-        createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(),
-        user: user());
-    final request = ModelMutations.create(routineToCreate);
+  Future<RoutineTemplate?> saveTemplate(
+      {required BuildContext context,
+      required String name,
+      required String notes,
+      required List<ExerciseLogDto> procedures}) async {
+    RoutineTemplate? templateToCreate;
+
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    if (user != null) {
+      final exerciseJsons = procedures.map((procedure) => procedure.toJson()).toList();
+      templateToCreate = RoutineTemplate(
+          name: name,
+          exercises: exerciseJsons,
+          notes: notes,
+          createdAt: TemporalDateTime.now(),
+          updatedAt: TemporalDateTime.now(),
+          user: user);
+      await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
+      _templates.insert(0, templateToCreate);
+      notifyListeners();
+    }
+    return templateToCreate;
+  }
+
+  Future<void> updateTemplate({required RoutineTemplate template}) async {
+    final request = ModelMutations.update(template);
     final response = await Amplify.API.mutate(request: request).response;
-    final createdRoutine = response.data;
-    if (createdRoutine != null) {
-      _routines.insert(0, routineToCreate);
-      _routines.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final updatedRoutineTemplate = response.data;
+    if (updatedRoutineTemplate != null) {
+      final index = _indexWhereRoutineTemplate(id: template.id);
+      _templates[index] = template;
       notifyListeners();
     }
-    return routineToCreate.id;
   }
 
-  Future<void> updateRoutine({required Routine routine}) async {
-    final request = ModelMutations.update(routine);
+  Future<void> removeTemplate({required String id}) async {
+    final index = _indexWhereRoutineTemplate(id: id);
+    final templateToBeRemoved = _templates[index];
+    final request = ModelMutations.delete(templateToBeRemoved);
     final response = await Amplify.API.mutate(request: request).response;
-    final updatedRoutine = response.data;
-    if (updatedRoutine != null) {
-      final index = _indexWhereRoutine(id: routine.id);
-      _routines[index] = routine;
+    final deletedRoutineTemplate = response.data;
+    if (deletedRoutineTemplate != null) {
+      _templates.removeAt(index);
       notifyListeners();
     }
   }
 
-  Future<void> removeRoutine({required String id}) async {
-    final index = _indexWhereRoutine(id: id);
-    final routineToBeRemoved = _routines[index];
-    final request = ModelMutations.delete(routineToBeRemoved);
-    final response = await Amplify.API.mutate(request: request).response;
-    final deletedRoutine = response.data;
-    if (deletedRoutine != null) {
-      _routines.removeAt(index);
-      notifyListeners();
-    }
+  int _indexWhereRoutineTemplate({required String id}) {
+    return _templates.indexWhere((template) => template.id == id);
   }
 
-  int _indexWhereRoutine({required String id}) {
-    return _routines.indexWhere((routine) => routine.id == id);
-  }
-
-  Routine? routineWhere({required String id}) {
-    return _routines.firstWhereOrNull((dto) => dto.id == id);
+  RoutineTemplate? templateWhere({required String id}) {
+    return _templates.firstWhereOrNull((dto) => dto.id == id);
   }
 
   void reset() {
-    _routines.clear();
+    _templates.clear();
     notifyListeners();
   }
 }

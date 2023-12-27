@@ -11,6 +11,7 @@ import 'package:tracker_app/screens/settings_screen.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_provider.dart';
+import '../providers/user_provider.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
@@ -81,21 +82,6 @@ void toggleWeightUnit({required WeightUnit unit}) {
 
 void toggleDistanceUnit({required DistanceUnit unit}) {
   SharedPrefs().distanceUnit = unit.name;
-}
-
-User user() {
-  final email = SharedPrefs().userEmail;
-  final userId = SharedPrefs().userId;
-  return User(id: userId, email: email);
-}
-
-Future<void> persistUserCredentials() async {
-  final authUser = await Amplify.Auth.getCurrentUser();
-  final signInDetails = authUser.signInDetails.toJson();
-  final email = signInDetails["username"] as String;
-  final id = authUser.userId;
-  SharedPrefs().userEmail = email;
-  SharedPrefs().userId = id;
 }
 
 String timeOfDay() {
@@ -174,34 +160,35 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
 }
 
 Future<void> loadAppData(BuildContext context) async {
+  final userProvider = Provider.of<UserProvider>(context, listen: false);
   final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
-  final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-  final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+  final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
+  final logProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-  /// Retrieve pending logs
-  routineLogProvider.retrieveCachedPendingRoutineLogs(context);
-  exerciseProvider.listExercises().then((_) {
-    routineProvider.listRoutines();
-    routineLogProvider.listRoutineLogs();
-  });
-}
-
-Map<String, dynamic> _fixRoutineLogJson(String jsonString) {
-  final json = jsonDecode(jsonString) as Map<String, dynamic>;
-  json.update("routine", (value) {
-    return {"serializedData": value};
-  });
-  return json;
+  userProvider.fetchUser();
+  await exerciseProvider.listExercises();
+  templateProvider.listTemplates();
+  logProvider.listLogs();
 }
 
 RoutineLog? cachedRoutineLog() {
   RoutineLog? routineLog;
   final cache = SharedPrefs().cachedRoutineLog;
   if (cache.isNotEmpty) {
-    final routineLogJson = _fixRoutineLogJson(cache);
-    routineLog = RoutineLog.fromJson(routineLogJson);
+    final json = jsonDecode(cache);
+    routineLog = RoutineLog.fromJson(json);
   }
   return routineLog;
+}
+
+User? cachedUser() {
+  User? user;
+  final cache = SharedPrefs().user;
+  if (cache.isNotEmpty) {
+    final json = jsonDecode(cache);
+    user = User.fromJson(json);
+  }
+  return user;
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {

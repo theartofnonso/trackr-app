@@ -92,7 +92,7 @@ ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> l
 
   // Count RoutineLogs with at least two exercises that have a non-null superSetId
   final achievedLogs = logs.where((log) {
-    var exercisesWithSuperSetId = log.procedures
+    var exercisesWithSuperSetId = log.exerciseLogs
         .map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)))
         .where((exerciseLog) => exerciseLog.superSetId.isNotEmpty)
         .length;
@@ -154,7 +154,7 @@ ProgressDto _calculateObsessedAchievement(
 }
 
 bool _hasLegExercise(RoutineLog log) {
-  return log.procedures.any((procedure) {
+  return log.exerciseLogs.any((procedure) {
     final json = jsonDecode(procedure);
     final exerciseString = json["exercise"];
     final exercise = Exercise.fromJson(exerciseString);

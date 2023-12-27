@@ -58,7 +58,7 @@ class _RoutineLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CListTile(
         title: log.name,
-        subtitle: "${log.procedures.length} exercise(s)",
+        subtitle: "${log.exerciseLogs.length} exercise(s)",
         trailing: log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }

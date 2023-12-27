@@ -9,7 +9,7 @@ class AppProviders {
 
   static void resetProviders(BuildContext context) {
     Provider.of<ExerciseProvider>(context, listen: false).reset();
-    Provider.of<RoutineProvider>(context, listen: false).reset();
+    Provider.of<RoutineTemplateProvider>(context, listen: false).reset();
     Provider.of<RoutineLogProvider>(context, listen: false).reset();
   }
 }

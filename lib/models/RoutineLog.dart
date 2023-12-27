@@ -29,13 +29,12 @@ class RoutineLog extends amplify_core.Model {
   static const classType = const _RoutineLogModelType();
   final String id;
   final User? _user;
-  final Routine? _routine;
+  final RoutineTemplate? _template;
   final String? _name;
-  final List<String>? _procedures;
+  final List<String>? _exerciseLogs;
   final String? _notes;
   final amplify_core.TemporalDateTime? _startTime;
   final amplify_core.TemporalDateTime? _endTime;
-  final String? _owner;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -65,8 +64,8 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  Routine? get routine {
-    return _routine;
+  RoutineTemplate? get template {
+    return _template;
   }
   
   String get name {
@@ -82,9 +81,9 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  List<String> get procedures {
+  List<String> get exerciseLogs {
     try {
-      return _procedures!;
+      return _exerciseLogs!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -134,10 +133,6 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  String? get owner {
-    return _owner;
-  }
-  
   amplify_core.TemporalDateTime get createdAt {
     try {
       return _createdAt!;
@@ -164,19 +159,18 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, required user, routine, required name, required procedures, required notes, required startTime, required endTime, owner, required createdAt, required updatedAt}): _user = user, _routine = routine, _name = name, _procedures = procedures, _notes = notes, _startTime = startTime, _endTime = endTime, _owner = owner, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineLog._internal({required this.id, required user, template, required name, required exerciseLogs, required notes, required startTime, required endTime, required createdAt, required updatedAt}): _user = user, _template = template, _name = name, _exerciseLogs = exerciseLogs, _notes = notes, _startTime = startTime, _endTime = endTime, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineLog({String? id, required User user, Routine? routine, required String name, required List<String> procedures, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, String? owner, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineLog({String? id, required User user, RoutineTemplate? template, required String name, required List<String> exerciseLogs, required String notes, required amplify_core.TemporalDateTime startTime, required amplify_core.TemporalDateTime endTime, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user: user,
-      routine: routine,
+      template: template,
       name: name,
-      procedures: procedures != null ? List<String>.unmodifiable(procedures) : procedures,
+      exerciseLogs: exerciseLogs != null ? List<String>.unmodifiable(exerciseLogs) : exerciseLogs,
       notes: notes,
       startTime: startTime,
       endTime: endTime,
-      owner: owner,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -191,13 +185,12 @@ class RoutineLog extends amplify_core.Model {
     return other is RoutineLog &&
       id == other.id &&
       _user == other._user &&
-      _routine == other._routine &&
+      _template == other._template &&
       _name == other._name &&
-      DeepCollectionEquality().equals(_procedures, other._procedures) &&
+      DeepCollectionEquality().equals(_exerciseLogs, other._exerciseLogs) &&
       _notes == other._notes &&
       _startTime == other._startTime &&
       _endTime == other._endTime &&
-      _owner == other._owner &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -212,13 +205,12 @@ class RoutineLog extends amplify_core.Model {
     buffer.write("RoutineLog {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
-    buffer.write("routine=" + (_routine != null ? _routine!.toString() : "null") + ", ");
+    buffer.write("template=" + (_template != null ? _template!.toString() : "null") + ", ");
     buffer.write("name=" + "$_name" + ", ");
-    buffer.write("procedures=" + (_procedures != null ? _procedures!.toString() : "null") + ", ");
+    buffer.write("exerciseLogs=" + (_exerciseLogs != null ? _exerciseLogs!.toString() : "null") + ", ");
     buffer.write("notes=" + "$_notes" + ", ");
     buffer.write("startTime=" + (_startTime != null ? _startTime!.format() : "null") + ", ");
     buffer.write("endTime=" + (_endTime != null ? _endTime!.format() : "null") + ", ");
-    buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -226,43 +218,40 @@ class RoutineLog extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineLog copyWith({User? user, Routine? routine, String? name, List<String>? procedures, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, String? owner, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineLog copyWith({User? user, RoutineTemplate? template, String? name, List<String>? exerciseLogs, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineLog._internal(
       id: id,
       user: user ?? this.user,
-      routine: routine ?? this.routine,
+      template: template ?? this.template,
       name: name ?? this.name,
-      procedures: procedures ?? this.procedures,
+      exerciseLogs: exerciseLogs ?? this.exerciseLogs,
       notes: notes ?? this.notes,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      owner: owner ?? this.owner,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
   RoutineLog copyWithModelFieldValues({
     ModelFieldValue<User>? user,
-    ModelFieldValue<Routine?>? routine,
+    ModelFieldValue<RoutineTemplate?>? template,
     ModelFieldValue<String>? name,
-    ModelFieldValue<List<String>?>? procedures,
+    ModelFieldValue<List<String>?>? exerciseLogs,
     ModelFieldValue<String>? notes,
     ModelFieldValue<amplify_core.TemporalDateTime>? startTime,
     ModelFieldValue<amplify_core.TemporalDateTime>? endTime,
-    ModelFieldValue<String?>? owner,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
     return RoutineLog._internal(
       id: id,
       user: user == null ? this.user : user.value,
-      routine: routine == null ? this.routine : routine.value,
+      template: template == null ? this.template : template.value,
       name: name == null ? this.name : name.value,
-      procedures: procedures == null ? this.procedures : procedures.value,
+      exerciseLogs: exerciseLogs == null ? this.exerciseLogs : exerciseLogs.value,
       notes: notes == null ? this.notes : notes.value,
       startTime: startTime == null ? this.startTime : startTime.value,
       endTime: endTime == null ? this.endTime : endTime.value,
-      owner: owner == null ? this.owner : owner.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
@@ -273,32 +262,30 @@ class RoutineLog extends amplify_core.Model {
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
-      _routine = json['routine']?['serializedData'] != null
-        ? Routine.fromJson(new Map<String, dynamic>.from(json['routine']['serializedData']))
+      _template = json['template']?['serializedData'] != null
+        ? RoutineTemplate.fromJson(new Map<String, dynamic>.from(json['template']['serializedData']))
         : null,
       _name = json['name'],
-      _procedures = json['procedures']?.cast<String>(),
+      _exerciseLogs = json['exerciseLogs']?.cast<String>(),
       _notes = json['notes'],
       _startTime = json['startTime'] != null ? amplify_core.TemporalDateTime.fromString(json['startTime']) : null,
       _endTime = json['endTime'] != null ? amplify_core.TemporalDateTime.fromString(json['endTime']) : null,
-      _owner = json['owner'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'routine': _routine?.toJson(), 'name': _name, 'procedures': _procedures, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'owner': _owner, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'template': _template?.toJson(), 'name': _name, 'exerciseLogs': _exerciseLogs, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'user': _user,
-    'routine': _routine,
+    'template': _template,
     'name': _name,
-    'procedures': _procedures,
+    'exerciseLogs': _exerciseLogs,
     'notes': _notes,
     'startTime': _startTime,
     'endTime': _endTime,
-    'owner': _owner,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -308,15 +295,14 @@ class RoutineLog extends amplify_core.Model {
   static final USER = amplify_core.QueryField(
     fieldName: "user",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
-  static final ROUTINE = amplify_core.QueryField(
-    fieldName: "routine",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Routine'));
+  static final TEMPLATE = amplify_core.QueryField(
+    fieldName: "template",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'RoutineTemplate'));
   static final NAME = amplify_core.QueryField(fieldName: "name");
-  static final PROCEDURES = amplify_core.QueryField(fieldName: "procedures");
+  static final EXERCISELOGS = amplify_core.QueryField(fieldName: "exerciseLogs");
   static final NOTES = amplify_core.QueryField(fieldName: "notes");
   static final STARTTIME = amplify_core.QueryField(fieldName: "startTime");
   static final ENDTIME = amplify_core.QueryField(fieldName: "endTime");
-  static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -344,7 +330,7 @@ class RoutineLog extends amplify_core.Model {
     
     modelSchemaDefinition.indexes = [
       amplify_core.ModelIndex(fields: const ["userID"], name: "byUser"),
-      amplify_core.ModelIndex(fields: const ["routineID"], name: "byRoutine")
+      amplify_core.ModelIndex(fields: const ["templateID"], name: "byRoutineTemplate")
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
@@ -357,10 +343,10 @@ class RoutineLog extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
-      key: RoutineLog.ROUTINE,
+      key: RoutineLog.TEMPLATE,
       isRequired: false,
-      targetNames: ['routineID'],
-      ofModelName: 'Routine'
+      targetNames: ['templateID'],
+      ofModelName: 'RoutineTemplate'
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
@@ -370,7 +356,7 @@ class RoutineLog extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineLog.PROCEDURES,
+      key: RoutineLog.EXERCISELOGS,
       isRequired: true,
       isArray: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
@@ -392,12 +378,6 @@ class RoutineLog extends amplify_core.Model {
       key: RoutineLog.ENDTIME,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineLog.OWNER,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

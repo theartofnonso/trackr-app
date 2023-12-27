@@ -4,17 +4,19 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/models/Exercise.dart';
-import 'package:tracker_app/models/Routine.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
-import '../models/RoutineLog.dart';
 import '../utils/general_utils.dart';
+
+const emptyTemplateId = "empty_template_id";
 
 class RoutineLogProvider with ChangeNotifier {
   Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
@@ -38,24 +40,8 @@ class RoutineLogProvider with ChangeNotifier {
 
   UnmodifiableMapView<DateTimeRange, List<RoutineLog>> get monthToLogs => UnmodifiableMapView(_monthToLogs);
 
-  RoutineLog? cachedRoutineLog;
-
-  List<RoutineLog> _cachedPendingLogs = [];
-
-  List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
-
-  void clearCachedPendingLogs() {
-    _cachedPendingLogs = [];
-    SharedPrefs().cachedPendingRoutineLogs = [];
-    notifyListeners();
-  }
-
-  void listRoutineLogs() async {
-    //final routineLogOwner = user();
-    //final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.USER.eq(routineLogOwner.id));
-    //final response = await Amplify.API.query(request: request).response;
-    final routineLogs = await Amplify.DataStore.query(RoutineLog.classType);
-    _logs = routineLogs.whereType<RoutineLog>().toList();
+  void listLogs() async {
+    _logs = await Amplify.DataStore.query(RoutineLog.classType);
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
     notifyListeners();
@@ -63,7 +49,7 @@ class RoutineLogProvider with ChangeNotifier {
 
   void _orderExercises() {
     List<ExerciseLogDto> exerciseLogs = _logs
-        .map((log) => log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))))
+        .map((log) => log.exerciseLogs.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))))
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
     _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
@@ -125,119 +111,74 @@ class RoutineLogProvider with ChangeNotifier {
     _loadMonthToLogs();
   }
 
-  Map<String, dynamic> _fixJson(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    json.update("routine", (value) {
-      return {"serializedData": value};
-    });
-    json.update("user", (value) {
-      return {"serializedData": value};
-    });
-    return json;
-  }
-
-  void retrieveCachedPendingRoutineLogs(BuildContext context) {
-    final cachedLogs = SharedPrefs().cachedPendingRoutineLogs;
-    if (cachedLogs.isNotEmpty) {
-      _cachedPendingLogs = cachedLogs.map((log) {
-        final json = _fixJson(log);
-        return RoutineLog.fromJson(json);
-      }).toList();
-    }
-  }
-
-  Future<RoutineLog> saveRoutineLog(
+  Future<RoutineLog?> saveRoutineLog(
       {required BuildContext context,
       required String name,
       required String notes,
       required List<ExerciseLogDto> exerciseLogs,
       required TemporalDateTime startTime,
-      required Routine? routine}) async {
-    final exerciseLogJsons = exerciseLogs.map((log) => log.toJson()).toList();
+      required RoutineTemplate? template}) async {
+    RoutineLog? logToCreate;
 
-    final logToCreate = RoutineLog(
-        name: name,
-        notes: notes,
-        procedures: exerciseLogJsons,
-        startTime: startTime,
-        endTime: TemporalDateTime.now(),
-        createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(),
-        routine: routine,
-        user: user());
+    final user = Provider.of<UserProvider>(context, listen: false).user;
 
-    try {
-      final request = ModelMutations.create(logToCreate);
-      final response = await Amplify.API.mutate(request: request).response;
-      final createdLog = response.data;
-      if (createdLog != null) {
-        _addToLogs(createdLog);
+    if (user != null) {
+      final now = TemporalDateTime.now();
+
+      final exerciseLogJsons = exerciseLogs.map((log) => log.toJson()).toList();
+
+      logToCreate = RoutineLog(
+          name: name,
+          notes: notes,
+          exerciseLogs: exerciseLogJsons,
+          startTime: startTime,
+          endTime: now,
+          createdAt: now,
+          updatedAt: now,
+          template: template,
+          user: user);
+
+      try {
+        await Amplify.DataStore.save(logToCreate);
+        _logs.add(logToCreate);
+        _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        _normaliseLogs();
+        notifyListeners();
+      } on DataStoreException catch (error) {
+        print('Error saving RoutineLog: ${error.message}');
       }
-    } catch (_) {
-      _cachePendingLogs(logToCreate);
     }
 
     return logToCreate;
   }
 
-  void _cachePendingLogs(RoutineLog pendingLog) {
-    _cachedPendingLogs.add(pendingLog);
-    final pendingLogs = SharedPrefs().cachedPendingRoutineLogs;
-    final json = jsonEncode(pendingLog);
-    pendingLogs.add(json);
-    SharedPrefs().cachedPendingRoutineLogs = pendingLogs;
-    notifyListeners();
-  }
-
-  void retryPendingRoutineLogs() async {
-    final cachedPendingRoutineLogs = SharedPrefs().cachedPendingRoutineLogs;
-    for (int index = 0; index < _cachedPendingLogs.length; index++) {
-      final pendingLog = _cachedPendingLogs[index];
-      final request = ModelMutations.create(pendingLog);
-      final response = await Amplify.API.mutate(request: request).response;
-      final createdLog = response.data;
-      if (createdLog != null) {
-        /// Remove from caches i.e both [_cachedPendingLogs] and [SharedPrefs().cachedPendingRoutineLogs]
-        _cachedPendingLogs.removeAt(index);
-        cachedPendingRoutineLogs.removeAt(index);
-        SharedPrefs().cachedPendingRoutineLogs = cachedPendingRoutineLogs;
-
-        /// Add to logs
-        _addToLogs(createdLog);
-      }
-    }
-  }
-
-  void _addToLogs(RoutineLog log) {
-    _logs.add(log);
-    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-    _normaliseLogs();
-    notifyListeners();
-  }
-
   void cacheRoutineLog(
-      {required String name,
+      {required BuildContext context,
+      required String name,
       required String notes,
       required List<ExerciseLogDto> procedures,
       required TemporalDateTime startTime,
       TemporalDateTime? createdAt,
-      required Routine? routine}) async {
-    final currentTime = TemporalDateTime.now();
+      required RoutineTemplate? template}) async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
 
-    final exerciseLogJson = procedures.map((procedure) => procedure.toJson()).toList();
+    if (user != null) {
+      final currentTime = TemporalDateTime.now();
 
-    final logToCache = RoutineLog(
-        name: name,
-        notes: notes,
-        routine: routine,
-        procedures: exerciseLogJson,
-        startTime: startTime,
-        endTime: currentTime,
-        createdAt: createdAt ?? currentTime,
-        updatedAt: currentTime,
-        user: user());
-    cachedRoutineLog = logToCache;
-    SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
+      final exerciseLogJson = procedures.map((procedure) => procedure.toJson()).toList();
+
+      final logToCache = RoutineLog(
+          name: name,
+          notes: notes,
+          template: template,
+          exerciseLogs: exerciseLogJson,
+          startTime: startTime,
+          endTime: currentTime,
+          createdAt: createdAt ?? currentTime,
+          updatedAt: currentTime,
+          user: user);
+      SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
+    }
   }
 
   Future<void> removeLog({required String id}) async {
@@ -284,8 +225,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   bool isLatestLogForTemplate({required String templateId, required logId}) {
-    final logsForTemplate = _logs.lastWhereOrNull((log) => log.routine?.id == templateId);
-    print(logsForTemplate);
+    final logsForTemplate = _logs.lastWhereOrNull((log) => log.template?.id == templateId);
     if (logsForTemplate == null) {
       return false;
     } else {
