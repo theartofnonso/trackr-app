@@ -209,9 +209,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             )));
   }
 
-  void _clearAppData() {
+  void _clearAppData() async {
+    await Amplify.DataStore.clear();
     SharedPrefs().clear();
-    AppProviders.resetProviders(context);
+    if(context.mounted) {
+      AppProviders.resetProviders(context);
+    }
   }
 
   void _logout() async {
@@ -237,14 +240,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         rightAction: () async {
           Navigator.of(context).pop();
           _toggleLoadingState(message: "Deleting account...");
-          final deletedExercises =
-              await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
-          final deletedRoutines =
-              await batchDeleteUserData(document: deleteUserRoutineData, documentKey: "deleteUserRoutineData");
-          final deletedRoutineLogs =
-              await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
-          final deletedUser = await batchDeleteUserData(document: deleteUserData, documentKey: "deleteUserData");
-          if (deletedExercises && deletedRoutines && deletedRoutineLogs && deletedUser) {
+          final deletedExercises = await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
+          final deletedRoutines = await batchDeleteUserData(document: deleteUserRoutineData, documentKey: "deleteUserRoutineData");
+          final deletedRoutineLogs = await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
+          if (deletedExercises && deletedRoutines && deletedRoutineLogs) {
             _toggleLoadingState();
             _clearAppData();
             await Amplify.Auth.deleteUser();
