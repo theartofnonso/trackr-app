@@ -54,4 +54,9 @@ class ExerciseDto {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  @override
+  String toString() {
+    return 'ExerciseDto{id: $id, name: $name, notes: $notes, primaryMuscleGroup: $primaryMuscleGroup, secondaryMuscleGroups: $secondaryMuscleGroups, type: $type, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }
