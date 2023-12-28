@@ -45,31 +45,41 @@ class PieChartWidget extends StatelessWidget {
       switch (index) {
         case 0:
           return PieChartSectionData(
+            showTitle: false,
             color: generateDecoration(index: index),
+            value: segments[0].value.toDouble(),
             radius: 70,
             titleStyle: textStyle,
           );
         case 1:
           return PieChartSectionData(
+            showTitle: false,
             color: generateDecoration(index: index),
+            value: segments[1].value.toDouble(),
             radius: 60,
             titleStyle: textStyle,
           );
         case 2:
           return PieChartSectionData(
+            showTitle: false,
             color: generateDecoration(index: index),
+            value: segments[2].value.toDouble(),
             radius: 50,
             titleStyle: textStyle,
           );
         case 3:
           return PieChartSectionData(
+            showTitle: false,
             color: generateDecoration(index: index),
+            value: segments[3].value.toDouble(),
             radius: 40,
             titleStyle: textStyle,
           );
         case 4:
           return PieChartSectionData(
+            showTitle: false,
             color: generateDecoration(index: index),
+            value: segments[4].value.toDouble(),
             radius: 30,
             titleStyle: textStyle,
           );
