@@ -153,7 +153,7 @@ ProgressDto _calculateObsessedAchievement(
 bool _hasLegExercise(RoutineLogDto log) {
   return log.exerciseLogs.any((exerciseLog) {
     final exercise = exerciseLog.exercise;
-    final muscleGroup = MuscleGroup.fromString(exercise.primaryMuscle);
+    final muscleGroup = exercise.primaryMuscleGroup;
     return muscleGroup.family == MuscleGroupFamily.legs;
   });
 }

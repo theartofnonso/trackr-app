@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -42,7 +42,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
     final exercises = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<Exercise>?;
+        as List<ExerciseDto>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (context.mounted) {

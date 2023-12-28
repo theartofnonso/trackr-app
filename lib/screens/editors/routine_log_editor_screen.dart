@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
@@ -43,7 +43,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final exercises = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<Exercise>?;
+        as List<ExerciseDto>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (context.mounted) {

@@ -10,6 +10,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
@@ -40,23 +41,18 @@ class RoutineLogProvider with ChangeNotifier {
   UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthToLogs => UnmodifiableMapView(_monthToLogs);
 
   void listLogs() async {
-    try {
-      final logs = await Amplify.DataStore.query(RoutineLog.classType);
-      _logs = logs.map((log) => log.dto()).toList();
-      _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      _normaliseLogs();
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+    final logs = await Amplify.DataStore.query(RoutineLog.classType);
+    _logs = logs.map((log) => log.dto()).toList();
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    _normaliseLogs();
+    notifyListeners();
   }
 
   void _orderExerciseLogs() {
     List<ExerciseLogDto> exerciseLogs = _logs.expand((log) => log.exerciseLogs).toList();
     _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
     _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) {
-      final exerciseTypeString = exerciseLog.exercise.type;
-      final exerciseType = ExerciseType.fromString(exerciseTypeString);
+      final exerciseType = exerciseLog.exercise.type;
       return exerciseType;
     });
   }
@@ -115,7 +111,8 @@ class RoutineLogProvider with ChangeNotifier {
   Future<RoutineLogDto> saveRoutineLog({required RoutineLogDto logDto}) async {
     final now = TemporalDateTime.now();
 
-    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+    final logToCreate =
+        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
 
     await Amplify.DataStore.save(logToCreate);
     _logs.add(logDto);
@@ -131,17 +128,19 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   Future<void> removeLog({required String id}) async {
-    // final index = _indexWhereRoutineLog(id: id);
-    // final logToBeRemoved = _logs[index];
-    // final request = ModelMutations.delete(logToBeRemoved);
-    // final response = await Amplify.API.mutate(request: request).response;
-    // final deletedLog = response.data;
-    // if (deletedLog != null) {
-    //   final index = _indexWhereRoutineLog(id: id);
-    //   _logs.removeAt(index);
-    //   _normaliseLogs();
-    //   notifyListeners();
-    // }
+    final result = (await Amplify.DataStore.query(
+      RoutineLog.classType,
+      where: RoutineTemplate.ID.eq(id),
+    ));
+
+    if (result.isNotEmpty) {
+      final oldTemplate = result.first;
+      await Amplify.DataStore.delete(oldTemplate);
+      final index = _indexWhereRoutineLog(id: id);
+      _logs.removeAt(index);
+      _normaliseLogs();
+      notifyListeners();
+    }
   }
 
   int _indexWhereRoutineLog({required String id}) {
@@ -152,7 +151,7 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> wherePastSets({required Exercise exercise}) {
+  List<SetDto> wherePastSets({required ExerciseDto exercise}) {
     final exerciseLogs = _exerciseLogsById[exercise.id]?.reversed.toList() ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
@@ -160,7 +159,7 @@ class RoutineLogProvider with ChangeNotifier {
   List<SetDto> setsForMuscleGroupWhereDateRange(
       {required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(ExerciseLogDto log) {
-      final primaryMuscle = MuscleGroup.fromString(log.exercise.primaryMuscle);
+      final primaryMuscle = log.exercise.primaryMuscleGroup;
       return primaryMuscle.family == muscleGroupFamily;
     }
 
@@ -181,7 +180,7 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.firstWhereOrNull((log) => log.createdAt.isSameDateAs(dateTime));
   }
 
-  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
+  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required ExerciseDto exercise}) {
     final values = _exerciseLogsById[exercise.id] ?? [];
     return values.where((log) => log.createdAt.isBetweenRange(range: range)).toList();
   }

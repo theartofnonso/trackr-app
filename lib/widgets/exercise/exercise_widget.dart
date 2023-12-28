@@ -32,13 +32,13 @@ class ExerciseWidget extends StatelessWidget {
               SizedBox(
                   width: 300,
                   child: Text(
-                    "Primary: ${exerciseInLibraryDto.exercise.primaryMuscle}",
+                    "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup}",
                     style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),
               SizedBox(
                   width: 300,
                   child: Text(
-                    "Secondary: ${exerciseInLibraryDto.exercise.secondaryMuscles.isNotEmpty ? exerciseInLibraryDto.exercise.secondaryMuscles.join(", ") : "None"}",
+                    "Secondary: ${exerciseInLibraryDto.exercise.secondaryMuscleGroups.isNotEmpty ? exerciseInLibraryDto.exercise.secondaryMuscleGroups.join(", ") : "None"}",
                     style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                   )),
             ],

@@ -241,9 +241,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Navigator.of(context).pop();
           _toggleLoadingState(message: "Deleting account...");
           final deletedExercises = await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
-          final deletedRoutines = await batchDeleteUserData(document: deleteUserRoutineData, documentKey: "deleteUserRoutineData");
+          final deletedRoutineTemplates = await batchDeleteUserData(document: deleteUserRoutineTemplateData, documentKey: "deleteUserRoutineTemplateData");
           final deletedRoutineLogs = await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
-          if (deletedExercises && deletedRoutines && deletedRoutineLogs) {
+          if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
             _toggleLoadingState();
             _clearAppData();
             await Amplify.Auth.deleteUser();

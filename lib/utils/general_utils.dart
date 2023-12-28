@@ -2,15 +2,11 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
-import '../providers/exercise_provider.dart';
-import '../providers/routine_log_provider.dart';
-import '../providers/routine_template_provider.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
@@ -169,10 +165,23 @@ RoutineLogDto? cachedRoutineLog() {
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {
-  final operation = Amplify.API.mutate(
-    request: GraphQLRequest<dynamic>(document: document),
-  );
-  final response = await operation.response;
-  final result = jsonDecode(response.data);
-  return result[documentKey];
+
+  try {
+    final operation = Amplify.API.mutate(
+      request: GraphQLRequest<dynamic>(document: document),
+    );
+    final response = await operation.response;
+    print(response);
+    final result = jsonDecode(response.data);
+    return result[documentKey];
+  } catch (e) {
+    print(e);
+    return false;
+  }
+  // final operation = Amplify.API.mutate(
+  //   request: GraphQLRequest<dynamic>(document: document),
+  // );
+  // final response = await operation.response;
+  // final result = jsonDecode(response.data);
+  // return result[documentKey];
 }

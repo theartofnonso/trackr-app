@@ -23,7 +23,8 @@ class RoutineTemplateProvider with ChangeNotifier {
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto.toJson()), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+    final templateToCreate = RoutineTemplate(
+        data: jsonEncode(templateDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
     _templates.insert(0, templateDto);
@@ -33,26 +34,34 @@ class RoutineTemplateProvider with ChangeNotifier {
   }
 
   Future<void> updateTemplate({required RoutineTemplateDto template}) async {
-    // final request = ModelMutations.update(template);
-    // final response = await Amplify.API.mutate(request: request).response;
-    // final updatedRoutineTemplate = response.data;
-    // if (updatedRoutineTemplate != null) {
-    //   final index = _indexWhereRoutineTemplate(id: template.id);
-    //   _templates[index] = template;
-    //   notifyListeners();
-    // }
+    final result = (await Amplify.DataStore.query(
+      RoutineLog.classType,
+      where: RoutineTemplate.ID.eq(template.id),
+    ));
+
+    if (result.isNotEmpty) {
+      final oldTemplate = result.first;
+      final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
+      await Amplify.DataStore.save(newTemplate);
+      final index = _indexWhereRoutineTemplate(id: template.id);
+      _templates[index] = template;
+      notifyListeners();
+    }
   }
 
   Future<void> removeTemplate({required String id}) async {
-    // final index = _indexWhereRoutineTemplate(id: id);
-    // final templateToBeRemoved = _templates[index];
-    // final request = ModelMutations.delete(templateToBeRemoved);
-    // final response = await Amplify.API.mutate(request: request).response;
-    // final deletedRoutineTemplate = response.data;
-    // if (deletedRoutineTemplate != null) {
-    //   _templates.removeAt(index);
-    //   notifyListeners();
-    // }
+    final result = (await Amplify.DataStore.query(
+      RoutineLog.classType,
+      where: RoutineTemplate.ID.eq(id),
+    ));
+
+    if (result.isNotEmpty) {
+      final oldTemplate = result.first;
+      await Amplify.DataStore.delete(oldTemplate);
+      final index = _indexWhereRoutineTemplate(id: id);
+      _templates.removeAt(index);
+      notifyListeners();
+    }
   }
 
   int _indexWhereRoutineTemplate({required String id}) {

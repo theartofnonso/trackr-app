@@ -7,7 +7,6 @@ type RoutineTemplate
      @auth(
         rules: [
           { allow: owner }
-          { allow: private, operations: [read] }
         ]
      ) {
   id: ID!
@@ -22,7 +21,6 @@ type RoutineLog
      @auth(
         rules: [
           { allow: owner }
-          { allow: private, operations: [read] }
         ]
      ) {
   id: ID!
@@ -41,17 +39,13 @@ type Exercise
      ) {
   id: ID!
   userId: String!
-  name: String!
-  primaryMuscle: String!
-  secondaryMuscles: [String]!
-  type: String!
-  notes: String
+  data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
 
 type Mutation {
   deleteUserExerciseData: Boolean! @function(name: "deleteUserExerciseData-${env}")
-  deleteUserRoutineTemplateData: Boolean! @function(name: "deleteUserRoutineTemplateData-${env}")
+  deleteUserRoutineTemplateData: Boolean! @function(name: "deleteUserRoutineData-${env}")
   deleteUserRoutineLogData: Boolean! @function(name: "deleteUserRoutineLogData-${env}")
 }

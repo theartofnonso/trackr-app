@@ -234,8 +234,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final superSetExerciseDto = widget.superSet;
 
-    final exerciseString = widget.exerciseLogDto.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseString);
+    final exerciseType = widget.exerciseLogDto.exercise.type;
 
     return Container(
       padding: const EdgeInsets.all(10),

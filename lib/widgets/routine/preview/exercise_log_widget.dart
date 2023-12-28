@@ -20,8 +20,7 @@ class ExerciseLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final otherSuperSet = superSet;
 
-    final exerciseString = exerciseLog.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseString);
+    final exerciseType = exerciseLog.exercise.type;
 
     return Container(
       padding: padding,
@@ -69,7 +68,7 @@ class ExerciseLogWidget extends StatelessWidget {
               DoubleSetHeader(firstLabel: 'TIME', secondLabel: distanceTitle(type: ExerciseType.durationAndDistance)),
           },
           const SizedBox(height: 8),
-          ...setsToWidgets(type: ExerciseType.fromString(exerciseLog.exercise.type), sets: exerciseLog.sets),
+          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets),
         ],
       ),
     );

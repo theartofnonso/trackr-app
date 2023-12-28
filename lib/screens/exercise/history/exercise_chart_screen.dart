@@ -2,15 +2,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
-import '../../../dtos/routine_log_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../providers/routine_log_provider.dart';
@@ -33,15 +32,15 @@ enum SummaryType {
 }
 
 class ExerciseChartScreen extends StatefulWidget {
-  final (RoutineLogDto?, double) heaviestWeight;
-  final (RoutineLogDto?, double) lightestWeight;
-  final (RoutineLogDto?, SetDto) heaviestSet;
-  final (RoutineLogDto?, SetDto) lightestSet;
-  final (RoutineLogDto?, Duration) longestDuration;
-  final (RoutineLogDto?, double) longestDistance;
-  final (RoutineLogDto?, int) mostRepsSet;
-  final (RoutineLogDto?, int) mostRepsSession;
-  final Exercise exercise;
+  final (String?, double) heaviestWeight;
+  final (String?, double) lightestWeight;
+  final (String?, SetDto) heaviestSet;
+  final (String?, SetDto) lightestSet;
+  final (String?, Duration) longestDuration;
+  final (String?, double) longestDistance;
+  final (String?, int) mostRepsSet;
+  final (String?, int) mostRepsSession;
+  final ExerciseDto exercise;
 
   const ExerciseChartScreen(
       {super.key,
@@ -147,8 +146,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   void _longestDistancePerLog() {
     final values = _exerciseLogs.map((log) => longestDistancePerLog(exerciseLog: log)).toList();
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.longestDistance;
@@ -158,8 +156,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   void _totalDistancePerLog() {
     final values = _exerciseLogs.map((log) => totalDistancePerLog(exerciseLog: log)).toList();
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionDistance;
@@ -168,8 +165,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _computeChart() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
 
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
@@ -230,36 +226,35 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
-  void _navigateTo({required RoutineLogDto? routineLog}) {
-    if (routineLog != null) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
+  void _navigateTo({required String? routineLogId}) {
+    if (routineLogId != null) {
+      final routineLog = Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: routineLogId);
+      if (routineLog != null) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
+      }
     }
   }
 
   bool _exerciseLogsWithWeights() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weightAndReps ||
         exerciseType == ExerciseType.weightedBodyWeight ||
         exerciseType == ExerciseType.weightAndDistance;
   }
 
   bool _exerciseLogsWithAssistedWeights() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.assistedBodyWeight;
   }
 
   bool _exerciseLogsWithWeightsAndReps() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
   bool _exerciseLogsWithReps() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weightAndReps ||
         exerciseType == ExerciseType.assistedBodyWeight ||
         exerciseType == ExerciseType.weightedBodyWeight ||
@@ -267,22 +262,19 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   bool _exerciseLogsWithRepsOnly() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.assistedBodyWeight ||
         exerciseType == ExerciseType.weightedBodyWeight ||
         exerciseType == ExerciseType.bodyWeightAndReps;
   }
 
   bool _exerciseLogsDuration() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.durationAndDistance;
   }
 
   bool _exerciseLogsWithDistance() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.durationAndDistance || exerciseType == ExerciseType.weightAndDistance;
   }
 
@@ -290,8 +282,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   Widget build(BuildContext context) {
     final weightUnitLabel = weightLabel();
 
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
 
     final distanceUnitLabel = distanceLabel(type: exerciseType);
 
@@ -307,12 +298,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Primary Muscle: ${widget.exercise.primaryMuscle}",
+            "Primary Muscle: ${widget.exercise.primaryMuscleGroup}",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 5),
           Text(
-            "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+            "Secondary Muscle: ${widget.exercise.secondaryMuscleGroups.isNotEmpty ? widget.exercise.secondaryMuscleGroups.join(", ") : "None"}",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 20),
@@ -434,7 +425,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 title: 'Heaviest Weight',
                 trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
                 subtitle: 'Heaviest weight in a set',
-                onTap: () => _navigateTo(routineLog: widget.heaviestWeight.$1),
+                onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                 enabled: _exerciseLogs.isNotEmpty,
               ),
             ),
@@ -445,7 +436,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 title: 'Lightest Weight',
                 trailing: "${widget.lightestWeight.$2}$weightUnitLabel",
                 subtitle: 'Lightest weight in a set',
-                onTap: () => _navigateTo(routineLog: widget.lightestWeight.$1),
+                onTap: () => _navigateTo(routineLogId: widget.lightestWeight.$1),
                 enabled: _exerciseLogs.isNotEmpty,
               ),
             ),
@@ -456,7 +447,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Heaviest Set Volume',
                   trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume in a set',
-                  onTap: () => _navigateTo(routineLog: widget.heaviestSet.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithAssistedWeights())
@@ -466,7 +457,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Lightest Set Volume',
                   trailing: "${widget.lightestSet.$2.value1}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
                   subtitle: 'Lightest volume in a set',
-                  onTap: () => _navigateTo(routineLog: widget.lightestSet.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.lightestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithWeightsAndReps())
@@ -476,7 +467,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: '1 Rep Max',
                   trailing: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
                   subtitle: 'Heaviest weight for one rep',
-                  onTap: () => _navigateTo(routineLog: widget.heaviestWeight.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsDuration())
@@ -486,7 +477,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Best Time',
                   trailing: widget.longestDuration.$2.secondsOrMinutesOrHours(),
                   subtitle: 'Longest time for this exercise',
-                  onTap: () => _navigateTo(routineLog: widget.longestDuration.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithDistance())
@@ -496,7 +487,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Longest Distance',
                   trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
                   subtitle: 'Longest distance for this exercise',
-                  onTap: () => _navigateTo(routineLog: widget.longestDistance.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithReps())
@@ -506,7 +497,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Most Reps (Set)',
                   trailing: "${widget.mostRepsSet.$2} reps",
                   subtitle: 'Most reps in a set',
-                  onTap: () => _navigateTo(routineLog: widget.mostRepsSet.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsWithRepsOnly())
@@ -516,10 +507,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   title: 'Most Reps (Session)',
                   trailing: "${widget.mostRepsSession.$2} reps",
                   subtitle: 'Most reps in a session',
-                  onTap: () => _navigateTo(routineLog: widget.mostRepsSession.$1),
+                  onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
-          if(_exerciseLogsWithWeightsAndReps() || _exerciseLogsWithAssistedWeights())
+          if (_exerciseLogsWithWeightsAndReps() || _exerciseLogsWithAssistedWeights())
             PersonalBestWidget(exercise: widget.exercise),
         ],
       ),

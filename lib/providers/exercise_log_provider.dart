@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 import 'package:uuid/uuid.dart';
 
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
-import '../models/Exercise.dart';
 
 class ExerciseLogProvider extends ChangeNotifier {
   List<ExerciseLogDto> _exerciseLogs = [];
@@ -41,7 +41,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }).toList();
   }
 
-  void addExerciseLogs({required List<Exercise> exercises}) {
+  void addExerciseLogs({required List<ExerciseDto> exercises}) {
     final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
     _exerciseLogs = [..._exerciseLogs, ...logsToAdd];
     notifyListeners();
@@ -254,7 +254,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  ExerciseLogDto _createExerciseLog(Exercise exercise, {String? notes}) {
+  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
     return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], DateTime.now());
   }
 
@@ -266,7 +266,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     double totalWeight = 0.0;
 
     for (var exerciseLog in _exerciseLogs) {
-      final exerciseType = ExerciseType.fromString(exerciseLog.exercise.type);
+      final exerciseType = exerciseLog.exercise.type;
 
       for (var set in exerciseLog.sets) {
         if (set.checked) {

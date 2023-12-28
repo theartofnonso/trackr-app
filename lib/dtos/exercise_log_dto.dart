@@ -1,32 +1,35 @@
 import 'dart:convert';
-import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/extensions/exercise_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:uuid/uuid.dart';
 
+import 'exercise_dto.dart';
+
 class ExerciseLogDto {
   final String id;
-  final RoutineLogDto? routineLog;
+  final String? routineLogId;
   final String superSetId;
-  final Exercise exercise;
+  final ExerciseDto exercise;
   final String notes;
   final List<SetDto> sets;
   final DateTime createdAt;
 
-  const ExerciseLogDto(this.id, this.routineLog, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
+  const ExerciseLogDto(
+      this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
 
   ExerciseLogDto copyWith(
       {String? id,
-      RoutineLogDto? routineLog,
+      String? routineLogId,
       String? superSetId,
       String? exerciseId,
-      Exercise? exercise,
+      ExerciseDto? exercise,
       String? notes,
       List<SetDto>? sets,
       DateTime? createdAt}) {
     return ExerciseLogDto(
       id ?? this.id,
-      routineLog ?? this.routineLog,
+      routineLogId ?? this.routineLogId,
       superSetId ?? this.superSetId,
       exercise ?? this.exercise,
       notes ?? this.notes,
@@ -41,19 +44,19 @@ class ExerciseLogDto {
     return jsonEncode({"superSetId": superSetId, "exercise": exercise, "notes": notes, "sets": setJons});
   }
 
-  factory ExerciseLogDto.fromJson({RoutineLogDto? routineLog, required Map<String, dynamic> json}) {
+  factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"];
     final exercise = Exercise.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    final createdAt = routineLog?.createdAt ?? DateTime.now();
-    return ExerciseLogDto(const Uuid().v4(), routineLog, superSetId, exercise, notes, sets, createdAt);
+    return ExerciseLogDto(
+        const Uuid().v4(), routineLogId, superSetId, exercise.dto(), notes, sets, createdAt ?? DateTime.now());
   }
 
   @override
   String toString() {
-    return 'ExerciseLogDto{id: $id, routineLog: $routineLog, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
   }
 }

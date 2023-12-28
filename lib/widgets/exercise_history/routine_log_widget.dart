@@ -24,7 +24,7 @@ class RoutineLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLog?.id ?? "");
+    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLogId ?? "");
 
     if(routineLog == null) {
       return const ListViewEmptyState();
@@ -66,8 +66,7 @@ class _ProcedureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final exerciseString = exerciseLog.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseString);
+    final exerciseType = exerciseLog.exercise.type;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +88,7 @@ class _ProcedureWidget extends StatelessWidget {
           ExerciseType.durationAndDistance => DoubleSetHeader(firstLabel: 'TIME', secondLabel: distanceTitle(type: ExerciseType.durationAndDistance)),
         },
         const SizedBox(height: 8),
-        ...setsToWidgets(type: ExerciseType.fromString(exerciseLog.exercise.type), sets: exerciseLog.sets),
+        ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets),
       ],
     );
   }
