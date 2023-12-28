@@ -23,7 +23,7 @@
       "function": {
         "postAuthentication": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
+          "s3Key": "amplify-builds/postAuthentication-6f36516751582b43625a-build.zip"
         },
         "trackerapp": {},
         "trackerapp648183fb": {},
@@ -41,7 +41,7 @@
         },
         "deleteUserData": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/deleteUserData-305a62454d68786e5a47-build.zip"
+          "s3Key": "amplify-builds/deleteUserData-6f61634d6943772b7743-build.zip"
         }
       }
     }

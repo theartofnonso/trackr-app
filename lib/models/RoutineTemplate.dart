@@ -27,7 +27,7 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 class RoutineTemplate extends amplify_core.Model {
   static const classType = const _RoutineTemplateModelType();
   final String id;
-  final String? _userID;
+  final String? _userId;
   final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -45,9 +45,9 @@ class RoutineTemplate extends amplify_core.Model {
       );
   }
   
-  String get userID {
+  String get userId {
     try {
-      return _userID!;
+      return _userId!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -97,12 +97,12 @@ class RoutineTemplate extends amplify_core.Model {
     }
   }
   
-  const RoutineTemplate._internal({required this.id, required userID, required data, required createdAt, required updatedAt}): _userID = userID, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineTemplate._internal({required this.id, required userId, required data, required createdAt, required updatedAt}): _userId = userId, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineTemplate({String? id, required String userID, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineTemplate({String? id, required String userId, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineTemplate._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      userID: userID,
+      userId: userId,
       data: data,
       createdAt: createdAt,
       updatedAt: updatedAt);
@@ -117,7 +117,7 @@ class RoutineTemplate extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is RoutineTemplate &&
       id == other.id &&
-      _userID == other._userID &&
+      _userId == other._userId &&
       _data == other._data &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
@@ -132,7 +132,7 @@ class RoutineTemplate extends amplify_core.Model {
     
     buffer.write("RoutineTemplate {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("userID=" + "$_userID" + ", ");
+    buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -141,24 +141,24 @@ class RoutineTemplate extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineTemplate copyWith({String? userID, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineTemplate copyWith({String? userId, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineTemplate._internal(
       id: id,
-      userID: userID ?? this.userID,
+      userId: userId ?? this.userId,
       data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
   RoutineTemplate copyWithModelFieldValues({
-    ModelFieldValue<String>? userID,
+    ModelFieldValue<String>? userId,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
     return RoutineTemplate._internal(
       id: id,
-      userID: userID == null ? this.userID : userID.value,
+      userId: userId == null ? this.userId : userId.value,
       data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
@@ -167,18 +167,18 @@ class RoutineTemplate extends amplify_core.Model {
   
   RoutineTemplate.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _userID = json['userID'],
+      _userId = json['userId'],
       _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'userID': _userID, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'userId': _userId, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
-    'userID': _userID,
+    'userId': _userId,
     'data': _data,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
@@ -186,7 +186,7 @@ class RoutineTemplate extends amplify_core.Model {
 
   static final amplify_core.QueryModelIdentifier<RoutineTemplateModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineTemplateModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
-  static final USERID = amplify_core.QueryField(fieldName: "userID");
+  static final USERID = amplify_core.QueryField(fieldName: "userId");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
@@ -211,10 +211,6 @@ class RoutineTemplate extends amplify_core.Model {
         operations: const [
           amplify_core.ModelOperation.READ
         ])
-    ];
-    
-    modelSchemaDefinition.indexes = [
-      amplify_core.ModelIndex(fields: const ["userID"], name: "byUser")
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());

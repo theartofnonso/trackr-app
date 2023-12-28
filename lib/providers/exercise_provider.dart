@@ -31,7 +31,7 @@ class ExerciseProvider with ChangeNotifier {
         type: type.name,
         secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(),
         createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(), userID: SharedPrefs().userId);
+        updatedAt: TemporalDateTime.now(), userId: SharedPrefs().userId);
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
     _exercises.add(exerciseToCreate);
     notifyListeners();
