@@ -249,6 +249,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             await Amplify.Auth.deleteUser();
           } else {
             _toggleLoadingState();
+            if(context.mounted) {
+              showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "Something went wrong. Please try again.");
+            }
           }
         },
         leftActionLabel: 'Cancel',

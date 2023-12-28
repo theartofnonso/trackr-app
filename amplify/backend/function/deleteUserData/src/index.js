@@ -37,9 +37,9 @@ exports.handler = async (event) => {
             const command = new BatchWriteItemCommand(batchWriteInput);
             await dynamoDBClient.send(command);
         }
-        return true;
     } catch (err) {
         console.log(err);
+        return false;
     }
-    return false; // this means the user data was cleaned up
+    return true; //his means the user data was cleaned up
 };

@@ -46,6 +46,6 @@ type Exercise
 
 type Mutation {
   deleteUserExerciseData: Boolean! @function(name: "deleteUserExerciseData-${env}")
-  deleteUserRoutineTemplateData: Boolean! @function(name: "deleteUserRoutineData-${env}")
+  deleteUserRoutineTemplateData: Boolean! @function(name: "deleteUserRoutineTemplateData-${env}")
   deleteUserRoutineLogData: Boolean! @function(name: "deleteUserRoutineLogData-${env}")
 }

@@ -165,23 +165,10 @@ RoutineLogDto? cachedRoutineLog() {
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {
-
-  try {
-    final operation = Amplify.API.mutate(
-      request: GraphQLRequest<dynamic>(document: document),
-    );
-    final response = await operation.response;
-    print(response);
-    final result = jsonDecode(response.data);
-    return result[documentKey];
-  } catch (e) {
-    print(e);
-    return false;
-  }
-  // final operation = Amplify.API.mutate(
-  //   request: GraphQLRequest<dynamic>(document: document),
-  // );
-  // final response = await operation.response;
-  // final result = jsonDecode(response.data);
-  // return result[documentKey];
+  final operation = Amplify.API.mutate(
+    request: GraphQLRequest<dynamic>(document: document),
+  );
+  final response = await operation.response;
+  final result = jsonDecode(response.data);
+  return result[documentKey];
 }
