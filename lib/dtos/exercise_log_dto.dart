@@ -39,9 +39,9 @@ class ExerciseLogDto {
   }
 
   String toJson() {
-    final setJons = sets.map((set) => (set).toJson()).toList();
+    final setJsons = sets.map((set) => (set).toJson()).toList();
 
-    return jsonEncode({"superSetId": superSetId, "exercise": exercise, "notes": notes, "sets": setJons});
+    return jsonEncode({"superSetId": superSetId, "exercise": exercise, "notes": notes, "sets": setJsons});
   }
 
   factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
