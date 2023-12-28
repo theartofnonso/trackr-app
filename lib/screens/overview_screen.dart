@@ -51,7 +51,7 @@ class OverviewScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        heroTag: "fab_routine_logs_screen",
+        heroTag: "fab_overview_screen",
         onPressed: () => _logEmptyRoutine(context),
         backgroundColor: tealBlueLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

@@ -190,7 +190,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             floatingActionButton: isKeyboardOpen || _loading
                 ? null
                 : FloatingActionButton(
-                    heroTag: "fab_end_routine_log_screen",
+                    heroTag: "fab_routine_log_editor_screen",
                     onPressed: _saveLog,
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
