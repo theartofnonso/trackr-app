@@ -127,7 +127,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(context: context, templateDto: template);
+      await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(user: user, templateDto: template);
       if (mounted) _navigateBack();
     } catch (e) {
       _handleRoutineTemplateCreationError("Unable to create workout");
