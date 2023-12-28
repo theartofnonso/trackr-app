@@ -25,10 +25,7 @@ extension ExerciseExtension on Exercise {
       notes: notes,
       primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroup),
       secondaryMuscleGroups: secondaryMuscleGroups,
-      type: type,
-      createdAt: createdAt.getDateTimeInUtc(),
-      updatedAt: updatedAt.getDateTimeInUtc(),
-    );
+      type: type);
 
   }
 

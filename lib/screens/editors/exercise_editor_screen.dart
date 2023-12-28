@@ -218,9 +218,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         notes: _exerciseNotesController.text.trim(),
         primaryMuscleGroup: _primaryMuscleGroup,
         secondaryMuscleGroups: _secondaryMuscleGroups,
-        type: _exerciseType,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
+        type: _exerciseType);
 
     try {
       await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);

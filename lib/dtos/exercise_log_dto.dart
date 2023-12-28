@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/extensions/exercise_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'exercise_dto.dart';
@@ -41,18 +39,18 @@ class ExerciseLogDto {
   String toJson() {
     final setJsons = sets.map((set) => (set).toJson()).toList();
 
-    return jsonEncode({"superSetId": superSetId, "exercise": exercise, "notes": notes, "sets": setJsons});
+    return jsonEncode({"superSetId": superSetId, "exercise": exercise.toJson(), "notes": notes, "sets": setJsons});
   }
 
   factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"];
-    final exercise = Exercise.fromJson(exerciseJson);
+    final exercise = ExerciseDto.fromJson(exerciseJson);
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     return ExerciseLogDto(
-        const Uuid().v4(), routineLogId, superSetId, exercise.dto(), notes, sets, createdAt ?? DateTime.now());
+        const Uuid().v4(), routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now());
   }
 
   @override
