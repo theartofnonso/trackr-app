@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
@@ -25,11 +26,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentScreenIndex = 0;
 
+  bool _loading = false;
+  String _loadingMessage = "";
+
   @override
   Widget build(BuildContext context) {
     final screens = [const OverviewScreen(), const RoutinesScreen(), const AchievementsScreen()];
     return Scaffold(
-      body: screens[_currentScreenIndex],
+      body: Stack(children: [
+        screens[_currentScreenIndex],
+        if (_loading)
+          Align(
+              alignment: Alignment.center,
+              child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: tealBlueDark.withOpacity(0.7),
+                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
+      ]),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
@@ -64,7 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _loadAppData({required BuildContext context}) async {
+  void _toggleLoadingState({String message = ""}) {
+    setState(() {
+      _loading = !_loading;
+      _loadingMessage = message;
+    });
+  }
+
+  Future<void> _loadAppData() async {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
     if (context.mounted) {
       Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
@@ -90,11 +111,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _firstLaunchSetup() async {
     if (SharedPrefs().firstLaunch) {
+      _toggleLoadingState(message: "Setting up Trackr...");
       SharedPrefs().firstLaunch = false;
       await _cacheUser();
       await _restartDataStore();
-      if(context.mounted) {
-        _loadAppData(context: context);
+      if (context.mounted) {
+        await _loadAppData();
+        _toggleLoadingState(message: "");
       }
     }
   }
@@ -117,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _firstLaunchSetup();
-    _loadAppData(context: context);
+    _loadAppData();
     _loadCachedLog();
   }
 }

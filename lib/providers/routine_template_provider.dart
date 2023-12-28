@@ -27,7 +27,7 @@ class RoutineTemplateProvider with ChangeNotifier {
         data: jsonEncode(templateDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
-    _templates.insert(0, templateDto);
+    _templates.insert(0, templateDto.copyWith(id: templateToCreate.id));
     notifyListeners();
 
     return templateDto;

@@ -115,7 +115,7 @@ class RoutineLogProvider with ChangeNotifier {
         RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
 
     await Amplify.DataStore.save(logToCreate);
-    _logs.add(logDto);
+    _logs.add(logDto.copyWith(id: logToCreate.id));
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
     notifyListeners();
