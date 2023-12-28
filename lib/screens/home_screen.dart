@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadAppData({required BuildContext context}) async {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
-    if(context.mounted) {
+    if (context.mounted) {
       Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
       Provider.of<RoutineLogProvider>(context, listen: false).listLogs();
     }
@@ -88,14 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPrefs().userEmail = signInDetails["username"] as String;
   }
 
-  void _runFirstLaunchSetup() async {
+  void _firstLaunchSetup() async {
     if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
       await _cacheUser();
-      await _restartDataStore();
-      if (mounted) {
-        _loadAppData(context: context);
-      }
+      _restartDataStore();
     }
   }
 
@@ -116,8 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _runFirstLaunchSetup();
-    _restartDataStore();
+    _firstLaunchSetup();
     _loadAppData(context: context);
     _loadCachedLog();
   }
