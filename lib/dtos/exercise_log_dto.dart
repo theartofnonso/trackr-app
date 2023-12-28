@@ -1,29 +1,29 @@
 import 'dart:convert';
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:uuid/uuid.dart';
 
 class ExerciseLogDto {
   final String id;
-  final RoutineLog? routineLog;
+  final RoutineLogDto? routineLog;
   final String superSetId;
   final Exercise exercise;
   final String notes;
   final List<SetDto> sets;
-  final TemporalDateTime createdAt;
+  final DateTime createdAt;
 
   const ExerciseLogDto(this.id, this.routineLog, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
 
   ExerciseLogDto copyWith(
       {String? id,
-      RoutineLog? routineLog,
+      RoutineLogDto? routineLog,
       String? superSetId,
       String? exerciseId,
       Exercise? exercise,
       String? notes,
       List<SetDto>? sets,
-      TemporalDateTime? createdAt}) {
+      DateTime? createdAt}) {
     return ExerciseLogDto(
       id ?? this.id,
       routineLog ?? this.routineLog,
@@ -41,14 +41,14 @@ class ExerciseLogDto {
     return jsonEncode({"superSetId": superSetId, "exercise": exercise, "notes": notes, "sets": setJons});
   }
 
-  factory ExerciseLogDto.fromJson({RoutineLog? routineLog, required Map<String, dynamic> json}) {
+  factory ExerciseLogDto.fromJson({RoutineLogDto? routineLog, required Map<String, dynamic> json}) {
     final superSetId = json["superSetId"];
     final exerciseString = json["exercise"];
     final exercise = Exercise.fromJson(exerciseString);
     final notes = json["notes"];
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    final createdAt = routineLog?.createdAt ?? TemporalDateTime.now();
+    final createdAt = routineLog?.createdAt ?? DateTime.now();
     return ExerciseLogDto(const Uuid().v4(), routineLog, superSetId, exercise, notes, sets, createdAt);
   }
 

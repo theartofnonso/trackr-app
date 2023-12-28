@@ -11,6 +11,7 @@ import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart'
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../../../dtos/exercise_log_dto.dart';
+import '../../../dtos/routine_log_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
@@ -166,7 +167,7 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
 }
 
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
-  return log.createdAt.getDateTimeInUtc();
+  return log.createdAt;
 }
 
 /// Highest value across all [RoutineLogDto]
@@ -175,10 +176,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 }
 
-(RoutineLog?, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   SetDto heaviestSet = const SetDto(0, 0, false);
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     heaviestSet = pastLogs.first.sets.first;
     log = pastLogs.first.routineLog;
@@ -198,10 +199,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, heaviestSet.copyWith(value1: weight));
 }
 
-(RoutineLog?, SetDto) _lightestSet({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, SetDto) _lightestSet({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   SetDto lightestSet = const SetDto(0, 0, false);
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     lightestSet = pastLogs.first.sets.first;
     log = pastLogs.first.routineLog;
@@ -221,10 +222,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, lightestSet.copyWith(value1: weight));
 }
 
-(RoutineLog?, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   double heaviestWeight = 0;
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     heaviestWeight = pastLogs.first.sets.first.value1.toDouble();
     log = pastLogs.first.routineLog;
@@ -241,10 +242,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, heaviestWeight);
 }
 
-(RoutineLog?, double) _lightestWeight({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, double) _lightestWeight({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   double lightestWeight = 0;
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     lightestWeight = pastLogs.first.sets.first.value1.toDouble();
     log = pastLogs.first.routineLog;
@@ -261,10 +262,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, lightestWeight);
 }
 
-(RoutineLog?, int) _highestReps({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, int) _highestReps({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   int highestReps = 0;
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     highestReps = pastLogs.first.sets.first.value2.toInt();
     log = pastLogs.first.routineLog;
@@ -279,10 +280,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, highestReps);
 }
 
-(RoutineLog?, int) _totalReps({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, int) _totalReps({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   int mostReps = 0;
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     mostReps = pastLogs.first.sets.first.value2.toInt();
     log = pastLogs.first.routineLog;
@@ -297,10 +298,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, mostReps);
 }
 
-(RoutineLog?, Duration) _longestDuration({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, Duration) _longestDuration({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   Duration longestDuration = Duration.zero;
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     longestDuration = Duration(milliseconds: pastLogs.first.sets.first.value1.toInt());
     log = pastLogs.first.routineLog;
@@ -315,10 +316,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (log, longestDuration);
 }
 
-(RoutineLog?, double) _longestDistance({required BuildContext context, required Exercise exercise}) {
+(RoutineLogDto?, double) _longestDistance({required BuildContext context, required Exercise exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   double longestDistance = 0;
-  RoutineLog? log;
+  RoutineLogDto? log;
   if (pastLogs.isNotEmpty) {
     longestDistance = pastLogs.first.sets.first.value2.toDouble();
     log = pastLogs.first.routineLog;

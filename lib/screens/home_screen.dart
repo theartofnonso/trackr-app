@@ -11,6 +11,7 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
+import '../dtos/routine_log_dto.dart';
 import '../models/RoutineLog.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      RoutineLog? log = cachedRoutineLog();
+      RoutineLogDto? log = cachedRoutineLog();
       if (log != null) {
         navigateToRoutineLogEditor(context: context, log: log);
       }
@@ -91,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
     if(mounted) {
-      loadAppData(context);
+      loadAppData(context: context);
       _loadCachedLog();
     }
   }

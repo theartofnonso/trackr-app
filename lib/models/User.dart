@@ -19,6 +19,7 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
+import '../dtos/routine_log_dto.dart';
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
@@ -88,14 +89,14 @@ class User extends amplify_core.Model {
   
   const User._internal({required this.id, name, required email, exercises, templates, routineLogs, createdAt, updatedAt}): _name = name, _email = email, _exercises = exercises, _templates = templates, _routineLogs = routineLogs, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory User({String? id, String? name, required String email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLog>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory User({String? id, String? name, required String email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLogDto>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       email: email,
       exercises: exercises != null ? List<Exercise>.unmodifiable(exercises) : exercises,
       templates: templates != null ? List<RoutineTemplate>.unmodifiable(templates) : templates,
-      routineLogs: routineLogs != null ? List<RoutineLog>.unmodifiable(routineLogs) : routineLogs,
+      routineLogs: routineLogs != null ? List<RoutineLogDto>.unmodifiable(routineLogs) : routineLogs,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -136,7 +137,7 @@ class User extends amplify_core.Model {
     return buffer.toString();
   }
   
-  User copyWith({String? name, String? email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLog>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  User copyWith({String? name, String? email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLogDto>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id,
       name: name ?? this.name,
@@ -153,7 +154,7 @@ class User extends amplify_core.Model {
     ModelFieldValue<String>? email,
     ModelFieldValue<List<Exercise>?>? exercises,
     ModelFieldValue<List<RoutineTemplate>?>? templates,
-    ModelFieldValue<List<RoutineLog>?>? routineLogs,
+    ModelFieldValue<List<RoutineLogDto>?>? routineLogs,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {

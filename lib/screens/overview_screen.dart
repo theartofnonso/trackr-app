@@ -7,7 +7,7 @@ import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../models/RoutineLog.dart';
+import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
@@ -26,23 +26,23 @@ class OverviewScreen extends StatelessWidget {
   }
 
   void _logEmptyRoutine(BuildContext context) async {
-
     final user = Provider.of<UserProvider>(context, listen: false).user;
-    if(user == null) {
+    if (user == null) {
       return;
     }
 
     final log = cachedRoutineLog();
     if (log == null) {
-      final log = RoutineLog(
-          user: user,
+      final log = RoutineLogDto(
+          id: "",
+          templateId: "",
           name: "${timeOfDay()} Session",
           exerciseLogs: [],
           notes: "",
-          startTime: TemporalDateTime.now(),
-          endTime: TemporalDateTime.now(),
-          createdAt: TemporalDateTime.now(),
-          updatedAt: TemporalDateTime.now());
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
       navigateToRoutineLogEditor(context: context, log: log);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
@@ -82,7 +82,7 @@ class OverviewScreen extends StatelessWidget {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => loadAppData(context),
+        onRefresh: () => loadAppData(context: context),
         child: SafeArea(
           child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 150),

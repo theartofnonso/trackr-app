@@ -10,6 +10,7 @@ import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
+import '../../../dtos/routine_log_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../providers/routine_log_provider.dart';
@@ -32,14 +33,14 @@ enum SummaryType {
 }
 
 class ExerciseChartScreen extends StatefulWidget {
-  final (RoutineLog?, double) heaviestWeight;
-  final (RoutineLog?, double) lightestWeight;
-  final (RoutineLog?, SetDto) heaviestSet;
-  final (RoutineLog?, SetDto) lightestSet;
-  final (RoutineLog?, Duration) longestDuration;
-  final (RoutineLog?, double) longestDistance;
-  final (RoutineLog?, int) mostRepsSet;
-  final (RoutineLog?, int) mostRepsSession;
+  final (RoutineLogDto?, double) heaviestWeight;
+  final (RoutineLogDto?, double) lightestWeight;
+  final (RoutineLogDto?, SetDto) heaviestSet;
+  final (RoutineLogDto?, SetDto) lightestSet;
+  final (RoutineLogDto?, Duration) longestDuration;
+  final (RoutineLogDto?, double) longestDistance;
+  final (RoutineLogDto?, int) mostRepsSet;
+  final (RoutineLogDto?, int) mostRepsSession;
   final Exercise exercise;
 
   const ExerciseChartScreen(
@@ -193,7 +194,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .exerciseLogsWhereDateRange(range: thisYear, exercise: widget.exercise)
         .toList();
 
-    _dateTimes = _exerciseLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+    _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 
     switch (_summaryType) {
       case SummaryType.weight:
@@ -229,7 +230,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
-  void _navigateTo({required RoutineLog? routineLog}) {
+  void _navigateTo({required RoutineLogDto? routineLog}) {
     if (routineLog != null) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));

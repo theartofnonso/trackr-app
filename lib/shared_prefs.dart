@@ -32,13 +32,6 @@ class SharedPrefs {
     _sharedPrefs?.setString(cachedRoutineLogKey, value);
   }
 
-  /// RoutineLogs that are yet to be updated
-  final String cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
-  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(cachedPendingRoutineLogsKey) ?? <String>[];
-  set cachedPendingRoutineLogs(List<String> value) {
-    _sharedPrefs?.setStringList(cachedPendingRoutineLogsKey, value);
-  }
-
   /// Weight Unit Type
   final String _weightUnitKey = "weight_unit_type_key";
   String get weightUnit => _sharedPrefs?.getString(_weightUnitKey) ?? WeightUnit.kg.name;

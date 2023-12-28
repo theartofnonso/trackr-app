@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
-import '../../../providers/routine_provider.dart';
+import '../../../providers/routine_template_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../dtos/routine_template_dto.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import 'helper_utils.dart';
@@ -25,7 +25,7 @@ class RoutinesScreen extends StatelessWidget {
             child: const Icon(Icons.add, size: 28),
           ),
           body: RefreshIndicator(
-            onRefresh: () => loadAppData(context),
+            onRefresh: () => loadAppData(context: context),
             child: SafeArea(
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
@@ -48,7 +48,7 @@ class RoutinesScreen extends StatelessWidget {
 }
 
 class _RoutineWidget extends StatelessWidget {
-  final RoutineTemplate template;
+  final RoutineTemplateDto template;
 
   const _RoutineWidget({required this.template});
 

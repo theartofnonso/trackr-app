@@ -21,7 +21,6 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
-import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the RoutineTemplate type in your schema. */
@@ -29,12 +28,7 @@ class RoutineTemplate extends amplify_core.Model {
   static const classType = const _RoutineTemplateModelType();
   final String id;
   final User? _user;
-  final String? _name;
-  final List<String>? _exercises;
-  final String? _notes;
-  final amplify_core.TemporalDateTime? _startTime;
-  final amplify_core.TemporalDateTime? _endTime;
-  final List<RoutineLog>? _logs;
+  final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -64,9 +58,9 @@ class RoutineTemplate extends amplify_core.Model {
     }
   }
   
-  String get name {
+  String get data {
     try {
-      return _name!;
+      return _data!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -75,44 +69,6 @@ class RoutineTemplate extends amplify_core.Model {
           underlyingException: e.toString()
           );
     }
-  }
-  
-  List<String> get exercises {
-    try {
-      return _exercises!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
-  }
-  
-  String get notes {
-    try {
-      return _notes!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
-  }
-  
-  amplify_core.TemporalDateTime? get startTime {
-    return _startTime;
-  }
-  
-  amplify_core.TemporalDateTime? get endTime {
-    return _endTime;
-  }
-  
-  List<RoutineLog>? get logs {
-    return _logs;
   }
   
   amplify_core.TemporalDateTime get createdAt {
@@ -141,18 +97,13 @@ class RoutineTemplate extends amplify_core.Model {
     }
   }
   
-  const RoutineTemplate._internal({required this.id, required user, required name, required exercises, required notes, startTime, endTime, logs, required createdAt, required updatedAt}): _user = user, _name = name, _exercises = exercises, _notes = notes, _startTime = startTime, _endTime = endTime, _logs = logs, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineTemplate._internal({required this.id, required user, required data, required createdAt, required updatedAt}): _user = user, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineTemplate({String? id, required User user, required String name, required List<String> exercises, required String notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, List<RoutineLog>? logs, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineTemplate({String? id, required User user, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineTemplate._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user: user,
-      name: name,
-      exercises: exercises != null ? List<String>.unmodifiable(exercises) : exercises,
-      notes: notes,
-      startTime: startTime,
-      endTime: endTime,
-      logs: logs != null ? List<RoutineLog>.unmodifiable(logs) : logs,
+      data: data,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -167,12 +118,7 @@ class RoutineTemplate extends amplify_core.Model {
     return other is RoutineTemplate &&
       id == other.id &&
       _user == other._user &&
-      _name == other._name &&
-      DeepCollectionEquality().equals(_exercises, other._exercises) &&
-      _notes == other._notes &&
-      _startTime == other._startTime &&
-      _endTime == other._endTime &&
-      DeepCollectionEquality().equals(_logs, other._logs) &&
+      _data == other._data &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -187,11 +133,7 @@ class RoutineTemplate extends amplify_core.Model {
     buffer.write("RoutineTemplate {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
-    buffer.write("name=" + "$_name" + ", ");
-    buffer.write("exercises=" + (_exercises != null ? _exercises!.toString() : "null") + ", ");
-    buffer.write("notes=" + "$_notes" + ", ");
-    buffer.write("startTime=" + (_startTime != null ? _startTime!.format() : "null") + ", ");
-    buffer.write("endTime=" + (_endTime != null ? _endTime!.format() : "null") + ", ");
+    buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -199,40 +141,25 @@ class RoutineTemplate extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineTemplate copyWith({User? user, String? name, List<String>? exercises, String? notes, amplify_core.TemporalDateTime? startTime, amplify_core.TemporalDateTime? endTime, List<RoutineLog>? logs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineTemplate copyWith({User? user, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineTemplate._internal(
       id: id,
       user: user ?? this.user,
-      name: name ?? this.name,
-      exercises: exercises ?? this.exercises,
-      notes: notes ?? this.notes,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
-      logs: logs ?? this.logs,
+      data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
   RoutineTemplate copyWithModelFieldValues({
     ModelFieldValue<User>? user,
-    ModelFieldValue<String>? name,
-    ModelFieldValue<List<String>?>? exercises,
-    ModelFieldValue<String>? notes,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? startTime,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? endTime,
-    ModelFieldValue<List<RoutineLog>?>? logs,
+    ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
     return RoutineTemplate._internal(
       id: id,
       user: user == null ? this.user : user.value,
-      name: name == null ? this.name : name.value,
-      exercises: exercises == null ? this.exercises : exercises.value,
-      notes: notes == null ? this.notes : notes.value,
-      startTime: startTime == null ? this.startTime : startTime.value,
-      endTime: endTime == null ? this.endTime : endTime.value,
-      logs: logs == null ? this.logs : logs.value,
+      data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
@@ -243,33 +170,18 @@ class RoutineTemplate extends amplify_core.Model {
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
-      _name = json['name'],
-      _exercises = json['exercises']?.cast<String>(),
-      _notes = json['notes'],
-      _startTime = json['startTime'] != null ? amplify_core.TemporalDateTime.fromString(json['startTime']) : null,
-      _endTime = json['endTime'] != null ? amplify_core.TemporalDateTime.fromString(json['endTime']) : null,
-      _logs = json['logs'] is List
-        ? (json['logs'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => RoutineLog.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
+      _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'name': _name, 'exercises': _exercises, 'notes': _notes, 'startTime': _startTime?.format(), 'endTime': _endTime?.format(), 'logs': _logs?.map((RoutineLog? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'user': _user,
-    'name': _name,
-    'exercises': _exercises,
-    'notes': _notes,
-    'startTime': _startTime,
-    'endTime': _endTime,
-    'logs': _logs,
+    'data': _data,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -279,14 +191,7 @@ class RoutineTemplate extends amplify_core.Model {
   static final USER = amplify_core.QueryField(
     fieldName: "user",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
-  static final NAME = amplify_core.QueryField(fieldName: "name");
-  static final EXERCISES = amplify_core.QueryField(fieldName: "exercises");
-  static final NOTES = amplify_core.QueryField(fieldName: "notes");
-  static final STARTTIME = amplify_core.QueryField(fieldName: "startTime");
-  static final ENDTIME = amplify_core.QueryField(fieldName: "endTime");
-  static final LOGS = amplify_core.QueryField(
-    fieldName: "logs",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'RoutineLog'));
+  static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -326,41 +231,9 @@ class RoutineTemplate extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.NAME,
+      key: RoutineTemplate.DATA,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.EXERCISES,
-      isRequired: true,
-      isArray: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.NOTES,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.STARTTIME,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: RoutineTemplate.ENDTIME,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
-      key: RoutineTemplate.LOGS,
-      isRequired: false,
-      ofModelName: 'RoutineLog',
-      associatedKey: RoutineLog.TEMPLATE
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

@@ -1,19 +1,27 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'dart:convert';
+
 import 'package:tracker_app/models/ModelProvider.dart';
+
+import '../dtos/exercise_log_dto.dart';
+import '../dtos/routine_template_dto.dart';
 
 extension RoutineExtension on RoutineTemplate {
 
-  RoutineLog log() {
-    return RoutineLog(
-        user: user,
-        name: name,
-        exerciseLogs: exercises,
-        notes: notes,
-        template: this,
-        startTime: TemporalDateTime.now(),
-        endTime: TemporalDateTime.now(),
-        createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now());
+  RoutineTemplateDto dto() {
+    final dataJson = jsonDecode(data);
+
+    final name = dataJson["name"];
+    final notes = dataJson["notes"];
+    final exercises = dataJson["exercise"].map((exerciseLog) => ExerciseLogDto.fromJson(json: exerciseLog)).toList();
+
+    return RoutineTemplateDto(
+      id: id,
+      name: name,
+      exercises: exercises,
+      notes: notes,
+      createdAt: createdAt.getDateTimeInUtc(),
+      updatedAt: updatedAt.getDateTimeInUtc(),
+    );
   }
 
 }

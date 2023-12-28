@@ -46,7 +46,7 @@ class RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(exerciseLog.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
+              Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
                   style: GoogleFonts.lato(
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
             ]),

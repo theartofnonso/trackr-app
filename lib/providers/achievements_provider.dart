@@ -1,15 +1,13 @@
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/progress_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 
 import '../dtos/exercise_log_dto.dart';
+import '../dtos/routine_log_dto.dart';
 import '../enums/achievement_type_enums.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
@@ -68,15 +66,15 @@ ProgressDto generateProgress<T>(
 }
 
 /// Date Extractors
-DateTime dateExtractorForExerciseLog(ExerciseLogDto log) => log.createdAt.getDateTimeInUtc().localDate();
+DateTime dateExtractorForExerciseLog(ExerciseLogDto log) => log.createdAt.localDate();
 
-DateTime dateExtractorForRoutineLog(RoutineLog log) => log.createdAt.getDateTimeInUtc().localDate();
+DateTime dateExtractorForRoutineLog(RoutineLogDto log) => log.createdAt.localDate();
 
 /// [AchievementType.days12]
 /// [AchievementType.days30]
 /// [AchievementType.days75]
 /// [AchievementType.days100]
-ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required AchievementType type}) {
+ProgressDto _calculateDaysAchievement({required List<RoutineLogDto> logs, required AchievementType type}) {
   final achievedLogs = logs.take(type.target);
 
   final progress = achievedLogs.length / type.target;
@@ -87,13 +85,12 @@ ProgressDto _calculateDaysAchievement({required List<RoutineLog> logs, required 
 }
 
 /// [AchievementType.supersetSpecialist]
-ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> logs}) {
+ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLogDto> logs}) {
   int target = 20;
 
   // Count RoutineLogs with at least two exercises that have a non-null superSetId
   final achievedLogs = logs.where((log) {
     var exercisesWithSuperSetId = log.exerciseLogs
-        .map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json)))
         .where((exerciseLog) => exerciseLog.superSetId.isNotEmpty)
         .length;
 
@@ -109,8 +106,8 @@ ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLog> l
 
 /// [AchievementType.obsessed]
 List<DateTimeRange> _consecutiveDatesWhere(
-    {required Map<DateTimeRange, List<RoutineLog>> weekToRoutineLogs,
-    required bool Function(MapEntry<DateTimeRange, List<RoutineLog>> week) evaluation}) {
+    {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
+    required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation}) {
   List<DateTimeRange> dateRanges = [];
 
   for (var entry in weekToRoutineLogs.entries) {
@@ -133,10 +130,10 @@ List<DateTimeRange> _consecutiveDatesWhere(
 ProgressDto _consecutiveAchievementProgress(
     {required List<DateTimeRange> dateTimeRanges,
     required int target,
-    required Map<DateTimeRange, List<RoutineLog>> weekToLogs}) {
+    required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs}) {
   final achievedLogs = dateTimeRanges
-      .map((DateTimeRange range) => weekToLogs[range] ?? <RoutineLog>[])
-      .expand((List<RoutineLog> logs) => logs);
+      .map((DateTimeRange range) => weekToLogs[range] ?? <RoutineLogDto>[])
+      .expand((List<RoutineLogDto> logs) => logs);
 
   int remainder = target - dateTimeRanges.length;
 
@@ -147,17 +144,15 @@ ProgressDto _consecutiveAchievementProgress(
 }
 
 ProgressDto _calculateObsessedAchievement(
-    {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
+    {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
   final dateTimeRanges =
       _consecutiveDatesWhere(weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.isNotEmpty);
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
-bool _hasLegExercise(RoutineLog log) {
-  return log.exerciseLogs.any((procedure) {
-    final json = jsonDecode(procedure);
-    final exerciseString = json["exercise"];
-    final exercise = Exercise.fromJson(exerciseString);
+bool _hasLegExercise(RoutineLogDto log) {
+  return log.exerciseLogs.any((exerciseLog) {
+    final exercise = exerciseLog.exercise;
     final muscleGroup = MuscleGroup.fromString(exercise.primaryMuscle);
     return muscleGroup.family == MuscleGroupFamily.legs;
   });
@@ -165,31 +160,31 @@ bool _hasLegExercise(RoutineLog log) {
 
 /// [AchievementType.neverSkipAMonday]
 ProgressDto _calculateNeverSkipALegDayAchievement(
-    {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
+    {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
   final dateTimeRanges = _consecutiveDatesWhere(
       weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _hasLegExercise(log)));
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
 /// [AchievementType.neverSkipAMonday]
-bool _loggedOnMonday(RoutineLog log) {
-  return log.createdAt.getDateTimeInUtc().weekday == 1;
+bool _loggedOnMonday(RoutineLogDto log) {
+  return log.createdAt.weekday == 1;
 }
 
 ProgressDto _calculateNeverSkipAMondayAchievement(
-    {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
+    {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
   final dateTimeRanges = _consecutiveDatesWhere(
       weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnMonday(log)));
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
 /// [AchievementType.weekendWarrior]
-bool _loggedOnWeekend(RoutineLog log) {
-  return log.createdAt.getDateTimeInUtc().weekday == 6 || log.createdAt.getDateTimeInUtc().weekday == 7;
+bool _loggedOnWeekend(RoutineLogDto log) {
+  return log.createdAt.weekday == 6 || log.createdAt.weekday == 7;
 }
 
 ProgressDto _calculateWeekendWarriorAchievement(
-    {required Map<DateTimeRange, List<RoutineLog>> weekToLogs, required int target}) {
+    {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
   final dateTimeRanges = _consecutiveDatesWhere(
       weekToRoutineLogs: weekToLogs,
       evaluation: (entry) => entry.value.where((log) => _loggedOnWeekend(log)).length == 2);
@@ -197,7 +192,7 @@ ProgressDto _calculateWeekendWarriorAchievement(
 }
 
 /// [AchievementType.sweatEquity]
-ProgressDto _calculateSweatEquityAchievement({required List<RoutineLog> logs, required int target}) {
+ProgressDto _calculateSweatEquityAchievement({required List<RoutineLogDto> logs, required int target}) {
   final targetHours = Duration(hours: target);
 
   final durations = logs.map((log) => log.duration());

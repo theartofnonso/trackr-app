@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/providers/routine_provider.dart';
+import 'package:tracker_app/providers/routine_template_provider.dart';
 
 import 'exercise_provider.dart';
 

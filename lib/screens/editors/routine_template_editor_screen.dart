@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,8 +8,10 @@ import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
+import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../providers/routine_provider.dart';
+import '../../providers/routine_template_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -21,7 +20,7 @@ import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
-  final RoutineTemplate? template;
+  final RoutineTemplateDto? template;
 
   const RoutineTemplateEditorScreen({super.key, this.template});
 
@@ -107,16 +106,28 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _createRoutineTemplate() async {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    if (user == null) {
+      return;
+    }
+
     if (!_validateRoutineTemplateInputs()) return;
     _toggleLoadingState();
     try {
-      await templateProvider.saveTemplate(
-          context: context,
-          name: _templateNameController.text.trim(),
-          notes: _templateNotesController.text.trim(),
-          procedures: procedureProvider.mergeSetsIntoExerciseLogs());
+
+      final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+      final exercises = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+
+      final template = RoutineTemplateDto(
+          id: "",
+          name: _templateNameController.text,
+          exercises: exercises,
+          notes: _templateNotesController.text,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
+
+      await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(context: context, templateDto: template);
       if (mounted) _navigateBack();
     } catch (e) {
       _handleRoutineTemplateCreationError("Unable to create workout");
@@ -144,7 +155,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
-  void _doUpdateRoutineTemplate({required RoutineTemplate template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
+  void _doUpdateRoutineTemplate(
+      {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs();
     final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
@@ -153,8 +165,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       final updatedRoutineTemplate = template.copyWith(
           name: _templateNameController.text.trim(),
           notes: _templateNotesController.text.trim(),
-          exercises: exerciseLogs.map((procedure) => procedure.toJson()).toList(),
-          updatedAt: TemporalDateTime.now());
+          exercises: exerciseLogs,
+          updatedAt: DateTime.now());
       await templateProvider.updateTemplate(template: updatedRoutineTemplate);
     } catch (e) {
       _handleRoutineTemplateCreationError("Unable to update workout");
@@ -165,8 +177,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final oldProcedures = widget.template?.exercises;
-    final exerciseLog1 = oldProcedures?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList() ?? [];
+    final exerciseLog1 = widget.template?.exercises ?? [];
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
     final unsavedChangesMessage =
         checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
@@ -330,15 +341,14 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _initializeProcedureData() {
-    final procedureJsons = widget.template?.exercises;
-    final procedures = procedureJsons?.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
-    if (procedures != null) {
-      Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
+    final exercises = widget.template?.exercises;
+    if (exercises != null && exercises.isNotEmpty) {
+      Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exercises);
     }
   }
 
   void _initializeTextControllers() {
-    RoutineTemplate? template = widget.template;
+    final template = widget.template;
     _templateNameController = TextEditingController(text: template?.name);
     _templateNotesController = TextEditingController(text: template?.notes);
   }

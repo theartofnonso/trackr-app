@@ -23,11 +23,10 @@ class ExerciseProvider with ChangeNotifier {
       required String notes,
       required MuscleGroup primary,
       required ExerciseType type,
-      required List<MuscleGroup> secondary}) async {
-    final users = await Amplify.DataStore.query(User.classType);
+      required List<MuscleGroup> secondary, required User user}) async {
 
     final exerciseToCreate = Exercise(
-        user: users.last,
+        user: user,
         name: name,
         primaryMuscle: primary.name,
         type: type.name,

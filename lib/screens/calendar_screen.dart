@@ -3,13 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/c_list_title.dart';
 
-import '../models/RoutineLog.dart';
+import '../dtos/routine_log_dto.dart';
 
 class _DateViewModel {
   DateTime dateTime;
@@ -306,7 +305,7 @@ class _CalenderDates extends StatelessWidget {
 }
 
 class _RoutineLogListView extends StatelessWidget {
-  final List<RoutineLog> logs;
+  final List<RoutineLogDto> logs;
 
   const _RoutineLogListView({required this.logs});
 
@@ -321,7 +320,7 @@ class _RoutineLogListView extends StatelessWidget {
 }
 
 class _RoutineLogWidget extends StatelessWidget {
-  final RoutineLog log;
+  final RoutineLogDto log;
 
   const _RoutineLogWidget({required this.log});
 

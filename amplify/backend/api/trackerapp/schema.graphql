@@ -31,12 +31,7 @@ type RoutineTemplate
   id: ID!
   userID: ID! @index(name: "byUser")
   user: User! @belongsTo(fields: ["userID"])
-  name: String!
-  exercises: [AWSJSON]!
-  notes: String!
-  startTime: AWSDateTime
-  endTime: AWSDateTime
-  logs: [RoutineLog] @hasMany(indexName: "byRoutineTemplate", fields: ["id"])
+  data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -52,13 +47,7 @@ type RoutineLog
   id: ID!
   userID: ID! @index(name: "byUser")
   user: User! @belongsTo(fields: ["userID"])
-  templateID: ID @index(name: "byRoutineTemplate")
-  template: RoutineTemplate @belongsTo(fields: ["templateID"])
-  name: String!
-  exerciseLogs: [AWSJSON]!
-  notes: String!
-  startTime: AWSDateTime!
-  endTime: AWSDateTime!
+  data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }

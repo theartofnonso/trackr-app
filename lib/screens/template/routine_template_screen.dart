@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
-import '../../../providers/routine_provider.dart';
+import '../../../providers/routine_template_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../dtos/exercise_log_view_model.dart';
@@ -82,14 +81,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       )
     ];
 
-    List<ExerciseLogDto> exerciseLogs =
-        template.exercises.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
+    List<ExerciseLogDto> exerciseLogs = template.exercises.map((exercise) {
       final exerciseFromLibrary =
-          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: exercise.exercise.id);
       if (exerciseFromLibrary != null) {
-        return procedure.copyWith(exercise: exerciseFromLibrary);
+        return exercise.copyWith(exercise: exerciseFromLibrary);
       }
-      return procedure;
+      return exercise;
     }).toList();
 
     return Scaffold(

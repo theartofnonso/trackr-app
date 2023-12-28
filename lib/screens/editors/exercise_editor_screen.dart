@@ -10,6 +10,7 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../models/Exercise.dart';
+import '../../providers/user_provider.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../exercise/exercise_type_screen.dart';
 
@@ -210,6 +211,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _createExercise() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    if (user == null) {
+      return;
+    }
+
     _toggleLoadingState();
     try {
       await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(
@@ -217,12 +224,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           notes: _exerciseNotesController.text.trim(),
           primary: _primaryMuscleGroup,
           type: _exerciseType,
-          secondary: _secondaryMuscleGroup);
+          secondary: _secondaryMuscleGroup,
+          user: user);
       if (mounted) {
         Navigator.of(context).pop();
       }
-    } catch (e) {
-      print(e);
+    } catch (_) {
       if (mounted) {
         showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
       }

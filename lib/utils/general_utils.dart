@@ -8,9 +8,10 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
+import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
+import '../providers/routine_template_provider.dart';
 import '../providers/user_provider.dart';
 import '../shared_prefs.dart';
 
@@ -159,7 +160,7 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
   return monthRanges;
 }
 
-Future<void> loadAppData(BuildContext context) async {
+Future<void> loadAppData({required BuildContext context}) async {
   final userProvider = Provider.of<UserProvider>(context, listen: false);
   final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
   final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
@@ -171,12 +172,12 @@ Future<void> loadAppData(BuildContext context) async {
   logProvider.listLogs();
 }
 
-RoutineLog? cachedRoutineLog() {
-  RoutineLog? routineLog;
+RoutineLogDto? cachedRoutineLog() {
+  RoutineLogDto? routineLog;
   final cache = SharedPrefs().cachedRoutineLog;
   if (cache.isNotEmpty) {
     final json = jsonDecode(cache);
-    routineLog = RoutineLog.fromJson(json);
+    routineLog = RoutineLogDto.fromJson(json);
   }
   return routineLog;
 }

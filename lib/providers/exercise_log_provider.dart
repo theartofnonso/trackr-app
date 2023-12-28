@@ -1,5 +1,4 @@
 
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
@@ -20,7 +19,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
-  void loadExerciseLogs({required List<ExerciseLogDto> logs, bool shouldNotifyListeners = false}) {
+  void loadExercises({required List<ExerciseLogDto> logs, bool shouldNotifyListeners = false}) {
     _exerciseLogs = logs;
     _loadSets();
     if (shouldNotifyListeners) {
@@ -256,7 +255,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(Exercise exercise, {String? notes}) {
-    return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], TemporalDateTime.now());
+    return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], DateTime.now());
   }
 
   List<SetDto> completedSets() {

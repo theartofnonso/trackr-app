@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -20,12 +16,15 @@ import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../dtos/exercise_log_view_model.dart';
-import '../providers/routine_provider.dart';
+import '../dtos/routine_log_dto.dart';
+import '../dtos/routine_template_dto.dart';
+import '../providers/routine_template_provider.dart';
+import '../providers/user_provider.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
-  final RoutineLog log;
+  final RoutineLogDto log;
   final String previousRouteName;
   final bool finishedLogging;
 
@@ -40,33 +39,24 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
   String _loadingMessage = "";
 
-  bool _isLatestLogForTemplate = false;
-
   @override
   Widget build(BuildContext context) {
     Provider.of<ExerciseProvider>(context, listen: true);
     final log = widget.log;
 
-    List<ExerciseLogDto> exerciseLogs =
-        log.exerciseLogs.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
-      final exerciseFromLibrary =
-          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+    List<ExerciseLogDto> exerciseLogs = log.exerciseLogs.map((exerciseLog) {
+      final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false)
+          .whereExerciseOrNull(exerciseId: exerciseLog.exercise.id);
       if (exerciseFromLibrary != null) {
-        return procedure.copyWith(exercise: exerciseFromLibrary);
+        return exerciseLog.copyWith(exercise: exerciseFromLibrary);
       }
-      return procedure;
+      return exerciseLog;
     }).toList();
 
     final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
     final menuActions = [
-      _isLatestLogForTemplate
-          ? MenuItemButton(
-              onPressed: _checkForTemplateUpdates,
-              child: const Text("Update template"),
-            )
-          : const SizedBox.shrink(),
       MenuItemButton(
         onPressed: () {
           _toggleLoadingState(message: "Creating template from log");
@@ -154,7 +144,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
+                        Text(log.createdAt.formattedDayAndMonthAndYear(),
                             style: GoogleFonts.lato(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
@@ -164,7 +154,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(log.endTime.getDateTimeInUtc().formattedTime(),
+                        Text(log.endTime.formattedTime(),
                             style: GoogleFonts.lato(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
@@ -254,19 +244,29 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _createTemplate() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    if (user == null) {
+      return;
+    }
+
     final log = widget.log;
     try {
-      final decodedProcedures = log.exerciseLogs.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)));
-      final procedures = decodedProcedures.map((procedure) {
-        final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
-        return procedure.copyWith(sets: newSets);
+      final exercises = log.exerciseLogs.map((exerciseLog) {
+        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: newSets);
       }).toList();
+      final templateToCreate = RoutineTemplateDto(
+          id: "",
+          name: log.name,
+          notes: log.notes,
+          exercises: exercises,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
       final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false)
-          .saveTemplate(context: context, name: log.name, notes: log.notes, procedures: procedures);
-      if (createdTemplate != null) {
-        if (mounted) {
-          navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
-        }
+          .saveTemplate(context: context, templateDto: templateToCreate);
+      if (mounted) {
+        navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
       }
     } catch (_) {
       if (mounted) {
@@ -281,26 +281,18 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _updateTemplate() async {
     _toggleLoadingState(message: "Updating template from log");
 
-    final log = widget.log;
     try {
-      final routineId = log.template?.id;
-      if (routineId != null) {
-        final routineToUpdate =
-            Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: routineId);
-        if (routineToUpdate != null) {
-          final exerciseLogJsons = log.exerciseLogs
-              .map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)))
-              .map((exerciseLog) {
-                final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-                return exerciseLog.copyWith(sets: newSets);
-              })
-              .map((exerciseLog) => exerciseLog.toJson())
-              .toList();
-          await Provider.of<RoutineTemplateProvider>(context, listen: false)
-              .updateTemplate(template: routineToUpdate.copyWith(exercises: exerciseLogJsons));
-          if (mounted) {
-            navigateToRoutinePreview(context: context, templateId: routineId);
-          }
+      final templateToUpdate =
+          Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+      if (templateToUpdate != null) {
+        final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+          final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+          return exerciseLog.copyWith(sets: newSets);
+        }).toList();
+        await Provider.of<RoutineTemplateProvider>(context, listen: false)
+            .updateTemplate(template: templateToUpdate.copyWith(exercises: exerciseLogs));
+        if (mounted) {
+          navigateToRoutinePreview(context: context, templateId: templateToUpdate.id);
         }
       }
     } catch (_) {
@@ -330,29 +322,19 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _checkForTemplateUpdates() {
-    _isLatestLogForTemplate = widget.finishedLogging ||
-        Provider.of<RoutineLogProvider>(context, listen: false)
-            .isLatestLogForTemplate(templateId: widget.log.template?.id ?? "", logId: widget.log.id);
-    if (!_isLatestLogForTemplate) {
+    final templateId = widget.log.templateId;
+    if (templateId.isEmpty) {
       return;
     }
 
-    final routine = widget.log.template;
-    if (routine == null) {
-      return;
-    }
-
-    final routineTemplate = Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: routine.id);
+    final routineTemplate = Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: templateId);
     if (routineTemplate == null) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final routineTemplateExerciseLogs =
-          routineTemplate.exercises.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
-      final exerciseLog1 = routineTemplateExerciseLogs;
-      final exerciseLog2 =
-          widget.log.exerciseLogs.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+      final exerciseLog1 = routineTemplate.exercises;
+      final exerciseLog2 = widget.log.exerciseLogs;
       final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
@@ -371,7 +353,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   @override
   void initState() {
     super.initState();
-    _checkForTemplateUpdates();
+
+    if (widget.finishedLogging) {
+      _checkForTemplateUpdates();
+    }
   }
 }
 
