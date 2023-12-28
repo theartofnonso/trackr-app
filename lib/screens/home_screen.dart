@@ -41,8 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                   width: double.infinity,
                   height: double.infinity,
-                  color: tealBlueDark.withOpacity(0.7),
-                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
+                  color: tealBlueDark.withOpacity(0.95),
+                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 16)))))
       ]),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
@@ -125,15 +125,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _restartDataStore() async {
     try {
       await Amplify.DataStore.stop();
+      print('DataStore Stopped');
     } catch (error) {
       print('Error stopping DataStore: $error');
     }
 
     try {
       await Amplify.DataStore.start();
+      print('DataStore started');
     } on Exception catch (error) {
       print('Error starting DataStore: $error');
     }
+
   }
 
   @override
