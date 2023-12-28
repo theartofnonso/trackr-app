@@ -139,12 +139,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ],
           ),
         ),
-        Container(
-          color: tealBlueDark,
-          height: 15,
-        ),
-        _CalendarHeader(),
+        // Container(
+        //   color: tealBlueDark,
+        //   height: 15,
+        // ),
+        //_CalendarHeader(),
         _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
+        const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
         if (logs.isEmpty)
           Column(
@@ -179,7 +180,7 @@ class _CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-                    width: 40,
+                    width: 45,
                     child: Center(
                       child: Text(day,
                           style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -203,13 +204,13 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return Colors.green;
     }
-    return Colors.transparent;
+    return Colors.green.withOpacity(0.1);
   }
 
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
     if (selectedDate.isSameDateAs(dateTime)) {
-      return Border.all(color: Colors.green, width: 2.0);
+      return Border.all(color: Colors.white70, width: 2.0);
     } else {
       return null;
     }
@@ -217,9 +218,9 @@ class _DateWidget extends StatelessWidget {
 
   Color _getTextColor(bool hasLog) {
     if (hasLog) {
-      return tealBlueDark;
+      return Colors.transparent;
     }
-    return Colors.white70;
+    return Colors.transparent;
   }
 
   FontWeight? _getFontWeight() {
@@ -233,10 +234,11 @@ class _DateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
     return InkWell(
+      splashColor: Colors.transparent,
       onTap: () => onTap(dateTime),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         decoration: BoxDecoration(
           border: _getBorder(),
           borderRadius: BorderRadius.circular(5),
@@ -271,7 +273,7 @@ class _CalenderDates extends StatelessWidget {
 
     final datesWidgets = dates.map((date) {
       if (date == null) {
-        return const SizedBox(width: 40, height: 40);
+        return const SizedBox(width: 45, height: 45);
       } else {
         return _DateWidget(
           dateTime: date.dateTime,
