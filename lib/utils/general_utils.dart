@@ -119,7 +119,7 @@ List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
   List<DateTimeRange> weekRanges = [];
 
   // Find the first day of the week for the given start date
-  startDate = startDate.subtract(Duration(days: startDate.weekday - 1)).toLocal();
+  startDate = startDate.localDate().subtract(Duration(days: startDate.weekday - 1));
 
   while (startDate.isBefore(lastDayOfCurrentWeek)) {
     DateTime endDate = startDate.add(const Duration(days: 6));
