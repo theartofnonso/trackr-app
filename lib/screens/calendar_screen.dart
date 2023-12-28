@@ -204,7 +204,7 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return Colors.green;
     }
-    return Colors.green.withOpacity(0.1);
+    return tealBlueLight.withOpacity(0.5);
   }
 
   Border? _getBorder() {
