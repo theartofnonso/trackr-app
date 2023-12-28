@@ -11,7 +11,6 @@ type User
         ]
      ) {
   id: ID!
-  name: String
   email: AWSEmail!
   exercises: [Exercise] @hasMany(indexName: "byUser", fields: ["id"])
   templates: [RoutineTemplate] @hasMany(indexName: "byUser", fields: ["id"])
@@ -30,7 +29,6 @@ type RoutineTemplate
      ) {
   id: ID!
   userID: ID! @index(name: "byUser")
-  user: User! @belongsTo(fields: ["userID"])
   data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -46,7 +44,6 @@ type RoutineLog
      ) {
   id: ID!
   userID: ID! @index(name: "byUser")
-  user: User! @belongsTo(fields: ["userID"])
   data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -61,7 +58,6 @@ type Exercise
      ) {
   id: ID!
   userID: ID! @index(name: "byUser")
-  user: User! @belongsTo(fields: ["userID"])
   name: String!
   primaryMuscle: String!
   secondaryMuscles: [String]!

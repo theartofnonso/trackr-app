@@ -11,7 +11,6 @@ import '../../app_constants.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_template_provider.dart';
-import '../../providers/user_provider.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -106,11 +105,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _createRoutineTemplate() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-
-    if (user == null) {
-      return;
-    }
 
     if (!_validateRoutineTemplateInputs()) return;
     _toggleLoadingState();
@@ -127,7 +121,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(user: user, templateDto: template);
+      await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: template);
       if (mounted) _navigateBack();
     } catch (e) {
       print(e);

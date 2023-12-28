@@ -27,7 +27,7 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 class RoutineLog extends amplify_core.Model {
   static const classType = const _RoutineLogModelType();
   final String id;
-  final User? _user;
+  final String? _userID;
   final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -45,9 +45,9 @@ class RoutineLog extends amplify_core.Model {
       );
   }
   
-  User get user {
+  String get userID {
     try {
-      return _user!;
+      return _userID!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -97,12 +97,12 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, required user, required data, required createdAt, required updatedAt}): _user = user, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineLog._internal({required this.id, required userID, required data, required createdAt, required updatedAt}): _userID = userID, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineLog({String? id, required User user, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineLog({String? id, required String userID, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      user: user,
+      userID: userID,
       data: data,
       createdAt: createdAt,
       updatedAt: updatedAt);
@@ -117,7 +117,7 @@ class RoutineLog extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is RoutineLog &&
       id == other.id &&
-      _user == other._user &&
+      _userID == other._userID &&
       _data == other._data &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
@@ -132,7 +132,7 @@ class RoutineLog extends amplify_core.Model {
     
     buffer.write("RoutineLog {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
+    buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -141,24 +141,24 @@ class RoutineLog extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineLog copyWith({User? user, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineLog copyWith({String? userID, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineLog._internal(
       id: id,
-      user: user ?? this.user,
+      userID: userID ?? this.userID,
       data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
   RoutineLog copyWithModelFieldValues({
-    ModelFieldValue<User>? user,
+    ModelFieldValue<String>? userID,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
     return RoutineLog._internal(
       id: id,
-      user: user == null ? this.user : user.value,
+      userID: userID == null ? this.userID : userID.value,
       data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
@@ -167,20 +167,18 @@ class RoutineLog extends amplify_core.Model {
   
   RoutineLog.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _user = json['user']?['serializedData'] != null
-        ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
-        : null,
+      _userID = json['userID'],
       _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'userID': _userID, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
-    'user': _user,
+    'userID': _userID,
     'data': _data,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
@@ -188,9 +186,7 @@ class RoutineLog extends amplify_core.Model {
 
   static final amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
-  static final USER = amplify_core.QueryField(
-    fieldName: "user",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'User'));
+  static final USERID = amplify_core.QueryField(fieldName: "userID");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
@@ -223,11 +219,10 @@ class RoutineLog extends amplify_core.Model {
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
-      key: RoutineLog.USER,
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: RoutineLog.USERID,
       isRequired: true,
-      targetNames: ['userID'],
-      ofModelName: 'User'
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

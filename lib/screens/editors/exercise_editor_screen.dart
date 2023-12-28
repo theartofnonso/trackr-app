@@ -10,7 +10,6 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../models/Exercise.dart';
-import '../../providers/user_provider.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../exercise/exercise_type_screen.dart';
 
@@ -211,11 +210,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _createExercise() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-
-    if (user == null) {
-      return;
-    }
 
     _toggleLoadingState();
     try {
@@ -224,8 +218,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           notes: _exerciseNotesController.text.trim(),
           primary: _primaryMuscleGroup,
           type: _exerciseType,
-          secondary: _secondaryMuscleGroup,
-          user: user);
+          secondary: _secondaryMuscleGroup);
       if (mounted) {
         Navigator.of(context).pop();
       }

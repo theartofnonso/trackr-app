@@ -1,9 +1,7 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
@@ -26,11 +24,6 @@ class OverviewScreen extends StatelessWidget {
   }
 
   void _logEmptyRoutine(BuildContext context) async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (user == null) {
-      return;
-    }
-
     final log = cachedRoutineLog();
     if (log == null) {
       final log = RoutineLogDto(

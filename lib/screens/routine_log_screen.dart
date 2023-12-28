@@ -19,7 +19,6 @@ import '../dtos/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../providers/routine_template_provider.dart';
-import '../providers/user_provider.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
 
@@ -244,12 +243,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _createTemplate() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-
-    if (user == null) {
-      return;
-    }
-
     final log = widget.log;
     try {
       final exercises = log.exerciseLogs.map((exerciseLog) {
@@ -263,8 +256,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false)
-          .saveTemplate(user: user, templateDto: templateToCreate);
+      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: templateToCreate);
       if (mounted) {
         navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
       }

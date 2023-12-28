@@ -108,10 +108,10 @@ class RoutineLogProvider with ChangeNotifier {
     _loadMonthToLogs();
   }
 
-  Future<RoutineLogDto> saveRoutineLog({required User user, required RoutineLogDto logDto}) async {
+  Future<RoutineLogDto> saveRoutineLog({required RoutineLogDto logDto}) async {
     final now = TemporalDateTime.now();
 
-    final logToCreate = RoutineLog(user: user, data: jsonEncode(logDto), createdAt: now, updatedAt: now);
+    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userID: SharedPrefs().userId);
 
     await Amplify.DataStore.save(logToCreate);
     _logs.add(logDto);

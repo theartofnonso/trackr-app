@@ -15,11 +15,9 @@ import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/providers/routine_template_provider.dart';
-import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
@@ -43,9 +41,6 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (BuildContext context) => UserProvider(),
-      ),
       ChangeNotifierProvider<ExerciseProvider>(
         create: (BuildContext context) => ExerciseProvider(),
       ),
@@ -80,13 +75,12 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
 
-    final user = cachedUser();
+    final userId = SharedPrefs().userId;
 
     final syncExpressions = [
-      DataStoreSyncExpression(User.classType, () => User.ID.eq(user?.id)),
-      DataStoreSyncExpression(Exercise.classType, () => Exercise.USER.eq(user?.id)),
-      DataStoreSyncExpression(RoutineTemplate.classType, () => RoutineTemplate.USER.eq(user?.id)),
-      DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.USER.eq(user?.id)),
+      DataStoreSyncExpression(Exercise.classType, () => Exercise.USERID.eq(userId)),
+      DataStoreSyncExpression(RoutineTemplate.classType, () => RoutineTemplate.USERID.eq(userId)),
+      DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.USERID.eq(userId)),
     ];
 
     try {

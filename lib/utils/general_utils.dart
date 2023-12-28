@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_template_provider.dart';
-import '../providers/user_provider.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
@@ -161,15 +159,11 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
 }
 
 Future<void> loadAppData({required BuildContext context}) async {
-  final userProvider = Provider.of<UserProvider>(context, listen: false);
-  final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
-  final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
-  final logProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-
-  userProvider.fetchUser();
-  await exerciseProvider.listExercises();
-  templateProvider.listTemplates();
-  logProvider.listLogs();
+  await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+  if(context.mounted) {
+    Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
+    Provider.of<RoutineLogProvider>(context, listen: false).listLogs();
+  }
 }
 
 RoutineLogDto? cachedRoutineLog() {
@@ -180,16 +174,6 @@ RoutineLogDto? cachedRoutineLog() {
     routineLog = RoutineLogDto.fromJson(json);
   }
   return routineLog;
-}
-
-User? cachedUser() {
-  User? user;
-  final cache = SharedPrefs().user;
-  if (cache.isNotEmpty) {
-    final json = jsonDecode(cache);
-    user = User.fromJson(json);
-  }
-  return user;
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {

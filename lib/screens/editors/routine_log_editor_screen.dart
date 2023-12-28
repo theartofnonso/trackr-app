@@ -14,7 +14,6 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
-import '../../providers/user_provider.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
@@ -95,17 +94,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   Future<void> _doCreateRoutineLog() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
 
-    if (user == null) {
-      return;
-    }
     _toggleLoadingState(message: "Saving log...");
 
     final routineLog = _routineLog();
 
     final createdLog =
-        await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(user: user, logDto: routineLog);
+        await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
 
     _toggleLoadingState();
 
@@ -143,14 +138,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _cacheLog() {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-
-    if (user == null) {
-      return;
-    }
-
     final routineLog = _routineLog();
-
     Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
   }
 

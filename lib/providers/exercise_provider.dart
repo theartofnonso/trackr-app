@@ -6,7 +6,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 
 import '../enums/exercise_type_enums.dart';
 import '../models/Exercise.dart';
-import '../models/User.dart';
+import '../shared_prefs.dart';
 
 class ExerciseProvider with ChangeNotifier {
   List<Exercise> _exercises = [];
@@ -23,16 +23,15 @@ class ExerciseProvider with ChangeNotifier {
       required String notes,
       required MuscleGroup primary,
       required ExerciseType type,
-      required List<MuscleGroup> secondary, required User user}) async {
+      required List<MuscleGroup> secondary}) async {
 
     final exerciseToCreate = Exercise(
-        user: user,
         name: name,
         primaryMuscle: primary.name,
         type: type.name,
         secondaryMuscles: secondary.map((muscleGroup) => muscleGroup.name).toList(),
         createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now());
+        updatedAt: TemporalDateTime.now(), userID: SharedPrefs().userId);
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
     _exercises.add(exerciseToCreate);
     notifyListeners();

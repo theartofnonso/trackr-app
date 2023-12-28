@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/routine_template_dto.dart';
+import '../shared_prefs.dart';
 
 class RoutineTemplateProvider with ChangeNotifier {
   List<RoutineTemplateDto> _templates = [];
@@ -19,10 +20,10 @@ class RoutineTemplateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<RoutineTemplateDto> saveTemplate({required User user, required RoutineTemplateDto templateDto}) async {
+  Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(user: user, data: jsonEncode(templateDto.toJson()), createdAt: now, updatedAt: now);
+    final templateToCreate = RoutineTemplate(data: jsonEncode(templateDto.toJson()), createdAt: now, updatedAt: now, userID: SharedPrefs().userId);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
     _templates.insert(0, templateDto);
