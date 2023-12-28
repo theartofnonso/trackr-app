@@ -11,7 +11,6 @@ type RoutineTemplate
      ) {
   id: ID!
   owner: String
-  userId: String!
   data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -26,7 +25,6 @@ type RoutineLog
      ) {
   id: ID!
   owner: String
-  userId: String!
   data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -41,7 +39,6 @@ type Exercise
      ) {
   id: ID!
   owner: String
-  userId: String!
   data: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
