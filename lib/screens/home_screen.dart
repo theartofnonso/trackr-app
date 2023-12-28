@@ -92,7 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
       await _cacheUser();
-      _restartDataStore();
+      await _restartDataStore();
+      if(context.mounted) {
+        _loadAppData(context: context);
+      }
     }
   }
 
