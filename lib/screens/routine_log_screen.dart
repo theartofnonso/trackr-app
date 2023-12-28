@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,7 @@ import '../../widgets/helper_widgets/routine_helper.dart';
 import '../dtos/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
+import '../enums/muscle_group_enums.dart';
 import '../providers/routine_template_provider.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
@@ -202,6 +205,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    _HorizontalBarChart(frequencyData: calculateFrequency(exerciseLogs)),
                     ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
@@ -217,6 +222,30 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       _loading = !_loading;
       _loadingMessage = message;
     });
+  }
+
+  Map<MuscleGroupFamily, double> calculateFrequency(List<ExerciseLogDto> logList) {
+    var frequencyMap = <MuscleGroupFamily, int>{};
+
+    // Counting the occurrences of each MuscleGroup
+    for (var log in logList) {
+      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    }
+
+    int totalCount = logList.length;
+    var scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+    // Scaling the frequencies from 0 to 1
+    frequencyMap.forEach((key, value) {
+      scaledFrequencyMap[key] = value / totalCount;
+    });
+
+    var sortedEntries = scaledFrequencyMap.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+
+    return sortedFrequencyMap;
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
@@ -384,6 +413,65 @@ class _TemplateChangesListView extends StatelessWidget {
         ...listTiles,
         const SizedBox(height: 10),
         Align(alignment: Alignment.center, child: CTextButton(onPressed: onPressed, label: "Update template"))
+      ],
+    );
+  }
+}
+
+class _HorizontalBarChart extends StatelessWidget {
+
+  final Map<MuscleGroupFamily, double> frequencyData;
+
+  const _HorizontalBarChart({required this.frequencyData});
+
+  @override
+  Widget build(BuildContext context) {
+    final children = frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [...children,
+        const SizedBox(height: 2),
+        Text("Calculations are based on primary muscle groups",
+            style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+        const SizedBox(height: 8),
+      ]
+    );
+  }
+}
+
+
+
+class _LinearBar extends StatelessWidget {
+  final MuscleGroupFamily muscleGroupFamily;
+  final double frequency;
+
+  const _LinearBar({required this.muscleGroupFamily, required this.frequency});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(children: [
+          LinearProgressIndicator(
+            value: frequency,
+            backgroundColor: Colors.green.withOpacity(0.1),
+            color: Colors.green,
+            minHeight: 24,
+            borderRadius: BorderRadius.circular(3.0), // Border r
+          ),
+          Positioned.fill(
+            child: Align(
+             alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 1, right: 14),
+                child: Text(muscleGroupFamily.name, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+              ),
+            ),
+          )
+        ],),
+        const SizedBox(height: 8),
       ],
     );
   }
