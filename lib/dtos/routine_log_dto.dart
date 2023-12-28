@@ -41,10 +41,10 @@ class RoutineLogDto {
   }
 
   factory RoutineLogDto.fromJson(Map<String, dynamic> json) {
-    final id = json["id"];
-    final templateId = json["templateId"];
-    final name = json["name"];
-    final notes = json["notes"];
+    final id = json["id"] ?? "";
+    final templateId = json["templateId"] ?? "";
+    final name = json["name"] ?? "";
+    final notes = json["notes"] ?? "";
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exercisesJsons = json["exercises"] as List<dynamic>;
