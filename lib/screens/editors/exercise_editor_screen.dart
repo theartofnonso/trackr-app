@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -273,7 +274,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNameController = TextEditingController(text: previousExercise?.name);
     _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
 
-    _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.first;
+    _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).first;
     _secondaryMuscleGroups = previousExercise?.secondaryMuscleGroups ?? [];
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weightAndReps;
   }
