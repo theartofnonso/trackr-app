@@ -22,7 +22,7 @@ class PersonalBestWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Personal Bests achievements for this exercise",
+          Text("Personal Best achievements for this exercise",
               style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
           const SizedBox(height: 16),
           SetRecordWidget(exerciseType: exercise.type, sets: pastLogs.expand((log) => log.sets).toList()),
