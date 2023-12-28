@@ -270,20 +270,24 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
+  Future<void> _doUpdateTemplate() async {
+    final templateToUpdate =
+    Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (templateToUpdate != null) {
+      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: newSets);
+      }).toList();
+      await Provider.of<RoutineTemplateProvider>(context, listen: false)
+          .updateTemplate(template: templateToUpdate.copyWith(exercises: exerciseLogs));
+    }
+  }
+
   void _updateTemplate() async {
     _toggleLoadingState(message: "Updating template from log");
 
     try {
-      final templateToUpdate =
-          Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
-      if (templateToUpdate != null) {
-        final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
-          final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-          return exerciseLog.copyWith(sets: newSets);
-        }).toList();
-        await Provider.of<RoutineTemplateProvider>(context, listen: false)
-            .updateTemplate(template: templateToUpdate.copyWith(exercises: exerciseLogs));
-      }
+      await _doUpdateTemplate();
     } catch (_) {
       if (mounted) {
         showSnackbar(
@@ -335,6 +339,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                   Navigator.of(context).pop();
                   _updateTemplate();
                 }));
+      } else {
+        _doUpdateTemplate();
       }
     });
   }

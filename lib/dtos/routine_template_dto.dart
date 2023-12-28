@@ -60,4 +60,9 @@ class RoutineTemplateDto {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  @override
+  String toString() {
+    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, exercises: $exercises, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }

@@ -35,7 +35,7 @@ class RoutineTemplateProvider with ChangeNotifier {
 
   Future<void> updateTemplate({required RoutineTemplateDto template}) async {
     final result = (await Amplify.DataStore.query(
-      RoutineLog.classType,
+      RoutineTemplate.classType,
       where: RoutineTemplate.ID.eq(template.id),
     ));
 
@@ -51,7 +51,7 @@ class RoutineTemplateProvider with ChangeNotifier {
 
   Future<void> removeTemplate({required String id}) async {
     final result = (await Amplify.DataStore.query(
-      RoutineLog.classType,
+      RoutineTemplate.classType,
       where: RoutineTemplate.ID.eq(id),
     ));
 
