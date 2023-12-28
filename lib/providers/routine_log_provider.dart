@@ -64,12 +64,12 @@ class RoutineLogProvider with ChangeNotifier {
 
     final weekToLogs = <DateTimeRange, List<RoutineLogDto>>{};
 
-    DateTime startDate = logs.first.createdAt;
+    DateTime startDate = _logs.first.createdAt;
     List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
 
     // Map each DateTimeRange to RoutineLogs falling within it
     for (var weekRange in weekRanges) {
-      List<RoutineLogDto> routinesInWeek = logs
+      List<RoutineLogDto> routinesInWeek = _logs
           .where((log) =>
               log.createdAt.isAfter(weekRange.start) &&
               log.createdAt.isBefore(weekRange.end.add(const Duration(days: 1))))
@@ -87,12 +87,12 @@ class RoutineLogProvider with ChangeNotifier {
 
     final monthToLogs = <DateTimeRange, List<RoutineLogDto>>{};
 
-    DateTime startDate = logs.first.createdAt;
+    DateTime startDate = _logs.first.createdAt;
     List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
 
     // Map each DateTimeRange to RoutineLogs falling within it
     for (var monthRange in monthRanges) {
-      List<RoutineLogDto> routinesInMonth = logs
+      List<RoutineLogDto> routinesInMonth = _logs
           .where((log) =>
               log.createdAt.isAfter(monthRange.start) &&
               log.createdAt.isBefore(monthRange.end.add(const Duration(days: 1))))
@@ -122,7 +122,7 @@ class RoutineLogProvider with ChangeNotifier {
     _normaliseLogs();
     notifyListeners();
 
-    return logDto;
+    return updatedWithRoutineIds;
   }
 
   void cacheRoutineLog({required RoutineLogDto logDto}) {

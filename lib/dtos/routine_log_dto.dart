@@ -32,6 +32,7 @@ class RoutineLogDto {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'templateId': templateId,
       'name': name,
       'notes': notes,
       'startTime': startTime.toIso8601String(),
