@@ -28,7 +28,6 @@ class Exercise extends amplify_core.Model {
   static const classType = const _ExerciseModelType();
   final String id;
   final String? _owner;
-  final String? _userId;
   final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -48,19 +47,6 @@ class Exercise extends amplify_core.Model {
   
   String? get owner {
     return _owner;
-  }
-  
-  String get userId {
-    try {
-      return _userId!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
   }
   
   String get data {
@@ -102,13 +88,12 @@ class Exercise extends amplify_core.Model {
     }
   }
   
-  const Exercise._internal({required this.id, owner, required userId, required data, required createdAt, required updatedAt}): _owner = owner, _userId = userId, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Exercise._internal({required this.id, owner, required data, required createdAt, required updatedAt}): _owner = owner, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Exercise({String? id, String? owner, required String userId, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory Exercise({String? id, String? owner, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return Exercise._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       owner: owner,
-      userId: userId,
       data: data,
       createdAt: createdAt,
       updatedAt: updatedAt);
@@ -124,7 +109,6 @@ class Exercise extends amplify_core.Model {
     return other is Exercise &&
       id == other.id &&
       _owner == other._owner &&
-      _userId == other._userId &&
       _data == other._data &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
@@ -140,7 +124,6 @@ class Exercise extends amplify_core.Model {
     buffer.write("Exercise {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
-    buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -149,11 +132,10 @@ class Exercise extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Exercise copyWith({String? owner, String? userId, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  Exercise copyWith({String? owner, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return Exercise._internal(
       id: id,
       owner: owner ?? this.owner,
-      userId: userId ?? this.userId,
       data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
@@ -161,7 +143,6 @@ class Exercise extends amplify_core.Model {
   
   Exercise copyWithModelFieldValues({
     ModelFieldValue<String?>? owner,
-    ModelFieldValue<String>? userId,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
@@ -169,7 +150,6 @@ class Exercise extends amplify_core.Model {
     return Exercise._internal(
       id: id,
       owner: owner == null ? this.owner : owner.value,
-      userId: userId == null ? this.userId : userId.value,
       data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
@@ -179,19 +159,17 @@ class Exercise extends amplify_core.Model {
   Exercise.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _owner = json['owner'],
-      _userId = json['userId'],
       _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'owner': _owner, 'userId': _userId, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'owner': _owner, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'owner': _owner,
-    'userId': _userId,
     'data': _data,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
@@ -200,7 +178,6 @@ class Exercise extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<ExerciseModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<ExerciseModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final OWNER = amplify_core.QueryField(fieldName: "owner");
-  static final USERID = amplify_core.QueryField(fieldName: "userId");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
@@ -227,12 +204,6 @@ class Exercise extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Exercise.OWNER,
       isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.USERID,
-      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     

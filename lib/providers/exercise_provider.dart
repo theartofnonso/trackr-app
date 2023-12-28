@@ -7,7 +7,6 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/extensions/exercise_extension.dart';
 
 import '../models/Exercise.dart';
-import '../shared_prefs.dart';
 
 class ExerciseProvider with ChangeNotifier {
   List<ExerciseDto> _exercises = [];
@@ -24,7 +23,7 @@ class ExerciseProvider with ChangeNotifier {
     final now = TemporalDateTime.now();
 
     final exerciseToCreate =
-        Exercise(data: jsonEncode(exerciseDto.toJson()), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+        Exercise(data: jsonEncode(exerciseDto.toJson()), createdAt: now, updatedAt: now);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
