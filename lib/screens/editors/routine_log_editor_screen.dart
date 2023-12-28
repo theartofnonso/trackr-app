@@ -88,9 +88,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         exerciseLogs: exerciseLogs,
         notes: log.notes,
         startTime: log.startTime,
-        endTime: log.endTime,
-        createdAt: log.createdAt,
-        updatedAt: log.updatedAt);
+        endTime: DateTime.now(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
     return routineLog;
   }
 
