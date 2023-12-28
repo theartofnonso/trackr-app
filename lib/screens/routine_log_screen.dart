@@ -283,9 +283,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         }).toList();
         await Provider.of<RoutineTemplateProvider>(context, listen: false)
             .updateTemplate(template: templateToUpdate.copyWith(exercises: exerciseLogs));
-        if (mounted) {
-          navigateToRoutinePreview(context: context, templateId: templateToUpdate.id);
-        }
       }
     } catch (_) {
       if (mounted) {
