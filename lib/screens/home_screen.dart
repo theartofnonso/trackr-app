@@ -1,14 +1,19 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
-import 'package:tracker_app/screens/template/routines_screen.dart';
+import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
-import '../models/RoutineLog.dart';
+import '../dtos/routine_log_dto.dart';
+import '../providers/exercise_provider.dart';
+import '../providers/routine_log_provider.dart';
+import '../providers/routine_template_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: tealBlueDark,
         surfaceTintColor: tealBlueLighter,
         overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
-        destinations:  const [
+        destinations: const [
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.house, color: Colors.grey),
             selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
@@ -59,22 +64,39 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _loadAppData() async {
+    await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+    if (context.mounted) {
+      Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
+      Provider.of<RoutineLogProvider>(context, listen: false).listLogs();
+    }
+  }
+
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      RoutineLog? log = cachedRoutineLog();
+      RoutineLogDto? log = cachedRoutineLog();
       if (log != null) {
         navigateToRoutineLogEditor(context: context, log: log);
       }
     });
   }
 
-  void _runSetUp() async {
-    if(SharedPrefs().firstLaunch){
+  Future<void> _cacheUser() async {
+    final authUser = await Amplify.Auth.getCurrentUser();
+    final signInDetails = authUser.signInDetails.toJson();
+    SharedPrefs().userId = authUser.userId;
+    SharedPrefs().userEmail = signInDetails["username"] as String;
+  }
+
+  void _runSetup() async {
+    if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
-    }
-    await persistUserCredentials();
-    if(mounted) {
-      loadAppData(context);
+      await _cacheUser();
+      if (context.mounted) {
+        await _loadAppData();
+      }
+    } else {
+      _loadAppData();
       _loadCachedLog();
     }
   }
@@ -82,6 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _runSetUp();
+    _runSetup();
   }
 }

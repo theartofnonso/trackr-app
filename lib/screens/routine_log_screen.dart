@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,10 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
-import 'package:tracker_app/providers/routine_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
@@ -21,11 +18,15 @@ import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../dtos/exercise_log_view_model.dart';
+import '../dtos/routine_log_dto.dart';
+import '../dtos/routine_template_dto.dart';
+import '../enums/muscle_group_enums.dart';
+import '../providers/routine_template_provider.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
-  final RoutineLog log;
+  final RoutineLogDto log;
   final String previousRouteName;
   final bool finishedLogging;
 
@@ -40,33 +41,24 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
   String _loadingMessage = "";
 
-  bool _isLatestLogForTemplate = false;
-
   @override
   Widget build(BuildContext context) {
     Provider.of<ExerciseProvider>(context, listen: true);
     final log = widget.log;
 
-    List<ExerciseLogDto> exerciseLogs =
-        log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
-      final exerciseFromLibrary =
-          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+    List<ExerciseLogDto> exerciseLogs = log.exerciseLogs.map((exerciseLog) {
+      final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false)
+          .whereExerciseOrNull(exerciseId: exerciseLog.exercise.id);
       if (exerciseFromLibrary != null) {
-        return procedure.copyWith(exercise: exerciseFromLibrary);
+        return exerciseLog.copyWith(exercise: exerciseFromLibrary);
       }
-      return procedure;
+      return exerciseLog;
     }).toList();
 
     final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
     final menuActions = [
-      _isLatestLogForTemplate
-          ? MenuItemButton(
-              onPressed: _checkForTemplateUpdates,
-              child: const Text("Update template"),
-            )
-          : const SizedBox.shrink(),
       MenuItemButton(
         onPressed: () {
           _toggleLoadingState(message: "Creating template from log");
@@ -154,7 +146,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(log.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
+                        Text(log.createdAt.formattedDayAndMonthAndYear(),
                             style: GoogleFonts.lato(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
@@ -164,7 +156,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                           size: 12,
                         ),
                         const SizedBox(width: 1),
-                        Text(log.endTime.getDateTimeInUtc().formattedTime(),
+                        Text(log.endTime.formattedTime(),
                             style: GoogleFonts.lato(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
@@ -196,7 +188,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                             TableCell(
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
-                                child: Text("${log.procedures.length} exercise(s)",
+                                child: Text("${log.exerciseLogs.length} exercise(s)",
                                     style: GoogleFonts.lato(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
@@ -213,6 +205,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    _HorizontalBarChart(frequencyData: calculateFrequency(exerciseLogs)),
                     ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
                   ],
                 ),
@@ -228,6 +222,30 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       _loading = !_loading;
       _loadingMessage = message;
     });
+  }
+
+  Map<MuscleGroupFamily, double> calculateFrequency(List<ExerciseLogDto> logList) {
+    var frequencyMap = <MuscleGroupFamily, int>{};
+
+    // Counting the occurrences of each MuscleGroup
+    for (var log in logList) {
+      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    }
+
+    int totalCount = logList.length;
+    var scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+    // Scaling the frequencies from 0 to 1
+    frequencyMap.forEach((key, value) {
+      scaledFrequencyMap[key] = value / totalCount;
+    });
+
+    var sortedEntries = scaledFrequencyMap.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+
+    return sortedFrequencyMap;
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
@@ -256,15 +274,20 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _createTemplate() async {
     final log = widget.log;
     try {
-      final decodedProcedures = log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)));
-      final procedures = decodedProcedures.map((procedure) {
-        final newSets = procedure.sets.map((set) => set.copyWith(checked: false)).toList();
-        return procedure.copyWith(sets: newSets);
+      final exercises = log.exerciseLogs.map((exerciseLog) {
+        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: newSets);
       }).toList();
-      final routineId = await Provider.of<RoutineProvider>(context, listen: false)
-          .saveRoutine(name: log.name, notes: log.notes, procedures: procedures);
+      final templateToCreate = RoutineTemplateDto(
+          id: "",
+          name: log.name,
+          notes: log.notes,
+          exercises: exercises,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
+      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: templateToCreate);
       if (mounted) {
-        navigateToRoutinePreview(context: context, routineId: routineId);
+        navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
       }
     } catch (_) {
       if (mounted) {
@@ -276,30 +299,24 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
+  Future<void> _doUpdateTemplate() async {
+    final templateToUpdate =
+    Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (templateToUpdate != null) {
+      final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
+        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: newSets);
+      }).toList();
+      await Provider.of<RoutineTemplateProvider>(context, listen: false)
+          .updateTemplate(template: templateToUpdate.copyWith(exercises: exerciseLogs));
+    }
+  }
+
   void _updateTemplate() async {
     _toggleLoadingState(message: "Updating template from log");
 
-    final log = widget.log;
     try {
-      final routineId = log.routine?.id;
-      if (routineId != null) {
-        final routineToUpdate = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: routineId);
-        if (routineToUpdate != null) {
-          final exerciseLogJsons = log.procedures
-              .map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json)))
-              .map((exerciseLog) {
-                final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-                return exerciseLog.copyWith(sets: newSets);
-              })
-              .map((exerciseLog) => exerciseLog.toJson())
-              .toList();
-          await Provider.of<RoutineProvider>(context, listen: false)
-              .updateRoutine(routine: routineToUpdate.copyWith(procedures: exerciseLogJsons));
-          if (mounted) {
-            navigateToRoutinePreview(context: context, routineId: routineId);
-          }
-        }
-      }
+      await _doUpdateTemplate();
     } catch (_) {
       if (mounted) {
         showSnackbar(
@@ -327,29 +344,19 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _checkForTemplateUpdates() {
-    _isLatestLogForTemplate = widget.finishedLogging ||
-        Provider.of<RoutineLogProvider>(context, listen: false)
-            .isLatestLogForTemplate(templateId: widget.log.routine?.id ?? "", logId: widget.log.id);
-    if (!_isLatestLogForTemplate) {
+    final templateId = widget.log.templateId;
+    if (templateId.isEmpty) {
       return;
     }
 
-    final routine = widget.log.routine;
-    if (routine == null) {
-      return;
-    }
-
-    final routineTemplate = Provider.of<RoutineProvider>(context, listen: false).routineWhere(id: routine.id);
+    final routineTemplate = Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: templateId);
     if (routineTemplate == null) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final routineTemplateExerciseLogs =
-          routineTemplate.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
-      final exerciseLog1 = routineTemplateExerciseLogs;
-      final exerciseLog2 =
-          widget.log.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
+      final exerciseLog1 = routineTemplate.exercises;
+      final exerciseLog2 = widget.log.exerciseLogs;
       final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
@@ -361,6 +368,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                   Navigator.of(context).pop();
                   _updateTemplate();
                 }));
+      } else {
+        _doUpdateTemplate();
       }
     });
   }
@@ -368,7 +377,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   @override
   void initState() {
     super.initState();
-    _checkForTemplateUpdates();
+
+    if (widget.finishedLogging) {
+      _checkForTemplateUpdates();
+    }
   }
 }
 
@@ -401,6 +413,65 @@ class _TemplateChangesListView extends StatelessWidget {
         ...listTiles,
         const SizedBox(height: 10),
         Align(alignment: Alignment.center, child: CTextButton(onPressed: onPressed, label: "Update template"))
+      ],
+    );
+  }
+}
+
+class _HorizontalBarChart extends StatelessWidget {
+
+  final Map<MuscleGroupFamily, double> frequencyData;
+
+  const _HorizontalBarChart({required this.frequencyData});
+
+  @override
+  Widget build(BuildContext context) {
+    final children = frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [...children,
+        const SizedBox(height: 2),
+        Text("Calculations are based on primary muscle groups",
+            style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+        const SizedBox(height: 8),
+      ]
+    );
+  }
+}
+
+
+
+class _LinearBar extends StatelessWidget {
+  final MuscleGroupFamily muscleGroupFamily;
+  final double frequency;
+
+  const _LinearBar({required this.muscleGroupFamily, required this.frequency});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(children: [
+          LinearProgressIndicator(
+            value: frequency,
+            backgroundColor: Colors.green.withOpacity(0.1),
+            color: Colors.green,
+            minHeight: 24,
+            borderRadius: BorderRadius.circular(3.0), // Border r
+          ),
+          Positioned.fill(
+            child: Align(
+             alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 1, right: 14),
+                child: Text(muscleGroupFamily.name, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+              ),
+            ),
+          )
+        ],),
+        const SizedBox(height: 8),
       ],
     );
   }

@@ -51,12 +51,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "deleteUserRoutineData",
+            "deleteUserRoutineTemplateData",
             {
               "Fn::Join": [
                 "",
                 [
-                  "deleteUserRoutineData",
+                  "deleteUserRoutineTemplateData",
                   "-",
                   {
                     "Ref": "env"
@@ -74,12 +74,12 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_TRACKERAPP_ROUTINETABLE_NAME": {
+            "API_TRACKERAPP_ROUTINETEMPLATETABLE_NAME": {
               "Fn::ImportValue": {
-                "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTable:Name"
+                "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTemplateTable:Name"
               }
             },
-            "API_TRACKERAPP_ROUTINETABLE_ARN": {
+            "API_TRACKERAPP_ROUTINETEMPLATETABLE_ARN": {
               "Fn::Join": [
                 "",
                 [
@@ -94,7 +94,7 @@
                   ":table/",
                   {
                     "Fn::ImportValue": {
-                      "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTable:Name"
+                      "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTemplateTable:Name"
                     }
                   }
                 ]
@@ -122,12 +122,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "trackerappLambdaRolee8d8c054",
+            "trackerappLambdaRole6254d8b5",
             {
               "Fn::Join": [
                 "",
                 [
-                  "trackerappLambdaRolee8d8c054",
+                  "trackerappLambdaRole6254d8b5",
                   "-",
                   {
                     "Ref": "env"
@@ -249,7 +249,7 @@
                       ":table/",
                       {
                         "Fn::ImportValue": {
-                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTable:Name"
+                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTemplateTable:Name"
                         }
                       }
                     ]
@@ -270,7 +270,7 @@
                       ":table/",
                       {
                         "Fn::ImportValue": {
-                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTable:Name"
+                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineTemplateTable:Name"
                         }
                       },
                       "/index/*"

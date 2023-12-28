@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
-import '../../../models/RoutineLog.dart';
 import '../../utils/navigation_utils.dart';
+import '../dtos/routine_log_dto.dart';
 import '../widgets/c_list_title.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
-  final List<RoutineLog> logs;
+  final List<RoutineLogDto> logs;
 
   const RoutineLogsScreen({super.key, required this.logs});
 
@@ -50,7 +50,7 @@ class RoutineLogsScreen extends StatelessWidget {
 }
 
 class _RoutineLogWidget extends StatelessWidget {
-  final RoutineLog log;
+  final RoutineLogDto log;
 
   const _RoutineLogWidget({required this.log});
 
@@ -58,8 +58,8 @@ class _RoutineLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CListTile(
         title: log.name,
-        subtitle: "${log.procedures.length} exercise(s)",
-        trailing: log.createdAt.getDateTimeInUtc().durationSinceOrDate(),
+        subtitle: "${log.exerciseLogs.length} exercise(s)",
+        trailing: log.createdAt.durationSinceOrDate(),
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }

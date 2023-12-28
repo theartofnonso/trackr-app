@@ -1,21 +1,20 @@
 /* Amplify Params - DO NOT EDIT
 	API_TRACKERAPP_GRAPHQLAPIIDOUTPUT
-	API_TRACKERAPP_ROUTINETABLE_ARN
-	API_TRACKERAPP_ROUTINETABLE_NAME
+	API_TRACKERAPP_ROUTINETEMPLATETABLE_ARN
+	API_TRACKERAPP_ROUTINETEMPLATETABLE_NAME
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
-
 const {DynamoDBClient, ScanCommand, BatchWriteItemCommand} = require("@aws-sdk/client-dynamodb");
 const dynamoDBClient = new DynamoDBClient({region: "eu-west-2"});
 
 exports.handler = async (event) => {
 
-    const tableName = process.env.API_TRACKERAPP_ROUTINETABLE_NAME;
+    const tableName = process.env.API_TRACKERAPP_ROUTINETEMPLATETABLE_NAME;
 
     let scanInput = {
         TableName: tableName,
-        FilterExpression: 'userID = :value',
+        FilterExpression: 'userId = :value',
         ExpressionAttributeValues: {
             ":value": {"S": event.identity.claims.username},
         }
@@ -26,7 +25,7 @@ exports.handler = async (event) => {
         const result = await dynamoDBClient.send(command);
         const items = result.Items;
         if (items.length > 0) {
-            console.log(`Routines to be deleted: ${items.length}`);
+            console.log(`Routines templates to be deleted: ${items.length}`);
             let batchWriteInput = {
                 RequestItems: {
                     [tableName]: items.map(item => {
@@ -41,9 +40,9 @@ exports.handler = async (event) => {
             const command = new BatchWriteItemCommand(batchWriteInput);
             await dynamoDBClient.send(command);
         }
-        return true;
     } catch (err) {
         console.log(err);
+        return false;
     }
-    return false; // this means the user data was cleaned up
+    return true; //his means the user data was cleaned up
 };

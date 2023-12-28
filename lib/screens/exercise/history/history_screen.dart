@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/models/Exercise.dart';
 
+import '../../../dtos/exercise_dto.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../widgets/empty_states/list_view_empty_state.dart';
 import '../../../widgets/exercise_history/routine_log_widget.dart';
 
 class HistoryScreen extends StatelessWidget {
-  final Exercise exercise;
+  final ExerciseDto exercise;
 
   const HistoryScreen({super.key, required this.exercise});
 

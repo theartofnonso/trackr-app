@@ -23,9 +23,9 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the Exercise type in your schema. */
-class Exercise extends amplify_core.Model {
-  static const classType = const _ExerciseModelType();
+/** This is an auto generated class representing the RoutineTemplate type in your schema. */
+class RoutineTemplate extends amplify_core.Model {
+  static const classType = const _RoutineTemplateModelType();
   final String id;
   final String? _owner;
   final String? _userId;
@@ -40,8 +40,8 @@ class Exercise extends amplify_core.Model {
   @override
   String getId() => id;
   
-  ExerciseModelIdentifier get modelIdentifier {
-      return ExerciseModelIdentifier(
+  RoutineTemplateModelIdentifier get modelIdentifier {
+      return RoutineTemplateModelIdentifier(
         id: id
       );
   }
@@ -102,10 +102,10 @@ class Exercise extends amplify_core.Model {
     }
   }
   
-  const Exercise._internal({required this.id, owner, required userId, required data, required createdAt, required updatedAt}): _owner = owner, _userId = userId, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineTemplate._internal({required this.id, owner, required userId, required data, required createdAt, required updatedAt}): _owner = owner, _userId = userId, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Exercise({String? id, String? owner, required String userId, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
-    return Exercise._internal(
+  factory RoutineTemplate({String? id, String? owner, required String userId, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+    return RoutineTemplate._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       owner: owner,
       userId: userId,
@@ -121,7 +121,7 @@ class Exercise extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Exercise &&
+    return other is RoutineTemplate &&
       id == other.id &&
       _owner == other._owner &&
       _userId == other._userId &&
@@ -137,7 +137,7 @@ class Exercise extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("Exercise {");
+    buffer.write("RoutineTemplate {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
@@ -149,8 +149,8 @@ class Exercise extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Exercise copyWith({String? owner, String? userId, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return Exercise._internal(
+  RoutineTemplate copyWith({String? owner, String? userId, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return RoutineTemplate._internal(
       id: id,
       owner: owner ?? this.owner,
       userId: userId ?? this.userId,
@@ -159,14 +159,14 @@ class Exercise extends amplify_core.Model {
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
-  Exercise copyWithModelFieldValues({
+  RoutineTemplate copyWithModelFieldValues({
     ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? userId,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime>? updatedAt
   }) {
-    return Exercise._internal(
+    return RoutineTemplate._internal(
       id: id,
       owner: owner == null ? this.owner : owner.value,
       userId: userId == null ? this.userId : userId.value,
@@ -176,7 +176,7 @@ class Exercise extends amplify_core.Model {
     );
   }
   
-  Exercise.fromJson(Map<String, dynamic> json)  
+  RoutineTemplate.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _owner = json['owner'],
       _userId = json['userId'],
@@ -197,7 +197,7 @@ class Exercise extends amplify_core.Model {
     'updatedAt': _updatedAt
   };
 
-  static final amplify_core.QueryModelIdentifier<ExerciseModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<ExerciseModelIdentifier>();
+  static final amplify_core.QueryModelIdentifier<RoutineTemplateModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineTemplateModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final USERID = amplify_core.QueryField(fieldName: "userId");
@@ -205,8 +205,8 @@ class Exercise extends amplify_core.Model {
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "Exercise";
-    modelSchemaDefinition.pluralName = "Exercises";
+    modelSchemaDefinition.name = "RoutineTemplate";
+    modelSchemaDefinition.pluralName = "RoutineTemplates";
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -225,60 +225,60 @@ class Exercise extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.OWNER,
+      key: RoutineTemplate.OWNER,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.USERID,
+      key: RoutineTemplate.USERID,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.DATA,
+      key: RoutineTemplate.DATA,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.CREATEDAT,
+      key: RoutineTemplate.CREATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Exercise.UPDATEDAT,
+      key: RoutineTemplate.UPDATEDAT,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
   });
 }
 
-class _ExerciseModelType extends amplify_core.ModelType<Exercise> {
-  const _ExerciseModelType();
+class _RoutineTemplateModelType extends amplify_core.ModelType<RoutineTemplate> {
+  const _RoutineTemplateModelType();
   
   @override
-  Exercise fromJson(Map<String, dynamic> jsonData) {
-    return Exercise.fromJson(jsonData);
+  RoutineTemplate fromJson(Map<String, dynamic> jsonData) {
+    return RoutineTemplate.fromJson(jsonData);
   }
   
   @override
   String modelName() {
-    return 'Exercise';
+    return 'RoutineTemplate';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [Exercise] in your schema.
+ * of [RoutineTemplate] in your schema.
  */
-class ExerciseModelIdentifier implements amplify_core.ModelIdentifier<Exercise> {
+class RoutineTemplateModelIdentifier implements amplify_core.ModelIdentifier<RoutineTemplate> {
   final String id;
 
-  /** Create an instance of ExerciseModelIdentifier using [id] the primary key. */
-  const ExerciseModelIdentifier({
+  /** Create an instance of RoutineTemplateModelIdentifier using [id] the primary key. */
+  const RoutineTemplateModelIdentifier({
     required this.id});
   
   @override
@@ -296,7 +296,7 @@ class ExerciseModelIdentifier implements amplify_core.ModelIdentifier<Exercise> 
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'ExerciseModelIdentifier(id: $id)';
+  String toString() => 'RoutineTemplateModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -304,7 +304,7 @@ class ExerciseModelIdentifier implements amplify_core.ModelIdentifier<Exercise> 
       return true;
     }
     
-    return other is ExerciseModelIdentifier &&
+    return other is RoutineTemplateModelIdentifier &&
       id == other.id;
   }
   

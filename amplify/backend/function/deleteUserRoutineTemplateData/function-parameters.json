@@ -1,7 +1,7 @@
 {
   "permissions": {
     "storage": {
-      "Routine:@model(appsync)": [
+      "RoutineTemplate:@model(appsync)": [
         "create",
         "read",
         "update",

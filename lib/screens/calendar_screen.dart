@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/c_list_title.dart';
 
-import '../models/RoutineLog.dart';
+import '../dtos/routine_log_dto.dart';
 
 class _DateViewModel {
   DateTime dateTime;
@@ -117,7 +117,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
-    final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate);
+    final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
     final dates = _generateDates();
 
@@ -129,23 +129,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: _decrementDate, icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+              IconButton(onPressed: _decrementDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
               Text(_currentDate.formattedMonthAndYear(),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   )),
-              IconButton(onPressed: _incrementDate, icon: const Icon(Icons.arrow_forward_ios_rounded)),
+              IconButton(onPressed: _incrementDate, icon: const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)),
             ],
           ),
         ),
-        Container(
-          color: tealBlueDark,
-          height: 15,
-        ),
-        _CalendarHeader(),
+        // Container(
+        //   color: tealBlueDark,
+        //   height: 15,
+        // ),
+        //_CalendarHeader(),
         _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
+        const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
         if (logs.isEmpty)
           Column(
@@ -180,7 +181,7 @@ class _CalendarHeader extends StatelessWidget {
         children: [
           ...daysOfWeek
               .map((day) => SizedBox(
-                    width: 40,
+                    width: 45,
                     child: Center(
                       child: Text(day,
                           style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -204,13 +205,13 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return Colors.green;
     }
-    return Colors.transparent;
+    return tealBlueLight.withOpacity(0.5);
   }
 
   Border? _getBorder() {
     final selectedDate = selectedDateTime;
     if (selectedDate.isSameDateAs(dateTime)) {
-      return Border.all(color: Colors.green, width: 2.0);
+      return Border.all(color: Colors.white70, width: 2.0);
     } else {
       return null;
     }
@@ -218,9 +219,9 @@ class _DateWidget extends StatelessWidget {
 
   Color _getTextColor(bool hasLog) {
     if (hasLog) {
-      return tealBlueDark;
+      return Colors.transparent;
     }
-    return Colors.white70;
+    return Colors.transparent;
   }
 
   FontWeight? _getFontWeight() {
@@ -234,10 +235,11 @@ class _DateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
     return InkWell(
+      splashColor: Colors.transparent,
       onTap: () => onTap(dateTime),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         decoration: BoxDecoration(
           border: _getBorder(),
           borderRadius: BorderRadius.circular(5),
@@ -272,7 +274,7 @@ class _CalenderDates extends StatelessWidget {
 
     final datesWidgets = dates.map((date) {
       if (date == null) {
-        return const SizedBox(width: 40, height: 40);
+        return const SizedBox(width: 45, height: 45);
       } else {
         return _DateWidget(
           dateTime: date.dateTime,
@@ -306,7 +308,7 @@ class _CalenderDates extends StatelessWidget {
 }
 
 class _RoutineLogListView extends StatelessWidget {
-  final List<RoutineLog> logs;
+  final List<RoutineLogDto> logs;
 
   const _RoutineLogListView({required this.logs});
 
@@ -321,7 +323,7 @@ class _RoutineLogListView extends StatelessWidget {
 }
 
 class _RoutineLogWidget extends StatelessWidget {
-  final RoutineLog log;
+  final RoutineLogDto log;
 
   const _RoutineLogWidget({required this.log});
 
@@ -329,7 +331,7 @@ class _RoutineLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CListTile(
         title: log.name,
-        subtitle: "${log.procedures.length} exercise(s)",
+        subtitle: "${log.exerciseLogs.length} exercise(s)",
         trailing: log.duration().secondsOrMinutesOrHours(),
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,

@@ -1,4 +1,4 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -8,13 +8,13 @@ import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../../app_constants.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
-import '../../models/Exercise.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
-  final Exercise? exercise;
+  final ExerciseDto? exercise;
 
   const ExerciseEditorScreen({super.key, this.exercise});
 
@@ -27,7 +27,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   late TextEditingController _exerciseNotesController;
 
   late MuscleGroup _primaryMuscleGroup;
-  List<MuscleGroup> _secondaryMuscleGroup = [];
+  List<MuscleGroup> _secondaryMuscleGroups = [];
   late ExerciseType _exerciseType;
 
   bool _loading = false;
@@ -113,13 +113,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     onTap: () => _navigateToMuscleGroupsScreen(multiSelect: true),
                     tileColor: tealBlueLight,
                     dense: true,
-                    contentPadding: _secondaryMuscleGroup.length > 6
+                    contentPadding: _secondaryMuscleGroups.length > 6
                         ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                         : null,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     title: Text("Secondary Muscles", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                     subtitle: Padding(
-                      padding: _secondaryMuscleGroup.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
+                      padding: _secondaryMuscleGroups.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
                       child:
                           Text(_secondaryMuscleDisplay(), style: GoogleFonts.lato(fontSize: 13, color: Colors.white70)),
                     )),
@@ -133,7 +133,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         onTap: () => _navigateToExerciseTypeScreen(),
                         tileColor: tealBlueLight,
                         dense: true,
-                        contentPadding: _secondaryMuscleGroup.length > 6
+                        contentPadding: _secondaryMuscleGroups.length > 6
                             ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                             : null,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -161,8 +161,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   String _secondaryMuscleDisplay() {
     String display;
-    if (_secondaryMuscleGroup.isNotEmpty) {
-      display = _secondaryMuscleGroup.map((bodyPart) => bodyPart.name).join(", ");
+    if (_secondaryMuscleGroups.isNotEmpty) {
+      display = _secondaryMuscleGroups.map((bodyPart) => bodyPart.name).join(", ");
     } else {
       display = "Select secondary muscle groups";
     }
@@ -178,9 +178,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
     final exercise = widget.exercise;
-    List<MuscleGroup> preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroup : [_primaryMuscleGroup];
+    List<MuscleGroup> preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroups : [_primaryMuscleGroup];
     if (exercise != null) {
-      preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroup : [_primaryMuscleGroup];
+      preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroups : [_primaryMuscleGroup];
     }
 
     final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(
@@ -189,7 +189,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if (muscleGroups != null) {
       if (multiSelect) {
         setState(() {
-          _secondaryMuscleGroup = muscleGroups;
+          _secondaryMuscleGroups = muscleGroups;
         });
       } else {
         setState(() {
@@ -211,13 +211,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _createExercise() async {
     _toggleLoadingState();
+
+    final exercise = ExerciseDto(
+        id: "",
+        name: _exerciseNameController.text.trim(),
+        notes: _exerciseNotesController.text.trim(),
+        primaryMuscleGroup: _primaryMuscleGroup,
+        secondaryMuscleGroups: _secondaryMuscleGroups,
+        type: _exerciseType);
+
     try {
-      await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(
-          name: _exerciseNameController.text.trim(),
-          notes: _exerciseNotesController.text.trim(),
-          primary: _primaryMuscleGroup,
-          type: _exerciseType,
-          secondary: _secondaryMuscleGroup);
+      await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -242,18 +246,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           final updatedExercise = exercise.copyWith(
               name: _exerciseNameController.text.trim(),
               notes: _exerciseNotesController.text.trim(),
-              primaryMuscle: _primaryMuscleGroup.name,
-              secondaryMuscles: _secondaryMuscleGroup.map((muscle) => muscle.name).toList());
+              primaryMuscleGroup: _primaryMuscleGroup,
+              secondaryMuscleGroups: _secondaryMuscleGroups);
           await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
           if (mounted) {
             Navigator.of(context).pop();
           }
-        } on AmplifyCodeGenModelException catch (_) {
-          if (mounted) {
-            showSnackbar(
-                context: context, icon: const Icon(Icons.info_outline), message: "${exercise.name} does not exist");
-          }
-        } catch (e) {
+        } catch (_) {
           if (mounted) {
             showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to update exercise");
           }
@@ -273,12 +272,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _exerciseNameController = TextEditingController(text: previousExercise?.name);
     _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
 
-    _primaryMuscleGroup =
-        previousExercise != null ? MuscleGroup.fromString(previousExercise.primaryMuscle) : MuscleGroup.values.first;
-    _secondaryMuscleGroup =
-        previousExercise?.secondaryMuscles.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList() ?? [];
-    _exerciseType =
-        previousExercise != null ? ExerciseType.fromString(previousExercise.type) : ExerciseType.weightAndReps;
+    _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).first;
+    _secondaryMuscleGroups = previousExercise?.secondaryMuscleGroups ?? [];
+    _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weightAndReps;
   }
 
   @override

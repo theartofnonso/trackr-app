@@ -1,32 +1,33 @@
 import 'dart:convert';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:uuid/uuid.dart';
+
+import 'exercise_dto.dart';
 
 class ExerciseLogDto {
   final String id;
-  final RoutineLog? routineLog;
+  final String? routineLogId;
   final String superSetId;
-  final Exercise exercise;
+  final ExerciseDto exercise;
   final String notes;
   final List<SetDto> sets;
-  final TemporalDateTime createdAt;
+  final DateTime createdAt;
 
-  const ExerciseLogDto(this.id, this.routineLog, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
+  const ExerciseLogDto(
+      this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
 
   ExerciseLogDto copyWith(
       {String? id,
-      RoutineLog? routineLog,
+      String? routineLogId,
       String? superSetId,
       String? exerciseId,
-      Exercise? exercise,
+      ExerciseDto? exercise,
       String? notes,
       List<SetDto>? sets,
-      TemporalDateTime? createdAt}) {
+      DateTime? createdAt}) {
     return ExerciseLogDto(
       id ?? this.id,
-      routineLog ?? this.routineLog,
+      routineLogId ?? this.routineLogId,
       superSetId ?? this.superSetId,
       exercise ?? this.exercise,
       notes ?? this.notes,
@@ -36,24 +37,24 @@ class ExerciseLogDto {
   }
 
   String toJson() {
-    final setJons = sets.map((set) => (set).toJson()).toList();
+    final setJsons = sets.map((set) => (set).toJson()).toList();
 
-    return jsonEncode({"superSetId": superSetId, "exercise": exercise, "notes": notes, "sets": setJons});
+    return jsonEncode({"superSetId": superSetId, "exercise": exercise.toJson(), "notes": notes, "sets": setJsons});
   }
 
-  factory ExerciseLogDto.fromJson({RoutineLog? routineLog, required Map<String, dynamic> json}) {
-    final superSetId = json["superSetId"];
-    final exerciseString = json["exercise"];
-    final exercise = Exercise.fromJson(exerciseString);
-    final notes = json["notes"];
+  factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
+    final superSetId = json["superSetId"] ?? "";
+    final exerciseJson = json["exercise"];
+    final exercise = ExerciseDto.fromJson(exerciseJson);
+    final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    final createdAt = routineLog?.createdAt ?? TemporalDateTime.now();
-    return ExerciseLogDto(const Uuid().v4(), routineLog, superSetId, exercise, notes, sets, createdAt);
+    return ExerciseLogDto(
+        const Uuid().v4(), routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now());
   }
 
   @override
   String toString() {
-    return 'ProcedureDto{id: $id, routineLogId: $routineLog, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
   }
 }

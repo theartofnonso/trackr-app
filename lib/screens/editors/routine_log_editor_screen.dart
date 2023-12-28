@@ -1,17 +1,17 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
@@ -23,7 +23,7 @@ import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
-  final RoutineLog log;
+  final RoutineLogDto log;
 
   const RoutineLogEditorScreen({super.key, required this.log});
 
@@ -43,7 +43,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final exercises = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<Exercise>?;
+        as List<ExerciseDto>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (context.mounted) {
@@ -74,21 +74,33 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         ));
   }
 
-  Future<void> _doCreateRoutineLog() async {
-    _toggleLoadingState(message: "Saving log...");
-
+  RoutineLogDto _routineLog() {
     final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
 
     final log = widget.log;
 
-    final createdLog = await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-        context: context,
+    final routineLog = RoutineLogDto(
+        id: log.id,
+        templateId: log.templateId,
         name: log.name,
-        notes: log.notes,
         exerciseLogs: exerciseLogs,
+        notes: log.notes,
         startTime: log.startTime,
-        routine: log.routine);
+        endTime: DateTime.now(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
+    return routineLog;
+  }
+
+  Future<void> _doCreateRoutineLog() async {
+
+    _toggleLoadingState(message: "Saving log...");
+
+    final routineLog = _routineLog();
+
+    final createdLog =
+        await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
 
     _toggleLoadingState();
 
@@ -126,11 +138,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _cacheLog() {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final procedures = procedureProvider.mergeSetsIntoExerciseLogs();
-    final log = widget.log;
-    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-        name: log.name, notes: log.notes, procedures: procedures, startTime: log.startTime, routine: log.routine);
+    final routineLog = _routineLog();
+    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
   }
 
   void _dismissKeyboard() {
@@ -141,9 +150,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Navigator.of(context).pop();
   }
 
-  void _navigateBack({RoutineLog? log}) {
+  void _navigateBack({RoutineLogDto? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
-    Provider.of<RoutineLogProvider>(context, listen: false).cachedRoutineLog = null;
     Navigator.of(context).pop(log);
   }
 
@@ -182,7 +190,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             floatingActionButton: isKeyboardOpen || _loading
                 ? null
                 : FloatingActionButton(
-                    heroTag: "fab_end_routine_log_screen",
+                    heroTag: "fab_routine_log_editor_screen",
                     onPressed: _saveLog,
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
@@ -208,7 +216,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                               builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
                             return _RoutineLogOverview(
                               sets: provider.completedSets().length,
-                              timer: _RoutineTimer(startTime: widget.log.startTime.getDateTimeInUtc()),
+                              timer: _RoutineTimer(startTime: widget.log.startTime),
                             );
                           }),
                           const SizedBox(height: 20),
@@ -262,12 +270,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     _initializeProcedureData();
 
     _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _cacheLog();
+    });
   }
 
   void _initializeProcedureData() {
-    final procedureJsons = widget.log.procedures;
-    final procedures = procedureJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
-    Provider.of<ExerciseLogProvider>(context, listen: false).loadExerciseLogs(logs: procedures);
+    final exerciseLogs = widget.log.exerciseLogs;
+    Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exerciseLogs);
   }
 
   @override

@@ -19,6 +19,11 @@ class SelectableExerciseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final secondaryMuscleGroups = exerciseInLibraryDto.exercise.secondaryMuscleGroups.isNotEmpty
+        ? exerciseInLibraryDto.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")
+        : "None";
+
     return Theme(
       data: ThemeData(
         splashColor: Colors.transparent,
@@ -35,13 +40,13 @@ class SelectableExerciseWidget extends StatelessWidget {
             SizedBox(
                 width: 300,
                 child: Text(
-                  "Primary: ${exerciseInLibraryDto.exercise.primaryMuscle}",
+                  "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
                   style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                 )),
             SizedBox(
                 width: 300,
                 child: Text(
-                  "Secondary: ${exerciseInLibraryDto.exercise.secondaryMuscles.isNotEmpty ? exerciseInLibraryDto.exercise.secondaryMuscles.join(", ") : "None"}",
+                  "Secondary: $secondaryMuscleGroups",
                   style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                 )),
           ],

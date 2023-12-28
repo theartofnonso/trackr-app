@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
-import '../../../providers/routine_provider.dart';
+import '../../../providers/routine_template_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../dtos/exercise_log_view_model.dart';
@@ -16,23 +15,21 @@ import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'helper_utils.dart';
 
-enum RoutineSummaryType { volume, reps, duration }
+class RoutineTemplateScreen extends StatefulWidget {
+  final String templateId;
 
-class RoutinePreviewScreen extends StatefulWidget {
-  final String routineId;
-
-  const RoutinePreviewScreen({super.key, required this.routineId});
+  const RoutineTemplateScreen({super.key, required this.templateId});
 
   @override
-  State<RoutinePreviewScreen> createState() => _RoutinePreviewScreenState();
+  State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
 }
 
-class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
+class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   bool _loading = false;
 
   void _deleteRoutine() async {
     try {
-      await Provider.of<RoutineProvider>(context, listen: false).removeRoutine(id: widget.routineId);
+      await Provider.of<RoutineTemplateProvider>(context, listen: false).removeTemplate(id: widget.templateId);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -53,16 +50,16 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routine = Provider.of<RoutineProvider>(context, listen: true).routineWhere(id: widget.routineId);
+    final template = Provider.of<RoutineTemplateProvider>(context, listen: true).templateWhere(id: widget.templateId);
 
-    if (routine == null) {
+    if (template == null) {
       return const SizedBox.shrink();
     }
 
     final menuActions = [
       MenuItemButton(
           onPressed: () {
-            navigateToRoutineEditor(context: context, routine: routine);
+            navigateToRoutineEditor(context: context, template: template);
           },
           child: Text("Edit", style: GoogleFonts.lato())),
       MenuItemButton(
@@ -84,20 +81,19 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
       )
     ];
 
-    List<ExerciseLogDto> exerciseLogs =
-        routine.procedures.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).map((procedure) {
+    List<ExerciseLogDto> exerciseLogs = template.exercises.map((exercise) {
       final exerciseFromLibrary =
-          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: procedure.exercise.id);
+          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: exercise.exercise.id);
       if (exerciseFromLibrary != null) {
-        return procedure.copyWith(exercise: exerciseFromLibrary);
+        return exercise.copyWith(exercise: exerciseFromLibrary);
       }
-      return procedure;
+      return exercise;
     }).toList();
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: "fab_routine_preview_screen",
-            onPressed: () => logRoutine(context: context, routine: routine),
+            onPressed: () => logRoutine(context: context, template: template),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),
@@ -107,7 +103,7 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
             icon: const Icon(Icons.arrow_back_outlined),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text(routine.name,
+          title: Text(template.name,
               style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
             MenuAnchor(
@@ -143,8 +139,8 @@ class _RoutinePreviewScreenState extends State<RoutinePreviewScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    routine.notes.isNotEmpty
-                        ? Text(routine.notes,
+                    template.notes.isNotEmpty
+                        ? Text(template.notes,
                             style: GoogleFonts.lato(
                               color: Colors.white,
                               fontSize: 14,

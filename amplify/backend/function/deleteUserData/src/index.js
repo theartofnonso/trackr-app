@@ -1,9 +1,5 @@
 /* Amplify Params - DO NOT EDIT
-	API_TRACKERAPP_GRAPHQLAPIIDOUTPUT
-	API_TRACKERAPP_USERTABLE_ARN
-	API_TRACKERAPP_USERTABLE_NAME
-	ENV
-	REGION
+	
 Amplify Params - DO NOT EDIT */
 
 const {DynamoDBClient, ScanCommand, BatchWriteItemCommand} = require("@aws-sdk/client-dynamodb");
@@ -41,9 +37,9 @@ exports.handler = async (event) => {
             const command = new BatchWriteItemCommand(batchWriteInput);
             await dynamoDBClient.send(command);
         }
-        return true;
     } catch (err) {
         console.log(err);
+        return false;
     }
-    return false; // this means the user data was cleaned up
+    return true; //his means the user data was cleaned up
 };

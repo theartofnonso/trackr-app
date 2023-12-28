@@ -1,6 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/providers/routine_provider.dart';
+import 'package:tracker_app/providers/routine_template_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -43,8 +44,8 @@ void main() async {
       ChangeNotifierProvider<ExerciseProvider>(
         create: (BuildContext context) => ExerciseProvider(),
       ),
-      ChangeNotifierProvider<RoutineProvider>(
-        create: (BuildContext context) => RoutineProvider(),
+      ChangeNotifierProvider<RoutineTemplateProvider>(
+        create: (BuildContext context) => RoutineTemplateProvider(),
       ),
       ChangeNotifierProvider<RoutineLogProvider>(
         create: (BuildContext context) => RoutineLogProvider(),
@@ -73,9 +74,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
+
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');

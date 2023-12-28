@@ -15,7 +15,7 @@ exports.handler = async (event) => {
 
     let scanInput = {
         TableName: tableName,
-        FilterExpression: 'userID = :value',
+        FilterExpression: 'userId = :value',
         ExpressionAttributeValues: {
             ":value": {"S": event.identity.claims.username},
         }
@@ -41,9 +41,9 @@ exports.handler = async (event) => {
             const command = new BatchWriteItemCommand(batchWriteInput);
             await dynamoDBClient.send(command);
         }
-        return true;
     } catch (err) {
         console.log(err);
+        return false;
     }
-    return false; // this means the user data was cleaned up
+    return true; // this means the user data was cleaned up
 };
