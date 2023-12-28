@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -128,14 +129,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: _decrementDate, icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+              IconButton(onPressed: _decrementDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
               Text(_currentDate.formattedMonthAndYear(),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   )),
-              IconButton(onPressed: _incrementDate, icon: const Icon(Icons.arrow_forward_ios_rounded)),
+              IconButton(onPressed: _incrementDate, icon: const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)),
             ],
           ),
         ),

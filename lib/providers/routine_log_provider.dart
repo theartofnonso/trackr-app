@@ -111,12 +111,14 @@ class RoutineLogProvider with ChangeNotifier {
   Future<RoutineLogDto> saveRoutineLog({required RoutineLogDto logDto}) async {
     final now = TemporalDateTime.now();
 
-    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+    final logToCreate =
+        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
 
     await Amplify.DataStore.save(logToCreate);
 
     final updatedWithId = logDto.copyWith(id: logToCreate.id);
-    final updatedWithRoutineIds = updatedWithId.copyWith(exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
+    final updatedWithRoutineIds = updatedWithId.copyWith(
+        exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
     _logs.add(updatedWithRoutineIds);
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();

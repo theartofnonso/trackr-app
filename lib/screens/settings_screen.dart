@@ -223,12 +223,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         message: "Log out?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
+          _toggleLoadingState(message: "Signing out...");
           Navigator.of(context).pop();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
-        rightActionLabel: 'Logout',
+        rightActionLabel: 'Sign out',
         isRightActionDestructive: true);
   }
 

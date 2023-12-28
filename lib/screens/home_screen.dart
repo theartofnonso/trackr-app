@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPrefs().userEmail = signInDetails["username"] as String;
   }
 
-  void _firstLaunchSetup() async {
+  void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
       _toggleLoadingState(message: "Setting up Trackr...");
       SharedPrefs().firstLaunch = false;
@@ -119,6 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
         await _loadAppData();
         _toggleLoadingState(message: "");
       }
+    } else {
+      _loadAppData();
+      _loadCachedLog();
     }
   }
 
@@ -131,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       await Amplify.DataStore.start();
+      print('DataStore started');
     } on Exception catch (error) {
       print('Error starting DataStore: $error');
     }
@@ -140,8 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _firstLaunchSetup();
-    _loadAppData();
-    _loadCachedLog();
+    _runSetup();
   }
 }
