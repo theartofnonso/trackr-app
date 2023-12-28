@@ -112,7 +112,7 @@ class RoutineLogProvider with ChangeNotifier {
     final now = TemporalDateTime.now();
 
     final logToCreate =
-        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
 
     await Amplify.DataStore.save(logToCreate);
 
