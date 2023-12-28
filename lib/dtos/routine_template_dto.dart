@@ -32,6 +32,15 @@ class RoutineTemplateDto {
         updatedAt: DateTime.now());
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'notes': notes,
+      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
+    };
+  }
+
   RoutineTemplateDto copyWith({
     String? id,
     String? name,
