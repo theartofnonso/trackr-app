@@ -75,18 +75,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
 
-    final userId = SharedPrefs().userId;
-
-    final syncExpressions = [
-      DataStoreSyncExpression(Exercise.classType, () => Exercise.USERID.eq(userId)),
-      DataStoreSyncExpression(RoutineTemplate.classType, () => RoutineTemplate.USERID.eq(userId)),
-      DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.USERID.eq(userId)),
-    ];
-
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: syncExpressions));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');

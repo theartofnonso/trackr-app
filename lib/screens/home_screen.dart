@@ -1,7 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
@@ -26,24 +25,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentScreenIndex = 0;
 
-  bool _loading = false;
-  String _loadingMessage = "";
-
   @override
   Widget build(BuildContext context) {
     final screens = [const OverviewScreen(), const RoutinesScreen(), const AchievementsScreen()];
     return Scaffold(
-      body: Stack(children: [
-        screens[_currentScreenIndex],
-        if (_loading)
-          Align(
-              alignment: Alignment.center,
-              child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: tealBlueDark.withOpacity(0.95),
-                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 16)))))
-      ]),
+      body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
@@ -78,13 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _toggleLoadingState({String message = ""}) {
-    setState(() {
-      _loading = !_loading;
-      _loadingMessage = message;
-    });
-  }
-
   Future<void> _loadAppData() async {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
     if (context.mounted) {
@@ -111,34 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
-      _toggleLoadingState(message: "Setting up Trackr...");
       SharedPrefs().firstLaunch = false;
       await _cacheUser();
-      await _restartDataStore();
       if (context.mounted) {
         await _loadAppData();
-        _toggleLoadingState(message: "");
       }
     } else {
       _loadAppData();
       _loadCachedLog();
     }
-  }
-
-  Future<void> _restartDataStore() async {
-    try {
-      await Amplify.DataStore.stop();
-    } catch (error) {
-      print('Error stopping DataStore: $error');
-    }
-
-    try {
-      await Amplify.DataStore.start();
-      print('DataStore started');
-    } on Exception catch (error) {
-      print('Error starting DataStore: $error');
-    }
-
   }
 
   @override

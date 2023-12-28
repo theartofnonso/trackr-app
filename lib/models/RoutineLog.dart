@@ -27,6 +27,7 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 class RoutineLog extends amplify_core.Model {
   static const classType = const _RoutineLogModelType();
   final String id;
+  final String? _owner;
   final String? _userId;
   final String? _data;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -43,6 +44,10 @@ class RoutineLog extends amplify_core.Model {
       return RoutineLogModelIdentifier(
         id: id
       );
+  }
+  
+  String? get owner {
+    return _owner;
   }
   
   String get userId {
@@ -97,11 +102,12 @@ class RoutineLog extends amplify_core.Model {
     }
   }
   
-  const RoutineLog._internal({required this.id, required userId, required data, required createdAt, required updatedAt}): _userId = userId, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
+  const RoutineLog._internal({required this.id, owner, required userId, required data, required createdAt, required updatedAt}): _owner = owner, _userId = userId, _data = data, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory RoutineLog({String? id, required String userId, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
+  factory RoutineLog({String? id, String? owner, required String userId, required String data, required amplify_core.TemporalDateTime createdAt, required amplify_core.TemporalDateTime updatedAt}) {
     return RoutineLog._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
+      owner: owner,
       userId: userId,
       data: data,
       createdAt: createdAt,
@@ -117,6 +123,7 @@ class RoutineLog extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is RoutineLog &&
       id == other.id &&
+      _owner == other._owner &&
       _userId == other._userId &&
       _data == other._data &&
       _createdAt == other._createdAt &&
@@ -132,6 +139,7 @@ class RoutineLog extends amplify_core.Model {
     
     buffer.write("RoutineLog {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("data=" + "$_data" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -141,9 +149,10 @@ class RoutineLog extends amplify_core.Model {
     return buffer.toString();
   }
   
-  RoutineLog copyWith({String? userId, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  RoutineLog copyWith({String? owner, String? userId, String? data, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return RoutineLog._internal(
       id: id,
+      owner: owner ?? this.owner,
       userId: userId ?? this.userId,
       data: data ?? this.data,
       createdAt: createdAt ?? this.createdAt,
@@ -151,6 +160,7 @@ class RoutineLog extends amplify_core.Model {
   }
   
   RoutineLog copyWithModelFieldValues({
+    ModelFieldValue<String?>? owner,
     ModelFieldValue<String>? userId,
     ModelFieldValue<String>? data,
     ModelFieldValue<amplify_core.TemporalDateTime>? createdAt,
@@ -158,6 +168,7 @@ class RoutineLog extends amplify_core.Model {
   }) {
     return RoutineLog._internal(
       id: id,
+      owner: owner == null ? this.owner : owner.value,
       userId: userId == null ? this.userId : userId.value,
       data: data == null ? this.data : data.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
@@ -167,17 +178,19 @@ class RoutineLog extends amplify_core.Model {
   
   RoutineLog.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _owner = json['owner'],
       _userId = json['userId'],
       _data = json['data'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'userId': _userId, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'owner': _owner, 'userId': _userId, 'data': _data, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
+    'owner': _owner,
     'userId': _userId,
     'data': _data,
     'createdAt': _createdAt,
@@ -186,6 +199,7 @@ class RoutineLog extends amplify_core.Model {
 
   static final amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<RoutineLogModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
+  static final OWNER = amplify_core.QueryField(fieldName: "owner");
   static final USERID = amplify_core.QueryField(fieldName: "userId");
   static final DATA = amplify_core.QueryField(fieldName: "data");
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
@@ -209,6 +223,12 @@ class RoutineLog extends amplify_core.Model {
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: RoutineLog.OWNER,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: RoutineLog.USERID,
