@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
@@ -10,6 +11,9 @@ import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../dtos/routine_log_dto.dart';
+import '../providers/exercise_provider.dart';
+import '../providers/routine_log_provider.dart';
+import '../providers/routine_template_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -60,6 +64,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _loadAppData({required BuildContext context}) async {
+    await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+    if(context.mounted) {
+      Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
+      Provider.of<RoutineLogProvider>(context, listen: false).listLogs();
+    }
+  }
+
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RoutineLogDto? log = cachedRoutineLog();
@@ -82,14 +94,9 @@ class _HomeScreenState extends State<HomeScreen> {
       await _cacheUser();
       await _restartDataStore();
       if (mounted) {
-        _loadData();
+        _loadAppData(context: context);
       }
     }
-  }
-
-  void _loadData() {
-    loadAppData(context: context);
-    _loadCachedLog();
   }
 
   Future<void> _restartDataStore() async {
@@ -111,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _runFirstLaunchSetup();
     _restartDataStore();
-    _loadData();
+    _loadAppData(context: context);
+    _loadCachedLog();
   }
 }

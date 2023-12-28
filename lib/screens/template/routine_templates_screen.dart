@@ -6,7 +6,6 @@ import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import '../../../providers/routine_template_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../dtos/routine_template_dto.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import 'helper_utils.dart';
 
@@ -24,25 +23,22 @@ class RoutinesScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.add, size: 28),
           ),
-          body: RefreshIndicator(
-            onRefresh: () => loadAppData(context: context),
-            child: SafeArea(
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                    child: Column(children: [
-                      provider.templates.isNotEmpty
-                          ? Expanded(
-                              child: ListView.separated(
-                                  padding: const EdgeInsets.only(bottom: 150),
-                                  itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                        template: provider.templates[index],
-                                      ),
-                                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                                  itemCount: provider.templates.length),
-                            )
-                          : const Expanded(child: RoutineEmptyState()),
-                    ]))),
-          ));
+          body: SafeArea(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                  child: Column(children: [
+                    provider.templates.isNotEmpty
+                        ? Expanded(
+                            child: ListView.separated(
+                                padding: const EdgeInsets.only(bottom: 150),
+                                itemBuilder: (BuildContext context, int index) => _RoutineWidget(
+                                      template: provider.templates[index],
+                                    ),
+                                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                                itemCount: provider.templates.length),
+                          )
+                        : const Expanded(child: RoutineEmptyState()),
+                  ]))));
     });
   }
 }

@@ -158,14 +158,6 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
   return monthRanges;
 }
 
-Future<void> loadAppData({required BuildContext context}) async {
-  await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
-  if(context.mounted) {
-    Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
-    Provider.of<RoutineLogProvider>(context, listen: false).listLogs();
-  }
-}
-
 RoutineLogDto? cachedRoutineLog() {
   RoutineLogDto? routineLog;
   final cache = SharedPrefs().cachedRoutineLog;
