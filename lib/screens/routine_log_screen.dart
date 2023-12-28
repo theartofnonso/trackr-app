@@ -264,7 +264,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
       final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false)
-          .saveTemplate(context: context, templateDto: templateToCreate);
+          .saveTemplate(user: user, templateDto: templateToCreate);
       if (mounted) {
         navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
       }

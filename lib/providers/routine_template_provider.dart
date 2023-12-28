@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/providers/user_provider.dart';
 import '../dtos/routine_template_dto.dart';
 
 class RoutineTemplateProvider with ChangeNotifier {
@@ -21,20 +19,14 @@ class RoutineTemplateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<RoutineTemplateDto> saveTemplate(
-      {required BuildContext context, required RoutineTemplateDto templateDto}) async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
+  Future<RoutineTemplateDto> saveTemplate({required User user, required RoutineTemplateDto templateDto}) async {
+    final now = TemporalDateTime.now();
 
-    if (user != null) {
-      final now = TemporalDateTime.now();
+    final templateToCreate = RoutineTemplate(user: user, data: jsonEncode(templateDto), createdAt: now, updatedAt: now);
 
-      final templateToCreate =
-          RoutineTemplate(user: user, data: jsonEncode(templateDto), createdAt: now, updatedAt: now);
-
-      await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
-      _templates.insert(0, templateDto);
-      notifyListeners();
-    }
+    await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
+    _templates.insert(0, templateDto);
+    notifyListeners();
 
     return templateDto;
   }

@@ -15,9 +15,9 @@ type User
   email: AWSEmail!
   exercises: [Exercise] @hasMany(indexName: "byUser", fields: ["id"])
   templates: [RoutineTemplate] @hasMany(indexName: "byUser", fields: ["id"])
-  routineLogs: [RoutineLog] @hasMany(indexName: "byUser", fields: ["id"])
-  createdAt: AWSDateTime
-  updatedAt: AWSDateTime
+  logs: [RoutineLog] @hasMany(indexName: "byUser", fields: ["id"])
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }
 
 type RoutineTemplate

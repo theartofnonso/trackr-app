@@ -19,7 +19,6 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
-import '../dtos/routine_log_dto.dart';
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
@@ -33,7 +32,7 @@ class User extends amplify_core.Model {
   final String? _email;
   final List<Exercise>? _exercises;
   final List<RoutineTemplate>? _templates;
-  final List<RoutineLog>? _routineLogs;
+  final List<RoutineLog>? _logs;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -75,8 +74,8 @@ class User extends amplify_core.Model {
     return _templates;
   }
   
-  List<RoutineLog>? get routineLogs {
-    return _routineLogs;
+  List<RoutineLog>? get logs {
+    return _logs;
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -87,16 +86,16 @@ class User extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const User._internal({required this.id, name, required email, exercises, templates, routineLogs, createdAt, updatedAt}): _name = name, _email = email, _exercises = exercises, _templates = templates, _routineLogs = routineLogs, _createdAt = createdAt, _updatedAt = updatedAt;
+  const User._internal({required this.id, name, required email, exercises, templates, logs, createdAt, updatedAt}): _name = name, _email = email, _exercises = exercises, _templates = templates, _logs = logs, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory User({String? id, String? name, required String email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLogDto>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory User({String? id, String? name, required String email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLog>? logs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       email: email,
       exercises: exercises != null ? List<Exercise>.unmodifiable(exercises) : exercises,
       templates: templates != null ? List<RoutineTemplate>.unmodifiable(templates) : templates,
-      routineLogs: routineLogs != null ? List<RoutineLogDto>.unmodifiable(routineLogs) : routineLogs,
+      logs: logs != null ? List<RoutineLog>.unmodifiable(logs) : logs,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -114,7 +113,7 @@ class User extends amplify_core.Model {
       _email == other._email &&
       DeepCollectionEquality().equals(_exercises, other._exercises) &&
       DeepCollectionEquality().equals(_templates, other._templates) &&
-      DeepCollectionEquality().equals(_routineLogs, other._routineLogs) &&
+      DeepCollectionEquality().equals(_logs, other._logs) &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -137,14 +136,14 @@ class User extends amplify_core.Model {
     return buffer.toString();
   }
   
-  User copyWith({String? name, String? email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLogDto>? routineLogs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  User copyWith({String? name, String? email, List<Exercise>? exercises, List<RoutineTemplate>? templates, List<RoutineLog>? logs, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id,
       name: name ?? this.name,
       email: email ?? this.email,
       exercises: exercises ?? this.exercises,
       templates: templates ?? this.templates,
-      routineLogs: routineLogs ?? this.routineLogs,
+      logs: logs ?? this.logs,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
@@ -154,7 +153,7 @@ class User extends amplify_core.Model {
     ModelFieldValue<String>? email,
     ModelFieldValue<List<Exercise>?>? exercises,
     ModelFieldValue<List<RoutineTemplate>?>? templates,
-    ModelFieldValue<List<RoutineLogDto>?>? routineLogs,
+    ModelFieldValue<List<RoutineLog>?>? logs,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {
@@ -164,7 +163,7 @@ class User extends amplify_core.Model {
       email: email == null ? this.email : email.value,
       exercises: exercises == null ? this.exercises : exercises.value,
       templates: templates == null ? this.templates : templates.value,
-      routineLogs: routineLogs == null ? this.routineLogs : routineLogs.value,
+      logs: logs == null ? this.logs : logs.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
@@ -186,8 +185,8 @@ class User extends amplify_core.Model {
           .map((e) => RoutineTemplate.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _routineLogs = json['routineLogs'] is List
-        ? (json['routineLogs'] as List)
+      _logs = json['logs'] is List
+        ? (json['logs'] as List)
           .where((e) => e?['serializedData'] != null)
           .map((e) => RoutineLog.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
@@ -196,7 +195,7 @@ class User extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'email': _email, 'exercises': _exercises?.map((Exercise? e) => e?.toJson()).toList(), 'templates': _templates?.map((RoutineTemplate? e) => e?.toJson()).toList(), 'routineLogs': _routineLogs?.map((RoutineLog? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'email': _email, 'exercises': _exercises?.map((Exercise? e) => e?.toJson()).toList(), 'templates': _templates?.map((RoutineTemplate? e) => e?.toJson()).toList(), 'logs': _logs?.map((RoutineLog? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -205,7 +204,7 @@ class User extends amplify_core.Model {
     'email': _email,
     'exercises': _exercises,
     'templates': _templates,
-    'routineLogs': _routineLogs,
+    'logs': _logs,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -220,8 +219,8 @@ class User extends amplify_core.Model {
   static final TEMPLATES = amplify_core.QueryField(
     fieldName: "templates",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'RoutineTemplate'));
-  static final ROUTINELOGS = amplify_core.QueryField(
-    fieldName: "routineLogs",
+  static final LOGS = amplify_core.QueryField(
+    fieldName: "logs",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'RoutineLog'));
   static final CREATEDAT = amplify_core.QueryField(fieldName: "createdAt");
   static final UPDATEDAT = amplify_core.QueryField(fieldName: "updatedAt");
@@ -277,7 +276,7 @@ class User extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
-      key: User.ROUTINELOGS,
+      key: User.LOGS,
       isRequired: false,
       ofModelName: 'RoutineLog',
       associatedKey: RoutineLog.USER

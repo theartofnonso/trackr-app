@@ -75,16 +75,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         ));
   }
 
-  Future<void> _doCreateRoutineLog() async {
-    _toggleLoadingState(message: "Saving log...");
-
+  RoutineLogDto _routineLog() {
     final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
 
     final log = widget.log;
 
     final routineLog = RoutineLogDto(
-        id: "",
+        id: log.id,
         templateId: log.templateId,
         name: log.name,
         exerciseLogs: exerciseLogs,
@@ -93,10 +91,21 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         endTime: log.endTime,
         createdAt: log.createdAt,
         updatedAt: log.updatedAt);
+    return routineLog;
+  }
 
-    final createdLog = await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(
-        context: context,
-        logDto: routineLog);
+  Future<void> _doCreateRoutineLog() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    if (user == null) {
+      return;
+    }
+    _toggleLoadingState(message: "Saving log...");
+
+    final routineLog = _routineLog();
+
+    final createdLog =
+        await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(user: user, logDto: routineLog);
 
     _toggleLoadingState();
 
@@ -140,25 +149,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
       return;
     }
 
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    final routineLog = _routineLog();
 
-    final log = widget.log;
-
-    final routineLog = RoutineLogDto(
-        id: "",
-        templateId: log.templateId,
-        name: log.name,
-        exerciseLogs: exerciseLogs,
-        notes: log.notes,
-        startTime: log.startTime,
-        endTime: log.endTime,
-        createdAt: log.createdAt,
-        updatedAt: log.updatedAt);
-
-    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(
-        context: context,
-        logDto: routineLog);
+    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
   }
 
   void _dismissKeyboard() {

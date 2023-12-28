@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
-import 'package:tracker_app/providers/user_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
@@ -49,9 +47,8 @@ class RoutineLogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _orderExercises() {
-    List<ExerciseLogDto> exerciseLogs =
-        _logs.map((log) => log.exerciseLogs).expand((exerciseLogs) => exerciseLogs).toList();
+  void _orderExerciseLogs() {
+    List<ExerciseLogDto> exerciseLogs = _logs.expand((log) => log.exerciseLogs).toList();
     _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
     _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) {
       final exerciseTypeString = exerciseLog.exercise.type;
@@ -106,36 +103,26 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void _normaliseLogs() {
-    _orderExercises();
+    _orderExerciseLogs();
     _loadWeekToLogs();
     _loadMonthToLogs();
   }
 
-  Future<RoutineLogDto> saveRoutineLog({required BuildContext context, required RoutineLogDto logDto}) async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
+  Future<RoutineLogDto> saveRoutineLog({required User user, required RoutineLogDto logDto}) async {
+    final now = TemporalDateTime.now();
 
-    if (user != null) {
+    final logToCreate = RoutineLog(user: user, data: jsonEncode(logDto), createdAt: now, updatedAt: now);
 
-      final now = TemporalDateTime.now();
-
-      final logToCreate = RoutineLog(
-          user: user, data: jsonEncode(logDto.toJson()), createdAt: now, updatedAt: now);
-
-      try {
-        await Amplify.DataStore.save(logToCreate);
-        _logs.add(logDto);
-        _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-        _normaliseLogs();
-        notifyListeners();
-      } on DataStoreException catch (error) {
-        print('Error saving RoutineLog: ${error.message}');
-      }
-    }
+    await Amplify.DataStore.save(logToCreate);
+    _logs.add(logDto);
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    _normaliseLogs();
+    notifyListeners();
 
     return logDto;
   }
 
-  void cacheRoutineLog({required BuildContext context, required RoutineLogDto logDto}) {
+  void cacheRoutineLog({required RoutineLogDto logDto}) {
     SharedPrefs().cachedRoutineLog = jsonEncode(logDto);
   }
 
@@ -201,6 +188,10 @@ class RoutineLogProvider with ChangeNotifier {
 
   void reset() {
     _logs.clear();
+    _exerciseLogsById.clear();
+    _exerciseLogsByType.clear();
+    _weekToLogs.clear();
+    _monthToLogs.clear();
     notifyListeners();
   }
 }

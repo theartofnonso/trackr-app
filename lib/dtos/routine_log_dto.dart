@@ -31,7 +31,7 @@ class RoutineLogDto {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id, // Assuming User class has a toJson method
+      'id': id,
       'name': name,
       'notes': notes,
       'startTime': startTime.toIso8601String(),
