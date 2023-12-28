@@ -11,6 +11,13 @@ import '../enums/muscle_group_enums.dart';
 import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';
 
+class _MuscleInsightTileViewModel {
+  final int index;
+  final MapEntry<MuscleGroupFamily, int> muscleGroupFamilyMap;
+
+  _MuscleInsightTileViewModel({required this.index, required this.muscleGroupFamilyMap});
+}
+
 class MuscleInsightsScreen extends StatefulWidget {
   const MuscleInsightsScreen({super.key});
 
@@ -19,7 +26,7 @@ class MuscleInsightsScreen extends StatefulWidget {
 }
 
 Color generateDecoration({required int index}) {
-  return switch(index) {
+  return switch (index) {
     0 => Colors.blue,
     1 => Colors.red,
     2 => Colors.green,
@@ -36,7 +43,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bodySplitWidgets = _muscleGroupSplitToWidgets();
+    final bodySplit = _muscleGroupSplitToModels();
 
     final textStyle = GoogleFonts.lato(fontSize: 14);
 
@@ -71,14 +78,11 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
               }
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           PieChartWidget(segments: _muscleGroupFamily.entries.take(5).toList()),
           const SizedBox(height: 12),
           Expanded(
-            child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => bodySplitWidgets[index],
-                separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
-                itemCount: bodySplitWidgets.length),
+            child: _MuscleInsightListView(models: bodySplit),
           )
         ]),
       ),
@@ -107,22 +111,11 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
     });
   }
 
-  List<Widget> _muscleGroupSplitToWidgets() {
-    final splitList = <Widget>[];
-    _muscleGroupFamily.entries.forEachIndexed((index, muscleGroupFamilyMap) {
-      final widget = Container(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        decoration: BoxDecoration(
-          border: Border(left: BorderSide(color: generateDecoration(index: index), width: 5.0)),
-        ),
-        child: ListTile(
-            dense: true,
-            title: Text(muscleGroupFamilyMap.key.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-            trailing: Text("${muscleGroupFamilyMap.value}", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-      );
-      splitList.add(widget);
-    });
-    return splitList;
+  List<_MuscleInsightTileViewModel> _muscleGroupSplitToModels() {
+    return _muscleGroupFamily.entries
+        .mapIndexed((index, muscleGroupFamilyMap) =>
+            _MuscleInsightTileViewModel(index: index, muscleGroupFamilyMap: muscleGroupFamilyMap))
+        .toList();
   }
 
   void _computeChart() {
@@ -143,5 +136,44 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
   void initState() {
     super.initState();
     _computeChart();
+  }
+}
+
+class _MuscleInsightListView extends StatelessWidget {
+  final List<_MuscleInsightTileViewModel> models;
+
+  const _MuscleInsightListView({required this.models});
+
+  @override
+  Widget build(BuildContext context) {
+    final widgets = models.map((model) {
+      return _MuscleInsightTile(index: model.index, muscleGroupFamilyMap: model.muscleGroupFamilyMap);
+    }).toList();
+    return ListView.separated(
+        itemBuilder: (BuildContext context, int index) => widgets[index],
+        separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.white70.withOpacity(0.1)),
+        itemCount: widgets.length);
+  }
+}
+
+class _MuscleInsightTile extends StatelessWidget {
+  final int index;
+  final MapEntry<MuscleGroupFamily, int> muscleGroupFamilyMap;
+
+  const _MuscleInsightTile({required this.index, required this.muscleGroupFamilyMap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(color: generateDecoration(index: index), width: 2.0)),
+      ),
+      child: ListTile(
+          dense: true,
+          title: Text(muscleGroupFamilyMap.key.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+          trailing:
+              Text("${muscleGroupFamilyMap.value}", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+    );
   }
 }

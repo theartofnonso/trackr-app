@@ -2,14 +2,11 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../providers/exercise_provider.dart';
-import '../providers/routine_log_provider.dart';
-import '../providers/routine_provider.dart';
+import '../dtos/routine_log_dto.dart';
 import '../shared_prefs.dart';
 
 bool isDefaultWeightUnit() {
@@ -82,21 +79,6 @@ void toggleDistanceUnit({required DistanceUnit unit}) {
   SharedPrefs().distanceUnit = unit.name;
 }
 
-User user() {
-  final email = SharedPrefs().userEmail;
-  final userId = SharedPrefs().userId;
-  return User(id: userId, email: email);
-}
-
-Future<void> persistUserCredentials() async {
-  final authUser = await Amplify.Auth.getCurrentUser();
-  final signInDetails = authUser.signInDetails.toJson();
-  final email = signInDetails["username"] as String;
-  final id = authUser.userId;
-  SharedPrefs().userEmail = email;
-  SharedPrefs().userId = id;
-}
-
 String timeOfDay() {
   var hour = DateTime.now().hour;
   if (hour < 12) {
@@ -110,15 +92,17 @@ String timeOfDay() {
 
 DateTimeRange thisWeekDateRange() {
   final now = DateTime.now();
-  final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-  final endOfWeek = now.add(Duration(days: 7 - now.weekday));
+  final currentWeekDate = DateTime(now.year, now.month, now.day);
+  final startOfWeek = currentWeekDate.subtract(Duration(days: currentWeekDate.weekday - 1));
+  final endOfWeek = currentWeekDate.add(Duration(days: 7 - currentWeekDate.weekday));
   return DateTimeRange(start: startOfWeek, end: endOfWeek);
 }
 
 DateTimeRange thisMonthDateRange() {
   final now = DateTime.now();
-  final startOfMonth = DateTime(now.year, now.month, 1);
-  final endOfMonth = DateTime(now.year, now.month + 1, 0);
+  final currentWeekDate = DateTime(now.year, now.month, now.day);
+  final startOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month, 1);
+  final endOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
   return DateTimeRange(start: startOfMonth, end: endOfMonth);
 }
 
@@ -129,33 +113,53 @@ DateTimeRange thisYearDateRange() {
   return DateTimeRange(start: startOfYear, end: endOfYear);
 }
 
-Future<void> loadAppData(BuildContext context) async {
-  final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
-  final routineProvider = Provider.of<RoutineProvider>(context, listen: false);
-  final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
+  DateTime lastDayOfCurrentWeek = DateTime.now().lastWeekDay();
 
-  /// Retrieve pending logs
-  routineLogProvider.retrieveCachedPendingRoutineLogs(context);
-  exerciseProvider.listExercises().then((_) {
-    routineProvider.listRoutines();
-    routineLogProvider.listRoutineLogs();
-  });
+  List<DateTimeRange> weekRanges = [];
+
+  // Find the first day of the week for the given start date
+  startDate = startDate.localDate().subtract(Duration(days: startDate.weekday - 1));
+
+  while (startDate.isBefore(lastDayOfCurrentWeek)) {
+    DateTime endDate = startDate.add(const Duration(days: 6));
+    endDate = endDate.isBefore(lastDayOfCurrentWeek) ? endDate : lastDayOfCurrentWeek;
+
+    weekRanges.add(DateTimeRange(start: startDate, end: endDate));
+
+    // Move to the next week
+    startDate = endDate.add(const Duration(days: 1));
+  }
+  return weekRanges;
 }
 
-Map<String, dynamic> _fixRoutineLogJson(String jsonString) {
-  final json = jsonDecode(jsonString) as Map<String, dynamic>;
-  json.update("routine", (value) {
-    return {"serializedData": value};
-  });
-  return json;
+List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
+  // Find the last day of the current month
+  DateTime lastDayOfCurrentMonth = DateTime.now().lastMonthDay();
+  List<DateTimeRange> monthRanges = [];
+
+  // Adjust the start date to the first day of the month
+  startDate = DateTime(startDate.year, startDate.month, 1);
+
+  while (startDate.isBefore(lastDayOfCurrentMonth)) {
+    // Find the last day of the month for the current startDate
+    DateTime endDate = DateTime(startDate.year, startDate.month + 1, 0);
+
+    monthRanges.add(DateTimeRange(start: startDate, end: endDate));
+
+    // Move to the first day of the next month
+    startDate = DateTime(startDate.year, startDate.month + 1, 1);
+  }
+
+  return monthRanges;
 }
 
-RoutineLog? cachedRoutineLog() {
-  RoutineLog? routineLog;
+RoutineLogDto? cachedRoutineLog() {
+  RoutineLogDto? routineLog;
   final cache = SharedPrefs().cachedRoutineLog;
   if (cache.isNotEmpty) {
-    final routineLogJson = _fixRoutineLogJson(cache);
-    routineLog = RoutineLog.fromJson(routineLogJson);
+    final json = jsonDecode(cache);
+    routineLog = RoutineLogDto.fromJson(json);
   }
   return routineLog;
 }

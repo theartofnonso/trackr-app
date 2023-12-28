@@ -1,13 +1,10 @@
-const deleteUserData = '''mutation DeleteUserData {
-    deleteUserData
-}''';
 
 const deleteUserExerciseData = '''mutation BatchDeleteExerciseData {
     deleteUserExerciseData
 }''';
 
-const deleteUserRoutineData = '''mutation BatchDeleteUserRoutineData {
-    deleteUserRoutineData
+const deleteUserRoutineTemplateData = '''mutation BatchDeleteUserRoutineTemplateData {
+    deleteUserRoutineTemplateData
 }''';
 
 const deleteUserRoutineLogData = '''mutation BatchDeleteUserRoutineLogData {

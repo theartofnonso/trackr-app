@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../enums/exercise_type_enums.dart';
@@ -23,7 +24,12 @@ class RoutineLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLogId)!;
+    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLogId ?? "");
+
+    if(routineLog == null) {
+      return const ListViewEmptyState();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,7 +46,7 @@ class RoutineLogWidget extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(exerciseLog.createdAt.getDateTimeInUtc().formattedDayAndMonthAndYear(),
+              Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
                   style: GoogleFonts.lato(
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
             ]),
@@ -60,8 +66,7 @@ class _ProcedureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final exerciseString = exerciseLog.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseString);
+    final exerciseType = exerciseLog.exercise.type;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +88,7 @@ class _ProcedureWidget extends StatelessWidget {
           ExerciseType.durationAndDistance => DoubleSetHeader(firstLabel: 'TIME', secondLabel: distanceTitle(type: ExerciseType.durationAndDistance)),
         },
         const SizedBox(height: 8),
-        ...setsToWidgets(type: ExerciseType.fromString(exerciseLog.exercise.type), sets: exerciseLog.sets),
+        ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets),
       ],
     );
   }

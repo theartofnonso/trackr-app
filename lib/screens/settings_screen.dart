@@ -36,7 +36,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   bool _loading = false;
   String _loadingMessage = "";
 
@@ -52,151 +51,148 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    dense: true,
-                    title: Text("Weight", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                    subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
-                    trailing: SegmentedButton(
-                      showSelectedIcon: false,
-                      style: ButtonStyle(
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                        shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        )),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.white;
-                            }
-                            return Colors.transparent;
-                          },
-                        ),
-                        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.black;
-                            }
+      body: Stack(children: [
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  dense: true,
+                  title: Text("Weight", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
+                  trailing: SegmentedButton(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(
+                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
                             return Colors.white;
-                          },
-                        ),
+                          }
+                          return Colors.transparent;
+                        },
                       ),
-                      segments: [
-                        ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                        ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                      ],
-                      selected: <WeightUnit>{_weightUnitType},
-                      onSelectionChanged: (Set<WeightUnit> unitType) {
-                        setState(() {
-                          _weightUnitType = unitType.first;
-                        });
-                        toggleWeightUnit(unit: _weightUnitType);
-                      },
+                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Colors.black;
+                          }
+                          return Colors.white;
+                        },
+                      ),
                     ),
+                    segments: [
+                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                    ],
+                    selected: <WeightUnit>{_weightUnitType},
+                    onSelectionChanged: (Set<WeightUnit> unitType) {
+                      setState(() {
+                        _weightUnitType = unitType.first;
+                      });
+                      toggleWeightUnit(unit: _weightUnitType);
+                    },
                   ),
-                  const SizedBox(height: 8),
-                  ListTile(
-                    dense: true,
-                    title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                    subtitle:
-                    Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
-                    trailing: SegmentedButton(
-                      showSelectedIcon: false,
-                      style: ButtonStyle(
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                        shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        )),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.white;
-                            }
-                            return Colors.transparent;
-                          },
-                        ),
-                        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.black;
-                            }
+                ),
+                const SizedBox(height: 8),
+                ListTile(
+                  dense: true,
+                  title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                  subtitle:
+                      Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
+                  trailing: SegmentedButton(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(
+                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
                             return Colors.white;
-                          },
-                        ),
+                          }
+                          return Colors.transparent;
+                        },
                       ),
-                      segments: [
-                        ButtonSegment<DistanceUnit>(value: DistanceUnit.mi, label: Text(DistanceUnit.mi.name)),
-                        ButtonSegment<DistanceUnit>(value: DistanceUnit.km, label: Text(DistanceUnit.km.name)),
-                      ],
-                      selected: <DistanceUnit>{_distanceUnitType},
-                      onSelectionChanged: (Set<DistanceUnit> unitType) {
-                        setState(() {
-                          _distanceUnitType = unitType.first;
-                        });
-                        toggleDistanceUnit(unit: _distanceUnitType);
-                      },
+                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Colors.black;
+                          }
+                          return Colors.white;
+                        },
+                      ),
                     ),
+                    segments: [
+                      ButtonSegment<DistanceUnit>(value: DistanceUnit.mi, label: Text(DistanceUnit.mi.name)),
+                      ButtonSegment<DistanceUnit>(value: DistanceUnit.km, label: Text(DistanceUnit.km.name)),
+                    ],
+                    selected: <DistanceUnit>{_distanceUnitType},
+                    onSelectionChanged: (Set<DistanceUnit> unitType) {
+                      setState(() {
+                        _distanceUnitType = unitType.first;
+                      });
+                      toggleDistanceUnit(unit: _distanceUnitType);
+                    },
                   ),
-                  const SizedBox(height: 8),
-                  Theme(
-                    data: ThemeData(splashColor: tealBlueLight),
-                    child: ListTile(
-                        tileColor: tealBlueLight,
-                        onTap: _navigateToExerciseLibrary,
-                        dense: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                        subtitle: Text("Add your favourites exercises",
-                            style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                  ),
-                  const Divider(height: 40, color: tealBlueLight, thickness: 1, indent: 12, endIndent: 12),
-                  Theme(
-                    data: ThemeData(splashColor: tealBlueLight),
-                    child: ListTile(
-                        tileColor: tealBlueLight,
-                        onTap: _logout,
-                        dense: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Logout", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                        subtitle: Text("Logout of your ${user().email} Trackr account",
-                            style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                  ),
-                  const SizedBox(height: 10),
-                  Theme(
-                    data: ThemeData(splashColor: tealBlueLight),
-                    child: ListTile(
-                        tileColor: tealBlueLight,
-                        onTap: _delete,
-                        dense: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Delete Account", style: GoogleFonts.lato(color: Colors.red, fontSize: 16)),
-                        subtitle: Text(
-                            "Including all exercises and logs. Your account will be removed after your request has been received",
-                            style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 8),
+                Theme(
+                  data: ThemeData(splashColor: tealBlueLight),
+                  child: ListTile(
+                      tileColor: tealBlueLight,
+                      onTap: _navigateToExerciseLibrary,
+                      dense: true,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+                      subtitle: Text("Add your favourites exercises",
+                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+                ),
+                const Divider(height: 40, color: tealBlueLight, thickness: 1, indent: 12, endIndent: 12),
+                Theme(
+                  data: ThemeData(splashColor: tealBlueLight),
+                  child: ListTile(
+                      tileColor: tealBlueLight,
+                      onTap: _logout,
+                      dense: true,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      title: Text("Logout", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+                      subtitle: Text("Logout of your ${SharedPrefs().userEmail} Trackr account",
+                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+                ),
+                const SizedBox(height: 10),
+                Theme(
+                  data: ThemeData(splashColor: tealBlueLight),
+                  child: ListTile(
+                      tileColor: tealBlueLight,
+                      onTap: _delete,
+                      dense: true,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      title: Text("Delete Account", style: GoogleFonts.lato(color: Colors.red, fontSize: 16)),
+                      subtitle: Text("Including all exercises and logs. Your account will be removed immediately",
+                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+                ),
+              ],
             ),
           ),
-          if (_loading)
-            Align(
-                alignment: Alignment.center,
-                child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: tealBlueDark.withOpacity(0.7),
-                    child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
-        ]
-      ),
+        ),
+        if (_loading)
+          Align(
+              alignment: Alignment.center,
+              child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: tealBlueDark.withOpacity(0.7),
+                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
+      ]),
     );
   }
 
@@ -208,9 +204,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             )));
   }
 
-  void _clearAppData() {
+  void _clearAppData() async {
+    await Amplify.DataStore.clear();
     SharedPrefs().clear();
-    AppProviders.resetProviders(context);
+    if (context.mounted) {
+      AppProviders.resetProviders(context);
+    }
   }
 
   void _logout() async {
@@ -219,12 +218,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         message: "Log out?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
+          _toggleLoadingState(message: "Signing out...");
           Navigator.of(context).pop();
           _clearAppData();
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
-        rightActionLabel: 'Logout',
+        rightActionLabel: 'Sign out',
         isRightActionDestructive: true);
   }
 
@@ -238,17 +238,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _toggleLoadingState(message: "Deleting account...");
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
-          final deletedRoutines =
-              await batchDeleteUserData(document: deleteUserRoutineData, documentKey: "deleteUserRoutineData");
+          final deletedRoutineTemplates = await batchDeleteUserData(
+              document: deleteUserRoutineTemplateData, documentKey: "deleteUserRoutineTemplateData");
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
-          final deletedUser = await batchDeleteUserData(document: deleteUserData, documentKey: "deleteUserData");
-          if (deletedExercises && deletedRoutines && deletedRoutineLogs && deletedUser) {
+          if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
             _toggleLoadingState();
             _clearAppData();
             await Amplify.Auth.deleteUser();
           } else {
             _toggleLoadingState();
+            if (context.mounted) {
+              showSnackbar(
+                  context: context,
+                  icon: const Icon(Icons.info_outline_rounded),
+                  message: "Something went wrong. Please try again.");
+            }
           }
         },
         leftActionLabel: 'Cancel',

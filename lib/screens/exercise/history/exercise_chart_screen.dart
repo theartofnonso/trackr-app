@@ -2,20 +2,21 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise_type_enums.dart';
-import '../../../models/Exercise.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../utils/general_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
-import '../../routine_log_preview_screen.dart';
+import '../../routine_log_screen.dart';
 import 'home_screen.dart';
 
 enum SummaryType {
@@ -31,15 +32,15 @@ enum SummaryType {
 }
 
 class ExerciseChartScreen extends StatefulWidget {
-  final (String, double) heaviestWeight;
-  final (String, double) lightestWeight;
-  final (String, SetDto) heaviestSet;
-  final (String, SetDto) lightestSet;
-  final (String, Duration) longestDuration;
-  final (String, double) longestDistance;
-  final (String, int) mostRepsSet;
-  final (String, int) mostRepsSession;
-  final Exercise exercise;
+  final (String?, double) heaviestWeight;
+  final (String?, double) lightestWeight;
+  final (String?, SetDto) heaviestSet;
+  final (String?, SetDto) lightestSet;
+  final (String?, Duration) longestDuration;
+  final (String?, double) longestDistance;
+  final (String?, int) mostRepsSet;
+  final (String?, int) mostRepsSession;
+  final ExerciseDto exercise;
 
   const ExerciseChartScreen(
       {super.key,
@@ -145,8 +146,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   void _longestDistancePerLog() {
     final values = _exerciseLogs.map((log) => longestDistancePerLog(exerciseLog: log)).toList();
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.longestDistance;
@@ -156,8 +156,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   void _totalDistancePerLog() {
     final values = _exerciseLogs.map((log) => totalDistancePerLog(exerciseLog: log)).toList();
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionDistance;
@@ -166,8 +165,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _computeChart() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
 
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
@@ -192,7 +190,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .exerciseLogsWhereDateRange(range: thisYear, exercise: widget.exercise)
         .toList();
 
-    _dateTimes = _exerciseLogs.map((log) => dateTimePerLog(log: log).formattedDayAndMonth()).toList();
+    _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 
     switch (_summaryType) {
       case SummaryType.weight:
@@ -228,49 +226,55 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     return _summaryType == type ? Colors.blueAccent : tealBlueLight;
   }
 
-  void _navigateTo({required String routineLogId}) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            RoutineLogPreviewScreen(routineLogId: routineLogId, previousRouteName: exerciseRouteName)));
+  void _navigateTo({required String? routineLogId}) {
+    if (routineLogId != null) {
+      final routineLog = Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: routineLogId);
+      if (routineLog != null) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
+      }
+    }
   }
 
   bool _exerciseLogsWithWeights() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weightAndReps ||
         exerciseType == ExerciseType.weightedBodyWeight ||
         exerciseType == ExerciseType.weightAndDistance;
   }
 
   bool _exerciseLogsWithAssistedWeights() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.assistedBodyWeight;
   }
 
   bool _exerciseLogsWithWeightsAndReps() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
+  bool _exerciseLogsWithReps() {
+    final exerciseType = widget.exercise.type;
+    return exerciseType == ExerciseType.weightAndReps ||
+        exerciseType == ExerciseType.assistedBodyWeight ||
+        exerciseType == ExerciseType.weightedBodyWeight ||
+        exerciseType == ExerciseType.bodyWeightAndReps;
+  }
+
   bool _exerciseLogsWithRepsOnly() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.assistedBodyWeight ||
         exerciseType == ExerciseType.weightedBodyWeight ||
         exerciseType == ExerciseType.bodyWeightAndReps;
   }
 
   bool _exerciseLogsDuration() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.durationAndDistance;
   }
 
   bool _exerciseLogsWithDistance() {
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.durationAndDistance || exerciseType == ExerciseType.weightAndDistance;
   }
 
@@ -278,8 +282,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   Widget build(BuildContext context) {
     final weightUnitLabel = weightLabel();
 
-    final exerciseTypeString = widget.exercise.type;
-    final exerciseType = ExerciseType.fromString(exerciseTypeString);
+    final exerciseType = widget.exercise.type;
 
     final distanceUnitLabel = distanceLabel(type: exerciseType);
 
@@ -288,6 +291,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       oneRepMax = _exerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).toList().max;
     }
 
+    final secondaryMuscleGroups = widget.exercise.secondaryMuscleGroups.isNotEmpty
+        ? widget.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")
+        : "None";
+
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
@@ -295,12 +302,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Primary Muscle: ${widget.exercise.primaryMuscle}",
+            "Primary Muscle: ${widget.exercise.primaryMuscleGroup.name}",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 5),
           Text(
-            "Secondary Muscle: ${widget.exercise.secondaryMuscles.isNotEmpty ? widget.exercise.secondaryMuscles.join(", ") : "None"}",
+            "Secondary Muscle: $secondaryMuscleGroups",
             style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 20),
@@ -364,7 +371,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             label: "1RM",
                             buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
-                    if (_exerciseLogsWithRepsOnly())
+                    if (_exerciseLogsWithReps())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
@@ -487,7 +494,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
-          if (_exerciseLogsWithRepsOnly())
+          if (_exerciseLogsWithReps())
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
@@ -507,6 +514,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
+          if (_exerciseLogsWithWeightsAndReps() || _exerciseLogsWithAssistedWeights())
+            PersonalBestWidget(exercise: widget.exercise),
         ],
       ),
     ));

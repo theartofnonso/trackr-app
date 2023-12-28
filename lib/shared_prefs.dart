@@ -32,13 +32,6 @@ class SharedPrefs {
     _sharedPrefs?.setString(cachedRoutineLogKey, value);
   }
 
-  /// RoutineLogs that are yet to be updated
-  final String cachedPendingRoutineLogsKey = "cached_pending_routine_logs_key";
-  List<String> get cachedPendingRoutineLogs => _sharedPrefs?.getStringList(cachedPendingRoutineLogsKey) ?? <String>[];
-  set cachedPendingRoutineLogs(List<String> value) {
-    _sharedPrefs?.setStringList(cachedPendingRoutineLogsKey, value);
-  }
-
   /// Weight Unit Type
   final String _weightUnitKey = "weight_unit_type_key";
   String get weightUnit => _sharedPrefs?.getString(_weightUnitKey) ?? WeightUnit.kg.name;
@@ -60,17 +53,16 @@ class SharedPrefs {
     _sharedPrefs?.setBool(_firstLaunchKey, value);
   }
 
-  /// User Email
-  final String _userEmailKey = "user_email_key";
-  String get userEmail => _sharedPrefs?.getString(_userEmailKey) ?? "";
-  set userEmail(String value) {
-    _sharedPrefs?.setString(_userEmailKey, value);
-  }
-
-  /// User Id
+  /// User
   final String _userIdKey = "user_id_key";
   String get userId => _sharedPrefs?.getString(_userIdKey) ?? "";
   set userId(String value) {
     _sharedPrefs?.setString(_userIdKey, value);
+  }
+
+  final String _userEmailKey = "user_email_key";
+  String get userEmail => _sharedPrefs?.getString(_userEmailKey) ?? "";
+  set userEmail(String value) {
+    _sharedPrefs?.setString(_userEmailKey, value);
   }
 }

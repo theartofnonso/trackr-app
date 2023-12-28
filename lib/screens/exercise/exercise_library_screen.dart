@@ -7,7 +7,7 @@ import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../app_constants.dart';
-import '../../models/Exercise.dart';
+import '../../dtos/exercise_dto.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
@@ -15,11 +15,11 @@ import 'history/home_screen.dart';
 
 class ExerciseInLibraryDto {
   final bool selected;
-  final Exercise exercise;
+  final ExerciseDto exercise;
 
   ExerciseInLibraryDto({this.selected = false, required this.exercise});
 
-  ExerciseInLibraryDto copyWith({bool? selected, Exercise? exercise}) {
+  ExerciseInLibraryDto copyWith({bool? selected, ExerciseDto? exercise}) {
     return ExerciseInLibraryDto(
       selected: selected ?? this.selected,
       exercise: exercise ?? this.exercise,
@@ -35,7 +35,7 @@ class ExerciseInLibraryDto {
 class ExerciseLibraryScreen extends StatefulWidget {
   final bool multiSelect;
   final bool readOnly;
-  final List<Exercise> preSelectedExercises;
+  final List<ExerciseDto> preSelectedExercises;
 
   const ExerciseLibraryScreen(
       {super.key, this.multiSelect = true, this.readOnly = false, this.preSelectedExercises = const []});

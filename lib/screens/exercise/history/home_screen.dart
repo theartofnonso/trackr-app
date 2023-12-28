@@ -9,12 +9,12 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
+import '../../../dtos/exercise_dto.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../../dtos/routine_log_dto.dart';
 import '../../../dtos/set_dto.dart';
-import '../../../models/Exercise.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
-import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import 'notes_screen.dart';
@@ -28,17 +28,17 @@ ChartUnitLabel weightUnit() {
 /// Highest value per [RoutineLogDto]
 
 SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
-  double heaviestWeight = 0;
-  SetDto setWithHeaviestWeight = const SetDto(0, 0, false);
+  SetDto heaviestSet = const SetDto(0, 0, false);
+  double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
 
   for (SetDto set in exerciseLog.sets) {
-    final weight = set.value1.toDouble();
-    if (weight > heaviestWeight) {
-      heaviestWeight = weight.toDouble();
-      setWithHeaviestWeight = set;
+    final volume = set.value1.toDouble() * set.value2.toInt();
+    if (volume > heaviestVolume) {
+      heaviestSet = set;
+      heaviestVolume = volume;
     }
   }
-  return setWithHeaviestWeight;
+  return heaviestSet;
 }
 
 double heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
@@ -157,9 +157,9 @@ double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
 }
 
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestWeightInSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
+  final heaviestSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
 
-  final max = (heaviestWeightInSet.value1 * (1 + 0.0333 * heaviestWeightInSet.value2));
+  final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
   final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
 
@@ -167,20 +167,19 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
 }
 
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
-  return log.createdAt.getDateTimeInUtc();
+  return log.createdAt;
 }
 
 /// Highest value across all [RoutineLogDto]
 
-List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required Exercise exercise}) {
-  final pastLogs = Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogs[exercise.id] ?? [];
-  return pastLogs.reversed.toList();
+List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
+  return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 }
 
-(String, SetDto) _heaviestSet({required BuildContext context, required Exercise exercise}) {
+(String?, SetDto) _heaviestSet({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   SetDto heaviestSet = const SetDto(0, 0, false);
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     heaviestSet = pastLogs.first.sets.first;
     logId = pastLogs.first.routineLogId;
@@ -189,7 +188,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final volume = set.value1 * set.value2;
         if (volume > (heaviestSet.value1 * heaviestSet.value2)) {
           heaviestSet = set;
-          logId = log.routineLogId;
+          log = log;
         }
       }
     }
@@ -200,10 +199,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (logId, heaviestSet.copyWith(value1: weight));
 }
 
-(String, SetDto) _lightestSet({required BuildContext context, required Exercise exercise}) {
+(String?, SetDto) _lightestSet({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   SetDto lightestSet = const SetDto(0, 0, false);
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     lightestSet = pastLogs.first.sets.first;
     logId = pastLogs.first.routineLogId;
@@ -212,7 +211,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final volume = set.value1 * set.value2;
         if ((lightestSet.value1 * lightestSet.value2) > volume) {
           lightestSet = set;
-          logId = log.routineLogId;
+          log = log;
         }
       }
     }
@@ -223,10 +222,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (logId, lightestSet.copyWith(value1: weight));
 }
 
-(String, double) _heaviestWeight({required BuildContext context, required Exercise exercise}) {
+(String?, double) _heaviestWeight({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   double heaviestWeight = 0;
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     heaviestWeight = pastLogs.first.sets.first.value1.toDouble();
     logId = pastLogs.first.routineLogId;
@@ -235,7 +234,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final weight = set.value1.toDouble();
         if (weight > heaviestWeight) {
           heaviestWeight = weight;
-          logId = log.routineLogId;
+          log = log;
         }
       }
     }
@@ -243,10 +242,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (logId, heaviestWeight);
 }
 
-(String, double) _lightestWeight({required BuildContext context, required Exercise exercise}) {
+(String?, double) _lightestWeight({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   double lightestWeight = 0;
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     lightestWeight = pastLogs.first.sets.first.value1.toDouble();
     logId = pastLogs.first.routineLogId;
@@ -255,7 +254,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final weight = set.value1.toDouble();
         if (lightestWeight > weight) {
           lightestWeight = weight;
-          logId = log.routineLogId;
+          log = log;
         }
       }
     }
@@ -263,10 +262,10 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
   return (logId, lightestWeight);
 }
 
-(String, int) _highestReps({required BuildContext context, required Exercise exercise}) {
+(String?, int) _highestReps({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   int highestReps = 0;
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     highestReps = pastLogs.first.sets.first.value2.toInt();
     logId = pastLogs.first.routineLogId;
@@ -274,17 +273,17 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final reps = highestRepsForLog(exerciseLog: log);
       if (reps > highestReps) {
         highestReps = reps;
-        logId = log.routineLogId;
+        log = log;
       }
     }
   }
   return (logId, highestReps);
 }
 
-(String, int) _totalReps({required BuildContext context, required Exercise exercise}) {
+(String?, int) _totalReps({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   int mostReps = 0;
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     mostReps = pastLogs.first.sets.first.value2.toInt();
     logId = pastLogs.first.routineLogId;
@@ -292,17 +291,17 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final reps = totalRepsForLog(exerciseLog: log);
       if (reps > mostReps) {
         mostReps = reps;
-        logId = log.routineLogId;
+        log = log;
       }
     }
   }
   return (logId, mostReps);
 }
 
-(String, Duration) _longestDuration({required BuildContext context, required Exercise exercise}) {
+(String?, Duration) _longestDuration({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   Duration longestDuration = Duration.zero;
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     longestDuration = Duration(milliseconds: pastLogs.first.sets.first.value1.toInt());
     logId = pastLogs.first.routineLogId;
@@ -310,17 +309,17 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final duration = longestDurationPerLog(exerciseLog: log);
       if (duration > longestDuration) {
         longestDuration = duration;
-        logId = log.routineLogId;
+        log = log;
       }
     }
   }
   return (logId, longestDuration);
 }
 
-(String, double) _longestDistance({required BuildContext context, required Exercise exercise}) {
+(String?, double) _longestDistance({required BuildContext context, required ExerciseDto exercise}) {
   final pastLogs = _pastLogsForExercise(context: context, exercise: exercise);
   double longestDistance = 0;
-  String logId = "";
+  String? logId;
   if (pastLogs.isNotEmpty) {
     longestDistance = pastLogs.first.sets.first.value2.toDouble();
     logId = pastLogs.first.routineLogId;
@@ -328,7 +327,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final distance = longestDistancePerLog(exerciseLog: log);
       if (distance > longestDistance) {
         longestDistance = distance;
-        logId = log.routineLogId;
+        log = log;
       }
     }
   }
@@ -336,34 +335,9 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 class HomeScreen extends StatelessWidget {
-  final Exercise exercise;
+  final ExerciseDto exercise;
 
   const HomeScreen({super.key, required this.exercise});
-
-  /// [MenuItemButton]
-  List<Widget> _menuActionButtons({required BuildContext context, required Exercise exercise}) {
-    return [
-      MenuItemButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
-        },
-        child: const Text("Edit"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete exercise?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () => _deleteExercise(context),
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
-  }
 
   void _deleteExercise(BuildContext context) async {
     Navigator.pop(context);
@@ -402,6 +376,28 @@ class HomeScreen extends StatelessWidget {
     final mostRepsSet = _highestReps(context: context, exercise: foundExercise);
 
     final mostRepsSession = _totalReps(context: context, exercise: foundExercise);
+
+    final menuActions = [
+      MenuItemButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
+        },
+        child: const Text("Edit"),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Delete exercise?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () => _deleteExercise(context),
+              leftActionLabel: 'Cancel',
+              rightActionLabel: 'Delete',
+              isRightActionDestructive: true);
+        },
+        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+      )
+    ];
 
     return DefaultTabController(
         length: 3,
@@ -450,7 +446,7 @@ class HomeScreen extends StatelessWidget {
                     tooltip: 'Show menu',
                   );
                 },
-                menuChildren: _menuActionButtons(context: context, exercise: foundExercise),
+                menuChildren: menuActions,
               )
             ],
           ),
@@ -469,7 +465,7 @@ class HomeScreen extends StatelessWidget {
                   exercise: foundExercise,
                 ),
                 HistoryScreen(exercise: foundExercise),
-                NotesScreen(notes: foundExercise.notes ?? "")
+                NotesScreen(notes: foundExercise.notes),
               ],
             ),
           ),

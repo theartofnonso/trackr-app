@@ -1,198 +1,148 @@
 import 'dart:convert';
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/models/Exercise.dart';
-import 'package:tracker_app/models/Routine.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
-import '../models/RoutineLog.dart';
+import '../dtos/routine_log_dto.dart';
+import '../enums/exercise_type_enums.dart';
 import '../utils/general_utils.dart';
 
+const emptyTemplateId = "empty_template_id";
+
 class RoutineLogProvider with ChangeNotifier {
+  Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
 
-  Map<String, List<ExerciseLogDto>> _exerciseLogs = {};
+  Map<ExerciseType, List<ExerciseLogDto>> _exerciseLogsByType = {};
 
-  List<RoutineLog> _logs = [];
+  List<RoutineLogDto> _logs = [];
 
-  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogs => UnmodifiableMapView(_exerciseLogs);
+  Map<DateTimeRange, List<RoutineLogDto>> _weekToLogs = {};
 
-  UnmodifiableListView<RoutineLog> get logs => UnmodifiableListView(_logs);
+  Map<DateTimeRange, List<RoutineLogDto>> _monthToLogs = {};
 
-  RoutineLog? cachedRoutineLog;
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
 
-  List<RoutineLog> _cachedPendingLogs = [];
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
+      UnmodifiableMapView(_exerciseLogsByType);
 
-  List<RoutineLog> get cachedPendingLogs => _cachedPendingLogs;
+  UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
 
-  void clearCachedPendingLogs() {
-    _cachedPendingLogs = [];
-    SharedPrefs().cachedPendingRoutineLogs = [];
+  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get weekToLogs => UnmodifiableMapView(_weekToLogs);
+
+  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthToLogs => UnmodifiableMapView(_monthToLogs);
+
+  void listLogs() async {
+    final logs = await Amplify.DataStore.query(RoutineLog.classType);
+    _logs = logs.map((log) => log.dto()).toList();
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    _normaliseLogs();
     notifyListeners();
   }
 
-  void listRoutineLogs() async {
-    final routineLogOwner = user();
-    final request = ModelQueries.list(RoutineLog.classType, where: RoutineLog.USER.eq(routineLogOwner.id));
-    final response = await Amplify.API.query(request: request).response;
-
-    final routineLogs = response.data?.items;
-    if (routineLogs != null) {
-      _logs = routineLogs.whereType<RoutineLog>().toList();
-      _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      _loadExerciseLogs();
-      notifyListeners();
-    }
-  }
-
-  void _loadExerciseLogs() {
-
-    Map<String, List<ExerciseLogDto>> map = {};
-
-    for (RoutineLog log in _logs) {
-      final decodedExerciseLogs = log.procedures.map((json) => ExerciseLogDto.fromJson(routineLog: log, json: jsonDecode(json))).toList();
-      for (ExerciseLogDto exerciseLog in decodedExerciseLogs) {
-        final exerciseId = exerciseLog.exercise.id;
-        final exerciseLogs = map[exerciseId] ?? [];
-        exerciseLogs.add(exerciseLog);
-        exerciseLogs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-        map.putIfAbsent(exerciseId, () => exerciseLogs);
-      }
-    }
-
-    _exerciseLogs = map;
-
-  }
-
-  Map<String, dynamic> _fixJson(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    json.update("routine", (value) {
-      return {"serializedData": value};
+  void _orderExerciseLogs() {
+    List<ExerciseLogDto> exerciseLogs = _logs.expand((log) => log.exerciseLogs).toList();
+    _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
+    _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) {
+      final exerciseType = exerciseLog.exercise.type;
+      return exerciseType;
     });
-    json.update("user", (value) {
-      return {"serializedData": value};
-    });
-    return json;
   }
 
-  void retrieveCachedPendingRoutineLogs(BuildContext context) {
-    final cachedLogs = SharedPrefs().cachedPendingRoutineLogs;
-    if (cachedLogs.isNotEmpty) {
-      _cachedPendingLogs = cachedLogs.map((log) {
-        final json = _fixJson(log);
-        return RoutineLog.fromJson(json);
-      }).toList();
+  void _loadWeekToLogs() {
+    if (_logs.isEmpty) {
+      return;
     }
-  }
 
-  void saveRoutineLog(
-      {required BuildContext context,
-      required String name,
-      required String notes,
-      required List<ExerciseLogDto> exerciseLogs,
-      required TemporalDateTime startTime,
-      required Routine? routine}) async {
-    final exerciseLogJsons = exerciseLogs.map((log) => log.toJson()).toList();
+    final weekToLogs = <DateTimeRange, List<RoutineLogDto>>{};
 
-    final logToCreate = RoutineLog(
-        name: name,
-        notes: notes,
-        procedures: exerciseLogJsons,
-        startTime: startTime,
-        endTime: TemporalDateTime.now(),
-        createdAt: TemporalDateTime.now(),
-        updatedAt: TemporalDateTime.now(),
-        routine: routine,
-        user: user());
+    DateTime startDate = _logs.first.createdAt;
+    List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
 
-    try {
-      final request = ModelMutations.create(logToCreate);
-      final response = await Amplify.API.mutate(request: request).response;
-      final createdLog = response.data;
-      if (createdLog != null) {
-        _addToLogs(createdLog);
-        _loadExerciseLogs();
-      }
-    } catch (_) {
-      _cachePendingLogs(logToCreate);
+    // Map each DateTimeRange to RoutineLogs falling within it
+    for (var weekRange in weekRanges) {
+      List<RoutineLogDto> routinesInWeek = _logs
+          .where((log) =>
+              log.createdAt.isAfter(weekRange.start) &&
+              log.createdAt.isBefore(weekRange.end.add(const Duration(days: 1))))
+          .toList();
+      weekToLogs[weekRange] = routinesInWeek;
     }
+
+    _weekToLogs = weekToLogs;
   }
 
-  void _cachePendingLogs(RoutineLog pendingLog) {
-    _cachedPendingLogs.add(pendingLog);
-    final pendingLogs = SharedPrefs().cachedPendingRoutineLogs;
-    final json = jsonEncode(pendingLog);
-    pendingLogs.add(json);
-    SharedPrefs().cachedPendingRoutineLogs = pendingLogs;
+  void _loadMonthToLogs() {
+    if (_logs.isEmpty) {
+      return;
+    }
+
+    final monthToLogs = <DateTimeRange, List<RoutineLogDto>>{};
+
+    DateTime startDate = _logs.first.createdAt;
+    List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
+
+    // Map each DateTimeRange to RoutineLogs falling within it
+    for (var monthRange in monthRanges) {
+      List<RoutineLogDto> routinesInMonth = _logs
+          .where((log) =>
+              log.createdAt.isAfter(monthRange.start) &&
+              log.createdAt.isBefore(monthRange.end.add(const Duration(days: 1))))
+          .toList();
+      monthToLogs[monthRange] = routinesInMonth;
+    }
+    _monthToLogs = monthToLogs;
+  }
+
+  void _normaliseLogs() {
+    _orderExerciseLogs();
+    _loadWeekToLogs();
+    _loadMonthToLogs();
+  }
+
+  Future<RoutineLogDto> saveRoutineLog({required RoutineLogDto logDto}) async {
+    final now = TemporalDateTime.now();
+
+    final logToCreate =
+        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+
+    await Amplify.DataStore.save(logToCreate);
+
+    final updatedWithId = logDto.copyWith(id: logToCreate.id);
+    final updatedWithRoutineIds = updatedWithId.copyWith(
+        exerciseLogs: updatedWithId.exerciseLogs.map((log) => log.copyWith(routineLogId: logToCreate.id)).toList());
+    _logs.add(updatedWithRoutineIds);
+    _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    _normaliseLogs();
     notifyListeners();
+
+    return updatedWithRoutineIds;
   }
 
-  void retryPendingRoutineLogs() async {
-    final cachedPendingRoutineLogs = SharedPrefs().cachedPendingRoutineLogs;
-    for (int index = 0; index < _cachedPendingLogs.length; index++) {
-      final pendingLog = _cachedPendingLogs[index];
-      final request = ModelMutations.create(pendingLog);
-      final response = await Amplify.API.mutate(request: request).response;
-      final createdLog = response.data;
-      if (createdLog != null) {
-        /// Remove from caches i.e both [_cachedPendingLogs] and [SharedPrefs().cachedPendingRoutineLogs]
-        _cachedPendingLogs.removeAt(index);
-        cachedPendingRoutineLogs.removeAt(index);
-        SharedPrefs().cachedPendingRoutineLogs = cachedPendingRoutineLogs;
-
-        /// Add to logs
-        _addToLogs(createdLog);
-      }
-    }
-  }
-
-  void _addToLogs(RoutineLog log) {
-    _logs.add(log);
-    _logs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    notifyListeners();
-  }
-
-  void cacheRoutineLog(
-      {required String name,
-        required String notes,
-        required List<ExerciseLogDto> procedures,
-        required TemporalDateTime startTime,
-        TemporalDateTime? createdAt,
-        required Routine? routine}) async {
-    final currentTime = TemporalDateTime.now();
-
-    final exerciseLogJson = procedures.map((procedure) => procedure.toJson()).toList();
-
-    final logToCache = RoutineLog(
-        name: name,
-        notes: notes,
-        routine: routine,
-        procedures: exerciseLogJson,
-        startTime: startTime,
-        endTime: currentTime,
-        createdAt: createdAt ?? currentTime,
-        updatedAt: currentTime,
-        user: user());
-    cachedRoutineLog = logToCache;
-    SharedPrefs().cachedRoutineLog = jsonEncode(logToCache);
+  void cacheRoutineLog({required RoutineLogDto logDto}) {
+    SharedPrefs().cachedRoutineLog = jsonEncode(logDto.toJson());
   }
 
   Future<void> removeLog({required String id}) async {
-    final index = _indexWhereRoutineLog(id: id);
-    final logToBeRemoved = _logs[index];
-    final request = ModelMutations.delete(logToBeRemoved);
-    final response = await Amplify.API.mutate(request: request).response;
-    final deletedLog = response.data;
-    if (deletedLog != null) {
+    final result = (await Amplify.DataStore.query(
+      RoutineLog.classType,
+      where: RoutineTemplate.ID.eq(id),
+    ));
+
+    if (result.isNotEmpty) {
+      final oldTemplate = result.first;
+      await Amplify.DataStore.delete(oldTemplate);
       final index = _indexWhereRoutineLog(id: id);
       _logs.removeAt(index);
-      _loadExerciseLogs();
+      _normaliseLogs();
       notifyListeners();
     }
   }
@@ -201,49 +151,54 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.indexWhere((log) => log.id == id);
   }
 
-  RoutineLog? whereRoutineLog({required String id}) {
+  RoutineLogDto? whereRoutineLog({required String id}) {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> wherePastSets({required Exercise exercise}) {
-    final exerciseLogs = _exerciseLogs[exercise.id] ?? [];
-    return exerciseLogs.isNotEmpty ? exerciseLogs.reversed.first.sets : [];
+  List<SetDto> wherePastSets({required ExerciseDto exercise}) {
+    final exerciseLogs = _exerciseLogsById[exercise.id]?.reversed.toList() ?? [];
+    return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+  List<SetDto> setsForMuscleGroupWhereDateRange(
+      {required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
     bool hasMatchingBodyPart(ExerciseLogDto log) {
-      final primaryMuscle = MuscleGroup.fromString(log.exercise.primaryMuscle);
+      final primaryMuscle = log.exercise.primaryMuscleGroup;
       return primaryMuscle.family == muscleGroupFamily;
     }
 
-    List<List<ExerciseLogDto>> allLogs = _exerciseLogs.values.toList();
+    List<List<ExerciseLogDto>> allLogs = _exerciseLogsById.values.toList();
 
     return allLogs.flattened
         .where((log) => hasMatchingBodyPart(log))
-        .where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range))
+        .where((log) => log.createdAt.isBetweenRange(range: range))
         .expand((log) => log.sets)
         .toList();
   }
 
-  List<RoutineLog> logsWhereDate({required DateTime dateTime}) {
-    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime)).toList();
+  List<RoutineLogDto> logsWhereDate({required DateTime dateTime}) {
+    return _logs.where((log) => log.createdAt.isSameDateAs(dateTime)).toList();
   }
 
-  RoutineLog? logWhereDate({required DateTime dateTime}) {
-    return _logs.firstWhereOrNull((log) => log.createdAt.getDateTimeInUtc().isSameDateAs(dateTime));
+  RoutineLogDto? logWhereDate({required DateTime dateTime}) {
+    return _logs.firstWhereOrNull((log) => log.createdAt.isSameDateAs(dateTime));
   }
 
-  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required Exercise exercise}) {
-    final values = _exerciseLogs[exercise.id] ?? [];
-    return values.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
+  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required ExerciseDto exercise}) {
+    final values = _exerciseLogsById[exercise.id] ?? [];
+    return values.where((log) => log.createdAt.isBetweenRange(range: range)).toList();
   }
 
-  List<RoutineLog> logsWhereDateRange({required DateTimeRange range}) {
-    return _logs.where((log) => log.createdAt.getDateTimeInUtc().isBetweenRange(range: range)).toList();
+  List<RoutineLogDto> logsWhereDateRange({required DateTimeRange range}) {
+    return _logs.where((log) => log.createdAt.isBetweenRange(range: range)).toList();
   }
 
   void reset() {
     _logs.clear();
+    _exerciseLogsById.clear();
+    _exerciseLogsByType.clear();
+    _weekToLogs.clear();
+    _monthToLogs.clear();
     notifyListeners();
   }
 }

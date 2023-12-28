@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/reorder_exercises_screen.dart';
 
 import '../../dtos/exercise_log_dto.dart';
-import '../../dtos/unsaved_changes_messages_dto.dart';
+import '../../dtos/template_changes_messages_dto.dart';
 import '../../providers/exercise_log_provider.dart';
 
 void reOrderExercises({required BuildContext context}) async {
@@ -36,18 +36,18 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
       .toList();
 }
 
-List<UnsavedChangesMessageDto> checkForChanges(
+List<TemplateChangesMessageDto> checkForChanges(
     {required BuildContext context,
     required List<ExerciseLogDto> exerciseLog1,
     required List<ExerciseLogDto> exerciseLog2}) {
-  List<UnsavedChangesMessageDto> unsavedChangesMessage = [];
+  List<TemplateChangesMessageDto> unsavedChangesMessage = [];
   final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
 
   /// Check if [ExerciseLogDto] have been added or removed
-  final differentExercisesChangeMessage =
+  final differentExercisesLengthMessage =
       procedureProvider.hasDifferentExerciseLogsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentExercisesChangeMessage != null) {
-    unsavedChangesMessage.add(differentExercisesChangeMessage);
+  if (differentExercisesLengthMessage != null) {
+    unsavedChangesMessage.add(differentExercisesLengthMessage);
   }
 
   /// Check if [ExerciseLogDto] has been re-ordered
@@ -58,10 +58,10 @@ List<UnsavedChangesMessageDto> checkForChanges(
   }
 
   /// Check if [SetDto]'s have been added or removed
-  final differentSetsChangeMessage =
+  final differentSetsLengthMessage =
       procedureProvider.hasDifferentSetsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentSetsChangeMessage != null) {
-    unsavedChangesMessage.add(differentSetsChangeMessage);
+  if (differentSetsLengthMessage != null) {
+    unsavedChangesMessage.add(differentSetsLengthMessage);
   }
 
   /// Check if [ExerciseType] for [Exercise] in [ExerciseLogDto] has been changed
@@ -78,11 +78,5 @@ List<UnsavedChangesMessageDto> checkForChanges(
     unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
   }
 
-  /// Check if [SetDto] value has been changed
-  final differentSetValueChangeMessage =
-      procedureProvider.hasSetValueChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentSetValueChangeMessage != null) {
-    unsavedChangesMessage.add(differentSetValueChangeMessage);
-  }
   return unsavedChangesMessage;
 }

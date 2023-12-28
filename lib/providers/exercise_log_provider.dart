@@ -1,15 +1,14 @@
-import 'dart:math';
 
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/unsaved_changes_messages_dto.dart';
+import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 import 'package:uuid/uuid.dart';
 
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
-import '../models/Exercise.dart';
+import '../enums/template_changes_type_message_enums.dart';
 
 class ExerciseLogProvider extends ChangeNotifier {
   List<ExerciseLogDto> _exerciseLogs = [];
@@ -20,7 +19,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
-  void loadExerciseLogs({required List<ExerciseLogDto> logs, bool shouldNotifyListeners = false}) {
+  void loadExercises({required List<ExerciseLogDto> logs, bool shouldNotifyListeners = false}) {
     _exerciseLogs = logs;
     _loadSets();
     if (shouldNotifyListeners) {
@@ -42,7 +41,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }).toList();
   }
 
-  void addExerciseLogs({required List<Exercise> exercises}) {
+  void addExerciseLogs({required List<ExerciseDto> exercises}) {
     final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
     _exerciseLogs = [..._exerciseLogs, ...logsToAdd];
     notifyListeners();
@@ -255,8 +254,8 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   /// Helper functions
 
-  ExerciseLogDto _createExerciseLog(Exercise exercise, {String? notes}) {
-    return ExerciseLogDto(const Uuid().v4(), "", "", exercise, notes ?? "", [], TemporalDateTime.now());
+  ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
+    return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], DateTime.now());
   }
 
   List<SetDto> completedSets() {
@@ -267,7 +266,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     double totalWeight = 0.0;
 
     for (var exerciseLog in _exerciseLogs) {
-      final exerciseType = ExerciseType.fromString(exerciseLog.exercise.type);
+      final exerciseType = exerciseLog.exercise.type;
 
       for (var set in exerciseLog.sets) {
         if (set.checked) {
@@ -306,33 +305,33 @@ class ExerciseLogProvider extends ChangeNotifier {
     return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
-  UnsavedChangesMessageDto? hasDifferentExerciseLogsLength(
+  TemplateChangesMessageDto? hasDifferentExerciseLogsLength(
       {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     final int difference = exerciseLog2.length - exerciseLog1.length;
 
     if (difference > 0) {
-      return UnsavedChangesMessageDto(
-          message: "Added $difference exercise(s)", type: UnsavedChangesMessageType.exerciseLogLength);
+      return TemplateChangesMessageDto(
+          message: "Added $difference exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
     } else if (difference < 0) {
-      return UnsavedChangesMessageDto(
-          message: "Removed ${-difference} exercise(s)", type: UnsavedChangesMessageType.exerciseLogLength);
+      return TemplateChangesMessageDto(
+          message: "Removed ${-difference} exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
     }
 
     return null; // No change in length
   }
 
-  UnsavedChangesMessageDto? hasReOrderedExercises(
+  TemplateChangesMessageDto? hasReOrderedExercises(
       {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     for (int i = 0; i < exerciseLog1.length; i++) {
       if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
-        return UnsavedChangesMessageDto(
-            message: "Exercises have been re-ordered", type: UnsavedChangesMessageType.exerciseOrder); // Re-orderedList
+        return TemplateChangesMessageDto(
+            message: "Exercises have been re-ordered", type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
       }
     }
     return null;
   }
 
-  UnsavedChangesMessageDto? hasDifferentSetsLength(
+  TemplateChangesMessageDto? hasDifferentSetsLength(
       {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
     int addedSetsCount = 0;
     int removedSetsCount = 0;
@@ -361,11 +360,11 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
 
     return message.isNotEmpty
-        ? UnsavedChangesMessageDto(message: message, type: UnsavedChangesMessageType.setsLength)
+        ? TemplateChangesMessageDto(message: message, type: TemplateChangesMessageType.setsLength)
         : null;
   }
 
-  UnsavedChangesMessageDto? hasExercisesChanged({
+  TemplateChangesMessageDto? hasExercisesChanged({
     required List<ExerciseLogDto> exerciseLog1,
     required List<ExerciseLogDto> exerciseLog2,
   }) {
@@ -375,12 +374,12 @@ class ExerciseLogProvider extends ChangeNotifier {
     int changes = exerciseIds1.difference(exerciseIds2).length;
 
     return changes > 0
-        ? UnsavedChangesMessageDto(
-            message: "Changed $changes exercise(s)", type: UnsavedChangesMessageType.exerciseLogChange)
+        ? TemplateChangesMessageDto(
+            message: "Changed $changes exercise(s)", type: TemplateChangesMessageType.exerciseLogChange)
         : null;
   }
 
-  UnsavedChangesMessageDto? hasSuperSetIdChanged({
+  TemplateChangesMessageDto? hasSuperSetIdChanged({
     required List<ExerciseLogDto> exerciseLog1,
     required List<ExerciseLogDto> exerciseLog2,
   }) {
@@ -392,32 +391,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     final changes = superSetIds2.difference(superSetIds1).length;
 
     return changes > 0
-        ? UnsavedChangesMessageDto(message: "Changed $changes supersets(s)", type: UnsavedChangesMessageType.supersetId)
-        : null;
-  }
-
-  UnsavedChangesMessageDto? hasSetValueChanged({
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2,
-  }) {
-    int changes = 0;
-
-    for (ExerciseLogDto proc1 in exerciseLog1) {
-      ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
-
-      if (matchingProc2 == null) continue;
-
-      int minSetLength = min(proc1.sets.length, matchingProc2.sets.length);
-      for (int i = 0; i < minSetLength; i++) {
-        if ((proc1.sets[i].value1 != matchingProc2.sets[i].value1) ||
-            (proc1.sets[i].value2 != matchingProc2.sets[i].value2)) {
-          changes += 1;
-        }
-      }
-    }
-
-    return changes > 0
-        ? UnsavedChangesMessageDto(message: "Changed $changes set value(s)", type: UnsavedChangesMessageType.setValue)
+        ? TemplateChangesMessageDto(message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
         : null;
   }
 

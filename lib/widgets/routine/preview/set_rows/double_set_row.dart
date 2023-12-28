@@ -6,12 +6,14 @@ import '../../../../app_constants.dart';
 class DoubleSetRow extends StatelessWidget {
   final String first;
   final String second;
+  final EdgeInsets? margin;
 
-  const DoubleSetRow({super.key, required this.first, required this.second});
+  const DoubleSetRow({super.key, required this.first, required this.second, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       decoration: BoxDecoration(
         color: tealBlueLight, // Container color
         borderRadius: BorderRadius.circular(5.0), // Radius for rounded corners

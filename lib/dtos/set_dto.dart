@@ -23,11 +23,11 @@ class SetDto {
   }
 
   bool isEmpty() {
-    return value1 + value2 == 0;
+    return value1 == 0 && value2 == 0;
   }
 
   bool isNotEmpty() {
-    return value1 + value2 > 0;
+    return value1 > 0 || value2 > 0;
   }
 
   @override

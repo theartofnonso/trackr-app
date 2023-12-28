@@ -31,7 +31,7 @@ class ExercisePicker extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 15, top: 10.0),
-            child: Text("Superset ${selectedExercise.exercise.name} with", style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500)),
+            child: Text("Superset ${selectedExercise.exercise.name} with", style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
           ),
           ...listTiles],
       ),

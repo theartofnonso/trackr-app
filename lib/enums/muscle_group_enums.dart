@@ -12,6 +12,7 @@ enum MuscleGroupFamily {
   const MuscleGroupFamily(this.name);
 
   final String name;
+
 }
 
 enum MuscleGroup {
@@ -32,7 +33,8 @@ enum MuscleGroup {
   calves("Calves", MuscleGroupFamily.legs),
   neck("Neck", MuscleGroupFamily.neck),
   cardio("Cardio", MuscleGroupFamily.cardio),
-  fullBody("Full Body", MuscleGroupFamily.fullBody);
+  fullBody("Full Body", MuscleGroupFamily.fullBody),
+  legs("Legs", MuscleGroupFamily.legs);
 
   const MuscleGroup(this.name, this.family);
 
