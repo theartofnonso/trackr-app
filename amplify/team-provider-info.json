@@ -65,25 +65,25 @@
       "function": {
         "postAuthentication": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/postAuthentication-503437374f465633342b-build.zip"
+          "s3Key": "amplify-builds/postAuthentication-6f36516751582b43625a-build.zip"
         },
         "trackerapp": {},
         "trackerapp648183fb": {},
         "deleteUserData": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/deleteUserData-305a62454d68786e5a47-build.zip"
+          "s3Key": "amplify-builds/deleteUserData-42594e4e5648316e6b5a-build.zip"
         },
         "deleteUserExerciseData": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/deleteUserExerciseData-65724d7a466475796137-build.zip"
-        },
-        "deleteUserRoutineData": {
-          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/deleteUserRoutineData-574a4f37415045716c50-build.zip"
+          "s3Key": "amplify-builds/deleteUserExerciseData-7469414c554a414b6e4e-build.zip"
         },
         "deleteUserRoutineLogData": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/deleteUserRoutineLogData-5a6e537a4f4b59647164-build.zip"
+          "s3Key": "amplify-builds/deleteUserRoutineLogData-7a47685431664a5a4c47-build.zip"
+        },
+        "deleteUserRoutineTemplateData": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/deleteUserRoutineTemplateData-46587073444b626a6c65-build.zip"
         }
       },
       "api": {
