@@ -22,17 +22,6 @@ class ExerciseDto {
     required this.updatedAt,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'notes': notes,
-      'primaryMuscleGroup': primaryMuscleGroup.name,
-      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
-      'type': type.name
-    };
-  }
-
   ExerciseDto copyWith({
     String? id,
     String? name,

@@ -21,10 +21,10 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
-
     final now = TemporalDateTime.now();
 
-    final exerciseToCreate = Exercise(data: jsonEncode(exerciseDto.toJson()), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
+    final exerciseToCreate =
+        Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now, userId: SharedPrefs().userId);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 

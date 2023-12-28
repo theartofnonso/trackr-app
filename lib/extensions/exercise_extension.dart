@@ -14,8 +14,8 @@ extension ExerciseExtension on Exercise {
     final name = dataJson["name"] ?? "";
     final notes = dataJson["notes"] ?? "";
     final primaryMuscleGroup = dataJson["primaryMuscle"] ?? "";
-    final secondaryMuscleGroupJsons = dataJson["secondaryMuscles"] as List<dynamic>;
-    final secondaryMuscleGroups = secondaryMuscleGroupJsons.map((json) => MuscleGroup.fromString(jsonDecode(json))).toList();
+    final secondaryMuscleGroupJsons = dataJson["secondaryMuscles"] as List<dynamic>?;
+    final secondaryMuscleGroups = secondaryMuscleGroupJsons?.map((json) => MuscleGroup.fromString(jsonDecode(json))).toList() ?? [];
     final typeJson = dataJson["type"] ?? "";
     final type = ExerciseType.fromString(jsonDecode(typeJson));
 
