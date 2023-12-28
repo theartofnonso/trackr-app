@@ -22,7 +22,7 @@ class RoutineTemplateProvider with ChangeNotifier {
   Future<RoutineTemplateDto> saveTemplate({required User user, required RoutineTemplateDto templateDto}) async {
     final now = TemporalDateTime.now();
 
-    final templateToCreate = RoutineTemplate(user: user, data: jsonEncode(templateDto), createdAt: now, updatedAt: now);
+    final templateToCreate = RoutineTemplate(user: user, data: jsonEncode(templateDto.toJson()), createdAt: now, updatedAt: now);
 
     await Amplify.DataStore.save<RoutineTemplate>(templateToCreate);
     _templates.insert(0, templateDto);

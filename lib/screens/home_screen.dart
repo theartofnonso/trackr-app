@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _runSetUp() async {
-    if(SharedPrefs().firstLaunch){
+    //if(SharedPrefs().firstLaunch){
       SharedPrefs().firstLaunch = false;
       try {
         await Amplify.DataStore.stop();
@@ -81,16 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
         print('Error stopping DataStore: $error');
       }
 
-      if(context.mounted) {
-        await Provider.of<UserProvider>(context, listen: false).createUser();
-      }
+      // if(context.mounted) {
+      //   await Provider.of<UserProvider>(context, listen: false).createUser();
+      // }
 
       try {
         await Amplify.DataStore.start();
       } on Exception catch (error) {
         print('Error starting DataStore: $error');
       }
-    }
+   // }
     if(mounted) {
       loadAppData(context: context);
       _loadCachedLog();

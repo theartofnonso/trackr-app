@@ -42,10 +42,10 @@ class ExerciseLogDto {
   }
 
   factory ExerciseLogDto.fromJson({RoutineLogDto? routineLog, required Map<String, dynamic> json}) {
-    final superSetId = json["superSetId"];
-    final exerciseString = json["exercise"];
-    final exercise = Exercise.fromJson(exerciseString);
-    final notes = json["notes"];
+    final superSetId = json["superSetId"] ?? "";
+    final exerciseJson = json["exercise"];
+    final exercise = Exercise.fromJson(exerciseJson);
+    final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
     final createdAt = routineLog?.createdAt ?? DateTime.now();
@@ -54,6 +54,6 @@ class ExerciseLogDto {
 
   @override
   String toString() {
-    return 'ProcedureDto{id: $id, routineLogId: $routineLog, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLog: $routineLog, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
   }
 }

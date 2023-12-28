@@ -9,13 +9,13 @@ extension RoutineLogExtension on RoutineLog {
 
   RoutineLogDto dto() {
     final dataJson = jsonDecode(data);
-    final templateId = dataJson["templateId"];
-    final name = dataJson["name"];
-    final notes = dataJson["notes"];
-    final startTime = dataJson["startTime"] as DateTime;
-    final endTime = dataJson["endTime"] as DateTime;
-    final exerciseLogs = dataJson["exercises"].map((exerciseLog) => ExerciseLogDto.fromJson(json: exerciseLog)).toList();
-
+    final templateId = dataJson["templateId"] ?? "";
+    final name = dataJson["name"] ?? "";
+    final notes = dataJson["notes"] ?? "";
+    final startTime = DateTime.parse(dataJson["startTime"]);
+    final endTime = DateTime.parse(dataJson["endTime"]);
+    final exerciseLogJsons = dataJson["exercises"] as List<dynamic>;
+    final exerciseLogs = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
     return RoutineLogDto(
       id: id,
       templateId: templateId,
