@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -100,7 +101,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         backgroundColor: tealBlueDark,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_outlined),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(template.name,

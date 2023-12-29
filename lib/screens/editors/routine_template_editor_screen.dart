@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
@@ -123,8 +124,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
       await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: template);
       if (mounted) _navigateBack();
-    } catch (e) {
-      print(e);
+    } catch (_) {
       _handleRoutineTemplateCreationError("Unable to create workout");
     } finally {
       _toggleLoadingState();
@@ -218,7 +218,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       child: Scaffold(
           backgroundColor: tealBlueDark,
           appBar: AppBar(
-            leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: _checkForUnsavedChanges),
+            leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: _checkForUnsavedChanges),
             actions: [
               CTextButton(
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,

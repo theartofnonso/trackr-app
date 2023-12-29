@@ -39,7 +39,7 @@ class RepsSetRow extends SetRow {
       children: [
         TableRow(children: [
           TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle, child: SetDeleteButton(onDelete: super.onRemoved)),
+              verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: SetDeleteButton(onDelete: super.onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: IntTextField(

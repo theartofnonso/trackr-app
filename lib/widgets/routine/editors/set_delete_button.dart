@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SetDeleteButton extends StatelessWidget {
   final VoidCallback onDelete;
@@ -9,7 +10,7 @@ class SetDeleteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onDelete,
-      child: Icon(Icons.delete_outline_rounded, color: Colors.red.withOpacity(0.7), size: 25),
+      child: FaIcon(FontAwesomeIcons.solidRectangleXmark, color: Colors.red.withOpacity(0.9), size: 28),
     );
   }
 }
