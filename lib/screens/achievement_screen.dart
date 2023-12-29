@@ -32,7 +32,7 @@ class AchievementScreen extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_outlined),
+                    icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ]),

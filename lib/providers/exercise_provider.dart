@@ -13,9 +13,9 @@ class ExerciseProvider with ChangeNotifier {
 
   UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
 
-  Future<void> listExercises() async {
-    final exercises = await Amplify.DataStore.query(Exercise.classType);
-    _exercises = exercises.map((exercise) => exercise.dto()).toList();
+  Future<void> listExercises({List<Exercise>? exercises}) async {
+    final queries = exercises ?? await Amplify.DataStore.query(Exercise.classType);
+    _exercises = queries.map((exercise) => exercise.dto()).toList();
     notifyListeners();
   }
 

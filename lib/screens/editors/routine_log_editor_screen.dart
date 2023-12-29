@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -175,11 +176,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             appBar: AppBar(
               leading: GestureDetector(
                 onTap: _discardLog,
-                child: const Icon(
-                  Icons.arrow_back_outlined,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                child: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               ),
               title: Text(
                 widget.log.name,

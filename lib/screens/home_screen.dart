@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -23,6 +26,51 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentScreenIndex = 0;
+
+  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
+  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
+  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
+
+  void _observeExerciseQuery() {
+    _exerciseStream = Amplify.DataStore.observeQuery(
+      Exercise.classType,
+    ).listen((QuerySnapshot<Exercise> snapshot) {
+      Provider.of<ExerciseProvider>(context, listen: false).listExercises(exercises: snapshot.items);
+      if (snapshot.items.isNotEmpty) {
+        _exerciseStream?.cancel();
+      }
+    });
+  }
+
+  void _observeRoutineTemplateQuery() {
+    _routineTemplateStream = Amplify.DataStore.observeQuery(
+      RoutineTemplate.classType,
+    ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
+      Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates(templates: snapshot.items);
+      if (snapshot.items.isNotEmpty) {
+        _routineTemplateStream?.cancel();
+      }
+    });
+  }
+
+  void _observeRoutineLogQuery() {
+    _routineLogStream = Amplify.DataStore.observeQuery(
+      RoutineLog.classType,
+    ).listen((QuerySnapshot<RoutineLog> snapshot) {
+      Provider.of<RoutineLogProvider>(context, listen: false).listLogs(logs: snapshot.items);
+      if (snapshot.items.isNotEmpty) {
+        _routineLogStream?.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _exerciseStream?.cancel();
+    _routineTemplateStream?.cancel();
+    _routineLogStream?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _loadAppData() async {
+  void _loadAppData() async {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
     if (context.mounted) {
       Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
@@ -80,20 +128,24 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _cacheUser() async {
+  void _cacheUser() async {
     final authUser = await Amplify.Auth.getCurrentUser();
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
   }
 
+  void _observeQueries() {
+    _observeExerciseQuery();
+    _observeRoutineTemplateQuery();
+    _observeRoutineLogQuery();
+  }
+
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
-      await _cacheUser();
-      if (context.mounted) {
-        await _loadAppData();
-      }
+      _observeQueries();
+      _cacheUser();
     } else {
       _loadAppData();
       _loadCachedLog();
