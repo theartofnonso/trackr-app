@@ -12,9 +12,9 @@ class RoutineTemplateProvider with ChangeNotifier {
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  void listTemplates() async {
-    final templates = await Amplify.DataStore.query(RoutineTemplate.classType);
-    _templates = templates.map((template) => template.dto()).toList();
+  void listTemplates({List<RoutineTemplate>? templates}) async {
+    final queries = templates ?? await Amplify.DataStore.query(RoutineTemplate.classType);
+    _templates = queries.map((template) => template.dto()).toList();
     _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     notifyListeners();
   }

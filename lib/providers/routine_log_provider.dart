@@ -40,9 +40,9 @@ class RoutineLogProvider with ChangeNotifier {
 
   UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthToLogs => UnmodifiableMapView(_monthToLogs);
 
-  void listLogs() async {
-    final logs = await Amplify.DataStore.query(RoutineLog.classType);
-    _logs = logs.map((log) => log.dto()).toList();
+  void listLogs({List<RoutineLog>? logs}) async {
+    final queries = logs ?? await Amplify.DataStore.query(RoutineLog.classType);
+    _logs = queries.map((log) => log.dto()).toList();
     _logs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
     notifyListeners();
