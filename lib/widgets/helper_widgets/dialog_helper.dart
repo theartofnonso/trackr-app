@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/c_timer_picker.dart';
 
 import '../../app_constants.dart';
+import '../time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -47,6 +50,35 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
               ),
             ],
           ));
+}
+
+void displayTimePicker(
+    {required BuildContext context,
+    required CupertinoTimerPickerMode mode,
+    required Duration initialDuration,
+    required void Function(Duration duration) onChangedDuration}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      height: 216,
+      context: context,
+      child: TimePicker(mode: mode, initialDuration: initialDuration, onSelect: onChangedDuration));
+}
+
+void displayNotificationTimePicker(
+    {required BuildContext context,
+    required CupertinoTimerPickerMode mode,
+    required Duration initialDuration,
+    required void Function(Duration duration) onChangedDuration,
+    required void Function() turnOffReminder}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      height: 240,
+      context: context,
+      child: CustomTimerPicker(
+          turnOffReminder: turnOffReminder,
+          onSelect: (Duration duration) {
+            onChangedDuration(duration);
+          }));
 }
 
 void showAlertDialogWithMultiActions(

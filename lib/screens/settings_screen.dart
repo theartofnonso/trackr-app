@@ -61,7 +61,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  dense: true,
                   title: Text("Weight", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                   subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
                   trailing: SegmentedButton(
@@ -102,9 +101,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 2),
                 ListTile(
-                  dense: true,
                   title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
                   subtitle:
                       Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),

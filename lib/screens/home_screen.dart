@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
@@ -20,6 +21,7 @@ import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_template_provider.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -154,13 +156,22 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadAppData();
       _loadCachedLog();
     }
-    _checkAndRequestNotificationPermission();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndRequestNotificationPermission();
+
+      // FlutterLocalNotificationsPlugin().zonedSchedule(
+      //     0,
+      //     "It's a great day to train!",
+      //     "Let's get you on track",
+      //     tz.TZDateTime.now(tz.local).add(DateTime.now().nextMorning()),
+      //     const NotificationDetails(),
+      //     uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime, matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
+    });
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {
-    final status = await Permission.notification.status;
-    print(status);
-    if (!status.isGranted) {
+    final result = await checkIosNotificationPermission();
+    if (!result.isEnabled) {
       if (mounted) {
         displayBottomSheet(
             context: context,
@@ -180,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
               CTextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    requestNotificationPermission();
+                    requestIosNotificationPermission().then((value) => print(value));
                   },
                   label: "Always remind me",
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

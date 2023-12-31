@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,16 @@ import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../shared_prefs.dart';
+
+String weekdayName(int weekday) {
+  List<String> weekDays = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+  ];
+
+  // Dart's DateTime weekday is 1-based (1 = Monday, 7 = Sunday)
+  // So, subtract 1 to map it to the 0-based index of the list
+  return weekDays[weekday - 1];
+}
 
 bool isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
@@ -175,16 +184,28 @@ Future<bool> batchDeleteUserData({required String document, required String docu
   return result[documentKey];
 }
 
-Future<bool?> requestNotificationPermission() async {
+Future<NotificationsEnabledOptions> checkIosNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  if (Platform.isIOS) {
-    return await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  }
-  return null;
+  return await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          ?.checkPermissions() ??
+      const NotificationsEnabledOptions(
+          isEnabled: false,
+          isSoundEnabled: false,
+          isAlertEnabled: false,
+          isBadgeEnabled: false,
+          isProvisionalEnabled: false,
+          isCriticalEnabled: false);
+}
+
+Future<bool> requestIosNotificationPermission() async {
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  return await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+      false;
 }

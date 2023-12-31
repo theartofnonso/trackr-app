@@ -48,8 +48,16 @@ extension DurationExtension on Duration {
     return display;
   }
 
-  String digitalTime() {
+  String digitalTimeHMS() {
     return "${inHours.toString().padLeft(2, "0")}:${_absoluteDuration(inMinutes)}:${_absoluteDuration(inSeconds)}";
+  }
+
+  String digitalTimeHM() {
+    return "${inHours.toString().padLeft(2, "0")}:${_absoluteDuration(inMinutes)}";
+  }
+
+  String digitalTimeMS() {
+    return "${_absoluteDuration(inMinutes)}:${_absoluteDuration(inSeconds)}";
   }
 
 }
