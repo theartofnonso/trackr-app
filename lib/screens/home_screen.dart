@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -161,6 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _checkAndRequestNotificationPermission() async {
     final status = await Permission.notification.status;
+    print(status);
     if (!status.isGranted) {
       if (mounted) {
         displayBottomSheet(
@@ -171,33 +170,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.start),
               Text("Going to the gym regularly is hard. Trackr can help you stay on track.",
-                  style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white70),
+                  style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               Text("You can change this by going to Settings > Notifications",
                   style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 16),
               CTextButton(
-                  onPressed: _requestNotificationPermission,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    requestNotificationPermission();
+                  },
                   label: "Always remind me",
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   buttonColor: Colors.green),
             ]));
       }
-    }
-  }
-
-  Future<void> _requestNotificationPermission() async {
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    if (Platform.isIOS) {
-      final status = await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
     }
   }
 

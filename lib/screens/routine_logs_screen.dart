@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
@@ -16,7 +17,7 @@ class RoutineLogsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: const Icon(Icons.arrow_back_outlined), onPressed: Navigator.of(context).pop),
+        leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: Navigator.of(context).pop),
       ),
       body: SafeArea(
         child: Padding(

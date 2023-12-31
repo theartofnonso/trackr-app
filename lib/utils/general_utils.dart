@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
@@ -171,4 +173,18 @@ Future<bool> batchDeleteUserData({required String document, required String docu
   final response = await operation.response;
   final result = jsonDecode(response.data);
   return result[documentKey];
+}
+
+Future<bool?> requestNotificationPermission() async {
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  if (Platform.isIOS) {
+    return await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+  return null;
 }

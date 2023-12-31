@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/graphQL/queries.dart';
+import 'package:tracker_app/screens/notification_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../providers/app_provider.dart';
@@ -163,6 +164,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
                       tileColor: tealBlueLight,
+                      onTap: () => _navigateToNotificationSettings(context),
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       leading: const FaIcon(FontAwesomeIcons.bell, color: Colors.white, size: 20),
@@ -178,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: _logout,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      leading: const FaIcon(FontAwesomeIcons.signOutAlt, color: Colors.white, size: 20),
+                      leading: const FaIcon(FontAwesomeIcons.rightFromBracket, color: Colors.white, size: 20),
                       title: Text("Logout", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
                       subtitle: Text("Logout of your ${SharedPrefs().userEmail} Trackr account",
                           style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
@@ -191,7 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: _delete,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      leading: const FaIcon(FontAwesomeIcons.trashAlt, color: Colors.white, size: 20),
+                      leading: const FaIcon(FontAwesomeIcons.trashCan, color: Colors.white, size: 20),
                       title: Text("Delete Account", style: GoogleFonts.lato(color: Colors.red, fontSize: 16)),
                       subtitle: Text("Including all exercises and logs. Your account will be removed immediately",
                           style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
@@ -218,6 +220,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               multiSelect: false,
               readOnly: true,
             )));
+  }
+
+  void _navigateToNotificationSettings(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
   }
 
   void _clearAppData() async {
