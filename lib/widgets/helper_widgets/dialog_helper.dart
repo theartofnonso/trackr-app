@@ -28,7 +28,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
       )));
 }
 
-void displayBottomSheet({required BuildContext context, required Widget child, double? height}) {
+void displayBottomSheet({required BuildContext context, required Widget child, double? height, EdgeInsets? padding}) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Column(
@@ -36,6 +36,7 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
             children: [
               Container(
                 height: height,
+                padding: padding,
                 margin: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),

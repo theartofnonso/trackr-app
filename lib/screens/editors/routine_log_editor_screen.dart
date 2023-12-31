@@ -174,10 +174,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         child: Scaffold(
             backgroundColor: tealBlueDark,
             appBar: AppBar(
-              leading: GestureDetector(
-                onTap: _discardLog,
-                child: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              ),
+              leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: _discardLog),
               title: Text(
                 widget.log.name,
                 style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),

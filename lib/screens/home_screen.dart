@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
@@ -11,6 +15,8 @@ import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
@@ -149,6 +155,49 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       _loadAppData();
       _loadCachedLog();
+    }
+    _checkAndRequestNotificationPermission();
+  }
+
+  Future<void> _checkAndRequestNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (!status.isGranted) {
+      if (mounted) {
+        displayBottomSheet(
+            context: context,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text("Remind me to train weekly",
+                  style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
+                  textAlign: TextAlign.start),
+              Text("Going to the gym regularly is hard. Trackr can help you stay on track.",
+                  style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white70),
+                  textAlign: TextAlign.start),
+              const SizedBox(height: 16),
+              Text("You can change this by going to Settings > Notifications",
+                  style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
+                  textAlign: TextAlign.start),
+              const SizedBox(height: 16),
+              CTextButton(
+                  onPressed: _requestNotificationPermission,
+                  label: "Always remind me",
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  buttonColor: Colors.green),
+            ]));
+      }
+    }
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    if (Platform.isIOS) {
+      final status = await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
     }
   }
 

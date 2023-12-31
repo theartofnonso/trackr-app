@@ -53,6 +53,8 @@ dependencies:
   sentry_flutter: ^7.13.2
   flutter_svg: ^2.0.9
   font_awesome_flutter: ^10.6.0
+  flutter_local_notifications: ^16.3.0
+  permission_handler: ^11.1.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
