@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'buttons/text_button_widget.dart';
 
 class CustomTimerPicker extends StatefulWidget {
+  final Duration initialDuration;
   final void Function(Duration duration) onSelect;
-  final void Function() turnOffReminder;
 
-  const CustomTimerPicker({super.key, required this.turnOffReminder, required this.onSelect});
+  const CustomTimerPicker({super.key, required this.initialDuration, required this.onSelect});
 
   @override
   State<CustomTimerPicker> createState() => _CustomTimerPickerState();
@@ -16,6 +16,9 @@ class CustomTimerPicker extends StatefulWidget {
 class _CustomTimerPickerState extends State<CustomTimerPicker> {
   int _hours = 0;
   int _minutes = 0;
+
+  FixedExtentScrollController? _hoursScrollController;
+  FixedExtentScrollController? _minutesScrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,7 @@ class _CustomTimerPickerState extends State<CustomTimerPicker> {
                 // Minutes Picker
                 Expanded(
                   child: CupertinoPicker(
+                    scrollController: _hoursScrollController,
                     looping: true,
                     itemExtent: 38.0,
                     onSelectedItemChanged: (int index) {
@@ -44,6 +48,7 @@ class _CustomTimerPickerState extends State<CustomTimerPicker> {
                 // Seconds Picker
                 Expanded(
                   child: CupertinoPicker(
+                    scrollController: _minutesScrollController,
                     looping: true,
                     itemExtent: 38.0,
                     onSelectedItemChanged: (int index) {
@@ -58,20 +63,25 @@ class _CustomTimerPickerState extends State<CustomTimerPicker> {
             ),
           ),
           const SizedBox(height: 10),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            CTextButton(
-                onPressed: widget.turnOffReminder, label: "Turn off reminder", padding: const EdgeInsets.all(10.0)),
-            const SizedBox(width: 10),
-            CTextButton(
-                onPressed: () {
-                  widget.onSelect( Duration(hours: _hours, minutes: _minutes));
-                },
-                label: "Remind me",
-                buttonColor: Colors.green,
-                padding: const EdgeInsets.all(10.0))
-          ]),
+          Center(
+              child: CTextButton(
+                  onPressed: () {
+                    widget.onSelect(Duration(hours: _hours, minutes: _minutes));
+                  },
+                  label: "Remind me",
+                  buttonColor: Colors.green,
+                  padding: const EdgeInsets.all(10.0)))
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _hours = widget.initialDuration.inHours;
+    _minutes = widget.initialDuration.inMinutes;
+    _hoursScrollController = FixedExtentScrollController(initialItem: _hours);
+    _minutesScrollController = FixedExtentScrollController(initialItem: _minutes);
   }
 }

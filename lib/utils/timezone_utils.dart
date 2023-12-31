@@ -1,8 +1,8 @@
 import 'package:timezone/timezone.dart' as tz;
 
 tz.TZDateTime _nextInstanceOfHour({required int hour, required int minutes}) {
-  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minutes);
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.getLocation("Europe/London"));
+  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.getLocation("Europe/London"), now.year, now.month, now.day, hour, minutes);
   if (scheduledDate.isBefore(now)) {
     scheduledDate = scheduledDate.add(const Duration(days: 1));
   }
@@ -11,6 +11,7 @@ tz.TZDateTime _nextInstanceOfHour({required int hour, required int minutes}) {
 
 tz.TZDateTime nextInstanceOfWeekDayAndHour({required int hour, required minutes,  required int weekday}) {
   tz.TZDateTime scheduledDate = _nextInstanceOfHour(hour: hour, minutes: minutes);
+  print(scheduledDate);
   while (scheduledDate.weekday != weekday) {
     scheduledDate = scheduledDate.add(const Duration(days: 1));
   }

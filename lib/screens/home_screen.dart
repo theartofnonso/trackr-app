@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
@@ -21,7 +20,6 @@ import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_template_provider.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -158,18 +156,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndRequestNotificationPermission();
-
-      // FlutterLocalNotificationsPlugin().zonedSchedule(
-      //     0,
-      //     "It's a great day to train!",
-      //     "Let's get you on track",
-      //     tz.TZDateTime.now(tz.local).add(DateTime.now().nextMorning()),
-      //     const NotificationDetails(),
-      //     uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime, matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
     });
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {
+
     final result = await checkIosNotificationPermission();
     if (!result.isEnabled) {
       if (mounted) {

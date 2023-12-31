@@ -68,14 +68,13 @@ void displayNotificationTimePicker(
     {required BuildContext context,
     required CupertinoTimerPickerMode mode,
     required Duration initialDuration,
-    required void Function(Duration duration) onChangedDuration,
-    required void Function() turnOffReminder}) {
+    required void Function(Duration duration) onChangedDuration}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       height: 240,
       context: context,
       child: CustomTimerPicker(
-          turnOffReminder: turnOffReminder,
+          initialDuration: initialDuration,
           onSelect: (Duration duration) {
             onChangedDuration(duration);
           }));

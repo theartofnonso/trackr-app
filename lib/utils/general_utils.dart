@@ -186,6 +186,7 @@ Future<bool> batchDeleteUserData({required String document, required String docu
 
 Future<NotificationsEnabledOptions> checkIosNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   return await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.checkPermissions() ??

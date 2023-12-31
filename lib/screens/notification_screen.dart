@@ -1,20 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
+import '../utils/timezone_utils.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
-
-class _NotificationDay {
-  final int weekday;
-  final String label;
-  final String description;
-
-  const _NotificationDay({required this.weekday, required this.label, required this.description});
-}
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -35,47 +31,31 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         )),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(children: [
-            SwitchListTile(
-              title: Text('Weekly Training reminder', style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-              subtitle: Text(_notificationStatusMessage, style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
-              value: _notificationEnabled,
-              activeColor: Colors.green,
-              inactiveThumbColor: Colors.white70,
-              onChanged: (bool value) {
-                if (value) {
-                  _requestNotificationPermission();
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: tealBlueLight, // Background color
-                    width: 2, // Border width
-                  ),
-                  borderRadius: BorderRadius.circular(16), // Border radius
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(children: [
+                SwitchListTile(
+                  title: Text('Weekly Training reminder', style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+                  subtitle:
+                      Text(_notificationStatusMessage, style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
+                  value: _notificationEnabled,
+                  activeColor: Colors.green,
+                  inactiveThumbColor: Colors.white70,
+                  onChanged: (bool value) {
+                    if (value) {
+                      _requestNotificationPermission();
+                    } else {
+                      // Handle disabling notifications
+                    }
+                  },
                 ),
-                child: const _NotificationListView(notificationDays: [
-                  _NotificationDay(
-                      weekday: DateTime.monday, label: "Monday", description: "Remind me to train on Mondays"),
-                  _NotificationDay(
-                      weekday: DateTime.tuesday, label: "Tuesday", description: "Remind me to train on Tuesdays"),
-                  _NotificationDay(
-                      weekday: DateTime.wednesday, label: "Wednesday", description: "Remind me to train on Wednesdays"),
-                  _NotificationDay(
-                      weekday: DateTime.thursday, label: "Thursday", description: "Remind me to train on Thursdays"),
-                  _NotificationDay(
-                      weekday: DateTime.friday, label: "Friday", description: "Remind me to train on Fridays"),
-                  _NotificationDay(
-                      weekday: DateTime.saturday, label: "Saturday", description: "Remind me to train on Saturdays"),
-                  _NotificationDay(
-                      weekday: DateTime.sunday, label: "Sunday", description: "Remind me to train on Sundays"),
-                ]))
-          ]),
+                const SizedBox(height: 16),
+                const _NotificationListView()
+              ]),
+            ),
+          ),
         ));
   }
 
@@ -113,58 +93,123 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 }
 
-class _NotificationListTile extends StatefulWidget {
-  final _NotificationDay notificationDay;
+class _NotificationListTile extends StatelessWidget {
+  final int weekDay;
+  final PendingNotificationRequest? schedule;
+  final void Function() onScheduleChanged;
 
-  const _NotificationListTile({required this.notificationDay});
-
-  @override
-  State<_NotificationListTile> createState() => _NotificationListTileState();
-}
-
-class _NotificationListTileState extends State<_NotificationListTile> {
-
-  Duration _time = const Duration(hours: 3, minutes: 0);
+  const _NotificationListTile({required this.weekDay, required this.schedule, required this.onScheduleChanged});
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        splashColor: Colors.transparent,
-        brightness: Brightness.dark,
+    print("Schedule: ${schedule?.id} - ${schedule?.payload}");
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: tealBlueLight, // Background color
+          width: 1, // Border width
+        ),
+        borderRadius: BorderRadius.circular(16), // Border radius
       ),
-      child: SwitchListTile(
-        activeColor: Colors.green,
-        inactiveThumbColor: Colors.white70,
-        title: Text(weekdayName(widget.notificationDay.weekday), style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-        subtitle: Text("Every ${weekdayName(widget.notificationDay.weekday)} at ${_time.digitalTimeHM()}", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
-        value: false,
-        onChanged: (bool value) {
-          displayNotificationTimePicker(
-              context: context,
-              mode: CupertinoTimerPickerMode.hm,
-              initialDuration: const Duration(hours: 3),
-              onChangedDuration: (duration) {
-                Navigator.of(context).pop();
-                setState(() {
-                  _time = duration;
-                });
-              }, turnOffReminder: () {  });
-        },
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(weekdayName(weekDay), style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+          if (schedule != null)
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const SizedBox(height: 8),
+              CTextButton(
+                  onPressed: () => _displayTimePicker(context: context),
+                  label: _timeForSchedule().digitalTimeHM(),
+                  textStyle: GoogleFonts.lato(color: Colors.white70, fontSize: 14))
+            ]),
+        ]),
+        Switch(
+          activeColor: Colors.green,
+          inactiveThumbColor: Colors.white70,
+          value: schedule != null,
+          onChanged: (bool value) {
+            if (value) {
+              _scheduleWeekDayNotification(duration: const Duration(hours: 3));
+            } else {
+              FlutterLocalNotificationsPlugin().cancel(weekDay);
+              onScheduleChanged();
+            }
+          },
+        )
+      ]),
     );
   }
+
+  Duration _timeForSchedule() {
+    final json = schedule?.payload ?? "";
+    return json.isNotEmpty ? Duration(milliseconds: int.parse(json)) : const Duration(hours: 3);
+  }
+
+  void _displayTimePicker({required BuildContext context}) {
+    displayNotificationTimePicker(
+        context: context,
+        mode: CupertinoTimerPickerMode.hm,
+        initialDuration: _timeForSchedule(),
+        onChangedDuration: (duration) {
+          Navigator.of(context).pop();
+          _scheduleWeekDayNotification(duration: duration);
+        });
+  }
+
+  void _scheduleWeekDayNotification({required Duration duration}) async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.cancel(weekDay);
+    FlutterLocalNotificationsPlugin().zonedSchedule(
+        weekDay,
+        "It's a great day to train!",
+        "Let's get you on track",
+        nextInstanceOfWeekDayAndHour(hour: duration.inHours, minutes: duration.inMinutes, weekday: weekDay),
+        const NotificationDetails(),
+        payload: duration.inMilliseconds.toString(),
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
+    onScheduleChanged();
+  }
+
 }
 
-class _NotificationListView extends StatelessWidget {
-  final List<_NotificationDay> notificationDays;
+class _NotificationListView extends StatefulWidget {
+  const _NotificationListView();
 
-  const _NotificationListView({required this.notificationDays});
+  @override
+  State<_NotificationListView> createState() => _NotificationListViewState();
+}
+
+class _NotificationListViewState extends State<_NotificationListView> {
+  List<PendingNotificationRequest> _schedules = [];
 
   @override
   Widget build(BuildContext context) {
-    final children = notificationDays.map((day) => _NotificationListTile(notificationDay: day)).toList();
+    List<int> weekDays = List.generate(7, (index) => index + 1);
+    final children = weekDays
+        .map((day) => _NotificationListTile(
+            weekDay: day,
+            schedule: _schedules.firstWhereOrNull((schedule) => schedule.id == day),
+            onScheduleChanged: _loadSchedules))
+        .toList();
 
     return Column(children: children);
+  }
+
+  void _loadSchedules() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final schedules = await FlutterLocalNotificationsPlugin().pendingNotificationRequests();
+      setState(() {
+        _schedules = schedules;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSchedules();
   }
 }
