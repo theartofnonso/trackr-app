@@ -23,10 +23,13 @@ import '../../widgets/routine/editors/exercise_picker.dart';
 import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
+enum RoutineLogEditorMode { log, edit }
+
 class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
+  final RoutineLogEditorMode mode;
 
-  const RoutineLogEditorScreen({super.key, required this.log});
+  const RoutineLogEditorScreen({super.key, required this.log, this.mode = RoutineLogEditorMode.log});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -95,17 +98,27 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   Future<void> _doCreateRoutineLog() async {
-
     _toggleLoadingState(message: "Saving log...");
 
     final routineLog = _routineLog();
 
-    final createdLog =
-        await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
+    final createdLog = await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
 
     _toggleLoadingState();
 
     _navigateBack(log: createdLog);
+  }
+
+  Future<void> _doUpdateRoutineLog() async {
+    _toggleLoadingState(message: "Updating log...");
+
+    final routineLog = _routineLog();
+
+    await Provider.of<RoutineLogProvider>(context, listen: false).updateRoutineLog(log: routineLog);
+
+    _toggleLoadingState();
+
+    _navigateBack();
   }
 
   bool _isRoutinePartiallyComplete() {
@@ -138,7 +151,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     }
   }
 
+  void _updateLog() {
+    final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
+    if (isRoutinePartiallyComplete) {
+      _doUpdateRoutineLog();
+    } else {
+      showAlertDialogWithSingleAction(
+          context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
+    }
+  }
+
   void _cacheLog() {
+    if (widget.mode == RoutineLogEditorMode.edit) return;
     final routineLog = _routineLog();
     Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
   }
@@ -174,7 +198,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         child: Scaffold(
             backgroundColor: tealBlueDark,
             appBar: AppBar(
-              leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: _discardLog),
+              leading: IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                  onPressed: _discardLog),
               title: Text(
                 widget.log.name,
                 style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
@@ -184,8 +210,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             floatingActionButton: isKeyboardOpen || _loading
                 ? null
                 : FloatingActionButton(
-                    heroTag: "fab_routine_log_editor_screen",
-                    onPressed: _saveLog,
+                    heroTag: "fab_log_routine_log_editor_screen",
+                    onPressed: widget.mode == RoutineLogEditorMode.log ? _saveLog : _updateLog,
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -206,14 +232,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                       onTap: _dismissKeyboard,
                       child: Column(
                         children: [
-                          Consumer<ExerciseLogProvider>(
-                              builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
-                            return _RoutineLogOverview(
-                              sets: provider.completedSets().length,
-                              timer: _RoutineTimer(startTime: widget.log.startTime),
-                            );
-                          }),
-                          const SizedBox(height: 20),
+                          if (widget.mode == RoutineLogEditorMode.log)
+                            Column(children: [
+                              Consumer<ExerciseLogProvider>(
+                                  builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
+                                return _RoutineLogOverview(
+                                  sets: provider.completedSets().length,
+                                  timer: _RoutineTimer(startTime: widget.log.startTime),
+                                );
+                              }),
+                              const SizedBox(height: 20),
+                            ]),
                           exerciseLogs.isNotEmpty
                               ? Expanded(
                                   child: ListView.separated(
@@ -336,12 +365,14 @@ class _RoutineLogOverview extends StatelessWidget {
           },
           children: [
             TableRow(children: [
-              Text("Sets", style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+              Text("Sets",
+                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Duration",
                   style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
             ]),
             TableRow(children: [
-              Text("$sets", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+              Text("$sets",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer
             ])
           ],

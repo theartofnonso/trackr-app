@@ -98,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white, size: 28),
             label: 'Workouts',
           ),
+          /// Uncomment this to enable achievements
           // NavigationDestination(
           //   icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
           //   selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
@@ -153,9 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadAppData();
       _loadCachedLog();
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndRequestNotificationPermission();
-    });
+    /// Uncomment this to enable notifications
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _checkAndRequestNotificationPermission();
+    // });
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {

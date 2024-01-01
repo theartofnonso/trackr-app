@@ -226,7 +226,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       if (mounted) {
         Navigator.of(context).pop();
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
       }
