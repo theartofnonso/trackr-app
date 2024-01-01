@@ -29,18 +29,6 @@ class RoutineLogDto {
     return endTime.difference(startTime);
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'templateId': templateId,
-      'name': name,
-      'notes': notes,
-      'startTime': startTime.toIso8601String(),
-      'endTime': endTime.toIso8601String(),
-      'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
-    };
-  }
-
   factory RoutineLogDto.fromJson(Map<String, dynamic> json) {
     final id = json["id"] ?? "";
     final templateId = json["templateId"] ?? "";

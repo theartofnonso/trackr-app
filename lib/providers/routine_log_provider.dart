@@ -128,7 +128,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   void cacheRoutineLog({required RoutineLogDto logDto}) {
-    SharedPrefs().cachedRoutineLog = jsonEncode(logDto.toJson());
+    SharedPrefs().cachedRoutineLog = jsonEncode(logDto);
   }
 
   Future<void> removeLog({required String id}) async {
