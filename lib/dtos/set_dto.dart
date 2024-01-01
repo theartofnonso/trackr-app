@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class SetDto {
   final num value1;
