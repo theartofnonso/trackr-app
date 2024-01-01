@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -395,7 +396,7 @@ class HomeScreen extends StatelessWidget {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
 
@@ -404,11 +405,11 @@ class HomeScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_outlined),
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Text(foundExercise.name,
-                style: GoogleFonts.lato(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+                style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: const TabBar(
               labelColor: Colors.white,
               unselectedLabelColor: Colors.white70,

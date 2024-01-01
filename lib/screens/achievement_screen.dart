@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/calendar_heatmap.dart';
+import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 
 import '../app_constants.dart';
 import '../dtos/achievement_dto.dart';
@@ -37,8 +37,8 @@ class AchievementScreen extends StatelessWidget {
                   )
                 ]),
                 const SizedBox(height: 10),
-                Text(achievementDto.type.title, style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
-                Text(achievementDto.type.description, style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
+                Text(achievementDto.type.title, style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+                Text(achievementDto.type.description, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70)),
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -57,7 +57,7 @@ class AchievementScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Text("${achievementDto.progress.remainder} left",
-                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
                     ],
                   ),
                 ),

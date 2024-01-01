@@ -38,7 +38,7 @@ class RoutineLogWidget extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
-            title: Text(routineLog.name, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+            title: Text(routineLog.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
             subtitle: Row(children: [
               const Icon(
                 Icons.date_range_rounded,
@@ -47,7 +47,7 @@ class RoutineLogWidget extends StatelessWidget {
               ),
               const SizedBox(width: 1),
               Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.montserrat(
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
             ]),
           ),
@@ -75,7 +75,7 @@ class _ProcedureWidget extends StatelessWidget {
             ? Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
           child: Text(exerciseLog.notes,
-              style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
+              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.8), fontSize: 15)),
         )
             : const SizedBox.shrink(),
         switch (exerciseType) {

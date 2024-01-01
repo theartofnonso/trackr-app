@@ -23,7 +23,7 @@ class ExerciseProvider with ChangeNotifier {
     final now = TemporalDateTime.now();
 
     final exerciseToCreate =
-        Exercise(data: jsonEncode(exerciseDto.toJson()), createdAt: now, updatedAt: now);
+        Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 

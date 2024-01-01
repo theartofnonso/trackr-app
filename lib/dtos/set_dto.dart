@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class SetDto {
   final num value1;
@@ -9,10 +8,6 @@ class SetDto {
 
   SetDto copyWith({num? value1, num? value2, bool? checked}) {
     return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
-  }
-
-  String toJson() {
-    return jsonEncode({"value1": value1, "value2": value2, "checked": checked});
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {

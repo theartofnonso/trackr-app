@@ -1,11 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/c_timer_picker.dart';
 
 import '../../app_constants.dart';
+import '../time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: tealBlueLighter,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+        side: const BorderSide(
+          color: tealBlueLighter, // Border color
+          width: 1.5, // Border width
+        ),
+      ),
+      backgroundColor: Colors.transparent,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       content: Row(
@@ -17,7 +27,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.montserrat(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
@@ -28,7 +38,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
       )));
 }
 
-void displayBottomSheet({required BuildContext context, required Widget child, double? height}) {
+void displayBottomSheet({required BuildContext context, required Widget child, double? height, EdgeInsets? padding}) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Column(
@@ -36,6 +46,7 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
             children: [
               Container(
                 height: height,
+                padding: padding,
                 margin: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
@@ -46,6 +57,34 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
               ),
             ],
           ));
+}
+
+void displayTimePicker(
+    {required BuildContext context,
+    required CupertinoTimerPickerMode mode,
+    required Duration initialDuration,
+    required void Function(Duration duration) onChangedDuration}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      height: 216,
+      context: context,
+      child: TimePicker(mode: mode, initialDuration: initialDuration, onSelect: onChangedDuration));
+}
+
+void displayNotificationTimePicker(
+    {required BuildContext context,
+    required CupertinoTimerPickerMode mode,
+    required Duration initialDuration,
+    required void Function(Duration duration) onChangedDuration}) {
+  FocusScope.of(context).unfocus();
+  displayBottomSheet(
+      height: 240,
+      context: context,
+      child: CustomTimerPicker(
+          initialDuration: initialDuration,
+          onSelect: (Duration duration) {
+            onChangedDuration(duration);
+          }));
 }
 
 void showAlertDialogWithMultiActions(
@@ -60,12 +99,13 @@ void showAlertDialogWithMultiActions(
   final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
-      child: Text(leftActionLabel, style: GoogleFonts.lato(color: isLeftActionDestructive ? Colors.red : Colors.white)),
+      child: Text(leftActionLabel,
+          style: GoogleFonts.montserrat(color: isLeftActionDestructive ? Colors.red : Colors.white)),
     ),
     TextButton(
       onPressed: rightAction,
-      child:
-          Text(rightActionLabel, style: GoogleFonts.lato(color: isRightActionDestructive ? Colors.red : Colors.white)),
+      child: Text(rightActionLabel,
+          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white)),
     ),
   ];
 
@@ -73,15 +113,21 @@ void showAlertDialogWithMultiActions(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        icon: const Icon(Icons.info_outline),
-        backgroundColor: tealBlueDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: const BorderSide(
+            color: tealBlueLighter, // Border color
+            width: 1.5, // Border width
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         content: Text(
           message,
-          style: GoogleFonts.lato(fontSize: 14),
+          style: GoogleFonts.montserrat(fontSize: 16),
           textAlign: TextAlign.center,
         ),
-        contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+        contentPadding: const EdgeInsets.only(top: 16, bottom: 10),
         actions: alertActions,
         actionsAlignment: MainAxisAlignment.center,
         actionsPadding: const EdgeInsets.only(bottom: 8),
@@ -98,7 +144,7 @@ void showAlertDialogWithSingleAction(
   final alertActions = <Widget>[
     TextButton(
       onPressed: action,
-      child: Text(actionLabel, style: GoogleFonts.lato(color: Colors.white)),
+      child: Text(actionLabel, style: GoogleFonts.montserrat(color: Colors.white)),
     ),
   ];
 
@@ -106,15 +152,21 @@ void showAlertDialogWithSingleAction(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        icon: const Icon(Icons.info_outline),
-        backgroundColor: tealBlueDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: const BorderSide(
+            color: tealBlueLighter, // Border color
+            width: 1.5, // Border width
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         content: Text(
           message,
-          style: GoogleFonts.lato(fontSize: 14),
+          style: GoogleFonts.montserrat(fontSize: 16),
           textAlign: TextAlign.center,
         ),
-        contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+        contentPadding: const EdgeInsets.only(top: 16, bottom: 10),
         actions: alertActions,
         actionsAlignment: MainAxisAlignment.center,
         actionsPadding: const EdgeInsets.only(bottom: 8),

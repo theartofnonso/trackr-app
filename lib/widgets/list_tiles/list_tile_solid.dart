@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../app_constants.dart';
-class CListTile extends StatelessWidget {
+import '../../app_constants.dart';
+class SolidListTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final String trailing;
@@ -10,7 +10,7 @@ class CListTile extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final Color? tileColor;
 
-  const CListTile({
+  const SolidListTile({
     super.key,
     required this.title,
     required this.subtitle,
@@ -29,11 +29,11 @@ class CListTile extends StatelessWidget {
           onTap: onTap,
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          title: Text(title, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+          title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
           subtitle: Text(subtitle,
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+              style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
           trailing: Text(trailing,
-              style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
+              style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
         ),
       ),
     );

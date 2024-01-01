@@ -134,5 +134,15 @@ extension DateTimeExtension on DateTime {
   DateTime localDate() {
     return DateTime(year, month, day, 0, 0, 0);
   }
+
+  Duration nextMorning() {
+    DateTime now = DateTime.now();
+
+    DateTime dayAfterNextMorning = DateTime(now.year, now.month, now.day + 2, 1, 0);
+
+    Duration duration = dayAfterNextMorning.difference(now);
+
+    return duration;
+  }
 }
 

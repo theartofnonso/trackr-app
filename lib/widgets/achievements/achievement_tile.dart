@@ -32,10 +32,10 @@ class AchievementTile extends StatelessWidget {
                     Row(
                       children: [
                         Text(achievement.type.title.toUpperCase(),
-                            style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                       ],
                     ),
-                    Text(achievement.type.description, style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                    Text(achievement.type.description, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
                       color: achievement.progress.remainder == 0 ? Colors.green : Colors.white,
@@ -48,7 +48,7 @@ class AchievementTile extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text("${achievement.progress.remainder} left",
-                  style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
             ],
           )),
     );

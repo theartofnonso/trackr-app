@@ -34,7 +34,7 @@ class PieChartWidget extends StatelessWidget {
   }
 
   List<PieChartSectionData> showingSections() {
-    final textStyle = GoogleFonts.lato(
+    final textStyle = GoogleFonts.montserrat(
       fontSize: 14,
       fontWeight: FontWeight.bold,
       color: Colors.white,

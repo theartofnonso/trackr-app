@@ -55,7 +55,7 @@ class _RoutineWidget extends StatelessWidget {
         onPressed: () {
           navigateToRoutineEditor(context: context, template: template);
         },
-        child: Text("Edit", style: GoogleFonts.lato(color: Colors.white)),
+        child: Text("Edit", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
       MenuItemButton(
         onPressed: () {
@@ -71,7 +71,7 @@ class _RoutineWidget extends StatelessWidget {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
 
@@ -89,7 +89,7 @@ class _RoutineWidget extends StatelessWidget {
                 color: Colors.white,
                 size: 35,
               )),
-          title: Text(template.name, style: Theme.of(context).textTheme.labelLarge),
+          title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
           subtitle: Row(children: [
             const Icon(
               Icons.numbers,
@@ -97,7 +97,7 @@ class _RoutineWidget extends StatelessWidget {
               size: 12,
             ),
             Text("${template.exercises.length} exercises",
-                style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
           ]),
           trailing: MenuAnchor(
             style: MenuStyle(

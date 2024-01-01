@@ -7,7 +7,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/widgets/c_list_title.dart';
+import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
 
@@ -132,7 +132,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               IconButton(onPressed: _decrementDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
               Text(_currentDate.formattedMonthAndYear(),
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.montserrat(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   )),
@@ -154,7 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             children: [
               RichText(
                   text: TextSpan(
-                      style: GoogleFonts.lato(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70),
                       children: const [
                     TextSpan(text: 'Tap'),
                     WidgetSpan(
@@ -184,7 +184,7 @@ class _CalendarHeader extends StatelessWidget {
                     width: 45,
                     child: Center(
                       child: Text(day,
-                          style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                   ))
               .toList()
@@ -252,7 +252,7 @@ class _DateWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.lato(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                style: GoogleFonts.montserrat(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),
@@ -329,7 +329,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CListTile(
+    return SolidListTile(
         title: log.name,
         subtitle: "${log.exerciseLogs.length} exercise(s)",
         trailing: log.duration().secondsOrMinutesOrHours(),
