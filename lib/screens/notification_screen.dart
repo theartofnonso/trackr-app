@@ -102,7 +102,6 @@ class _NotificationListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Schedule: ${schedule?.id} - ${schedule?.payload}");
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -121,7 +120,7 @@ class _NotificationListTile extends StatelessWidget {
               const SizedBox(height: 8),
               CTextButton(
                   onPressed: () => _displayTimePicker(context: context),
-                  label: _timeForSchedule().digitalTimeHM(),
+                  label: "Every ${weekdayName(weekDay)} at ${_timeForSchedule().digitalTimeHM()}",
                   textStyle: GoogleFonts.lato(color: Colors.white70, fontSize: 14))
             ]),
         ]),

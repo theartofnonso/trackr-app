@@ -15,10 +15,8 @@ class CustomTimerPicker extends StatefulWidget {
 
 class _CustomTimerPickerState extends State<CustomTimerPicker> {
   int _hours = 0;
-  int _minutes = 0;
 
   FixedExtentScrollController? _hoursScrollController;
-  FixedExtentScrollController? _minutesScrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +43,6 @@ class _CustomTimerPickerState extends State<CustomTimerPicker> {
                     }),
                   ),
                 ),
-                // Seconds Picker
-                Expanded(
-                  child: CupertinoPicker(
-                    scrollController: _minutesScrollController,
-                    looping: true,
-                    itemExtent: 38.0,
-                    onSelectedItemChanged: (int index) {
-                      _minutes = index;
-                    },
-                    children: List<Widget>.generate(60, (int index) {
-                      return Center(child: Text(index.toString().padLeft(2, "0")));
-                    }),
-                  ),
-                ),
               ],
             ),
           ),
@@ -66,9 +50,9 @@ class _CustomTimerPickerState extends State<CustomTimerPicker> {
           Center(
               child: CTextButton(
                   onPressed: () {
-                    widget.onSelect(Duration(hours: _hours, minutes: _minutes));
+                    widget.onSelect(Duration(hours: _hours));
                   },
-                  label: "Remind me",
+                  label: "Remind me at this hour",
                   buttonColor: Colors.green,
                   padding: const EdgeInsets.all(10.0)))
         ],
@@ -79,9 +63,12 @@ class _CustomTimerPickerState extends State<CustomTimerPicker> {
   @override
   void initState() {
     super.initState();
-    _hours = widget.initialDuration.inHours;
-    _minutes = widget.initialDuration.inMinutes;
-    _hoursScrollController = FixedExtentScrollController(initialItem: _hours);
-    _minutesScrollController = FixedExtentScrollController(initialItem: _minutes);
+    _hoursScrollController = FixedExtentScrollController(initialItem: widget.initialDuration.inHours);
+  }
+
+  @override
+  void dispose() {
+    _hoursScrollController?.dispose();
+    super.dispose();
   }
 }

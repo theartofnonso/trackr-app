@@ -19,8 +19,7 @@ import 'package:tracker_app/providers/routine_template_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
