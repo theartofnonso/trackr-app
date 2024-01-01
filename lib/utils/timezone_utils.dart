@@ -1,9 +1,9 @@
 import 'package:timezone/timezone.dart' as tz;
 
-tz.TZDateTime _nextInstanceOfHour({required int hour, required int minutes}) {
+tz.TZDateTime nextInstanceOfHour({required int hours}) {
   final DateTime now = DateTime.now();
   tz.TZDateTime scheduledDate = tz.TZDateTime.from(
-    DateTime(now.year, now.month, now.day, hour, 0, 0, 0, 0),
+    DateTime(now.year, now.month, now.day, hours, 0, 0, 0, 0),
     tz.local,
   );
 
@@ -14,11 +14,10 @@ tz.TZDateTime _nextInstanceOfHour({required int hour, required int minutes}) {
   return scheduledDate;
 }
 
-tz.TZDateTime nextInstanceOfWeekDayAndHour({required int hour, required minutes, required int weekday}) {
-  tz.TZDateTime scheduledDate = _nextInstanceOfHour(hour: hour, minutes: minutes);
+tz.TZDateTime nextInstanceOfHourAndWeekDay({required int hours, required int weekday}) {
+  tz.TZDateTime scheduledDate = nextInstanceOfHour(hours: hours);
   while (scheduledDate.weekday != weekday) {
     scheduledDate = scheduledDate.add(const Duration(days: 1));
   }
-  print(scheduledDate);
   return scheduledDate;
 }

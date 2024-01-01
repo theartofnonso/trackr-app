@@ -12,6 +12,8 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../utils/timezone_utils.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
 
+const dailyNotificationId = 999;
+
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -95,10 +97,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
 class _NotificationListTile extends StatelessWidget {
   final int weekDay;
+  final String? title;
+  final String? subtitle;
   final PendingNotificationRequest? schedule;
   final void Function() onScheduleChanged;
 
-  const _NotificationListTile({required this.weekDay, required this.schedule, required this.onScheduleChanged});
+  const _NotificationListTile(
+      {required this.weekDay, required this.schedule, required this.onScheduleChanged, this.title, this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -114,13 +119,13 @@ class _NotificationListTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(weekdayName(weekDay), style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+          Text(title ?? weekdayName(weekDay), style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
           if (schedule != null)
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const SizedBox(height: 8),
               CTextButton(
                   onPressed: () => _displayTimePicker(context: context),
-                  label: "Every ${weekdayName(weekDay)} at ${_timeForSchedule().digitalTimeHM()}",
+                  label: "Every ${subtitle ?? weekdayName(weekDay)} at ${_timeForSchedule().digitalTimeHM()}",
                   textStyle: GoogleFonts.lato(color: Colors.white70, fontSize: 14))
             ]),
         ]),
@@ -158,20 +163,28 @@ class _NotificationListTile extends StatelessWidget {
   }
 
   void _scheduleWeekDayNotification({required Duration duration}) async {
+    final tzDateTime = weekDay == dailyNotificationId
+        ? nextInstanceOfHour(hours: duration.inHours)
+        : nextInstanceOfHourAndWeekDay(hours: duration.inHours, weekday: weekDay);
+
+    final matchDateTimeComponents =
+        weekDay == dailyNotificationId ? DateTimeComponents.time : DateTimeComponents.dayOfWeekAndTime;
+
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin.cancel(weekDay);
+
+    if(weekDay == dailyNotificationId) {
+      await flutterLocalNotificationsPlugin.cancelAll();
+    } else {
+      await flutterLocalNotificationsPlugin.cancel(weekDay);
+    }
+
     FlutterLocalNotificationsPlugin().zonedSchedule(
-        weekDay,
-        "It's a great day to train!",
-        "Let's get you on track",
-        nextInstanceOfWeekDayAndHour(hour: duration.inHours, minutes: duration.inMinutes, weekday: weekDay),
-        const NotificationDetails(),
+        weekDay, "It's a great day to train!", "Let's get you on track", tzDateTime, const NotificationDetails(),
         payload: duration.inMilliseconds.toString(),
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
+        matchDateTimeComponents: matchDateTimeComponents);
     onScheduleChanged();
   }
-
 }
 
 class _NotificationListView extends StatefulWidget {
@@ -194,7 +207,20 @@ class _NotificationListViewState extends State<_NotificationListView> {
             onScheduleChanged: _loadSchedules))
         .toList();
 
-    return Column(children: children);
+    final dailyNotificationEnabled = _schedules.firstWhereOrNull((schedule) => schedule.id == dailyNotificationId);
+
+    final dailyNotification = _NotificationListTile(
+        weekDay: dailyNotificationId,
+        schedule: dailyNotificationEnabled,
+        title: "Daily Training",
+        subtitle: "day",
+        onScheduleChanged: _loadSchedules);
+
+    if (dailyNotificationEnabled != null) {
+      return dailyNotification;
+    }
+
+    return Column(children: [dailyNotification, const SizedBox(height: 16), ...children]);
   }
 
   void _loadSchedules() async {
