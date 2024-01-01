@@ -37,8 +37,8 @@ class AchievementScreen extends StatelessWidget {
                   )
                 ]),
                 const SizedBox(height: 10),
-                Text(achievementDto.type.title, style: GoogleFonts.lato(fontSize: 24, fontWeight: FontWeight.w900)),
-                Text(achievementDto.type.description, style: GoogleFonts.lato(fontSize: 14, color: Colors.white70)),
+                Text(achievementDto.type.title, style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+                Text(achievementDto.type.description, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70)),
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -57,7 +57,7 @@ class AchievementScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Text("${achievementDto.progress.remainder} left",
-                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 12)),
+                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
                     ],
                   ),
                 ),

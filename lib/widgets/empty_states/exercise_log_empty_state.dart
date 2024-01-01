@@ -32,7 +32,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Text("Hamstring Curl",
-                      style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
                   const Icon(Icons.more_horiz_rounded, color: Colors.white)
                 ]),
                 const SizedBox(height: 10),
@@ -45,7 +45,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5.0), // Border radius
                     ),
                     child: Text("Enter notes",
-                        style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14))),
+                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14))),
                 const SizedBox(height: 10),
                 WeightRepsSetHeader(editorType: mode, firstLabel: 'KG', secondLabel: 'REPS')
               ])),

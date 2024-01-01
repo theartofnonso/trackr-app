@@ -29,7 +29,7 @@ class SingleSetRow extends StatelessWidget {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Text(
                   label,
-                  style: GoogleFonts.lato(color: Colors.white),
+                  style: GoogleFonts.montserrat(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
               ),

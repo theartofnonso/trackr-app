@@ -169,14 +169,14 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",
-                  style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
+                  style: GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.start),
               Text("Going to the gym regularly is hard. Trackr can help you stay on track.",
-                  style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 14),
               Text("You can change this by going to Settings > Notifications",
-                  style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
+                  style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 16),
               CTextButton(

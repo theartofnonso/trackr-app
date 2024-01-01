@@ -62,7 +62,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           onPressed: () {
             navigateToRoutineEditor(context: context, template: template);
           },
-          child: Text("Edit", style: GoogleFonts.lato())),
+          child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(
         onPressed: () {
           showAlertDialogWithMultiActions(
@@ -78,7 +78,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
 
@@ -105,7 +105,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(template.name,
-              style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
             MenuAnchor(
               style: MenuStyle(
@@ -142,7 +142,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   children: [
                     template.notes.isNotEmpty
                         ? Text(template.notes,
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: 14,
                             ))

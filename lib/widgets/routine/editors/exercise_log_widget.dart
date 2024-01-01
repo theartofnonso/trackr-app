@@ -59,22 +59,22 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return [
       MenuItemButton(
         onPressed: widget.onReOrder,
-        child: Text("Re-order", style: GoogleFonts.lato()),
+        child: Text("Re-order", style: GoogleFonts.montserrat()),
       ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-              child: Text("Remove Super-set", style: GoogleFonts.lato(color: Colors.red)),
+              child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
             )
           : MenuItemButton(
               onPressed: widget.onSuperSet,
-              child: Text("Super-set", style: GoogleFonts.lato()),
+              child: Text("Super-set", style: GoogleFonts.montserrat()),
             ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
           "Remove",
-          style: GoogleFonts.lato(color: Colors.red),
+          style: GoogleFonts.montserrat(color: Colors.red),
         ),
       )
     ];
@@ -256,7 +256,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       MaterialPageRoute(builder: (context) => HomeScreen(exercise: widget.exerciseLogDto.exercise)));
                 },
                 child: Text(widget.exerciseLogDto.exercise.name,
-                    style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
               )),
               MenuAnchor(
                   style: MenuStyle(
@@ -283,7 +283,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             Column(
               children: [
                 Text("with ${superSetExerciseDto.exercise.name}",
-                    style: GoogleFonts.lato(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
+                    style: GoogleFonts.montserrat(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
                 const SizedBox(height: 10),
               ],
             ),
@@ -297,13 +297,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               filled: true,
               fillColor: tealBlueLighter,
               hintText: "Enter notes",
-              hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14),
+              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
             ),
             maxLines: null,
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {

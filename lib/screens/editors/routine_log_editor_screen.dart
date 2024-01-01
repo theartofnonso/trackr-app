@@ -177,7 +177,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
               leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: _discardLog),
               title: Text(
                 widget.log.name,
-                style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
               actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
             ),
@@ -298,7 +298,7 @@ class _RoutineTimerState extends State<_RoutineTimer> {
   @override
   Widget build(BuildContext context) {
     return Text(_elapsedDuration.secondsOrMinutesOrHours(),
-        style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600));
+        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600));
   }
 
   @override
@@ -336,12 +336,12 @@ class _RoutineLogOverview extends StatelessWidget {
           },
           children: [
             TableRow(children: [
-              Text("Sets", style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
+              Text("Sets", style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
               Text("Duration",
-                  style: GoogleFonts.lato(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
+                  style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500))
             ]),
             TableRow(children: [
-              Text("$sets", style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+              Text("$sets", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
               timer
             ])
           ],

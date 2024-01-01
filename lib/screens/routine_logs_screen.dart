@@ -6,7 +6,7 @@ import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../utils/navigation_utils.dart';
 import '../dtos/routine_log_dto.dart';
-import '../widgets/c_list_title.dart';
+import '../widgets/list_tiles/list_tile_solid.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
   final List<RoutineLogDto> logs;
@@ -39,7 +39,7 @@ class RoutineLogsScreen extends StatelessWidget {
                         const ListViewEmptyState(),
                         const SizedBox(height: 8),
                         Text("You have no logs",
-                            style: GoogleFonts.lato(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
+                            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
                       ],
                     ),
             ],
@@ -57,7 +57,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CListTile(
+    return SolidListTile(
         title: log.name,
         subtitle: "${log.exerciseLogs.length} exercise(s)",
         trailing: log.createdAt.durationSinceOrDate(),

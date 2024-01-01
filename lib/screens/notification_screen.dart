@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -12,18 +13,8 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../utils/timezone_utils.dart';
 import '../widgets/helper_widgets/dialog_helper.dart';
 
-const dailyNotificationId = 999;
-
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
-
-  @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  bool _notificationEnabled = false;
-  String _notificationStatusMessage = "Trackr won't remind you to train weekly";
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +28,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
-              child: Column(children: [
-                SwitchListTile(
-                  title: Text('Weekly Training reminder', style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                  subtitle:
-                      Text(_notificationStatusMessage, style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
-                  value: _notificationEnabled,
-                  activeColor: Colors.green,
-                  inactiveThumbColor: Colors.white70,
-                  onChanged: (bool value) {
-                    if (value) {
-                      _requestNotificationPermission();
-                    } else {
-                      // Handle disabling notifications
-                    }
-                  },
-                ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text("Notifications", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 16),
                 const _NotificationListView()
               ]),
@@ -63,47 +42,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   void _checkNotificationPermission() async {
     final result = await checkIosNotificationPermission();
-    if (!result.isEnabled) {
-      setState(() {
-        _notificationEnabled = false;
-        _notificationStatusMessage = "Trackr won't remind you to train weekly";
-      });
-    } else {
-      setState(() {
-        _notificationEnabled = true;
-        _notificationStatusMessage = "Trackr will remind you to train weekly";
-      });
-    }
   }
 
   void _requestNotificationPermission() async {
     final isEnabled = await requestIosNotificationPermission();
-    if (isEnabled) {
-      setState(() {
-        _notificationEnabled = true;
-        _notificationStatusMessage = "Trackr will remind you to train weekly";
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkNotificationPermission();
-    });
   }
 }
 
 class _NotificationListTile extends StatelessWidget {
-  final int weekDay;
-  final String? title;
-  final String? subtitle;
+  final DailyReminder dailyReminder;
   final PendingNotificationRequest? schedule;
   final void Function() onScheduleChanged;
 
-  const _NotificationListTile(
-      {required this.weekDay, required this.schedule, required this.onScheduleChanged, this.title, this.subtitle});
+  const _NotificationListTile({required this.dailyReminder, required this.schedule, required this.onScheduleChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -113,20 +64,21 @@ class _NotificationListTile extends StatelessWidget {
           color: tealBlueLight, // Background color
           width: 1, // Border width
         ),
-        borderRadius: BorderRadius.circular(16), // Border radius
+        borderRadius: BorderRadius.circular(5), // Border radius
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title ?? weekdayName(weekDay), style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+          Text(dailyReminder.day, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
           if (schedule != null)
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const SizedBox(height: 8),
               CTextButton(
                   onPressed: () => _displayTimePicker(context: context),
-                  label: "Every ${subtitle ?? weekdayName(weekDay)} at ${_timeForSchedule().digitalTimeHM()}",
-                  textStyle: GoogleFonts.lato(color: Colors.white70, fontSize: 14))
+                  label:
+                      "${dailyReminder.day == DailyReminder.everyday.day ? "Everyday" : "Every ${dailyReminder.day}"} at ${_timeForSchedule().digitalTimeHM()}",
+                  textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
             ]),
         ]),
         Switch(
@@ -137,7 +89,7 @@ class _NotificationListTile extends StatelessWidget {
             if (value) {
               _scheduleWeekDayNotification(duration: const Duration(hours: 3));
             } else {
-              FlutterLocalNotificationsPlugin().cancel(weekDay);
+              FlutterLocalNotificationsPlugin().cancel(dailyReminder.weekday);
               onScheduleChanged();
             }
           },
@@ -163,23 +115,24 @@ class _NotificationListTile extends StatelessWidget {
   }
 
   void _scheduleWeekDayNotification({required Duration duration}) async {
-    final tzDateTime = weekDay == dailyNotificationId
+    final tzDateTime = dailyReminder.weekday == DailyReminder.everyday.weekday
         ? nextInstanceOfHour(hours: duration.inHours)
-        : nextInstanceOfHourAndWeekDay(hours: duration.inHours, weekday: weekDay);
+        : nextInstanceOfHourAndWeekDay(hours: duration.inHours, weekday: dailyReminder.weekday);
 
-    final matchDateTimeComponents =
-        weekDay == dailyNotificationId ? DateTimeComponents.time : DateTimeComponents.dayOfWeekAndTime;
+    final matchDateTimeComponents = dailyReminder.weekday == DailyReminder.everyday.weekday
+        ? DateTimeComponents.time
+        : DateTimeComponents.dayOfWeekAndTime;
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    if(weekDay == dailyNotificationId) {
+    if (dailyReminder.weekday == DailyReminder.everyday.weekday) {
       await flutterLocalNotificationsPlugin.cancelAll();
     } else {
-      await flutterLocalNotificationsPlugin.cancel(weekDay);
+      await flutterLocalNotificationsPlugin.cancel(dailyReminder.weekday);
     }
 
     FlutterLocalNotificationsPlugin().zonedSchedule(
-        weekDay, "It's a great day to train!", "Let's get you on track", tzDateTime, const NotificationDetails(),
+        dailyReminder.weekday, dailyReminder.title, dailyReminder.subtitle, tzDateTime, const NotificationDetails(),
         payload: duration.inMilliseconds.toString(),
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: matchDateTimeComponents);
@@ -199,22 +152,20 @@ class _NotificationListViewState extends State<_NotificationListView> {
 
   @override
   Widget build(BuildContext context) {
-    List<int> weekDays = List.generate(7, (index) => index + 1);
-    final children = weekDays
-        .map((day) => _NotificationListTile(
-            weekDay: day,
-            schedule: _schedules.firstWhereOrNull((schedule) => schedule.id == day),
-            onScheduleChanged: _loadSchedules))
-        .toList();
+    List<int> weekDays = List.generate(7, (index) => index);
+    final children = weekDays.map((day) {
+      final dailyReminder = DailyReminder.values[day];
+      return _NotificationListTile(
+          dailyReminder: dailyReminder,
+          schedule: _schedules.firstWhereOrNull((schedule) => schedule.id == dailyReminder.weekday),
+          onScheduleChanged: _loadSchedules);
+    }).toList();
 
-    final dailyNotificationEnabled = _schedules.firstWhereOrNull((schedule) => schedule.id == dailyNotificationId);
+    final dailyNotificationEnabled =
+        _schedules.firstWhereOrNull((schedule) => schedule.id == DailyReminder.everyday.weekday);
 
     final dailyNotification = _NotificationListTile(
-        weekDay: dailyNotificationId,
-        schedule: dailyNotificationEnabled,
-        title: "Daily Training",
-        subtitle: "day",
-        onScheduleChanged: _loadSchedules);
+        dailyReminder: DailyReminder.everyday, schedule: dailyNotificationEnabled, onScheduleChanged: _loadSchedules);
 
     if (dailyNotificationEnabled != null) {
       return dailyNotification;

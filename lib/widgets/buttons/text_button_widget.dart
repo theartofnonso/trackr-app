@@ -26,7 +26,7 @@ class CTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final defaultTextStyle = textStyle ?? GoogleFonts.lato(fontWeight: FontWeight.w600);
+    final defaultTextStyle = textStyle ?? GoogleFonts.montserrat(fontWeight: FontWeight.w600);
     final buttonColor = this.buttonColor ?? tealBlueLight;
     return TextButton(
         style: ButtonStyle(

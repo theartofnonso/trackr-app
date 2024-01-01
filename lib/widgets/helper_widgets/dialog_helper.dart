@@ -92,12 +92,12 @@ void showAlertDialogWithMultiActions(
   final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
-      child: Text(leftActionLabel, style: GoogleFonts.lato(color: isLeftActionDestructive ? Colors.red : Colors.white)),
+      child: Text(leftActionLabel, style: GoogleFonts.montserrat(color: isLeftActionDestructive ? Colors.red : Colors.white)),
     ),
     TextButton(
       onPressed: rightAction,
       child:
-          Text(rightActionLabel, style: GoogleFonts.lato(color: isRightActionDestructive ? Colors.red : Colors.white)),
+          Text(rightActionLabel, style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white)),
     ),
   ];
 
@@ -110,7 +110,7 @@ void showAlertDialogWithMultiActions(
         backgroundColor: tealBlueDark,
         content: Text(
           message,
-          style: GoogleFonts.lato(fontSize: 14),
+          style: GoogleFonts.montserrat(fontSize: 14),
           textAlign: TextAlign.center,
         ),
         contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
@@ -130,7 +130,7 @@ void showAlertDialogWithSingleAction(
   final alertActions = <Widget>[
     TextButton(
       onPressed: action,
-      child: Text(actionLabel, style: GoogleFonts.lato(color: Colors.white)),
+      child: Text(actionLabel, style: GoogleFonts.montserrat(color: Colors.white)),
     ),
   ];
 
@@ -143,7 +143,7 @@ void showAlertDialogWithSingleAction(
         backgroundColor: tealBlueDark,
         content: Text(
           message,
-          style: GoogleFonts.lato(fontSize: 14),
+          style: GoogleFonts.montserrat(fontSize: 14),
           textAlign: TextAlign.center,
         ),
         contentPadding: const EdgeInsets.only(top: 12, bottom: 10),

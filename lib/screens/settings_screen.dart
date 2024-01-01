@@ -6,6 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/notification_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 
 import '../providers/app_provider.dart';
 import '../utils/general_utils.dart';
@@ -61,8 +62,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  title: Text("Weight", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
-                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
+                  title: Text("Weight", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
                     style: ButtonStyle(
@@ -103,9 +104,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 2),
                 ListTile(
-                  title: Text("Distance", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                  title: Text("Distance", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                   subtitle:
-                      Text("Choose kilometres or miles", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14)),
+                      Text("Choose kilometres or miles", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
                     style: ButtonStyle(
@@ -145,57 +146,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
-                  child: ListTile(
-                      tileColor: tealBlueLight,
-                      onTap: _navigateToExerciseLibrary,
-                      dense: true,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      leading: const FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 20),
-                      title: Text("Exercises", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                      subtitle: Text("Add your favourites exercises",
-                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                ),
+                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
                 const SizedBox(height: 8),
-                Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
-                  child: ListTile(
-                      tileColor: tealBlueLight,
-                      onTap: () => _navigateToNotificationSettings(context),
-                      dense: true,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      leading: const FaIcon(FontAwesomeIcons.bell, color: Colors.white, size: 20),
-                      title: Text("Notifications", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                      subtitle: Text("Manage your notification settings",
-                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                ),
-                const Divider(height: 40, color: tealBlueLight, thickness: 1, indent: 12, endIndent: 12),
-                Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
-                  child: ListTile(
-                      tileColor: tealBlueLight,
-                      onTap: _logout,
-                      dense: true,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      leading: const FaIcon(FontAwesomeIcons.rightFromBracket, color: Colors.white, size: 20),
-                      title: Text("Logout", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
-                      subtitle: Text("Logout of your ${SharedPrefs().userEmail} Trackr account",
-                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                ),
-                const SizedBox(height: 10),
-                Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
-                  child: ListTile(
-                      tileColor: tealBlueLight,
-                      onTap: _delete,
-                      dense: true,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      leading: const FaIcon(FontAwesomeIcons.trashCan, color: Colors.white, size: 20),
-                      title: Text("Delete Account", style: GoogleFonts.lato(color: Colors.red, fontSize: 16)),
-                      subtitle: Text("Including all exercises and logs. Your account will be removed immediately",
-                          style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
-                ),
+                OutlineListTile(onTap: _navigateToNotificationSettings, title: "Notifications", trailing: "Enabled"),
+                const SizedBox(height: 8),
+                const SizedBox(height: 16),
+                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _delete, title: "Delete Account"),
               ],
             ),
           ),
@@ -207,7 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   width: double.infinity,
                   height: double.infinity,
                   color: tealBlueDark.withOpacity(0.7),
-                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.lato(fontSize: 14)))))
+                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.montserrat(fontSize: 14)))))
       ]),
     );
   }
@@ -220,7 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             )));
   }
 
-  void _navigateToNotificationSettings(BuildContext context) {
+  void _navigateToNotificationSettings() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
   }
 

@@ -263,11 +263,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 filled: true,
                                 fillColor: tealBlueLighter,
                                 hintText: "New workout",
-                                hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.words,
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                           const SizedBox(height: 10),
@@ -281,12 +281,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                 filled: true,
                                 fillColor: tealBlueLighter,
                                 hintText: "Notes",
-                                hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
                             maxLines: null,
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
                           ),
                         ],

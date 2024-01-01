@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
-import 'package:tracker_app/widgets/empty_states/bar_chart_empty_state.dart';
+
+import '../../app_constants.dart';
 
 enum ChartUnitLabel {
   kg, lbs, reps, mins, hrs, yd, mi,
@@ -69,7 +71,7 @@ class LineChartWidget extends StatelessWidget {
                   isCurved: true)
             ])),
       ),
-    ) : const BarChartEmptyState();
+    ) : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: tealBlueLighter, size: 120));
   }
 
   double _interval() {
@@ -92,7 +94,7 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.lato(
+    final style = GoogleFonts.montserrat(
       fontWeight: FontWeight.w600,
       fontSize: 9,
     );
@@ -104,7 +106,7 @@ class LineChartWidget extends StatelessWidget {
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = dateTimes.length == 1 ? [...dateTimes, ...dateTimes] : dateTimes;
-    final style = GoogleFonts.lato(
+    final style = GoogleFonts.montserrat(
       fontWeight: FontWeight.w600,
       fontSize: 10,
     );

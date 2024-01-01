@@ -32,8 +32,8 @@ class _CSearchBarState extends State<CSearchBar> {
         widget.onClear();
       }, icon: const Icon(Icons.cancel, color: Colors.white70), visualDensity: VisualDensity.compact,)],
       hintText: widget.hintText,
-      hintStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.lato(color: Colors.white70)),
-      textStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.lato(color: Colors.white)),
+      hintStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white70)),
+      textStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white)),
       surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
       backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
       shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(

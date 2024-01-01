@@ -21,7 +21,7 @@ class TimerWidget extends StatelessWidget {
           initialDuration: duration,
           onChangedDuration: onChangedDuration),
       label: duration.digitalTimeHMS(),
-      textStyle: GoogleFonts.lato(fontSize: 15, color: Colors.white),
+      textStyle: GoogleFonts.montserrat(fontSize: 15, color: Colors.white),
     );
   }
 }

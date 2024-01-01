@@ -82,7 +82,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               rightActionLabel: 'Delete',
               isRightActionDestructive: true);
         },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
+        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
 
@@ -94,7 +94,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title:
-              Text(log.name, style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+              Text(log.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
           actions: [
             MenuAnchor(
               style: MenuStyle(
@@ -133,7 +133,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
                             child: Text(log.notes,
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.montserrat(
                                   color: Colors.white,
                                   fontSize: 14,
                                 )),
@@ -148,7 +148,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.createdAt.formattedDayAndMonthAndYear(),
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
                         const Icon(
@@ -158,7 +158,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.endTime.formattedTime(),
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
@@ -182,7 +182,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(completedSetsSummary,
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -190,7 +190,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text("${log.exerciseLogs.length} exercise(s)",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -198,7 +198,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(log.duration().secondsOrMinutesOrHours(),
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             )
@@ -397,7 +397,7 @@ class _TemplateChangesListView extends StatelessWidget {
     final listTiles = changes
         .map((change) => ListTile(
             dense: true,
-            title: Text(change.message, style: GoogleFonts.lato(color: Colors.white)),
+            title: Text(change.message, style: GoogleFonts.montserrat(color: Colors.white)),
             leading: const Icon(Icons.info_outline_rounded),
             horizontalTitleGap: 6))
         .toList();
@@ -409,7 +409,7 @@ class _TemplateChangesListView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 15, top: 12.0, bottom: 10),
           child: Text("Update $templateName",
-              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+              style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
         ),
         ...listTiles,
         const SizedBox(height: 10),
@@ -434,7 +434,7 @@ class _HorizontalBarChart extends StatelessWidget {
       children: [...children,
         const SizedBox(height: 2),
         Text("Calculations are based on primary muscle groups",
-            style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
         const SizedBox(height: 8),
       ]
     );
@@ -467,7 +467,7 @@ class _LinearBar extends StatelessWidget {
              alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 1, right: 14),
-                child: Text(muscleGroupFamily.name, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                child: Text(muscleGroupFamily.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
               ),
             ),
           )
