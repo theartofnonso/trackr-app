@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
               CTextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    requestIosNotificationPermission().then((value) => print(value));
+                    requestIosNotificationPermission();
                   },
                   label: "Always remind me",
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
