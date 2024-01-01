@@ -25,7 +25,7 @@ class OutlineListTile extends StatelessWidget {
       ),
       child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           splashColor: tealBlueLighter,
           onTap: onTap,
           title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/calendar_heatmap.dart';
+import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 
 import '../app_constants.dart';
 import '../dtos/achievement_dto.dart';

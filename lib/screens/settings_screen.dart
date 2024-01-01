@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/notification_screen.dart';
+import 'package:tracker_app/screens/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 
@@ -45,6 +45,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late WeightUnit _weightUnitType;
   late DistanceUnit _distanceUnitType;
 
+  bool _notificationEnabled = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,8 +64,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  title: Text("Weight", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                  title: Text("Weight",
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                  subtitle:
+                      Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
                     style: ButtonStyle(
@@ -104,9 +108,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 2),
                 ListTile(
-                  title: Text("Distance", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-                  subtitle:
-                      Text("Choose kilometres or miles", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                  title: Text("Distance",
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                  subtitle: Text("Choose kilometres or miles",
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
                     style: ButtonStyle(
@@ -146,9 +151,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
+                OutlineListTile(
+                    onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
                 const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToNotificationSettings, title: "Notifications", trailing: "Enabled"),
+                OutlineListTile(
+                    onTap: _navigateToNotificationSettings,
+                    title: "Notifications",
+                    trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                 const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
@@ -178,8 +187,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             )));
   }
 
-  void _navigateToNotificationSettings() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
+  void _navigateToNotificationSettings() async {
+    if (!_notificationEnabled) {
+      final isEnabled = await requestIosNotificationPermission();
+      setState(() {
+        _notificationEnabled = isEnabled;
+      });
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
+    }
   }
 
   void _clearAppData() async {
@@ -246,10 +262,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  void _checkNotificationPermission() async {
+    final result = await checkIosNotificationPermission();
+    setState(() {
+      _notificationEnabled = result.isEnabled;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _distanceUnitType = DistanceUnit.fromString(SharedPrefs().distanceUnit);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkNotificationPermission();
+    });
   }
 }

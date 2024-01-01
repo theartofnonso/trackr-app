@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../utils/timezone_utils.dart';
@@ -38,14 +37,6 @@ class NotificationsScreen extends StatelessWidget {
             ),
           ),
         ));
-  }
-
-  void _checkNotificationPermission() async {
-    final result = await checkIosNotificationPermission();
-  }
-
-  void _requestNotificationPermission() async {
-    final isEnabled = await requestIosNotificationPermission();
   }
 }
 

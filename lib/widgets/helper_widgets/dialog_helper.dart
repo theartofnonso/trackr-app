@@ -8,7 +8,14 @@ import '../time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: tealBlueLighter,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+        side: const BorderSide(
+          color: tealBlueLighter, // Border color
+          width: 1.5, // Border width
+        ),
+      ),
+      backgroundColor: Colors.transparent,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       content: Row(
@@ -20,7 +27,7 @@ void showSnackbar({required BuildContext context, required Widget icon, required
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.montserrat(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
@@ -92,12 +99,13 @@ void showAlertDialogWithMultiActions(
   final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
-      child: Text(leftActionLabel, style: GoogleFonts.montserrat(color: isLeftActionDestructive ? Colors.red : Colors.white)),
+      child: Text(leftActionLabel,
+          style: GoogleFonts.montserrat(color: isLeftActionDestructive ? Colors.red : Colors.white)),
     ),
     TextButton(
       onPressed: rightAction,
-      child:
-          Text(rightActionLabel, style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white)),
+      child: Text(rightActionLabel,
+          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white)),
     ),
   ];
 
@@ -105,15 +113,21 @@ void showAlertDialogWithMultiActions(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        icon: const Icon(Icons.info_outline),
-        backgroundColor: tealBlueDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: const BorderSide(
+            color: tealBlueLighter, // Border color
+            width: 1.5, // Border width
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         content: Text(
           message,
-          style: GoogleFonts.montserrat(fontSize: 14),
+          style: GoogleFonts.montserrat(fontSize: 16),
           textAlign: TextAlign.center,
         ),
-        contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+        contentPadding: const EdgeInsets.only(top: 16, bottom: 10),
         actions: alertActions,
         actionsAlignment: MainAxisAlignment.center,
         actionsPadding: const EdgeInsets.only(bottom: 8),
@@ -138,15 +152,21 @@ void showAlertDialogWithSingleAction(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        icon: const Icon(Icons.info_outline),
-        backgroundColor: tealBlueDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: const BorderSide(
+            color: tealBlueLighter, // Border color
+            width: 1.5, // Border width
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         content: Text(
           message,
-          style: GoogleFonts.montserrat(fontSize: 14),
+          style: GoogleFonts.montserrat(fontSize: 16),
           textAlign: TextAlign.center,
         ),
-        contentPadding: const EdgeInsets.only(top: 12, bottom: 10),
+        contentPadding: const EdgeInsets.only(top: 16, bottom: 10),
         actions: alertActions,
         actionsAlignment: MainAxisAlignment.center,
         actionsPadding: const EdgeInsets.only(bottom: 8),
