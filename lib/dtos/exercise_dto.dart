@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
@@ -37,7 +36,7 @@ class ExerciseDto {
     final primaryMuscleGroup = json["primaryMuscleGroup"] ?? "";
     final secondaryMuscleGroupJsons = json["secondaryMuscleGroups"] as List<dynamic>;
     final secondaryMuscleGroups =
-        secondaryMuscleGroupJsons.map((json) => MuscleGroup.fromString(jsonDecode(json))).toList();
+        secondaryMuscleGroupJsons.map((json) => MuscleGroup.fromString(json)).toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
 

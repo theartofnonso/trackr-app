@@ -199,7 +199,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         onPressed: _navigateToExerciseEditor,
         backgroundColor: tealBlueLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const Icon(Icons.add),
+        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
       ),
       body: NotificationListener(
         onNotification: (scrollNotification) {
@@ -218,6 +218,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 _filteredExercises.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 250),
                             itemBuilder: (BuildContext context, int index) =>
                                 _exerciseWidget(_filteredExercises[index]),
                             separatorBuilder: (BuildContext context, int index) => const Divider(

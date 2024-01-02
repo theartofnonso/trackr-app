@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -21,7 +22,7 @@ class RoutinesScreen extends StatelessWidget {
             onPressed: () => navigateToRoutineEditor(context: context),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const Icon(Icons.add, size: 28),
+            child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
           ),
           body: SafeArea(
               child: Padding(

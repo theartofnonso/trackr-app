@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../app_constants.dart';
-import 'buttons/text_button_widget.dart';
+import '../../app_constants.dart';
+import '../buttons/text_button_widget.dart';
 
 class TimePicker extends StatefulWidget {
   final Duration? initialDuration;
-  final void Function(Duration duration) onSelect;
+  final void Function(Duration duration) onDurationChanged;
   final CupertinoTimerPickerMode mode;
 
-  const TimePicker({super.key, required this.onSelect, required this.initialDuration, this.mode = CupertinoTimerPickerMode.ms});
+  const TimePicker({super.key, required this.onDurationChanged, required this.initialDuration, this.mode = CupertinoTimerPickerMode.ms});
 
   @override
   State<TimePicker> createState() => _TimerPickerState();
@@ -23,7 +23,7 @@ class _TimerPickerState extends State<TimePicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        CTextButton(onPressed: () => widget.onSelect(_duration), label: "Select"),
+        CTextButton(onPressed: () => widget.onDurationChanged(_duration), label: "Select"),
         Flexible(
           child: Theme(
             data: ThemeData(

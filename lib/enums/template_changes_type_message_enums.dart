@@ -1,3 +1,3 @@
 enum TemplateChangesMessageType {
-  setsLength, exerciseLogLength, exerciseOrder, exerciseLogChange, supersetId,
+  setsLength, exerciseLogLength, exerciseOrder, exerciseLogChange, supersetId, checkedSets
 }

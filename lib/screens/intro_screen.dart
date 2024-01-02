@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -40,7 +41,7 @@ class IntroScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const ExerciseLogEmptyState(mode: RoutineEditorMode.log, message: ""),
               ListTile(
-                  leading: const Icon(Icons.add),
+                  leading: const FaIcon(FontAwesomeIcons.plus, color: Colors.white),
                   title: Padding(
                     padding: const EdgeInsets.only(bottom: 6.0),
                     child: Text(_headers[0]),

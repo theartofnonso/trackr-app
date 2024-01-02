@@ -13,13 +13,12 @@ class GradientWidget extends StatelessWidget {
         child,
         Positioned.fill(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.transparent,
-                  Colors.transparent,
+                  tealBlueDark.withOpacity(0.2),
                   tealBlueDark,
                 ],
               ),

@@ -154,11 +154,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
             children: [
               RichText(
                   text: TextSpan(
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
                       children: const [
                     TextSpan(text: 'Tap'),
                     WidgetSpan(
-                        child: Icon(Icons.play_arrow_rounded, color: Colors.white70),
+                        child: Icon(Icons.play_arrow_rounded, color: Colors.white),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(text: 'to start logging or visit the + tab to create new workouts'),
                   ]))

@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -38,7 +39,7 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   bool _loading = false;
   String _loadingMessage = "";
 
@@ -153,13 +154,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 8),
                 OutlineListTile(
                     onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-                /// TODO: Implement notifications
-                // const SizedBox(height: 8),
+                const SizedBox(height: 8),
+                /// Uncomment this to enable notifications
                 // OutlineListTile(
                 //     onTap: _navigateToNotificationSettings,
                 //     title: "Notifications",
                 //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                const SizedBox(height: 8),
+                // const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),
@@ -194,6 +195,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _notificationEnabled = isEnabled;
       });
+      if (!isEnabled) {
+        if (mounted) {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Enable notifications?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {},
+              leftActionLabel: "Cancel",
+              rightActionLabel: "Settings");
+        }
+      }
     } else {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
     }
@@ -202,6 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _clearAppData() async {
     await Amplify.DataStore.clear();
     SharedPrefs().clear();
+    FlutterLocalNotificationsPlugin().cancelAll();
     if (context.mounted) {
       AppProviders.resetProviders(context);
     }
@@ -226,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _delete() async {
     showAlertDialogWithMultiActions(
         context: context,
-        message: "Request Deletion?",
+        message: "Delete account?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
@@ -273,11 +286,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _distanceUnitType = DistanceUnit.fromString(SharedPrefs().distanceUnit);
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkNotificationPermission();
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Uncomment this to enable notifications
+    // if (state == AppLifecycleState.resumed) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     _checkNotificationPermission();
+    //   });
+    // }
   }
 }

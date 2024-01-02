@@ -10,65 +10,62 @@ class RoutineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GradientWidget(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  tileColor: tealBlueLight,
-                  dense: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  leading: const Icon(
-                    Icons.play_arrow_rounded,
-                    color: Colors.white,
-                    size: 35,
-                  ),
-                  title: Text("Legs Day 1", style: Theme.of(context).textTheme.labelLarge),
-                  subtitle: Row(children: [
-                    const Icon(
-                      Icons.numbers,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                    Text("3 exercises",
-                        style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                  ]),
-                  trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GradientWidget(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                tileColor: tealBlueLight,
+                dense: true,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                leading: const Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 35,
                 ),
-                const SizedBox(height: 8),
-                ListTile(
-                  tileColor: tealBlueLight,
-                  dense: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  leading: const Icon(
-                    Icons.play_arrow_rounded,
+                title: Text("Legs Day 1", style: Theme.of(context).textTheme.labelLarge),
+                subtitle: Row(children: [
+                  const Icon(
+                    Icons.numbers,
                     color: Colors.white,
-                    size: 35,
+                    size: 12,
                   ),
-                  title: Text("Push Day", style: Theme.of(context).textTheme.labelLarge),
-                  subtitle: Row(children: [
-                    const Icon(
-                      Icons.numbers,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                    Text("5 exercises",
-                        style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                  ]),
-                  trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                  Text("3 exercises",
+                      style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                ]),
+                trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+              ),
+              const SizedBox(height: 8),
+              ListTile(
+                tileColor: tealBlueLight,
+                dense: true,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                leading: const Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 35,
                 ),
-              ],
-            ),
+                title: Text("Push Day", style: Theme.of(context).textTheme.labelLarge),
+                subtitle: Row(children: [
+                  const Icon(
+                    Icons.numbers,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                  Text("5 exercises",
+                      style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                ]),
+                trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          const TextEmptyState(message: "Tap the + button to create workouts"),
-        ],
-      ),
+        ),
+        const SizedBox(height: 10),
+        const TextEmptyState(message: "Tap the + button to create workouts"),
+      ],
     );
   }
 }

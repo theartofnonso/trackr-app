@@ -94,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.grey, size: 28),
-            selectedIcon: FaIcon(FontAwesomeIcons.solidSquarePlus, color: Colors.white, size: 28),
+            icon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.grey, size: 28),
+            selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 28),
             label: 'Workouts',
           ),
           /// Uncomment this to enable achievements
@@ -170,14 +170,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",
-                  style: GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
+                  style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.start),
-              Text("Going to the gym regularly is hard. Trackr can help you stay on track.",
+              Text("Training regularly is hard. Trackr can help you stay on track.",
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-                  textAlign: TextAlign.start),
-              const SizedBox(height: 14),
-              Text("You can change this by going to Settings > Notifications",
-                  style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 16),
               CTextButton(
