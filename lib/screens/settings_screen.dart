@@ -39,7 +39,7 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   bool _loading = false;
   String _loadingMessage = "";
 
@@ -194,6 +194,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _notificationEnabled = isEnabled;
       });
+      if (!isEnabled) {
+        if (mounted) {
+          showAlertDialogWithMultiActions(
+              context: context,
+              message: "Enable notifications?",
+              leftAction: Navigator.of(context).pop,
+              rightAction: () {},
+              leftActionLabel: "Cancel",
+              rightActionLabel: "Settings");
+        }
+      }
     } else {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
     }
@@ -274,11 +285,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _distanceUnitType = DistanceUnit.fromString(SharedPrefs().distanceUnit);
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkNotificationPermission();
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkNotificationPermission();
+      });
+    }
   }
 }

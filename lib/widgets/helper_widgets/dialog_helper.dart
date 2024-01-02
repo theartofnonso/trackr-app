@@ -97,7 +97,7 @@ void showAlertDialogWithMultiActions(
     TextButton(
       onPressed: rightAction,
       child: Text(rightActionLabel,
-          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white)),
+          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white, fontWeight: FontWeight.w600)),
     ),
   ];
 
@@ -112,8 +112,8 @@ void showAlertDialogWithMultiActions(
             width: 1.5, // Border width
           ),
         ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
+        backgroundColor: tealBlueDark.withOpacity(0.7),
+        surfaceTintColor: tealBlueDark.withOpacity(0.7),
         content: Text(
           message,
           style: GoogleFonts.montserrat(fontSize: 16),
@@ -151,8 +151,8 @@ void showAlertDialogWithSingleAction(
             width: 1.5, // Border width
           ),
         ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
+        backgroundColor: tealBlueDark.withOpacity(0.7),
+        surfaceTintColor: tealBlueDark.withOpacity(0.7),
         content: Text(
           message,
           style: GoogleFonts.montserrat(fontSize: 16),
