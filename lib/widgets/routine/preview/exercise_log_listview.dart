@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../dtos/exercise_log_view_model.dart';
+import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import 'exercise_log_widget.dart';
 
 class ExerciseLogListView extends StatelessWidget {

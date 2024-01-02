@@ -19,6 +19,17 @@ class ExerciseDto {
       required this.secondaryMuscleGroups,
       required this.type});
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'notes': notes,
+      'primaryMuscleGroup': primaryMuscleGroup.name,
+      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
+      'type': type.name
+    };
+  }
+
   factory ExerciseDto.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? "";
     final name = json["name"] ?? "";

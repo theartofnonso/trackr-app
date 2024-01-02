@@ -18,13 +18,16 @@ import '../../dtos/exercise_log_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
-import '../dtos/exercise_log_view_model.dart';
+import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_template_provider.dart';
+import '../widgets/fabs/expandable_fab.dart';
+import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
+import 'editors/routine_log_editor_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -45,7 +48,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   @override
   Widget build(BuildContext context) {
     Provider.of<ExerciseProvider>(context, listen: true);
-    final log = widget.log;
+
+    final foundLog = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.log.id);
+
+    final log = foundLog ?? widget.log;
 
     List<ExerciseLogDto> exerciseLogs = log.exerciseLogs.map((exerciseLog) {
       final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false)
@@ -59,33 +65,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
-    final menuActions = [
-      MenuItemButton(
-        onPressed: () {
-          _toggleLoadingState(message: "Creating template from log");
-          _createTemplate();
-        },
-        child: const Text("Create template"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete log?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _toggleLoadingState(message: "Deleting log");
-                _deleteLog();
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
-      )
-    ];
-
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: AppBar(
@@ -95,30 +74,22 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           ),
           title:
               Text(log.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-          actions: [
-            MenuAnchor(
-              style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-              ),
-              builder: (BuildContext context, MenuController controller, Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.more_vert_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  tooltip: 'Show menu',
-                );
-              },
-              menuChildren: menuActions,
-            )
+        ),
+        floatingActionButton: ExpandableFab(
+          distance: 112,
+          children: [
+            ActionButton(
+              onPressed: () => _editLog(log: log),
+              icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, color: Colors.white),
+            ),
+            ActionButton(
+              onPressed: _createTemplate,
+              icon: const FaIcon(FontAwesomeIcons.fileCirclePlus, color: Colors.white),
+            ),
+            ActionButton(
+              onPressed: _deleteLog,
+              icon: FaIcon(FontAwesomeIcons.trash, color: Colors.red.withOpacity(0.9)),
+            ),
           ],
         ),
         body: Stack(children: [
@@ -272,6 +243,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return completedSets.length;
   }
 
+  void _editLog({required RoutineLogDto log}) {
+    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineLogEditorMode.edit);
+  }
+
   void _createTemplate() async {
     final log = widget.log;
     try {
@@ -328,7 +303,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
-  void _deleteLog() async {
+  void _doDeleteLog() async {
     try {
       await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.log.id);
       if (mounted) {
@@ -342,6 +317,21 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } finally {
       _toggleLoadingState();
     }
+  }
+
+  void _deleteLog() {
+    showAlertDialogWithMultiActions(
+        context: context,
+        message: "Delete log?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () {
+          Navigator.of(context).pop();
+          _toggleLoadingState(message: "Deleting log");
+          _doDeleteLog();
+        },
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Delete',
+        isRightActionDestructive: true);
   }
 
   void _checkForTemplateUpdates() {
@@ -440,8 +430,6 @@ class _HorizontalBarChart extends StatelessWidget {
     );
   }
 }
-
-
 
 class _LinearBar extends StatelessWidget {
   final MuscleGroupFamily muscleGroupFamily;

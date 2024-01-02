@@ -9,7 +9,7 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../../providers/routine_template_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
-import '../../dtos/exercise_log_view_model.dart';
+import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../providers/exercise_provider.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
