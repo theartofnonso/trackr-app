@@ -8,16 +8,8 @@ import '../time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-        side: const BorderSide(
-          color: tealBlueLighter, // Border color
-          width: 1.5, // Border width
-        ),
-      ),
       backgroundColor: Colors.transparent,
-      behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
           icon,
