@@ -424,7 +424,7 @@ class _HorizontalBarChart extends StatelessWidget {
       children: [...children,
         const SizedBox(height: 2),
         Text("Calculations are based on primary muscle groups",
-            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12)),
         const SizedBox(height: 8),
       ]
     );

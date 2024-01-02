@@ -23,13 +23,14 @@ class ExerciseWidget extends StatelessWidget {
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
           leading: IconButton(
+            iconSize: 24,
             onPressed: onNavigateToExercise,
             icon: const Icon(
               Icons.timeline_rounded,
               color: Colors.white,
             ),
           ),
-          title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
+          title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
           onTap: onTap,
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

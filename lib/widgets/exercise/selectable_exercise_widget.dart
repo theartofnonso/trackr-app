@@ -19,7 +19,6 @@ class SelectableExerciseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final secondaryMuscleGroups = exerciseInLibraryDto.exercise.secondaryMuscleGroups.isNotEmpty
         ? exerciseInLibraryDto.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")
         : "None";
@@ -33,7 +32,8 @@ class SelectableExerciseWidget extends StatelessWidget {
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         dense: true,
-        title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
+        title: Text(exerciseInLibraryDto.exercise.name,
+            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -52,6 +52,7 @@ class SelectableExerciseWidget extends StatelessWidget {
           ],
         ),
         leading: IconButton(
+          iconSize: 24,
           onPressed: onNavigateToExercise,
           icon: const Icon(
             Icons.timeline_rounded,

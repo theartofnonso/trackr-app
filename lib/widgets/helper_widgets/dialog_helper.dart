@@ -1,23 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/c_timer_picker.dart';
+import 'package:tracker_app/widgets/time_pickers/hour_timer_picker.dart';
 
 import '../../app_constants.dart';
-import '../time_picker.dart';
+import '../time_pickers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-        side: const BorderSide(
-          color: tealBlueLighter, // Border color
-          width: 1.5, // Border width
-        ),
-      ),
       backgroundColor: Colors.transparent,
-      behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
           icon,
@@ -68,7 +60,7 @@ void displayTimePicker(
   displayBottomSheet(
       height: 216,
       context: context,
-      child: TimePicker(mode: mode, initialDuration: initialDuration, onSelect: onChangedDuration));
+      child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
 void displayNotificationTimePicker(
@@ -80,7 +72,7 @@ void displayNotificationTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
-      child: CustomTimerPicker(
+      child: HourTimerPicker(
           initialDuration: initialDuration,
           onSelect: (Duration duration) {
             onChangedDuration(duration);
@@ -105,7 +97,7 @@ void showAlertDialogWithMultiActions(
     TextButton(
       onPressed: rightAction,
       child: Text(rightActionLabel,
-          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white)),
+          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white, fontWeight: FontWeight.w600)),
     ),
   ];
 
@@ -120,8 +112,8 @@ void showAlertDialogWithMultiActions(
             width: 1.5, // Border width
           ),
         ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
+        backgroundColor: tealBlueDark.withOpacity(0.7),
+        surfaceTintColor: tealBlueDark.withOpacity(0.7),
         content: Text(
           message,
           style: GoogleFonts.montserrat(fontSize: 16),
@@ -159,8 +151,8 @@ void showAlertDialogWithSingleAction(
             width: 1.5, // Border width
           ),
         ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
+        backgroundColor: tealBlueDark.withOpacity(0.7),
+        surfaceTintColor: tealBlueDark.withOpacity(0.7),
         content: Text(
           message,
           style: GoogleFonts.montserrat(fontSize: 16),
