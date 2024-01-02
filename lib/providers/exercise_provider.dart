@@ -15,6 +15,7 @@ class ExerciseProvider with ChangeNotifier {
 
   Future<void> listExercises({List<Exercise>? exercises}) async {
     final queries = exercises ?? await Amplify.DataStore.query(Exercise.classType);
+    print(queries);
     _exercises = queries.map((exercise) => exercise.dto()).toList();
     notifyListeners();
   }
@@ -22,8 +23,7 @@ class ExerciseProvider with ChangeNotifier {
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
     final now = TemporalDateTime.now();
 
-    final exerciseToCreate =
-        Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now);
+    final exerciseToCreate = Exercise(data: jsonEncode(exerciseDto), createdAt: now, updatedAt: now);
 
     await Amplify.DataStore.save<Exercise>(exerciseToCreate);
 
