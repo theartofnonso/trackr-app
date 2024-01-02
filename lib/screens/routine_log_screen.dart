@@ -47,9 +47,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<RoutineLogProvider>(context, listen: true);
     Provider.of<ExerciseProvider>(context, listen: true);
-    final log = widget.log;
+
+    final foundLog = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.log.id);
+
+    final log = foundLog ?? widget.log;
 
     List<ExerciseLogDto> exerciseLogs = log.exerciseLogs.map((exerciseLog) {
       final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false)
@@ -77,7 +79,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           distance: 112,
           children: [
             ActionButton(
-              onPressed: _editLog,
+              onPressed: () => _editLog(log: log),
               icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, color: Colors.white),
             ),
             ActionButton(
@@ -241,8 +243,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return completedSets.length;
   }
 
-  void _editLog() {
-    navigateToRoutineLogEditor(context: context, log: widget.log, editorMode: RoutineLogEditorMode.edit);
+  void _editLog({required RoutineLogDto log}) {
+    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineLogEditorMode.edit);
   }
 
   void _createTemplate() async {

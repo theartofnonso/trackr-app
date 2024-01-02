@@ -127,6 +127,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   Future<void> updateRoutineLog({required RoutineLogDto log}) async {
+
     final result = (await Amplify.DataStore.query(
       RoutineLog.classType,
       where: RoutineLog.ID.eq(log.id),

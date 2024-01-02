@@ -84,15 +84,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final log = widget.log;
 
-    final routineLog = RoutineLogDto(
-        id: log.id,
-        templateId: log.templateId,
-        name: log.name,
+    final routineLog = log.copyWith(
         exerciseLogs: exerciseLogs,
-        notes: log.notes,
-        startTime: log.startTime,
-        endTime: DateTime.now(),
-        createdAt: DateTime.now(),
+        endTime: widget.mode == RoutineLogEditorMode.log ? DateTime.now() : log.endTime,
         updatedAt: DateTime.now());
     return routineLog;
   }
@@ -130,7 +124,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _discardLog() {
     showAlertDialogWithMultiActions(
         context: context,
-        message: "Do you want to discard workout?",
+        message: "Discard workout?",
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
@@ -210,7 +204,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             floatingActionButton: isKeyboardOpen || _loading
                 ? null
                 : FloatingActionButton(
-                    heroTag: "fab_log_routine_log_editor_screen",
+                    heroTag: UniqueKey(),
                     onPressed: widget.mode == RoutineLogEditorMode.log ? _saveLog : _updateLog,
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
