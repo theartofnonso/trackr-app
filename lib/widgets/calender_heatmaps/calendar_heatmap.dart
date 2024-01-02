@@ -65,7 +65,7 @@ class CalendarHeatMap extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(firstDate.abbreviatedMonth().toUpperCase(),
-              style: GoogleFonts.lato(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           _Dates(dates: datesForMonth),
         ],
       ),

@@ -111,8 +111,7 @@ class RoutineLogProvider with ChangeNotifier {
   Future<RoutineLogDto> saveRoutineLog({required RoutineLogDto logDto}) async {
     final now = TemporalDateTime.now();
 
-    final logToCreate =
-        RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
+    final logToCreate = RoutineLog(data: jsonEncode(logDto), createdAt: now, updatedAt: now);
 
     await Amplify.DataStore.save(logToCreate);
 
@@ -127,8 +126,26 @@ class RoutineLogProvider with ChangeNotifier {
     return updatedWithRoutineIds;
   }
 
+  Future<void> updateRoutineLog({required RoutineLogDto log}) async {
+
+    final result = (await Amplify.DataStore.query(
+      RoutineLog.classType,
+      where: RoutineLog.ID.eq(log.id),
+    ));
+
+    if (result.isNotEmpty) {
+      final oldLog = result.first;
+      final newLog = oldLog.copyWith(data: jsonEncode(log));
+      await Amplify.DataStore.save(newLog);
+      final index = _indexWhereRoutineLog(id: log.id);
+      _logs[index] = log;
+      _normaliseLogs();
+      notifyListeners();
+    }
+  }
+
   void cacheRoutineLog({required RoutineLogDto logDto}) {
-    SharedPrefs().cachedRoutineLog = jsonEncode(logDto.toJson());
+    SharedPrefs().cachedRoutineLog = jsonEncode(logDto);
   }
 
   Future<void> removeLog({required String id}) async {

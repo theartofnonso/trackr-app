@@ -116,9 +116,9 @@ class OverviewScreen extends StatelessWidget {
                         tileColor: tealBlueLight,
                         dense: true,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Muscle insights", style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+                        title: Text("Muscle insights", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
                         subtitle: Text("Number of sets logged for each muscle group",
-                            style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+                            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                   ),
                   const SizedBox(height: 20),
                   const CalendarScreen()
@@ -142,8 +142,8 @@ class _CTableCell extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: GoogleFonts.lato(fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-        Text(subtitle, style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
+        Text(title, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
+        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
       ]),
     );
   }

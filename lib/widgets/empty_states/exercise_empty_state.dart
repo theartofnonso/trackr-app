@@ -22,7 +22,7 @@ class ExerciseEmptyState extends StatelessWidget {
                     Icons.timeline_rounded,
                     color: Colors.white,
                   ),
-                  title: Text("Squat", style: GoogleFonts.lato(color: Colors.white)),
+                  title: Text("Squat", style: GoogleFonts.montserrat(color: Colors.white)),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -30,13 +30,13 @@ class ExerciseEmptyState extends StatelessWidget {
                           width: 300,
                           child: Text(
                             "Primary: Quadriceps",
-                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                           )),
                       SizedBox(
                           width: 300,
                           child: Text(
                             "Secondary: Glutes, Hamstrings, Calves",
-                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                           )),
                     ],
                   )),
@@ -46,7 +46,7 @@ class ExerciseEmptyState extends StatelessWidget {
                     Icons.timeline_rounded,
                     color: Colors.white,
                   ),
-                  title: Text("Romanian Deadlift", style: GoogleFonts.lato(color: Colors.white)),
+                  title: Text("Romanian Deadlift", style: GoogleFonts.montserrat(color: Colors.white)),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -54,13 +54,13 @@ class ExerciseEmptyState extends StatelessWidget {
                           width: 300,
                           child: Text(
                             "Primary: Hamstrings",
-                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                           )),
                       SizedBox(
                           width: 300,
                           child: Text(
                             "Secondary: Glutes",
-                            style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                           )),
                     ],
                   )),

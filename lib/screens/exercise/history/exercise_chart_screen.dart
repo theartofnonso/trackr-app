@@ -303,12 +303,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         children: [
           Text(
             "Primary Muscle: ${widget.exercise.primaryMuscleGroup.name}",
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 5),
           Text(
             "Secondary Muscle: $secondaryMuscleGroups",
-            style: GoogleFonts.lato(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -549,10 +549,10 @@ class _MetricListTile extends StatelessWidget {
       child: ListTile(
         onTap: enabled ? onTap : () {},
         tileColor: tealBlueLight,
-        title: Text(title, style: GoogleFonts.lato(fontSize: 14, color: Colors.white)),
-        subtitle: Text(subtitle, style: GoogleFonts.lato(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+        title: Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white)),
+        subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing:
-            Text(trailing, style: GoogleFonts.lato(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+            Text(trailing, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

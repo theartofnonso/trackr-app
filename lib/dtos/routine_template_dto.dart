@@ -19,6 +19,14 @@ class RoutineTemplateDto {
     required this.updatedAt,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'notes': notes,
+      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
+    };
+  }
+
   RoutineLogDto log() {
     return RoutineLogDto(
         id: "",
@@ -30,15 +38,6 @@ class RoutineTemplateDto {
         endTime: DateTime.now(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'notes': notes,
-      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
-    };
   }
 
   RoutineTemplateDto copyWith({

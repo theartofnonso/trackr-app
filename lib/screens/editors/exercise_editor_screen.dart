@@ -70,12 +70,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     filled: true,
                     fillColor: tealBlueLighter,
                     hintText: "New Exercise",
-                    hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                    hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
                 cursorColor: Colors.white,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 style:
-                    GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
               ),
               const SizedBox(height: 10),
               TextField(
@@ -87,13 +87,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     filled: true,
                     fillColor: tealBlueLighter,
                     hintText: "Notes",
-                    hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14)),
+                    hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
                 maxLines: null,
                 cursorColor: Colors.white,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.sentences,
                 style:
-                    GoogleFonts.lato(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
               ),
               const SizedBox(height: 10),
               Theme(
@@ -103,9 +103,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     tileColor: tealBlueLight,
                     dense: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    title: Text("Primary Muscle", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                    title: Text("Primary Muscle", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
                     subtitle:
-                        Text(_primaryMuscleGroup.name, style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
+                        Text(_primaryMuscleGroup.name, style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white70))),
               ),
               const SizedBox(height: 8),
               Theme(
@@ -118,11 +118,11 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                         : null,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    title: Text("Secondary Muscles", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                    title: Text("Secondary Muscles", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
                     subtitle: Padding(
                       padding: _secondaryMuscleGroups.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
                       child:
-                          Text(_secondaryMuscleDisplay(), style: GoogleFonts.lato(fontSize: 13, color: Colors.white70)),
+                          Text(_secondaryMuscleDisplay(), style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white70)),
                     )),
               ),
               const SizedBox(height: 8),
@@ -138,9 +138,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                             ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
                             : null,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Exercise Type", style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+                        title: Text("Exercise Type", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
                         subtitle:
-                            Text(_exerciseType.name, style: GoogleFonts.lato(fontSize: 13, color: Colors.white70))),
+                            Text(_exerciseType.name, style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white70))),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -226,7 +226,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       if (mounted) {
         Navigator.of(context).pop();
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
       }

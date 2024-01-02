@@ -18,9 +18,9 @@ class IntroScreen extends StatelessWidget {
     "Measure and gain insights on your performance across all training sessions and exercises.",
   ];
 
-  final _titleStyle = GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 16);
+  final _titleStyle = GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16);
 
-  final _subTitleStyle = GoogleFonts.lato(fontSize: 15, color: Colors.white.withOpacity(0.8));
+  final _subTitleStyle = GoogleFonts.montserrat(fontSize: 15, color: Colors.white.withOpacity(0.8));
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class IntroScreen extends StatelessWidget {
                   label: "Start Tracking",
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                   buttonColor: Colors.green,
-                  textStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 10),

@@ -46,7 +46,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
   Widget build(BuildContext context) {
     final bodySplit = _muscleGroupSplitToModels();
 
-    final textStyle = GoogleFonts.lato(fontSize: 14);
+    final textStyle = GoogleFonts.montserrat(fontSize: 13);
 
     return Scaffold(
       appBar: AppBar(
@@ -172,9 +172,9 @@ class _MuscleInsightTile extends StatelessWidget {
       ),
       child: ListTile(
           dense: true,
-          title: Text(muscleGroupFamilyMap.key.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 16)),
+          title: Text(muscleGroupFamilyMap.key.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
           trailing:
-              Text("${muscleGroupFamilyMap.value}", style: GoogleFonts.lato(color: Colors.white70, fontSize: 14))),
+              Text("${muscleGroupFamilyMap.value}", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
     );
   }
 }

@@ -33,7 +33,7 @@ class SelectableExerciseWidget extends StatelessWidget {
         hoverColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         dense: true,
-        title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.lato(color: Colors.white, fontSize: 14)),
+        title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,13 +41,13 @@ class SelectableExerciseWidget extends StatelessWidget {
                 width: 300,
                 child: Text(
                   "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-                  style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                  style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                 )),
             SizedBox(
                 width: 300,
                 child: Text(
                   "Secondary: $secondaryMuscleGroups",
-                  style: GoogleFonts.lato(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                  style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                 )),
           ],
         ),

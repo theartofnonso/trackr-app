@@ -16,6 +16,12 @@ class ExerciseLogDto {
   const ExerciseLogDto(
       this.id, this.routineLogId, this.superSetId, this.exercise, this.notes, this.sets, this.createdAt);
 
+  String toJson() {
+    final setJsons = sets.map((set) => set.toJson()).toList();
+
+    return jsonEncode({"superSetId": superSetId, "exercise": exercise.toJson(), "notes": notes, "sets": setJsons});
+  }
+
   ExerciseLogDto copyWith(
       {String? id,
       String? routineLogId,
@@ -34,12 +40,6 @@ class ExerciseLogDto {
       sets ?? this.sets,
       createdAt ?? this.createdAt,
     );
-  }
-
-  String toJson() {
-    final setJsons = sets.map((set) => (set).toJson()).toList();
-
-    return jsonEncode({"superSetId": superSetId, "exercise": exercise.toJson(), "notes": notes, "sets": setJsons});
   }
 
   factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {

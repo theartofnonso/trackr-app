@@ -6,6 +6,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +19,10 @@ import 'package:tracker_app/providers/routine_template_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
-
-final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +30,18 @@ void main() async {
   await SharedPrefs().init();
 
   await initializeDateFormatting();
+
+  const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
+    requestAlertPermission: false,
+    requestBadgePermission: false,
+    requestSoundPermission: false,
+  );
+
+  const initializationSettings = InitializationSettings(iOS: initializationSettingsDarwin);
+
+  await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
+
+  tz.initializeTimeZones();
 
   await SentryFlutter.init(
     (options) {
@@ -74,7 +86,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
-
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
@@ -110,7 +121,10 @@ class _MyAppState extends State<MyApp> {
       backgroundColor: tealBlueDark,
       surfaceTintColor: tealBlueDark,
     ),
-    snackBarTheme: const SnackBarThemeData(backgroundColor: tealBlueDark, actionBackgroundColor: tealBlueLighter, contentTextStyle: TextStyle(color: tealBlueDark)),
+    snackBarTheme: const SnackBarThemeData(
+        backgroundColor: tealBlueDark,
+        actionBackgroundColor: tealBlueLighter,
+        contentTextStyle: TextStyle(color: tealBlueDark)),
     tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -119,7 +133,7 @@ class _MyAppState extends State<MyApp> {
           OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
       filled: true,
       fillColor: tealBlueLighter,
-      hintStyle: GoogleFonts.lato(color: Colors.grey, fontSize: 14),
+      hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
@@ -142,7 +156,6 @@ class _MyAppState extends State<MyApp> {
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp(
-              navigatorObservers: [routeObserver],
               debugShowCheckedModeBanner: false,
               builder: Authenticator.builder(),
               theme: _themeData,

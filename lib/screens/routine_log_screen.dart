@@ -18,13 +18,16 @@ import '../../dtos/exercise_log_dto.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
-import '../dtos/exercise_log_view_model.dart';
+import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_template_provider.dart';
+import '../widgets/fabs/expandable_fab.dart';
+import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import 'editors/helper_utils.dart';
+import 'editors/routine_log_editor_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -45,7 +48,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   @override
   Widget build(BuildContext context) {
     Provider.of<ExerciseProvider>(context, listen: true);
-    final log = widget.log;
+
+    final foundLog = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.log.id);
+
+    final log = foundLog ?? widget.log;
 
     List<ExerciseLogDto> exerciseLogs = log.exerciseLogs.map((exerciseLog) {
       final exerciseFromLibrary = Provider.of<ExerciseProvider>(context, listen: false)
@@ -59,33 +65,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final numberOfCompletedSets = _calculateCompletedSets(procedures: exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets set(s)";
 
-    final menuActions = [
-      MenuItemButton(
-        onPressed: () {
-          _toggleLoadingState(message: "Creating template from log");
-          _createTemplate();
-        },
-        child: const Text("Create template"),
-      ),
-      MenuItemButton(
-        onPressed: () {
-          showAlertDialogWithMultiActions(
-              context: context,
-              message: "Delete log?",
-              leftAction: Navigator.of(context).pop,
-              rightAction: () {
-                Navigator.of(context).pop();
-                _toggleLoadingState(message: "Deleting log");
-                _deleteLog();
-              },
-              leftActionLabel: 'Cancel',
-              rightActionLabel: 'Delete',
-              isRightActionDestructive: true);
-        },
-        child: Text("Delete", style: GoogleFonts.lato(color: Colors.red)),
-      )
-    ];
-
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: AppBar(
@@ -94,31 +73,23 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title:
-              Text(log.name, style: GoogleFonts.lato(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-          actions: [
-            MenuAnchor(
-              style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-              ),
-              builder: (BuildContext context, MenuController controller, Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.more_vert_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  tooltip: 'Show menu',
-                );
-              },
-              menuChildren: menuActions,
-            )
+              Text(log.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+        ),
+        floatingActionButton: ExpandableFab(
+          distance: 112,
+          children: [
+            ActionButton(
+              onPressed: () => _editLog(log: log),
+              icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, color: Colors.white),
+            ),
+            ActionButton(
+              onPressed: _createTemplate,
+              icon: const FaIcon(FontAwesomeIcons.fileCirclePlus, color: Colors.white),
+            ),
+            ActionButton(
+              onPressed: _deleteLog,
+              icon: FaIcon(FontAwesomeIcons.trash, color: Colors.red.withOpacity(0.9)),
+            ),
           ],
         ),
         body: Stack(children: [
@@ -133,7 +104,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
                             child: Text(log.notes,
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.montserrat(
                                   color: Colors.white,
                                   fontSize: 14,
                                 )),
@@ -148,7 +119,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.createdAt.formattedDayAndMonthAndYear(),
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                         const SizedBox(width: 10),
                         const Icon(
@@ -158,7 +129,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                         ),
                         const SizedBox(width: 1),
                         Text(log.endTime.formattedTime(),
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.montserrat(
                                 color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
                     ),
@@ -182,7 +153,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(completedSetsSummary,
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -190,7 +161,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text("${log.exerciseLogs.length} exercise(s)",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             ),
@@ -198,7 +169,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               verticalAlignment: TableCellVerticalAlignment.middle,
                               child: Center(
                                 child: Text(log.duration().secondsOrMinutesOrHours(),
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.montserrat(
                                         color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                               ),
                             )
@@ -272,6 +243,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return completedSets.length;
   }
 
+  void _editLog({required RoutineLogDto log}) {
+    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineLogEditorMode.edit);
+  }
+
   void _createTemplate() async {
     final log = widget.log;
     try {
@@ -328,7 +303,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
-  void _deleteLog() async {
+  void _doDeleteLog() async {
     try {
       await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.log.id);
       if (mounted) {
@@ -342,6 +317,21 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     } finally {
       _toggleLoadingState();
     }
+  }
+
+  void _deleteLog() {
+    showAlertDialogWithMultiActions(
+        context: context,
+        message: "Delete log?",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () {
+          Navigator.of(context).pop();
+          _toggleLoadingState(message: "Deleting log");
+          _doDeleteLog();
+        },
+        leftActionLabel: 'Cancel',
+        rightActionLabel: 'Delete',
+        isRightActionDestructive: true);
   }
 
   void _checkForTemplateUpdates() {
@@ -397,7 +387,7 @@ class _TemplateChangesListView extends StatelessWidget {
     final listTiles = changes
         .map((change) => ListTile(
             dense: true,
-            title: Text(change.message, style: GoogleFonts.lato(color: Colors.white)),
+            title: Text(change.message, style: GoogleFonts.montserrat(color: Colors.white)),
             leading: const Icon(Icons.info_outline_rounded),
             horizontalTitleGap: 6))
         .toList();
@@ -409,7 +399,7 @@ class _TemplateChangesListView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 15, top: 12.0, bottom: 10),
           child: Text("Update $templateName",
-              style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+              style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
         ),
         ...listTiles,
         const SizedBox(height: 10),
@@ -434,14 +424,12 @@ class _HorizontalBarChart extends StatelessWidget {
       children: [...children,
         const SizedBox(height: 2),
         Text("Calculations are based on primary muscle groups",
-            style: GoogleFonts.lato(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
         const SizedBox(height: 8),
       ]
     );
   }
 }
-
-
 
 class _LinearBar extends StatelessWidget {
   final MuscleGroupFamily muscleGroupFamily;
@@ -467,7 +455,7 @@ class _LinearBar extends StatelessWidget {
              alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 1, right: 14),
-                child: Text(muscleGroupFamily.name, style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white)),
+                child: Text(muscleGroupFamily.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
               ),
             ),
           )
