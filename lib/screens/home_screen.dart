@@ -155,9 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadCachedLog();
     }
     /// Uncomment this to enable notifications
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _checkAndRequestNotificationPermission();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndRequestNotificationPermission();
+    });
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {
@@ -170,14 +170,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",
-                  style: GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
+                  style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.start),
-              Text("Going to the gym regularly is hard. Trackr can help you stay on track.",
+              Text("Training regularly is hard. Trackr can help you stay on track.",
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-                  textAlign: TextAlign.start),
-              const SizedBox(height: 14),
-              Text("You can change this by going to Settings > Notifications",
-                  style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 16),
               CTextButton(

@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -153,12 +154,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 8),
                 OutlineListTile(
                     onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-                /// TODO: Implement notifications
-                // const SizedBox(height: 8),
-                // OutlineListTile(
-                //     onTap: _navigateToNotificationSettings,
-                //     title: "Notifications",
-                //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                const SizedBox(height: 8),
+                OutlineListTile(
+                    onTap: _navigateToNotificationSettings,
+                    title: "Notifications",
+                    trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                 const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
@@ -202,6 +202,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _clearAppData() async {
     await Amplify.DataStore.clear();
     SharedPrefs().clear();
+    FlutterLocalNotificationsPlugin().cancelAll();
     if (context.mounted) {
       AppProviders.resetProviders(context);
     }
