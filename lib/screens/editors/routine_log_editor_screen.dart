@@ -7,12 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
+import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
+import '../../dtos/template_changes_messages_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../providers/routine_log_provider.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
@@ -179,6 +181,48 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
   }
 
+  TemplateChangesMessageDto? _completedSetsChanged(
+      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+    final exerciseLog1CompletedSets = exerciseLog1.expand((log) => log.sets).where((set) => set.checked).toList();
+    final exerciseLog2CompletedSets = exerciseLog2.expand((log) => log.sets).where((set) => set.checked).toList();
+
+    if (exerciseLog1CompletedSets.length > exerciseLog2CompletedSets.length) {
+      return TemplateChangesMessageDto(type: TemplateChangesMessageType.checkedSets, message: 'Removed completed sets');
+    } else if (exerciseLog1CompletedSets.length < exerciseLog2CompletedSets.length) {
+      return TemplateChangesMessageDto(type: TemplateChangesMessageType.checkedSets, message: 'Added completed sets');
+    }
+
+    return null;
+  }
+
+  void _checkForUnsavedChanges() {
+    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final exerciseLog1 = widget.log.exerciseLogs;
+    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
+    final unsavedChangesMessage =
+        checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final completedSetsChanged = _completedSetsChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    if (completedSetsChanged != null) {
+      unsavedChangesMessage.add(completedSetsChanged);
+    }
+    print(unsavedChangesMessage);
+    if (unsavedChangesMessage.isNotEmpty) {
+      showAlertDialogWithMultiActions(
+          context: context,
+          message: "You have unsaved changes",
+          leftAction: _closeDialog,
+          leftActionLabel: 'Cancel',
+          rightAction: () {
+            _closeDialog();
+            _navigateBack();
+          },
+          rightActionLabel: 'Discard',
+          isRightActionDestructive: true);
+    } else {
+      _navigateBack();
+    }
+  }
+
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
@@ -212,7 +256,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             appBar: AppBar(
               leading: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                  onPressed: _discardLog),
+                  onPressed: widget.mode == RoutineLogEditorMode.log ? _discardLog : _checkForUnsavedChanges),
               title: Text(
                 widget.log.name,
                 style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
