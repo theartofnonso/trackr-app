@@ -153,11 +153,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 8),
                 OutlineListTile(
                     onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-                const SizedBox(height: 8),
-                OutlineListTile(
-                    onTap: _navigateToNotificationSettings,
-                    title: "Notifications",
-                    trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                /// TODO: Implement notifications
+                // const SizedBox(height: 8),
+                // OutlineListTile(
+                //     onTap: _navigateToNotificationSettings,
+                //     title: "Notifications",
+                //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                 const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
