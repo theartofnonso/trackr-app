@@ -235,7 +235,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   onPressed: _selectExercisesInLibrary,
                   backgroundColor: tealBlueLighter,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const Icon(Icons.add, size: 28),
+                  child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
                 ),
           body: SafeArea(
             child: NotificationListener<UserScrollNotification>(

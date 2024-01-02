@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -334,7 +335,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             alignment: Alignment.bottomRight,
             child: IconButton(
                 onPressed: _addSet,
-                icon: const Icon(Icons.add, color: Colors.white70),
+                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                 style: ButtonStyle(
                     visualDensity: VisualDensity.compact,
                     backgroundColor: MaterialStateProperty.all(tealBlueLighter),

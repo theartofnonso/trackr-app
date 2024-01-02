@@ -260,7 +260,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                 widget.log.name,
                 style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
-              actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const Icon(Icons.add))],
+              actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white))],
             ),
             floatingActionButton: isKeyboardOpen || _loading
                 ? null

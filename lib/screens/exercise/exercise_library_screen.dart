@@ -199,7 +199,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         onPressed: _navigateToExerciseEditor,
         backgroundColor: tealBlueLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const Icon(Icons.add),
+        child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
       ),
       body: NotificationListener(
         onNotification: (scrollNotification) {
