@@ -205,7 +205,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     if (completedSetsChanged != null) {
       unsavedChangesMessage.add(completedSetsChanged);
     }
-    print(unsavedChangesMessage);
     if (unsavedChangesMessage.isNotEmpty) {
       showAlertDialogWithMultiActions(
           context: context,

@@ -19,7 +19,10 @@ class TimerWidget extends StatelessWidget {
           context: context,
           mode: CupertinoTimerPickerMode.hms,
           initialDuration: duration,
-          onChangedDuration: onChangedDuration),
+          onChangedDuration: (Duration duration) {
+            Navigator.of(context).pop();
+            onChangedDuration(duration);
+          }),
       label: duration.digitalTimeHMS(),
       textStyle: GoogleFonts.montserrat(fontSize: 15, color: Colors.white),
     );

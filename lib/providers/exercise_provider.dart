@@ -15,7 +15,6 @@ class ExerciseProvider with ChangeNotifier {
 
   Future<void> listExercises({List<Exercise>? exercises}) async {
     final queries = exercises ?? await Amplify.DataStore.query(Exercise.classType);
-    print(queries);
     _exercises = queries.map((exercise) => exercise.dto()).toList();
     notifyListeners();
   }

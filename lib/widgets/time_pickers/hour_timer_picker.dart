@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'buttons/text_button_widget.dart';
+import '../buttons/text_button_widget.dart';
 
-class CustomTimerPicker extends StatefulWidget {
+class HourTimerPicker extends StatefulWidget {
   final Duration initialDuration;
   final void Function(Duration duration) onSelect;
 
-  const CustomTimerPicker({super.key, required this.initialDuration, required this.onSelect});
+  const HourTimerPicker({super.key, required this.initialDuration, required this.onSelect});
 
   @override
-  State<CustomTimerPicker> createState() => _CustomTimerPickerState();
+  State<HourTimerPicker> createState() => _HourTimerPickerState();
 }
 
-class _CustomTimerPickerState extends State<CustomTimerPicker> {
+class _HourTimerPickerState extends State<HourTimerPicker> {
   int _hours = 0;
 
   FixedExtentScrollController? _hoursScrollController;

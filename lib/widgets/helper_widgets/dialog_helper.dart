@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/c_timer_picker.dart';
+import 'package:tracker_app/widgets/time_pickers/hour_timer_picker.dart';
 
 import '../../app_constants.dart';
-import '../time_picker.dart';
+import '../time_pickers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -60,7 +60,7 @@ void displayTimePicker(
   displayBottomSheet(
       height: 216,
       context: context,
-      child: TimePicker(mode: mode, initialDuration: initialDuration, onSelect: onChangedDuration));
+      child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
 void displayNotificationTimePicker(
@@ -72,7 +72,7 @@ void displayNotificationTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
-      child: CustomTimerPicker(
+      child: HourTimerPicker(
           initialDuration: initialDuration,
           onSelect: (Duration duration) {
             onChangedDuration(duration);

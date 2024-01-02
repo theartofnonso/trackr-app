@@ -218,6 +218,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 _filteredExercises.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 250),
                             itemBuilder: (BuildContext context, int index) =>
                                 _exerciseWidget(_filteredExercises[index]),
                             separatorBuilder: (BuildContext context, int index) => const Divider(
