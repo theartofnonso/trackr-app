@@ -155,11 +155,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 OutlineListTile(
                     onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
                 const SizedBox(height: 8),
-                OutlineListTile(
-                    onTap: _navigateToNotificationSettings,
-                    title: "Notifications",
-                    trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                const SizedBox(height: 8),
+                /// Uncomment this to enable notifications
+                // OutlineListTile(
+                //     onTap: _navigateToNotificationSettings,
+                //     title: "Notifications",
+                //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                // const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),
@@ -298,10 +299,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkNotificationPermission();
-      });
-    }
+    /// Uncomment this to enable notifications
+    // if (state == AppLifecycleState.resumed) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     _checkNotificationPermission();
+    //   });
+    // }
   }
 }
