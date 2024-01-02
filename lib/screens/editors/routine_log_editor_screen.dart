@@ -95,12 +95,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     _toggleLoadingState(message: "Saving log...");
 
     final routineLog = _routineLog();
+    try {
+      final createdLog =
+          await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
 
-    final createdLog = await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
-
-    _toggleLoadingState();
-
-    _navigateBack(log: createdLog);
+      _navigateBack(log: createdLog);
+    } catch (_) {
+      _handleRoutineLogError("Unable to log workout");
+    } finally {
+      _toggleLoadingState();
+    }
   }
 
   Future<void> _doUpdateRoutineLog() async {
@@ -108,11 +112,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final routineLog = _routineLog();
 
-    await Provider.of<RoutineLogProvider>(context, listen: false).updateRoutineLog(log: routineLog);
+    try {
+      await Provider.of<RoutineLogProvider>(context, listen: false).updateRoutineLog(log: routineLog);
 
-    _toggleLoadingState();
-
-    _navigateBack();
+      _navigateBack();
+    } catch (_) {
+      _handleRoutineLogError("Unable to update log");
+    } finally {
+      _toggleLoadingState();
+    }
   }
 
   bool _isRoutinePartiallyComplete() {
@@ -152,6 +160,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     } else {
       showAlertDialogWithSingleAction(
           context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
+    }
+  }
+
+  void _showSnackbar(String message) {
+    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+  }
+
+  void _handleRoutineLogError(String message) {
+    if (mounted) {
+      _showSnackbar(message);
     }
   }
 

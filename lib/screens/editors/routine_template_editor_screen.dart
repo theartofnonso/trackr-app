@@ -99,7 +99,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _handleRoutineTemplateCreationError(String message) {
+  void _handleRoutineTemplateError(String message) {
     if (mounted) {
       _showSnackbar(message);
     }
@@ -125,7 +125,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: template);
       if (mounted) _navigateBack();
     } catch (_) {
-      _handleRoutineTemplateCreationError("Unable to create workout");
+      _handleRoutineTemplateError("Unable to create workout");
     } finally {
       _toggleLoadingState();
     }
@@ -164,7 +164,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           updatedAt: DateTime.now());
       await templateProvider.updateTemplate(template: updatedRoutineTemplate);
     } catch (e) {
-      _handleRoutineTemplateCreationError("Unable to update workout");
+      _handleRoutineTemplateError("Unable to update workout");
     } finally {
       _toggleLoadingState();
     }
