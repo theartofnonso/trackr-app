@@ -3,22 +3,11 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../shared_prefs.dart';
-
-String weekdayName(int weekday) {
-  List<String> weekDays = [
-    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-  ];
-
-  // Dart's DateTime weekday is 1-based (1 = Monday, 7 = Sunday)
-  // So, subtract 1 to map it to the 0-based index of the list
-  return weekDays[weekday - 1];
-}
 
 bool isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
@@ -26,30 +15,8 @@ bool isDefaultWeightUnit() {
   return weightUnit == WeightUnit.kg;
 }
 
-bool isDefaultDistanceUnit() {
-  final distanceString = SharedPrefs().distanceUnit;
-  final distanceUnit = DistanceUnit.fromString(distanceString);
-  return distanceUnit == DistanceUnit.mi;
-}
-
 String weightLabel() {
   return SharedPrefs().weightUnit;
-}
-
-String distanceLabel({required ExerciseType type}) {
-  if (type == ExerciseType.durationAndDistance) {
-    return isDefaultDistanceUnit() ? "mi" : "km";
-  } else {
-    return isDefaultDistanceUnit() ? "yd" : "m";
-  }
-}
-
-String distanceTitle({required ExerciseType type}) {
-  if (type == ExerciseType.durationAndDistance) {
-    return isDefaultDistanceUnit() ? "MI" : "KM";
-  } else {
-    return isDefaultDistanceUnit() ? "YARDS" : "METRES";
-  }
 }
 
 double toKg(double value) {
@@ -62,32 +29,8 @@ double toLbs(double value) {
   return double.parse(conversion.toStringAsFixed(2));
 }
 
-double toMI(double value, {required ExerciseType type}) {
-  double conversion = 0;
-  if (type == ExerciseType.durationAndDistance) {
-    conversion = value / 1.609;
-  } else {
-    conversion = value * 1.094;
-  }
-  return double.parse(conversion.toStringAsFixed(2));
-}
-
-double toKM(double value, {required ExerciseType type}) {
-  double conversion = 0;
-  if (type == ExerciseType.durationAndDistance) {
-    conversion = value * 1.609;
-  } else {
-    conversion = value / 1.094;
-  }
-  return double.parse(conversion.toStringAsFixed(2));
-}
-
 void toggleWeightUnit({required WeightUnit unit}) {
   SharedPrefs().weightUnit = unit.name;
-}
-
-void toggleDistanceUnit({required DistanceUnit unit}) {
-  SharedPrefs().distanceUnit = unit.name;
 }
 
 String timeOfDay() {

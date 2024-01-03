@@ -151,7 +151,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
       _doCreateRoutineLog();
     } else {
       showAlertDialogWithSingleAction(
-          context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
+          context: context, message: "Complete some sets!", actionLabel: 'Ok', action: _closeDialog);
     }
   }
 
@@ -161,7 +161,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
       _doUpdateRoutineLog();
     } else {
       showAlertDialogWithSingleAction(
-          context: context, message: "You have not completed any sets", actionLabel: 'Ok', action: _closeDialog);
+          context: context, message: "Completed some sets!", actionLabel: 'Ok', action: _closeDialog);
     }
   }
 

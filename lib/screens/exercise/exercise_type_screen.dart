@@ -61,8 +61,6 @@ class _TrailingWidget extends StatelessWidget {
       ExerciseType.weightedBodyWeight => ["KG+", " | ", "REPS"],
       ExerciseType.assistedBodyWeight => ["KG-", " | ", "REPS"],
       ExerciseType.duration => ["TIME"],
-      ExerciseType.durationAndDistance => ["MI", " | ", "TIME"],
-      ExerciseType.weightAndDistance => ["KG", " | ", "MI"],
     };
 
     final itemWidgets = measurements

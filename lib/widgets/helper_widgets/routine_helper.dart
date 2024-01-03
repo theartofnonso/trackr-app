@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
@@ -23,35 +24,25 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
   return null; // Explicitly return null if no matching procedure is found
 }
 
-List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets}) {
+List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, PBViewModel? pbViewModel}) {
   const margin = EdgeInsets.only(bottom: 6.0);
 
   final widgets = sets.map(((setDto) {
+    final pb = pbViewModel != null && pbViewModel.set == setDto ? pbViewModel : null;
+
     switch (type) {
       case ExerciseType.weightAndReps:
       case ExerciseType.assistedBodyWeight:
       case ExerciseType.weightedBodyWeight:
         final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
         final secondLabel = setDto.value2;
-        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin);
+        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbViewModel: pb);
       case ExerciseType.bodyWeightAndReps:
         final label = setDto.value2;
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
         final label = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
-        return SingleSetRow(label: label, margin: margin);
-      case ExerciseType.durationAndDistance:
-        final firstLabel = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
-        final secondLabel = isDefaultDistanceUnit()
-            ? setDto.value2
-            : toKM(setDto.value2.toDouble(), type: ExerciseType.durationAndDistance);
-        return DoubleSetRow(first: firstLabel, second: "$secondLabel", margin: margin);
-      case ExerciseType.weightAndDistance:
-        final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
-        final secondLabel = isDefaultDistanceUnit()
-            ? setDto.value2
-            : toKM(setDto.value2.toDouble(), type: ExerciseType.weightAndDistance);
-        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin);
+        return SingleSetRow(label: label, margin: margin, pbViewModel: pb);
     }
   })).toList();
 

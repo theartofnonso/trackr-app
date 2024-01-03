@@ -38,8 +38,10 @@ class RoutineLogWidget extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
-            title: Text(routineLog.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
-            subtitle: Row(children: [
+            title: Text(routineLog.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+            subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               const Icon(
                 Icons.date_range_rounded,
                 color: Colors.white,
@@ -48,7 +50,7 @@ class RoutineLogWidget extends StatelessWidget {
               const SizedBox(width: 1),
               Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
                   style: GoogleFonts.montserrat(
-                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
             ]),
           ),
         ),
@@ -82,10 +84,8 @@ class _ProcedureWidget extends StatelessWidget {
           ExerciseType.weightAndReps => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: 'REPS',),
           ExerciseType.weightedBodyWeight => DoubleSetHeader(firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS',),
           ExerciseType.assistedBodyWeight => DoubleSetHeader(firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS',),
-          ExerciseType.weightAndDistance => DoubleSetHeader(firstLabel: weightLabel().toUpperCase(), secondLabel: distanceTitle(type: ExerciseType.weightAndDistance)),
           ExerciseType.bodyWeightAndReps => const SingleSetHeader(label: 'REPS'),
           ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
-          ExerciseType.durationAndDistance => DoubleSetHeader(firstLabel: 'TIME', secondLabel: distanceTitle(type: ExerciseType.durationAndDistance)),
         },
         const SizedBox(height: 8),
         ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets),

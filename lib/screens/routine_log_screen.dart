@@ -111,6 +111,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                           )
                         : const SizedBox.shrink(),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
                           Icons.date_range_rounded,
