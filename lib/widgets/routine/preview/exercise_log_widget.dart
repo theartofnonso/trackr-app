@@ -53,8 +53,6 @@ class ExerciseLogWidget extends StatelessWidget {
 
       final pastSets = provider.wherePastSetsForExerciseFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
       final pastExerciseLogs = provider.wherePastExerciseLogsFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-      final currentExerciseLogs = provider.wherePastExerciseLogs(exercise: exerciseLog.exercise);
-
 
       if(pastSets.isNotEmpty) {
         final pastBestSets = personalBestSets(sets: pastSets);
@@ -65,7 +63,8 @@ class ExerciseLogWidget extends StatelessWidget {
         final currentBestSet = personalBestSets(sets: exerciseLog.sets);
         final highestCurrentSet = maxVolume(sets: currentBestSet);
         final highestCurrentSetVolume = highestCurrentSet.value1 * highestCurrentSet.value2;
-        final highestCurrent1RM = currentExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).toList().max;
+        final heaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
+        final highestCurrent1RM = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
         List<PBType> pbs = [];
 
@@ -124,13 +123,8 @@ class ExerciseLogWidget extends StatelessWidget {
               DoubleSetHeader(firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS'),
             ExerciseType.assistedBodyWeight =>
               DoubleSetHeader(firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS'),
-            ExerciseType.weightAndDistance => DoubleSetHeader(
-                firstLabel: weightLabel().toUpperCase(),
-                secondLabel: distanceTitle(type: ExerciseType.weightAndDistance)),
             ExerciseType.bodyWeightAndReps => const SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
-            ExerciseType.durationAndDistance =>
-              DoubleSetHeader(firstLabel: 'TIME', secondLabel: distanceTitle(type: ExerciseType.durationAndDistance)),
           },
           const SizedBox(height: 8),
           ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbViewModel: pbViewModel),

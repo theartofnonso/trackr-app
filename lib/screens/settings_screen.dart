@@ -23,15 +23,6 @@ enum WeightUnit {
   }
 }
 
-enum DistanceUnit {
-  mi,
-  km;
-
-  static DistanceUnit fromString(String string) {
-    return DistanceUnit.values.firstWhere((value) => value.name == string);
-  }
-}
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -44,7 +35,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   String _loadingMessage = "";
 
   late WeightUnit _weightUnitType;
-  late DistanceUnit _distanceUnitType;
 
   bool _notificationEnabled = false;
 
@@ -104,50 +94,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         _weightUnitType = unitType.first;
                       });
                       toggleWeightUnit(unit: _weightUnitType);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 2),
-                ListTile(
-                  title: Text("Distance",
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-                  subtitle: Text("Choose kilometres or miles",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.white;
-                          }
-                          return Colors.transparent;
-                        },
-                      ),
-                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.black;
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                    ),
-                    segments: [
-                      ButtonSegment<DistanceUnit>(value: DistanceUnit.mi, label: Text(DistanceUnit.mi.name)),
-                      ButtonSegment<DistanceUnit>(value: DistanceUnit.km, label: Text(DistanceUnit.km.name)),
-                    ],
-                    selected: <DistanceUnit>{_distanceUnitType},
-                    onSelectionChanged: (Set<DistanceUnit> unitType) {
-                      setState(() {
-                        _distanceUnitType = unitType.first;
-                      });
-                      toggleDistanceUnit(unit: _distanceUnitType);
                     },
                   ),
                 ),
@@ -288,7 +234,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
-    _distanceUnitType = DistanceUnit.fromString(SharedPrefs().distanceUnit);
   }
 
   @override

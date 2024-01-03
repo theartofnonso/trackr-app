@@ -26,10 +26,8 @@ enum SummaryType {
   oneRepMax,
   bestTime,
   mostReps,
-  longestDistance,
   sessionReps,
   sessionTimes,
-  sessionDistance,
 }
 
 class ExerciseChartScreen extends StatefulWidget {
@@ -145,26 +143,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     });
   }
 
-  void _longestDistancePerLog() {
-    final values = _exerciseLogs.map((log) => longestDistancePerLog(exerciseLog: log)).toList();
-    final exerciseType = widget.exercise.type;
-    setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.longestDistance;
-      _chartUnit = exerciseType == ExerciseType.weightAndDistance ? ChartUnitLabel.yd : ChartUnitLabel.mi;
-    });
-  }
-
-  void _totalDistancePerLog() {
-    final values = _exerciseLogs.map((log) => totalDistancePerLog(exerciseLog: log)).toList();
-    final exerciseType = widget.exercise.type;
-    setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.sessionDistance;
-      _chartUnit = exerciseType == ExerciseType.weightAndDistance ? ChartUnitLabel.yd : ChartUnitLabel.mi;
-    });
-  }
-
   void _computeChart() {
     final exerciseType = widget.exercise.type;
 
@@ -178,11 +156,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         _summaryType = SummaryType.mostReps;
         break;
       case ExerciseType.duration:
-      case ExerciseType.durationAndDistance:
         _summaryType = SummaryType.bestTime;
-        break;
-      case ExerciseType.weightAndDistance:
-        _summaryType = SummaryType.longestDistance;
         break;
     }
 
@@ -215,11 +189,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       case SummaryType.sessionTimes:
         _totalTimePerLog();
         break;
-      case SummaryType.longestDistance:
-        _longestDistancePerLog();
-        break;
-      case SummaryType.sessionDistance:
-        _totalDistancePerLog();
     }
   }
 
@@ -239,9 +208,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   bool _exerciseLogsWithWeights() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.weightAndReps ||
-        exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.weightAndDistance;
+    return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
   }
 
   bool _exerciseLogsWithAssistedWeights() {
@@ -271,22 +238,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   bool _exerciseLogsDuration() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.duration || exerciseType == ExerciseType.durationAndDistance;
-  }
-
-  bool _exerciseLogsWithDistance() {
-    final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.durationAndDistance || exerciseType == ExerciseType.weightAndDistance;
+    return exerciseType == ExerciseType.duration;
   }
 
   @override
   Widget build(BuildContext context) {
-
     final weightUnitLabel = weightLabel();
-
-    final exerciseType = widget.exercise.type;
-
-    final distanceUnitLabel = distanceLabel(type: exerciseType);
 
     double oneRepMax = 0;
     if (_exerciseLogs.isNotEmpty) {
@@ -305,12 +262,14 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         children: [
           Text(
             "Primary Muscle: ${widget.exercise.primaryMuscleGroup.name}",
-            style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            style:
+                GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 5),
           Text(
             "Secondary Muscle: $secondaryMuscleGroups",
-            style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+            style:
+                GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -405,22 +364,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             label: "Total Time",
                             buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),
-                    if (_exerciseLogsWithDistance())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _longestDistancePerLog,
-                            label: "Longest Distance",
-                            buttonColor: _buttonColor(type: SummaryType.longestDistance)),
-                      ),
-                    if (_exerciseLogsWithDistance())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _totalDistancePerLog,
-                            label: "Total Distance",
-                            buttonColor: _buttonColor(type: SummaryType.sessionDistance)),
-                      ),
                   ],
                 )),
           const SizedBox(height: 10),
@@ -486,16 +429,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
-          if (_exerciseLogsWithDistance())
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: _MetricListTile(
-                  title: 'Longest Distance',
-                  trailing: "${widget.longestDistance.$2}$distanceUnitLabel",
-                  subtitle: 'Longest distance for this exercise',
-                  onTap: () => _navigateTo(routineLogId: widget.longestDistance.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
-            ),
           if (_exerciseLogsWithReps())
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
@@ -553,8 +486,8 @@ class _MetricListTile extends StatelessWidget {
         tileColor: tealBlueLight,
         title: Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white)),
         subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
-        trailing:
-            Text(trailing, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        trailing: Text(trailing,
+            style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

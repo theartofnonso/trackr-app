@@ -23,11 +23,6 @@ enum AchievementType {
       "Log 50 sessions, each with at least a duration of 15 minutes in a single set.",
       15,
       "15 Minutes To Go encourages you to push yourself to exercise for even longer durations. It is a great way to increase the intensity of your workout"),
-  templeRun(
-      "Temple Run",
-      "Log 50 running or cycling sessions, each with at least a duration of 30 minutes in a single set.",
-      30,
-      "Temple Run is a challenge for the runners out there. It encourages you to push yourself to run for longer durations. It is also a great way to increase the intensity of your workout"),
   timeUnderTension("Time Under Tension", "Accumulate 100 hours of strength training for any duration exercises", 100,
       "Time Under Tension focuses on duration exercises. It is a great way to increase the intensity of your workout"),
   obsessed("Obsessed", "Log at least one session for 16 consecutive weeks", 16,

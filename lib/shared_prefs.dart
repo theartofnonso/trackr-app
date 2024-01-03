@@ -39,13 +39,6 @@ class SharedPrefs {
     _sharedPrefs?.setString(_weightUnitKey, value);
   }
 
-  /// Distance Unit Type
-  final String _distanceUnitKey = "distance_unit_type_key";
-  String get distanceUnit => _sharedPrefs?.getString(_distanceUnitKey) ?? DistanceUnit.mi.name;
-  set distanceUnit(String value) {
-    _sharedPrefs?.setString(_distanceUnitKey, value);
-  }
-
   /// First launch flag
   final String _firstLaunchKey = "first_launch_key";
   bool get firstLaunch => _sharedPrefs?.getBool(_firstLaunchKey) ?? true;

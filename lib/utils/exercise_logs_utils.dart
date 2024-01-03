@@ -2,7 +2,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import 'general_utils.dart';
 
-SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
+SetDto heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
   SetDto heaviestSet = const SetDto(0, 0, false);
   double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
 
@@ -17,7 +17,7 @@ SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
 }
 
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
+  final heaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
 
   final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 

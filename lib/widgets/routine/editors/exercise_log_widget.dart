@@ -8,14 +8,10 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editors/set_headers/duration_distance_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
-import 'package:tracker_app/widgets/routine/editors/set_headers/weight_distance_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/duration_distance_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/weight_distance_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weight_reps_set_row.dart';
 
 import '../../../app_constants.dart';
@@ -112,16 +108,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           onChangedReps: (num value) => _updateReps(index: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
-      case ExerciseType.weightAndDistance:
-        return WeightDistanceSetRow(
-          setDto: set,
-          editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(index: index, setDto: set),
-          onRemoved: () => _removeSet(index),
-          onChangedDistance: (double value) => _updateDistance(index: index, distance: value, setDto: set),
-          onChangedWeight: (double value) => _updateWeight(index: index, value: value, setDto: set),
-          controllers: _controllers[index],
-        );
       case ExerciseType.duration:
         return DurationSetRow(
           setDto: set,
@@ -129,16 +115,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
           onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
-        );
-      case ExerciseType.durationAndDistance:
-        return DurationDistanceSetRow(
-          setDto: set,
-          editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(index: index, setDto: set),
-          onRemoved: () => _removeSet(index),
-          onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
-          onChangedDistance: (double distance) => _updateDistance(index: index, distance: distance, setDto: set),
-          controllers: _controllers[index],
         );
     }
   }
@@ -183,13 +159,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-    _cacheLog();
-  }
-
-  void _updateDistance({required int index, required double distance, required SetDto setDto}) {
-    final updatedSet = setDto.copyWith(value2: distance);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
-        .updateDistance(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
@@ -321,10 +290,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 firstLabel: '-${weightLabel().toUpperCase()}',
                 secondLabel: 'REPS',
               ),
-            ExerciseType.weightAndDistance => WeightDistanceSetHeader(editorType: widget.editorType),
             ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
-            ExerciseType.durationAndDistance => DurationDistanceSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty) Column(children: [..._displaySets(exerciseType: exerciseType, sets: sets)]),

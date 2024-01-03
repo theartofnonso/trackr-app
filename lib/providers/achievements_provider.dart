@@ -25,7 +25,6 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.fifteenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
-    AchievementType.templeRun => _calculateRunningTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: routineLogs),
     AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.neverSkipAMonday =>
@@ -213,24 +212,8 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLogDto> logs,
 ProgressDto _calculateTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
   final exerciseLogsWithDurationOnly = logs[ExerciseType.duration] ?? [];
-  final exerciseLogsWithDurationAndDistanceOnly = logs[ExerciseType.durationAndDistance] ?? [];
-  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly, ...exerciseLogsWithDurationAndDistanceOnly];
+  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly];
   List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
-    return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
-  }).toList();
-
-  final progress = achievedLogs.length / 50;
-  final remainder = 50 - achievedLogs.length;
-
-  return generateProgress(
-      achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForExerciseLog);
-}
-
-/// [AchievementType.templeRun]
-ProgressDto _calculateRunningTimeAchievement(
-    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-  final exerciseLogsWithDistanceAndDuration = logs[ExerciseType.durationAndDistance] ?? [];
-  List<ExerciseLogDto> achievedLogs = exerciseLogsWithDistanceAndDuration.where((log) {
     return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
   }).toList();
 
@@ -258,9 +241,8 @@ ProgressDto _calculateStrongerThanEverAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
   final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
   final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
-  final weightAndDistance = logs[ExerciseType.weightAndDistance] ?? [];
 
-  final achievedLogs = [...weightAndReps, ...weightedBodyWeight, ...weightAndDistance];
+  final achievedLogs = [...weightAndReps, ...weightedBodyWeight];
 
   final tonnages = achievedLogs.map((log) {
     final volume = log.sets.map((set) => set.value1 * set.value2).reduce((total, tonnage) => total + tonnage);

@@ -178,7 +178,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<SetDto> wherePastSetsForExerciseFromDate({required ExerciseDto exercise, required DateTime date}) {
-    final exerciseLogs = _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBeforeOrEqual(date)) ?? [];
+    final exerciseLogs = _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)) ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
@@ -187,7 +187,7 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   List<ExerciseLogDto> wherePastExerciseLogsFromDate({required ExerciseDto exercise, required DateTime date}) {
-    return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBeforeOrEqual(date)).toList() ?? [];
+    return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
   List<SetDto> setsForMuscleGroupWhereDateRange(
