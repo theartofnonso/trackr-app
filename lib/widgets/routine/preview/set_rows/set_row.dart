@@ -23,7 +23,7 @@ class SetRow extends StatelessWidget {
               label: Text(pb.name,
                   style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
               labelPadding: const EdgeInsets.only(left: 4),
-              side: const BorderSide(width: 0, color: tealBlueLight),
+              side: const BorderSide(width: 0, color: Colors.transparent),
             ))
         .toList();
 
