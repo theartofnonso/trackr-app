@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:uuid/uuid.dart';
 
 import 'exercise_dto.dart';
 
@@ -49,8 +48,7 @@ class ExerciseLogDto {
     final notes = json["notes"] ?? "";
     final setsJsons = json["sets"] as List<dynamic>;
     final sets = setsJsons.map((json) => SetDto.fromJson(jsonDecode(json))).toList();
-    return ExerciseLogDto(
-        const Uuid().v4(), routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now());
+    return ExerciseLogDto(exercise.id, routineLogId, superSetId, exercise, notes, sets, createdAt ?? DateTime.now());
   }
 
   @override
