@@ -16,13 +16,14 @@ import '../preview/set_headers/single_set_header.dart';
 import '../preview/set_headers/double_set_header.dart';
 
 enum PBType {
-
-  weight("Weight"), volume("Volume"), oneRepMax("1RM"), duration("Duration"), distance("Distance");
+  weight("Weight"),
+  volume("Volume"),
+  oneRepMax("1RM"),
+  duration("Duration");
 
   const PBType(this.name);
 
   final String name;
-
 }
 
 class PBViewModel {
@@ -45,43 +46,54 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final exerciseType = exerciseLog.exercise.type;
 
+    final provider = Provider.of<RoutineLogProvider>(context, listen: false);
+
+    final pastSets =
+        provider.wherePastSetsForExerciseFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+    final pastExerciseLogs =
+        provider.wherePastExerciseLogsFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
     PBViewModel? pbViewModel;
 
-    if(exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight || exerciseType == ExerciseType.assistedBodyWeight) {
-
-      final provider = Provider.of<RoutineLogProvider>(context, listen: false);
-
-      final pastSets = provider.wherePastSetsForExerciseFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-      final pastExerciseLogs = provider.wherePastExerciseLogsFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-
-      if(pastSets.isNotEmpty) {
+    if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty) {
+      if (exerciseType == ExerciseType.weightAndReps ||
+          exerciseType == ExerciseType.weightedBodyWeight ||
+          exerciseType == ExerciseType.assistedBodyWeight) {
         final pastBestSets = personalBestSets(sets: pastSets);
-        final highestPastSet = maxVolume(sets: pastBestSets);
-        final highestPastSetVolume = highestPastSet.value1 * highestPastSet.value2;
-        final highestPast1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).toList().max;
+        final pastHeaviestSet = heaviestSet(sets: pastBestSets);
+        final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestSetVolumePerLog(exerciseLog: log)).max;
+        final pastHeaviest1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
 
-        final currentBestSet = personalBestSets(sets: exerciseLog.sets);
-        final highestCurrentSet = maxVolume(sets: currentBestSet);
-        final highestCurrentSetVolume = highestCurrentSet.value1 * highestCurrentSet.value2;
-        final heaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
-        final highestCurrent1RM = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
+        final currentHeaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
+        final currentHeaviestSetVolume = currentHeaviestSet.value1 * currentHeaviestSet.value2;
+        final currentHeaviest1RM = (currentHeaviestSet.value1 * (1 + 0.0333 * currentHeaviestSet.value2));
 
         List<PBType> pbs = [];
 
-        if (highestCurrentSet.value1 > highestPastSet.value1) {
+        if (currentHeaviestSet.value1 > pastHeaviestSet.value1) {
           pbs.add(PBType.weight);
         }
 
-        if (highestCurrentSetVolume > highestPastSetVolume) {
+        if (currentHeaviestSetVolume > pastHeaviestSetVolume) {
           pbs.add(PBType.volume);
         }
 
-        if (highestCurrent1RM > highestPast1RM) {
+        if (currentHeaviest1RM > pastHeaviest1RM) {
           pbs.add(PBType.oneRepMax);
         }
 
         if (pbs.isNotEmpty) {
-          pbViewModel = PBViewModel(set: highestCurrentSet, pbs: pbs);
+          pbViewModel = PBViewModel(set: currentHeaviestSet, pbs: pbs);
+        }
+      }
+
+      if (exerciseType == ExerciseType.duration) {
+        final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationPerLog(exerciseLog: log)).max;
+        final currentLongestDurationSet = longestDurationSet(sets: exerciseLog.sets);
+        final currentLongestDuration = Duration(milliseconds: currentLongestDurationSet.value1.toInt());
+
+        if (currentLongestDuration > pastLongestDuration) {
+          pbViewModel = PBViewModel(set: currentLongestDurationSet, pbs: [PBType.duration]);
         }
       }
     }

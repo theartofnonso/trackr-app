@@ -182,7 +182,7 @@ class RoutineLogProvider with ChangeNotifier {
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<ExerciseLogDto> wherePastExerciseLogs({required ExerciseDto exercise}) {
+  List<ExerciseLogDto> whereExerciseLogs({required ExerciseDto exercise}) {
     return _exerciseLogsById[exercise.id] ?? [];
   }
 

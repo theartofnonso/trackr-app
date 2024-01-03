@@ -239,10 +239,6 @@ class ExerciseLogProvider extends ChangeNotifier {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateDistance({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
-  }
-
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }

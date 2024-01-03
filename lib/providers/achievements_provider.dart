@@ -309,10 +309,9 @@ ProgressDto _calculateOneMoreRepAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
   final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
   final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
-  final weightAndDistance = logs[ExerciseType.bodyWeightAndReps] ?? [];
   final assistedBodyWeight = logs[ExerciseType.assistedBodyWeight] ?? [];
 
-  final achievedLogs = [...weightAndReps, ...weightedBodyWeight, ...weightAndDistance, ...assistedBodyWeight];
+  final achievedLogs = [...weightAndReps, ...weightedBodyWeight, ...assistedBodyWeight];
 
   final reps = achievedLogs.map((log) {
     final reps = log.sets.map((set) => set.value2).reduce((total, reps) => total + reps);

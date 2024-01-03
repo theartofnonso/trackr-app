@@ -36,7 +36,6 @@ class ExerciseChartScreen extends StatefulWidget {
   final (String?, SetDto) heaviestSet;
   final (String?, SetDto) lightestSet;
   final (String?, Duration) longestDuration;
-  final (String?, double) longestDistance;
   final (String?, int) mostRepsSet;
   final (String?, int) mostRepsSession;
   final ExerciseDto exercise;
@@ -48,7 +47,6 @@ class ExerciseChartScreen extends StatefulWidget {
       required this.lightestSet,
       required this.heaviestSet,
       required this.longestDuration,
-      required this.longestDistance,
       required this.mostRepsSet,
       required this.mostRepsSession,
       required this.exercise});
@@ -247,7 +245,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     double oneRepMax = 0;
     if (_exerciseLogs.isNotEmpty) {
-      oneRepMax = _exerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).toList().max;
+      oneRepMax = _exerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
     }
 
     final secondaryMuscleGroups = widget.exercise.secondaryMuscleGroups.isNotEmpty
