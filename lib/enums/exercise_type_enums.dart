@@ -3,9 +3,7 @@ enum ExerciseType {
   bodyWeightAndReps("Bodyweight", "Pull Ups, Crunches, Burpees"),
   weightedBodyWeight("Weighted Bodyweight", "Weighted Pull Ups, Weighted Dips"),
   assistedBodyWeight("Assisted Bodyweight", "Assisted Pull Ups, Assisted Dips"),
-  duration("Duration", "Planks, Yoga"),
-  durationAndDistance("Distance & Duration", "Running, Cycling"),
-  weightAndDistance("Weight & Distance", "Farmers walk");
+  duration("Duration", "Planks, Yoga");
 
   const ExerciseType(this.name, this.description);
 

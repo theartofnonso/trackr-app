@@ -89,9 +89,11 @@ class OverviewScreen extends StatelessWidget {
                       Container(
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: Table(
+                            border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
                             columnWidths: const <int, TableColumnWidth>{
                               0: FlexColumnWidth(),
                               1: FlexColumnWidth(),
+                              2: FlexColumnWidth(),
                             },
                             children: [
                               TableRow(children: [
@@ -103,6 +105,10 @@ class OverviewScreen extends StatelessWidget {
                                     title: "This Month",
                                     subtitle: "${logsForTheMonth.length} sessions",
                                     onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
+                                _CTableCell(
+                                    title: "Level",
+                                    subtitle: "Coming soon",
+                                    onTap: () => {})
                               ])
                             ],
                           )),
@@ -141,7 +147,7 @@ class _CTableCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Text(title, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
         Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
       ]),

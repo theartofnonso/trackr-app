@@ -37,8 +37,7 @@ class SetDto {
       other is SetDto &&
           runtimeType == other.runtimeType &&
           value1 == other.value1 &&
-          value2 == other.value2 &&
-          checked == other.checked;
+          value2 == other.value2;
 
   @override
   int get hashCode => value1.hashCode ^ value2.hashCode ^ checked.hashCode;

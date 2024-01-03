@@ -145,7 +145,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: 14,
-                            ))
+                            ), textAlign: TextAlign.center)
                         : const SizedBox.shrink(),
                     const SizedBox(height: 5),
                     ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),

@@ -167,7 +167,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  void removeSetForExerciseLog({required String exerciseLogId, required int index, required List<SetDto> pastSets}) {
+  void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
     // Check if the exercise ID exists in the map
     if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the exercise ID does not exist
@@ -236,10 +236,6 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
-  }
-
-  void updateDistance({required String exerciseLogId, required int index, required SetDto setDto}) {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
