@@ -38,8 +38,10 @@ class RoutineLogWidget extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
-            title: Text(routineLog.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
-            subtitle: Row(children: [
+            title: Text(routineLog.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+            subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               const Icon(
                 Icons.date_range_rounded,
                 color: Colors.white,
@@ -48,7 +50,7 @@ class RoutineLogWidget extends StatelessWidget {
               const SizedBox(width: 1),
               Text(exerciseLog.createdAt.formattedDayAndMonthAndYear(),
                   style: GoogleFonts.montserrat(
-                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12), textAlign: TextAlign.center),
             ]),
           ),
         ),

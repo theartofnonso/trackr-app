@@ -112,12 +112,12 @@ class ExerciseLogWidget extends StatelessWidget {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
               },
-              title: Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
+              title: Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14), textAlign: TextAlign.center),
               subtitle: otherSuperSet != null
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: Text("with ${otherSuperSet.exercise.name}",
-                          style: GoogleFonts.montserrat(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600)),
+                          style: GoogleFonts.montserrat(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
                     )
                   : null,
             ),
