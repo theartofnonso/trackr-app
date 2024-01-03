@@ -28,20 +28,6 @@ ChartUnitLabel weightUnit() {
 
 /// Highest value per [RoutineLogDto]
 
-SetDto _heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
-  SetDto heaviestSet = const SetDto(0, 0, false);
-  double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
-
-  for (SetDto set in exerciseLog.sets) {
-    final volume = set.value1.toDouble() * set.value2.toInt();
-    if (volume > heaviestVolume) {
-      heaviestSet = set;
-      heaviestVolume = volume;
-    }
-  }
-  return heaviestSet;
-}
-
 double heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
   double heaviestWeight = 0;
 
@@ -157,16 +143,6 @@ double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
   return volume;
 }
 
-double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestSet = _heaviestSetPerLog(exerciseLog: exerciseLog);
-
-  final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
-
-  final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
-
-  return maxWeight;
-}
-
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
 }
@@ -189,7 +165,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final volume = set.value1 * set.value2;
         if (volume > (heaviestSet.value1 * heaviestSet.value2)) {
           heaviestSet = set;
-          log = log;
+          logId = log.routineLogId;
         }
       }
     }
@@ -212,7 +188,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final volume = set.value1 * set.value2;
         if ((lightestSet.value1 * lightestSet.value2) > volume) {
           lightestSet = set;
-          log = log;
+          logId = log.routineLogId;
         }
       }
     }
@@ -235,7 +211,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final weight = set.value1.toDouble();
         if (weight > heaviestWeight) {
           heaviestWeight = weight;
-          log = log;
+          logId = log.routineLogId;
         }
       }
     }
@@ -255,7 +231,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
         final weight = set.value1.toDouble();
         if (lightestWeight > weight) {
           lightestWeight = weight;
-          log = log;
+          logId = log.routineLogId;
         }
       }
     }
@@ -274,7 +250,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final reps = highestRepsForLog(exerciseLog: log);
       if (reps > highestReps) {
         highestReps = reps;
-        log = log;
+        logId = log.routineLogId;
       }
     }
   }
@@ -292,7 +268,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final reps = totalRepsForLog(exerciseLog: log);
       if (reps > mostReps) {
         mostReps = reps;
-        log = log;
+        logId = log.routineLogId;
       }
     }
   }
@@ -310,7 +286,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final duration = longestDurationPerLog(exerciseLog: log);
       if (duration > longestDuration) {
         longestDuration = duration;
-        log = log;
+        logId = log.routineLogId;
       }
     }
   }
@@ -328,7 +304,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
       final distance = longestDistancePerLog(exerciseLog: log);
       if (distance > longestDistance) {
         longestDistance = distance;
-        log = log;
+        logId = log.routineLogId;
       }
     }
   }

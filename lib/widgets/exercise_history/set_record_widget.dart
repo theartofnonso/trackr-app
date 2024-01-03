@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
@@ -6,6 +5,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
+import '../../utils/sets_utils.dart';
 import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
@@ -17,7 +17,7 @@ class SetRecordWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final personaBestSets = personalBestSets();
+    final personaBestSets = personalBestSets(sets: sets);
 
     if (personaBestSets.isEmpty) {
       return const InformationContainerLite(
@@ -37,22 +37,5 @@ class SetRecordWidget extends StatelessWidget {
         }).toList(),
       ],
     );
-  }
-
-  List<SetDto> personalBestSets() {
-    var groupedByReps = groupBy(sets, (set) => set.value2);
-
-    final setsWithHeaviestWeight = <SetDto>[];
-
-    for (var group in groupedByReps.entries) {
-      final weights = group.value.map((set) => set.value1);
-      final heaviestWeight = weights.max;
-      setsWithHeaviestWeight.add(SetDto(heaviestWeight, group.key, false));
-    }
-
-    // Sort by value2
-    setsWithHeaviestWeight.sort((a, b) => a.value2.compareTo(b.value2));
-
-    return setsWithHeaviestWeight;
   }
 }

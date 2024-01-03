@@ -160,10 +160,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _removeSet(int index) {
     _controllers.removeAt(index);
-    final pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
-        .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index, pastSets: pastSets);
+        .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
     _cacheLog();
   }
 
