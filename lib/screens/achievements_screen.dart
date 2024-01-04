@@ -36,20 +36,18 @@ class AchievementsScreen extends StatelessWidget {
         body: Stack(children: [
       const Positioned.fill(child: GradientBackground()),
       SafeArea(
+        minimum: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 10),
-            Text("Achievements",
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w500)),
-            const SizedBox(height: 6),
-            Text("Keep logging your sessions to achieve milestones and unlock badges.",
-                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 16)),
-            const SizedBox(height: 20),
-            logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
-          ]),
-        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const SizedBox(height: 10),
+          Text("Achievements",
+              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 6),
+          Text("Keep logging your sessions to achieve milestones and unlock badges.",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 16)),
+          const SizedBox(height: 20),
+          logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
+        ]),
       ))
     ]));
   }

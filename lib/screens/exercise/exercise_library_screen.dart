@@ -209,27 +209,25 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           return false;
         },
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-            child: Column(
-              children: [
-                CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
-                const SizedBox(height: 12),
-                _filteredExercises.isNotEmpty
-                    ? Expanded(
-                  child: ListView.separated(
-                      padding: const EdgeInsets.only(bottom: 250),
-                      itemBuilder: (BuildContext context, int index) =>
-                          _exerciseWidget(_filteredExercises[index]),
-                      separatorBuilder: (BuildContext context, int index) => const Divider(
-                        thickness: 1.0,
-                        color: tealBlueLight,
-                      ),
-                      itemCount: _filteredExercises.length),
-                )
-                    : const ExerciseEmptyState(),
-              ],
-            ),
+          minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+          child: Column(
+            children: [
+              CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
+              const SizedBox(height: 12),
+              _filteredExercises.isNotEmpty
+                  ? Expanded(
+                child: ListView.separated(
+                    padding: const EdgeInsets.only(bottom: 250),
+                    itemBuilder: (BuildContext context, int index) =>
+                        _exerciseWidget(_filteredExercises[index]),
+                    separatorBuilder: (BuildContext context, int index) => const Divider(
+                      thickness: 1.0,
+                      color: tealBlueLight,
+                    ),
+                    itemCount: _filteredExercises.length),
+              )
+                  : const ExerciseEmptyState(),
+            ],
           ),
         ),
       ),

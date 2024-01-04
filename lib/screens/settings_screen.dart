@@ -49,70 +49,68 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       ),
       body: Stack(children: [
         SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  title: Text("Weight",
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-                  subtitle:
-                      Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.white;
-                          }
-                          return Colors.transparent;
-                        },
-                      ),
-                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.black;
-                          }
+          minimum: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: Text("Weight",
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                trailing: SegmentedButton(
+                  showSelectedIcon: false,
+                  style: ButtonStyle(
+                    visualDensity: const VisualDensity(
+                        horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                    shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    )),
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
                           return Colors.white;
-                        },
-                      ),
+                        }
+                        return Colors.transparent;
+                      },
                     ),
-                    segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                    ],
-                    selected: <WeightUnit>{_weightUnitType},
-                    onSelectionChanged: (Set<WeightUnit> unitType) {
-                      setState(() {
-                        _weightUnitType = unitType.first;
-                      });
-                      toggleWeightUnit(unit: _weightUnitType);
-                    },
+                    foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return Colors.black;
+                        }
+                        return Colors.white;
+                      },
+                    ),
                   ),
+                  segments: [
+                    ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                    ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                  ],
+                  selected: <WeightUnit>{_weightUnitType},
+                  onSelectionChanged: (Set<WeightUnit> unitType) {
+                    setState(() {
+                      _weightUnitType = unitType.first;
+                    });
+                    toggleWeightUnit(unit: _weightUnitType);
+                  },
                 ),
-                const SizedBox(height: 8),
-                OutlineListTile(
-                    onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-                const SizedBox(height: 8),
-                /// Uncomment this to enable notifications
-                // OutlineListTile(
-                //     onTap: _navigateToNotificationSettings,
-                //     title: "Notifications",
-                //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                // const SizedBox(height: 8),
-                const SizedBox(height: 16),
-                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _delete, title: "Delete Account"),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+              OutlineListTile(
+                  onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
+              const SizedBox(height: 8),
+
+              /// Uncomment this to enable notifications
+              // OutlineListTile(
+              //     onTap: _navigateToNotificationSettings,
+              //     title: "Notifications",
+              //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+              // const SizedBox(height: 8),
+              const SizedBox(height: 16),
+              OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+              const SizedBox(height: 8),
+              OutlineListTile(onTap: _delete, title: "Delete Account"),
+            ],
           ),
         ),
         if (_loading)

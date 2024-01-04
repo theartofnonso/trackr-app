@@ -135,23 +135,21 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ),
         body: Stack(children: [
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    template.notes.isNotEmpty
-                        ? Text(template.notes,
-                            style: GoogleFonts.montserrat(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ))
-                        : const SizedBox.shrink(),
-                    const SizedBox(height: 5),
-                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs), previewType: RoutinePreviewType.template,),
-                  ],
-                ),
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  template.notes.isNotEmpty
+                      ? Text(template.notes,
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ))
+                      : const SizedBox.shrink(),
+                  const SizedBox(height: 5),
+                  ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs), previewType: RoutinePreviewType.template,),
+                ],
               ),
             ),
           ),

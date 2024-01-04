@@ -73,8 +73,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title:
-              Text(log.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+          title: Text(log.name,
+              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
         ),
         floatingActionButton: ExpandableFab(
           distance: 112,
@@ -95,95 +95,95 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ),
         body: Stack(children: [
           SafeArea(
+            minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    log.notes.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Text(log.notes,
-                                style: GoogleFonts.montserrat(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                )),
-                          )
-                        : const SizedBox.shrink(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  log.notes.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text(log.notes,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.white,
+                                fontSize: 14,
+                              )),
+                        )
+                      : const SizedBox.shrink(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.date_range_rounded,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(log.createdAt.formattedDayAndMonthAndYear(),
+                          style: GoogleFonts.montserrat(
+                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      const SizedBox(width: 10),
+                      const Icon(
+                        Icons.access_time_rounded,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(log.endTime.formattedTime(),
+                          style: GoogleFonts.montserrat(
+                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 24, bottom: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                      color: tealBlueLight, // Set the background color
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Table(
+                      border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(),
+                        1: FlexColumnWidth(),
+                        2: FlexColumnWidth(),
+                      },
                       children: [
-                        const Icon(
-                          Icons.date_range_rounded,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 1),
-                        Text(log.createdAt.formattedDayAndMonthAndYear(),
-                            style: GoogleFonts.montserrat(
-                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                        const SizedBox(width: 10),
-                        const Icon(
-                          Icons.access_time_rounded,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 1),
-                        Text(log.endTime.formattedTime(),
-                            style: GoogleFonts.montserrat(
-                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(completedSetsSummary,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text("${log.exerciseLogs.length} exercise(s)",
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: Text(log.duration().secondsOrMinutesOrHours(),
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          )
+                        ]),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 24, bottom: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                        color: tealBlueLight, // Set the background color
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Table(
-                        border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
-                        columnWidths: const <int, TableColumnWidth>{
-                          0: FlexColumnWidth(),
-                          1: FlexColumnWidth(),
-                          2: FlexColumnWidth(),
-                        },
-                        children: [
-                          TableRow(children: [
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(completedSetsSummary,
-                                    style: GoogleFonts.montserrat(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text("${log.exerciseLogs.length} exercise(s)",
-                                    style: GoogleFonts.montserrat(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.middle,
-                              child: Center(
-                                child: Text(log.duration().secondsOrMinutesOrHours(),
-                                    style: GoogleFonts.montserrat(
-                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                              ),
-                            )
-                          ]),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    _HorizontalBarChart(frequencyData: calculateFrequency(exerciseLogs)),
-                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs), previewType: RoutinePreviewType.log),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 10),
+                  _HorizontalBarChart(frequencyData: calculateFrequency(exerciseLogs)),
+                  ExerciseLogListView(
+                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs),
+                      previewType: RoutinePreviewType.log),
+                ],
               ),
             ),
           ),
@@ -214,8 +214,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       scaledFrequencyMap[key] = value / totalCount;
     });
 
-    var sortedEntries = scaledFrequencyMap.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    var sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
 
@@ -263,7 +262,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: templateToCreate);
+      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false)
+          .saveTemplate(templateDto: templateToCreate);
       if (mounted) {
         navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
       }
@@ -279,7 +279,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   Future<void> _doUpdateTemplate() async {
     final templateToUpdate =
-    Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
       final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
@@ -353,6 +353,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
+            isDismissible: false,
             context: context,
             child: _TemplateChangesListView(
                 templateName: routineTemplate.name,
@@ -404,32 +405,44 @@ class _TemplateChangesListView extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
         ),
         ...listTiles,
-        const SizedBox(height: 10),
-        Align(alignment: Alignment.center, child: CTextButton(onPressed: onPressed, label: "Update template"))
+        const SizedBox(height: 16),
+        Row(children: [
+          const SizedBox(width: 15),
+          CTextButton(
+              onPressed: Navigator.of(context).pop,
+              label: "Cancel",
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              buttonColor: Colors.transparent,
+              buttonBorderColor: Colors.transparent),
+          const SizedBox(width: 10),
+          CTextButton(
+              onPressed: onPressed,
+              label: "Update Template",
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              buttonColor: Colors.green)
+        ])
       ],
     );
   }
 }
 
 class _HorizontalBarChart extends StatelessWidget {
-
   final Map<MuscleGroupFamily, double> frequencyData;
 
   const _HorizontalBarChart({required this.frequencyData});
 
   @override
   Widget build(BuildContext context) {
-    final children = frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+    final children =
+        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [...children,
-        const SizedBox(height: 2),
-        Text("Calculations are based on primary muscle groups",
-            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12)),
-        const SizedBox(height: 8),
-      ]
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ...children,
+      const SizedBox(height: 2),
+      Text("Calculations are based on primary muscle groups",
+          style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12)),
+      const SizedBox(height: 8),
+    ]);
   }
 }
 
@@ -444,24 +457,27 @@ class _LinearBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Stack(children: [
-          LinearProgressIndicator(
-            value: frequency,
-            backgroundColor: Colors.green.withOpacity(0.1),
-            color: Colors.green,
-            minHeight: 24,
-            borderRadius: BorderRadius.circular(3.0), // Border r
-          ),
-          Positioned.fill(
-            child: Align(
-             alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 1, right: 14),
-                child: Text(muscleGroupFamily.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
+        Stack(
+          children: [
+            LinearProgressIndicator(
+              value: frequency,
+              backgroundColor: Colors.green.withOpacity(0.1),
+              color: Colors.green,
+              minHeight: 24,
+              borderRadius: BorderRadius.circular(3.0), // Border r
             ),
-          )
-        ],),
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 1, right: 14),
+                  child: Text(muscleGroupFamily.name,
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
+                ),
+              ),
+            )
+          ],
+        ),
         const SizedBox(height: 8),
       ],
     );

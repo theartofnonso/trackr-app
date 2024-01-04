@@ -25,21 +25,20 @@ class RoutinesScreen extends StatelessWidget {
             child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
           ),
           body: SafeArea(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                  child: Column(children: [
-                    provider.templates.isNotEmpty
-                        ? Expanded(
-                            child: ListView.separated(
-                                padding: const EdgeInsets.only(bottom: 150),
-                                itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                      template: provider.templates[index],
-                                    ),
-                                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                                itemCount: provider.templates.length),
-                          )
-                        : const Expanded(child: RoutineEmptyState()),
-                  ]))));
+              minimum: const EdgeInsets.all(10.0),
+              child: Column(children: [
+                provider.templates.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 150),
+                            itemBuilder: (BuildContext context, int index) => _RoutineWidget(
+                                  template: provider.templates[index],
+                                ),
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
+                            itemCount: provider.templates.length),
+                      )
+                    : const Expanded(child: RoutineEmptyState()),
+              ])));
     });
   }
 }
