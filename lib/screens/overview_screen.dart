@@ -107,7 +107,7 @@ class OverviewScreen extends StatelessWidget {
                                     onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                                 _CTableCell(
                                     title: "Level",
-                                    subtitle: "Coming soon",
+                                      subtitle: "Coming",
                                     onTap: () => {})
                               ])
                             ],
@@ -122,7 +122,7 @@ class OverviewScreen extends StatelessWidget {
                         tileColor: tealBlueLight,
                         dense: true,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Muscle insights", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
+                        title: Text("Muscle insights", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                         subtitle: Text("Number of sets logged for each muscle group",
                             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                   ),

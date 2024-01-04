@@ -1,12 +1,13 @@
 enum ExerciseType {
-  weightAndReps("Weight & Reps", "Bench Press, Dumbbell Curls"),
-  bodyWeightAndReps("Bodyweight", "Pull Ups, Crunches, Burpees"),
-  weightedBodyWeight("Weighted Bodyweight", "Weighted Pull Ups, Weighted Dips"),
-  assistedBodyWeight("Assisted Bodyweight", "Assisted Pull Ups, Assisted Dips"),
-  duration("Duration", "Planks, Yoga");
+  weightAndReps("WP", "Weight & Reps", "Bench Press, Dumbbell Curls"),
+  bodyWeightAndReps("BW", "Bodyweight", "Pull Ups, Crunches, Burpees"),
+  weightedBodyWeight("WBW", "Weight On Bodyweight", "Weighted Pull Ups, Weighted Dips"),
+  assistedBodyWeight("ABW", "Assisted Bodyweight", "Assisted Pull Ups, Assisted Dips"),
+  duration("DR", "Duration", "Planks, Yoga");
 
-  const ExerciseType(this.name, this.description);
+  const ExerciseType(this.id, this.name, this.description);
 
+  final String id;
   final String name;
   final String description;
 

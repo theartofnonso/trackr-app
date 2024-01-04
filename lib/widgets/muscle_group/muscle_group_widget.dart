@@ -11,11 +11,17 @@ class MuscleGroupWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
+      data: ThemeData(
+        splashColor: Colors.transparent,
+      ),
       child: ListTile(
-        dense: true,
-        title: Text(muscleGroupDto.muscleGroup.name, style: Theme.of(context).textTheme.bodyMedium),
         onTap: onTap,
+        dense: true,
+        title: Text(muscleGroupDto.muscleGroup.name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        trailing: muscleGroupDto.selected
+            ? const Icon(Icons.check_box_rounded, color: Colors.green)
+            : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
       ),
     );
   }

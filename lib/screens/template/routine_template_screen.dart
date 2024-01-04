@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -145,10 +146,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: 14,
-                            ), textAlign: TextAlign.center)
+                            ))
                         : const SizedBox.shrink(),
                     const SizedBox(height: 5),
-                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs)),
+                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs), previewType: RoutinePreviewType.template,),
                   ],
                 ),
               ),
