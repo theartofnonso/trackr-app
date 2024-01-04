@@ -182,14 +182,16 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _createExercise() async {
-    _toggleLoadingState();
-
     final exerciseName = _exerciseName;
 
-    if (exerciseName == null) {
+    if (exerciseName == null) return;
+
+    if (exerciseName.isEmpty) {
       showSnackbar(
           context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
     } else {
+      _toggleLoadingState();
+
       final exercise =
           ExerciseDto(id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType);
 
@@ -210,27 +212,31 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _updateExercise() async {
     final exerciseName = _exerciseName;
-    if (exerciseName == null) {
+
+    if (exerciseName == null) return;
+
+    if (exerciseName.isEmpty) {
       showSnackbar(
           context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
     } else {
       final exercise = widget.exercise;
-      if (exercise != null) {
-        _toggleLoadingState();
-        try {
-          final updatedExercise = exercise.copyWith(
-              name: capitalizeFirstLetter(exerciseName.trim()), primaryMuscleGroup: _primaryMuscleGroup);
-          await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
-          if (mounted) {
-            Navigator.of(context).pop();
-          }
-        } catch (_) {
-          if (mounted) {
-            showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to update exercise");
-          }
-        } finally {
-          _toggleLoadingState();
+      if (exercise == null) return;
+
+      _toggleLoadingState();
+
+      try {
+        final updatedExercise = exercise.copyWith(
+            name: capitalizeFirstLetter(exerciseName.trim()), primaryMuscleGroup: _primaryMuscleGroup);
+        await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
+        if (mounted) {
+          Navigator.of(context).pop();
         }
+      } catch (_) {
+        if (mounted) {
+          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to update exercise");
+        }
+      } finally {
+        _toggleLoadingState();
       }
     }
   }
