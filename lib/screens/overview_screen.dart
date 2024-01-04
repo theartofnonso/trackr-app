@@ -75,61 +75,59 @@ class OverviewScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
+        minimum: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 150),
             physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Table(
-                            border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
-                            columnWidths: const <int, TableColumnWidth>{
-                              0: FlexColumnWidth(),
-                              1: FlexColumnWidth(),
-                              2: FlexColumnWidth(),
-                            },
-                            children: [
-                              TableRow(children: [
-                                _CTableCell(
-                                    title: "This Week",
-                                    subtitle: "${logsForTheWeek.length} sessions",
-                                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
-                                _CTableCell(
-                                    title: "This Month",
-                                    subtitle: "${logsForTheMonth.length} sessions",
-                                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
-                                _CTableCell(
-                                    title: "Level",
-                                      subtitle: "Coming",
-                                    onTap: () => {})
-                              ])
-                            ],
-                          )),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Theme(
-                    data: ThemeData(splashColor: tealBlueLight),
-                    child: ListTile(
-                        onTap: () => _navigateToMuscleDistribution(context),
-                        tileColor: tealBlueLight,
-                        dense: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Muscle insights", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                        subtitle: Text("Number of sets logged for each muscle group",
-                            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
-                  ),
-                  const SizedBox(height: 20),
-                  const CalendarScreen()
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Table(
+                          border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                          columnWidths: const <int, TableColumnWidth>{
+                            0: FlexColumnWidth(),
+                            1: FlexColumnWidth(),
+                            2: FlexColumnWidth(),
+                          },
+                          children: [
+                            TableRow(children: [
+                              _CTableCell(
+                                  title: "This Week",
+                                  subtitle: "${logsForTheWeek.length} sessions",
+                                  onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
+                              _CTableCell(
+                                  title: "This Month",
+                                  subtitle: "${logsForTheMonth.length} sessions",
+                                  onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
+                              _CTableCell(
+                                  title: "Level",
+                                  subtitle: "Coming",
+                                  onTap: () => {})
+                            ])
+                          ],
+                        )),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Theme(
+                  data: ThemeData(splashColor: tealBlueLight),
+                  child: ListTile(
+                      onTap: () => _navigateToMuscleDistribution(context),
+                      tileColor: tealBlueLight,
+                      dense: true,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      title: Text("Muscle insights", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                      subtitle: Text("Number of sets logged for each muscle group",
+                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
+                ),
+                const SizedBox(height: 20),
+                const CalendarScreen()
+              ],
             )),
       ),
     );

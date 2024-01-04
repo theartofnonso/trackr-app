@@ -20,30 +20,28 @@ class RoutineLogsScreen extends StatelessWidget {
         leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: Navigator.of(context).pop),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-          child: Column(
-            children: [
-              logs.isNotEmpty
-                  ? Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 150),
-                          itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                          separatorBuilder: (BuildContext context, int index) =>
-                              Divider(color: Colors.white70.withOpacity(0.1)),
-                          itemCount: logs.length),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const ListViewEmptyState(),
-                        const SizedBox(height: 8),
-                        Text("You have no logs",
-                            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
-                      ],
-                    ),
-            ],
-          ),
+        minimum: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            logs.isNotEmpty
+                ? Expanded(
+              child: ListView.separated(
+                  padding: const EdgeInsets.only(bottom: 150),
+                  itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(color: Colors.white70.withOpacity(0.1)),
+                  itemCount: logs.length),
+            )
+                : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const ListViewEmptyState(),
+                const SizedBox(height: 8),
+                Text("You have no logs",
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
+              ],
+            ),
+          ],
         ),
       ),
     );

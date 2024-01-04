@@ -55,8 +55,8 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
           onPressed: _navigateBack,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+      body: SafeArea(
+        minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           CupertinoSlidingSegmentedControl<ChartTimePeriod>(
             backgroundColor: tealBlueLight,
@@ -64,11 +64,11 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
             groupValue: _selectedChartTimePeriod,
             children: {
               ChartTimePeriod.thisWeek:
-                  SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
+              SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
               ChartTimePeriod.thisMonth:
-                  SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
+              SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
               ChartTimePeriod.thisYear:
-                  SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
+              SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
             },
             onValueChanged: (ChartTimePeriod? value) {
               if (value != null) {

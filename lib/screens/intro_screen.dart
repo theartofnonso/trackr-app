@@ -29,61 +29,59 @@ class IntroScreen extends StatelessWidget {
       theme: themeData,
       home: Scaffold(
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              const SizedBox(height: 10),
-              Image.asset(
-                'assets/trackr.png',
-                fit: BoxFit.contain,
-                height: 16, // Adjust the height as needed
-              ),
-              const SizedBox(height: 20),
-              const ExerciseLogEmptyState(mode: RoutineEditorMode.log, message: ""),
-              ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.plus, color: Colors.white),
-                  title: Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Text(_headers[0]),
-                  ),
-                  subtitle: Text(_contents[0]),
-                  titleTextStyle: _titleStyle,
-                  subtitleTextStyle: _subTitleStyle),
-              const SizedBox(height: 8),
-              ListTile(
-                  leading: const Icon(Icons.history),
-                  title: Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Text(_headers[1]),
-                  ),
-                  subtitle: Text(_contents[1]),
-                  titleTextStyle: _titleStyle,
-                  subtitleTextStyle: _subTitleStyle),
-              const SizedBox(height: 8),
-              ListTile(
-                  leading: const Icon(Icons.timeline_rounded),
-                  title: Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Text(_headers[2]),
-                  ),
-                  subtitle: Text(_contents[2]),
-                  titleTextStyle: _titleStyle,
-                  subtitleTextStyle: _subTitleStyle),
-              const Spacer(),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: CTextButton(
-                  onPressed: onComplete,
-                  label: "Start Tracking",
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                  buttonColor: Colors.green,
-                  textStyle: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold),
+          minimum: const EdgeInsets.all(10.0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            const SizedBox(height: 10),
+            Image.asset(
+              'assets/trackr.png',
+              fit: BoxFit.contain,
+              height: 16, // Adjust the height as needed
+            ),
+            const SizedBox(height: 20),
+            const ExerciseLogEmptyState(mode: RoutineEditorMode.log, message: ""),
+            ListTile(
+                leading: const FaIcon(FontAwesomeIcons.plus, color: Colors.white),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Text(_headers[0]),
                 ),
+                subtitle: Text(_contents[0]),
+                titleTextStyle: _titleStyle,
+                subtitleTextStyle: _subTitleStyle),
+            const SizedBox(height: 8),
+            ListTile(
+                leading: const Icon(Icons.history),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Text(_headers[1]),
+                ),
+                subtitle: Text(_contents[1]),
+                titleTextStyle: _titleStyle,
+                subtitleTextStyle: _subTitleStyle),
+            const SizedBox(height: 8),
+            ListTile(
+                leading: const Icon(Icons.timeline_rounded),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Text(_headers[2]),
+                ),
+                subtitle: Text(_contents[2]),
+                titleTextStyle: _titleStyle,
+                subtitleTextStyle: _subTitleStyle),
+            const Spacer(),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: CTextButton(
+                onPressed: onComplete,
+                label: "Start Tracking",
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                buttonColor: Colors.green,
+                textStyle: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
-            ]),
-          ),
+            ),
+            const SizedBox(height: 10),
+          ]),
         ),
       ),
     );
