@@ -252,12 +252,15 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Training ${widget.exercise.primaryMuscleGroup.name}",
-            style:
-                GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
+          SizedBox(
+            width: double.infinity,
+            child: Text(
+              "Training ${widget.exercise.primaryMuscleGroup.name}",
+              style:
+                  GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14), textAlign: TextAlign.center,
+            ),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -472,7 +475,7 @@ class _MetricListTile extends StatelessWidget {
       child: ListTile(
         onTap: enabled ? onTap : () {},
         tileColor: tealBlueLight,
-        title: Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white)),
+        title: Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
         subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing: Text(trailing,
             style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
