@@ -9,6 +9,7 @@ class CTextButton extends StatelessWidget {
   final String loadingLabel;
   final bool loading;
   final Color? buttonColor;
+  final Color? buttonBorderColor;
   final EdgeInsets? padding;
   final VisualDensity? visualDensity;
   final TextStyle? textStyle;
@@ -20,6 +21,7 @@ class CTextButton extends StatelessWidget {
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor,
+        this.buttonBorderColor,
       this.padding,
       this.visualDensity = VisualDensity.compact,
       this.textStyle});
@@ -34,7 +36,7 @@ class CTextButton extends StatelessWidget {
             backgroundColor: MaterialStateProperty.all(buttonColor),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
-                side: BorderSide(color: buttonColor.withOpacity(0.3), width: 2)))),
+                side: BorderSide(color: buttonBorderColor ?? buttonColor.withOpacity(0.3), width: 2)))),
         onPressed: loading ? () {} : onPressed,
         child: Container(
           padding: padding,
