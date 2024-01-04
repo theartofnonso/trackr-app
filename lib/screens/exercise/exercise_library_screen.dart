@@ -11,7 +11,6 @@ import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/exercise/exercise_widget.dart';
-import '../../widgets/exercise/selectable_exercise_widget.dart';
 import 'history/home_screen.dart';
 
 class ExerciseInLibraryDto {
@@ -83,52 +82,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Select an exercise
   void _navigateBackWithSelectedExercise({required ExerciseInLibraryDto selectedExercise}) {
     Navigator.of(context).pop([selectedExercise.exercise]);
-  }
-
-  /// Select up to many exercise
-  void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
-    final exerciseIndex = _exercisesInLibrary
-        .indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
-    final filteredIndex = _filteredExercises
-        .indexWhere((filteredInLibrary) => filteredInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
-    if (selected) {
-      _selectedExercises.add(exerciseInLibraryDto);
-      setState(() {
-        _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: true);
-        _filteredExercises[filteredIndex] = exerciseInLibraryDto.copyWith(selected: true);
-      });
-    } else {
-      _selectedExercises.removeWhere((exercise) => exercise.exercise.id == exerciseInLibraryDto.exercise.id);
-      setState(() {
-        _exercisesInLibrary[exerciseIndex] = exerciseInLibraryDto.copyWith(selected: false);
-        _filteredExercises[filteredIndex] = exerciseInLibraryDto.copyWith(selected: false);
-      });
-    }
-  }
-
-  Widget _exerciseWidget(ExerciseInLibraryDto exerciseInLibraryDto) {
-    if (widget.multiSelect) {
-      return SelectableExerciseWidget(
-          exerciseInLibraryDto: exerciseInLibraryDto,
-          onTap: (selected) {
-            if (!widget.readOnly) {
-              _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto);
-            }
-          },
-          onNavigateToExercise: () {
-            _navigateToExerciseHistory(exerciseInLibraryDto);
-          });
-    }
-    return ExerciseWidget(
-        exerciseInLibraryDto: exerciseInLibraryDto,
-        onTap: () {
-          if (!widget.readOnly) {
-            _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto);
-          }
-        },
-        onNavigateToExercise: () {
-          _navigateToExerciseHistory(exerciseInLibraryDto);
-        });
   }
 
   void _dismissKeyboard(BuildContext context) {
@@ -219,8 +172,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     ? Expanded(
                         child: ListView.separated(
                             padding: const EdgeInsets.only(bottom: 250),
-                            itemBuilder: (BuildContext context, int index) =>
-                                _exerciseWidget(_filteredExercises[index]),
+                            itemBuilder: (BuildContext context, int index) => ExerciseWidget(
+                                exerciseInLibraryDto: _filteredExercises[index],
+                                onTap: () {
+                                  if (!widget.readOnly) {
+                                    _navigateBackWithSelectedExercise(selectedExercise: _filteredExercises[index]);
+                                  }
+                                },
+                                onNavigateToExercise: () {
+                                  _navigateToExerciseHistory(_filteredExercises[index]);
+                                }),
                             separatorBuilder: (BuildContext context, int index) => const Divider(
                                   thickness: 1.0,
                                   color: tealBlueLight,

@@ -248,26 +248,16 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       oneRepMax = _exerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
     }
 
-    final secondaryMuscleGroups = widget.exercise.secondaryMuscleGroups.isNotEmpty
-        ? widget.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")
-        : "None";
-
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Primary Muscle: ${widget.exercise.primaryMuscleGroup.name}",
+            "Training ${widget.exercise.primaryMuscleGroup.name}",
             style:
-                GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            "Secondary Muscle: $secondaryMuscleGroups",
-            style:
-                GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 12),
+                GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
           ),
           const SizedBox(height: 20),
           Padding(

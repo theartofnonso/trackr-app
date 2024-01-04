@@ -14,11 +14,6 @@ class ExerciseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final secondaryMuscleGroups = exerciseInLibraryDto.exercise.secondaryMuscleGroups.isNotEmpty
-        ? exerciseInLibraryDto.exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).join(", ")
-        : "None";
-
     return Theme(
       data: ThemeData(splashColor: tealBlueLight),
       child: ListTile(
@@ -30,24 +25,12 @@ class ExerciseWidget extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          title: Text(exerciseInLibraryDto.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+          title: Text(exerciseInLibraryDto.exercise.name,
+              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
           onTap: onTap,
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  width: 300,
-                  child: Text(
-                    "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-                    style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                  )),
-              SizedBox(
-                  width: 300,
-                  child: Text(
-                    "Secondary: $secondaryMuscleGroups",
-                    style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                  )),
-            ],
+          subtitle: Text(
+            "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
+            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
           )),
     );
   }

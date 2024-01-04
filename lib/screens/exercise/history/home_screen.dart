@@ -14,7 +14,6 @@ import '../../../shared_prefs.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
-import 'notes_screen.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
@@ -86,7 +85,7 @@ class HomeScreen extends StatelessWidget {
     ];
 
     return DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -104,9 +103,6 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Tab(
                   text: "History",
-                ),
-                Tab(
-                  text: "Notes",
                 )
               ],
             ),
@@ -150,7 +146,6 @@ class HomeScreen extends StatelessWidget {
                   exercise: foundExercise,
                 ),
                 HistoryScreen(exercise: foundExercise),
-                NotesScreen(notes: foundExercise.notes),
               ],
             ),
           ),

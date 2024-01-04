@@ -30,8 +30,16 @@ void showSnackbar({required BuildContext context, required Widget icon, required
       )));
 }
 
-void displayBottomSheet({required BuildContext context, required Widget child, double? height, EdgeInsets? padding}) {
-  showModalBottomSheet(
+Future<void> displayBottomSheet(
+    {required BuildContext context,
+    required Widget child,
+    double? height,
+    EdgeInsets? padding,
+    Color? color,
+    bool isDismissible = true}) {
+  return showModalBottomSheet(
+      isDismissible: isDismissible,
+      backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -42,7 +50,7 @@ void displayBottomSheet({required BuildContext context, required Widget child, d
                 margin: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
-                color: tealBlueLight,
+                color: color ?? tealBlueLight,
                 child: SafeArea(
                   child: child,
                 ),
@@ -97,7 +105,8 @@ void showAlertDialogWithMultiActions(
     TextButton(
       onPressed: rightAction,
       child: Text(rightActionLabel,
-          style: GoogleFonts.montserrat(color: isRightActionDestructive ? Colors.red : Colors.white, fontWeight: FontWeight.w600)),
+          style: GoogleFonts.montserrat(
+              color: isRightActionDestructive ? Colors.red : Colors.white, fontWeight: FontWeight.w600)),
     ),
   ];
 
