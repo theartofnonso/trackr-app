@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../../app_constants.dart';
@@ -83,19 +84,19 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   TextSpan(
                       text: _exerciseType.name,
                       recognizer: TapGestureRecognizer()..onTap = _navigateToExerciseTypeScreen,
-                      style: activeStyle)
+                      style: exercise == null ? activeStyle : inactiveStyle),
                 ])),
               ),
               const Spacer(),
               if (!_isInputFieldVisible)
                 const Column(children: [
-                InformationContainer(
-                    icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                    title: 'Tip',
-                    description: "Tap text in white to edit",
-                    color: tealBlueDark),
-                SizedBox(height: 20),
-              ]),
+                  InformationContainer(
+                      icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                      title: 'Tip',
+                      description: "Tap text in white to edit.\nExercise type is not editable once created.",
+                      color: tealBlueDark),
+                  SizedBox(height: 20),
+                ]),
               if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
                 SizedBox(
                   width: double.infinity,
@@ -119,24 +120,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     });
   }
 
-  void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
-    final exercise = widget.exercise;
-    List<MuscleGroup> preSelectedMuscleGroups = [_primaryMuscleGroup];
-    if (exercise != null) {
-      preSelectedMuscleGroups = [_primaryMuscleGroup];
-    }
-
-    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MuscleGroupsScreen(muscleGroups: preSelectedMuscleGroups, multiSelect: multiSelect)))
-        as List<MuscleGroup>?;
-    if (muscleGroups != null) {
-      setState(() {
-        _primaryMuscleGroup = muscleGroups.first;
-      });
-    }
+  void _navigateToMuscleGroupsScreen() async {
+    final muscleGroup = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(previousMuscleGroup: _primaryMuscleGroup)))
+        as MuscleGroup;
+    setState(() {
+      _primaryMuscleGroup = muscleGroup;
+    });
   }
 
   void _navigateToExerciseTypeScreen() async {
+    if (widget.exercise != null) return;
     final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
         as ExerciseType?;
     if (type != null) {
@@ -147,8 +141,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _updateExerciseName(String? value) {
+    if (value == null) return;
     setState(() {
-      _exerciseName = value?.trim();
+      _exerciseName = capitalizeFirstLetter(value.trim());
     });
   }
 
@@ -223,7 +218,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       if (exercise != null) {
         _toggleLoadingState();
         try {
-          final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
+          final updatedExercise = exercise.copyWith(
+              name: capitalizeFirstLetter(exerciseName.trim()), primaryMuscleGroup: _primaryMuscleGroup);
           await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
           if (mounted) {
             Navigator.of(context).pop();

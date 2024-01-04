@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../utils/general_utils.dart';
-import '../empty_states/list_tile_empty_state.dart';
+import '../empty_states/single_set_row_empty_state.dart';
 import '../routine/preview/set_rows/single_set_row.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
@@ -25,6 +26,10 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 }
 
 List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, PBViewModel? pbViewModel}) {
+  Widget emptyState = type == ExerciseType.duration || type == ExerciseType.bodyWeightAndReps
+      ? const SingleSetRowEmptyState()
+      : const DoubleSetRowEmptyState();
+
   const margin = EdgeInsets.only(bottom: 6.0);
 
   final widgets = sets.map(((setDto) {
@@ -46,5 +51,5 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
     }
   })).toList();
 
-  return widgets.isNotEmpty ? widgets : [const ListTileEmptyState()];
+  return widgets.isNotEmpty ? widgets : [emptyState];
 }
