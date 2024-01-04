@@ -2,10 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/widgets/muscle_group/selectable_muscle_group_widget.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
-import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/muscle_group/muscle_group_widget.dart';
 
 class MuscleGroupDto {
   final bool selected;
@@ -27,21 +26,18 @@ class MuscleGroupDto {
 }
 
 class MuscleGroupsScreen extends StatefulWidget {
-  final List<MuscleGroup>? muscleGroups;
-  final bool multiSelect;
+  final MuscleGroup previousMuscleGroup;
 
-  const MuscleGroupsScreen({super.key, this.muscleGroups, this.multiSelect = true});
+  const MuscleGroupsScreen({super.key, required this.previousMuscleGroup});
 
   @override
   State<MuscleGroupsScreen> createState() => _MuscleGroupsScreenState();
 }
 
 class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
-  List<MuscleGroupDto> _muscleGroups = [];
+  late List<MuscleGroupDto> _muscleGroups = [];
 
   List<MuscleGroupDto> _filteredMuscleGroups = [];
-
-  final List<MuscleGroupDto> _selectedMuscleGroups = [];
 
   /// Search through the list of exercises
   void _runSearch(String searchTerm) {
@@ -62,64 +58,9 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
     });
   }
 
-  /// Navigate to previous screen
-  void _navigateBackWithSelectedMuscleGroups() {
-    final muscleGroups = _selectedMuscleGroups.map((muscle) => muscle.muscleGroup).toList();
-    Navigator.of(context).pop(muscleGroups);
-  }
-
-  int _indexWhereMuscleGroup({required MuscleGroup muscleGroup}) {
-    return _muscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.muscleGroup == muscleGroup);
-  }
-
-  int _indexWhereFilteredMuscleGroup({required MuscleGroup muscleGroup}) {
-    return _filteredMuscleGroups.indexWhere((exerciseInLibrary) => exerciseInLibrary.muscleGroup == muscleGroup);
-  }
-
-  List<MuscleGroup> _difference() {
-    final Set<MuscleGroup> previousSelection = Set.from(widget.muscleGroups ?? []);
-    final Set<MuscleGroup> currentSelection = _muscleGroups
-        .where((muscle) => muscle.selected)
-        .map((muscleGroup) => muscleGroup.muscleGroup)
-        .toSet();
-
-    return previousSelection
-        .difference(currentSelection)
-        .toList();
-  }
-
-  /// Select up to many exercise
-  void _selectCheckedMuscleGroup({required bool selected, required MuscleGroupDto muscleGroupDto}) {
-    final muscleGroupIndex = _indexWhereMuscleGroup(muscleGroup: muscleGroupDto.muscleGroup);
-    final filteredMuscleGroupIndex = _indexWhereFilteredMuscleGroup(muscleGroup: muscleGroupDto.muscleGroup);
-    if (selected) {
-      _selectedMuscleGroups.add(muscleGroupDto);
-      setState(() {
-        _muscleGroups[muscleGroupIndex] = muscleGroupDto.copyWith(selected: true);
-        _filteredMuscleGroups[filteredMuscleGroupIndex] = muscleGroupDto.copyWith(selected: true);
-      });
-    } else {
-      _selectedMuscleGroups.remove(muscleGroupDto);
-      setState(() {
-        _muscleGroups[muscleGroupIndex] = muscleGroupDto.copyWith(selected: false);
-        _filteredMuscleGroups[filteredMuscleGroupIndex] = muscleGroupDto.copyWith(selected: false);
-      });
-    }
-  }
-
   /// Select an muscle group
   void _selectMuscleGroup({required MuscleGroupDto muscleGroupDto}) {
-    Navigator.of(context).pop([muscleGroupDto.muscleGroup]);
-  }
-
-  Widget _muscleGroupWidget(MuscleGroupDto muscleGroupDto) {
-    if (widget.multiSelect) {
-      return SelectableMuscleGroupWidget(
-          muscleGroupDto: muscleGroupDto,
-          onTap: (selected) => _selectCheckedMuscleGroup(selected: selected, muscleGroupDto: muscleGroupDto));
-    }
-    return SelectableMuscleGroupWidget(
-        muscleGroupDto: muscleGroupDto, onTap: (_) => _selectMuscleGroup(muscleGroupDto: muscleGroupDto));
+    Navigator.of(context).pop(muscleGroupDto.muscleGroup);
   }
 
   @override
@@ -130,20 +71,6 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          if (_selectedMuscleGroups.isNotEmpty && _difference().isEmpty && widget.multiSelect)
-            CTextButton(
-              onPressed: _navigateBackWithSelectedMuscleGroups,
-              label: "Add (${_selectedMuscleGroups.length})",
-              buttonColor: Colors.transparent,
-            ),
-          if(_difference().isNotEmpty)
-            CTextButton(
-              onPressed: _navigateBackWithSelectedMuscleGroups,
-              label: "Update",
-              buttonColor: Colors.transparent,
-            )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
@@ -153,7 +80,9 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) => _muscleGroupWidget(_filteredMuscleGroups[index]),
+                  itemBuilder: (BuildContext context, int index) => MuscleGroupWidget(
+                      muscleGroupDto: _filteredMuscleGroups[index],
+                      onTap: () => _selectMuscleGroup(muscleGroupDto: _filteredMuscleGroups[index])),
                   separatorBuilder: (BuildContext context, int index) =>
                       Divider(color: Colors.white70.withOpacity(0.1)),
                   itemCount: _filteredMuscleGroups.length),
@@ -167,19 +96,10 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   @override
   void initState() {
     super.initState();
-    final muscleGroupsDtos = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).map((muscleGroup) => MuscleGroupDto(muscleGroup: muscleGroup)).toList();
-    final previousMuscleGroups = widget.muscleGroups;
-    if (previousMuscleGroups != null) {
-      /// Convert previous MuscleGroups ot MuscleGroupsDto
-      final previousMuscleGroupsDtos = previousMuscleGroups.map((muscleGroup) {
-        return MuscleGroupDto(muscleGroup: muscleGroup, selected: true);
-      }).toList();
-      _muscleGroups = muscleGroupsDtos.map((muscleGroup) {
-        final previousMuscleGroup = previousMuscleGroupsDtos.firstWhereOrNull((previousMuscleGroup) => previousMuscleGroup.muscleGroup.name == muscleGroup.muscleGroup.name);
-        return previousMuscleGroup ?? muscleGroup;
-      }).toList();
-      _selectedMuscleGroups.addAll(previousMuscleGroupsDtos);
-    }
+
+    _muscleGroups = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).map((muscleGroup) {
+      return MuscleGroupDto(muscleGroup: muscleGroup, selected: widget.previousMuscleGroup == muscleGroup);
+    }).toList();
 
     _filteredMuscleGroups = _muscleGroups;
   }

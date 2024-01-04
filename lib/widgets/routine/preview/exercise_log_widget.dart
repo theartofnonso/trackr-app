@@ -6,6 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import '../../../providers/routine_log_provider.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -37,8 +38,9 @@ class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
   final ExerciseLogDto? superSet;
   final EdgeInsetsGeometry? padding;
+  final RoutinePreviewType previewType;
 
-  const ExerciseLogWidget({super.key, required this.exerciseLog, required this.superSet, this.padding});
+  const ExerciseLogWidget({super.key, required this.exerciseLog, required this.superSet, this.padding, required this.previewType});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,7 @@ class ExerciseLogWidget extends StatelessWidget {
 
     PBViewModel? pbViewModel;
 
-    if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty) {
+    if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
       if (exerciseType == ExerciseType.weightAndReps ||
           exerciseType == ExerciseType.weightedBodyWeight ||
           exerciseType == ExerciseType.assistedBodyWeight) {
@@ -112,7 +114,7 @@ class ExerciseLogWidget extends StatelessWidget {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseLog.exercise)));
               },
-              title: Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14), textAlign: TextAlign.center),
+              title: Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
               subtitle: otherSuperSet != null
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
@@ -139,7 +141,7 @@ class ExerciseLogWidget extends StatelessWidget {
             ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
           },
           const SizedBox(height: 8),
-          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbViewModel: pbViewModel),
+          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbViewModel: previewType == RoutinePreviewType.log ? pbViewModel : null),
         ],
       ),
     );

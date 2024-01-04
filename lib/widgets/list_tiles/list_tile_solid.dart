@@ -29,7 +29,7 @@ class SolidListTile extends StatelessWidget {
           onTap: onTap,
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
+          title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
           subtitle: Text(subtitle,
               style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
           trailing: Text(trailing,

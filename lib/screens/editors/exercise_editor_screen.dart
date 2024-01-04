@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,12 +7,14 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
@@ -24,150 +27,90 @@ class ExerciseEditorScreen extends StatefulWidget {
 }
 
 class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
-  late TextEditingController _exerciseNameController;
-  late TextEditingController _exerciseNotesController;
+  String? _exerciseName;
 
   late MuscleGroup _primaryMuscleGroup;
-  List<MuscleGroup> _secondaryMuscleGroups = [];
   late ExerciseType _exerciseType;
 
   bool _loading = false;
   String _loadingLabel = "";
 
+  bool _isInputFieldVisible = false;
+
   @override
   Widget build(BuildContext context) {
     final exercise = widget.exercise;
 
+    final inactiveStyle = GoogleFonts.montserrat(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
+    final activeStyle = GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600);
+
     return PopScope(
-      canPop: false,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
+        canPop: false,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            actions: [
+              exercise != null
+                  ? CTextButton(
+                      onPressed: _updateExercise,
+                      label: "Update",
+                      buttonColor: Colors.transparent,
+                      loading: _loading,
+                      loadingLabel: _loadingLabel)
+                  : const SizedBox.shrink()
+            ],
           ),
-          actions: [
-            exercise != null
-                ? CTextButton(
-                    onPressed: _updateExercise,
-                    label: "Update",
-                    buttonColor: Colors.transparent,
-                    loading: _loading,
-                    loadingLabel: _loadingLabel)
-                : const SizedBox.shrink()
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-            child: Column(children: [
-              TextField(
-                controller: _exerciseNameController,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
-                    filled: true,
-                    fillColor: tealBlueLighter,
-                    hintText: "New Exercise",
-                    hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
-                cursorColor: Colors.white,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                style:
-                    GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+          body: SafeArea(
+            minimum: const EdgeInsets.all(10),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RichText(
+                    text: TextSpan(style: const TextStyle(height: 2.0), children: [
+                  TextSpan(text: "Train ", style: inactiveStyle),
+                  TextSpan(
+                      text: "${_primaryMuscleGroup.name} \n",
+                      recognizer: TapGestureRecognizer()..onTap = _navigateToMuscleGroupsScreen,
+                      style: activeStyle),
+                  TextSpan(text: "with ", style: inactiveStyle),
+                  TextSpan(
+                      text: "${_exerciseName ?? "exercise name"} \n",
+                      recognizer: TapGestureRecognizer()..onTap = _showInputTextField,
+                      style: activeStyle),
+                  TextSpan(text: "using ", style: inactiveStyle),
+                  TextSpan(
+                      text: _exerciseType.name,
+                      recognizer: TapGestureRecognizer()..onTap = _navigateToExerciseTypeScreen,
+                      style: exercise == null ? activeStyle : inactiveStyle),
+                ])),
               ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _exerciseNotesController,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
-                    filled: true,
-                    fillColor: tealBlueLighter,
-                    hintText: "Notes",
-                    hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
-                maxLines: null,
-                cursorColor: Colors.white,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.sentences,
-                style:
-                    GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-              ),
-              const SizedBox(height: 10),
-              Theme(
-                data: ThemeData(splashColor: tealBlueLight),
-                child: ListTile(
-                    onTap: _navigateToMuscleGroupsScreen,
-                    tileColor: tealBlueLight,
-                    dense: true,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    title: Text("Primary Muscle", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-                    subtitle:
-                        Text(_primaryMuscleGroup.name, style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white70))),
-              ),
-              const SizedBox(height: 8),
-              Theme(
-                data: ThemeData(splashColor: tealBlueLight),
-                child: ListTile(
-                    onTap: () => _navigateToMuscleGroupsScreen(multiSelect: true),
-                    tileColor: tealBlueLight,
-                    dense: true,
-                    contentPadding: _secondaryMuscleGroups.length > 6
-                        ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
-                        : null,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    title: Text("Secondary Muscles", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-                    subtitle: Padding(
-                      padding: _secondaryMuscleGroups.length > 6 ? const EdgeInsets.only(top: 4.0) : EdgeInsets.zero,
-                      child:
-                          Text(_secondaryMuscleDisplay(), style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white70)),
-                    )),
-              ),
-              const SizedBox(height: 8),
-              if (widget.exercise == null)
-                Column(children: [
-                  Theme(
-                    data: ThemeData(splashColor: tealBlueLight),
-                    child: ListTile(
-                        onTap: () => _navigateToExerciseTypeScreen(),
-                        tileColor: tealBlueLight,
-                        dense: true,
-                        contentPadding: _secondaryMuscleGroups.length > 6
-                            ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
-                            : null,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        title: Text("Exercise Type", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-                        subtitle:
-                            Text(_exerciseType.name, style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white70))),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: CTextButton(
-                        onPressed: _createExercise,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        label: "Create exercise",
-                        loading: _loading,
-                        loadingLabel: _loadingLabel),
-                  )
-                ])
+              const Spacer(),
+              if (!_isInputFieldVisible)
+                const Column(children: [
+                  InformationContainer(
+                      icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                      title: 'Tip',
+                      description: "Tap text in white to edit.\nExercise type is not editable once created.",
+                      color: tealBlueDark),
+                  SizedBox(height: 20),
+                ]),
+              if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
+                SizedBox(
+                  width: double.infinity,
+                  child: CTextButton(
+                      onPressed: _createExercise,
+                      label: "Create Exercise",
+                      loading: _loading,
+                      loadingLabel: _loadingLabel,
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      buttonColor: Colors.green),
+                ),
             ]),
           ),
-        ),
-      ),
-    );
-  }
-
-  String _secondaryMuscleDisplay() {
-    String display;
-    if (_secondaryMuscleGroups.isNotEmpty) {
-      display = _secondaryMuscleGroups.map((bodyPart) => bodyPart.name).join(", ");
-    } else {
-      display = "Select secondary muscle groups";
-    }
-    return display;
+        ));
   }
 
   void _toggleLoadingState() {
@@ -177,30 +120,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     });
   }
 
-  void _navigateToMuscleGroupsScreen({bool multiSelect = false}) async {
-    final exercise = widget.exercise;
-    List<MuscleGroup> preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroups : [_primaryMuscleGroup];
-    if (exercise != null) {
-      preSelectedMuscleGroups = multiSelect ? _secondaryMuscleGroups : [_primaryMuscleGroup];
-    }
-
-    final muscleGroups = await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MuscleGroupsScreen(muscleGroups: preSelectedMuscleGroups, multiSelect: multiSelect)))
-        as List<MuscleGroup>?;
-    if (muscleGroups != null) {
-      if (multiSelect) {
-        setState(() {
-          _secondaryMuscleGroups = muscleGroups;
-        });
-      } else {
-        setState(() {
-          _primaryMuscleGroup = muscleGroups.first;
-        });
-      }
-    }
+  void _navigateToMuscleGroupsScreen() async {
+    final muscleGroup = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(previousMuscleGroup: _primaryMuscleGroup)))
+        as MuscleGroup;
+    setState(() {
+      _primaryMuscleGroup = muscleGroup;
+    });
   }
 
   void _navigateToExerciseTypeScreen() async {
+    if (widget.exercise != null) return;
     final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
         as ExerciseType?;
     if (type != null) {
@@ -210,33 +140,77 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     }
   }
 
+  void _updateExerciseName(String? value) {
+    if (value == null) return;
+    setState(() {
+      _exerciseName = capitalizeFirstLetter(value.trim());
+    });
+  }
+
+  void _doneTyping() {
+    setState(() {
+      _isInputFieldVisible = false;
+    });
+  }
+
+  void _showInputTextField() async {
+    setState(() {
+      _isInputFieldVisible = true;
+    });
+    await displayBottomSheet(
+        context: context,
+        color: Colors.transparent,
+        padding: const EdgeInsets.all(20),
+        child: TextField(
+          controller: TextEditingController(text: _exerciseName),
+          decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+              filled: true,
+              fillColor: tealBlueLighter,
+              hintText: "New Exercise",
+              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+          onChanged: (value) => _updateExerciseName(value),
+          cursorColor: Colors.white,
+          keyboardType: TextInputType.text,
+          textCapitalization: TextCapitalization.words,
+          style:
+              GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+        ));
+    _doneTyping();
+  }
+
   void _createExercise() async {
     _toggleLoadingState();
 
-    final exercise = ExerciseDto(
-        id: "",
-        name: _exerciseNameController.text.trim(),
-        notes: _exerciseNotesController.text.trim(),
-        primaryMuscleGroup: _primaryMuscleGroup,
-        secondaryMuscleGroups: _secondaryMuscleGroups,
-        type: _exerciseType);
+    final exerciseName = _exerciseName;
 
-    try {
-      await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);
-      if (mounted) {
-        Navigator.of(context).pop();
+    if (exerciseName == null) {
+      showSnackbar(
+          context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
+    } else {
+      final exercise =
+          ExerciseDto(id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType);
+
+      try {
+        await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
+        }
+      } finally {
+        _toggleLoadingState();
       }
-    } catch (e) {
-      if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
-      }
-    } finally {
-      _toggleLoadingState();
     }
   }
 
   void _updateExercise() async {
-    if (_exerciseNameController.text.isEmpty) {
+    final exerciseName = _exerciseName;
+    if (exerciseName == null) {
       showSnackbar(
           context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
     } else {
@@ -245,10 +219,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         _toggleLoadingState();
         try {
           final updatedExercise = exercise.copyWith(
-              name: _exerciseNameController.text.trim(),
-              notes: _exerciseNotesController.text.trim(),
-              primaryMuscleGroup: _primaryMuscleGroup,
-              secondaryMuscleGroups: _secondaryMuscleGroups);
+              name: capitalizeFirstLetter(exerciseName.trim()), primaryMuscleGroup: _primaryMuscleGroup);
           await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
           if (mounted) {
             Navigator.of(context).pop();
@@ -270,18 +241,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     final previousExercise = widget.exercise;
 
-    _exerciseNameController = TextEditingController(text: previousExercise?.name);
-    _exerciseNotesController = TextEditingController(text: previousExercise?.notes);
+    _primaryMuscleGroup = previousExercise != null
+        ? previousExercise.primaryMuscleGroup
+        : MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).first;
 
-    _primaryMuscleGroup = previousExercise != null ? previousExercise.primaryMuscleGroup : MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).first;
-    _secondaryMuscleGroups = previousExercise?.secondaryMuscleGroups ?? [];
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weightAndReps;
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _exerciseNameController.dispose();
-    _exerciseNotesController.dispose();
+    _exerciseName = previousExercise?.name;
   }
 }

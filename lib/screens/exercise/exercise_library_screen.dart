@@ -61,9 +61,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       final query = searchTerm.toLowerCase();
       _filteredExercises = _exercisesInLibrary
           .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
-              exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
-              exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
-              exerciseItem.exercise.name.toLowerCase() == query))
+          exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
+          exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
+          exerciseItem.exercise.name.toLowerCase() == query))
           .toList();
     });
   }
@@ -160,7 +160,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
     return exercises.map((exercise) {
       final exerciseInLibrary =
-          _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
+      _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
       if (exerciseInLibrary != null) {
         if (exerciseInLibrary.selected) {
           return ExerciseInLibraryDto(exercise: exercise, selected: true);
@@ -187,10 +187,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         actions: [
           _selectedExercises.isNotEmpty
               ? CTextButton(
-                  onPressed: _navigateBackWithSelectedExercises,
-                  label: "Add (${_selectedExercises.length})",
-                  buttonColor: Colors.transparent,
-                )
+            onPressed: _navigateBackWithSelectedExercises,
+            label: "Add (${_selectedExercises.length})",
+            buttonColor: Colors.transparent,
+          )
               : const SizedBox.shrink()
         ],
       ),
@@ -217,16 +217,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 const SizedBox(height: 12),
                 _filteredExercises.isNotEmpty
                     ? Expanded(
-                        child: ListView.separated(
-                            padding: const EdgeInsets.only(bottom: 250),
-                            itemBuilder: (BuildContext context, int index) =>
-                                _exerciseWidget(_filteredExercises[index]),
-                            separatorBuilder: (BuildContext context, int index) => const Divider(
-                                  thickness: 1.0,
-                                  color: tealBlueLight,
-                                ),
-                            itemCount: _filteredExercises.length),
-                      )
+                  child: ListView.separated(
+                      padding: const EdgeInsets.only(bottom: 250),
+                      itemBuilder: (BuildContext context, int index) =>
+                          _exerciseWidget(_filteredExercises[index]),
+                      separatorBuilder: (BuildContext context, int index) => const Divider(
+                        thickness: 1.0,
+                        color: tealBlueLight,
+                      ),
+                      itemCount: _filteredExercises.length),
+                )
                     : const ExerciseEmptyState(),
               ],
             ),
