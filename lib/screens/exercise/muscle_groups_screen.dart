@@ -72,8 +72,8 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+      body: SafeArea(
+        minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           children: [
             CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch, onClear: _clearSearch),
