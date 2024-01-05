@@ -158,9 +158,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       children: const [
                     TextSpan(text: 'Tap'),
                     WidgetSpan(
-                        child: Icon(Icons.play_arrow_rounded, color: Colors.white),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6.0),
+                          child: FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 14,),
+                        ),
                         alignment: PlaceholderAlignment.middle),
-                    TextSpan(text: 'to start logging or visit the + tab to create new workouts'),
+                    TextSpan(text: 'to start logging or visit the'),
+                        WidgetSpan(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                              child: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 14,),
+                            ),
+                            alignment: PlaceholderAlignment.middle),
+                        TextSpan(text: 'tab to create new workouts'),
                   ]))
             ],
           )
