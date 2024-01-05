@@ -227,7 +227,7 @@ ProgressDto _calculateTimeAchievement(
 /// [AchievementType.bodyweightChampion]
 ProgressDto _calculateBodyWeightChampionAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-  final achievedLogs = logs[ExerciseType.bodyWeightAndReps] ?? [];
+  final achievedLogs = logs[ExerciseType.bodyWeight] ?? [];
 
   final progress = achievedLogs.length / type.target;
   final remainder = type.target - achievedLogs.length;

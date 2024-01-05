@@ -99,7 +99,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           onChangedWeight: (double value) => _updateWeight(index: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
-      case ExerciseType.bodyWeightAndReps:
+      case ExerciseType.bodyWeight:
         return RepsSetRow(
           setDto: set,
           editorType: widget.editorType,
@@ -290,7 +290,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 firstLabel: '-${weightLabel().toUpperCase()}',
                 secondLabel: 'REPS',
               ),
-            ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
+            ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),

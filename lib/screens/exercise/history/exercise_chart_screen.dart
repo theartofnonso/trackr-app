@@ -150,7 +150,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       case ExerciseType.assistedBodyWeight:
         _summaryType = SummaryType.weight;
         break;
-      case ExerciseType.bodyWeightAndReps:
+      case ExerciseType.bodyWeight:
         _summaryType = SummaryType.mostReps;
         break;
       case ExerciseType.duration:
@@ -224,14 +224,14 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     return exerciseType == ExerciseType.weightAndReps ||
         exerciseType == ExerciseType.assistedBodyWeight ||
         exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.bodyWeightAndReps;
+        exerciseType == ExerciseType.bodyWeight;
   }
 
   bool _exerciseLogsWithRepsOnly() {
     final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.assistedBodyWeight ||
         exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.bodyWeightAndReps;
+        exerciseType == ExerciseType.bodyWeight;
   }
 
   bool _exerciseLogsDuration() {

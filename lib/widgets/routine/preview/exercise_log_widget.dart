@@ -137,7 +137,7 @@ class ExerciseLogWidget extends StatelessWidget {
               DoubleSetHeader(firstLabel: "+${weightLabel().toUpperCase()}", secondLabel: 'REPS'),
             ExerciseType.assistedBodyWeight =>
               DoubleSetHeader(firstLabel: '-${weightLabel().toUpperCase()}', secondLabel: 'REPS'),
-            ExerciseType.bodyWeightAndReps => const SingleSetHeader(label: 'REPS'),
+            ExerciseType.bodyWeight => const SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
           },
           const SizedBox(height: 8),
