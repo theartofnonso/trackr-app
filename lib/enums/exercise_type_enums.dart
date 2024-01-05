@@ -12,6 +12,6 @@ enum ExerciseType {
   final String description;
 
   static ExerciseType fromString(String string) {
-    return ExerciseType.values.firstWhere((value) => value.id == string);
+    return ExerciseType.values.firstWhere((value) => value.name == string || value.id == string);
   }
 }
