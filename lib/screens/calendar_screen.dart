@@ -168,7 +168,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     TextSpan(text: 'to start logging or visit the'),
                         WidgetSpan(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                              padding: EdgeInsets.symmetric(horizontal: 4.0),
                               child: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 14,),
                             ),
                             alignment: PlaceholderAlignment.middle),
