@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../utils/navigation_utils.dart';
 import '../dtos/routine_log_dto.dart';
+import '../utils/exercise_logs_utils.dart';
+import '../widgets/chips/chip_1.dart';
 import '../widgets/list_tiles/list_tile_solid.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
@@ -55,10 +58,17 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final pbs = log.exerciseLogs
+        .map((exerciseLog) => calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+        .where((pb) => pb != null)
+        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+
     return SolidListTile(
         title: log.name,
-        subtitle: "${log.exerciseLogs.length} exercise(s)",
+        subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
         trailing: log.createdAt.durationSinceOrDate(),
+        trailingSubtitle: pbs >=1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }

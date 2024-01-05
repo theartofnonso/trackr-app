@@ -98,11 +98,11 @@ class OverviewScreen extends StatelessWidget {
                             TableRow(children: [
                               _CTableCell(
                                   title: "This Week",
-                                  subtitle: "${logsForTheWeek.length} sessions",
+                                  subtitle: "${logsForTheWeek.length} ${logsForTheWeek.length > 1 ? "sessions" : "session"}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
                               _CTableCell(
                                   title: "This Month",
-                                  subtitle: "${logsForTheMonth.length} sessions",
+                                  subtitle: "${logsForTheMonth.length} ${logsForTheMonth.length > 1 ? "sessions" : "session"}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                               _CTableCell(
                                   title: "Level",

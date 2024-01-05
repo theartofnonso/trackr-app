@@ -90,15 +90,8 @@ class _RoutineWidget extends StatelessWidget {
                 size: 35,
               )),
           title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-          subtitle: Row(children: [
-            const Icon(
-              Icons.numbers,
-              color: Colors.white,
-              size: 12,
-            ),
-            Text("${template.exercises.length} exercises",
-                style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-          ]),
+          subtitle: Text("${template.exercises.length} ${template.exercises.length > 1 ? "exercises" : "exercise"}",
+              style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
           trailing: MenuAnchor(
             style: MenuStyle(
               backgroundColor: MaterialStateProperty.all(tealBlueLighter),
