@@ -7,9 +7,11 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/widgets/chips/chip_1.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
+import '../utils/exercise_logs_utils.dart';
 
 class _DateViewModel {
   DateTime dateTime;
@@ -339,10 +341,17 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final pbs = log.exerciseLogs
+        .map((exerciseLog) => calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+        .where((pb) => pb != null)
+        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+
     return SolidListTile(
         title: log.name,
-        subtitle: "${log.exerciseLogs.length} exercise(s)",
+        subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
         trailing: log.duration().secondsOrMinutesOrHours(),
+        trailingSubtitle: pbs >=1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
