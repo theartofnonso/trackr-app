@@ -188,7 +188,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           ),
                         ),
                         alignment: PlaceholderAlignment.middle),
-                    TextSpan(text: 'tab to create new workouts'),
+                    TextSpan(text: 'tab to create workout templates'),
                   ]))
             ],
           )
