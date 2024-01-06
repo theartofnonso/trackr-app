@@ -131,14 +131,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: _decrementDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
-              Text(_currentDate.formattedMonthAndYear(),
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                  )),
-              IconButton(onPressed: _incrementDate, icon: const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)),
+              IconButton(
+                  onPressed: _decrementDate,
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
+              Expanded(
+                child: Text(_currentDate.formattedMonthAndYear(),
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.montserrat(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    )),
+              ),
+              IconButton(
+                  onPressed: _incrementDate,
+                  icon: _hasLaterDate()
+                      ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
+                      : const SizedBox()),
             ],
           ),
         ),
@@ -162,17 +170,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 6.0),
-                          child: FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 14,),
+                          child: FaIcon(
+                            FontAwesomeIcons.play,
+                            color: Colors.white,
+                            size: 14,
+                          ),
                         ),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(text: 'to start logging or visit the'),
-                        WidgetSpan(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.0),
-                              child: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 14,),
-                            ),
-                            alignment: PlaceholderAlignment.middle),
-                        TextSpan(text: 'tab to create new workouts'),
+                    WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4.0),
+                          child: FaIcon(
+                            FontAwesomeIcons.dumbbell,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ),
+                        alignment: PlaceholderAlignment.middle),
+                    TextSpan(text: 'tab to create new workouts'),
                   ]))
             ],
           )
@@ -196,7 +212,8 @@ class _CalendarHeader extends StatelessWidget {
                     width: 45,
                     child: Center(
                       child: Text(day,
-                          style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          style:
+                              GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                   ))
               .toList()
@@ -264,7 +281,8 @@ class _DateWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                style: GoogleFonts.montserrat(
+                    fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),
@@ -341,9 +359,9 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final pbs = log.exerciseLogs
-        .map((exerciseLog) => calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+        .map((exerciseLog) =>
+            calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
         .where((pb) => pb != null)
         .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
 
@@ -351,7 +369,7 @@ class _RoutineLogWidget extends StatelessWidget {
         title: log.name,
         subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
         trailing: log.duration().secondsOrMinutesOrHours(),
-        trailingSubtitle: pbs >=1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
+        trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
