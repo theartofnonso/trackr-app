@@ -36,7 +36,7 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
     final pb = pbViewModel != null && pbViewModel.set == setDto ? pbViewModel : null;
 
     switch (type) {
-      case ExerciseType.weightAndReps:
+      case ExerciseType.weights:
       case ExerciseType.assistedBodyWeight:
         final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
         final secondLabel = setDto.value2;

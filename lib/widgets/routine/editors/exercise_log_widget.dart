@@ -87,7 +87,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   Widget _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
     switch (exerciseType) {
-      case ExerciseType.weightAndReps:
+      case ExerciseType.weights:
       case ExerciseType.assistedBodyWeight:
         return WeightRepsSetRow(
           setDto: set,
@@ -274,7 +274,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
-            ExerciseType.weightAndReps => WeightRepsSetHeader(
+            ExerciseType.weights => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
                 secondLabel: 'REPS',
