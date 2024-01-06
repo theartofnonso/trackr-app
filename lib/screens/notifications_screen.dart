@@ -26,13 +26,12 @@ class NotificationsScreen extends StatelessWidget {
         body: SafeArea(
           minimum: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Notifications", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-                  const SizedBox(height: 16),
-                  const _NotificationListView()
-                ]),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text("Notifications",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 16),
+              const _NotificationListView()
+            ]),
           ),
         ));
   }
@@ -104,17 +103,16 @@ class _NotificationListTile extends StatelessWidget {
   }
 
   void _scheduleWeekDayNotification({required Duration duration}) async {
-    final tzDateTime = dailyReminder.weekday == DailyReminder.everyday.weekday
+    final tzDateTime = dailyReminder == DailyReminder.everyday
         ? nextInstanceOfHour(hours: duration.inHours)
         : nextInstanceOfHourAndWeekDay(hours: duration.inHours, weekday: dailyReminder.weekday);
 
-    final matchDateTimeComponents = dailyReminder.weekday == DailyReminder.everyday.weekday
-        ? DateTimeComponents.time
-        : DateTimeComponents.dayOfWeekAndTime;
+    final matchDateTimeComponents =
+        dailyReminder == DailyReminder.everyday ? DateTimeComponents.time : DateTimeComponents.dayOfWeekAndTime;
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    if (dailyReminder.weekday == DailyReminder.everyday.weekday) {
+    if (dailyReminder == DailyReminder.everyday) {
       await flutterLocalNotificationsPlugin.cancelAll();
     } else {
       await flutterLocalNotificationsPlugin.cancel(dailyReminder.weekday);
