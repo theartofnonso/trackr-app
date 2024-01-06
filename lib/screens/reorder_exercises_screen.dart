@@ -67,6 +67,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         ],
       ),
       body: ReorderableListView(
+          physics: const NeverScrollableScrollPhysics(),
           buildDefaultDragHandles: true,
           children: widgets,
           onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
