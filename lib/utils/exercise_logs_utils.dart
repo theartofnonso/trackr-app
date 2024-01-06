@@ -291,9 +291,7 @@ PBViewModel? calculatePBs({required BuildContext context, required ExerciseType 
   PBViewModel? pbViewModel;
 
   if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
-    if (exerciseType == ExerciseType.weightAndReps ||
-        exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.assistedBodyWeight) {
+    if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.assistedBodyWeight) {
       final pastBestSets = personalBestSets(sets: pastSets);
       final pastHeaviestSet = heaviestSet(sets: pastBestSets);
       final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestSetVolumePerLog(exerciseLog: log)).max;

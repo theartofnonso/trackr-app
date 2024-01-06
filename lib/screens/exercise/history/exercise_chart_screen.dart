@@ -146,7 +146,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     switch (exerciseType) {
       case ExerciseType.weightAndReps:
-      case ExerciseType.weightedBodyWeight:
       case ExerciseType.assistedBodyWeight:
         _summaryType = SummaryType.weight;
         break;
@@ -206,7 +205,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   bool _exerciseLogsWithWeights() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
+    return exerciseType == ExerciseType.weightAndReps;
   }
 
   bool _exerciseLogsWithAssistedWeights() {
@@ -216,22 +215,19 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   bool _exerciseLogsWithWeightsAndReps() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight;
+    return exerciseType == ExerciseType.weightAndReps;
   }
 
   bool _exerciseLogsWithReps() {
     final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weightAndReps ||
         exerciseType == ExerciseType.assistedBodyWeight ||
-        exerciseType == ExerciseType.weightedBodyWeight ||
         exerciseType == ExerciseType.bodyWeight;
   }
 
   bool _exerciseLogsWithRepsOnly() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.assistedBodyWeight ||
-        exerciseType == ExerciseType.weightedBodyWeight ||
-        exerciseType == ExerciseType.bodyWeight;
+    return exerciseType == ExerciseType.assistedBodyWeight || exerciseType == ExerciseType.bodyWeight;
   }
 
   bool _exerciseLogsDuration() {

@@ -239,10 +239,7 @@ ProgressDto _calculateBodyWeightChampionAchievement(
 /// [AchievementType.strongerThanEver]
 ProgressDto _calculateStrongerThanEverAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-  final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
-  final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
-
-  final achievedLogs = [...weightAndReps, ...weightedBodyWeight];
+  final achievedLogs = logs[ExerciseType.weightAndReps] ?? [];
 
   final tonnages = achievedLogs.map((log) {
     final volume = log.sets.map((set) => set.value1 * set.value2).reduce((total, tonnage) => total + tonnage);
@@ -308,10 +305,9 @@ ProgressDto _calculateAssistedToUnAssistedAchievement(
 ProgressDto _calculateOneMoreRepAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
   final weightAndReps = logs[ExerciseType.weightAndReps] ?? [];
-  final weightedBodyWeight = logs[ExerciseType.weightedBodyWeight] ?? [];
   final assistedBodyWeight = logs[ExerciseType.assistedBodyWeight] ?? [];
 
-  final achievedLogs = [...weightAndReps, ...weightedBodyWeight, ...assistedBodyWeight];
+  final achievedLogs = [...weightAndReps, ...assistedBodyWeight];
 
   final reps = achievedLogs.map((log) {
     final reps = log.sets.map((set) => set.value2).reduce((total, reps) => total + reps);
