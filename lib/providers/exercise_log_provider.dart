@@ -267,7 +267,7 @@ class ExerciseLogProvider extends ChangeNotifier {
       for (var set in exerciseLog.sets) {
         if (set.checked) {
           double weightPerSet = 0.0;
-          if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight) {
+          if (exerciseType == ExerciseType.weights) {
             weightPerSet = set.value1.toDouble() * set.value2;
           }
           totalWeight += weightPerSet;
