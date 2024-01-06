@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
@@ -34,13 +33,16 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   List<ExerciseLogDto> mergeSetsIntoExerciseLogs() {
-    return _exerciseLogs.map((exercise) {
-      final sets = _sets[exercise.id] ?? [];
-      final hasSets = sets.isNotEmpty;
-      if (hasSets) {
-        return exercise.copyWith(sets: sets);
-      }
-    }).whereType<ExerciseLogDto>().toList();
+    return _exerciseLogs
+        .map((exercise) {
+          final sets = _sets[exercise.id] ?? [];
+          final hasSets = sets.isNotEmpty;
+          if (hasSets) {
+            return exercise.copyWith(sets: sets);
+          }
+        })
+        .whereType<ExerciseLogDto>()
+        .toList();
   }
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
@@ -318,14 +320,14 @@ class ExerciseLogProvider extends ChangeNotifier {
     return null; // No change in length
   }
 
-  TemplateChangesMessageDto? hasReOrderedExercises({required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-
-   // if(exerciseLog1.length != exerciseLog2.length) return null; // No change in length (added or removed exercises)
-
-    for (int i = 0; i < exerciseLog1.length; i++) {
+  TemplateChangesMessageDto? hasReOrderedExercises(
+      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+    final length = exerciseLog1.length > exerciseLog2.length ? exerciseLog2.length : exerciseLog1.length;
+    for (int i = 0; i < length; i++) {
       if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
         return TemplateChangesMessageDto(
-            message: "Exercises have been re-ordered", type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
+            message: "Exercises have been re-ordered",
+            type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
       }
     }
     return null;
@@ -391,7 +393,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     final changes = superSetIds2.difference(superSetIds1).length;
 
     return changes > 0
-        ? TemplateChangesMessageDto(message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
+        ? TemplateChangesMessageDto(
+            message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
         : null;
   }
 
