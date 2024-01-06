@@ -316,8 +316,10 @@ class ExerciseLogProvider extends ChangeNotifier {
     return null; // No change in length
   }
 
-  TemplateChangesMessageDto? hasReOrderedExercises(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+  TemplateChangesMessageDto? hasReOrderedExercises({required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+
+   // if(exerciseLog1.length != exerciseLog2.length) return null; // No change in length (added or removed exercises)
+
     for (int i = 0; i < exerciseLog1.length; i++) {
       if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
         return TemplateChangesMessageDto(
