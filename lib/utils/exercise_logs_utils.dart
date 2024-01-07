@@ -9,7 +9,6 @@ import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/routine/preview/exercise_log_widget.dart';
-import 'general_utils.dart';
 
 List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
   return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
@@ -95,9 +94,7 @@ double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final volume = isDefaultWeightUnit() ? heaviestVolume : toLbs(heaviestVolume);
-
-  return volume;
+  return heaviestVolume;
 }
 
 double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
@@ -110,9 +107,7 @@ double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final volume = isDefaultWeightUnit() ? lightestVolume : toLbs(lightestVolume);
-
-  return volume;
+  return lightestVolume;
 }
 
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
@@ -124,9 +119,7 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
 
   final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
-  final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
-
-  return maxWeight;
+  return max;
 }
 
 /// Highest value across all [RoutineLogDto]
@@ -149,9 +142,7 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestSet.value1 : toLbs(heaviestSet.value1.toDouble());
-
-  return (logId, heaviestSet.copyWith(value1: weight));
+  return (logId, heaviestSet);
 }
 
 (String?, SetDto) lightestSetForExercise({required BuildContext context, required ExerciseDto exercise}) {
@@ -172,9 +163,7 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final weight = isDefaultWeightUnit() ? lightestSet.value1 : toLbs(lightestSet.value1.toDouble());
-
-  return (logId, lightestSet.copyWith(value1: weight));
+  return (logId, lightestSet);
 }
 
 (String?, double) heaviestWeightForExercise({required BuildContext context, required ExerciseDto exercise}) {

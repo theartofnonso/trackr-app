@@ -9,10 +9,14 @@ import 'package:tracker_app/screens/settings_screen.dart';
 import '../dtos/routine_log_dto.dart';
 import '../shared_prefs.dart';
 
-bool isDefaultWeightUnit() {
+bool _isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
   final weightUnit = WeightUnit.fromString(weightString);
   return weightUnit == WeightUnit.kg;
+}
+
+double weightWithConversion({required num value}) {
+  return _isDefaultWeightUnit() ? value.toDouble() : toLbs(value.toDouble());
 }
 
 String weightLabel() {
