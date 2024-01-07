@@ -6,6 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/chips/chip_1.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
@@ -152,12 +153,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ],
           ),
         ),
-        if (widget.showCalendarDates)
+        if (SharedPrefs().showCalendarDates)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: _CalendarHeader(),
           ),
-        _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate, showCalendarDates: widget.showCalendarDates),
+        _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
         const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
         if (logs.isEmpty)
@@ -228,10 +229,9 @@ class _CalendarHeader extends StatelessWidget {
 class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
-  final bool showCalendarDates;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showCalendarDates});
+  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap});
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
@@ -250,7 +250,7 @@ class _DateWidget extends StatelessWidget {
   }
 
   Color _getTextColor(bool hasLog) {
-    if(showCalendarDates) {
+    if(SharedPrefs().showCalendarDates) {
       if (hasLog) {
         return Colors.white;
       }
@@ -300,9 +300,8 @@ class _CalenderDates extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
   final void Function(DateTime dateTime) onTap;
-  final bool showCalendarDates;
 
-  const _CalenderDates({required this.dates, required this.selectedDateTime, required this.onTap, required this.showCalendarDates});
+  const _CalenderDates({required this.dates, required this.selectedDateTime, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +315,7 @@ class _CalenderDates extends StatelessWidget {
         return _DateWidget(
           dateTime: date.dateTime,
           onTap: onTap,
-          selectedDateTime: selectedDateTime, showCalendarDates: showCalendarDates,
+          selectedDateTime: selectedDateTime,
         );
       }
     }).toList();
