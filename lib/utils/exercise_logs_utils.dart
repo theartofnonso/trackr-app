@@ -16,20 +16,25 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 /// Highest value per [RoutineLogDto]
+///
 
-double heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
-  double heaviestWeight = 0;
+SetDto _heaviestWeight({required List<SetDto> sets}) {
 
-  for (SetDto set in exerciseLog.sets) {
-    final weight = set.value1.toDouble();
-    if (weight > heaviestWeight) {
-      heaviestWeight = weight.toDouble();
+  SetDto maxSet = sets[0];
+  num heaviestWeight = sets[0].value1;
+
+  for (SetDto set in sets) {
+    num currentWeight = set.value1;
+    if (currentWeight > heaviestWeight) {
+      maxSet = set;
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestWeight : toLbs(heaviestWeight);
+  return maxSet;
+}
 
-  return weight;
+SetDto heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
+  return _heaviestWeight(sets: exerciseLog.sets);
 }
 
 Duration longestDurationPerLog({required ExerciseLogDto exerciseLog}) {
@@ -114,22 +119,8 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
 }
 
-SetDto heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
-  SetDto heaviestSet = const SetDto(0, 0, false);
-  double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
-
-  for (SetDto set in exerciseLog.sets) {
-    final volume = set.value1.toDouble() * set.value2.toInt();
-    if (volume > heaviestVolume) {
-      heaviestSet = set;
-      heaviestVolume = volume;
-    }
-  }
-  return heaviestSet;
-}
-
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
+  final heaviestSet = heaviestWeightPerLog(exerciseLog: exerciseLog);
 
   final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
@@ -284,26 +275,25 @@ PBViewModel? calculatePBs({required BuildContext context, required ExerciseType 
   final provider = Provider.of<RoutineLogProvider>(context, listen: false);
 
   final pastSets =
-  provider.wherePastSetsForExerciseFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+  provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
   final pastExerciseLogs =
-  provider.wherePastExerciseLogsFromDate(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+  provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
   PBViewModel? pbViewModel;
 
   if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
-      final pastBestSets = personalBestSets(sets: pastSets);
-      final pastHeaviestSet = heaviestSet(sets: pastBestSets);
+      final pastHeaviestSetWeight = _heaviestWeight(sets: pastSets);
       final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestSetVolumePerLog(exerciseLog: log)).max;
-      final pastHeaviest1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
+      final past1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
 
-      final currentHeaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
-      final currentHeaviestSetVolume = currentHeaviestSet.value1 * currentHeaviestSet.value2;
-      final currentHeaviest1RM = (currentHeaviestSet.value1 * (1 + 0.0333 * currentHeaviestSet.value2));
+      final currentHeaviestSetWeight = _heaviestWeight(sets: exerciseLog.sets);
+      final currentHeaviestSetVolume = currentHeaviestSetWeight.value1 * currentHeaviestSetWeight.value2;
+      final current1RM = (currentHeaviestSetWeight.value1 * (1 + 0.0333 * currentHeaviestSetWeight.value2));
 
       List<PBType> pbs = [];
 
-      if (currentHeaviestSet.value1 > pastHeaviestSet.value1) {
+      if (currentHeaviestSetWeight.value1 > pastHeaviestSetWeight.value1) {
         pbs.add(PBType.weight);
       }
 
@@ -311,12 +301,12 @@ PBViewModel? calculatePBs({required BuildContext context, required ExerciseType 
         pbs.add(PBType.volume);
       }
 
-      if (currentHeaviest1RM > pastHeaviest1RM) {
+      if (current1RM > past1RM) {
         pbs.add(PBType.oneRepMax);
       }
 
       if (pbs.isNotEmpty) {
-        pbViewModel = PBViewModel(set: currentHeaviestSet, pbs: pbs);
+        pbViewModel = PBViewModel(set: currentHeaviestSetWeight, pbs: pbs);
       }
     }
 

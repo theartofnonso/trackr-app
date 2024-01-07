@@ -15,7 +15,10 @@ class SetRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final pb = pbViewModel;
 
-    final pbs = pb?.pbs.map((pb) => ChipOne(color: tealBlueLight, label: pb.name)).toList();
+    final pbs = pb?.pbs.map((pb) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+      child: ChipOne(color: tealBlueLight, label: pb.name),
+    )).toList();
 
     return Container(
       margin: margin,
@@ -31,7 +34,7 @@ class SetRow extends StatelessWidget {
           child,
           if (pbs != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 14.0),
+              padding: const EdgeInsets.only(top: 10, bottom: 14.0),
               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: pbs),
             )
         ],

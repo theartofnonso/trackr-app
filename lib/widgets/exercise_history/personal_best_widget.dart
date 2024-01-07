@@ -17,6 +17,8 @@ class PersonalBestWidget extends StatelessWidget {
     List<ExerciseLogDto> pastLogs =
         Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 
+    final sets = pastLogs.expand((log) => log.sets).where((set) => set.isNotEmpty()).toList();
+
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -25,7 +27,7 @@ class PersonalBestWidget extends StatelessWidget {
           Text("Personal Best achievements for this exercise",
               style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
           const SizedBox(height: 16),
-          SetRecordWidget(exerciseType: exercise.type, sets: pastLogs.expand((log) => log.sets).toList()),
+          SetRecordWidget(exerciseType: exercise.type, sets: sets),
         ],
       ),
     );

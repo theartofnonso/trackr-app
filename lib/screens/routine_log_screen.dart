@@ -354,10 +354,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
             isDismissible: false,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             context: context,
             child: _TemplateChangesListView(
                 templateName: routineTemplate.name,
-                changes: templateChanges,
                 onPressed: () {
                   Navigator.of(context).pop();
                   _updateTemplate();
@@ -380,31 +380,22 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
 class _TemplateChangesListView extends StatelessWidget {
   final String templateName;
-  final List<TemplateChangesMessageDto> changes;
   final void Function() onPressed;
 
-  const _TemplateChangesListView({required this.templateName, required this.changes, required this.onPressed});
+  const _TemplateChangesListView({required this.templateName, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    final listTiles = changes
-        .map((change) => ListTile(
-            dense: true,
-            title: Text(change.message, style: GoogleFonts.montserrat(color: Colors.white)),
-            leading: const Icon(Icons.info_outline_rounded),
-            horizontalTitleGap: 6))
-        .toList();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15, top: 12.0, bottom: 10),
-          child: Text("Update $templateName",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
-        ),
-        ...listTiles,
+        Text("Update $templateName?",
+            style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+            textAlign: TextAlign.start),
+        Text("You have made changes to this template. Do you want to update it?",
+            style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
+            textAlign: TextAlign.start),
         const SizedBox(height: 16),
         Row(children: [
           const SizedBox(width: 15),

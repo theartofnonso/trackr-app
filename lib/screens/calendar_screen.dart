@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/chips/chip_1.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
+import '../shared_prefs.dart';
 import '../utils/exercise_logs_utils.dart';
 
 class _DateViewModel {
@@ -21,7 +22,8 @@ class _DateViewModel {
 }
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({super.key});
+  final bool showCalendarDates;
+  const CalendarScreen({super.key, required this.showCalendarDates});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -118,6 +120,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
@@ -150,12 +153,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ],
           ),
         ),
-        // Container(
-        //   color: tealBlueDark,
-        //   height: 15,
-        // ),
-        //_CalendarHeader(),
-        _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
+        if (widget.showCalendarDates)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: _CalendarHeader(),
+          ),
+        _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate, showCalendarDates: widget.showCalendarDates),
         const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
         if (logs.isEmpty)
@@ -188,7 +191,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           ),
                         ),
                         alignment: PlaceholderAlignment.middle),
-                    TextSpan(text: 'tab to create new workouts'),
+                    TextSpan(text: 'tab to create workout templates'),
                   ]))
             ],
           )
@@ -226,9 +229,10 @@ class _CalendarHeader extends StatelessWidget {
 class _DateWidget extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
+  final bool showCalendarDates;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap});
+  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showCalendarDates});
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
@@ -247,8 +251,11 @@ class _DateWidget extends StatelessWidget {
   }
 
   Color _getTextColor(bool hasLog) {
-    if (hasLog) {
-      return Colors.transparent;
+    if(showCalendarDates) {
+      if (hasLog) {
+        return Colors.white;
+      }
+      return Colors.white70;
     }
     return Colors.transparent;
   }
@@ -294,8 +301,9 @@ class _CalenderDates extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
   final void Function(DateTime dateTime) onTap;
+  final bool showCalendarDates;
 
-  const _CalenderDates({required this.dates, required this.selectedDateTime, required this.onTap});
+  const _CalenderDates({required this.dates, required this.selectedDateTime, required this.onTap, required this.showCalendarDates});
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +317,7 @@ class _CalenderDates extends StatelessWidget {
         return _DateWidget(
           dateTime: date.dateTime,
           onTap: onTap,
-          selectedDateTime: selectedDateTime,
+          selectedDateTime: selectedDateTime, showCalendarDates: showCalendarDates,
         );
       }
     }).toList();
