@@ -67,9 +67,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   late SummaryType _summaryType;
 
   void _heaviestWeightPerLog() {
-    final values = _exerciseLogs.map((log) => heaviestWeightPerLog(exerciseLog: log)).toList();
+    final sets = _exerciseLogs.map((log) => heaviestWeightPerLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.value1.toDouble())).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = weightUnit();
     });

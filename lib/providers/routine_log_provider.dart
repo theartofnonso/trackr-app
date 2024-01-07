@@ -177,16 +177,12 @@ class RoutineLogProvider with ChangeNotifier {
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<SetDto> wherePastSetsForExerciseFromDate({required ExerciseDto exercise, required DateTime date}) {
+  List<SetDto> wherePastSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
     final exerciseLogs = _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)) ?? [];
     return exerciseLogs.isNotEmpty ? exerciseLogs.first.sets : [];
   }
 
-  List<ExerciseLogDto> whereExerciseLogs({required ExerciseDto exercise}) {
-    return _exerciseLogsById[exercise.id] ?? [];
-  }
-
-  List<ExerciseLogDto> wherePastExerciseLogsFromDate({required ExerciseDto exercise, required DateTime date}) {
+  List<ExerciseLogDto> wherePastExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
     return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
