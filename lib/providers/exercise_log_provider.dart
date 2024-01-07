@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
-import 'package:uuid/uuid.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -255,7 +254,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
-    return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], DateTime.now());
+    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now());
   }
 
   List<SetDto> completedSets() {

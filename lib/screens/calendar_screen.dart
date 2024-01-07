@@ -11,7 +11,6 @@ import 'package:tracker_app/widgets/chips/chip_1.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
-import '../shared_prefs.dart';
 import '../utils/exercise_logs_utils.dart';
 
 class _DateViewModel {

@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
