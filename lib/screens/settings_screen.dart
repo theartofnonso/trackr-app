@@ -96,16 +96,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
               ),
               const SizedBox(height: 8),
-              SwitchListTile(
-                activeColor: Colors.green,
-                title: Text('Show calendar dates',
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                value: SharedPrefs().showCalendarDates,
-                onChanged: (bool value) {
-                  setState(() {
-                    SharedPrefs().showCalendarDates = value;
-                  });
-                },
+              Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent // Disable the splash effect
+                ),
+                child: SwitchListTile(
+                  activeColor: Colors.green,
+                  title: Text('Show calendar dates',
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                  value: SharedPrefs().showCalendarDates,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  onChanged: (bool value) {
+                    setState(() {
+                      SharedPrefs().showCalendarDates = value;
+                    });
+                  },
+                ),
               ),
               const SizedBox(height: 8),
               OutlineListTile(
