@@ -9,7 +9,13 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../app_constants.dart';
 
 enum ChartUnitLabel {
-  kg, lbs, reps, mins, hrs, yd, mi,
+  kg,
+  lbs,
+  reps,
+  mins,
+  hrs,
+  yd,
+  mi,
 }
 
 class LineChartWidget extends StatelessWidget {
@@ -26,7 +32,6 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return chartPoints.isNotEmpty ? Center(
       child: AspectRatio(
         aspectRatio: 1.5,
@@ -59,7 +64,10 @@ class LineChartWidget extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                  spots: chartPoints.map((point) => FlSpot(point.x, weightWithConversion(value: point.y))).toList(),
+                  spots: chartPoints.map((point) {
+                    final y = unit == ChartUnitLabel.lbs || unit == ChartUnitLabel.kg ? weightWithConversion(value: point.y) : point.y;
+                    return FlSpot(point.x, y);
+                  }).toList(),
                   gradient: const LinearGradient(
                     colors: gradientColors,
                   ),
@@ -80,13 +88,13 @@ class LineChartWidget extends StatelessWidget {
     final min = points.min;
     final max = points.max;
     double interval = max - min;
-    if(interval >= 1000) {
+    if (interval >= 1000) {
       interval = 1000;
-    } else if(interval >= 500) {
+    } else if (interval >= 500) {
       interval = 500;
-    } else if(interval >= 100) {
+    } else if (interval >= 100) {
       interval = 100;
-    } else if(interval >= 50) {
+    } else if (interval >= 50) {
       interval = 50;
     } else {
       interval = 10;
