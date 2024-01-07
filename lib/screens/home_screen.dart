@@ -155,9 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadCachedLog();
     }
     /// Uncomment this to enable notifications
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _checkAndRequestNotificationPermission();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndRequestNotificationPermission();
+    });
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {

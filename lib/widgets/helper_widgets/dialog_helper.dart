@@ -73,7 +73,6 @@ void displayTimePicker(
 
 void displayNotificationTimePicker(
     {required BuildContext context,
-    required CupertinoTimerPickerMode mode,
     required Duration initialDuration,
     required void Function(Duration duration) onChangedDuration}) {
   FocusScope.of(context).unfocus();
