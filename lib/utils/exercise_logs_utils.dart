@@ -86,8 +86,6 @@ int highestRepsForLog({required ExerciseLogDto exerciseLog}) {
 }
 
 double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
-
-
   double heaviestVolume = 0;
 
   for (var set in exerciseLog.sets) {
@@ -119,20 +117,6 @@ double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
 
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
-}
-
-SetDto heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
-  SetDto heaviestSet = const SetDto(0, 0, false);
-  double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
-
-  for (SetDto set in exerciseLog.sets) {
-    final volume = set.value1.toDouble() * set.value2.toInt();
-    if (volume > heaviestVolume) {
-      heaviestSet = set;
-      heaviestVolume = volume;
-    }
-  }
-  return heaviestSet;
 }
 
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
