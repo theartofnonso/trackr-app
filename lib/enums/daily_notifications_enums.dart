@@ -17,7 +17,7 @@ enum DailyReminder {
 
 enum DailyReminderType {
 
-  daily, weekdays;
+  daily, weekday;
 
   static DailyReminderType fromString(String string) {
     return DailyReminderType.values.firstWhere((value) => value.name == string);

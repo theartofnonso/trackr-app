@@ -47,6 +47,19 @@ Map<String, dynamic> _decodeNotificationPayload({required PendingNotificationReq
   return {};
 }
 
+void _displayTimePicker(
+    {required BuildContext context,
+    required PendingNotificationRequest? schedule,
+    required void Function(Duration) onDurationChanged}) {
+  displayNotificationTimePicker(
+      context: context,
+      initialDuration: _timeForSchedule(schedule: schedule),
+      onChangedDuration: (duration) {
+        Navigator.of(context).pop();
+        onDurationChanged(duration);
+      });
+}
+
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
@@ -136,25 +149,15 @@ class _WeekDayNotificationListTile extends StatelessWidget {
     return _NotificationSwitch(
         title: dailyReminder.day,
         subtitle: _timeForSchedule(schedule: schedule).digitalTimeHM(),
-        enabled: schedule != null && payload["type"] == DailyReminderType.weekdays,
-        onPressed: () => _displayTimePicker(context: context),
+        enabled: schedule != null && payload["type"] == DailyReminderType.weekday,
+        onPressed: () =>
+            _displayTimePicker(context: context, schedule: schedule, onDurationChanged: _scheduleWeekDayNotification),
         onChanged: (bool value) {
           if (value) {
-            _scheduleWeekDayNotification(duration: const Duration(hours: 3));
+            _scheduleWeekDayNotification(const Duration(hours: 3));
           } else {
             _cancelWeekDayNotification();
           }
-        });
-  }
-
-  void _displayTimePicker({required BuildContext context}) {
-    displayNotificationTimePicker(
-        context: context,
-        mode: CupertinoTimerPickerMode.hm,
-        initialDuration: _timeForSchedule(schedule: schedule),
-        onChangedDuration: (duration) {
-          Navigator.of(context).pop();
-          _scheduleWeekDayNotification(duration: duration);
         });
   }
 
@@ -164,12 +167,12 @@ class _WeekDayNotificationListTile extends StatelessWidget {
     onScheduleChanged();
   }
 
-  void _scheduleWeekDayNotification({required Duration duration}) async {
+  void _scheduleWeekDayNotification(Duration duration) async {
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     await flutterLocalNotificationsPlugin.cancel(dailyReminder.weekday);
 
-    await _scheduleNotification(reminder: dailyReminder, type: DailyReminderType.weekdays, duration: duration);
+    await _scheduleNotification(reminder: dailyReminder, type: DailyReminderType.weekday, duration: duration);
 
     onScheduleChanged();
   }
@@ -188,24 +191,14 @@ class _DailyNotificationListTile extends StatelessWidget {
         title: "Everyday",
         subtitle: _timeForSchedule(schedule: schedule).digitalTimeHM(),
         enabled: enabled,
-        onPressed: () => _displayTimePicker(context: context),
+        onPressed: () =>
+            _displayTimePicker(context: context, schedule: schedule, onDurationChanged: _scheduleDailyNotification),
         onChanged: (bool value) {
           if (value) {
-            _scheduleDailyNotification(duration: const Duration(hours: 3));
+            _scheduleDailyNotification(const Duration(hours: 3));
           } else {
             _cancelDailyNotification();
           }
-        });
-  }
-
-  void _displayTimePicker({required BuildContext context}) {
-    displayNotificationTimePicker(
-        context: context,
-        mode: CupertinoTimerPickerMode.hm,
-        initialDuration: _timeForSchedule(schedule: schedule),
-        onChangedDuration: (duration) {
-          Navigator.of(context).pop();
-          _scheduleDailyNotification(duration: duration);
         });
   }
 
@@ -215,13 +208,12 @@ class _DailyNotificationListTile extends StatelessWidget {
     onScheduleChanged();
   }
 
-  void _scheduleDailyNotification({required Duration duration}) async {
+  void _scheduleDailyNotification(Duration duration) async {
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     await flutterLocalNotificationsPlugin.cancelAll();
 
     const weekDays = DailyReminder.values;
-    weekDays.sort();
 
     for (var day in weekDays) {
       await _scheduleNotification(reminder: day, type: DailyReminderType.daily, duration: duration);
@@ -249,10 +241,11 @@ class _NotificationListViewState extends State<_NotificationListView> {
           dailyReminder: reminder, schedule: schedule, onScheduleChanged: _loadSchedules);
     }).toList();
 
-    final isDailyNotificationEnabled = _schedules.isNotEmpty && _schedules.every((schedule) {
-      final payload = _decodeNotificationPayload(schedule: schedule);
-      return payload["type"] == DailyReminderType.daily;
-    });
+    final isDailyNotificationEnabled = _schedules.isNotEmpty &&
+        _schedules.every((schedule) {
+          final payload = _decodeNotificationPayload(schedule: schedule);
+          return payload["type"] == DailyReminderType.daily;
+        });
 
     final dailyNotification = _DailyNotificationListTile(
         enabled: isDailyNotificationEnabled, schedule: _schedules.firstOrNull, onScheduleChanged: _loadSchedules);
