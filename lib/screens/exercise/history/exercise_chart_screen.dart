@@ -354,7 +354,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                 title: 'Heaviest Weight',
-                trailing: "${widget.heaviestWeight.$2}$weightUnitLabel",
+                trailing: "${weightWithConversion(value: widget.heaviestWeight.$2)}$weightUnitLabel",
                 subtitle: 'Heaviest weight in a set',
                 onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                 enabled: _exerciseLogs.isNotEmpty,
@@ -365,7 +365,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                 title: 'Lightest Weight',
-                trailing: "${widget.lightestWeight.$2}$weightUnitLabel",
+                trailing: "${weightWithConversion(value: widget.lightestWeight.$2)}$weightUnitLabel",
                 subtitle: 'Lightest weight in a set',
                 onTap: () => _navigateTo(routineLogId: widget.lightestWeight.$1),
                 enabled: _exerciseLogs.isNotEmpty,
@@ -376,7 +376,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing: "${widget.heaviestSet.$2.value1}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
+                  trailing: "${weightWithConversion(value: widget.heaviestSet.$2.value1)}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
@@ -386,7 +386,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Lightest Set Volume',
-                  trailing: "${widget.lightestSet.$2.value1}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
+                  trailing: "${weightWithConversion(value: widget.lightestSet.$2.value1)}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
                   subtitle: 'Lightest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.lightestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
@@ -396,7 +396,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: '1 Rep Max',
-                  trailing: '${oneRepMax.toStringAsFixed(2)}$weightUnitLabel',
+                  trailing: '${weightWithConversion(value: oneRepMax).toStringAsFixed(2)}$weightUnitLabel',
                   subtitle: 'Heaviest weight for one rep',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                   enabled: _exerciseLogs.isNotEmpty),

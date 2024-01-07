@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app_constants.dart';
+import '../../../../utils/general_utils.dart';
 
 class DoubleTextField extends StatelessWidget {
-  final double value;
+  final num value;
   final TextEditingController controller;
   final void Function(double value) onChanged;
 
@@ -24,7 +25,7 @@ class DoubleTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
           fillColor: tealBlueLight,
-          hintText: "${value > 0 ? value : '-'}",
+          hintText: "${value > 0 ? weightWithConversion(value: value) : '-'}",
           hintStyle: GoogleFonts.montserrat(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       maxLines: 1,

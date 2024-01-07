@@ -12,7 +12,7 @@ import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_hea
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/weight_reps_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
@@ -89,7 +89,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     switch (exerciseType) {
       case ExerciseType.weights:
       case ExerciseType.assistedBodyWeight:
-        return WeightRepsSetRow(
+        return WeightsSetRow(
           setDto: set,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),

@@ -5,16 +5,15 @@ import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
-import '../../../../utils/general_utils.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
-class WeightRepsSetRow extends SetRow {
+class WeightsSetRow extends SetRow {
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
   final (TextEditingController, TextEditingController) controllers;
 
-  const WeightRepsSetRow(
+  const WeightsSetRow(
       {super.key,
       required this.controllers,
       required this.onChangedReps,
@@ -26,7 +25,7 @@ class WeightRepsSetRow extends SetRow {
 
   @override
   Widget build(BuildContext context) {
-    double weight = isDefaultWeightUnit() ? setDto.value1.toDouble() : toLbs(setDto.value1.toDouble());
+    num weight = setDto.value1;
     int reps = setDto.value2.toInt();
 
     return Table(
@@ -52,8 +51,7 @@ class WeightRepsSetRow extends SetRow {
             child: DoubleTextField(
               value: weight,
               onChanged: (value) {
-                final conversion = _convertWeight(value: value);
-                onChangedWeight(conversion);
+                onChangedWeight(value);
               },
               controller: controllers.$1,
             ),
@@ -73,9 +71,5 @@ class WeightRepsSetRow extends SetRow {
         ])
       ],
     );
-  }
-
-  double _convertWeight({required double value}) {
-    return isDefaultWeightUnit() ? value : toKg(value);
   }
 }
