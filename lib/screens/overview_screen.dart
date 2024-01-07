@@ -134,7 +134,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 20),
-                CalendarScreen(showCalendarDates: SharedPrefs().showCalendarDates),
+                CalendarScreen(),
               ],
             )),
       ),

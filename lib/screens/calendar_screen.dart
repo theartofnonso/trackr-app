@@ -22,8 +22,9 @@ class _DateViewModel {
 }
 
 class CalendarScreen extends StatefulWidget {
-  final bool showCalendarDates;
-  const CalendarScreen({super.key, required this.showCalendarDates});
+
+  /// Do no make this a const as it has properties that depends on the state of this parent widget
+  CalendarScreen({super.key});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
