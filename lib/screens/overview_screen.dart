@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
