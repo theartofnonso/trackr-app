@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text("Remind me to train weekly",
                   style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.start),
-              Text("Training regularly is hard. Trackr can help you stay on track.",
+              Text("Training regularly can be hard. Trackr can help you stay on track.",
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 16),

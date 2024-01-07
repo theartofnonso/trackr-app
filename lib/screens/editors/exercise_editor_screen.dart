@@ -251,7 +251,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         ? previousExercise.primaryMuscleGroup
         : MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).first;
 
-    _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weightAndReps;
+    _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weights;
 
     _exerciseName = previousExercise?.name;
   }

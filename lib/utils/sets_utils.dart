@@ -19,22 +19,6 @@ List<SetDto> personalBestSets({required List<SetDto> sets}) {
   return setsWithHeaviestWeight;
 }
 
-SetDto heaviestSet({required List<SetDto> sets}) {
-
-  SetDto maxSet = sets[0];
-  num maxVolume = sets[0].value1 * sets[0].value2;
-
-  for (SetDto set in sets) {
-    num currentSet = set.value1 * set.value2;
-    if (currentSet > maxVolume) {
-      maxVolume = currentSet;
-      maxSet = set;
-    }
-  }
-
-  return maxSet;
-}
-
 SetDto longestDurationSet({required List<SetDto> sets}) {
 
   SetDto longestSet = sets[0];

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
@@ -12,11 +13,17 @@ import '../utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'calendar_screen.dart';
 
-class OverviewScreen extends StatelessWidget {
+class OverviewScreen extends StatefulWidget {
   const OverviewScreen({super.key});
 
-  void _navigateBack(BuildContext context) async {
+  @override
+  State<OverviewScreen> createState() => _OverviewScreenState();
+}
+
+class _OverviewScreenState extends State<OverviewScreen> {
+  void _navigateToSettings(BuildContext context) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+    setState(() {});
   }
 
   void _navigateToMuscleDistribution(BuildContext context) {
@@ -66,7 +73,7 @@ class OverviewScreen extends StatelessWidget {
         centerTitle: false,
         actions: [
           GestureDetector(
-            onTap: () => _navigateBack(context),
+            onTap: () => _navigateToSettings(context),
             child: const Padding(
               padding: EdgeInsets.only(right: 14.0),
               child: Icon(Icons.settings),
@@ -98,16 +105,15 @@ class OverviewScreen extends StatelessWidget {
                             TableRow(children: [
                               _CTableCell(
                                   title: "This Week",
-                                  subtitle: "${logsForTheWeek.length} sessions",
+                                  subtitle:
+                                      "${logsForTheWeek.length} ${logsForTheWeek.length > 1 ? "sessions" : "session"}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
                               _CTableCell(
                                   title: "This Month",
-                                  subtitle: "${logsForTheMonth.length} sessions",
+                                  subtitle:
+                                      "${logsForTheMonth.length} ${logsForTheMonth.length > 1 ? "sessions" : "session"}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
-                              _CTableCell(
-                                  title: "Level",
-                                  subtitle: "Coming",
-                                  onTap: () => {})
+                              _CTableCell(title: "Level", subtitle: "Coming", onTap: () => {})
                             ])
                           ],
                         )),
@@ -121,12 +127,14 @@ class OverviewScreen extends StatelessWidget {
                       tileColor: tealBlueLight,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      title: Text("Muscle insights", style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                      title: Text("Muscle insights",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                       subtitle: Text("Number of sets logged for each muscle group",
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 20),
-                const CalendarScreen()
+                CalendarScreen(),
               ],
             )),
       ),

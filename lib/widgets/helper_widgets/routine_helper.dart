@@ -26,7 +26,7 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 }
 
 List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, PBViewModel? pbViewModel}) {
-  Widget emptyState = type == ExerciseType.duration || type == ExerciseType.bodyWeightAndReps
+  Widget emptyState = type == ExerciseType.duration || type == ExerciseType.bodyWeight
       ? const SingleSetRowEmptyState()
       : const DoubleSetRowEmptyState();
 
@@ -36,13 +36,12 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
     final pb = pbViewModel != null && pbViewModel.set == setDto ? pbViewModel : null;
 
     switch (type) {
-      case ExerciseType.weightAndReps:
+      case ExerciseType.weights:
       case ExerciseType.assistedBodyWeight:
-      case ExerciseType.weightedBodyWeight:
-        final firstLabel = isDefaultWeightUnit() ? setDto.value1 : toLbs(setDto.value1.toDouble());
+        final firstLabel = weightWithConversion(value: setDto.value1);
         final secondLabel = setDto.value2;
         return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbViewModel: pb);
-      case ExerciseType.bodyWeightAndReps:
+      case ExerciseType.bodyWeight:
         final label = setDto.value2;
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:

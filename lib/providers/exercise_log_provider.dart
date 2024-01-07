@@ -1,8 +1,6 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
-import 'package:uuid/uuid.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -34,11 +32,16 @@ class ExerciseLogProvider extends ChangeNotifier {
   }
 
   List<ExerciseLogDto> mergeSetsIntoExerciseLogs() {
-    return _exerciseLogs.map((exercise) {
-      List<SetDto> matchingSets = _sets[exercise.id] ?? [];
-
-      return exercise.copyWith(sets: matchingSets);
-    }).toList();
+    return _exerciseLogs
+        .map((exercise) {
+          final sets = _sets[exercise.id] ?? [];
+          final hasSets = sets.isNotEmpty;
+          if (hasSets) {
+            return exercise.copyWith(sets: sets);
+          }
+        })
+        .whereType<ExerciseLogDto>()
+        .toList();
   }
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
@@ -251,7 +254,7 @@ class ExerciseLogProvider extends ChangeNotifier {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(ExerciseDto exercise, {String? notes}) {
-    return ExerciseLogDto(const Uuid().v4(), null, "", exercise, notes ?? "", [], DateTime.now());
+    return ExerciseLogDto(exercise.id, null, "", exercise, notes ?? "", [], DateTime.now());
   }
 
   List<SetDto> completedSets() {
@@ -267,7 +270,7 @@ class ExerciseLogProvider extends ChangeNotifier {
       for (var set in exerciseLog.sets) {
         if (set.checked) {
           double weightPerSet = 0.0;
-          if (exerciseType == ExerciseType.weightAndReps || exerciseType == ExerciseType.weightedBodyWeight) {
+          if (exerciseType == ExerciseType.weights) {
             weightPerSet = set.value1.toDouble() * set.value2;
           }
           totalWeight += weightPerSet;
@@ -318,10 +321,12 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   TemplateChangesMessageDto? hasReOrderedExercises(
       {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    for (int i = 0; i < exerciseLog1.length; i++) {
+    final length = exerciseLog1.length > exerciseLog2.length ? exerciseLog2.length : exerciseLog1.length;
+    for (int i = 0; i < length; i++) {
       if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
         return TemplateChangesMessageDto(
-            message: "Exercises have been re-ordered", type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
+            message: "Exercises have been re-ordered",
+            type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
       }
     }
     return null;
@@ -387,7 +392,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     final changes = superSetIds2.difference(superSetIds1).length;
 
     return changes > 0
-        ? TemplateChangesMessageDto(message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
+        ? TemplateChangesMessageDto(
+            message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
         : null;
   }
 

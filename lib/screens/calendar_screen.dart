@@ -6,10 +6,13 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/widgets/chips/chip_1.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
+import '../utils/exercise_logs_utils.dart';
 
 class _DateViewModel {
   DateTime dateTime;
@@ -19,7 +22,9 @@ class _DateViewModel {
 }
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({super.key});
+
+  /// Do no make this a const as it has properties that depends on the state of this parent widget
+  CalendarScreen({super.key});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -116,6 +121,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
@@ -129,22 +135,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: _decrementDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
-              Text(_currentDate.formattedMonthAndYear(),
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                  )),
-              IconButton(onPressed: _incrementDate, icon: const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)),
+              IconButton(
+                  onPressed: _decrementDate,
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
+              Expanded(
+                child: Text(_currentDate.formattedMonthAndYear(),
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.montserrat(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    )),
+              ),
+              IconButton(
+                  onPressed: _incrementDate,
+                  icon: _hasLaterDate()
+                      ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
+                      : const SizedBox()),
             ],
           ),
         ),
-        // Container(
-        //   color: tealBlueDark,
-        //   height: 15,
-        // ),
-        //_CalendarHeader(),
+        if (SharedPrefs().showCalendarDates)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: _CalendarHeader(),
+          ),
         _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
         const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
@@ -158,9 +172,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       children: const [
                     TextSpan(text: 'Tap'),
                     WidgetSpan(
-                        child: Icon(Icons.play_arrow_rounded, color: Colors.white),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6.0),
+                          child: FaIcon(
+                            FontAwesomeIcons.play,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ),
                         alignment: PlaceholderAlignment.middle),
-                    TextSpan(text: 'to start logging or visit the + tab to create new workouts'),
+                    TextSpan(text: 'to start logging or visit the'),
+                    WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4.0),
+                          child: FaIcon(
+                            FontAwesomeIcons.dumbbell,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ),
+                        alignment: PlaceholderAlignment.middle),
+                    TextSpan(text: 'tab to create workout templates'),
                   ]))
             ],
           )
@@ -184,7 +216,8 @@ class _CalendarHeader extends StatelessWidget {
                     width: 45,
                     child: Center(
                       child: Text(day,
-                          style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          style:
+                              GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                   ))
               .toList()
@@ -218,8 +251,11 @@ class _DateWidget extends StatelessWidget {
   }
 
   Color _getTextColor(bool hasLog) {
-    if (hasLog) {
-      return Colors.transparent;
+    if(SharedPrefs().showCalendarDates) {
+      if (hasLog) {
+        return Colors.white;
+      }
+      return Colors.white70;
     }
     return Colors.transparent;
   }
@@ -252,7 +288,8 @@ class _DateWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                style: GoogleFonts.montserrat(
+                    fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),
@@ -329,10 +366,17 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pbs = log.exerciseLogs
+        .map((exerciseLog) =>
+            calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+        .where((pb) => pb != null)
+        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+
     return SolidListTile(
         title: log.name,
-        subtitle: "${log.exerciseLogs.length} exercise(s)",
+        subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
         trailing: log.duration().secondsOrMinutesOrHours(),
+        trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));

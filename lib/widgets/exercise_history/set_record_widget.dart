@@ -32,7 +32,7 @@ class SetRecordWidget extends StatelessWidget {
         const SizedBox(height: 8),
         ...personaBestSets.map((set) {
           final firstLabel = set.value2;
-          final secondLabel = isDefaultWeightUnit() ? set.value1 : toLbs(set.value1.toDouble());
+          final secondLabel = weightWithConversion(value: set.value1);
           return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: const EdgeInsets.only(bottom: 6.0));
         }).toList(),
       ],

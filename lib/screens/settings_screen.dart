@@ -55,7 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             children: [
               ListTile(
                 title: Text("Weight",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                 subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
                 trailing: SegmentedButton(
                   showSelectedIcon: false,
@@ -96,9 +96,20 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
               ),
               const SizedBox(height: 8),
+              SwitchListTile(
+                activeColor: Colors.green,
+                title: Text('Show calendar dates',
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                value: SharedPrefs().showCalendarDates,
+                onChanged: (bool value) {
+                  setState(() {
+                    SharedPrefs().showCalendarDates = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
               OutlineListTile(
                   onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-              const SizedBox(height: 8),
 
               /// Uncomment this to enable notifications
               // OutlineListTile(
@@ -232,6 +243,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
+    _checkNotificationPermission();
   }
 
   @override
@@ -243,10 +255,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     /// Uncomment this to enable notifications
-    // if (state == AppLifecycleState.resumed) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     _checkNotificationPermission();
-    //   });
-    // }
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkNotificationPermission();
+      });
+    }
   }
 }

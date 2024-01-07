@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../app_constants.dart';
 
@@ -58,7 +59,7 @@ class LineChartWidget extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                  spots: chartPoints.map((point) => FlSpot(point.x, point.y)).toList(),
+                  spots: chartPoints.map((point) => FlSpot(point.x, weightWithConversion(value: point.y))).toList(),
                   gradient: const LinearGradient(
                     colors: gradientColors,
                   ),

@@ -1,7 +1,6 @@
 enum ExerciseType {
-  weightAndReps("WP", "Weight & Reps", "Bench Press, Dumbbell Curls"),
-  bodyWeightAndReps("BW", "Bodyweight", "Pull Ups, Crunches, Burpees"),
-  weightedBodyWeight("WBW", "Weight On Bodyweight", "Weighted Pull Ups, Weighted Dips"),
+  weights("WR", "Weights", "Bench Press, Dumbbell Curls"),
+  bodyWeight("BW", "Bodyweight", "Pull Ups, Crunches, Burpees"),
   assistedBodyWeight("ABW", "Assisted Bodyweight", "Assisted Pull Ups, Assisted Dips"),
   duration("DR", "Duration", "Planks, Yoga");
 
@@ -12,6 +11,6 @@ enum ExerciseType {
   final String description;
 
   static ExerciseType fromString(String string) {
-    return ExerciseType.values.firstWhere((value) => value.name == string);
+    return ExerciseType.values.firstWhere((value) => value.id == string);
   }
 }

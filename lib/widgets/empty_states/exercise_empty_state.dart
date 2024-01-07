@@ -32,12 +32,6 @@ class ExerciseEmptyState extends StatelessWidget {
                             "Primary: Quadriceps",
                             style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
                           )),
-                      SizedBox(
-                          width: 300,
-                          child: Text(
-                            "Secondary: Glutes, Hamstrings, Calves",
-                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                          )),
                     ],
                   )),
               const Divider(thickness: 1.0, color: tealBlueLight),

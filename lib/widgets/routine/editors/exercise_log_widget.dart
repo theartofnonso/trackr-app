@@ -12,7 +12,7 @@ import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_hea
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/weight_reps_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/set_dto.dart';
@@ -87,10 +87,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   Widget _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
     switch (exerciseType) {
-      case ExerciseType.weightAndReps:
-      case ExerciseType.weightedBodyWeight:
+      case ExerciseType.weights:
       case ExerciseType.assistedBodyWeight:
-        return WeightRepsSetRow(
+        return WeightsSetRow(
           setDto: set,
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
@@ -99,7 +98,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           onChangedWeight: (double value) => _updateWeight(index: index, value: value, setDto: set),
           controllers: _controllers[index],
         );
-      case ExerciseType.bodyWeightAndReps:
+      case ExerciseType.bodyWeight:
         return RepsSetRow(
           setDto: set,
           editorType: widget.editorType,
@@ -275,14 +274,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
-            ExerciseType.weightAndReps => WeightRepsSetHeader(
+            ExerciseType.weights => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
-                secondLabel: 'REPS',
-              ),
-            ExerciseType.weightedBodyWeight => WeightRepsSetHeader(
-                editorType: widget.editorType,
-                firstLabel: "+${weightLabel().toUpperCase()}",
                 secondLabel: 'REPS',
               ),
             ExerciseType.assistedBodyWeight => WeightRepsSetHeader(
@@ -290,7 +284,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 firstLabel: '-${weightLabel().toUpperCase()}',
                 secondLabel: 'REPS',
               ),
-            ExerciseType.bodyWeightAndReps => RepsSetHeader(editorType: widget.editorType),
+            ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),
             ExerciseType.duration => DurationSetHeader(editorType: widget.editorType),
           },
           const SizedBox(height: 8),

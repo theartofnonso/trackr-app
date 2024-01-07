@@ -1,31 +1,39 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/utils/sets_utils.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
+import '../enums/exercise_type_enums.dart';
 import '../providers/routine_log_provider.dart';
-import 'general_utils.dart';
+import '../widgets/routine/preview/exercise_log_widget.dart';
 
 List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
   return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 }
 
 /// Highest value per [RoutineLogDto]
+///
 
-double heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
-  double heaviestWeight = 0;
+SetDto _heaviestWeight({required List<SetDto> sets}) {
 
-  for (SetDto set in exerciseLog.sets) {
-    final weight = set.value1.toDouble();
-    if (weight > heaviestWeight) {
-      heaviestWeight = weight.toDouble();
+  SetDto maxSet = sets[0];
+  num heaviestWeight = sets[0].value1;
+
+  for (SetDto set in sets) {
+    num currentWeight = set.value1;
+    if (currentWeight > heaviestWeight) {
+      maxSet = set;
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestWeight : toLbs(heaviestWeight);
+  return maxSet;
+}
 
-  return weight;
+SetDto heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
+  return _heaviestWeight(sets: exerciseLog.sets);
 }
 
 Duration longestDurationPerLog({required ExerciseLogDto exerciseLog}) {
@@ -86,9 +94,7 @@ double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final volume = isDefaultWeightUnit() ? heaviestVolume : toLbs(heaviestVolume);
-
-  return volume;
+  return heaviestVolume;
 }
 
 double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
@@ -101,37 +107,19 @@ double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final volume = isDefaultWeightUnit() ? lightestVolume : toLbs(lightestVolume);
-
-  return volume;
+  return lightestVolume;
 }
 
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
 }
 
-SetDto heaviestSetPerLog({required ExerciseLogDto exerciseLog}) {
-  SetDto heaviestSet = const SetDto(0, 0, false);
-  double heaviestVolume = heaviestSet.value1.toDouble() * heaviestSet.value2.toInt();
-
-  for (SetDto set in exerciseLog.sets) {
-    final volume = set.value1.toDouble() * set.value2.toInt();
-    if (volume > heaviestVolume) {
-      heaviestSet = set;
-      heaviestVolume = volume;
-    }
-  }
-  return heaviestSet;
-}
-
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestSet = heaviestSetPerLog(exerciseLog: exerciseLog);
+  final heaviestSet = heaviestWeightPerLog(exerciseLog: exerciseLog);
 
   final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
-  final maxWeight = isDefaultWeightUnit() ? max : toLbs(max);
-
-  return maxWeight;
+  return max;
 }
 
 /// Highest value across all [RoutineLogDto]
@@ -154,9 +142,7 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final weight = isDefaultWeightUnit() ? heaviestSet.value1 : toLbs(heaviestSet.value1.toDouble());
-
-  return (logId, heaviestSet.copyWith(value1: weight));
+  return (logId, heaviestSet);
 }
 
 (String?, SetDto) lightestSetForExercise({required BuildContext context, required ExerciseDto exercise}) {
@@ -177,9 +163,7 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
 
-  final weight = isDefaultWeightUnit() ? lightestSet.value1 : toLbs(lightestSet.value1.toDouble());
-
-  return (logId, lightestSet.copyWith(value1: weight));
+  return (logId, lightestSet);
 }
 
 (String?, double) heaviestWeightForExercise({required BuildContext context, required ExerciseDto exercise}) {
@@ -274,4 +258,56 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
     }
   }
   return (logId, longestDuration);
+}
+
+PBViewModel? calculatePBs({required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
+  final provider = Provider.of<RoutineLogProvider>(context, listen: false);
+
+  final pastSets =
+  provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+  final pastExerciseLogs =
+  provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
+  PBViewModel? pbViewModel;
+
+  if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
+    if (exerciseType == ExerciseType.weights) {
+      final pastHeaviestSetWeight = _heaviestWeight(sets: pastSets);
+      final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestSetVolumePerLog(exerciseLog: log)).max;
+      final past1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
+
+      final currentHeaviestSetWeight = _heaviestWeight(sets: exerciseLog.sets);
+      final currentHeaviestSetVolume = currentHeaviestSetWeight.value1 * currentHeaviestSetWeight.value2;
+      final current1RM = (currentHeaviestSetWeight.value1 * (1 + 0.0333 * currentHeaviestSetWeight.value2));
+
+      List<PBType> pbs = [];
+
+      if (currentHeaviestSetWeight.value1 > pastHeaviestSetWeight.value1) {
+        pbs.add(PBType.weight);
+      }
+
+      if (currentHeaviestSetVolume > pastHeaviestSetVolume) {
+        pbs.add(PBType.volume);
+      }
+
+      if (current1RM > past1RM) {
+        pbs.add(PBType.oneRepMax);
+      }
+
+      if (pbs.isNotEmpty) {
+        pbViewModel = PBViewModel(set: currentHeaviestSetWeight, pbs: pbs);
+      }
+    }
+
+    if (exerciseType == ExerciseType.duration) {
+      final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationPerLog(exerciseLog: log)).max;
+      final currentLongestDurationSet = longestDurationSet(sets: exerciseLog.sets);
+      final currentLongestDuration = Duration(milliseconds: currentLongestDurationSet.value1.toInt());
+
+      if (currentLongestDuration > pastLongestDuration) {
+        pbViewModel = PBViewModel(set: currentLongestDurationSet, pbs: [PBType.duration]);
+      }
+    }
+  }
+  return pbViewModel;
 }

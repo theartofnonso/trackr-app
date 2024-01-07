@@ -36,10 +36,7 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
       .toList();
 }
 
-List<TemplateChangesMessageDto> checkForChanges(
-    {required BuildContext context,
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2}) {
+List<TemplateChangesMessageDto> checkForChanges({required BuildContext context, required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
   List<TemplateChangesMessageDto> unsavedChangesMessage = [];
   final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
 
