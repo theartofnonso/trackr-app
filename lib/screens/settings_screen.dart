@@ -116,7 +116,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               const SizedBox(height: 8),
               OutlineListTile(
                   onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-
+              const SizedBox(height: 8),
               /// Uncomment this to enable notifications
               OutlineListTile(
                   onTap: _navigateToNotificationSettings,
