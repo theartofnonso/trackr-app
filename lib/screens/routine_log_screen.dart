@@ -284,23 +284,17 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
-      await Provider.of<RoutineTemplateProvider>(context, listen: false)
-          .updateTemplate(template: templateToUpdate.copyWith(exercises: exerciseLogs));
+      final newTemplate = templateToUpdate.copyWith(exercises: exerciseLogs);
+      await Provider.of<RoutineTemplateProvider>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
-  void _updateTemplate() async {
-    _toggleLoadingState(message: "Updating template from log");
-
-    try {
-      await _doUpdateTemplate();
-    } catch (_) {
-      if (mounted) {
-        showSnackbar(
-            context: context, icon: const Icon(Icons.info_outline), message: "Oops, we are unable to update template");
-      }
-    } finally {
-      _toggleLoadingState();
+  Future<void> _doUpdateTemplateExercises() async {
+    final templateToUpdate =
+        Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+    if (templateToUpdate != null) {
+      await Provider.of<RoutineTemplateProvider>(context, listen: false)
+          .updateTemplateExerciseLogs(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
     }
   }
 
@@ -359,10 +353,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 templateName: routineTemplate.name,
                 onPressed: () {
                   Navigator.of(context).pop();
-                  _updateTemplate();
+                  _doUpdateTemplate();
+                },
+                onDismissed: () {
+                  Navigator.of(context).pop();
+                  _doUpdateTemplateExercises();
                 }));
       } else {
-        _doUpdateTemplate();
+        _doUpdateTemplateExercises();
       }
     });
   }
@@ -380,8 +378,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 class _TemplateChangesListView extends StatelessWidget {
   final String templateName;
   final void Function() onPressed;
+  final void Function() onDismissed;
 
-  const _TemplateChangesListView({required this.templateName, required this.onPressed});
+  const _TemplateChangesListView({required this.templateName, required this.onPressed, required this.onDismissed});
 
   @override
   Widget build(BuildContext context) {
@@ -399,7 +398,7 @@ class _TemplateChangesListView extends StatelessWidget {
         Row(children: [
           const SizedBox(width: 15),
           CTextButton(
-              onPressed: Navigator.of(context).pop,
+              onPressed: onDismissed,
               label: "Cancel",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               buttonColor: Colors.transparent,

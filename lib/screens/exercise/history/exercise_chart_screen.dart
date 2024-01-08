@@ -67,7 +67,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   late SummaryType _summaryType;
 
   void _heaviestWeightPerLog() {
-    final sets = _exerciseLogs.map((log) => heaviestWeightPerLog(exerciseLog: log)).toList();
+    final sets = _exerciseLogs.map((log) => heaviestWeightForLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.value1.toDouble())).toList();
       _summaryType = SummaryType.weight;
@@ -76,7 +76,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _heaviestSetVolumePerLog() {
-    final values = _exerciseLogs.map((log) => heaviestSetVolumePerLog(exerciseLog: log)).toList();
+    final values = _exerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.setVolume;
@@ -85,7 +85,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _lightestSetVolumePerLog() {
-    final values = _exerciseLogs.map((log) => lightestSetVolumePerLog(exerciseLog: log)).toList();
+    final values = _exerciseLogs.map((log) => lightestSetVolumeForLog(exerciseLog: log)).toList();
 
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
