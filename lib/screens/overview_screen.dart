@@ -57,12 +57,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final monthToLogs = routineLogProvider.monthToLogs;
+    final weekToLogs = routineLogProvider.weekToLogs;
 
-    final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
-    final logsForTheMonth = monthToLogs[thisMonthDateRange()] ?? [];
+    final logsForTheWeek = weekToLogs[thisWeekDateRange()] ?? [];
+    final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
 
-    final consistencyLevel = levelFromXp(daysLogged: monthToLogs.keys.length);
+    final consistencyLevel = levelFromXp(daysLogged: weekToLogs.keys.length);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(

@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const OverviewScreen(), const RoutinesScreen(), const AchievementsScreen()];
+    final screens = [const OverviewScreen(), const RoutinesScreen()];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
@@ -101,11 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Workouts',
           ),
           /// Uncomment this to enable achievements
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
-            selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
-            label: 'Achievements',
-          )
+          // NavigationDestination(
+          //   icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
+          //   selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
+          //   label: 'Achievements',
+          // )
         ],
         onDestinationSelected: (int index) {
           setState(() {
