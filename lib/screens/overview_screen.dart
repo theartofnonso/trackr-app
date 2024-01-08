@@ -57,10 +57,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final logAndWeeks = routineLogProvider.weekToLogs;
+    final monthToLogs = routineLogProvider.monthToLogs;
 
-    final logsForTheWeek = logAndWeeks[thisWeekDateRange()] ?? [];
-    final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
+    final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
+    final logsForTheMonth = monthToLogs[thisMonthDateRange()] ?? [];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -121,7 +121,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                               _CTableCell(
                                   title: "Level",
-                                  subtitle: "${levelFromXp(daysLogged: logAndWeeks.length)}/50",
+                                  subtitle: "${levelFromXp(daysLogged: monthToLogs.keys.length)}/50",
                                   onTap: () => navigateToAllDaysTracked(context: context))
                             ])
                           ],
