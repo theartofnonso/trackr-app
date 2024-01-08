@@ -12,7 +12,7 @@ class InformationContainerLite extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
       padding: const EdgeInsets.all(12),
-      child: Text(content, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+      child: Text(content, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
     );
   }
 }

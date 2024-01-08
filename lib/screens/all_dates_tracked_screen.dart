@@ -47,7 +47,7 @@ class AllDaysTrackedScreen extends StatelessWidget {
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                   const SizedBox(height: 16),
                   const InformationContainerLite(
-                    content: 'Your level of consistency is calculated by the number of weeks that contain at least one green square',
+                    content: 'Your consistency score is determined by counting the weeks with at least one green square over a 50-week period',
                     color: tealBlueLighter,
                   ),
                   const SizedBox(height: 20),
