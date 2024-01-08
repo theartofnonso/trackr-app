@@ -24,7 +24,7 @@ class InformationContainer extends StatelessWidget {
             Text(title, style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w700)),
           ]),
           const SizedBox(height: 8),
-          Text(description, style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(description, style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500)),
         ],
       ),
     );

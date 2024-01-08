@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +24,8 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
     AchievementType.fifteenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogs, type: type),
-    AchievementType.supersetSpecialist => _calculateSuperSetSpecialistAchievement(logs: routineLogs),
+    AchievementType.supersetSpecialist =>
+      _calculateSuperSetSpecialistAchievement(logs: routineLogs, target: type.target),
     AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.neverSkipAMonday =>
       _calculateNeverSkipAMondayAchievement(weekToLogs: weekToLogs, target: type.target),
@@ -84,14 +84,10 @@ ProgressDto _calculateDaysAchievement({required List<RoutineLogDto> logs, requir
 }
 
 /// [AchievementType.supersetSpecialist]
-ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLogDto> logs}) {
-  int target = 20;
-
+ProgressDto _calculateSuperSetSpecialistAchievement({required List<RoutineLogDto> logs, required int target}) {
   // Count RoutineLogs with at least two exercises that have a non-null superSetId
   final achievedLogs = logs.where((log) {
-    var exercisesWithSuperSetId = log.exerciseLogs
-        .where((exerciseLog) => exerciseLog.superSetId.isNotEmpty)
-        .length;
+    var exercisesWithSuperSetId = log.exerciseLogs.where((exerciseLog) => exerciseLog.superSetId.isNotEmpty).length;
 
     return exercisesWithSuperSetId >= 2;
   }).toList();
@@ -271,11 +267,11 @@ ProgressDto _calculateTimeUnderTensionAchievement(
     return Duration(milliseconds: duration.toInt());
   });
 
-  final duration = durations.isNotEmpty ? durations.reduce((total, duration) => total + duration) : Duration.zero;
+  final totalDuration = durations.isNotEmpty ? durations.reduce((total, duration) => total + duration) : Duration.zero;
 
-  final progress = duration.inHours / targetHours.inHours;
+  final progress = totalDuration.inMilliseconds / targetHours.inMilliseconds;
 
-  final remainder = targetHours - duration;
+  final remainder = targetHours - totalDuration;
 
   return generateProgress(
       achievedLogs: achievedLogs,

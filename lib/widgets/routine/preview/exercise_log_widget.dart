@@ -28,6 +28,11 @@ class PBViewModel {
   final List<PBType> pbs;
 
   PBViewModel({required this.set, required this.pbs});
+
+  @override
+  String toString() {
+    return 'PBViewModel{set: $set, pbs: $pbs}';
+  }
 }
 
 class ExerciseLogWidget extends StatelessWidget {

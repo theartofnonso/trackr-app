@@ -17,7 +17,7 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 /// Highest value per [RoutineLogDto]
 ///
 
-SetDto _heaviestWeight({required List<SetDto> sets}) {
+SetDto _heaviestWeightInSets({required List<SetDto> sets}) {
 
   SetDto maxSet = sets[0];
   num heaviestWeight = sets[0].value1;
@@ -32,8 +32,8 @@ SetDto _heaviestWeight({required List<SetDto> sets}) {
   return maxSet;
 }
 
-SetDto heaviestWeightPerLog({required ExerciseLogDto exerciseLog}) {
-  return _heaviestWeight(sets: exerciseLog.sets);
+SetDto heaviestWeightForLog({required ExerciseLogDto exerciseLog}) {
+  return _heaviestWeightInSets(sets: exerciseLog.sets);
 }
 
 Duration longestDurationPerLog({required ExerciseLogDto exerciseLog}) {
@@ -84,7 +84,7 @@ int highestRepsForLog({required ExerciseLogDto exerciseLog}) {
   return highestReps;
 }
 
-double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
+double heaviestVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
   double heaviestVolume = 0;
 
   for (var set in exerciseLog.sets) {
@@ -97,7 +97,21 @@ double heaviestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
   return heaviestVolume;
 }
 
-double lightestSetVolumePerLog({required ExerciseLogDto exerciseLog}) {
+SetDto heaviestSetForExerciseLog({required ExerciseLogDto exerciseLog}) {
+  double heaviestVolume = 0;
+  SetDto setDto = const SetDto(0, 0, false);
+  for (var set in exerciseLog.sets) {
+    final volume = set.value1 * set.value2;
+    if (volume > heaviestVolume) {
+      heaviestVolume = volume.toDouble();
+      setDto = set;
+    }
+  }
+
+  return setDto;
+}
+
+double lightestSetVolumeForLog({required ExerciseLogDto exerciseLog}) {
   double lightestVolume = 0;
 
   for (var set in exerciseLog.sets) {
@@ -115,7 +129,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestSet = heaviestWeightPerLog(exerciseLog: exerciseLog);
+  final heaviestSet = heaviestSetForExerciseLog(exerciseLog: exerciseLog);
 
   final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
 
@@ -272,30 +286,35 @@ PBViewModel? calculatePBs({required BuildContext context, required ExerciseType 
 
   if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
-      final pastHeaviestSetWeight = _heaviestWeight(sets: pastSets);
-      final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestSetVolumePerLog(exerciseLog: log)).max;
+      final pastHeaviestSetWeight = _heaviestWeightInSets(sets: pastSets);
+      final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).max;
       final past1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
 
-      final currentHeaviestSetWeight = _heaviestWeight(sets: exerciseLog.sets);
-      final currentHeaviestSetVolume = currentHeaviestSetWeight.value1 * currentHeaviestSetWeight.value2;
-      final current1RM = (currentHeaviestSetWeight.value1 * (1 + 0.0333 * currentHeaviestSetWeight.value2));
+      final currentHeaviestSetWeight = _heaviestWeightInSets(sets: exerciseLog.sets);
+      final currentHeaviestSetVolume = heaviestVolumeForExerciseLog(exerciseLog: exerciseLog);
+      final currentHeaviestSet = heaviestSetForExerciseLog(exerciseLog: exerciseLog);
+      final current1RM = oneRepMaxPerLog(exerciseLog: exerciseLog);
 
       List<PBType> pbs = [];
+      SetDto set = const SetDto(0, 0, false);
 
       if (currentHeaviestSetWeight.value1 > pastHeaviestSetWeight.value1) {
         pbs.add(PBType.weight);
+        set = currentHeaviestSetWeight;
       }
 
       if (currentHeaviestSetVolume > pastHeaviestSetVolume) {
         pbs.add(PBType.volume);
+        set = currentHeaviestSetWeight;
       }
 
       if (current1RM > past1RM) {
         pbs.add(PBType.oneRepMax);
+        set = currentHeaviestSet;
       }
 
       if (pbs.isNotEmpty) {
-        pbViewModel = PBViewModel(set: currentHeaviestSetWeight, pbs: pbs);
+        pbViewModel = PBViewModel(set: set, pbs: pbs);
       }
     }
 

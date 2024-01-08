@@ -28,19 +28,6 @@ class AllDaysTrackedScreen extends StatelessWidget {
       );
     }
 
-    // The number of containers per row is 3.
-    int containersPerRow = 3;
-
-    // Get the screen width.
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate the width of each container. Here, we subtract the padding (16.0 on each side) and
-    // the spacing between the containers (8.0 between each container, hence 16.0 total for two gaps).
-    double containerWidth = (screenWidth - (16.0 * 2) - (16.0 * (containersPerRow - 1))) / containersPerRow;
-
-    // The aspect ratio for the GridView based on the container width and the screen height.
-    double aspectRatio = containerWidth / (screenWidth / 3);
-
     return Scaffold(
       body: Scaffold(
           body: Stack(
@@ -60,14 +47,14 @@ class AllDaysTrackedScreen extends StatelessWidget {
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                   const SizedBox(height: 16),
                   const InformationContainerLite(
-                    content: 'Your level of consistency is calculated by the number of weeks that contain at least one green square',
+                    content: 'Your consistency score is determined by counting the weeks with at least one green square over a 50-week period',
                     color: tealBlueLighter,
                   ),
                   const SizedBox(height: 20),
                   Expanded(
                     child: GridView.count(
-                      crossAxisCount: containersPerRow,
-                      childAspectRatio: aspectRatio,
+                      crossAxisCount: 3,
+                      childAspectRatio: 1,
                       mainAxisSpacing: 10.0,
                       crossAxisSpacing: 10.0,
                       children: List.generate(12, (index) {
