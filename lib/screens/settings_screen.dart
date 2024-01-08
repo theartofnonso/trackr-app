@@ -53,6 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text("Settings",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 16),
               ListTile(
                 title: Text("Weight",
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),

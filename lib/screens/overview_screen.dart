@@ -30,8 +30,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void navigateToAllDaysTracked({required BuildContext context}) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AllDaysTrackedScreen()));
+  void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AllDaysTrackedScreen(consistencyLevel: consistencyLevel)));
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -61,6 +61,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
     final logsForTheMonth = monthToLogs[thisMonthDateRange()] ?? [];
+
+    final consistencyLevel = levelFromXp(daysLogged: monthToLogs.keys.length);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -121,8 +123,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                               _CTableCell(
                                   title: "Level",
-                                  subtitle: "${levelFromXp(daysLogged: monthToLogs.keys.length)}/50",
-                                  onTap: () => navigateToAllDaysTracked(context: context))
+                                  subtitle: "$consistencyLevel/50",
+                                  onTap: () => navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
                             ])
                           ],
                         )),

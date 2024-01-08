@@ -11,7 +11,8 @@ import '../utils/general_utils.dart';
 import '../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class AllDaysTrackedScreen extends StatelessWidget {
-  const AllDaysTrackedScreen({super.key});
+  final int consistencyLevel;
+  const AllDaysTrackedScreen({super.key, required this.consistencyLevel});
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +51,11 @@ class AllDaysTrackedScreen extends StatelessWidget {
           body: SafeArea(
         minimum: const EdgeInsets.all(10.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("All Days Trackd",
+          Text("Consistency Level $consistencyLevel",
               style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
           const SizedBox(height: 16),
           const InformationContainerLite(
-            content: 'Green squares represent the days you have logged a training session for this year',
+            content: 'Your level of consistency is calculated by the number of rows per month that contain at least one green square',
             color: tealBlue,
           ),
           const SizedBox(height: 20),
