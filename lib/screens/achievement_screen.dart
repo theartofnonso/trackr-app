@@ -18,9 +18,9 @@ class AchievementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final monthsHeatMap = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
-            return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8));
+            return CalendarHeatMap(dates: dates, initialDate: DateTime.now());
           }).toList()
-        : [const CalendarHeatMap(dates: [], margin: EdgeInsets.all(8))];
+        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now())];
 
     return Scaffold(
       body: Stack(children: [
@@ -61,9 +61,7 @@ class AchievementScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              monthsHeatMap.length >= 3
-                  ? Center(child: Wrap(children: monthsHeatMap))
-                  : Wrap(children: monthsHeatMap),
+              monthsHeatMap.length >= 3 ? Center(child: Wrap(children: monthsHeatMap)) : Wrap(children: monthsHeatMap),
               const SizedBox(height: 10),
               const InformationContainerLite(
                   content: 'Brightly-coloured squares represent days you logged a session for this achievement',

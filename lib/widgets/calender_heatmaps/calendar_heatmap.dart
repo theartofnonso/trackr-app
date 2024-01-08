@@ -7,16 +7,20 @@ class _DateViewModel {
   final bool active;
 
   const _DateViewModel({required this.active, required this.dateTime});
+
+  @override
+  String toString() {
+    return '_DateViewModel{dateTime: $dateTime, active: $active}';
+  }
 }
 
 class CalendarHeatMap extends StatelessWidget {
-  final EdgeInsetsGeometry? margin;
   final List<DateTime> dates;
+  final DateTime initialDate;
 
-  const CalendarHeatMap({super.key, required this.margin, required this.dates});
+  const CalendarHeatMap({super.key, required this.initialDate, required this.dates});
 
   List<_DateViewModel?> _generateDates() {
-    final initialDate = dates.isNotEmpty ? dates.first : DateTime.now();
     int year = initialDate.year;
     int month = initialDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -30,8 +34,8 @@ class CalendarHeatMap extends StatelessWidget {
     final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
     if (isFirstDayNotMonday) {
       final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyDated = List.filled(precedingDays, null);
-      datesInMonths.addAll(emptyDated);
+      final emptyDates = List.filled(precedingDays, null);
+      datesInMonths.addAll(emptyDates);
     }
 
     // Add dates
@@ -56,78 +60,60 @@ class CalendarHeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
 
-    final firstDate = dates.isNotEmpty ? dates.first : DateTime.now();
-
-    return Container(
-      margin: margin,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(firstDate.abbreviatedMonth().toUpperCase(),
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-          _Dates(dates: datesForMonth),
-        ],
-      ),
-    );
+    return _Month(days: datesForMonth, initialDate: initialDate);
   }
 }
 
-class _Date extends StatelessWidget {
+class _Day extends StatelessWidget {
   final _DateViewModel date;
 
-  const _Date({required this.date});
+  const _Day({required this.date});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 12,
-      height: 12,
-      child: Container(
-        decoration: BoxDecoration(
-          color: date.active ? Colors.green : Colors.green.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(1),
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        color: date.active ? Colors.green : Colors.green.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(1),
       ),
     );
   }
 }
 
-class _Dates extends StatelessWidget {
-  final List<_DateViewModel?> dates;
+class _Month extends StatelessWidget {
+  final List<_DateViewModel?> days;
+  final DateTime initialDate;
 
-  const _Dates({required this.dates});
+  const _Month({required this.days, required this.initialDate});
 
   @override
   Widget build(BuildContext context) {
-    int iterationCount = 6;
-    int numbersPerIteration = 7;
-
-    final datesWidgets = dates.map((date) {
-      if (date == null) {
-        return const SizedBox(width: 12, height: 12);
+    final daysWidgets = days.map((day) {
+      if (day == null) {
+        return const SizedBox();
       } else {
-        return _Date(date: date);
+        return _Day(date: day);
       }
     }).toList();
 
-    List<Widget> widgets = [];
-
-    for (int i = 0; i < iterationCount; i++) {
-      int startIndex = i * numbersPerIteration;
-      int endIndex = (i + 1) * numbersPerIteration;
-
-      if (endIndex > dates.length) {
-        endIndex = dates.length;
-      }
-
-      widgets.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [...datesWidgets.sublist(startIndex, endIndex)],
-      ));
-    }
-
-    return SizedBox(
-        width: 100, height: 80, child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: widgets));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(initialDate.abbreviatedMonth().toUpperCase(),
+          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+      Expanded(
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            childAspectRatio: 1, // for square shape
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 4.0,
+          ),
+          itemCount: daysWidgets.length, // Just an example to vary the number of squares
+          itemBuilder: (context, index) {
+            return daysWidgets[index];
+          },
+        ),
+      )
+    ]);
   }
 }

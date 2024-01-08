@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
+import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
-class WeightsSetRow extends SetRow {
+class WeightsSetRow extends StatelessWidget {
+  final SetDto setDto;
+  final RoutineEditorMode editorType;
+  final VoidCallback onRemoved;
+  final VoidCallback onCheck;
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
   final (TextEditingController, TextEditingController) controllers;
 
-  const WeightsSetRow(
-      {super.key,
-      required this.controllers,
-      required this.onChangedReps,
-      required this.onChangedWeight,
-      required super.setDto,
-      required super.editorType,
-      required super.onRemoved,
-      required super.onCheck});
+  const WeightsSetRow({
+    super.key,
+    required this.setDto,
+    required this.editorType,
+    required this.onRemoved,
+    required this.onCheck,
+    required this.onChangedReps,
+    required this.onChangedWeight,
+    required this.controllers,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +50,7 @@ class WeightsSetRow extends SetRow {
       children: [
         TableRow(children: [
           TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: SetDeleteButton(onDelete: super.onRemoved))),
+              verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
