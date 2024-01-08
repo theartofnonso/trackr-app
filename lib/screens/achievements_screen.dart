@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
 import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
+import '../app_constants.dart';
 import '../enums/achievement_type_enums.dart';
 import '../providers/achievements_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/achievements/achievement_tile.dart';
 import '../widgets/backgrounds/gradient_background.dart';
+import '../widgets/information_container_lite.dart';
 import 'achievement_screen.dart';
 
 class AchievementsScreen extends StatelessWidget {
@@ -36,19 +38,21 @@ class AchievementsScreen extends StatelessWidget {
         body: Stack(children: [
       const Positioned.fill(child: GradientBackground()),
       SafeArea(
-        minimum: const EdgeInsets.all(10.0),
+          minimum: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const SizedBox(height: 10),
-          Text("Achievements",
-              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w500)),
-          const SizedBox(height: 6),
-          Text("Keep logging your sessions to achieve milestones and unlock badges.",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 16)),
-          const SizedBox(height: 20),
-          logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
-        ]),
-      ))
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const SizedBox(height: 10),
+              Text("Achievements",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 16),
+              const InformationContainerLite(
+                content: 'Keep logging your sessions to achieve milestones and unlock new achievements',
+                color: tealBlueLighter,
+              ),
+              const SizedBox(height: 20),
+              logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
+            ]),
+          ))
     ]));
   }
 }

@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -78,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const OverviewScreen(), const RoutinesScreen()];
+    final screens = [const OverviewScreen(), const RoutinesScreen(), const AchievementsScreen()];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
@@ -100,11 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Workouts',
           ),
           /// Uncomment this to enable achievements
-          // NavigationDestination(
-          //   icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
-          //   selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
-          //   label: 'Achievements',
-          // )
+          NavigationDestination(
+            icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
+            selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
+            label: 'Achievements',
+          )
         ],
         onDestinationSelected: (int index) {
           setState(() {
