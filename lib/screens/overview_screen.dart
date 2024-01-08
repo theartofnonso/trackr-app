@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/screens/all_dates_tracked_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
@@ -29,6 +30,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
+  void navigateToAllDaysTracked({required BuildContext context}) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AllDaysTrackedScreen()));
+  }
+
   void _logEmptyRoutine(BuildContext context) async {
     final log = cachedRoutineLog();
     if (log == null) {
@@ -52,7 +57,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
+    final logAndWeeks = routineLogProvider.weekToLogs;
+
+    final logsForTheWeek = logAndWeeks[thisWeekDateRange()] ?? [];
     final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
 
     return Scaffold(
@@ -112,7 +119,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   subtitle:
                                       "${logsForTheMonth.length} ${logsForTheMonth.length > 1 ? "sessions" : "session"}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
-                              _CTableCell(title: "Level", subtitle: "Coming", onTap: () => {})
+                              _CTableCell(
+                                  title: "Level",
+                                  subtitle: "${levelFromXp(daysLogged: logAndWeeks.length)}/50",
+                                  onTap: () => navigateToAllDaysTracked(context: context))
                             ])
                           ],
                         )),

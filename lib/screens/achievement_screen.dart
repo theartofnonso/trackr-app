@@ -18,9 +18,9 @@ class AchievementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final monthsHeatMap = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
-            return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8));
+            return CalendarHeatMap(dates: dates, margin: const EdgeInsets.all(8), initialDate: DateTime.now());
           }).toList()
-        : [const CalendarHeatMap(dates: [], margin: EdgeInsets.all(8))];
+        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), margin: const EdgeInsets.all(8),)];
 
     return Scaffold(
       body: Stack(children: [

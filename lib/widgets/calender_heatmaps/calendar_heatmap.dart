@@ -12,11 +12,11 @@ class _DateViewModel {
 class CalendarHeatMap extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final List<DateTime> dates;
+  final DateTime initialDate;
 
-  const CalendarHeatMap({super.key, required this.margin, required this.dates});
+  const CalendarHeatMap({super.key, required this.margin, required this.initialDate, required this.dates});
 
   List<_DateViewModel?> _generateDates() {
-    final initialDate = dates.isNotEmpty ? dates.first : DateTime.now();
     int year = initialDate.year;
     int month = initialDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -56,15 +56,13 @@ class CalendarHeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
 
-    final firstDate = dates.isNotEmpty ? dates.first : DateTime.now();
-
     return Container(
       margin: margin,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(firstDate.abbreviatedMonth().toUpperCase(),
+          Text(initialDate.abbreviatedMonth().toUpperCase(),
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           _Dates(dates: datesForMonth),
         ],
