@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
 import '../../../../app_constants.dart';
+import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
-class RepsSetRow extends SetRow {
+class RepsSetRow extends StatelessWidget {
+  final SetDto setDto;
+  final RoutineEditorMode editorType;
+  final VoidCallback onRemoved;
+  final VoidCallback onCheck;
   final (TextEditingController, TextEditingController) controllers;
   final void Function(num value) onChangedReps;
 
-  const RepsSetRow(
-      {super.key,
-      required this.controllers,
-      required this.onChangedReps,
-      required super.setDto,
-      required super.editorType,
-      required super.onRemoved,
-      required super.onCheck});
+  const RepsSetRow({
+    super.key,
+    required this.setDto,
+    required this.editorType,
+    required this.onRemoved,
+    required this.onCheck,
+    required this.controllers,
+    required this.onChangedReps,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,8 @@ class RepsSetRow extends SetRow {
       children: [
         TableRow(children: [
           TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: SetDeleteButton(onDelete: super.onRemoved))),
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: IntTextField(

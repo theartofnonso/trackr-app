@@ -157,3 +157,32 @@ Future<bool> requestIosNotificationPermission() async {
           ) ??
       false;
 }
+
+List<DateTime> datesInRange(DateTimeRange range) {
+  List<DateTime> dates = [];
+
+  for (DateTime date = range.start;
+      date.isBefore(range.end) || date.isAtSameMomentAs(range.end);
+      date = date.add(const Duration(days: 1))) {
+    dates.add(date);
+  }
+
+  return dates;
+}
+
+List<DateTimeRange> monthRangesForYear(int year) {
+  List<DateTimeRange> monthRanges = [];
+
+  for (int month = 1; month <= 12; month++) {
+    DateTime start = DateTime(year, month, 1);
+    DateTime end = (month < 12) ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1)) : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
+
+    monthRanges.add(DateTimeRange(start: start, end: end));
+  }
+
+  return monthRanges;
+}
+
+int levelFromXp({required int daysLogged}) {
+  return daysLogged > 50 ? 50 : daysLogged;
+}

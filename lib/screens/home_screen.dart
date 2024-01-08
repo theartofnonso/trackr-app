@@ -19,6 +19,7 @@ import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
 import '../providers/routine_log_provider.dart';
 import '../providers/routine_template_provider.dart';
+import 'notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -155,9 +156,19 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadCachedLog();
     }
     /// Uncomment this to enable notifications
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _checkAndRequestNotificationPermission();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndRequestNotificationPermission();
+    });
+  }
+
+  void _requestIosNotificationPermission() async {
+    final isEnabled = await requestIosNotificationPermission();
+    if(isEnabled) {
+      if(mounted) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
+      }
+    }
+
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {
@@ -179,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
               CTextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    requestIosNotificationPermission();
+                    _requestIosNotificationPermission();
                   },
                   label: "Always remind me",
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

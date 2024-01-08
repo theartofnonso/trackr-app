@@ -53,6 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text("Settings",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 16),
               ListTile(
                 title: Text("Weight",
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
@@ -115,14 +118,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ),
               const SizedBox(height: 8),
               OutlineListTile(
-                  onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourites exercises"),
-
+                  onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourite exercises"),
+              const SizedBox(height: 8),
               /// Uncomment this to enable notifications
-              // OutlineListTile(
-              //     onTap: _navigateToNotificationSettings,
-              //     title: "Notifications",
-              //     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-              // const SizedBox(height: 8),
+              OutlineListTile(
+                  onTap: _navigateToNotificationSettings,
+                  title: "Notifications",
+                  trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+              const SizedBox(height: 8),
               const SizedBox(height: 16),
               OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
               const SizedBox(height: 8),
