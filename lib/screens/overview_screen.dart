@@ -30,8 +30,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AllDaysTrackedScreen(consistencyLevel: consistencyLevel)));
+  void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => AllDaysTrackedScreen(consistencyLevel: consistencyLevel)));
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -124,7 +125,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               _CTableCell(
                                   title: "Level",
                                   subtitle: "$consistencyLevel/50",
-                                  onTap: () => navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
+                                  onTap: () =>
+                                      navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
                             ])
                           ],
                         )),
@@ -145,7 +147,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 20),
-                CalendarScreen(),
+                CalendarScreen()
               ],
             )),
       ),
