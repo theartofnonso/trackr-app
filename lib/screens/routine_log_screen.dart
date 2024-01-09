@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/pbs_screen.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -23,9 +24,11 @@ import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_template_provider.dart';
+import '../utils/exercise_logs_utils.dart';
 import '../widgets/fabs/expandable_fab.dart';
 import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
+import '../widgets/routine/preview/exercise_log_widget.dart';
 import 'editors/helper_utils.dart';
 import 'editors/routine_log_editor_screen.dart';
 
@@ -329,6 +332,25 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         isRightActionDestructive: true);
   }
 
+  void _displayPBs() {
+    final pbs = widget.log.exerciseLogs
+        .map((exerciseLog) {
+          final exercise = exerciseLog.exercise;
+          return calculatePBs(context: context, exerciseType: exercise.type, exerciseLog: exerciseLog);
+        })
+        .whereType<PBViewModel>()
+        .toList();
+
+    if (pbs.isEmpty) {
+      return;
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return PBsScreen(pbViewModels: pbs, onPressed: Navigator.of(context).pop);
+        });
+  }
+
   void _checkForTemplateUpdates() {
     final templateId = widget.log.templateId;
     if (templateId.isEmpty) {
@@ -354,13 +376,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   _doUpdateTemplate();
+                  _displayPBs();
                 },
                 onDismissed: () {
                   Navigator.of(context).pop();
                   _doUpdateTemplateExercises();
+                  _displayPBs();
                 }));
       } else {
         _doUpdateTemplateExercises();
+        _displayPBs();
       }
     });
   }

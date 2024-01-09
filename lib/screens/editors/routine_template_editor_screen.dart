@@ -224,6 +224,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
                   label: template != null ? "Update" : "Save",
                   buttonColor: Colors.transparent,
+                  buttonBorderColor: Colors.transparent,
                   loading: _loading,
                   loadingLabel: _loadingLabel)
             ],
