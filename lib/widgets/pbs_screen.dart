@@ -93,7 +93,7 @@ class PBListTile extends StatelessWidget {
         crossAxisAlignment: single ? CrossAxisAlignment.center : CrossAxisAlignment.start,
         children: [
           Text(pbViewModel.exercise.name,
-              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800)),
+              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800), textAlign: single ? TextAlign.center : TextAlign.start),
           const SizedBox(height: 8),
           Text(pbValue, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
           const SizedBox(height: 16),

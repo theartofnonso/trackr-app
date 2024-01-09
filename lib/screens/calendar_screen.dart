@@ -271,16 +271,22 @@ class _Date extends StatelessWidget {
       splashColor: Colors.transparent,
       onTap: () => onTap(dateTime),
       child: Container(
-        margin: const EdgeInsets.all(3),
+        padding: selectedDateTime.isSameDateAs(dateTime) ? const EdgeInsets.all(1) : null,
         decoration: BoxDecoration(
-          color: _getBackgroundColor(log != null),
-          borderRadius: BorderRadius.circular(5),
           border: _getBorder(),
+          borderRadius: BorderRadius.circular(5),
         ),
-        child: Center(
-          child: Text("${dateTime.day}",
-              style: GoogleFonts.montserrat(
-                  fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+        child: Container(
+          margin: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: _getBackgroundColor(log != null),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Center(
+            child: Text("${dateTime.day}",
+                style: GoogleFonts.montserrat(
+                    fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+          ),
         ),
       ),
     );

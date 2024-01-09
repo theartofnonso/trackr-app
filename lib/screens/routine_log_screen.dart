@@ -354,6 +354,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _checkForTemplateUpdates() {
     final templateId = widget.log.templateId;
     if (templateId.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _displayPBs();
+      });
       return;
     }
 
