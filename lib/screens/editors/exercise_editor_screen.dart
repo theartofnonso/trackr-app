@@ -58,6 +58,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       onPressed: _updateExercise,
                       label: "Update",
                       buttonColor: Colors.transparent,
+                      buttonBorderColor: Colors.transparent,
                       loading: _loading,
                       loadingLabel: _loadingLabel)
                   : const SizedBox.shrink()

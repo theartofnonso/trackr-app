@@ -190,6 +190,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             onPressed: _navigateBackWithSelectedExercises,
             label: "Add (${_selectedExercises.length})",
             buttonColor: Colors.transparent,
+            buttonBorderColor: Colors.transparent,
           )
               : const SizedBox.shrink()
         ],

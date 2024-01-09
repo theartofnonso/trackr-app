@@ -5,6 +5,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
+import '../../../dtos/exercise_dto.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
@@ -24,14 +25,15 @@ enum PBType {
 }
 
 class PBViewModel {
+  final ExerciseDto exercise;
   final SetDto set;
   final List<PBType> pbs;
 
-  PBViewModel({required this.set, required this.pbs});
+  PBViewModel({required this.exercise, required this.set, required this.pbs});
 
   @override
   String toString() {
-    return 'PBViewModel{set: $set, pbs: $pbs}';
+    return 'PBViewModel{exercise: $exercise, set: $set, pbs: $pbs}';
   }
 }
 

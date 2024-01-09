@@ -314,7 +314,7 @@ PBViewModel? calculatePBs({required BuildContext context, required ExerciseType 
       }
 
       if (pbs.isNotEmpty) {
-        pbViewModel = PBViewModel(set: set, pbs: pbs);
+        pbViewModel = PBViewModel(exercise: exerciseLog.exercise, set: set, pbs: pbs);
       }
     }
 
@@ -324,7 +324,7 @@ PBViewModel? calculatePBs({required BuildContext context, required ExerciseType 
       final currentLongestDuration = Duration(milliseconds: currentLongestDurationSet.value1.toInt());
 
       if (currentLongestDuration > pastLongestDuration) {
-        pbViewModel = PBViewModel(set: currentLongestDurationSet, pbs: [PBType.duration]);
+        pbViewModel = PBViewModel(exercise: exerciseLog.exercise, set: currentLongestDurationSet, pbs: [PBType.duration]);
       }
     }
   }
