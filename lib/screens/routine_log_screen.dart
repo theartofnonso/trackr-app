@@ -171,7 +171,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                           TableCell(
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
-                              child: Text(log.duration().secondsOrMinutesOrHours(),
+                              child: Text(log.duration().hmsAnalog(),
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),

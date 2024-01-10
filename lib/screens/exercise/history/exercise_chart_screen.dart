@@ -406,7 +406,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Best Time',
-                  trailing: widget.longestDuration.$2.secondsOrMinutesOrHours(),
+                  trailing: widget.longestDuration.$2.hmsAnalog(),
                   subtitle: 'Longest time for this exercise',
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
                   enabled: _exerciseLogs.isNotEmpty),

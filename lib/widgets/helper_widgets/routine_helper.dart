@@ -45,7 +45,7 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
         final label = setDto.value2;
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
-        final label = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
+        final label = Duration(milliseconds: setDto.value1.toInt()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbViewModel: pb);
     }
   })).toList();

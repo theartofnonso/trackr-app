@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
@@ -22,6 +21,7 @@ import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_picker.dart';
+import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
@@ -292,7 +292,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                 builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
                                   return _RoutineLogOverview(
                                     sets: provider.completedSets().length,
-                                    timer: _RoutineTimer(startTime: widget.log.startTime),
+                                    timer: RoutineTimer(startTime: widget.log.startTime),
                                   );
                                 }),
                             const SizedBox(height: 20),
@@ -361,43 +361,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void dispose() {
     _onDisposeCallback();
     super.dispose();
-  }
-}
-
-class _RoutineTimer extends StatefulWidget {
-  final DateTime startTime;
-
-  const _RoutineTimer({required this.startTime});
-
-  @override
-  State<_RoutineTimer> createState() => _RoutineTimerState();
-}
-
-class _RoutineTimerState extends State<_RoutineTimer> {
-  late Timer _timer;
-  Duration _elapsedDuration = Duration.zero;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(_elapsedDuration.secondsOrMinutesOrHours(),
-        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _elapsedDuration = DateTime.now().difference(widget.startTime);
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {
-        _elapsedDuration = DateTime.now().difference(widget.startTime);
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
   }
 }
 

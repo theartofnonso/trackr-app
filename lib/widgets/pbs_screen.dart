@@ -76,7 +76,7 @@ class PBListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final pbValue = switch (pbViewModel.exercise.type) {
       ExerciseType.weights => "${pbViewModel.set.value1}${weightLabel()} x ${pbViewModel.set.value2}",
-      ExerciseType.duration => Duration(milliseconds: pbViewModel.set.value1.toInt()).secondsOrMinutesOrHours(),
+      ExerciseType.duration => Duration(milliseconds: pbViewModel.set.value1.toInt()).hmsAnalog(),
       ExerciseType.bodyWeight => "x ${pbViewModel.set.value2}",
       ExerciseType.assistedBodyWeight => "-${pbViewModel.set.value1}${weightLabel()} x ${pbViewModel.set.value2}",
     };
