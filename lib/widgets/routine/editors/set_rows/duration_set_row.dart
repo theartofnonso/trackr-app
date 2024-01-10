@@ -7,7 +7,7 @@ import '../set_check_button.dart';
 import '../set_delete_button.dart';
 import '../timer_widget.dart';
 
-class DurationSetRow extends StatefulWidget {
+class DurationSetRow extends StatelessWidget {
   final SetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
@@ -24,17 +24,12 @@ class DurationSetRow extends StatefulWidget {
   });
 
   @override
-  State<DurationSetRow> createState() => _DurationSetRowState();
-}
-
-class _DurationSetRowState extends State<DurationSetRow> {
-  @override
   Widget build(BuildContext context) {
-    Duration duration = Duration(milliseconds: widget.setDto.value1.toInt());
+    Duration duration = Duration(milliseconds: setDto.value1.toInt());
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
-      columnWidths: widget.editorType == RoutineEditorMode.edit
+      columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
@@ -48,19 +43,19 @@ class _DurationSetRowState extends State<DurationSetRow> {
         TableRow(children: [
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Center(child: SetDeleteButton(onDelete: widget.onRemoved))),
+              child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: InlineTimerWidget(
-              stopped: widget.setDto.checked,
+              stopped: setDto.checked,
               duration: duration,
-              onChangedDuration: (Duration duration) => widget.onChangedDuration(duration),
+              onChangedDuration: (Duration duration) => onChangedDuration(duration),
             ),
           ),
-          if (widget.editorType == RoutineEditorMode.log)
+          if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(setDto: widget.setDto, onCheck: widget.onCheck))
+                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
         ])
       ],
     );

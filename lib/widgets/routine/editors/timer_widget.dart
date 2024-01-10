@@ -55,7 +55,7 @@ class _InlineTimerWidgetState extends State<InlineTimerWidget> {
                 ? const FaIcon(FontAwesomeIcons.pause, color: Colors.white70)
                 : const FaIcon(FontAwesomeIcons.play, color: Colors.white70)),
         _started && !widget.stopped
-            ? SizedBox(width: 65, child: RoutineTimer(startTime: _startTime!, digital: true))
+            ? SizedBox(width: 70, child: Center(child: RoutineTimer(startTime: _startTime!, digital: true)))
             : GestureDetector(
                 onTap: () => displayTimePicker(
                     context: context,
@@ -66,9 +66,11 @@ class _InlineTimerWidgetState extends State<InlineTimerWidget> {
                       widget.onChangedDuration(duration);
                     }),
                 child: SizedBox(
-                  width: 65,
-                  child: Text(widget.duration.hmsDigital(),
-                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500)),
+                  width: 70,
+                  child: Center(
+                    child: Text(widget.duration.hmsDigital(),
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500)),
+                  ),
                 ),
               )
       ],
