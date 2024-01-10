@@ -113,7 +113,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           editorType: widget.editorType,
           onCheck: () => _updateSetCheck(index: index, setDto: set),
           onRemoved: () => _removeSet(index),
-          onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
+          onChangedDuration: (Duration duration, bool notify) => _updateDuration(index: index, duration: duration, setDto: set, notify: notify),
         );
     }
   }
@@ -154,10 +154,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
+  void _updateDuration({required int index, required Duration duration, required SetDto setDto, bool notify = true}) {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
     Provider.of<ExerciseLogProvider>(context, listen: false)
-        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: notify);
     _cacheLog();
   }
 

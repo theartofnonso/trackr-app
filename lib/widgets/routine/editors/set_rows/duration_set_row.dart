@@ -5,14 +5,14 @@ import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
-import '../timer_widget.dart';
+import '../../../timers/set_timer_widget.dart';
 
 class DurationSetRow extends StatelessWidget {
   final SetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
-  final void Function(Duration duration) onChangedDuration;
+  final void Function(Duration duration, bool notify) onChangedDuration;
 
   const DurationSetRow({
     super.key,
@@ -46,10 +46,10 @@ class DurationSetRow extends StatelessWidget {
               child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: InlineTimerWidget(
-              stopped: setDto.checked,
+            child: SetTimerWidget(
+              enabled: !setDto.checked,
               duration: duration,
-              onChangedDuration: (Duration duration) => onChangedDuration(duration),
+              onChangedDuration: (Duration duration) => onChangedDuration(duration, false),
             ),
           ),
           if (editorType == RoutineEditorMode.log)
