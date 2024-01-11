@@ -24,11 +24,15 @@ import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_template_provider.dart';
+import '../utils/shareables_utils.dart';
 import '../widgets/fabs/expandable_fab.dart';
 import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
+import '../widgets/shareables/routine_log_shareable_one.dart';
 import 'editors/helper_utils.dart';
 import 'editors/routine_log_editor_screen.dart';
+
+GlobalKey routineLogShareableOneKey = GlobalKey();
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -77,7 +81,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
             actions: [
               IconButton(
-                  onPressed: () {},
+                  onPressed: () => captureImage(key: routineLogShareableOneKey),
                   icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
             ]),
         floatingActionButton: ExpandableFab(
@@ -114,6 +118,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                               )),
                         )
                       : const SizedBox.shrink(),
+                  RepaintBoundary(
+                      key: routineLogShareableOneKey,
+                      child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
