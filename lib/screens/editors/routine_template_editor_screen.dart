@@ -112,7 +112,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     try {
 
       final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-      final exercises = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+      final exercises = exerciseLogsProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
 
       final template = RoutineTemplateDto(
           id: "",
@@ -153,7 +153,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _doUpdateRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
     final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
     _toggleLoadingState();
     try {
@@ -173,7 +173,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
     final exerciseLog1 = widget.template?.exercises ?? [];
-    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
     final unsavedChangesMessage =
         checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {

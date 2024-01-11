@@ -109,13 +109,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.duration:
-        return DurationSetRow(
-            setDto: set,
-            editorType: widget.editorType,
-            onCheck: () => _updateSetCheck(index: index, setDto: set),
-            onRemoved: () => _removeSet(index),
-            onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
-            startTime: _durationControllers[index]);
+        return widget.editorType == RoutineEditorMode.log
+            ? DurationSetRow(
+                setDto: set,
+                editorType: widget.editorType,
+                onCheck: () => _updateSetCheck(index: index, setDto: set),
+                onRemoved: () => _removeSet(index),
+                onChangedDuration: (Duration duration) =>
+                    _updateDuration(index: index, duration: duration, setDto: set),
+                startTime: _durationControllers[index])
+            : Center(
+                child: Text("Timer will be available in log mode",
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+              );
     }
   }
 
@@ -183,10 +189,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _controllers.addAll(controllers);
   }
 
+  void _loadDurationControllers() {
+    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    List<DateTime> controllers = [];
+    for (var _ in sets) {
+      controllers.add(DateTime.now());
+    }
+   // _durationControllers.addAll(controllers);
+  }
+
   @override
   void initState() {
     super.initState();
     _loadTextEditingControllers();
+    _loadDurationControllers();
   }
 
   void _cacheLog() {
@@ -294,16 +310,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           const SizedBox(height: 8),
           if (sets.isNotEmpty) Column(children: [..._displaySets(exerciseType: exerciseType, sets: sets)]),
           const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-                onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-          )
+          if (widget.editorType == RoutineEditorMode.log)
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                  onPressed: _addSet,
+                  icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                  style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                      shape:
+                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+            )
         ],
       ),
     );
