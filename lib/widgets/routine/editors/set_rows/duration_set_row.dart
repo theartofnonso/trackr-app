@@ -69,16 +69,13 @@ class _DurationSetRowState extends State<DurationSetRow> {
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
-              child: _started
-                  ? GestureDetector(
-                      onTap: () => _toggleTimer(duration: duration),
-                      child: RoutineTimer(
-                        startTime: _startTime,
-                        digital: true,
-                      ),
-                    )
-                  : Text(duration.hmsDigital(),
-                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600)),
+              child: GestureDetector(
+                onTap: () => _toggleTimer(duration: duration),
+                child: RoutineTimer(
+                  startTime: _startTime,
+                  digital: true,
+                ),
+              ),
             ),
           ),
           if (widget.editorType == RoutineEditorMode.log)
