@@ -38,9 +38,10 @@ class AchievementTile extends StatelessWidget {
                     Text(achievement.type.description, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
+                      minHeight: 10,
                       color: achievement.progress.remainder == 0 ? Colors.green : Colors.white,
                       value: achievement.progress.value,
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      borderRadius: const BorderRadius.all(Radius.circular(3)),
                       backgroundColor: tealBlueLighter,
                     ),
                   ],

@@ -64,7 +64,7 @@ class RoutineEmptyState extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        const TextEmptyState(message: "Tap the + button to create workouts"),
+        const TextEmptyState(message: "Tap the + button to create workout templates"),
       ],
     );
   }

@@ -78,6 +78,7 @@ class RoutineLogProvider with ChangeNotifier {
     }
 
     _weekToLogs = weekToLogs;
+
   }
 
   void _loadMonthToLogs() {

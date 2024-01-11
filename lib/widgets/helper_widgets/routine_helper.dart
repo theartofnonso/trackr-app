@@ -25,7 +25,7 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
   return null; // Explicitly return null if no matching procedure is found
 }
 
-List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, PBViewModel? pbViewModel}) {
+List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, Map<SetDto, List<PBDto>> pbs = const {}}) {
   Widget emptyState = type == ExerciseType.duration || type == ExerciseType.bodyWeight
       ? const SingleSetRowEmptyState()
       : const DoubleSetRowEmptyState();
@@ -33,20 +33,21 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
   const margin = EdgeInsets.only(bottom: 6.0);
 
   final widgets = sets.map(((setDto) {
-    final pb = pbViewModel != null && pbViewModel.set == setDto ? pbViewModel : null;
+
+   final pbsForSet = pbs[setDto] ?? [];
 
     switch (type) {
       case ExerciseType.weights:
       case ExerciseType.assistedBodyWeight:
         final firstLabel = weightWithConversion(value: setDto.value1);
         final secondLabel = setDto.value2;
-        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbViewModel: pb);
+        return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);
       case ExerciseType.bodyWeight:
         final label = setDto.value2;
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
-        final label = Duration(milliseconds: setDto.value1.toInt()).secondsOrMinutesOrHours();
-        return SingleSetRow(label: label, margin: margin, pbViewModel: pb);
+        final label = Duration(milliseconds: setDto.value1.toInt()).hmsAnalog();
+        return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
     }
   })).toList();
 

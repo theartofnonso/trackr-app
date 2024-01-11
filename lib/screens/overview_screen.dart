@@ -30,8 +30,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AllDaysTrackedScreen(consistencyLevel: consistencyLevel)));
+  void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => AllDaysTrackedScreen(consistencyLevel: consistencyLevel)));
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -57,12 +58,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
 
-    final monthToLogs = routineLogProvider.monthToLogs;
+    final weekToLogs = routineLogProvider.weekToLogs;
 
-    final logsForTheWeek = routineLogProvider.weekToLogs[thisWeekDateRange()] ?? [];
-    final logsForTheMonth = monthToLogs[thisMonthDateRange()] ?? [];
+    final logsForTheWeek = weekToLogs[thisWeekDateRange()] ?? [];
+    final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
 
-    final consistencyLevel = levelFromXp(daysLogged: monthToLogs.keys.length);
+    final consistencyLevel = levelFromXp(daysLogged: weekToLogs.keys.length);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -124,7 +125,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               _CTableCell(
                                   title: "Level",
                                   subtitle: "$consistencyLevel/50",
-                                  onTap: () => navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
+                                  onTap: () =>
+                                      navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
                             ])
                           ],
                         )),
@@ -141,11 +143,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       title: Text("Muscle insights",
                           style:
                               GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      subtitle: Text("Number of sets logged for each muscle group",
+                      subtitle: Text("Number of sets logged for per muscle group",
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 20),
-                CalendarScreen(),
+                CalendarScreen()
               ],
             )),
       ),

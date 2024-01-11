@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
-
   /// Get datetime format
   String abbreviatedMonth() {
     return DateFormat("LLL", "en").format(this);
@@ -75,37 +74,35 @@ extension DateTimeExtension on DateTime {
   }
 
   String durationSinceOrDate() {
+    final now = DateTime.now();
+    final duration = now.difference(this);
 
-    String display;
-
-    final date = this;
-    final duration = DateTime.now().difference(date);
-
-    if(duration.inDays > 29) {
-      display = date.formattedDayAndMonthAndYear();
-    } else if(duration.inDays > 20) {
-      display = "3 weeks ago";
-    } else if(duration.inDays > 13) {
-      display = "2 weeks ago";
-    } else if(duration.inDays > 6) {
-      display = "1 week ago";
-    } else if(duration.inDays == 1) {
-      display = "Yesterday";
-    } else if(duration.inHours > 24) {
-      display = "${duration.inDays} days ago";
-    } else if(duration.inMinutes > 59) {
-      display = duration.inHours == 1 ? "${duration.inHours} hour ago" : "${duration.inHours} hours ago";
-    } else if(duration.inSeconds > 59) {
-      display = duration.inMinutes == 1 ? "${duration.inMinutes} minute ago" : "${duration.inMinutes} minutes ago";
+    if (duration.inDays > 29) {
+      return formattedDayAndMonthAndYear();
+    } else if (duration.inDays >= 20) {
+      return "3 weeks ago";
+    } else if (duration.inDays >= 13) {
+      return "2 weeks ago";
+    } else if (duration.inDays >= 6) {
+      return "1 week ago";
+    } else if (duration.inDays >= 1) {
+      return _pluralize(duration.inDays, "day");
+    } else if (duration.inHours >= 23) {
+      return "Yesterday";
+    } else if (duration.inHours >= 1) {
+      return _pluralize(duration.inHours, "hour");
+    } else if (duration.inMinutes >= 1) {
+      return _pluralize(duration.inMinutes, "minute");
     } else {
-      display = "now";
+      return "now";
     }
+  }
 
-    return display;
+  String _pluralize(int count, String noun) {
+    return "$count $noun${count > 1 ? 's' : ''} ago";
   }
 
   DateTime lastWeekDay() {
-
     // Calculate the last day of the current week (Sunday)
     int daysToAdd = DateTime.sunday - weekday;
 
@@ -116,17 +113,15 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTime lastMonthDay() {
-
     // Calculate the first day of the next month
-    DateTime firstDayNextMonth = (month < 12) ?
-    DateTime(year, month + 1, 1) :
-    DateTime(year + 1, 1, 1);
+    DateTime firstDayNextMonth = (month < 12) ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
 
     // Subtract one day to get the last day of the current month
     DateTime lastDayCurrentMonth = firstDayNextMonth.subtract(const Duration(days: 1));
 
     // Create a DateTime object representing the last moment of the current month
-    DateTime endOfMonth = DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
+    DateTime endOfMonth =
+        DateTime(lastDayCurrentMonth.year, lastDayCurrentMonth.month, lastDayCurrentMonth.day, 23, 59, 59);
 
     return endOfMonth;
   }
@@ -145,4 +140,3 @@ extension DateTimeExtension on DateTime {
     return duration;
   }
 }
-

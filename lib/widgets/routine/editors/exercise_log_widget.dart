@@ -50,6 +50,7 @@ class ExerciseLogWidget extends StatefulWidget {
 
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
+  final List<DateTime> _durationControllers = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -108,13 +109,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.duration:
-        return DurationSetRow(
-          setDto: set,
-          editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(index: index, setDto: set),
-          onRemoved: () => _removeSet(index),
-          onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
-        );
+        return widget.editorType == RoutineEditorMode.log
+            ? DurationSetRow(
+                setDto: set,
+                editorType: widget.editorType,
+                onCheck: () => _updateSetCheck(index: index, setDto: set),
+                onRemoved: () => _removeSet(index),
+                onChangedDuration: (Duration duration) =>
+                    _updateDuration(index: index, duration: duration, setDto: set),
+                startTime: _durationControllers[index])
+            : Center(
+                child: Text("Timer will be available in log mode",
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+              );
     }
   }
 
@@ -126,6 +133,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _addSet() {
     _controllers.add((TextEditingController(), TextEditingController()));
+    _durationControllers.add(DateTime.now());
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
@@ -135,6 +143,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _removeSet(int index) {
     _controllers.removeAt(index);
+    _durationControllers.removeAt(index);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
     _cacheLog();
@@ -155,7 +164,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
-    final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
+    final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: true);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
@@ -180,10 +189,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _controllers.addAll(controllers);
   }
 
+  void _loadDurationControllers() {
+    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    List<DateTime> controllers = [];
+    for (var _ in sets) {
+      controllers.add(DateTime.now());
+    }
+   _durationControllers.addAll(controllers);
+  }
+
   @override
   void initState() {
     super.initState();
     _loadTextEditingControllers();
+    _loadDurationControllers();
   }
 
   void _cacheLog() {
@@ -195,6 +214,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     Provider.of<RoutineLogProvider>(context, listen: true);
 
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
@@ -270,7 +290,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style:
+                GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {
@@ -290,16 +311,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           const SizedBox(height: 8),
           if (sets.isNotEmpty) Column(children: [..._displaySets(exerciseType: exerciseType, sets: sets)]),
           const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-                onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-          )
+          if (widget.editorType == RoutineEditorMode.log)
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                  onPressed: _addSet,
+                  icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                  style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                      shape:
+                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+            )
         ],
       ),
     );

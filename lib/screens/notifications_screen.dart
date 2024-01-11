@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -148,7 +147,7 @@ class _WeekDayNotificationListTile extends StatelessWidget {
 
     return _NotificationSwitch(
         title: dailyReminder.day,
-        subtitle: _timeForSchedule(schedule: schedule).digitalTimeHM(),
+        subtitle: _timeForSchedule(schedule: schedule).hmDigital(),
         enabled: schedule != null && payload["type"] == DailyReminderType.weekday,
         onPressed: () =>
             _displayTimePicker(context: context, schedule: schedule, onDurationChanged: _scheduleWeekDayNotification),
@@ -189,7 +188,7 @@ class _DailyNotificationListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return _NotificationSwitch(
         title: "Everyday",
-        subtitle: _timeForSchedule(schedule: schedule).digitalTimeHM(),
+        subtitle: _timeForSchedule(schedule: schedule).hmDigital(),
         enabled: enabled,
         onPressed: () =>
             _displayTimePicker(context: context, schedule: schedule, onDurationChanged: _scheduleDailyNotification),

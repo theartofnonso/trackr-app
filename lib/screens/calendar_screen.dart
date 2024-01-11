@@ -22,7 +22,6 @@ class _DateViewModel {
 }
 
 class CalendarScreen extends StatefulWidget {
-
   /// Do no make this a const as it has properties that depends on the state of this parent widget
   CalendarScreen({super.key});
 
@@ -121,7 +120,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
@@ -156,10 +154,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         if (SharedPrefs().showCalendarDates)
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: _CalendarHeader(),
           ),
-        _CalenderDates(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
+        _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
         const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
         if (logs.isEmpty)
@@ -202,37 +200,36 @@ class _CalendarScreenState extends State<CalendarScreen> {
 }
 
 class _CalendarHeader extends StatelessWidget {
-  final List<String> daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
+  final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: tealBlueDark,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ...daysOfWeek
-              .map((day) => SizedBox(
-                    width: 45,
-                    child: Center(
-                      child: Text(day,
-                          style:
-                              GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                    ),
-                  ))
-              .toList()
-        ],
-      ),
-    );
+    return SizedBox(
+        height: 25,
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            childAspectRatio: 1, // for square shape
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 4.0,
+          ),
+          itemCount: daysOfWeek.length, // Just an example to vary the number of squares
+          itemBuilder: (context, index) {
+            return Text(daysOfWeek[index],
+                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                textAlign: TextAlign.center);
+          },
+        ));
   }
 }
 
-class _DateWidget extends StatelessWidget {
+class _Date extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
   final void Function(DateTime dateTime) onTap;
 
-  const _DateWidget({required this.dateTime, required this.selectedDateTime, required this.onTap});
+  const _Date({required this.dateTime, required this.selectedDateTime, required this.onTap});
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
@@ -251,7 +248,7 @@ class _DateWidget extends StatelessWidget {
   }
 
   Color _getTextColor(bool hasLog) {
-    if(SharedPrefs().showCalendarDates) {
+    if (SharedPrefs().showCalendarDates) {
       if (hasLog) {
         return Colors.white;
       }
@@ -274,14 +271,13 @@ class _DateWidget extends StatelessWidget {
       splashColor: Colors.transparent,
       onTap: () => onTap(dateTime),
       child: Container(
-        width: 45,
-        height: 45,
+        padding: selectedDateTime.isSameDateAs(dateTime) ? const EdgeInsets.all(1) : null,
         decoration: BoxDecoration(
           border: _getBorder(),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Container(
-          margin: const EdgeInsets.all(3),
+          margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: _getBackgroundColor(log != null),
             borderRadius: BorderRadius.circular(5),
@@ -289,7 +285,7 @@ class _DateWidget extends StatelessWidget {
           child: Center(
             child: Text("${dateTime.day}",
                 style: GoogleFonts.montserrat(
-                    fontSize: 14, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                    fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
           ),
         ),
       ),
@@ -297,23 +293,20 @@ class _DateWidget extends StatelessWidget {
   }
 }
 
-class _CalenderDates extends StatelessWidget {
+class _Month extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
   final void Function(DateTime dateTime) onTap;
 
-  const _CalenderDates({required this.dates, required this.selectedDateTime, required this.onTap});
+  const _Month({required this.dates, required this.selectedDateTime, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    int iterationCount = 6;
-    int numbersPerIteration = 7;
-
     final datesWidgets = dates.map((date) {
       if (date == null) {
         return const SizedBox(width: 45, height: 45);
       } else {
-        return _DateWidget(
+        return _Date(
           dateTime: date.dateTime,
           onTap: onTap,
           selectedDateTime: selectedDateTime,
@@ -321,26 +314,22 @@ class _CalenderDates extends StatelessWidget {
       }
     }).toList();
 
-    List<Widget> widgets = [];
-
-    for (int i = 0; i < iterationCount; i++) {
-      int startIndex = i * numbersPerIteration;
-      int endIndex = (i + 1) * numbersPerIteration;
-
-      if (endIndex > dates.length) {
-        endIndex = dates.length;
-      }
-
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [...datesWidgets.sublist(startIndex, endIndex)],
-        ),
-      ));
-    }
-
-    return Column(children: widgets);
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      // to disable GridView's scrolling
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        childAspectRatio: 1, // for square shape
+        crossAxisSpacing: 4.0,
+        mainAxisSpacing: 4.0,
+      ),
+      itemCount: datesWidgets.length,
+      // Just an example to vary the number of squares
+      itemBuilder: (context, index) {
+        return datesWidgets[index];
+      },
+    );
   }
 }
 
@@ -369,13 +358,13 @@ class _RoutineLogWidget extends StatelessWidget {
     final pbs = log.exerciseLogs
         .map((exerciseLog) =>
             calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .where((pb) => pb != null)
-        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+        .expand((pbs) => pbs.values)
+        .fold<int>(0, (count, pb) => count + pb.length);
 
     return SolidListTile(
         title: log.name,
         subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
-        trailing: log.duration().secondsOrMinutesOrHours(),
+        trailing: log.duration().hmsAnalog(),
         trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,

@@ -8,6 +8,7 @@ import 'package:tracker_app/widgets/information_container_lite.dart';
 import '../dtos/routine_log_dto.dart';
 import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';
+import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class AllDaysTrackedScreen extends StatelessWidget {
@@ -27,56 +28,49 @@ class AllDaysTrackedScreen extends StatelessWidget {
       );
     }
 
-    // The number of containers per row is 3.
-    int containersPerRow = 3;
-
-    // Get the screen width.
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate the width of each container. Here, we subtract the padding (16.0 on each side) and
-    // the spacing between the containers (8.0 between each container, hence 16.0 total for two gaps).
-    double containerWidth = (screenWidth - (16.0 * 2) - (16.0 * (containersPerRow - 1))) / containersPerRow;
-
-    // The aspect ratio for the GridView based on the container width and the screen height.
-    double aspectRatio = containerWidth / (screenWidth / 3);
-
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       body: Scaffold(
-          body: SafeArea(
-        minimum: const EdgeInsets.all(10.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("Consistency Level $consistencyLevel",
-              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 16),
-          const InformationContainerLite(
-            content: 'Your level of consistency is calculated by the number of rows per month that contain at least one green square',
-            color: tealBlue,
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: containersPerRow,
-              childAspectRatio: aspectRatio,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              children: List.generate(12, (index) {
-                final monthAndLogs = monthsToLogs[index];
-                final dates = monthAndLogs.value
-                    .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
-                    .toList();
-                // Generate 12 containers for each month.
-                return CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates);
-              }),
-            ),
-          )
-        ]),
-      )),
+          body: Stack(
+            children: [
+              const Positioned.fill(child: GradientBackground()),
+              SafeArea(
+                minimum: const EdgeInsets.all(10.0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  ]),
+                  const SizedBox(height: 10),
+                  Text("Consistency Level $consistencyLevel",
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 16),
+                  const InformationContainerLite(
+                    content: 'Your consistency score is determined by counting the weeks with at least one green square over a 50-week period',
+                    color: tealBlueLighter,
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1,
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 10.0,
+                      children: List.generate(12, (index) {
+                        final monthAndLogs = monthsToLogs[index];
+                        final dates = monthAndLogs.value
+                            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
+                            .toList();
+                        // Generate 12 containers for each month.
+                        return CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates);
+                      }),
+                    ),
+                  )
+                ]),
+              )
+            ]
+          )),
     );
   }
 }
