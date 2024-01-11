@@ -68,13 +68,17 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text(log.name,
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-        ),
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(log.name,
+                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            actions: [
+              IconButton(
+                  onPressed: () {},
+                  icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+            ]),
         floatingActionButton: ExpandableFab(
           distance: 112,
           children: [
