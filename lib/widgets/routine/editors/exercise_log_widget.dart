@@ -109,12 +109,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         );
       case ExerciseType.duration:
         return DurationSetRow(
-          setDto: set,
-          editorType: widget.editorType,
-          onCheck: () => _updateSetCheck(index: index, setDto: set),
-          onRemoved: () => _removeSet(index),
-          onChangedDuration: (Duration duration, bool notify) => _updateDuration(index: index, duration: duration, setDto: set, notify: notify),
-        );
+            setDto: set,
+            editorType: widget.editorType,
+            onCheck: () => _updateSetCheck(index: index, setDto: set),
+            onRemoved: () => _removeSet(index),
+            onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set));
     }
   }
 
@@ -154,10 +153,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto, bool notify = true}) {
+  void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
     Provider.of<ExerciseLogProvider>(context, listen: false)
-        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: notify);
+        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
@@ -270,7 +269,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             cursorColor: Colors.white,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+            style:
+                GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 12),
           switch (exerciseType) {

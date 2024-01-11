@@ -204,7 +204,7 @@ class ExerciseLogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _updateSetForExerciseLog({required String exerciseLogId, required int index, required SetDto updatedSet, bool notify = true}) {
+  void _updateSetForExerciseLog({required String exerciseLogId, required int index, required SetDto updatedSet}) {
     // Check if the exercise ID exists in the map and if the index is valid
     if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -227,9 +227,7 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     _sets = newMap;
 
-    if(notify) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
@@ -240,8 +238,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void updateDuration({required String exerciseLogId, required int index, required SetDto setDto, bool notify = true}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto, notify: notify);
+  void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
+    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {

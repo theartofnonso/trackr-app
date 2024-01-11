@@ -61,7 +61,6 @@ class _SetTimerWidgetState extends State<SetTimerWidget> {
                     child: RoutineTimer(
                   startTime: _startTime!,
                   digital: true,
-                  onChangedDuration: (Duration duration) => widget.onChangedDuration(duration),
                 )))
             : GestureDetector(
                 onTap: () => displayTimePicker(
@@ -83,15 +82,5 @@ class _SetTimerWidgetState extends State<SetTimerWidget> {
               )
       ],
     );
-  }
-
-  @override
-  void didUpdateWidget(SetTimerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.enabled) {
-        _toggleTimer();
-      }
-    });
   }
 }

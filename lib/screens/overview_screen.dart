@@ -143,7 +143,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       title: Text("Muscle insights",
                           style:
                               GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      subtitle: Text("Number of sets logged for each muscle group",
+                      subtitle: Text("Number of sets logged for per muscle group",
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 20),

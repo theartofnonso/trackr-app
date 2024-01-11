@@ -9,15 +9,15 @@ class DoubleSetRow extends StatelessWidget {
   final String first;
   final String second;
   final EdgeInsets? margin;
-  final PBViewModel? pbViewModel;
+  final List<PBDto> pbs;
 
-  const DoubleSetRow({super.key, required this.first, required this.second, this.margin, this.pbViewModel});
+  const DoubleSetRow({super.key, required this.first, required this.second, this.margin, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
     return SetRow(
         margin: margin,
-        pbViewModel: pbViewModel,
+        pbs: pbs,
         child: Table(
             border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
             columnWidths: const <int, TableColumnWidth>{

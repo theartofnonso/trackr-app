@@ -358,8 +358,8 @@ class _RoutineLogWidget extends StatelessWidget {
     final pbs = log.exerciseLogs
         .map((exerciseLog) =>
             calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .where((pb) => pb != null)
-        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+        .expand((pbs) => pbs.values)
+        .fold<int>(0, (count, pb) => count + pb.length);
 
     return SolidListTile(
         title: log.name,

@@ -30,7 +30,7 @@ class ExerciseWidget extends StatelessWidget {
           onTap: onTap,
           subtitle: Text(
             "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
           )),
     );
   }

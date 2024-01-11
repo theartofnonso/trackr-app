@@ -20,7 +20,9 @@ class RoutineLogsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: Navigator.of(context).pop),
+        leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            onPressed: Navigator.of(context).pop),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(10.0),
@@ -28,22 +30,23 @@ class RoutineLogsScreen extends StatelessWidget {
           children: [
             logs.isNotEmpty
                 ? Expanded(
-              child: ListView.separated(
-                  padding: const EdgeInsets.only(bottom: 150),
-                  itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
-                  separatorBuilder: (BuildContext context, int index) =>
-                      Divider(color: Colors.white70.withOpacity(0.1)),
-                  itemCount: logs.length),
-            )
+                    child: ListView.separated(
+                        padding: const EdgeInsets.only(bottom: 150),
+                        itemBuilder: (BuildContext context, int index) => _RoutineLogWidget(log: logs[index]),
+                        separatorBuilder: (BuildContext context, int index) =>
+                            Divider(color: Colors.white70.withOpacity(0.1)),
+                        itemCount: logs.length),
+                  )
                 : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const ListViewEmptyState(),
-                const SizedBox(height: 8),
-                Text("You have no logs",
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
-              ],
-            ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const ListViewEmptyState(),
+                      const SizedBox(height: 8),
+                      Text("You have no logs",
+                          style:
+                              GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
+                    ],
+                  ),
           ],
         ),
       ),
@@ -58,17 +61,17 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final pbs = log.exerciseLogs
-        .map((exerciseLog) => calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .where((pb) => pb != null)
-        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+        .map((exerciseLog) =>
+            calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+        .expand((pbs) => pbs.values)
+        .fold<int>(0, (count, pb) => count + pb.length);
 
     return SolidListTile(
         title: log.name,
         subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
         trailing: log.createdAt.durationSinceOrDate(),
-        trailingSubtitle: pbs >=1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
+        trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }
