@@ -20,20 +20,19 @@ class SingleSetRow extends StatelessWidget {
         child: Table(
             border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
             columnWidths: const <int, TableColumnWidth>{
-          0: FlexColumnWidth(),
-        },
+              0: FlexColumnWidth(),
+            },
             children: <TableRow>[
-          TableRow(children: [
-            TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Text(
-                label,
-                style: GoogleFonts.montserrat(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            // const TableCell(child: SizedBox.shrink())
-          ]),
-        ]));
+              TableRow(children: [
+                TableCell(
+                  verticalAlignment: TableCellVerticalAlignment.middle,
+                  child: Text(
+                    label,
+                    style: GoogleFonts.montserrat(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ]),
+            ]));
   }
 }

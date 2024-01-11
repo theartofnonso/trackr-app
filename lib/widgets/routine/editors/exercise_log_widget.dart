@@ -195,7 +195,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     for (var _ in sets) {
       controllers.add(DateTime.now());
     }
-   // _durationControllers.addAll(controllers);
+   _durationControllers.addAll(controllers);
   }
 
   @override
@@ -214,6 +214,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     Provider.of<RoutineLogProvider>(context, listen: true);
 
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];

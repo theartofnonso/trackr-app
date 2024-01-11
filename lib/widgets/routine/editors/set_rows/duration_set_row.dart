@@ -34,6 +34,7 @@ class DurationSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
