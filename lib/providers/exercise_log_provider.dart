@@ -31,12 +31,12 @@ class ExerciseLogProvider extends ChangeNotifier {
     }
   }
 
-  List<ExerciseLogDto> mergeSetsIntoExerciseLogs() {
+  List<ExerciseLogDto> mergeSetsIntoExerciseLogs({bool includeEmptySets = false}) {
     return _exerciseLogs
         .map((exercise) {
           final sets = _sets[exercise.id] ?? [];
           final hasSets = sets.isNotEmpty;
-          if (hasSets) {
+          if (hasSets || includeEmptySets) {
             return exercise.copyWith(sets: sets);
           }
         })

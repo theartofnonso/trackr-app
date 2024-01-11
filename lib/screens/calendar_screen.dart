@@ -358,13 +358,13 @@ class _RoutineLogWidget extends StatelessWidget {
     final pbs = log.exerciseLogs
         .map((exerciseLog) =>
             calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .where((pb) => pb != null)
-        .fold<int>(0, (count, pb) => pb != null ? count + pb.pbs.length : 0);
+        .expand((pbs) => pbs.values)
+        .fold<int>(0, (count, pb) => count + pb.length);
 
     return SolidListTile(
         title: log.name,
         subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
-        trailing: log.duration().secondsOrMinutesOrHours(),
+        trailing: log.duration().hmsAnalog(),
         trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,

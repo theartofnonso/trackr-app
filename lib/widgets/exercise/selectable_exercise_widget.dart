@@ -32,7 +32,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         subtitle: Text(
           "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-          style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+          style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
         ),
         leading: IconButton(
           iconSize: 24,

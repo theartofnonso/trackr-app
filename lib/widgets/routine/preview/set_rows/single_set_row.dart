@@ -8,32 +8,31 @@ import '../exercise_log_widget.dart';
 class SingleSetRow extends StatelessWidget {
   final String label;
   final EdgeInsets? margin;
-  final PBViewModel? pbViewModel;
+  final List<PBDto> pbs;
 
-  const SingleSetRow({super.key, required this.label, this.margin, this.pbViewModel});
+  const SingleSetRow({super.key, required this.label, this.margin, this.pbs = const []});
 
   @override
   Widget build(BuildContext context) {
     return SetRow(
         margin: margin,
-        pbViewModel: pbViewModel,
+        pbs: pbs,
         child: Table(
             border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
             columnWidths: const <int, TableColumnWidth>{
-          0: FlexColumnWidth(),
-        },
+              0: FlexColumnWidth(),
+            },
             children: <TableRow>[
-          TableRow(children: [
-            TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Text(
-                label,
-                style: GoogleFonts.montserrat(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            // const TableCell(child: SizedBox.shrink())
-          ]),
-        ]));
+              TableRow(children: [
+                TableCell(
+                  verticalAlignment: TableCellVerticalAlignment.middle,
+                  child: Text(
+                    label,
+                    style: GoogleFonts.montserrat(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ]),
+            ]));
   }
 }

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/utils/sets_utils.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -15,21 +14,19 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 }
 
 /// Highest value per [RoutineLogDto]
-///
 
 SetDto _heaviestWeightInSets({required List<SetDto> sets}) {
 
-  SetDto maxSet = sets[0];
-  num heaviestWeight = sets[0].value1;
+  SetDto heaviestWeightSet = sets[0];
 
   for (SetDto set in sets) {
     num currentWeight = set.value1;
-    if (currentWeight > heaviestWeight) {
-      maxSet = set;
+    if (currentWeight > heaviestWeightSet.value1) {
+      heaviestWeightSet = set;
     }
   }
 
-  return maxSet;
+  return heaviestWeightSet;
 }
 
 SetDto heaviestWeightForLog({required ExerciseLogDto exerciseLog}) {
@@ -126,14 +123,6 @@ double lightestSetVolumeForLog({required ExerciseLogDto exerciseLog}) {
 
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
-}
-
-double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
-  final heaviestSet = heaviestSetForExerciseLog(exerciseLog: exerciseLog);
-
-  final max = (heaviestSet.value1 * (1 + 0.0333 * heaviestSet.value2));
-
-  return max;
 }
 
 /// Highest value across all [RoutineLogDto]
@@ -274,59 +263,53 @@ double oneRepMaxPerLog({required ExerciseLogDto exerciseLog}) {
   return (logId, longestDuration);
 }
 
-PBViewModel? calculatePBs({required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
+Map<SetDto, List<PBDto>> calculatePBs(
+    {required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
   final provider = Provider.of<RoutineLogProvider>(context, listen: false);
 
-  final pastSets =
-  provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+  final pastSets = provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
   final pastExerciseLogs =
-  provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+      provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
-  PBViewModel? pbViewModel;
+  Map<SetDto, List<PBDto>> pbsMap = {};
 
   if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
-      final pastHeaviestSetWeight = _heaviestWeightInSets(sets: pastSets);
+      final pastHeaviestWeight =
+          pastExerciseLogs.map((log) => heaviestWeightForLog(exerciseLog: log)).map((set) => set.value1).max;
       final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).max;
-      final past1RM = pastExerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
 
-      final currentHeaviestSetWeight = _heaviestWeightInSets(sets: exerciseLog.sets);
-      final currentHeaviestSetVolume = heaviestVolumeForExerciseLog(exerciseLog: exerciseLog);
-      final currentHeaviestSet = heaviestSetForExerciseLog(exerciseLog: exerciseLog);
-      final current1RM = oneRepMaxPerLog(exerciseLog: exerciseLog);
-
-      List<PBType> pbs = [];
-      SetDto set = const SetDto(0, 0, false);
-
-      if (currentHeaviestSetWeight.value1 > pastHeaviestSetWeight.value1) {
-        pbs.add(PBType.weight);
-        set = currentHeaviestSetWeight;
+      final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.value1 > pastHeaviestWeight);
+      if (currentHeaviestWeightSets.isNotEmpty) {
+        for (final set in currentHeaviestWeightSets) {
+          final pbs = pbsMap[set] ?? [];
+          pbs.add(PBDto(exercise: exerciseLog.exercise, pb: PBType.weight));
+          pbsMap[set] = pbs;
+        }
       }
 
-      if (currentHeaviestSetVolume > pastHeaviestSetVolume) {
-        pbs.add(PBType.volume);
-        set = currentHeaviestSetWeight;
-      }
-
-      if (current1RM > past1RM) {
-        pbs.add(PBType.oneRepMax);
-        set = currentHeaviestSet;
-      }
-
-      if (pbs.isNotEmpty) {
-        pbViewModel = PBViewModel(exercise: exerciseLog.exercise, set: set, pbs: pbs);
+      final currentHeaviestVolumeSets = exerciseLog.sets.where((set) => (set.value1 * set.value2) > pastHeaviestSetVolume);
+      if (currentHeaviestVolumeSets.isNotEmpty) {
+        for (final set in currentHeaviestVolumeSets) {
+          final pbs = pbsMap[set] ?? [];
+          pbs.add(PBDto(exercise: exerciseLog.exercise, pb: PBType.volume));
+          pbsMap[set] = pbs;
+        }
       }
     }
 
     if (exerciseType == ExerciseType.duration) {
       final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationPerLog(exerciseLog: log)).max;
-      final currentLongestDurationSet = longestDurationSet(sets: exerciseLog.sets);
-      final currentLongestDuration = Duration(milliseconds: currentLongestDurationSet.value1.toInt());
 
-      if (currentLongestDuration > pastLongestDuration) {
-        pbViewModel = PBViewModel(exercise: exerciseLog.exercise, set: currentLongestDurationSet, pbs: [PBType.duration]);
+      final currentLongestDurations = exerciseLog.sets.where((set) => Duration(milliseconds: set.value1.toInt()) > pastLongestDuration);
+      if (currentLongestDurations.isNotEmpty) {
+        for (final set in currentLongestDurations) {
+          final pbs = pbsMap[set] ?? [];
+          pbs.add(PBDto(exercise: exerciseLog.exercise, pb: PBType.duration));
+          pbsMap[set] = pbs;
+        }
       }
     }
   }
-  return pbViewModel;
+  return pbsMap;
 }

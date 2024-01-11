@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../../../app_constants.dart';
 import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
+import '../../../timers/routine_timer.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
-import '../timer_widget.dart';
 
 class DurationSetRow extends StatelessWidget {
   final SetDto setDto;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
+  final DateTime startTime;
   final void Function(Duration duration) onChangedDuration;
 
   const DurationSetRow({
@@ -21,11 +24,16 @@ class DurationSetRow extends StatelessWidget {
     required this.onRemoved,
     required this.onCheck,
     required this.onChangedDuration,
+    required this.startTime,
   });
+
+  void _stopTimer() {
+    if (setDto.checked) return;
+    onChangedDuration(DateTime.now().difference(startTime));
+  }
 
   @override
   Widget build(BuildContext context) {
-    Duration duration = Duration(milliseconds: setDto.value1.toInt());
 
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
@@ -46,15 +54,23 @@ class DurationSetRow extends StatelessWidget {
               child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: TimerWidget(
-              duration: duration,
-              onChangedDuration: (Duration duration) => onChangedDuration(duration),
+            child: SizedBox(
+              height: 50,
+              child: Center(
+                child: setDto.checked
+                    ? Text(Duration(milliseconds: setDto.value1.toInt()).hmsDigital(),
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
+                    : RoutineTimer(
+                        startTime: startTime,
+                        digital: true,
+                      ),
+              ),
             ),
           ),
           if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
+                child: SetCheckButton(setDto: setDto, onCheck: _stopTimer))
         ])
       ],
     );

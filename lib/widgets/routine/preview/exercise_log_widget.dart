@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import '../../../dtos/exercise_dto.dart';
@@ -16,7 +15,6 @@ import '../preview/set_headers/double_set_header.dart';
 enum PBType {
   weight("Weight"),
   volume("Volume"),
-  oneRepMax("1RM"),
   duration("Duration");
 
   const PBType(this.name);
@@ -24,16 +22,15 @@ enum PBType {
   final String name;
 }
 
-class PBViewModel {
+class PBDto {
   final ExerciseDto exercise;
-  final SetDto set;
-  final List<PBType> pbs;
+  final PBType pb;
 
-  PBViewModel({required this.exercise, required this.set, required this.pbs});
+  PBDto({required this.exercise, required this.pb});
 
   @override
   String toString() {
-    return 'PBViewModel{exercise: $exercise, set: $set, pbs: $pbs}';
+    return 'PBViewModel{exercise: $exercise, pb: $pb}';
   }
 }
 
@@ -51,7 +48,7 @@ class ExerciseLogWidget extends StatelessWidget {
 
     final exerciseType = exerciseLog.exercise.type;
 
-    PBViewModel? pbViewModel = calculatePBs(context: context, exerciseType: exerciseType, exerciseLog: exerciseLog);
+    final pbs = calculatePBs(context: context, exerciseType: exerciseType, exerciseLog: exerciseLog);
 
     return Container(
       padding: padding,
@@ -92,7 +89,7 @@ class ExerciseLogWidget extends StatelessWidget {
             ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
           },
           const SizedBox(height: 8),
-          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbViewModel: previewType == RoutinePreviewType.log ? pbViewModel : null),
+          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbs: previewType == RoutinePreviewType.log ? pbs : {}),
         ],
       ),
     );

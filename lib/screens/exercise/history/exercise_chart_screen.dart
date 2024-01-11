@@ -23,7 +23,6 @@ import 'home_screen.dart';
 enum SummaryType {
   weight,
   setVolume,
-  oneRepMax,
   bestTime,
   mostReps,
   sessionReps,
@@ -90,15 +89,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.setVolume;
-      _chartUnit = weightUnit();
-    });
-  }
-
-  void _oneRepMaxPerLog() {
-    final values = _exerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).toList();
-    setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.oneRepMax;
       _chartUnit = weightUnit();
     });
   }
@@ -171,9 +161,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       case SummaryType.setVolume:
         _heaviestSetVolumePerLog();
         break;
-      case SummaryType.oneRepMax:
-        _oneRepMaxPerLog();
-        break;
       case SummaryType.mostReps:
         _highestRepsForLog();
         break;
@@ -234,11 +221,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   Widget build(BuildContext context) {
     final weightUnitLabel = weightLabel();
 
-    double oneRepMax = 0;
-    if (_exerciseLogs.isNotEmpty) {
-      oneRepMax = _exerciseLogs.map((log) => oneRepMaxPerLog(exerciseLog: log)).max;
-    }
-
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
@@ -249,8 +231,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             width: double.infinity,
             child: Text(
               "Training ${widget.exercise.primaryMuscleGroup.name}",
-              style:
-                  GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14), textAlign: TextAlign.center,
+              style: GoogleFonts.montserrat(
+                  color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
+              textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 20),
@@ -305,14 +288,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             onPressed: _lightestSetVolumePerLog,
                             label: "Lightest Volume (Set)",
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
-                      ),
-                    if (_exerciseLogsWithWeightsOnly())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _oneRepMaxPerLog,
-                            label: "1RM",
-                            buttonColor: _buttonColor(type: SummaryType.oneRepMax)),
                       ),
                     if (_exerciseLogsWithReps())
                       Padding(
@@ -376,7 +351,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
-                  trailing: "${weightWithConversion(value: widget.heaviestSet.$2.value1)}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
+                  trailing:
+                      "${weightWithConversion(value: widget.heaviestSet.$2.value1)}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
@@ -386,19 +362,10 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Lightest Set Volume',
-                  trailing: "${weightWithConversion(value: widget.lightestSet.$2.value1)}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
+                  trailing:
+                      "${weightWithConversion(value: widget.lightestSet.$2.value1)}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
                   subtitle: 'Lightest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.lightestSet.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
-            ),
-          if (_exerciseLogsWithWeightsOnly())
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: _MetricListTile(
-                  title: '1 Rep Max',
-                  trailing: '${weightWithConversion(value: oneRepMax).toStringAsFixed(2)}$weightUnitLabel',
-                  subtitle: 'Heaviest weight for one rep',
-                  onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsDuration())
@@ -406,7 +373,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: _MetricListTile(
                   title: 'Best Time',
-                  trailing: widget.longestDuration.$2.secondsOrMinutesOrHours(),
+                  trailing: widget.longestDuration.$2.hmsAnalog(),
                   subtitle: 'Longest time for this exercise',
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
                   enabled: _exerciseLogs.isNotEmpty),
@@ -466,7 +433,8 @@ class _MetricListTile extends StatelessWidget {
       child: ListTile(
         onTap: enabled ? onTap : () {},
         tileColor: tealBlueLight,
-        title: Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+        title:
+            Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
         subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing: Text(trailing,
             style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
