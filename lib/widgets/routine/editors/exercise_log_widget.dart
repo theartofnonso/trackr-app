@@ -50,6 +50,7 @@ class ExerciseLogWidget extends StatefulWidget {
 
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   final List<(TextEditingController, TextEditingController)> _controllers = [];
+  final List<DateTime> _durationControllers = [];
 
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
@@ -113,7 +114,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             editorType: widget.editorType,
             onCheck: () => _updateSetCheck(index: index, setDto: set),
             onRemoved: () => _removeSet(index),
-            onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set));
+            onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
+            startTime: _durationControllers[index]);
     }
   }
 
@@ -125,6 +127,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _addSet() {
     _controllers.add((TextEditingController(), TextEditingController()));
+    _durationControllers.add(DateTime.now());
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
@@ -134,6 +137,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _removeSet(int index) {
     _controllers.removeAt(index);
+    _durationControllers.removeAt(index);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
     _cacheLog();
