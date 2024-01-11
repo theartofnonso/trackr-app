@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -182,7 +183,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  _HorizontalBarChart(frequencyData: calculateFrequency(exerciseLogs)),
+                  RoutineMuscleGroupSplitChart(frequencyData: calculateFrequency(exerciseLogs)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs),
                       previewType: RoutinePreviewType.log),
@@ -416,64 +417,6 @@ class _TemplateChangesListView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               buttonColor: Colors.green)
         ])
-      ],
-    );
-  }
-}
-
-class _HorizontalBarChart extends StatelessWidget {
-  final Map<MuscleGroupFamily, double> frequencyData;
-
-  const _HorizontalBarChart({required this.frequencyData});
-
-  @override
-  Widget build(BuildContext context) {
-    final children =
-        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ...children,
-      const SizedBox(height: 2),
-      Text("Calculations are based on primary muscle groups",
-          style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12)),
-      const SizedBox(height: 8),
-    ]);
-  }
-}
-
-class _LinearBar extends StatelessWidget {
-  final MuscleGroupFamily muscleGroupFamily;
-  final double frequency;
-
-  const _LinearBar({required this.muscleGroupFamily, required this.frequency});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          children: [
-            LinearProgressIndicator(
-              value: frequency,
-              backgroundColor: Colors.green.withOpacity(0.1),
-              color: Colors.green,
-              minHeight: 24,
-              borderRadius: BorderRadius.circular(3.0), // Border r
-            ),
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 1, right: 14),
-                  child: Text(muscleGroupFamily.name,
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ),
-            )
-          ],
-        ),
-        const SizedBox(height: 8),
       ],
     );
   }
