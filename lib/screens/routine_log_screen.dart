@@ -352,6 +352,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
             isDismissible: false,
+            enabledDrag: false,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             context: context,
             child: _TemplateChangesListView(
