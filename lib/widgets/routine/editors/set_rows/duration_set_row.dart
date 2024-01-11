@@ -23,16 +23,13 @@ class DurationSetRow extends StatelessWidget {
     required this.editorType,
     required this.onRemoved,
     required this.onCheck,
-    required this.onChangedDuration, required this.startTime,
+    required this.onChangedDuration,
+    required this.startTime,
   });
 
-  Duration _elapsedDuration() {
-    return DateTime.now().difference(startTime);
-  }
-
   void _stopTimer() {
-    onChangedDuration(_elapsedDuration());
-    onCheck();
+    if (setDto.checked) return;
+    onChangedDuration(DateTime.now().difference(startTime));
   }
 
   @override
@@ -56,14 +53,17 @@ class DurationSetRow extends StatelessWidget {
               child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-              child: setDto.checked
-                  ? Text(_elapsedDuration().hmsDigital(),
-                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
-                  : RoutineTimer(
-                      startTime: setDto.checked ? DateTime.now().subtract(Duration(milliseconds: setDto.value1.toInt())) : startTime,
-                      digital: true,
-                    ),
+            child: SizedBox(
+              height: 50,
+              child: Center(
+                child: setDto.checked
+                    ? Text(Duration(milliseconds: setDto.value1.toInt()).hmsDigital(),
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
+                    : RoutineTimer(
+                        startTime: startTime,
+                        digital: true,
+                      ),
+              ),
             ),
           ),
           if (editorType == RoutineEditorMode.log)

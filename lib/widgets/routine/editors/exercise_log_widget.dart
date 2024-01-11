@@ -158,7 +158,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
-    final updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
+    final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: true);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
