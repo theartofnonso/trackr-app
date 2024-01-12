@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
@@ -51,7 +52,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
-  Set<MuscleGroup> _selectedMuscleGroups = {};
+  MuscleGroup? _selectedMuscleGroup;
 
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
   List<ExerciseInLibraryDto> _filteredExercises = [];
@@ -182,9 +183,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final muscleGroups = MuscleGroup.values
-        .sorted((a, b) => a.name.compareTo(b.name))
-        .map((muscleGroup) => CTextButton(onPressed: () {}, label: muscleGroup.name))
-        .toList();
+        .sorted((a, b) => a.name.compareTo(b.name));
 
     return Scaffold(
       appBar: AppBar(
@@ -223,7 +222,28 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             children: [
               CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
               const SizedBox(height: 12),
-              Wrap(spacing: 8, children: muscleGroups,),
+              DropdownButton<MuscleGroup>(
+                isDense: true,
+                value: _selectedMuscleGroup,
+                underline: Container(color: Colors.transparent,),
+                style: GoogleFonts.montserrat(color: Colors.white),
+                onChanged: (MuscleGroup? value) {
+                  setState(() {
+                    _selectedMuscleGroup = value;
+                  });
+                  if(value != null) {
+
+                  } else {
+                    _clearSearch();
+                  }
+                },
+                items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
+                  return DropdownMenuItem<MuscleGroup>(
+                    value: muscleGroup,
+                    child: Text(muscleGroup.name, style: GoogleFonts.lato(fontSize: 12)),
+                  );
+                }).toList(),
+              ),
               const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
                   ? Expanded(
