@@ -9,6 +9,7 @@ import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
+import '../../enums/muscle_group_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
@@ -50,6 +51,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   List<ExerciseInLibraryDto> _exercisesInLibrary = [];
 
+  Set<MuscleGroup> _selectedMuscleGroups = {};
+
   /// Holds a list of [ExerciseInLibraryDto] when filtering through a search
   List<ExerciseInLibraryDto> _filteredExercises = [];
 
@@ -61,9 +64,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       final query = searchTerm.toLowerCase();
       _filteredExercises = _exercisesInLibrary
           .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
-          exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
-          exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
-          exerciseItem.exercise.name.toLowerCase() == query))
+              exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
+              exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
+              exerciseItem.exercise.name.toLowerCase() == query))
           .toList();
     });
   }
@@ -160,7 +163,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
     return exercises.map((exercise) {
       final exerciseInLibrary =
-      _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
+          _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
       if (exerciseInLibrary != null) {
         if (exerciseInLibrary.selected) {
           return ExerciseInLibraryDto(exercise: exercise, selected: true);
@@ -178,6 +181,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final muscleGroups = MuscleGroup.values
+        .sorted((a, b) => a.name.compareTo(b.name))
+        .map((muscleGroup) => CTextButton(onPressed: () {}, label: muscleGroup.name))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -187,11 +195,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         actions: [
           _selectedExercises.isNotEmpty
               ? CTextButton(
-            onPressed: _navigateBackWithSelectedExercises,
-            label: "Add (${_selectedExercises.length})",
-            buttonColor: Colors.transparent,
-            buttonBorderColor: Colors.transparent,
-          )
+                  onPressed: _navigateBackWithSelectedExercises,
+                  label: "Add (${_selectedExercises.length})",
+                  buttonColor: Colors.transparent,
+                  buttonBorderColor: Colors.transparent,
+                )
               : const SizedBox.shrink()
         ],
       ),
@@ -215,18 +223,19 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             children: [
               CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
               const SizedBox(height: 12),
+              Wrap(spacing: 8, children: muscleGroups,),
+              const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
                   ? Expanded(
-                child: ListView.separated(
-                    padding: const EdgeInsets.only(bottom: 250),
-                    itemBuilder: (BuildContext context, int index) =>
-                        _exerciseWidget(_filteredExercises[index]),
-                    separatorBuilder: (BuildContext context, int index) => const Divider(
-                      thickness: 1.0,
-                      color: tealBlueLight,
-                    ),
-                    itemCount: _filteredExercises.length),
-              )
+                      child: ListView.separated(
+                          padding: const EdgeInsets.only(bottom: 250),
+                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                          separatorBuilder: (BuildContext context, int index) => const Divider(
+                                thickness: 1.0,
+                                color: tealBlueLight,
+                              ),
+                          itemCount: _filteredExercises.length),
+                    )
                   : const ExerciseEmptyState(),
             ],
           ),

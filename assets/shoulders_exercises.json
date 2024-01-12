@@ -1,7 +1,7 @@
 [
-  {"id": "SH1", "name": "Band External Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "ABW"},
-  {"id": "SH2", "name": "Band Internal Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "ABW"},
-  {"id": "SH3", "name": "Band Pull-Apart", "primaryMuscleGroup": "Shoulders", "type": "ABW"},
+  {"id": "SH1", "name": "Band External Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "BW"},
+  {"id": "SH2", "name": "Band Internal Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "BW"},
+  {"id": "SH3", "name": "Band Pull-Apart", "primaryMuscleGroup": "Shoulders", "type": "BW"},
   {"id": "SH4", "name": "Barbell Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH5", "name": "Barbell Rear Delt Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH6", "name": "Barbell Upright Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},

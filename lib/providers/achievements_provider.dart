@@ -36,8 +36,6 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.bodyweightChampion => _calculateBodyWeightChampionAchievement(logs: exerciseLogs, type: type),
     AchievementType.strongerThanEver => _calculateStrongerThanEverAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.timeUnderTension => _calculateTimeUnderTensionAchievement(logs: exerciseLogs, target: type.target),
-    AchievementType.assistedToUnAssisted =>
-      _calculateAssistedToUnAssistedAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogs, target: type.target),
     // _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
   };
@@ -280,30 +278,10 @@ ProgressDto _calculateTimeUnderTensionAchievement(
       dateSelector: dateExtractorForExerciseLog);
 }
 
-/// [AchievementType.assistedToUnAssisted]
-ProgressDto _calculateAssistedToUnAssistedAchievement(
-    {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-  final assistedBodyWeight = logs[ExerciseType.assistedBodyWeight] ?? [];
-
-  final achievedLogs = assistedBodyWeight.where((log) => log.sets.any((set) => set.value1 == target));
-
-  final progress = achievedLogs.length / assistedBodyWeight.length;
-  final remainder = assistedBodyWeight.length - achievedLogs.length;
-
-  return generateProgress(
-      achievedLogs: achievedLogs,
-      progress: progress.isNaN ? 1 : progress,
-      remainder: remainder,
-      dateSelector: dateExtractorForExerciseLog);
-}
-
 /// [AchievementType.oneMoreRep]
 ProgressDto _calculateOneMoreRepAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-  final weightAndReps = logs[ExerciseType.weights] ?? [];
-  final assistedBodyWeight = logs[ExerciseType.assistedBodyWeight] ?? [];
-
-  final achievedLogs = [...weightAndReps, ...assistedBodyWeight];
+  final achievedLogs = logs[ExerciseType.weights] ?? [];
 
   final reps = achievedLogs.map((log) {
     final reps = log.sets.map((set) => set.value2).reduce((total, reps) => total + reps);
