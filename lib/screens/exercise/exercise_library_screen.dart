@@ -68,7 +68,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
               exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
               exerciseItem.exercise.name.toLowerCase() == query))
-          .toList();
+          .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name));
+      _runFilter();
     });
   }
 
@@ -76,6 +77,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     setState(() {
       _filteredExercises = _exercisesInLibrary;
     });
+  }
+
+  void _runFilter() {
+    if (_selectedMuscleGroup != null) {
+      _filteredExercises = _exercisesInLibrary
+          .where((exerciseItem) =>
+              exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup ||
+              exerciseItem.exercise.primaryMuscleGroup.family == _selectedMuscleGroup?.family)
+          .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name));
+    }
   }
 
   /// Navigate to previous screen
@@ -182,15 +193,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final muscleGroups = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).whereNot((muscleGroup) =>
-        muscleGroup == MuscleGroup.glutes ||
-        muscleGroup == MuscleGroup.abductors ||
-        muscleGroup == MuscleGroup.adductors ||
-        muscleGroup == MuscleGroup.hamstrings ||
-        muscleGroup == MuscleGroup.quadriceps ||
-        muscleGroup == MuscleGroup.calves ||
-        muscleGroup == MuscleGroup.traps ||
-        muscleGroup == MuscleGroup.lats);
+    final muscleGroups = MuscleGroup.values
+        .whereNot((muscleGroup) =>
+            muscleGroup == MuscleGroup.glutes ||
+            muscleGroup == MuscleGroup.abductors ||
+            muscleGroup == MuscleGroup.adductors ||
+            muscleGroup == MuscleGroup.hamstrings ||
+            muscleGroup == MuscleGroup.quadriceps ||
+            muscleGroup == MuscleGroup.calves ||
+            muscleGroup == MuscleGroup.traps ||
+            muscleGroup == MuscleGroup.lats)
+        .sorted((a, b) => a.name.compareTo(b.name));
 
     return Scaffold(
       appBar: AppBar(
@@ -226,34 +239,55 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         child: SafeArea(
           minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
               const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
                   color: tealBlueLighter, // Background color
                   borderRadius: BorderRadius.circular(5), // Border radius
                 ),
                 child: DropdownButton<MuscleGroup>(
+                  isExpanded: true,
                   isDense: true,
                   value: _selectedMuscleGroup,
+                  hint: Text("Filter by muscle group",
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                  icon: GestureDetector(
+                    onTap: () {
+                      _selectedMuscleGroup = null;
+                      setState(() {
+                        _runFilter();
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: _selectedMuscleGroup == null
+                          ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
+                          : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
+                    ),
+                  ),
                   underline: Container(
                     color: Colors.transparent,
                   ),
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                   onChanged: (MuscleGroup? value) {
+                    _selectedMuscleGroup = value;
                     setState(() {
-                      _selectedMuscleGroup = value;
+                      _runFilter();
                     });
                   },
                   items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
                     return DropdownMenuItem<MuscleGroup>(
                       value: muscleGroup,
                       child: Text(muscleGroup.name,
-                          style:
-                              GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                          style: GoogleFonts.montserrat(
+                              color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
+                              fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                              fontSize: 14)),
                     );
                   }).toList(),
                 ),
