@@ -1,0 +1,14 @@
+[
+  {"id": "BIC1", "name": "Barbell Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC2", "name": "Barbell Preacher Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC3", "name": "Bodyweight Curl", "primaryMuscleGroup": "Biceps", "type": "BW"},
+  {"id": "BIC4", "name": "Cable Curl With Bar", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC5", "name": "Cable Curl With Rope", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC6", "name": "Concentration Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC7", "name": "Dumbbell Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC8", "name": "Dumbbell Preacher Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC9", "name": "Hammer Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC10", "name": "Incline Dumbbell Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC11", "name": "Machine Bicep Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC12", "name": "Spider Curl", "primaryMuscleGroup": "Biceps", "type": "WR"}
+]

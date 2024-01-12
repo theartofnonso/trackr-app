@@ -15,8 +15,8 @@ class ExerciseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
-      child: ListTile(
+        data: ThemeData(splashColor: tealBlueLight),
+        child: ListTile(
           leading: IconButton(
             iconSize: 24,
             onPressed: onNavigateToExercise,
@@ -31,7 +31,17 @@ class ExerciseWidget extends StatelessWidget {
           subtitle: Text(
             "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
             style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
-          )),
-    );
+          ),
+          trailing: exerciseInLibraryDto.exercise.owner ? Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: tealBlueLighter,
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Text("user",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+          ) : null,
+        ));
   }
 }

@@ -292,7 +292,7 @@ ProgressDto _calculateAssistedToUnAssistedAchievement(
 
   return generateProgress(
       achievedLogs: achievedLogs,
-      progress: progress.isNaN ? 0 : progress,
+      progress: progress.isNaN ? 1 : progress,
       remainder: remainder,
       dateSelector: dateExtractorForExerciseLog);
 }
