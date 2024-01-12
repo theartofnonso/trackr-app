@@ -182,8 +182,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final muscleGroups = MuscleGroup.values
-        .sorted((a, b) => a.name.compareTo(b.name));
+    final muscleGroups = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).whereNot((muscleGroup) =>
+        muscleGroup == MuscleGroup.glutes ||
+        muscleGroup == MuscleGroup.abductors ||
+        muscleGroup == MuscleGroup.adductors ||
+        muscleGroup == MuscleGroup.hamstrings ||
+        muscleGroup == MuscleGroup.quadriceps ||
+        muscleGroup == MuscleGroup.calves ||
+        muscleGroup == MuscleGroup.traps ||
+        muscleGroup == MuscleGroup.lats);
 
     return Scaffold(
       appBar: AppBar(
@@ -219,30 +226,37 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         child: SafeArea(
           minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
-              const SizedBox(height: 12),
-              DropdownButton<MuscleGroup>(
-                isDense: true,
-                value: _selectedMuscleGroup,
-                underline: Container(color: Colors.transparent,),
-                style: GoogleFonts.montserrat(color: Colors.white),
-                onChanged: (MuscleGroup? value) {
-                  setState(() {
-                    _selectedMuscleGroup = value;
-                  });
-                  if(value != null) {
-
-                  } else {
-                    _clearSearch();
-                  }
-                },
-                items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                  return DropdownMenuItem<MuscleGroup>(
-                    value: muscleGroup,
-                    child: Text(muscleGroup.name, style: GoogleFonts.lato(fontSize: 12)),
-                  );
-                }).toList(),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: tealBlueLighter, // Background color
+                  borderRadius: BorderRadius.circular(5), // Border radius
+                ),
+                child: DropdownButton<MuscleGroup>(
+                  isDense: true,
+                  value: _selectedMuscleGroup,
+                  underline: Container(
+                    color: Colors.transparent,
+                  ),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                  onChanged: (MuscleGroup? value) {
+                    setState(() {
+                      _selectedMuscleGroup = value;
+                    });
+                  },
+                  items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
+                    return DropdownMenuItem<MuscleGroup>(
+                      value: muscleGroup,
+                      child: Text(muscleGroup.name,
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                    );
+                  }).toList(),
+                ),
               ),
               const SizedBox(height: 12),
               _filteredExercises.isNotEmpty
