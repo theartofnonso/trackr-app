@@ -1,0 +1,6 @@
+[
+  {"id": "CALV1", "name": "Eccentric Heel Drop", "primaryMuscleGroup": "Calves", "type": "BW"},
+  {"id": "CALV2", "name": "Heel Raise", "primaryMuscleGroup": "Calves", "type": "BW"},
+  {"id": "CALV3", "name": "Seated Calf Raise", "primaryMuscleGroup": "Calves", "type": "WR"},
+  {"id": "CALV4", "name": "Standing Calf Raise", "primaryMuscleGroup": "Calves", "type": "WR"}
+]

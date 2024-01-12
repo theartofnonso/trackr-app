@@ -1,0 +1,11 @@
+[
+  {"id": "FOR1", "name": "Barbell Wrist Curl", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR2", "name": "Barbell Wrist Curl Behind the Back", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR3", "name": "Dumbbell Wrist Curl", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR4", "name": "Farmers Walk", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR5", "name": "Gripper", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR6", "name": "Plate Pinch", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR7", "name": "Plate Wrist Curl", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR8", "name": "Barbell Wrist Extension", "primaryMuscleGroup": "Forearms", "type": "WR"},
+  {"id": "FOR9", "name": "Dumbbell Wrist Extension", "primaryMuscleGroup": "Forearms", "type": "WR"}
+]

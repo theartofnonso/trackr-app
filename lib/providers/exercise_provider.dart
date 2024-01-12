@@ -40,6 +40,10 @@ class ExerciseProvider with ChangeNotifier {
     final tricepsExercises = await loadExercisesFromAssets(file: 'triceps_exercises.json');
     final legsExercises = await loadExercisesFromAssets(file: 'legs_exercises.json');
     final backExercises = await loadExercisesFromAssets(file: 'back_exercises.json');
+    final glutesExercises = await loadExercisesFromAssets(file: 'glutes_exercises.json');
+    final absExercises = await loadExercisesFromAssets(file: 'abs_exercises.json');
+    final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
+    final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
 
     final queries = exercises ?? await Amplify.DataStore.query(Exercise.classType);
     _exercises = queries.map((exercise) => exercise.dto()).toList();
@@ -49,6 +53,10 @@ class ExerciseProvider with ChangeNotifier {
     _exercises.addAll(tricepsExercises);
     _exercises.addAll(legsExercises);
     _exercises.addAll(backExercises);
+    _exercises.addAll(glutesExercises);
+    _exercises.addAll(absExercises);
+    _exercises.addAll(calvesExercises);
+    _exercises.addAll(forearmsExercises);
     notifyListeners();
   }
 
