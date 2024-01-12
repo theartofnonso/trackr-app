@@ -34,6 +34,10 @@ class ExerciseProvider with ChangeNotifier {
   }
 
   Future<void> listExercises({List<Exercise>? exercises}) async {
+
+    final queries = exercises ?? await Amplify.DataStore.query(Exercise.classType);
+    _exercises = queries.map((exercise) => exercise.dto()).toList();
+
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await loadExercisesFromAssets(file: 'shoulders_exercises.json');
     final bicepsExercises = await loadExercisesFromAssets(file: 'biceps_exercises.json');
@@ -45,8 +49,6 @@ class ExerciseProvider with ChangeNotifier {
     final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
     final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
 
-    final queries = exercises ?? await Amplify.DataStore.query(Exercise.classType);
-    _exercises = queries.map((exercise) => exercise.dto()).toList();
     _exercises.addAll(chestExercises);
     _exercises.addAll(shouldersExercises);
     _exercises.addAll(bicepsExercises);
@@ -57,6 +59,9 @@ class ExerciseProvider with ChangeNotifier {
     _exercises.addAll(absExercises);
     _exercises.addAll(calvesExercises);
     _exercises.addAll(forearmsExercises);
+
+    _exercises.sort((a, b) => a.name.compareTo(b.name));
+
     notifyListeners();
   }
 
