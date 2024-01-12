@@ -38,7 +38,6 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
 
     switch (type) {
       case ExerciseType.weights:
-      case ExerciseType.assistedBodyWeight:
         final firstLabel = weightWithConversion(value: setDto.value1);
         final secondLabel = setDto.value2;
         return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);

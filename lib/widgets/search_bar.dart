@@ -3,35 +3,26 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../app_constants.dart';
 
-class CSearchBar extends StatefulWidget {
+class CSearchBar extends StatelessWidget {
   final Function(String) onChanged;
   final Function() onClear;
   final String hintText;
-  const CSearchBar({super.key, required this.onChanged, required this.onClear, required this.hintText});
+  final TextEditingController controller;
 
-  @override
-  State<CSearchBar> createState() => _CSearchBarState();
-}
-
-class _CSearchBarState extends State<CSearchBar> {
-
-  late TextEditingController _controller = TextEditingController();
+  const CSearchBar({super.key, required this.onChanged, required this.onClear, required this.hintText, required this.controller});
 
   @override
   Widget build(BuildContext context) {
 
     return SearchBar(
-      controller: _controller,
-      onChanged: widget.onChanged,
+      controller: controller,
+      onChanged: onChanged,
       leading: const Icon(
         Icons.search_rounded,
         color: Colors.white70,
       ),
-      trailing: [IconButton(onPressed: () {
-        _controller.clear();
-        widget.onClear();
-      }, icon: const Icon(Icons.cancel, color: Colors.white70), visualDensity: VisualDensity.compact,)],
-      hintText: widget.hintText,
+      trailing: [IconButton(onPressed: onClear, icon: const Icon(Icons.cancel, color: Colors.white70), visualDensity: VisualDensity.compact,)],
+      hintText: hintText,
       hintStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white70)),
       textStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white)),
       surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
@@ -41,17 +32,5 @@ class _CSearchBarState extends State<CSearchBar> {
       )),
       constraints: const BoxConstraints(minHeight: 50),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

@@ -1,0 +1,23 @@
+[
+  {"id": "ABS1", "name": "Cable Crunch", "primaryMuscleGroup": "Abs", "type": "WR"},
+  {"id": "ABS2", "name": "Crunch", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS3", "name": "Dead Bug", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS4", "name": "Hanging Leg Raise", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS5", "name": "Hanging Knee Raise", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS6", "name": "Hanging Sit-Up", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS7", "name": "High to Low Wood Chop with Band", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS8", "name": "Horizontal Wood Chop with Band", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS9", "name": "Kneeling Ab Wheel Roll-Out", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS10", "name": "Kneeling Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
+  {"id": "ABS11", "name": "Kneeling Side Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
+  {"id": "ABS12", "name": "Lying Leg Raise", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS13", "name": "Lying Windshield Wiper", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS14", "name": "Lying Windshield Wiper with Bent Knees", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS15", "name": "Machine Crunch", "primaryMuscleGroup": "Abs", "type": "WR"},
+  {"id": "ABS16", "name": "Mountain Climbers", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS17", "name": "Oblique Crunch", "primaryMuscleGroup": "Abs", "type":"BW"},
+  {"id": "ABS18", "name": "Oblique Sit-Up", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS19", "name": "Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
+  {"id": "ABS20", "name": "Side Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
+  {"id": "ABS21", "name": "Sit-Up", "primaryMuscleGroup": "Abs", "type": "BW"}
+]

@@ -42,9 +42,23 @@ class SelectableExerciseWidget extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        trailing: exerciseInLibraryDto.selected
-            ? const Icon(Icons.check_box_rounded, color: Colors.green)
-            : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
+        trailing: Row(children: [
+          if (exerciseInLibraryDto.exercise.owner)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: tealBlueLighter,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Text(
+                "user",
+                style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            ),
+          exerciseInLibraryDto.selected
+              ? const Icon(Icons.check_box_rounded, color: Colors.green)
+              : const Icon(Icons.check_box_rounded, color: tealBlueLighter)
+        ]),
       ),
     );
   }

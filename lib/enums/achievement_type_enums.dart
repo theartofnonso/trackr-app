@@ -40,8 +40,6 @@ enum AchievementType {
       "Weekend Warrior focuses on adhering to a two-month workout regimen for individuals with a busy schedule. Additionally, it serves as an effective method for establishing a consistent weekend exercise routine"),
   bodyweightChampion("Bodyweight Champion", "Accumulate 100 bodyweight exercises", 100,
       "Bodyweight Champion focuses on bodyweight exercises. It is designed to encourage you to add bodyweight exercises to your workout routine for a more well-rounded workout"),
-  assistedToUnAssisted("Assisted to Unassisted", "Reduce weight assistance for any assisted-weight exercise", 0,
-      "Assisted to Unassisted focuses on reducing the weight assistance for any assisted-weight exercise. It is a great way to increase the intensity of your workout"),
   // maxOutMadness("Max Out Madness", "Set a goal to increase the maximum weight lifted in a specific compound exercise", 0),
   // twiceAsStrong("Twice as Strong", "Achieve a 2x body weight deadlift", 0),
   // twiceAsLow("Twice as Low", "Achieve a 2x body weight squat", 0)

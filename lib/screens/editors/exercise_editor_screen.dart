@@ -193,7 +193,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       _toggleLoadingState();
 
       final exercise =
-          ExerciseDto(id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType);
+          ExerciseDto(id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 
       try {
         await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);

@@ -89,7 +89,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   Widget _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
     switch (exerciseType) {
       case ExerciseType.weights:
-      case ExerciseType.assistedBodyWeight:
         return WeightsSetRow(
           setDto: set,
           editorType: widget.editorType,
@@ -195,7 +194,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     for (var _ in sets) {
       controllers.add(DateTime.now());
     }
-   _durationControllers.addAll(controllers);
+    _durationControllers.addAll(controllers);
   }
 
   @override
@@ -214,7 +213,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     Provider.of<RoutineLogProvider>(context, listen: true);
 
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
@@ -298,11 +296,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ExerciseType.weights => WeightRepsSetHeader(
                 editorType: widget.editorType,
                 firstLabel: weightLabel().toUpperCase(),
-                secondLabel: 'REPS',
-              ),
-            ExerciseType.assistedBodyWeight => WeightRepsSetHeader(
-                editorType: widget.editorType,
-                firstLabel: '-${weightLabel().toUpperCase()}',
                 secondLabel: 'REPS',
               ),
             ExerciseType.bodyWeight => RepsSetHeader(editorType: widget.editorType),

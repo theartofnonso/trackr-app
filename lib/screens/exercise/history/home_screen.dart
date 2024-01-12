@@ -106,31 +106,33 @@ class HomeScreen extends StatelessWidget {
                 )
               ],
             ),
-            actions: [
-              MenuAnchor(
-                style: MenuStyle(
-                  backgroundColor: MaterialStateProperty.all(tealBlueLighter),
-                ),
-                builder: (BuildContext context, MenuController controller, Widget? child) {
-                  return IconButton(
-                    onPressed: () {
-                      if (controller.isOpen) {
-                        controller.close();
-                      } else {
-                        controller.open();
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.more_vert_rounded,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                    tooltip: 'Show menu',
-                  );
-                },
-                menuChildren: menuActions,
-              )
-            ],
+            actions: foundExercise.owner
+                ? [
+                    MenuAnchor(
+                      style: MenuStyle(
+                        backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                      ),
+                      builder: (BuildContext context, MenuController controller, Widget? child) {
+                        return IconButton(
+                          onPressed: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.more_vert_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                          tooltip: 'Show menu',
+                        );
+                      },
+                      menuChildren: menuActions,
+                    )
+                  ]
+                : null,
           ),
           body: SafeArea(
             child: TabBarView(
