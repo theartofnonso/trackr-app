@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../../app_constants.dart';
@@ -144,7 +143,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   void _updateExerciseName(String? value) {
     if (value == null) return;
     setState(() {
-      _exerciseName = capitalizeFirstLetter(value.trim());
+      _exerciseName = value.trim();
     });
   }
 
@@ -227,7 +226,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
       try {
         final updatedExercise = exercise.copyWith(
-            name: capitalizeFirstLetter(exerciseName.trim()), primaryMuscleGroup: _primaryMuscleGroup);
+            name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
         await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
         if (mounted) {
           Navigator.of(context).pop();

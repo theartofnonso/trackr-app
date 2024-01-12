@@ -12,6 +12,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -23,11 +24,15 @@ import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../providers/routine_template_provider.dart';
+import '../utils/shareables_utils.dart';
 import '../widgets/fabs/expandable_fab.dart';
 import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
+import '../widgets/shareables/routine_log_shareable_one.dart';
 import 'editors/helper_utils.dart';
 import 'editors/routine_log_editor_screen.dart';
+
+GlobalKey routineLogShareableOneKey = GlobalKey();
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -68,12 +73,33 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return Scaffold(
         backgroundColor: tealBlueDark,
         appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text(log.name,
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(log.name,
+                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            // actions: [
+            //   IconButton(
+            //       onPressed: () {
+            //         displayBottomSheet(
+            //             color: tealBlueDark,
+            //             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            //             context: context,
+            //             child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            //               RepaintBoundary(
+            //                   key: routineLogShareableOneKey,
+            //                   child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
+            //               const SizedBox(height: 10),
+            //               CTextButton(
+            //                   onPressed: () => captureImage(key: routineLogShareableOneKey),
+            //                   label: "Share",
+            //                   buttonColor: Colors.transparent,
+            //                   buttonBorderColor: Colors.transparent)
+            //             ]));
+            //       },
+            //       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+            // ]
         ),
         floatingActionButton: ExpandableFab(
           distance: 112,
@@ -99,16 +125,15 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  log.notes.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text(log.notes,
-                              style: GoogleFonts.montserrat(
-                                color: Colors.white,
-                                fontSize: 14,
-                              )),
-                        )
-                      : const SizedBox.shrink(),
+                  if (log.notes.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Text(log.notes,
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontSize: 14,
+                          )),
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -178,7 +203,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  _HorizontalBarChart(frequencyData: calculateFrequency(exerciseLogs)),
+                  RoutineMuscleGroupSplitChart(frequencyData: calculateFrequency(exerciseLogs)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs),
                       previewType: RoutinePreviewType.log),
@@ -348,6 +373,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
             isDismissible: false,
+            enabledDrag: false,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             context: context,
             child: _TemplateChangesListView(
@@ -411,64 +437,6 @@ class _TemplateChangesListView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               buttonColor: Colors.green)
         ])
-      ],
-    );
-  }
-}
-
-class _HorizontalBarChart extends StatelessWidget {
-  final Map<MuscleGroupFamily, double> frequencyData;
-
-  const _HorizontalBarChart({required this.frequencyData});
-
-  @override
-  Widget build(BuildContext context) {
-    final children =
-        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ...children,
-      const SizedBox(height: 2),
-      Text("Calculations are based on primary muscle groups",
-          style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12)),
-      const SizedBox(height: 8),
-    ]);
-  }
-}
-
-class _LinearBar extends StatelessWidget {
-  final MuscleGroupFamily muscleGroupFamily;
-  final double frequency;
-
-  const _LinearBar({required this.muscleGroupFamily, required this.frequency});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          children: [
-            LinearProgressIndicator(
-              value: frequency,
-              backgroundColor: Colors.green.withOpacity(0.1),
-              color: Colors.green,
-              minHeight: 24,
-              borderRadius: BorderRadius.circular(3.0), // Border r
-            ),
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 1, right: 14),
-                  child: Text(muscleGroupFamily.name,
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ),
-            )
-          ],
-        ),
-        const SizedBox(height: 8),
       ],
     );
   }

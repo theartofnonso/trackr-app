@@ -36,9 +36,11 @@ Future<void> displayBottomSheet(
     double? height,
     EdgeInsets? padding,
     Color? color,
+      enabledDrag = true,
     bool isDismissible = true}) {
   return showModalBottomSheet(
       isDismissible: isDismissible,
+      enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) => Column(
