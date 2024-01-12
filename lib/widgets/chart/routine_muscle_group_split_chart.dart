@@ -54,7 +54,7 @@ class _LinearBar extends StatelessWidget {
               value: frequency,
               backgroundColor: Colors.green.withOpacity(0.1),
               color: Colors.green,
-              minHeight: 24,
+              minHeight: 20,
               borderRadius: BorderRadius.circular(3.0), // Border r
             ),
             Positioned.fill(
@@ -63,7 +63,7 @@ class _LinearBar extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 1, right: 14),
                   child: Text(muscleGroupFamily.name,
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 12)),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 12)),
                 ),
               ),
             )

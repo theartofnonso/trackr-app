@@ -10,6 +10,7 @@ import '../chart/routine_muscle_group_split_chart.dart';
 class RoutineLogShareableOne extends StatelessWidget {
   final RoutineLogDto log;
   final Map<MuscleGroupFamily, double> frequencyData;
+
   const RoutineLogShareableOne({super.key, required this.log, required this.frequencyData});
 
   @override
@@ -34,7 +35,7 @@ class RoutineLogShareableOne extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(log.createdAt.formattedDayAndMonthAndYear(),
+              Text(log.createdAt.formattedDayAndMonth(),
                   style: GoogleFonts.montserrat(
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
               const SizedBox(width: 10),
@@ -49,8 +50,6 @@ class RoutineLogShareableOne extends StatelessWidget {
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
             ],
           ),
-          trailing: Text("${log.exerciseLogs.length} exercise(s)",
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 16)),
         ),
         RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
         const SizedBox(height: 12),
