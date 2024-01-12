@@ -48,6 +48,7 @@ class ExerciseProvider with ChangeNotifier {
     final absExercises = await loadExercisesFromAssets(file: 'abs_exercises.json');
     final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
     final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
+    final fullBodyExercises = await loadExercisesFromAssets(file: 'fullbody_exercises.json');
 
     _exercises.addAll(chestExercises);
     _exercises.addAll(shouldersExercises);
@@ -59,6 +60,7 @@ class ExerciseProvider with ChangeNotifier {
     _exercises.addAll(absExercises);
     _exercises.addAll(calvesExercises);
     _exercises.addAll(forearmsExercises);
+    _exercises.addAll(fullBodyExercises);
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));
 

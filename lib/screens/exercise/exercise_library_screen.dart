@@ -60,33 +60,36 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   final List<ExerciseInLibraryDto> _selectedExercises = [];
 
   /// Search through the list of exercises
-  void _runSearch(String searchTerm) {
+  void _runSearch(String? text) {
     setState(() {
-      final query = searchTerm.toLowerCase();
-      _filteredExercises = _exercisesInLibrary
-          .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
-              exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
-              exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
-              exerciseItem.exercise.name.toLowerCase() == query))
-          .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name));
-      _runFilter();
+      final searchTerm = text ?? _searchController.text;
+      final query = searchTerm.toLowerCase().trim();
+      List<ExerciseInLibraryDto> searchResults = query.isNotEmpty
+          ? _exercisesInLibrary
+              .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
+                  exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
+                  exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
+                  exerciseItem.exercise.name.toLowerCase() == query))
+              .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
+          : _exercisesInLibrary;
+
+      searchResults = _selectedMuscleGroup != null
+          ? searchResults
+              .where((exerciseItem) =>
+                  exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup ||
+                  exerciseItem.exercise.primaryMuscleGroup.family == _selectedMuscleGroup?.family)
+              .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
+          : searchResults;
+
+      _filteredExercises = searchResults;
     });
   }
 
   void _clearSearch() {
+    _searchController.clear();
     setState(() {
       _filteredExercises = _exercisesInLibrary;
     });
-  }
-
-  void _runFilter() {
-    if (_selectedMuscleGroup != null) {
-      _filteredExercises = _exercisesInLibrary
-          .where((exerciseItem) =>
-              exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup ||
-              exerciseItem.exercise.primaryMuscleGroup.family == _selectedMuscleGroup?.family)
-          .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name));
-    }
   }
 
   /// Navigate to previous screen
@@ -241,7 +244,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              CSearchBar(hintText: "Search exercises", onChanged: _runSearch, onClear: _clearSearch),
+              CSearchBar(
+                  hintText: "Search exercises",
+                  onChanged: _runSearch,
+                  onClear: _clearSearch,
+                  controller: _searchController),
               const SizedBox(height: 10),
               Container(
                 width: double.infinity,
@@ -259,9 +266,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   icon: GestureDetector(
                     onTap: () {
                       _selectedMuscleGroup = null;
-                      setState(() {
-                        _runFilter();
-                      });
+                      _runSearch(null);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -276,9 +281,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                   onChanged: (MuscleGroup? value) {
                     _selectedMuscleGroup = value;
-                    setState(() {
-                      _runFilter();
-                    });
+                    _runSearch(null);
                   },
                   items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
                     return DropdownMenuItem<MuscleGroup>(
