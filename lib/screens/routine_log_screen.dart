@@ -79,27 +79,28 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             ),
             title: Text(log.name,
                 style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    displayBottomSheet(
-                        color: tealBlueDark,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        context: context,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          RepaintBoundary(
-                              key: routineLogShareableOneKey,
-                              child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
-                          const SizedBox(height: 10),
-                          CTextButton(
-                              onPressed: () => captureImage(key: routineLogShareableOneKey),
-                              label: "Share",
-                              buttonColor: Colors.transparent,
-                              buttonBorderColor: Colors.transparent)
-                        ]));
-                  },
-                  icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
-            ]),
+            // actions: [
+            //   IconButton(
+            //       onPressed: () {
+            //         displayBottomSheet(
+            //             color: tealBlueDark,
+            //             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            //             context: context,
+            //             child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            //               RepaintBoundary(
+            //                   key: routineLogShareableOneKey,
+            //                   child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
+            //               const SizedBox(height: 10),
+            //               CTextButton(
+            //                   onPressed: () => captureImage(key: routineLogShareableOneKey),
+            //                   label: "Share",
+            //                   buttonColor: Colors.transparent,
+            //                   buttonBorderColor: Colors.transparent)
+            //             ]));
+            //       },
+            //       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+            // ]
+        ),
         floatingActionButton: ExpandableFab(
           distance: 112,
           children: [
