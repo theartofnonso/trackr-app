@@ -54,6 +54,10 @@ class RoutineLogShareableOne extends StatelessWidget {
         RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
         const SizedBox(height: 12),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Text("${log.exerciseLogs.length} exercises",
+              style: GoogleFonts.montserrat(
+                  color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+          const Spacer(),
           Image.asset(
             'assets/trackr.png',
             fit: BoxFit.contain,
