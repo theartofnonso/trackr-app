@@ -15,6 +15,17 @@ class RoutineLogShareableOne extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final exerciseLogs = log.exerciseLogs
+        .map((exerciseLog) => Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Row(children: [
+                Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
+                const Spacer(),
+                Text("${exerciseLog.sets.length} sets", style: GoogleFonts.montserrat(fontWeight: FontWeight.w500))
+              ]),
+            ))
+        .toList();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       margin: const EdgeInsets.all(12),
@@ -22,7 +33,7 @@ class RoutineLogShareableOne extends StatelessWidget {
         color: tealBlueLight,
         borderRadius: BorderRadius.circular(5), // Border radius
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(log.name,
@@ -52,19 +63,15 @@ class RoutineLogShareableOne extends StatelessWidget {
           ),
         ),
         RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
+        const SizedBox(height: 8),
+        ...exerciseLogs,
         const SizedBox(height: 12),
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Text("${log.exerciseLogs.length} exercises",
-              style: GoogleFonts.montserrat(
-                  color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-          const Spacer(),
-          Image.asset(
-            'assets/trackr.png',
-            fit: BoxFit.contain,
-            height: 8, // Adjust the height as needed
-          )
-        ]),
-        const SizedBox(height: 20),
+        Image.asset(
+          'assets/trackr.png',
+          fit: BoxFit.contain,
+          height: 8, // Adjust the height as needed
+        ),
+        const SizedBox(height: 12),
       ]),
     );
   }
