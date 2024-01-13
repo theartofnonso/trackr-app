@@ -20,8 +20,9 @@ class RoutineLogShareableOne extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: Row(children: [
                 Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
-                const Spacer(),
-                Text("${exerciseLog.sets.length} sets", style: GoogleFonts.montserrat(fontWeight: FontWeight.w500))
+                //const Spacer(),
+                const SizedBox(width: 10),
+                Text("x${exerciseLog.sets.length} sets", style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70)),
               ]),
             ))
         .toList();
