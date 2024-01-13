@@ -27,7 +27,11 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   void _loadSets() {
     for (var exerciseLog in _exerciseLogs) {
-      _sets[exerciseLog.id] = exerciseLog.sets;
+      if(exerciseLog.exercise.type == ExerciseType.duration) {
+        _sets[exerciseLog.id] = [];
+      } else {
+        _sets[exerciseLog.id] = exerciseLog.sets;
+      }
     }
   }
 

@@ -20,6 +20,9 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/general_utils.dart';
 
+const _logModeTimerMessage = "Tap the + button to add a timer";
+const _editModeTimerMessage = "Timer will be available in log mode";
+
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
 
@@ -108,19 +111,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.duration:
-        return widget.editorType == RoutineEditorMode.log
-            ? DurationSetRow(
-                setDto: set,
-                editorType: widget.editorType,
-                onCheck: () => _updateSetCheck(index: index, setDto: set),
-                onRemoved: () => _removeSet(index),
-                onChangedDuration: (Duration duration) =>
-                    _updateDuration(index: index, duration: duration, setDto: set),
-                startTime: _durationControllers[index])
-            : Center(
-                child: Text("Timer will be available in log mode",
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
-              );
+        return DurationSetRow(
+            setDto: set,
+            editorType: widget.editorType,
+            onCheck: () => _updateSetCheck(index: index, setDto: set),
+            onRemoved: () => _removeSet(index),
+            onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
+            startTime: _durationControllers[index]);
     }
   }
 
@@ -131,8 +128,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _addSet() {
-    _controllers.add((TextEditingController(), TextEditingController()));
-    _durationControllers.add(DateTime.now());
+    if (widget.exerciseLogDto.exercise.type == ExerciseType.duration) {
+      _durationControllers.add(DateTime.now());
+    } else {
+      _controllers.add((TextEditingController(), TextEditingController()));
+    }
     final pastSets =
         Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
@@ -141,8 +141,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet(int index) {
-    _controllers.removeAt(index);
-    _durationControllers.removeAt(index);
+    if (widget.exerciseLogDto.exercise.type == ExerciseType.duration) {
+      _durationControllers.removeAt(index);
+    } else {
+      _controllers.removeAt(index);
+    }
+
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
     _cacheLog();
@@ -188,26 +192,24 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _controllers.addAll(controllers);
   }
 
-  void _loadDurationControllers() {
-    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
-    List<DateTime> controllers = [];
-    for (var _ in sets) {
-      controllers.add(DateTime.now());
-    }
-    _durationControllers.addAll(controllers);
-  }
-
   @override
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    _loadDurationControllers();
   }
 
   void _cacheLog() {
     final cacheLog = widget.onCache;
     if (cacheLog != null) {
       cacheLog();
+    }
+  }
+
+  String _timerMessage() {
+    if (widget.editorType == RoutineEditorMode.log) {
+      return _logModeTimerMessage;
+    } else {
+      return _editModeTimerMessage;
     }
   }
 
@@ -303,6 +305,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           },
           const SizedBox(height: 8),
           if (sets.isNotEmpty) Column(children: [..._displaySets(exerciseType: exerciseType, sets: sets)]),
+          const SizedBox(height: 8),
+          if(exerciseType == ExerciseType.duration && sets.isEmpty)
+            Center(
+              child: Text(_timerMessage(),
+                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+            ),
           const SizedBox(height: 8),
           if (widget.editorType == RoutineEditorMode.log)
             Align(
