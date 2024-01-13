@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/notifications_screen.dart';
@@ -38,6 +39,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   bool _notificationEnabled = false;
 
+  String _appVersion = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,87 +53,94 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       body: Stack(children: [
         SafeArea(
           minimum: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Settings",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 16),
-              ListTile(
-                title: Text("Weight",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
-                trailing: SegmentedButton(
-                  showSelectedIcon: false,
-                  style: ButtonStyle(
-                    visualDensity: const VisualDensity(
-                        horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                    shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return Colors.white;
-                        }
-                        return Colors.transparent;
-                      },
-                    ),
-                    foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return Colors.black;
-                        }
-                        return Colors.white;
-                      },
-                    ),
-                  ),
-                  segments: [
-                    ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                    ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                  ],
-                  selected: <WeightUnit>{_weightUnitType},
-                  onSelectionChanged: (Set<WeightUnit> unitType) {
-                    setState(() {
-                      _weightUnitType = unitType.first;
-                    });
-                    toggleWeightUnit(unit: _weightUnitType);
-                  },
-                ),
-              ),
-              const SizedBox(height: 8),
-              Theme(
-                data: Theme.of(context).copyWith(
-                  splashColor: Colors.transparent // Disable the splash effect
-                ),
-                child: SwitchListTile(
-                  activeColor: Colors.green,
-                  title: Text('Show calendar dates',
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Settings",
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 16),
+                ListTile(
+                  title: Text("Weight",
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  value: SharedPrefs().showCalendarDates,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  onChanged: (bool value) {
-                    setState(() {
-                      SharedPrefs().showCalendarDates = value;
-                    });
-                  },
+                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                  trailing: SegmentedButton(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(
+                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Colors.white;
+                          }
+                          return Colors.transparent;
+                        },
+                      ),
+                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Colors.black;
+                          }
+                          return Colors.white;
+                        },
+                      ),
+                    ),
+                    segments: [
+                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                    ],
+                    selected: <WeightUnit>{_weightUnitType},
+                    onSelectionChanged: (Set<WeightUnit> unitType) {
+                      setState(() {
+                        _weightUnitType = unitType.first;
+                      });
+                      toggleWeightUnit(unit: _weightUnitType);
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              OutlineListTile(
-                  onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "Add favourite exercises"),
-              const SizedBox(height: 8),
-              /// Uncomment this to enable notifications
-              OutlineListTile(
-                  onTap: _navigateToNotificationSettings,
-                  title: "Notifications",
-                  trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-              const SizedBox(height: 8),
-              const SizedBox(height: 16),
-              OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
-              const SizedBox(height: 8),
-              OutlineListTile(onTap: _delete, title: "Delete Account"),
-            ],
+                const SizedBox(height: 8),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    splashColor: Colors.transparent // Disable the splash effect
+                  ),
+                  child: SwitchListTile(
+                    activeColor: Colors.green,
+                    title: Text('Show calendar dates',
+                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                    value: SharedPrefs().showCalendarDates,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    onChanged: (bool value) {
+                      setState(() {
+                        SharedPrefs().showCalendarDates = value;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+                OutlineListTile(
+                    onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                const SizedBox(height: 8),
+                /// Uncomment this to enable notifications
+                OutlineListTile(
+                    onTap: _navigateToNotificationSettings,
+                    title: "Notifications",
+                    trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                const SizedBox(height: 8),
+                const SizedBox(height: 16),
+                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                const SizedBox(height: 8),
+                OutlineListTile(onTap: _delete, title: "Delete Account"),
+                const SizedBox(height: 50),
+                Center(
+                  child: Text(_appVersion,
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
           ),
         ),
         if (_loading)
@@ -247,12 +257,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     });
   }
 
+  void _getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final version = packageInfo.version;
+    final buildNumber = packageInfo.buildNumber;
+    setState(() {
+      _appVersion = "APP VERSION: $version (BUILD $buildNumber)";
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _weightUnitType = WeightUnit.fromString(SharedPrefs().weightUnit);
     _checkNotificationPermission();
+    _getAppVersion();
   }
 
   @override

@@ -35,6 +35,9 @@ class MuscleGroupsScreen extends StatefulWidget {
 }
 
 class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
+
+  late TextEditingController _searchController;
+
   late List<MuscleGroupDto> _muscleGroups = [];
 
   List<MuscleGroupDto> _filteredMuscleGroups = [];
@@ -53,6 +56,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   }
 
   void _clearSearch() {
+    _searchController.clear();
     setState(() {
       _filteredMuscleGroups = _muscleGroups;
     });
@@ -76,7 +80,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
         minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           children: [
-            CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch, onClear: _clearSearch),
+            CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch, onClear: _clearSearch, controller: _searchController),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
@@ -97,10 +101,18 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
   void initState() {
     super.initState();
 
+    _searchController = TextEditingController();
+
     _muscleGroups = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).map((muscleGroup) {
       return MuscleGroupDto(muscleGroup: muscleGroup, selected: widget.previousMuscleGroup == muscleGroup);
     }).toList();
 
     _filteredMuscleGroups = _muscleGroups;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
   }
 }

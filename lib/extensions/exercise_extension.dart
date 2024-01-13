@@ -13,7 +13,8 @@ extension ExerciseExtension on Exercise {
     final primaryMuscleGroup = dataJson["primaryMuscleGroup"] ?? "";
     final typeJson = dataJson["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
+    final user = owner != null;
 
-    return ExerciseDto(id: id, name: name, primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroup), type: type);
+    return ExerciseDto(id: id, name: name, primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroup), type: type, owner: user);
   }
 }

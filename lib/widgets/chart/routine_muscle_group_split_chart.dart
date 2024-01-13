@@ -54,7 +54,7 @@ class _LinearBar extends StatelessWidget {
               value: frequency,
               backgroundColor: Colors.green.withOpacity(0.1),
               color: Colors.green,
-              minHeight: 20,
+              minHeight: 24,
               borderRadius: BorderRadius.circular(3.0), // Border r
             ),
             Positioned.fill(

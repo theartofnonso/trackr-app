@@ -123,14 +123,17 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   void _navigateToMuscleGroupsScreen() async {
     final muscleGroup = await Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => MuscleGroupsScreen(previousMuscleGroup: _primaryMuscleGroup)))
-        as MuscleGroup;
-    setState(() {
-      _primaryMuscleGroup = muscleGroup;
-    });
+        as MuscleGroup?;
+
+    if (muscleGroup != null) {
+      setState(() {
+        _primaryMuscleGroup = muscleGroup;
+      });
+    }
   }
 
   void _navigateToExerciseTypeScreen() async {
-    if (widget.exercise != null) return;
+    if (widget.exercise != null) return; /// We don't want to allow editing of exercise type once created.
     final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
         as ExerciseType?;
     if (type != null) {
@@ -192,8 +195,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     } else {
       _toggleLoadingState();
 
-      final exercise =
-          ExerciseDto(id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType);
+      final exercise = ExerciseDto(
+          id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 
       try {
         await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);
@@ -225,8 +228,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       _toggleLoadingState();
 
       try {
-        final updatedExercise = exercise.copyWith(
-            name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
+        final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
         await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
         if (mounted) {
           Navigator.of(context).pop();

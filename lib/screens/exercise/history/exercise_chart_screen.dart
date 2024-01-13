@@ -83,16 +83,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     });
   }
 
-  void _lightestSetVolumePerLog() {
-    final values = _exerciseLogs.map((log) => lightestSetVolumeForLog(exerciseLog: log)).toList();
-
-    setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
-      _summaryType = SummaryType.setVolume;
-      _chartUnit = weightUnit();
-    });
-  }
-
   void _totalRepsForLog() {
     final values = _exerciseLogs.map((log) => totalRepsForLog(exerciseLog: log)).toList();
     setState(() {
@@ -136,7 +126,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
     switch (exerciseType) {
       case ExerciseType.weights:
-      case ExerciseType.assistedBodyWeight:
         _summaryType = SummaryType.weight;
         break;
       case ExerciseType.bodyWeight:
@@ -190,11 +179,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     }
   }
 
-  bool _exerciseLogsWithAssistedWeightsOnly() {
-    final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.assistedBodyWeight;
-  }
-
   bool _exerciseLogsWithWeightsOnly() {
     final exerciseType = widget.exercise.type;
     return exerciseType == ExerciseType.weights;
@@ -202,14 +186,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   bool _exerciseLogsWithReps() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.weights ||
-        exerciseType == ExerciseType.assistedBodyWeight ||
-        exerciseType == ExerciseType.bodyWeight;
+    return exerciseType == ExerciseType.weights || exerciseType == ExerciseType.bodyWeight;
   }
 
   bool _exerciseLogsWithRepsOnly() {
     final exerciseType = widget.exercise.type;
-    return exerciseType == ExerciseType.assistedBodyWeight || exerciseType == ExerciseType.bodyWeight;
+    return exerciseType == ExerciseType.bodyWeight;
   }
 
   bool _exerciseLogsDuration() {
@@ -265,28 +247,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                             label: "Heaviest Weight",
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
-                    if (_exerciseLogsWithAssistedWeightsOnly())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _heaviestWeightPerLog,
-                            label: "Assisted Weight",
-                            buttonColor: _buttonColor(type: SummaryType.weight)),
-                      ),
                     if (_exerciseLogsWithWeightsOnly())
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
                             onPressed: _heaviestSetVolumePerLog,
                             label: "Heaviest Volume (Set)",
-                            buttonColor: _buttonColor(type: SummaryType.setVolume)),
-                      ),
-                    if (_exerciseLogsWithAssistedWeightsOnly())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: CTextButton(
-                            onPressed: _lightestSetVolumePerLog,
-                            label: "Lightest Volume (Set)",
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
                     if (_exerciseLogsWithReps())
@@ -335,17 +301,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 enabled: _exerciseLogs.isNotEmpty,
               ),
             ),
-          if (_exerciseLogsWithAssistedWeightsOnly())
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: _MetricListTile(
-                title: 'Lightest Weight',
-                trailing: "${weightWithConversion(value: widget.lightestWeight.$2)}$weightUnitLabel",
-                subtitle: 'Lightest weight in a set',
-                onTap: () => _navigateTo(routineLogId: widget.lightestWeight.$1),
-                enabled: _exerciseLogs.isNotEmpty,
-              ),
-            ),
           if (_exerciseLogsWithWeightsOnly())
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
@@ -355,17 +310,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                       "${weightWithConversion(value: widget.heaviestSet.$2.value1)}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
-            ),
-          if (_exerciseLogsWithAssistedWeightsOnly())
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: _MetricListTile(
-                  title: 'Lightest Set Volume',
-                  trailing:
-                      "${weightWithConversion(value: widget.lightestSet.$2.value1)}$weightUnitLabel x ${widget.lightestSet.$2.value2}",
-                  subtitle: 'Lightest volume in a set',
-                  onTap: () => _navigateTo(routineLogId: widget.lightestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
           if (_exerciseLogsDuration())
@@ -398,8 +342,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
                   enabled: _exerciseLogs.isNotEmpty),
             ),
-          if (_exerciseLogsWithWeightsOnly() || _exerciseLogsWithAssistedWeightsOnly())
-            PersonalBestWidget(exercise: widget.exercise),
+          if (_exerciseLogsWithWeightsOnly()) PersonalBestWidget(exercise: widget.exercise),
         ],
       ),
     ));

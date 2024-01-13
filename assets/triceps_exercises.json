@@ -1,0 +1,12 @@
+[
+  {"id": "TRI1", "name": "Barbell Standing Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI2", "name": "Barbell Lying Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI3", "name": "Bench Dip", "primaryMuscleGroup": "Triceps", "type": "BW"},
+  {"id": "TRI4", "name": "Close-Grip Push-Up", "primaryMuscleGroup": "Triceps", "type": "BW"},
+  {"id": "TRI5", "name": "Dumbbell Lying Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI6", "name": "Dumbbell Standing Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI7", "name": "Overhead Cable Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI8", "name": "Tricep Bodyweight Extension", "primaryMuscleGroup": "Triceps", "type": "BW"},
+  {"id": "TRI9", "name": "Tricep Pushdown With Bar", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI10", "name": "Tricep Pushdown With Rope", "primaryMuscleGroup": "Triceps", "type": "WR"}
+]

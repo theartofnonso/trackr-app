@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/all_dates_tracked_screen.dart';
+import 'package:tracker_app/screens/consistency_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
@@ -32,7 +32,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => AllDaysTrackedScreen(consistencyLevel: consistencyLevel)));
+        .push(MaterialPageRoute(builder: (context) => ConsistencyScreen(consistencyLevel: consistencyLevel)));
   }
 
   void _logEmptyRoutine(BuildContext context) async {

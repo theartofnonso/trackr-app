@@ -58,7 +58,6 @@ class _TrailingWidget extends StatelessWidget {
     List<String> measurements = switch (type) {
       ExerciseType.weights => ["KG", " | ", "REPS"],
       ExerciseType.bodyWeight => ["REPS"],
-      ExerciseType.assistedBodyWeight => ["KG-", " | ", "REPS"],
       ExerciseType.duration => ["TIME"],
     };
 
