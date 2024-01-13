@@ -36,8 +36,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.bodyweightChampion => _calculateBodyWeightChampionAchievement(logs: exerciseLogs, type: type),
     AchievementType.strongerThanEver => _calculateStrongerThanEverAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.timeUnderTension => _calculateTimeUnderTensionAchievement(logs: exerciseLogs, target: type.target),
-    AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogs, target: type.target),
-    // _ => ProgressDto(value: 0.0, remainder: 0, dates: {}),
+    AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogs, target: type.target)
   };
 
   return progress;

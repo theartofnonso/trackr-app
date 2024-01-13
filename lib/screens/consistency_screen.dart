@@ -11,9 +11,9 @@ import '../utils/general_utils.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/calender_heatmaps/calendar_heatmap.dart';
 
-class AllDaysTrackedScreen extends StatelessWidget {
+class ConsistencyScreen extends StatelessWidget {
   final int consistencyLevel;
-  const AllDaysTrackedScreen({super.key, required this.consistencyLevel});
+  const ConsistencyScreen({super.key, required this.consistencyLevel});
 
   @override
   Widget build(BuildContext context) {
