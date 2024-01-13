@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/progress_dto.dart';
 import 'package:tracker_app/enums/achievement_type_enums.dart';
 import 'package:tracker_app/widgets/achievements/achievement_tile.dart';
-import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
 import '../../dtos/achievement_dto.dart';
 import '../backgrounds/gradient_widget.dart';
@@ -28,7 +27,6 @@ class AchievementsEmptyState extends StatelessWidget {
             ],
           ),
         ),
-        const TextEmptyState(message: "You have not logged any sessions yet."),
       ],
     );
   }

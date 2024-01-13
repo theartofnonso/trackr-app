@@ -87,14 +87,15 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
 
+    /// Only sync data from the last 12 months
     DateTime currentDate = DateTime.now();
     DateTime date12MonthsAgo = DateTime(currentDate.year - 1, currentDate.month, currentDate.day);
-
+    TemporalDateTime temporalDate12MonthsAgo = TemporalDateTime(date12MonthsAgo);
     try {
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
-        DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.CREATEDAT.gt(date12MonthsAgo)),
+        DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.CREATEDAT.gt(temporalDate12MonthsAgo.format())),
       ]));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
 
 import '../../utils/navigation_utils.dart';
 import '../dtos/routine_log_dto.dart';
@@ -37,16 +36,7 @@ class RoutineLogsScreen extends StatelessWidget {
                             Divider(color: Colors.white70.withOpacity(0.1)),
                         itemCount: logs.length),
                   )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const ListViewEmptyState(),
-                      const SizedBox(height: 8),
-                      Text("You have no logs",
-                          style:
-                              GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white70))
-                    ],
-                  ),
+                : const RoutineLogEmptyState(),
           ],
         ),
       ),
