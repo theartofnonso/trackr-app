@@ -203,7 +203,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _onShareLog({required RoutineLogDto log, required List<ExerciseLogDto> exerciseLogs}) {
     displayBottomSheet(
-        color: tealBlueLight,
+        color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
