@@ -32,16 +32,19 @@ List<Widget> setsToWidgets(
     required List<SetDto> sets,
     Map<SetDto, List<PBDto>> pbs = const {},
     required RoutinePreviewType routinePreviewType}) {
+  
+  final durationTemplate = Center(
+    child: Text("Timer will be available in log mode",
+        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+  );
+
   Widget emptyState;
 
   if (type == ExerciseType.weights) {
     emptyState = const DoubleSetRowEmptyState();
   } else {
     if (type == ExerciseType.duration) {
-      emptyState = Center(
-        child: Text("Timer will be available in log mode",
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
-      );
+      emptyState = durationTemplate;
     } else {
       emptyState = const SingleSetRowEmptyState();
     }
@@ -62,10 +65,7 @@ List<Widget> setsToWidgets(
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
-          return Center(
-            child: Text("Timer will be available in log mode",
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
-          );
+          return durationTemplate;
         }
         final label = Duration(milliseconds: setDto.value1.toInt()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
