@@ -84,7 +84,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _selectDate(DateTime dateTime) {
-    print("Selected date: $dateTime");
     setState(() {
       _currentDate = dateTime;
     });
