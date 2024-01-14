@@ -107,19 +107,6 @@ SetDto heaviestSetForExerciseLog({required ExerciseLogDto exerciseLog}) {
   return setDto;
 }
 
-double lightestSetVolumeForLog({required ExerciseLogDto exerciseLog}) {
-  double lightestVolume = 0;
-
-  for (var set in exerciseLog.sets) {
-    final volume = set.value1 * set.value2;
-    if (lightestVolume < volume) {
-      lightestVolume = volume.toDouble();
-    }
-  }
-
-  return lightestVolume;
-}
-
 DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return log.createdAt;
 }
