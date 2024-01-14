@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
+import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -17,21 +18,31 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
-  void loadExercises({required List<ExerciseLogDto> logs, bool shouldNotifyListeners = false}) {
+  void loadExercises({required List<ExerciseLogDto> logs}) {
     _exerciseLogs = logs;
     _loadSets();
-    if (shouldNotifyListeners) {
-      notifyListeners();
-    }
   }
 
   void _loadSets() {
     for (var exerciseLog in _exerciseLogs) {
-      if(exerciseLog.exercise.type == ExerciseType.duration) {
-        _sets[exerciseLog.id] = [];
-      } else {
-        _sets[exerciseLog.id] = exerciseLog.sets;
+      _sets[exerciseLog.id] = exerciseLog.sets;
+    }
+  }
+
+  void loadLogExercises({required List<ExerciseLogDto> logs, required RoutineLogEditorMode mode}) {
+    _exerciseLogs = logs;
+    _loadLogSets(mode: mode);
+  }
+
+  void _loadLogSets({required RoutineLogEditorMode mode}) {
+    for (var exerciseLog in _exerciseLogs) {
+      if (exerciseLog.exercise.type == ExerciseType.duration) {
+        if (mode == RoutineLogEditorMode.log) {
+          _sets[exerciseLog.id] = [];
+          continue;
+        }
       }
+      _sets[exerciseLog.id] = exerciseLog.sets;
     }
   }
 

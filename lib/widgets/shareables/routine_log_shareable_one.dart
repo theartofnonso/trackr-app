@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../app_constants.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -22,18 +23,15 @@ class RoutineLogShareableOne extends StatelessWidget {
                 Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
                 //const Spacer(),
                 const SizedBox(width: 10),
-                Text("x${exerciseLog.sets.length} sets", style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70)),
+                Text("x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)}",
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70)),
               ]),
             ))
         .toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      margin: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: tealBlueLight,
-        borderRadius: BorderRadius.circular(5), // Border radius
-      ),
+      color: tealBlueDark,
       child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
@@ -66,7 +64,6 @@ class RoutineLogShareableOne extends StatelessWidget {
         RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
         const SizedBox(height: 8),
         ...exerciseLogs,
-        const SizedBox(height: 12),
         Image.asset(
           'assets/trackr.png',
           fit: BoxFit.contain,

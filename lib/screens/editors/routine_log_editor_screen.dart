@@ -354,7 +354,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exerciseLogs);
+    widget.mode == RoutineLogEditorMode.edit;
+    Provider.of<ExerciseLogProvider>(context, listen: false).loadLogExercises(logs: exerciseLogs, mode: widget.mode);
   }
 
   @override
