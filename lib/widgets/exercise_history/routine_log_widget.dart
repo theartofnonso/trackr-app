@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
@@ -86,7 +87,7 @@ class _ProcedureWidget extends StatelessWidget {
           ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
         },
         const SizedBox(height: 8),
-        ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets),
+        ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, routinePreviewType: RoutinePreviewType.log),
       ],
     );
   }

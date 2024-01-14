@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../app_constants.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -15,14 +16,23 @@ class RoutineLogShareableOne extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final exerciseLogs = log.exerciseLogs
+        .map((exerciseLog) => Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Row(children: [
+                Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
+                //const Spacer(),
+                const SizedBox(width: 10),
+                Text("x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)}",
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70)),
+              ]),
+            ))
+        .toList();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      margin: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: tealBlueLight,
-        borderRadius: BorderRadius.circular(5), // Border radius
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      color: tealBlueDark,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(log.name,
@@ -52,15 +62,14 @@ class RoutineLogShareableOne extends StatelessWidget {
           ),
         ),
         RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
+        const SizedBox(height: 8),
+        ...exerciseLogs,
+        Image.asset(
+          'assets/trackr.png',
+          fit: BoxFit.contain,
+          height: 8, // Adjust the height as needed
+        ),
         const SizedBox(height: 12),
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Image.asset(
-            'assets/trackr.png',
-            fit: BoxFit.contain,
-            height: 8, // Adjust the height as needed
-          )
-        ]),
-        const SizedBox(height: 20),
       ]),
     );
   }

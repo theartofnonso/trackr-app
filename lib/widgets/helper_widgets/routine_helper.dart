@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
@@ -25,16 +27,30 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
   return null; // Explicitly return null if no matching procedure is found
 }
 
-List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> sets, Map<SetDto, List<PBDto>> pbs = const {}}) {
-  Widget emptyState = type == ExerciseType.duration || type == ExerciseType.bodyWeight
-      ? const SingleSetRowEmptyState()
-      : const DoubleSetRowEmptyState();
+List<Widget> setsToWidgets(
+    {required ExerciseType type,
+    required List<SetDto> sets,
+    Map<SetDto, List<PBDto>> pbs = const {},
+    required RoutinePreviewType routinePreviewType}) {
+  Widget emptyState;
+
+  if (type == ExerciseType.weights) {
+    emptyState = const DoubleSetRowEmptyState();
+  } else {
+    if (type == ExerciseType.duration) {
+      emptyState = Center(
+        child: Text("Timer will be available in log mode",
+            style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+      );
+    } else {
+      emptyState = const SingleSetRowEmptyState();
+    }
+  }
 
   const margin = EdgeInsets.only(bottom: 6.0);
 
   final widgets = sets.map(((setDto) {
-
-   final pbsForSet = pbs[setDto] ?? [];
+    final pbsForSet = pbs[setDto] ?? [];
 
     switch (type) {
       case ExerciseType.weights:
@@ -45,6 +61,12 @@ List<Widget> setsToWidgets({required ExerciseType type, required List<SetDto> se
         final label = setDto.value2;
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
+        if (routinePreviewType == RoutinePreviewType.template) {
+          return Center(
+            child: Text("Timer will be available in log mode",
+                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+          );
+        }
         final label = Duration(milliseconds: setDto.value1.toInt()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
     }
