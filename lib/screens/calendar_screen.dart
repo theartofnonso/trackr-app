@@ -84,6 +84,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _selectDate(DateTime dateTime) {
+    print("Selected date: $dateTime");
     setState(() {
       _currentDate = dateTime;
     });
@@ -237,7 +238,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               child: _CalendarHeader(),
                             )
                           : const SizedBox(height: 8),
-                      _Month(dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
+                      _Month(
+                          dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Image.asset(
@@ -289,7 +291,8 @@ class _Date extends StatelessWidget {
   final bool showSelector;
   final void Function(DateTime dateTime) onTap;
 
-  const _Date({required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showSelector});
+  const _Date(
+      {required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showSelector});
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
@@ -327,22 +330,27 @@ class _Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
-    return Container(
-      padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(1) : null,
-      decoration: showSelector ? BoxDecoration(
-        border: _getBorder(),
-        borderRadius: BorderRadius.circular(5),
-      ) : null,
+    return GestureDetector(
+      onTap: () => onTap(dateTime),
       child: Container(
-        margin: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: _getBackgroundColor(log != null),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Center(
-          child: Text("${dateTime.day}",
-              style: GoogleFonts.montserrat(
-                  fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+        padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(1) : null,
+        decoration: showSelector
+            ? BoxDecoration(
+                border: _getBorder(),
+                borderRadius: BorderRadius.circular(5),
+              )
+            : null,
+        child: Container(
+          margin: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: _getBackgroundColor(log != null),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Center(
+            child: Text("${dateTime.day}",
+                style: GoogleFonts.montserrat(
+                    fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+          ),
         ),
       ),
     );
@@ -366,7 +374,8 @@ class _Month extends StatelessWidget {
         return _Date(
           dateTime: date.dateTime,
           onTap: onTap,
-          selectedDateTime: selectedDateTime, showSelector: showSelector,
+          selectedDateTime: selectedDateTime,
+          showSelector: showSelector,
         );
       }
     }).toList();
