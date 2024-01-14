@@ -32,7 +32,6 @@ List<Widget> setsToWidgets(
     required List<SetDto> sets,
     Map<SetDto, List<PBDto>> pbs = const {},
     required RoutinePreviewType routinePreviewType}) {
-  
   final durationTemplate = Center(
     child: Text("Timer will be available in log mode",
         style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
