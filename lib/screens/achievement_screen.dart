@@ -120,7 +120,7 @@ class AchievementScreen extends StatelessWidget {
                       const SizedBox(height: 10),
                       GridView.count(
                         shrinkWrap: true,
-                        crossAxisCount: 3,
+                        crossAxisCount: monthsHeatMap.length > 4 ? 4 : monthsHeatMap.length,
                         childAspectRatio: 1,
                         mainAxisSpacing: 10.0,
                         crossAxisSpacing: 10.0,
