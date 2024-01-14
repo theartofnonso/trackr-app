@@ -8,6 +8,7 @@ import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/chips/chip_1.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
@@ -363,7 +364,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
     return SolidListTile(
         title: log.name,
-        subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
+        subtitle: "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
         trailing: log.duration().hmsAnalog(),
         trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
