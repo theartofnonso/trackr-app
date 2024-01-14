@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChipOne extends StatelessWidget {
+class PBIcon extends StatelessWidget {
   final Color color;
   final String label;
 
-  const ChipOne({super.key, required this.color, required this.label});
+  const PBIcon({super.key, required this.color, required this.label});
 
   @override
   Widget build(BuildContext context) {
