@@ -25,13 +25,11 @@ import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
 import 'helper_utils.dart';
 
-enum RoutineLogEditorMode { log, edit }
-
 class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
-  final RoutineLogEditorMode mode;
+  final RoutineEditorMode mode;
 
-  const RoutineLogEditorScreen({super.key, required this.log, this.mode = RoutineLogEditorMode.log});
+  const RoutineLogEditorScreen({super.key, required this.log, this.mode = RoutineEditorMode.log});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -88,7 +86,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final routineLog = log.copyWith(
         exerciseLogs: exerciseLogs,
-        endTime: widget.mode == RoutineLogEditorMode.log ? DateTime.now() : log.endTime,
+        endTime: widget.mode == RoutineEditorMode.log ? DateTime.now() : log.endTime,
         updatedAt: DateTime.now());
     return routineLog;
   }
@@ -176,7 +174,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _cacheLog() {
-    if (widget.mode == RoutineLogEditorMode.edit) return;
+    if (widget.mode == RoutineEditorMode.edit) return;
     final routineLog = _routineLog();
     Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
   }
@@ -255,7 +253,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
             appBar: AppBar(
               leading: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                  onPressed: widget.mode == RoutineLogEditorMode.log ? _discardLog : _checkForUnsavedChanges),
+                  onPressed: widget.mode == RoutineEditorMode.log ? _discardLog : _checkForUnsavedChanges),
               title: Text(
                 widget.log.name,
                 style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
@@ -266,7 +264,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                 ? null
                 : FloatingActionButton(
                     heroTag: UniqueKey(),
-                    onPressed: widget.mode == RoutineLogEditorMode.log ? _saveLog : _updateLog,
+                    onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -286,7 +284,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     onTap: _dismissKeyboard,
                     child: Column(
                       children: [
-                        if (widget.mode == RoutineLogEditorMode.log)
+                        if (widget.mode == RoutineEditorMode.log)
                           Column(children: [
                             Consumer<ExerciseLogProvider>(
                                 builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
@@ -354,7 +352,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exerciseLogs);
+    widget.mode == RoutineEditorMode.edit;
+    Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
   }
 
   @override

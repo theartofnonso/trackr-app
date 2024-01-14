@@ -23,6 +23,7 @@ import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../providers/routine_template_provider.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/fabs/expandable_fab.dart';
@@ -30,7 +31,6 @@ import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import '../widgets/shareables/routine_log_shareable_one.dart';
 import 'editors/helper_utils.dart';
-import 'editors/routine_log_editor_screen.dart';
 
 GlobalKey routineLogShareableOneKey = GlobalKey();
 
@@ -79,27 +79,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             ),
             title: Text(log.name,
                 style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            // actions: [
-            //   IconButton(
-            //       onPressed: () {
-            //         displayBottomSheet(
-            //             color: tealBlueDark,
-            //             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            //             context: context,
-            //             child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            //               RepaintBoundary(
-            //                   key: routineLogShareableOneKey,
-            //                   child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
-            //               const SizedBox(height: 10),
-            //               CTextButton(
-            //                   onPressed: () => captureImage(key: routineLogShareableOneKey),
-            //                   label: "Share",
-            //                   buttonColor: Colors.transparent,
-            //                   buttonBorderColor: Colors.transparent)
-            //             ]));
-            //       },
-            //       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
-            // ]
+            actions: [
+              IconButton(
+                  onPressed: () => _onShareLog(log: log, exerciseLogs: exerciseLogs),
+                  icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
+            ]
         ),
         floatingActionButton: ExpandableFab(
           distance: 112,
@@ -215,6 +199,25 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ]));
   }
 
+  void _onShareLog({required RoutineLogDto log, required List<ExerciseLogDto> exerciseLogs}) {
+    displayBottomSheet(
+        color: tealBlueLight,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          RepaintBoundary(
+              key: routineLogShareableOneKey,
+              child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
+          const SizedBox(height: 10),
+          CTextButton(
+              onPressed: () => captureImage(key: routineLogShareableOneKey),
+              label: "Share",
+              buttonColor: Colors.transparent,
+              buttonBorderColor: Colors.transparent)
+        ]));
+  }
+
   void _toggleLoadingState({String message = ""}) {
     setState(() {
       _loading = !_loading;
@@ -269,7 +272,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _editLog({required RoutineLogDto log}) {
-    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineLogEditorMode.edit);
+    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineEditorMode.edit);
   }
 
   void _createTemplate() async {

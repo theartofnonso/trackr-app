@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import '../../../providers/routine_template_provider.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
@@ -90,7 +91,8 @@ class _RoutineWidget extends StatelessWidget {
                 size: 35,
               )),
           title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-          subtitle: Text("${template.exercises.length} ${template.exercises.length > 1 ? "exercises" : "exercise"}",
+          subtitle: Text(
+              "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
               style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
           trailing: MenuAnchor(
             style: MenuStyle(

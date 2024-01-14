@@ -192,10 +192,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _controllers.addAll(controllers);
   }
 
+  void _loadDurationControllers() {
+    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    List<DateTime> controllers = [];
+    for (var _ in sets) {
+      controllers.add(DateTime.now());
+    }
+    _durationControllers.addAll(controllers);
+  }
+
   @override
   void initState() {
     super.initState();
     _loadTextEditingControllers();
+    _loadDurationControllers();
   }
 
   void _cacheLog() {
@@ -306,7 +316,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           const SizedBox(height: 8),
           if (sets.isNotEmpty) Column(children: [..._displaySets(exerciseType: exerciseType, sets: sets)]),
           const SizedBox(height: 8),
-          if(exerciseType == ExerciseType.duration && sets.isEmpty)
+          if (exerciseType == ExerciseType.duration && sets.isEmpty)
             Center(
               child: Text(_timerMessage(),
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),

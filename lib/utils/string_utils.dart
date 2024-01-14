@@ -14,3 +14,7 @@ String capitalizeWords({required String text}) {
   }
   return words.join(' ');
 }
+
+String pluralize({required String word, required int count}) {
+  return count == 1 ? word : '${word}s';
+}

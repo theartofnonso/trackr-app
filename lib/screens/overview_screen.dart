@@ -11,6 +11,7 @@ import '../providers/routine_log_provider.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import '../utils/string_utils.dart';
 import 'calendar_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -115,12 +116,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               _CTableCell(
                                   title: "This Week",
                                   subtitle:
-                                      "${logsForTheWeek.length} ${logsForTheWeek.length > 1 ? "sessions" : "session"}",
+                                      "${logsForTheWeek.length} ${pluralize(word: "session", count: logsForTheWeek.length)}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
                               _CTableCell(
                                   title: "This Month",
                                   subtitle:
-                                      "${logsForTheMonth.length} ${logsForTheMonth.length > 1 ? "sessions" : "session"}",
+                                      "${logsForTheMonth.length} ${pluralize(word: "session", count: logsForTheMonth.length)}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                               _CTableCell(
                                   title: "Level",

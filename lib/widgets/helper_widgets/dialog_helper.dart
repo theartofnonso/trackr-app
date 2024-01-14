@@ -37,8 +37,9 @@ Future<void> displayBottomSheet(
     EdgeInsets? padding,
     Color? color,
       enabledDrag = true,
-    bool isDismissible = true}) {
+    bool isDismissible = true, bool isScrollControlled = false}) {
   return showModalBottomSheet(
+    isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
       enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,

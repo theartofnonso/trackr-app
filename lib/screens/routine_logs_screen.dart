@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
 
 import '../../utils/navigation_utils.dart';
@@ -59,7 +60,7 @@ class _RoutineLogWidget extends StatelessWidget {
 
     return SolidListTile(
         title: log.name,
-        subtitle: "${log.exerciseLogs.length} ${log.exerciseLogs.length > 1 ? "exercises" : "exercise"}",
+        subtitle: "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
         trailing: log.createdAt.durationSinceOrDate(),
         trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
