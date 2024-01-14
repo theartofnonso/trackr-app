@@ -32,7 +32,7 @@ import '../widgets/routine/preview/exercise_log_listview.dart';
 import '../widgets/shareables/routine_log_shareable_one.dart';
 import 'editors/helper_utils.dart';
 
-GlobalKey routineLogShareableOneKey = GlobalKey();
+GlobalKey _routineLogShareableOneKey = GlobalKey();
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -207,11 +207,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         isScrollControlled: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           RepaintBoundary(
-              key: routineLogShareableOneKey,
+              key: _routineLogShareableOneKey,
               child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
           const SizedBox(height: 10),
           CTextButton(
-              onPressed: () => captureImage(key: routineLogShareableOneKey),
+              onPressed: () => captureImage(key: _routineLogShareableOneKey),
               label: "Share",
               buttonColor: Colors.transparent,
               buttonBorderColor: Colors.transparent)
