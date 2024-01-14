@@ -9,7 +9,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/chips/chip_1.dart';
+import 'package:tracker_app/widgets/pbs/pb_icon.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
@@ -431,7 +431,7 @@ class _RoutineLogWidget extends StatelessWidget {
         title: log.name,
         subtitle: "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
         trailing: log.duration().hmsAnalog(),
-        trailingSubtitle: pbs >= 1 ? ChipOne(color: tealBlueLight, label: "$pbs") : null,
+        trailingSubtitle: pbs >= 1 ? PBIcon(color: tealBlueLight, label: "$pbs") : null,
         margin: const EdgeInsets.only(bottom: 8.0),
         tileColor: tealBlueLight,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));

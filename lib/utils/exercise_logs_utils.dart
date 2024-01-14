@@ -16,7 +16,6 @@ List<ExerciseLogDto> _pastLogsForExercise({required BuildContext context, requir
 /// Highest value per [RoutineLogDto]
 
 SetDto _heaviestWeightInSets({required List<SetDto> sets}) {
-
   SetDto heaviestWeightSet = sets[0];
 
   for (SetDto set in sets) {
@@ -288,7 +287,8 @@ Map<SetDto, List<PBDto>> calculatePBs(
         }
       }
 
-      final currentHeaviestVolumeSets = exerciseLog.sets.where((set) => (set.value1 * set.value2) > pastHeaviestSetVolume);
+      final currentHeaviestVolumeSets =
+          exerciseLog.sets.where((set) => (set.value1 * set.value2) > pastHeaviestSetVolume);
       if (currentHeaviestVolumeSets.isNotEmpty) {
         for (final set in currentHeaviestVolumeSets) {
           final pbs = pbsMap[set] ?? [];
@@ -301,7 +301,8 @@ Map<SetDto, List<PBDto>> calculatePBs(
     if (exerciseType == ExerciseType.duration) {
       final pastLongestDuration = pastExerciseLogs.map((log) => longestDurationPerLog(exerciseLog: log)).max;
 
-      final currentLongestDurations = exerciseLog.sets.where((set) => Duration(milliseconds: set.value1.toInt()) > pastLongestDuration);
+      final currentLongestDurations =
+          exerciseLog.sets.where((set) => Duration(milliseconds: set.value1.toInt()) > pastLongestDuration);
       if (currentLongestDurations.isNotEmpty) {
         for (final set in currentLongestDurations) {
           final pbs = pbsMap[set] ?? [];

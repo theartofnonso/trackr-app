@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app_constants.dart';
-import '../../../chips/chip_1.dart';
+import '../../../pbs/pb_icon.dart';
 import '../exercise_log_widget.dart';
 
 class SetRow extends StatelessWidget {
@@ -16,7 +16,7 @@ class SetRow extends StatelessWidget {
 
     final pbsForSet = pbs.map((pb) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: ChipOne(color: tealBlueLight, label: pb.pb.name),
+      child: PBIcon(color: tealBlueLight, label: pb.pb.name),
     )).toList();
 
     return Container(

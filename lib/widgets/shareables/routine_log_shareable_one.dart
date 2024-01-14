@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../app_constants.dart';
@@ -55,7 +56,7 @@ class RoutineLogShareableOne extends StatelessWidget {
                 size: 12,
               ),
               const SizedBox(width: 1),
-              Text(log.endTime.formattedTime(),
+              Text(log.duration().hmsAnalog(),
                   style: GoogleFonts.montserrat(
                       color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
             ],

@@ -9,10 +9,13 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
+import 'package:tracker_app/widgets/pbs/pbs.dart';
+import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -83,8 +86,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               IconButton(
                   onPressed: () => _onShareLog(log: log, exerciseLogs: exerciseLogs),
                   icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
-            ]
-        ),
+            ]),
         floatingActionButton: ExpandableFab(
           distance: 112,
           children: [
@@ -217,6 +219,33 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               buttonBorderColor: Colors.transparent)
         ]));
+  }
+
+  List<PBDto> _calculatePBs() {
+    final pbs = widget.log.exerciseLogs
+        .map((exerciseLog) =>
+        calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+        .expand((setAndPbs) => setAndPbs.values)
+        .expand((pbs) => pbs).toSet().toList();
+    return pbs;
+  }
+
+  void _showPBs() {
+    final pbs = _calculatePBs();
+    displayBottomSheet(
+        color: tealBlueDark,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        context: context,
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text("Personal Bests",
+                style: GoogleFonts.montserrat(
+                    color: Colors.white70, fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+            const SizedBox(height: 16),
+            Pbs(pbs: pbs)
+          ]),
+        ));
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -362,6 +391,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final templateId = widget.log.templateId;
 
     if (templateId.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showPBs();
+      });
       return;
     }
 
@@ -370,10 +402,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return;
     }
 
+    final exerciseLog1 = routineTemplate.exercises;
+    final exerciseLog2 = widget.log.exerciseLogs;
+    final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final exerciseLog1 = routineTemplate.exercises;
-      final exerciseLog2 = widget.log.exerciseLogs;
-      final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
       if (templateChanges.isNotEmpty) {
         displayBottomSheet(
             isDismissible: false,
@@ -385,13 +418,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   _doUpdateTemplate();
+                  _showPBs();
                 },
                 onDismissed: () {
                   Navigator.of(context).pop();
                   _doUpdateTemplateExercises();
+                  _showPBs();
                 }));
       } else {
         _doUpdateTemplateExercises();
+        _showPBs();
       }
     });
   }

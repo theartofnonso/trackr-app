@@ -32,6 +32,16 @@ class PBDto {
   String toString() {
     return 'PBViewModel{exercise: $exercise, pb: $pb}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(exercise.id, (other as PBDto).exercise.id) && identical(pb.name, (other).pb.name)) return true;
+
+    return exercise.id == other.exercise.id && pb.name == other.pb.name;
+  }
+
+  @override
+  int get hashCode => exercise.id.hashCode ^ pb.hashCode;
 }
 
 class ExerciseLogWidget extends StatelessWidget {
