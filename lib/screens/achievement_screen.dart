@@ -5,9 +5,14 @@ import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 
 import '../app_constants.dart';
 import '../dtos/achievement_dto.dart';
+import '../utils/shareables_utils.dart';
 import '../widgets/backgrounds/gradient_background.dart';
+import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
 import '../widgets/information_container.dart';
 import '../widgets/information_container_lite.dart';
+
+GlobalKey _achievementKey = GlobalKey();
 
 class AchievementScreen extends StatelessWidget {
   final AchievementDto achievementDto;
@@ -23,6 +28,13 @@ class AchievementScreen extends StatelessWidget {
         : [CalendarHeatMap(dates: const [], initialDate: DateTime.now())];
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _onShareCalendar(context: context, monthsHeatMap: monthsHeatMap),
+        heroTag: "fab_achievement_screen",
+        backgroundColor: tealBlueLighter,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
+      ),
       body: Stack(children: [
         const Positioned.fill(child: GradientBackground()),
         SafeArea(
@@ -84,5 +96,53 @@ class AchievementScreen extends StatelessWidget {
         )
       ]),
     );
+  }
+
+  void _onShareCalendar({required BuildContext context, required List<CalendarHeatMap> monthsHeatMap}) {
+    displayBottomSheet(
+        color: tealBlueDark,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          RepaintBoundary(
+              key: _achievementKey,
+              child: Container(
+                  color: tealBlueDark,
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(achievementDto.type.title,
+                          style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+                      Text(achievementDto.type.description,
+                          style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70)),
+                      const SizedBox(height: 10),
+                      GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 3,
+                        childAspectRatio: 1,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        children: List.generate(monthsHeatMap.length, (index) => monthsHeatMap[index]),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Image.asset(
+                          'assets/trackr.png',
+                          fit: BoxFit.contain,
+                          height: 8, // Adjust the height as needed
+                        ),
+                      ),
+                    ],
+                  ))),
+          const SizedBox(height: 10),
+          CTextButton(
+              onPressed: () => captureImage(key: _achievementKey),
+              label: "Share",
+              buttonColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              buttonBorderColor: Colors.transparent)
+        ]));
   }
 }

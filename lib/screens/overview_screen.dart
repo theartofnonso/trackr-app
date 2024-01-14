@@ -124,7 +124,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                       "${logsForTheMonth.length} ${pluralize(word: "session", count: logsForTheMonth.length)}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                               _CTableCell(
-                                  title: "Level",
+                                  title: "Streak",
                                   subtitle: "$consistencyLevel/50",
                                   onTap: () =>
                                       navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
