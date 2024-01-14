@@ -214,6 +214,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               onPressed: () => captureImage(key: _routineLogShareableOneKey),
               label: "Share",
               buttonColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               buttonBorderColor: Colors.transparent)
         ]));
   }

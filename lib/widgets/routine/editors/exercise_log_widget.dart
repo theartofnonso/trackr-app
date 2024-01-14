@@ -322,7 +322,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
-          if (widget.editorType == RoutineEditorMode.log)
+          if (exerciseType != ExerciseType.duration || widget.editorType == RoutineEditorMode.log)
             Align(
               alignment: Alignment.bottomRight,
               child: IconButton(
