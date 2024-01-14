@@ -14,6 +14,11 @@ import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../utils/exercise_logs_utils.dart';
+import '../utils/shareables_utils.dart';
+import '../widgets/buttons/text_button_widget.dart';
+import '../widgets/helper_widgets/dialog_helper.dart';
+
+GlobalKey _calendarKey = GlobalKey();
 
 class _DateViewModel {
   DateTime dateTime;
@@ -129,35 +134,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          color: tealBlueDark,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                  onPressed: _decrementDate,
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
-              Expanded(
-                child: Text(_currentDate.formattedMonthAndYear(),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                    )),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+                onPressed: _decrementDate,
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(_currentDate.formattedMonthAndYear(),
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                      )),
+                  IconButton(
+                      onPressed: () => _onShareCalendar(),
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
+                ],
               ),
-              IconButton(
-                  onPressed: _incrementDate,
-                  icon: _hasLaterDate()
-                      ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
-                      : const SizedBox()),
-            ],
-          ),
+            ),
+            IconButton(
+                onPressed: _incrementDate,
+                icon: _hasLaterDate()
+                    ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
+                    : const SizedBox()),
+          ],
         ),
-        if (SharedPrefs().showCalendarDates)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: _CalendarHeader(),
-          ),
+        SharedPrefs().showCalendarDates
+            ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: _CalendarHeader(),
+              )
+            : const SizedBox(height: 8),
         _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
         const SizedBox(height: 10),
         if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
@@ -198,6 +209,53 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ],
     );
   }
+
+  void _onShareCalendar() {
+    displayBottomSheet(
+        color: tealBlueDark,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          RepaintBoundary(
+              key: _calendarKey,
+              child: Container(
+                  color: tealBlueDark,
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(_currentDate.formattedMonthAndYear(),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.montserrat(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                          )),
+                      SharedPrefs().showCalendarDates
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: _CalendarHeader(),
+                            )
+                          : const SizedBox(height: 8),
+                      _Month(dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Image.asset(
+                          'assets/trackr.png',
+                          fit: BoxFit.contain,
+                          height: 8, // Adjust the height as needed
+                        ),
+                      ),
+                    ],
+                  ))),
+          const SizedBox(height: 10),
+          CTextButton(
+              onPressed: () => captureImage(key: _calendarKey),
+              label: "Share",
+              buttonColor: Colors.transparent,
+              buttonBorderColor: Colors.transparent)
+        ]));
+  }
 }
 
 class _CalendarHeader extends StatelessWidget {
@@ -228,9 +286,10 @@ class _CalendarHeader extends StatelessWidget {
 class _Date extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
+  final bool showSelector;
   final void Function(DateTime dateTime) onTap;
 
-  const _Date({required this.dateTime, required this.selectedDateTime, required this.onTap});
+  const _Date({required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showSelector});
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
@@ -268,26 +327,22 @@ class _Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
-    return InkWell(
-      splashColor: Colors.transparent,
-      onTap: () => onTap(dateTime),
+    return Container(
+      padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(1) : null,
+      decoration: showSelector ? BoxDecoration(
+        border: _getBorder(),
+        borderRadius: BorderRadius.circular(5),
+      ) : null,
       child: Container(
-        padding: selectedDateTime.isSameDateAs(dateTime) ? const EdgeInsets.all(1) : null,
+        margin: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          border: _getBorder(),
+          color: _getBackgroundColor(log != null),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(log != null),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
-            child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(
-                    fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
-          ),
+        child: Center(
+          child: Text("${dateTime.day}",
+              style: GoogleFonts.montserrat(
+                  fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
         ),
       ),
     );
@@ -297,9 +352,10 @@ class _Date extends StatelessWidget {
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
+  final bool showSelector;
   final void Function(DateTime dateTime) onTap;
 
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap});
+  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, this.showSelector = true});
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +366,7 @@ class _Month extends StatelessWidget {
         return _Date(
           dateTime: date.dateTime,
           onTap: onTap,
-          selectedDateTime: selectedDateTime,
+          selectedDateTime: selectedDateTime, showSelector: showSelector,
         );
       }
     }).toList();
