@@ -9,7 +9,7 @@ import 'package:share_plus/share_plus.dart';
 
 Future<void> captureImage({required GlobalKey key}) async {
   final RenderRepaintBoundary boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-  final ui.Image image = await boundary.toImage(pixelRatio: 5.0);
+  final ui.Image image = await boundary.toImage(pixelRatio: 3.0);
   final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
   final Uint8List pngBytes = byteData!.buffer.asUint8List();
 

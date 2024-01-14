@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/routine_log_screen.dart';
@@ -12,7 +13,7 @@ void navigateToRoutineEditor({required BuildContext context, RoutineTemplateDto?
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateEditorScreen(template: template)));
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, RoutineLogEditorMode editorMode = RoutineLogEditorMode.log}) async {
+void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, RoutineEditorMode editorMode = RoutineEditorMode.log}) async {
   final createdLog = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogEditorScreen(log: log, mode: editorMode))) as RoutineLogDto?;
   if(createdLog != null) {
     if(context.mounted) {

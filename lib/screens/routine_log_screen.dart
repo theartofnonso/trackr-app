@@ -23,6 +23,7 @@ import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../providers/routine_template_provider.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/fabs/expandable_fab.dart';
@@ -30,7 +31,6 @@ import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import '../widgets/shareables/routine_log_shareable_one.dart';
 import 'editors/helper_utils.dart';
-import 'editors/routine_log_editor_screen.dart';
 
 GlobalKey routineLogShareableOneKey = GlobalKey();
 
@@ -272,7 +272,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _editLog({required RoutineLogDto log}) {
-    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineLogEditorMode.edit);
+    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineEditorMode.edit);
   }
 
   void _createTemplate() async {

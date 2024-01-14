@@ -337,7 +337,10 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _initializeProcedureData() {
     final exercises = widget.template?.exercises;
     if (exercises != null && exercises.isNotEmpty) {
-      Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exercises);
+      /// Pass [RoutineEditorMode.log] to loadExercises() to prevent the [RoutineTemplateEditorScreen] loading any timers
+      /// When in [RoutineEditorMode.log], timers only when run when a set is added
+      /// Since this is a template, we don't want to run any timers (The functionality to run timers is only available when logging a workout)
+      Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.log);
     }
   }
 
