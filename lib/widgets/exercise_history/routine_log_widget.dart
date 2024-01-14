@@ -55,16 +55,16 @@ class RoutineLogWidget extends StatelessWidget {
             ]),
           ),
         ),
-        _ProcedureWidget(exerciseLog: exerciseLog)
+        _ExerciseLogWidget(exerciseLog: exerciseLog)
       ],
     );
   }
 }
 
-class _ProcedureWidget extends StatelessWidget {
+class _ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
 
-  const _ProcedureWidget({required this.exerciseLog});
+  const _ExerciseLogWidget({required this.exerciseLog});
 
   @override
   Widget build(BuildContext context) {
