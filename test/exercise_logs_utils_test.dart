@@ -11,9 +11,16 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 class MockBuildContext extends Mock implements BuildContext {}
 
-class MockRoutineLogProvider extends Mock implements RoutineLogProvider {}
+class MockRoutineLogProvider extends Mock implements RoutineLogProvider {
 
-// @GenerateMocks([BuildContext, ])
+
+
+  @override
+  List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
+    return [];
+  }
+}
+
 void main() {
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_exercise1",
@@ -119,10 +126,10 @@ void main() {
   });
 
   final mockBuildContext = MockBuildContext();
-  final mockRoutineLogProvider = MockRoutineLogProvider();
+  final mockRoutineLogProvider = RoutineLogProvider();
 
-  when(mockRoutineLogProvider.exerciseLogsForExercise(exercise: lyingLegCurlExercise))
-      .thenReturn([lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+  // when(mockRoutineLogProvider.exerciseLogsForExercise(exercise: lyingLegCurlExercise))
+  //     .thenReturn([lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
 
   test("Heaviest set volume for exercise", () {
 

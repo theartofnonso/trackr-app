@@ -16,8 +16,6 @@ import '../dtos/routine_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../utils/general_utils.dart';
 
-const emptyTemplateId = "empty_template_id";
-
 class RoutineLogProvider with ChangeNotifier {
   Map<String, List<ExerciseLogDto>> _exerciseLogsById = {};
 
