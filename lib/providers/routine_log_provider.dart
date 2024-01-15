@@ -78,7 +78,6 @@ class RoutineLogProvider with ChangeNotifier {
     }
 
     _weekToLogs = weekToLogs;
-
   }
 
   void _loadMonthToLogs() {
@@ -128,7 +127,6 @@ class RoutineLogProvider with ChangeNotifier {
   }
 
   Future<void> updateRoutineLog({required RoutineLogDto log}) async {
-
     final result = (await Amplify.DataStore.query(
       RoutineLog.classType,
       where: RoutineLog.ID.eq(log.id),
@@ -187,8 +185,7 @@ class RoutineLogProvider with ChangeNotifier {
     return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
-  List<SetDto> setsForMuscleGroupWhereDateRange(
-      {required MuscleGroupFamily muscleGroupFamily, required DateTimeRange range}) {
+  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, DateTimeRange? range}) {
     bool hasMatchingBodyPart(ExerciseLogDto log) {
       final primaryMuscle = log.exercise.primaryMuscleGroup;
       return primaryMuscle.family == muscleGroupFamily;
@@ -198,7 +195,7 @@ class RoutineLogProvider with ChangeNotifier {
 
     return allLogs.flattened
         .where((log) => hasMatchingBodyPart(log))
-        .where((log) => log.createdAt.isBetweenRange(range: range))
+        .where((log) => range != null ? log.createdAt.isBetweenRange(range: range) : true)
         .expand((log) => log.sets)
         .toList();
   }
@@ -209,15 +206,6 @@ class RoutineLogProvider with ChangeNotifier {
 
   RoutineLogDto? logWhereDate({required DateTime dateTime}) {
     return _logs.firstWhereOrNull((log) => log.createdAt.isSameDateAs(dateTime));
-  }
-
-  List<ExerciseLogDto> exerciseLogsWhereDateRange({required DateTimeRange range, required ExerciseDto exercise}) {
-    final values = _exerciseLogsById[exercise.id] ?? [];
-    return values.where((log) => log.createdAt.isBetweenRange(range: range)).toList();
-  }
-
-  List<RoutineLogDto> logsWhereDateRange({required DateTimeRange range}) {
-    return _logs.where((log) => log.createdAt.isBetweenRange(range: range)).toList();
   }
 
   List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {

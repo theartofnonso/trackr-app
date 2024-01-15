@@ -63,12 +63,14 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
             thumbColor: Colors.blue,
             groupValue: _selectedChartTimePeriod,
             children: {
-              ChartTimePeriod.thisWeek:
-              SizedBox(width: 80, child: Text('This Week', style: textStyle, textAlign: TextAlign.center)),
-              ChartTimePeriod.thisMonth:
-              SizedBox(width: 80, child: Text('This Month', style: textStyle, textAlign: TextAlign.center)),
-              ChartTimePeriod.thisYear:
-              SizedBox(width: 80, child: Text('This Year', style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.thisWeek: SizedBox(
+                  width: 80,
+                  child: Text(ChartTimePeriod.thisWeek.label, style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.thisMonth: SizedBox(
+                  width: 80,
+                  child: Text(ChartTimePeriod.thisMonth.label, style: textStyle, textAlign: TextAlign.center)),
+              ChartTimePeriod.allTime: SizedBox(
+                  width: 80, child: Text(ChartTimePeriod.allTime.label, style: textStyle, textAlign: TextAlign.center)),
             },
             onValueChanged: (ChartTimePeriod? value) {
               if (value != null) {
@@ -94,7 +96,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
     Navigator.of(context).pop();
   }
 
-  void _calculateBodySplitPercentageForDateRange({required DateTimeRange range}) {
+  void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
     final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
 
     final Map<MuscleGroupFamily, int> frequencyMap = {};
@@ -127,9 +129,8 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
       case ChartTimePeriod.thisMonth:
         final thisMonth = thisMonthDateRange();
         _calculateBodySplitPercentageForDateRange(range: thisMonth);
-      case ChartTimePeriod.thisYear:
-        final thisYear = thisYearDateRange();
-        _calculateBodySplitPercentageForDateRange(range: thisYear);
+      case ChartTimePeriod.allTime:
+        _calculateBodySplitPercentageForDateRange();
     }
   }
 
@@ -173,8 +174,8 @@ class _MuscleInsightTile extends StatelessWidget {
       child: ListTile(
           dense: true,
           title: Text(muscleGroupFamilyMap.key.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
-          trailing:
-              Text("${muscleGroupFamilyMap.value}", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
+          trailing: Text("${muscleGroupFamilyMap.value}",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
     );
   }
 }
