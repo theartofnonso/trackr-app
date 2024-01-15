@@ -48,13 +48,9 @@ class HomeScreen extends StatelessWidget {
     final foundExercise =
         Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
 
-    final heaviestSetRecord = heaviestSetForExercise(context: context, exercise: foundExercise);
-
-    final lightestSetRecord = lightestSetForExercise(context: context, exercise: foundExercise);
+    final heaviestSetVolumeRecord = heaviestSetVolumeForExercise(context: context, exercise: foundExercise);
 
     final heaviestWeightRecord = heaviestWeightForExercise(context: context, exercise: foundExercise);
-
-    final lightestWeightRecord = lightestWeightForExercise(context: context, exercise: foundExercise);
 
     final longestDurationRecord = longestDurationForExercise(context: context, exercise: foundExercise);
 
@@ -139,9 +135,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 ExerciseChartScreen(
                   heaviestWeight: heaviestWeightRecord,
-                  lightestWeight: lightestWeightRecord,
-                  heaviestSet: heaviestSetRecord,
-                  lightestSet: lightestSetRecord,
+                  heaviestSet: heaviestSetVolumeRecord,
                   longestDuration: longestDurationRecord,
                   mostRepsSet: mostRepsSetRecord,
                   mostRepsSession: mostRepsSessionRecord,

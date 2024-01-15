@@ -220,6 +220,10 @@ class RoutineLogProvider with ChangeNotifier {
     return _logs.where((log) => log.createdAt.isBetweenRange(range: range)).toList();
   }
 
+  List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
+    return exerciseLogsById[exercise.id] ?? [];
+  }
+
   void reset() {
     _logs.clear();
     _exerciseLogsById.clear();
