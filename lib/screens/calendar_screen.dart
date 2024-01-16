@@ -251,7 +251,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   ))),
           const SizedBox(height: 10),
           CTextButton(
-              onPressed: () => captureImage(key: _calendarKey),
+              onPressed: () {
+                captureImage(key: _calendarKey, pixelRatio: 5);
+                Navigator.of(context).pop();
+              },
               label: "Share",
               buttonColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
