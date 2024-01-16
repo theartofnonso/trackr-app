@@ -138,7 +138,10 @@ class AchievementScreen extends StatelessWidget {
                   ))),
           const SizedBox(height: 10),
           CTextButton(
-              onPressed: () => captureImage(key: _achievementKey),
+              onPressed: () {
+                captureImage(key: _achievementKey, pixelRatio: 5);
+                Navigator.of(context).pop();
+              },
               label: "Share",
               buttonColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),

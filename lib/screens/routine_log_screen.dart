@@ -213,7 +213,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
               child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
           const SizedBox(height: 10),
           CTextButton(
-              onPressed: () => captureImage(key: _routineLogShareableOneKey),
+              onPressed: () {
+                captureImage(key: _routineLogShareableOneKey, pixelRatio: 3.5);
+                Navigator.of(context).pop();
+              },
               label: "Share",
               buttonColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
