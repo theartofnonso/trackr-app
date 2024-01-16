@@ -42,11 +42,11 @@ class AchievementsScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const SizedBox(height: 10),
-              Text("Achievements",
+              Text("Milestones ${DateTime.now().year}",
                   style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
               const SizedBox(height: 16),
               const InformationContainerLite(
-                content: 'Keep logging your sessions to achieve milestones and unlock new achievements',
+                content: 'Only workouts logged in the current year will count towards your milestones.',
                 color: tealBlueLighter,
               ),
               const SizedBox(height: 20),
