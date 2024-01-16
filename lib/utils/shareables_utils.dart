@@ -14,8 +14,8 @@ Future<void> captureImage({required GlobalKey key}) async {
   final Uint8List pngBytes = byteData!.buffer.asUint8List();
 
   final Directory tempDir = await getTemporaryDirectory();
-  final File file = File('${tempDir.path}/image.jpg');
-  file.writeAsBytesSync(pngBytes, flush: true);
+  final File file = File('${tempDir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
+  final newFile = await file.writeAsBytes(pngBytes, flush: true);
 
-  await Share.shareXFiles([XFile(file.path)], subject: "Check out my workout log!");
+  await Share.shareUri(newFile.uri);
 }
