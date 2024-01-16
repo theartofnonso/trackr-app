@@ -13,9 +13,18 @@ import '../enums/muscle_group_enums.dart';
 
 ProgressDto calculateProgress({required BuildContext context, required AchievementType type}) {
   final routineLogsProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-  final routineLogs = routineLogsProvider.logs;
-  final exerciseLogs = routineLogsProvider.exerciseLogsByType;
-  final weekToLogs = routineLogsProvider.weekToLogs;
+
+  /// Filter logs to only include ones from the current year
+  final routineLogs = routineLogsProvider.logs.where((log) => log.createdAt.withinCurrentYear()).toList();
+
+  final exerciseLogs = routineLogsProvider.exerciseLogsByType.map((key, value) {
+    final logs = value.where((log) => log.createdAt.withinCurrentYear());
+    return MapEntry(key, logs.toList());
+  });
+
+  final weekToLogs = routineLogsProvider.weekToLogs
+      .map((key, value) => MapEntry(key, value.where((log) => log.createdAt.withinCurrentYear()).toList()));
+
   final progress = switch (type) {
     AchievementType.days12 => _calculateDaysAchievement(logs: routineLogs, type: type),
     AchievementType.days30 => _calculateDaysAchievement(logs: routineLogs, type: type),

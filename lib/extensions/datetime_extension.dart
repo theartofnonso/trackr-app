@@ -139,4 +139,14 @@ extension DateTimeExtension on DateTime {
 
     return duration;
   }
+
+  bool withinCurrentYear() {
+    final datetime = DateTime(year, month, day);
+    final now = DateTime.now();
+    final startOfYear = DateTime(now.year, 1, 1);
+    final endOfYear = DateTime(now.year, 12, 31);
+    final currentYearRange = DateTimeRange(start: startOfYear, end: endOfYear);
+
+    return datetime.isBetweenRange(range: currentYearRange);
+  }
 }
