@@ -31,9 +31,7 @@ enum SummaryType {
 
 class ExerciseChartScreen extends StatefulWidget {
   final (String?, double) heaviestWeight;
-  final (String?, double) lightestWeight;
   final (String?, SetDto) heaviestSet;
-  final (String?, SetDto) lightestSet;
   final (String?, Duration) longestDuration;
   final (String?, int) mostRepsSet;
   final (String?, int) mostRepsSession;
@@ -42,8 +40,6 @@ class ExerciseChartScreen extends StatefulWidget {
   const ExerciseChartScreen(
       {super.key,
       required this.heaviestWeight,
-      required this.lightestWeight,
-      required this.lightestSet,
       required this.heaviestSet,
       required this.longestDuration,
       required this.mostRepsSet,
@@ -66,7 +62,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   late SummaryType _summaryType;
 
   void _heaviestWeightPerLog() {
-    final sets = _exerciseLogs.map((log) => heaviestWeightForLog(exerciseLog: log)).toList();
+    final sets = _exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.value1.toDouble())).toList();
       _summaryType = SummaryType.weight;
@@ -84,7 +80,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalRepsForLog() {
-    final values = _exerciseLogs.map((log) => totalRepsForLog(exerciseLog: log)).toList();
+    final values = _exerciseLogs.map((log) => totalRepsForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;
@@ -93,7 +89,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _highestRepsForLog() {
-    final values = _exerciseLogs.map((log) => highestRepsForLog(exerciseLog: log)).toList();
+    final values = _exerciseLogs.map((log) => highestRepsForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.mostReps;
@@ -102,7 +98,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _longestDurationPerLog() {
-    final values = _exerciseLogs.map((log) => longestDurationPerLog(exerciseLog: log)).toList();
+    final values = _exerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
@@ -112,7 +108,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalTimePerLog() {
-    final values = _exerciseLogs.map((log) => totalDurationPerLog(exerciseLog: log)).toList();
+    final values = _exerciseLogs.map((log) => totalDurationExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
@@ -136,9 +132,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
     }
 
-    final thisYear = thisYearDateRange();
     _exerciseLogs = Provider.of<RoutineLogProvider>(context, listen: false)
-        .exerciseLogsWhereDateRange(range: thisYear, exercise: widget.exercise)
+        .exerciseLogsForExercise(exercise: widget.exercise)
         .toList();
 
     _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();

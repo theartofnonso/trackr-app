@@ -232,6 +232,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _showPBs() {
     final pbs = _calculatePBs();
+    if(pbs.isEmpty) {
+      return;
+    }
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
