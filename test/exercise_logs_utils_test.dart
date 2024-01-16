@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
@@ -9,11 +10,12 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/providers/routine_log_provider.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
+final _childKey = GlobalKey();
+
 class MockBuildContext extends Mock implements BuildContext {}
 
 class MockRoutineLogProvider extends Mock implements RoutineLogProvider {
-
-
+  MockRoutineLogProvider() : super();
 
   @override
   List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
@@ -22,6 +24,9 @@ class MockRoutineLogProvider extends Mock implements RoutineLogProvider {
 }
 
 void main() {
+
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_exercise1",
       name: "Lying Leg Curl",
@@ -126,14 +131,16 @@ void main() {
   });
 
   final mockBuildContext = MockBuildContext();
-  final mockRoutineLogProvider = RoutineLogProvider();
+  final mockRoutineLogProvider = MockRoutineLogProvider();
 
-  // when(mockRoutineLogProvider.exerciseLogsForExercise(exercise: lyingLegCurlExercise))
+  // when(Provider.of<RoutineLogProvider>(_childKey.currentContext!)
+  //         .exerciseLogsForExercise(exercise: lyingLegCurlExercise))
   //     .thenReturn([lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
 
   test("Heaviest set volume for exercise", () {
-
     final result = heaviestSetVolumeForExercise(context: mockBuildContext, exercise: lyingLegCurlExercise);
     expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2]));
   });
+
+  // Add your widget tests here
 }
