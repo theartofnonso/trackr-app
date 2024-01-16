@@ -41,7 +41,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     AchievementType.neverSkipALegDay =>
       _calculateNeverSkipALegDayAchievement(weekToLogs: weekToLogs, target: type.target),
     AchievementType.weekendWarrior => _calculateWeekendWarriorAchievement(weekToLogs: weekToLogs, target: type.target),
-    AchievementType.sweatEquity => _calculateSweatEquityAchievement(logs: routineLogs, target: type.target),
+    AchievementType.sweatMarathon => _calculateSweatEquityAchievement(logs: routineLogs, target: type.target),
     AchievementType.bodyweightChampion => _calculateBodyWeightChampionAchievement(logs: exerciseLogs, type: type),
     AchievementType.strongerThanEver => _calculateStrongerThanEverAchievement(logs: exerciseLogs, target: type.target),
     AchievementType.timeUnderTension => _calculateTimeUnderTensionAchievement(logs: exerciseLogs, target: type.target),
@@ -192,7 +192,7 @@ ProgressDto _calculateWeekendWarriorAchievement(
   return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
 }
 
-/// [AchievementType.sweatEquity]
+/// [AchievementType.sweatMarathon]
 ProgressDto _calculateSweatEquityAchievement({required List<RoutineLogDto> logs, required int target}) {
   final targetHours = Duration(hours: target);
 
@@ -213,14 +213,13 @@ ProgressDto _calculateSweatEquityAchievement({required List<RoutineLogDto> logs,
 /// [AchievementType.fifteenMinutesToGo]
 ProgressDto _calculateTimeAchievement(
     {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-  final exerciseLogsWithDurationOnly = logs[ExerciseType.duration] ?? [];
-  final exerciseLogsWithDuration = [...exerciseLogsWithDurationOnly];
-  List<ExerciseLogDto> achievedLogs = exerciseLogsWithDuration.where((log) {
+  final achievedLogs = logs[ExerciseType.duration] ?? [];
+  List<ExerciseLogDto> durations = achievedLogs.where((log) {
     return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
   }).toList();
 
-  final progress = achievedLogs.length / 50;
-  final remainder = 50 - achievedLogs.length;
+  final progress = durations.length / type.target;
+  final remainder = type.target - durations.length;
 
   return generateProgress(
       achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForExerciseLog);
