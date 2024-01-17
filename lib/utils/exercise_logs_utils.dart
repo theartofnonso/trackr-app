@@ -6,6 +6,7 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
+import '../enums/pb_enums.dart';
 import '../providers/routine_log_provider.dart';
 import '../widgets/routine/preview/exercise_log_widget.dart';
 

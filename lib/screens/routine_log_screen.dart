@@ -199,12 +199,13 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _onShareLog({required RoutineLogDto log, required List<ExerciseLogDto> exerciseLogs}) {
+    final pbs = _calculatePBs();
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: RoutineLogShareableContainer(log: log, frequencyData: calculateFrequency(exerciseLogs)));
+        child: RoutineLogShareableContainer(log: log, pbs: pbs, frequencyData: calculateFrequency(exerciseLogs)));
   }
 
   List<PBDto> _calculatePBs() {

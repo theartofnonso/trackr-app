@@ -5,22 +5,13 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import '../../../dtos/exercise_dto.dart';
+import '../../../enums/pb_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/routine_helper.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/set_headers/double_set_header.dart';
-
-enum PBType {
-  weight("Weight"),
-  volume("Volume"),
-  duration("Duration");
-
-  const PBType(this.name);
-
-  final String name;
-}
 
 class PBDto {
   final ExerciseDto exercise;
