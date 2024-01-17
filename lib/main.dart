@@ -128,6 +128,10 @@ class _MyAppState extends State<MyApp> {
       backgroundColor: tealBlueDark,
       surfaceTintColor: tealBlueDark,
     ),
+    scrollbarTheme: ScrollbarThemeData(
+      thumbColor: MaterialStateProperty.all(Colors.green),
+      trackColor: MaterialStateProperty.all(Colors.white.withOpacity(0.2)),
+    ),
     snackBarTheme: const SnackBarThemeData(
         backgroundColor: tealBlueDark,
         actionBackgroundColor: tealBlueLighter,
