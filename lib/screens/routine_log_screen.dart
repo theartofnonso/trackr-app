@@ -28,14 +28,11 @@ import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../providers/routine_template_provider.dart';
-import '../utils/shareables_utils.dart';
 import '../widgets/fabs/expandable_fab.dart';
 import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
-import '../widgets/shareables/routine_log_shareable_one.dart';
+import '../widgets/shareables/routine_log_shareable_container.dart';
 import 'editors/helper_utils.dart';
-
-GlobalKey _routineLogShareableOneKey = GlobalKey();
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -207,35 +204,23 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          RepaintBoundary(
-              key: _routineLogShareableOneKey,
-              child: RoutineLogShareableOne(log: log, frequencyData: calculateFrequency(exerciseLogs))),
-          const SizedBox(height: 10),
-          CTextButton(
-              onPressed: () {
-                captureImage(key: _routineLogShareableOneKey, pixelRatio: 3.5);
-                Navigator.of(context).pop();
-              },
-              label: "Share",
-              buttonColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              buttonBorderColor: Colors.transparent)
-        ]));
+        child: RoutineLogShareableContainer(log: log, frequencyData: calculateFrequency(exerciseLogs)));
   }
 
   List<PBDto> _calculatePBs() {
     final pbs = widget.log.exerciseLogs
         .map((exerciseLog) =>
-        calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
+            calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
         .expand((setAndPbs) => setAndPbs.values)
-        .expand((pbs) => pbs).toSet().toList();
+        .expand((pbs) => pbs)
+        .toSet()
+        .toList();
     return pbs;
   }
 
   void _showPBs() {
     final pbs = _calculatePBs();
-    if(pbs.isEmpty) {
+    if (pbs.isEmpty) {
       return;
     }
     displayBottomSheet(

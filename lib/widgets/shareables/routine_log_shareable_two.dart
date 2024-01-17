@@ -1,10 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../app_constants.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -12,40 +10,26 @@ import '../../utils/shareables_utils.dart';
 import '../buttons/text_button_widget.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 
-GlobalKey _routineLogShareableOneKey = GlobalKey();
+GlobalKey _routineLogShareableTwoKey = GlobalKey();
 
-class RoutineLogShareableOne extends StatelessWidget {
+class RoutineLogShareableTwo extends StatelessWidget {
   final RoutineLogDto log;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const RoutineLogShareableOne({super.key, required this.log, required this.frequencyData});
+  const RoutineLogShareableTwo({super.key, required this.log, required this.frequencyData});
 
   @override
   Widget build(BuildContext context) {
-    final exerciseLogs = log.exerciseLogs
-        .mapIndexed(((index, exerciseLog) => Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Row(children: [
-                Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
-                //const Spacer(),
-                const SizedBox(width: 10),
-                Text("x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)} ${index == 2 ? "and more" : ""}",
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70)),
-              ]),
-            )))
-        .take(3)
-        .toList();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         RepaintBoundary(
-          key: _routineLogShareableOneKey,
+          key: _routineLogShareableTwoKey,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             color: tealBlueDark,
             width: MediaQuery.of(context).size.width - 32,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(log.name,
@@ -76,19 +60,28 @@ class RoutineLogShareableOne extends StatelessWidget {
               ),
               RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
               const SizedBox(height: 8),
-              ...exerciseLogs,
-              Image.asset(
-                'assets/trackr.png',
-                fit: BoxFit.contain,
-                height: 8, // Adjust the height as needed
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                      "${log.exerciseLogs.length} Exercises - ${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} Sets",
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)),
+                  const Spacer(),
+                  Image.asset(
+                    'assets/trackr.png',
+                    fit: BoxFit.contain,
+                    height: 8, // Adjust the height as needed
+                  )
+                ],
               ),
               const SizedBox(height: 12),
             ]),
           ),
         ),
+        const SizedBox(height: 30),
         CTextButton(
             onPressed: () async {
-              await captureImage(key: _routineLogShareableOneKey, pixelRatio: 3.5);
+              await captureImage(key: _routineLogShareableTwoKey, pixelRatio: 3.5);
               if(context.mounted) {
                 Navigator.of(context).pop();
               }
