@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_one.dart';
@@ -30,23 +29,23 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
   @override
   Widget build(BuildContext context) {
 
-    for (final exerciseLog in widget.log.exerciseLogs) {
-      final pbsSet = calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
-      final sf = pbsSet.entries.map((e) {
-        return (e.key, e.value);
-        print(e.key);
-        print(e.value);
-      });
+    List<Widget> shareables = [];
 
-      print(sf);
-      // final pbsValues = pbsSet.values.expand((element) => element).map((dto) => dto.pb);
-      // print(pbsValues);
+    for (final exerciseLog in widget.log.exerciseLogs) {
+      final setAndPBs = calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+      for (final setAndPB in setAndPBs.entries) {
+        final pbs = setAndPB.value;
+        for (final pb in pbs) {
+          final shareable = RoutineLogShareableThree(set: setAndPB.key, pbDto: pb, globalKey: GlobalKey());
+          shareables.add(shareable);
+        }
+      }
     }
 
     final pages = [
+      ...shareables,
       RoutineLogShareableOne(log: widget.log, frequencyData: widget.frequencyData),
       RoutineLogShareableTwo(log: widget.log, frequencyData: widget.frequencyData),
-      RoutineLogShareableThree(log: widget.log, frequencyData: widget.frequencyData),
     ];
 
     final pagesKeys = [routineLogShareableOneKey, routineLogShareableTwoKey, routineLogShareableThreeKey];
