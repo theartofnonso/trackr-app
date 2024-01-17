@@ -23,14 +23,9 @@ class RoutineLogShareableOne extends StatelessWidget {
     final exerciseLogs = log.exerciseLogs
         .mapIndexed(((index, exerciseLog) => Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
-              child: Row(children: [
-                Text(exerciseLog.exercise.name, style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
-                //const Spacer(),
-                const SizedBox(width: 10),
-                Text(
-                    "x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)} ${index == 2 ? "and more" : ""}",
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70)),
-              ]),
+              child: Text(
+                  "${exerciseLog.exercise.name}x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)} ${index == 2 ? "and more" : ""}",
+                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
             )))
         .take(3)
         .toList();
@@ -41,7 +36,7 @@ class RoutineLogShareableOne extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         color: tealBlueDark,
         width: MediaQuery.of(context).size.width - 20,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(log.name,
@@ -73,11 +68,13 @@ class RoutineLogShareableOne extends StatelessWidget {
           RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
           const SizedBox(height: 8),
           ...exerciseLogs,
-          Image.asset(
-            'assets/trackr.png',
-            fit: BoxFit.contain,
-            height: 8, // Adjust the height as needed
-          ),
+          Align(
+              alignment: Alignment.centerRight,
+              child: Image.asset(
+                'assets/trackr.png',
+                fit: BoxFit.contain,
+                height: 8, // Adjust the height as needed
+              )),
           const SizedBox(height: 12),
         ]),
       ),
