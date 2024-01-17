@@ -23,9 +23,17 @@ class RoutineLogShareableOne extends StatelessWidget {
     final exerciseLogs = log.exerciseLogs
         .mapIndexed(((index, exerciseLog) => Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
-              child: Text(
-                  "${exerciseLog.exercise.name}x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)} ${index == 2 ? "and more" : ""}",
-                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w500)),
+              child: RichText(
+                  text: TextSpan(
+                      text: exerciseLog.exercise.name,
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+                      children: [
+                    const TextSpan(text: " "),
+                    TextSpan(
+                        text:
+                            "x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)} ${index == 2 ? "+ ${log.exerciseLogs.length}" : ""}",
+                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
+                  ])),
             )))
         .take(3)
         .toList();

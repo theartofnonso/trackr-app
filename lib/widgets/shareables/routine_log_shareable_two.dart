@@ -58,9 +58,16 @@ class RoutineLogShareableTwo extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                  "${log.exerciseLogs.length} Exercises - ${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} Sets",
-                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)),
+              RichText(
+                  text: TextSpan(
+                      text: "${log.exerciseLogs.length} Exercises",
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+                      children: [
+                    const TextSpan(text: " "),
+                    TextSpan(
+                        text: "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} Sets",
+                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
+                  ])),
               const Spacer(),
               Image.asset(
                 'assets/trackr.png',
