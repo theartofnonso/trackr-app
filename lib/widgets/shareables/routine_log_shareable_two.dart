@@ -6,11 +6,9 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../app_constants.dart';
 import '../../enums/muscle_group_enums.dart';
-import '../../utils/shareables_utils.dart';
-import '../buttons/text_button_widget.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 
-GlobalKey _routineLogShareableTwoKey = GlobalKey();
+GlobalKey routineLogShareableTwoKey = GlobalKey();
 
 class RoutineLogShareableTwo extends StatelessWidget {
   final RoutineLogDto log;
@@ -20,77 +18,60 @@ class RoutineLogShareableTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        RepaintBoundary(
-          key: _routineLogShareableTwoKey,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            color: tealBlueDark,
-            width: MediaQuery.of(context).size.width - 32,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(log.name,
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-                subtitle: Row(
-                  children: [
-                    const Icon(
-                      Icons.date_range_rounded,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                    const SizedBox(width: 1),
-                    Text(log.createdAt.formattedDayAndMonth(),
-                        style: GoogleFonts.montserrat(
-                            color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                    const SizedBox(width: 10),
-                    const Icon(
-                      Icons.access_time_rounded,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                    const SizedBox(width: 1),
-                    Text(log.duration().hmsAnalog(),
-                        style: GoogleFonts.montserrat(
-                            color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                  ],
+    return RepaintBoundary(
+      key: routineLogShareableTwoKey,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        color: tealBlueDark,
+        width: MediaQuery.of(context).size.width - 20,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(log.name,
+                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+            subtitle: Row(
+              children: [
+                const Icon(
+                  Icons.date_range_rounded,
+                  color: Colors.white,
+                  size: 12,
                 ),
-              ),
-              RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                      "${log.exerciseLogs.length} Exercises - ${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} Sets",
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)),
-                  const Spacer(),
-                  Image.asset(
-                    'assets/trackr.png',
-                    fit: BoxFit.contain,
-                    height: 8, // Adjust the height as needed
-                  )
-                ],
-              ),
-              const SizedBox(height: 12),
-            ]),
+                const SizedBox(width: 1),
+                Text(log.createdAt.formattedDayAndMonth(),
+                    style: GoogleFonts.montserrat(
+                        color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                const SizedBox(width: 10),
+                const Icon(
+                  Icons.access_time_rounded,
+                  color: Colors.white,
+                  size: 12,
+                ),
+                const SizedBox(width: 1),
+                Text(log.duration().hmsAnalog(),
+                    style: GoogleFonts.montserrat(
+                        color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 30),
-        CTextButton(
-            onPressed: () async {
-              await captureImage(key: _routineLogShareableTwoKey, pixelRatio: 3.5);
-              if(context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            label: "Share",
-            buttonColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            buttonBorderColor: Colors.transparent)
-      ],
+          RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                  "${log.exerciseLogs.length} Exercises - ${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} Sets",
+                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)),
+              const Spacer(),
+              Image.asset(
+                'assets/trackr.png',
+                fit: BoxFit.contain,
+                height: 8, // Adjust the height as needed
+              )
+            ],
+          ),
+          const SizedBox(height: 12),
+        ]),
+      ),
     );
   }
 }
