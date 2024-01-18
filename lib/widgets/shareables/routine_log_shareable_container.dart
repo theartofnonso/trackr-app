@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_one.dart';
@@ -29,8 +30,9 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
     final pbShareableKeys = [];
 
     for (final exerciseLog in widget.log.exerciseLogs) {
-      final setAndPBs =
+      final pbs =
           calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+      final setAndPBs = groupBy(pbs, (pb) => pb.set);
       for (final setAndPB in setAndPBs.entries) {
         final pbs = setAndPB.value;
         for (final pb in pbs) {

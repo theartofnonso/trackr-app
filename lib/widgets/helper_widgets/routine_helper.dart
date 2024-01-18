@@ -1,12 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../dtos/exercise_log_dto.dart';
+import '../../dtos/pb_dto.dart';
 import '../../dtos/set_dto.dart';
 import '../../utils/general_utils.dart';
 import '../empty_states/single_set_row_empty_state.dart';
@@ -30,7 +31,7 @@ ExerciseLogDto? whereOtherExerciseInSuperSet(
 List<Widget> setsToWidgets(
     {required ExerciseType type,
     required List<SetDto> sets,
-    Map<SetDto, List<PBDto>> pbs = const {},
+    List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
   final durationTemplate = Center(
     child: Text("Timer will be available in log mode",
@@ -51,8 +52,11 @@ List<Widget> setsToWidgets(
 
   const margin = EdgeInsets.only(bottom: 6.0);
 
+  final pbsBySet = groupBy(pbs, (pb) => pb.set);
+
   final widgets = sets.map(((setDto) {
-    final pbsForSet = pbs[setDto] ?? [];
+
+    final pbsForSet = pbsBySet[setDto] ?? [];
 
     switch (type) {
       case ExerciseType.weights:

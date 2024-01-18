@@ -5,9 +5,9 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/routine/preview/exercise_log_widget.dart';
 
 import '../../app_constants.dart';
+import '../../dtos/pb_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 
 GlobalKey routineLogShareableThreeKey = GlobalKey();

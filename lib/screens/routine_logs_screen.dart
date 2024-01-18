@@ -55,14 +55,13 @@ class _RoutineLogWidget extends StatelessWidget {
     final pbs = log.exerciseLogs
         .map((exerciseLog) =>
             calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .expand((pbs) => pbs.values)
-        .fold<int>(0, (count, pb) => count + pb.length);
+        .expand((pbs) => pbs);
 
     return SolidListTile(
         title: log.name,
         subtitle: "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
         trailing: log.createdAt.durationSinceOrDate(),
-        trailingSubtitle: pbs >= 1 ? PBIcon(color: tealBlueLight, label: "$pbs") : null,
+        trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: tealBlueLight, label: "${pbs.length}") : null,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }

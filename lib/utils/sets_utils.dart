@@ -19,18 +19,20 @@ List<SetDto> personalBestSets({required List<SetDto> sets}) {
   return setsWithHeaviestWeight;
 }
 
-SetDto longestDurationSet({required List<SetDto> sets}) {
+SetDto heaviestSetVolume({required List<SetDto> sets}) {
 
-  SetDto longestSet = sets[0];
-  num longestDuration = sets[0].value1;
+  double heaviestVolume = 0;
+  SetDto heaviestSet = const SetDto(0, 0, false);
 
-  for (SetDto set in sets) {
-    num currentSet = set.value1;
-    if (currentSet > longestDuration) {
       longestDuration = currentSet;
-      longestSet = set;
+  for (final set in sets) {
+    final num volume = set.value1 * set.value2;
+
+    if (volume > heaviestVolume) {
+      heaviestVolume = volume.toDouble();
+      heaviestSet = set;
     }
   }
 
-  return longestSet;
+  return heaviestSet;
 }
