@@ -18,21 +18,3 @@ List<SetDto> personalBestSets({required List<SetDto> sets}) {
 
   return setsWithHeaviestWeight;
 }
-
-SetDto heaviestSetVolume({required List<SetDto> sets}) {
-
-  double heaviestVolume = 0;
-  SetDto heaviestSet = const SetDto(0, 0, false);
-
-      longestDuration = currentSet;
-  for (final set in sets) {
-    final num volume = set.value1 * set.value2;
-
-    if (volume > heaviestVolume) {
-      heaviestVolume = volume.toDouble();
-      heaviestSet = set;
-    }
-  }
-
-  return heaviestSet;
-}
