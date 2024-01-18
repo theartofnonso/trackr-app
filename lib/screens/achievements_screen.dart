@@ -6,7 +6,7 @@ import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
 import '../app_constants.dart';
 import '../enums/achievement_type_enums.dart';
-import '../providers/achievements_provider.dart';
+import '../controllers/achievement_controller.dart';
 import '../controllers/routine_log_controller.dart';
 import '../widgets/achievements/achievement_tile.dart';
 import '../widgets/backgrounds/gradient_background.dart';
