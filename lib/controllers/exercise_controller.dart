@@ -71,4 +71,9 @@ class ExerciseController with ChangeNotifier {
     return _amplifyExerciseRepository.whereExercise(exerciseId: exerciseId);
   }
 
+  void clear() {
+    _amplifyExerciseRepository.clear();
+    notifyListeners();
+  }
+
 }

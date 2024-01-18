@@ -135,4 +135,8 @@ class AmplifyExerciseRepository {
   ExerciseDto? whereExercise({required String exerciseId}) {
     return _exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
   }
+
+  void clear() {
+    _exercises.clear();
+  }
 }

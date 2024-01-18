@@ -401,7 +401,7 @@ class ExerciseLogController extends ChangeNotifier {
         : null;
   }
 
-  void reset() {
+  void clear() {
     _exerciseLogs.clear();
     _sets.clear();
     notifyListeners();

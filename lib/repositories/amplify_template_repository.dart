@@ -129,4 +129,8 @@ class AmplifyTemplateRepository {
   RoutineTemplateDto? templateWhere({required String id}) {
     return _templates.firstWhereOrNull((dto) => dto.id == id);
   }
+
+  void clear() {
+    _templates.clear();
+  }
 }

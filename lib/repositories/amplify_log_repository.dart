@@ -226,7 +226,7 @@ class AmplifyLogRepository {
     return _exerciseLogsById[exercise.id] ?? [];
   }
 
-  void reset() {
+  void clear() {
     _routineLogs.clear();
     _exerciseLogsById.clear();
     _exerciseLogsByType.clear();

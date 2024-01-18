@@ -86,4 +86,9 @@ class RoutineTemplateController with ChangeNotifier {
   RoutineTemplateDto? templateWhere({required String id}) {
     return _amplifyTemplateRepository.templateWhere(id: id);
   }
+
+  void clear() {
+    _amplifyTemplateRepository.clear();
+    notifyListeners();
+  }
 }
