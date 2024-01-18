@@ -30,8 +30,7 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
     final pbShareableKeys = [];
 
     for (final exerciseLog in widget.log.exerciseLogs) {
-      final pbs =
-          calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+      final pbs = calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
       final setAndPBs = groupBy(pbs, (pb) => pb.set);
       for (final setAndPB in setAndPBs.entries) {
         final pbs = setAndPB.value;
@@ -69,11 +68,9 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
         ),
         const SizedBox(height: 30),
         CTextButton(
-            onPressed: () async {
-              await captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5);
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
+            onPressed: () {
+              captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5);
+              Navigator.of(context).pop();
             },
             label: "Share",
             buttonColor: Colors.transparent,
