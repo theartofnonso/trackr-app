@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -126,7 +126,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
+    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: true);
     final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
     final dates = _generateDates();
@@ -332,7 +332,7 @@ class _Date extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
+    final log = Provider.of<RoutineLogController>(context, listen: true).logWhereDate(dateTime: dateTime);
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(

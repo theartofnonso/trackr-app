@@ -6,7 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../dtos/routine_log_dto.dart';
-import '../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 import '../utils/general_utils.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/calender_heatmaps/calendar_heatmap.dart';
@@ -17,12 +17,12 @@ class ConsistencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: false);
 
     final monthsToLogs = <MapEntry<DateTimeRange, List<RoutineLogDto>>>[];
     final ranges = monthRangesForYear(DateTime.now().year);
     for (var range in ranges) {
-      final logs = routineLogProvider.monthToLogs[range];
+      final logs = routineLogProvider.monthlyLogs[range];
       monthsToLogs.add(
         MapEntry(range, logs ?? <RoutineLogDto>[]),
       );

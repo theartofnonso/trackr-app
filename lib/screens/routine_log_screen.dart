@@ -16,7 +16,7 @@ import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart'
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
-import '../../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 import '../../widgets/helper_widgets/dialog_helper.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
@@ -51,7 +51,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final foundLog = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.log.id);
+    final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
 
     final log = foundLog ?? widget.log;
 
@@ -311,7 +311,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _doDeleteLog() async {
     try {
-      await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.log.id);
+      await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: widget.log);
       if (mounted) {
         Navigator.of(context).pop();
       }

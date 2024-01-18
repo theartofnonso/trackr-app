@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/progress_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_log_dto.dart';
@@ -12,7 +12,7 @@ import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
 
 ProgressDto calculateProgress({required BuildContext context, required AchievementType type}) {
-  final routineLogsProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+  final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: false);
 
   /// Filter logs to only include ones from the current year
   final routineLogs = routineLogsProvider.logs.where((log) => log.createdAt.withinCurrentYear()).toList();
@@ -22,7 +22,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
     return MapEntry(key, logs.toList());
   });
 
-  final weekToLogs = routineLogsProvider.weekToLogs
+  final weekToLogs = routineLogsProvider.weeklyLogs
       .map((key, value) => MapEntry(key, value.where((log) => log.createdAt.withinCurrentYear()).toList()));
 
   final progress = switch (type) {

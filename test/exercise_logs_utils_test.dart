@@ -7,14 +7,14 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 final _childKey = GlobalKey();
 
 class MockBuildContext extends Mock implements BuildContext {}
 
-class MockRoutineLogProvider extends Mock implements RoutineLogProvider {
+class MockRoutineLogProvider extends Mock implements RoutineLogController {
   MockRoutineLogProvider() : super();
 
   @override

@@ -7,7 +7,7 @@ import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
-import '../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
@@ -57,12 +57,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
+    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: true);
 
-    final weekToLogs = routineLogProvider.weekToLogs;
+    final weekToLogs = routineLogProvider.weeklyLogs;
 
     final logsForTheWeek = weekToLogs[thisWeekDateRange()] ?? [];
-    final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
+    final logsForTheMonth = routineLogProvider.monthlyLogs[thisMonthDateRange()] ?? [];
 
     final weeksWithLogs = weekToLogs.entries.where((element) => element.value.isNotEmpty);
     final consistencyLevel = levelFromXp(daysLogged: weeksWithLogs.length);

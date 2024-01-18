@@ -8,10 +8,10 @@ import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/pb_enums.dart';
-import '../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 
 List<ExerciseLogDto> pastExerciseLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsForExercise(exercise: exercise);
+  return Provider.of<RoutineLogController>(context, listen: false).exerciseLogsForExercise(exercise: exercise);
 }
 
 /// Highest value per [ExerciseLogDto]
@@ -177,7 +177,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 
 List<PBDto> calculatePBs(
     {required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
-  final provider = Provider.of<RoutineLogProvider>(context, listen: false);
+  final provider = Provider.of<RoutineLogController>(context, listen: false);
 
   final pastSets = provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
   final pastExerciseLogs =
@@ -193,8 +193,8 @@ List<PBDto> calculatePBs(
 
       final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.value1 > pastHeaviestWeight);
       if (currentHeaviestWeightSets.isNotEmpty) {
-        final heaviestWeightSet =
-            currentHeaviestWeightSets.reduce((curr, next) => (curr.value1 * curr.value2) > (next.value1 * next.value2) ? curr : next);
+        final heaviestWeightSet = currentHeaviestWeightSets
+            .reduce((curr, next) => (curr.value1 * curr.value2) > (next.value1 * next.value2) ? curr : next);
         pbs.add(PBDto(set: heaviestWeightSet, exercise: exerciseLog.exercise, pb: PBType.weight));
       }
 

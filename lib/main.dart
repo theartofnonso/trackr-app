@@ -14,7 +14,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/providers/routine_template_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
@@ -59,8 +59,8 @@ void main() async {
       ChangeNotifierProvider<RoutineTemplateProvider>(
         create: (BuildContext context) => RoutineTemplateProvider(),
       ),
-      ChangeNotifierProvider<RoutineLogProvider>(
-        create: (BuildContext context) => RoutineLogProvider(),
+      ChangeNotifierProvider<RoutineLogController>(
+        create: (BuildContext context) => RoutineLogController(),
       ),
       ChangeNotifierProvider<ExerciseLogProvider>(
         create: (BuildContext context) => ExerciseLogProvider(),
@@ -86,7 +86,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
-
     /// Only sync data from the last 12 months
     DateTime currentDate = DateTime.now();
     DateTime date12MonthsAgo = DateTime(currentDate.year - 1, currentDate.month, currentDate.day);

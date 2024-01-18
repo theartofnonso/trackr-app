@@ -18,7 +18,7 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
-import '../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 import '../providers/routine_template_provider.dart';
 import 'notifications_screen.dart';
 
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _routineLogStream = Amplify.DataStore.observeQuery(
       RoutineLog.classType,
     ).listen((QuerySnapshot<RoutineLog> snapshot) {
-      Provider.of<RoutineLogProvider>(context, listen: false).listLogs(logs: snapshot.items);
+      Provider.of<RoutineLogController>(context, listen: false).listLogs(logs: snapshot.items);
       if (snapshot.items.isNotEmpty) {
         _routineLogStream?.cancel();
       }
@@ -121,7 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
     if (context.mounted) {
       Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
-      Provider.of<RoutineLogProvider>(context, listen: false).listLogs();
     }
   }
 

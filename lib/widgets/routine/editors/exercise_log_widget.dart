@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/providers/exercise_log_provider.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -134,7 +134,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       _controllers.add((TextEditingController(), TextEditingController()));
     }
     final pastSets =
-        Provider.of<RoutineLogProvider>(context, listen: false).wherePastSets(exercise: widget.exerciseLogDto.exercise);
+        Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogProvider>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
     _cacheLog();
@@ -225,7 +225,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<RoutineLogProvider>(context, listen: true);
+    Provider.of<RoutineLogController>(context, listen: true);
 
     final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
 
