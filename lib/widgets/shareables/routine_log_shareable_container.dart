@@ -9,14 +9,12 @@ import '../../enums/muscle_group_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../buttons/text_button_widget.dart';
-import '../routine/preview/exercise_log_widget.dart';
 
 class RoutineLogShareableContainer extends StatefulWidget {
   final RoutineLogDto log;
-  final List<PBDto> pbs;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const RoutineLogShareableContainer({super.key, required this.log, required this.pbs, required this.frequencyData});
+  const RoutineLogShareableContainer({super.key, required this.log, required this.frequencyData});
 
   @override
   State<RoutineLogShareableContainer> createState() => _RoutineLogShareableContainerState();
