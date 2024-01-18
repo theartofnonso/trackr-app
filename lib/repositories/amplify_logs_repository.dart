@@ -31,15 +31,15 @@ class AmplifyLogsRepository {
 
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
 
-  List<RoutineLogDto> get routineLogs => _routineLogs;
+  UnmodifiableListView<RoutineLogDto> get routineLogs => UnmodifiableListView(_routineLogs);
 
-  Map<DateTimeRange, List<RoutineLogDto>> get weeklyLogs => _weeklyLogs;
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
 
-  Map<DateTimeRange, List<RoutineLogDto>> get monthlyLogs => _monthlyLogs;
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => UnmodifiableMapView(_exerciseLogsByType);
 
-  Map<String, List<ExerciseLogDto>> get exerciseLogsById => _exerciseLogsById;
+  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get weeklyLogs => UnmodifiableMapView(_weeklyLogs);
 
-  Map<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => _exerciseLogsByType;
+  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthlyLogs => UnmodifiableMapView(_monthlyLogs);
 
   void _normaliseLogs() {
     _orderExerciseLogs();

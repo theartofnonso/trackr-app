@@ -25,7 +25,7 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logs = Provider.of<RoutineLogController>(context, listen: true).logs;
+    final logs = Provider.of<RoutineLogController>(context, listen: true).routineLogs;
 
     List<AchievementDto> achievements = [];
 

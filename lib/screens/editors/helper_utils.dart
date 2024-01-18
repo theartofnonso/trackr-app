@@ -4,10 +4,10 @@ import 'package:tracker_app/screens/reorder_exercises_screen.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/template_changes_messages_dto.dart';
-import '../../providers/exercise_log_provider.dart';
+import '../../controllers/exercise_log_controller.dart';
 
 void reOrderExercises({required BuildContext context}) async {
-  final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+  final provider = Provider.of<ExerciseLogController>(context, listen: false);
   final exercises = List<ExerciseLogDto>.from(provider.exerciseLogs);
   final reOrderedList = await Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exercises)))
@@ -21,16 +21,16 @@ void reOrderExercises({required BuildContext context}) async {
 }
 
 void removeExerciseFromSuperSet({required BuildContext context, required String superSetId}) {
-  Provider.of<ExerciseLogProvider>(context, listen: false).removeSuperSetForLogs(superSetId: superSetId);
+  Provider.of<ExerciseLogController>(context, listen: false).removeSuperSetForLogs(superSetId: superSetId);
 }
 
 void removeExercise({required BuildContext context, required String exerciseId}) {
-  Provider.of<ExerciseLogProvider>(context, listen: false).removeExerciseLog(logId: exerciseId);
+  Provider.of<ExerciseLogController>(context, listen: false).removeExerciseLog(logId: exerciseId);
 }
 
 List<ExerciseLogDto> whereOtherExerciseLogsExcept(
     {required BuildContext context, required ExerciseLogDto firstProcedure}) {
-  return Provider.of<ExerciseLogProvider>(context, listen: false)
+  return Provider.of<ExerciseLogController>(context, listen: false)
       .exerciseLogs
       .where((procedure) => procedure.id != firstProcedure.id && procedure.superSetId.isEmpty)
       .toList();
@@ -38,7 +38,7 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
 
 List<TemplateChangesMessageDto> checkForChanges({required BuildContext context, required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
   List<TemplateChangesMessageDto> unsavedChangesMessage = [];
-  final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+  final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
 
   /// Check if [ExerciseLogDto] have been added or removed
   final differentExercisesLengthMessage =

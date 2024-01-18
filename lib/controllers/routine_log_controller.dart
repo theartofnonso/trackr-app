@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -13,15 +15,15 @@ class RoutineLogController with ChangeNotifier {
 
   final AmplifyLogsRepository _amplifyLogsRepository = AmplifyLogsRepository();
 
-  List<RoutineLogDto> get logs => _amplifyLogsRepository.routineLogs;
+  UnmodifiableListView<RoutineLogDto> get routineLogs => _amplifyLogsRepository.routineLogs;
 
-  Map<DateTimeRange, List<RoutineLogDto>> get weeklyLogs => _amplifyLogsRepository.weeklyLogs;
+  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get weeklyLogs => _amplifyLogsRepository.weeklyLogs;
 
-  Map<DateTimeRange, List<RoutineLogDto>> get monthlyLogs => _amplifyLogsRepository.monthlyLogs;
+  UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthlyLogs => _amplifyLogsRepository.monthlyLogs;
 
-  Map<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogsRepository.exerciseLogsById;
+  UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogsRepository.exerciseLogsById;
 
-  Map<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => _amplifyLogsRepository.exerciseLogsByType;
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => _amplifyLogsRepository.exerciseLogsByType;
 
   void fetchLogs() async {
     isLoading = true;

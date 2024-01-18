@@ -57,12 +57,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final weekToLogs = routineLogProvider.weeklyLogs;
+    final weekToLogs = routineLogController.weeklyLogs;
 
     final logsForTheWeek = weekToLogs[thisWeekDateRange()] ?? [];
-    final logsForTheMonth = routineLogProvider.monthlyLogs[thisMonthDateRange()] ?? [];
+    final logsForTheMonth = routineLogController.monthlyLogs[thisMonthDateRange()] ?? [];
 
     final weeksWithLogs = weekToLogs.entries.where((element) => element.value.isNotEmpty);
     final consistencyLevel = levelFromXp(daysLogged: weeksWithLogs.length);

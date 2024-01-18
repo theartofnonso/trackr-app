@@ -17,12 +17,12 @@ class ConsistencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final monthsToLogs = <MapEntry<DateTimeRange, List<RoutineLogDto>>>[];
     final ranges = monthRangesForYear(DateTime.now().year);
     for (var range in ranges) {
-      final logs = routineLogProvider.monthlyLogs[range];
+      final logs = routineLogController.monthlyLogs[range];
       monthsToLogs.add(
         MapEntry(range, logs ?? <RoutineLogDto>[]),
       );

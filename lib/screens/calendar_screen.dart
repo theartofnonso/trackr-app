@@ -126,8 +126,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: true);
-    final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final logs = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
     final dates = _generateDates();
 

@@ -24,8 +24,8 @@ class RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: false);
-    final routineLog = routineLogProvider.logWhereId(id: exerciseLog.routineLogId ?? "");
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLog = routineLogController.logWhereId(id: exerciseLog.routineLogId ?? "");
 
     if(routineLog == null) {
       return const ListViewEmptyState();

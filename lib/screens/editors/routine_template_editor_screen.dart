@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/providers/exercise_log_provider.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
@@ -38,7 +38,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final provider = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
@@ -62,7 +62,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
             final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            Provider.of<ExerciseLogProvider>(context, listen: false).superSetExerciseLogs(
+            Provider.of<ExerciseLogController>(context, listen: false).superSetExerciseLogs(
                 firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
           },
           onSelectExercisesInLibrary: () {
@@ -81,7 +81,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   bool _validateRoutineTemplateInputs() {
-    final procedureProviders = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedureProviders = Provider.of<ExerciseLogController>(context, listen: false);
     final procedures = procedureProviders.exerciseLogs;
 
     if (_templateNameController.text.isEmpty) {
@@ -111,8 +111,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     _toggleLoadingState();
     try {
 
-      final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-      final exercises = exerciseLogsProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
+      final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+      final exercises = exerciseLogController.mergeSetsIntoExerciseLogs(includeEmptySets: true);
 
       final template = RoutineTemplateDto(
           id: "",
@@ -152,7 +152,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _doUpdateRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
     final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
     _toggleLoadingState();
@@ -171,7 +171,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _checkForUnsavedChanges() {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exercises ?? [];
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
     final unsavedChangesMessage =
@@ -209,7 +209,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   Widget build(BuildContext context) {
     final template = widget.template;
 
-    final exerciseLogs = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
+    final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -331,7 +331,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     _initializeProcedureData();
     _initializeTextControllers();
 
-    _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
+    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClearProvider;
   }
 
   void _initializeProcedureData() {
@@ -340,7 +340,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       /// Pass [RoutineEditorMode.log] to loadExercises() to prevent the [RoutineTemplateEditorScreen] loading any timers
       /// When in [RoutineEditorMode.log], timers only when run when a set is added
       /// Since this is a template, we don't want to run any timers (The functionality to run timers is only available when logging a workout)
-      Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.log);
+      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.log);
     }
   }
 

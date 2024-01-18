@@ -15,7 +15,7 @@ ProgressDto calculateProgress({required BuildContext context, required Achieveme
   final routineLogsProvider = Provider.of<RoutineLogController>(context, listen: false);
 
   /// Filter logs to only include ones from the current year
-  final routineLogs = routineLogsProvider.logs.where((log) => log.createdAt.withinCurrentYear()).toList();
+  final routineLogs = routineLogsProvider.routineLogs.where((log) => log.createdAt.withinCurrentYear()).toList();
 
   final exerciseLogs = routineLogsProvider.exerciseLogsByType.map((key, value) {
     final logs = value.where((log) => log.createdAt.withinCurrentYear());

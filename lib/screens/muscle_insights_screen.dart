@@ -97,13 +97,13 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
   }
 
   void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
-    final routineLogProvider = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final Map<MuscleGroupFamily, int> frequencyMap = {};
 
     // Count the occurrences of each MuscleGroup
     for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
-      frequencyMap[muscleGroupFamily] = routineLogProvider
+      frequencyMap[muscleGroupFamily] = routineLogController
           .setsForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
           .length;
     }

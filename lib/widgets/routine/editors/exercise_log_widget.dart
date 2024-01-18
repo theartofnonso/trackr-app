@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/providers/exercise_log_provider.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -122,7 +122,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateProcedureNotes({required String value}) {
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .updateExerciseLogNotes(exerciseLogId: widget.exerciseLogDto.id, value: value);
     _cacheLog();
   }
@@ -135,7 +135,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
     final pastSets =
         Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
     _cacheLog();
   }
@@ -147,28 +147,28 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       _controllers.removeAt(index);
     }
 
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .removeSetForExerciseLog(exerciseLogId: widget.exerciseLogDto.id, index: index);
     _cacheLog();
   }
 
   void _updateWeight({required int index, required double value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: value);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .updateWeight(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
   void _updateReps({required int index, required num value, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value2: value);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .updateReps(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
   void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
     final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: true);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
   }
@@ -176,13 +176,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _updateSetCheck({required int index, required SetDto setDto}) {
     final checked = setDto.checked;
     final updatedSet = setDto.copyWith(checked: !checked);
-    Provider.of<ExerciseLogProvider>(context, listen: false)
+    Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
   }
 
   void _loadTextEditingControllers() {
-    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in sets) {
       final value1Controller = TextEditingController(text: set.value1.toString());
@@ -193,7 +193,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _loadDurationControllers() {
-    final sets = Provider.of<ExerciseLogProvider>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
     List<DateTime> controllers = [];
     for (var _ in sets) {
       controllers.add(DateTime.now());
@@ -227,7 +227,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   Widget build(BuildContext context) {
     Provider.of<RoutineLogController>(context, listen: true);
 
-    final sets = context.select((ExerciseLogProvider provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
+    final sets = context.select((ExerciseLogController provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
 
     final superSetExerciseDto = widget.superSet;
 

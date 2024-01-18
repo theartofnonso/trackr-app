@@ -9,7 +9,7 @@ import '../enums/exercise_type_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
-class ExerciseLogProvider extends ChangeNotifier {
+class ExerciseLogController extends ChangeNotifier {
   List<ExerciseLogDto> _exerciseLogs = [];
 
   Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};

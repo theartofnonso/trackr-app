@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
-import 'package:tracker_app/providers/exercise_log_provider.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 import '../../app_constants.dart';
@@ -42,7 +42,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final provider = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
@@ -67,7 +67,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
             final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            Provider.of<ExerciseLogProvider>(context, listen: false).superSetExerciseLogs(
+            Provider.of<ExerciseLogController>(context, listen: false).superSetExerciseLogs(
                 firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
             _cacheLog();
           },
@@ -79,8 +79,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   RoutineLogDto _routineLog() {
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseLogs = exerciseLogController.mergeSetsIntoExerciseLogs();
 
     final log = widget.log;
 
@@ -117,8 +117,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   bool _isRoutinePartiallyComplete() {
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseLogs = exerciseLogController.mergeSetsIntoExerciseLogs();
     return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
   }
 
@@ -187,7 +187,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _checkForUnsavedChanges() {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
     final unsavedChangesMessage =
@@ -241,7 +241,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
       _showSnackbar(routineLogEditorController.errorMessage);
     }
 
-    final exerciseLogs = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
+    final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -289,8 +289,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                       children: [
                         if (widget.mode == RoutineEditorMode.log)
                           Column(children: [
-                            Consumer<ExerciseLogProvider>(
-                                builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
+                            Consumer<ExerciseLogController>(
+                                builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                               return _RoutineLogOverview(
                                 sets: provider.completedSets().length,
                                 timer: RoutineTimer(startTime: widget.log.startTime),
@@ -346,7 +346,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     _initializeProcedureData();
 
-    _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
+    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClearProvider;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _cacheLog();
@@ -356,7 +356,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
     widget.mode == RoutineEditorMode.edit;
-    Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
+    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
   }
 
   @override

@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/providers/exercise_provider.dart';
-import 'package:tracker_app/providers/exercise_log_provider.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/providers/routine_template_provider.dart';
 import 'package:tracker_app/screens/home_screen.dart';
@@ -62,8 +62,8 @@ void main() async {
       ChangeNotifierProvider<RoutineLogController>(
         create: (BuildContext context) => RoutineLogController(),
       ),
-      ChangeNotifierProvider<ExerciseLogProvider>(
-        create: (BuildContext context) => ExerciseLogProvider(),
+      ChangeNotifierProvider<ExerciseLogController>(
+        create: (BuildContext context) => ExerciseLogController(),
       ),
     ], child: const MyApp())),
   );
