@@ -10,10 +10,6 @@ import '../enums/exercise_type_enums.dart';
 import '../enums/pb_enums.dart';
 import '../controllers/routine_log_controller.dart';
 
-List<ExerciseLogDto> pastExerciseLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  return Provider.of<RoutineLogController>(context, listen: false).exerciseLogsForExercise(exercise: exercise);
-}
-
 /// Highest value per [ExerciseLogDto]
 
 SetDto heaviestSetWeightForExerciseLog({required ExerciseLogDto exerciseLog}) {
@@ -80,18 +76,16 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 
 /// Highest value across all [ExerciseDto]
 
-(String?, SetDto) heaviestSetVolumeForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
-
+(String?, SetDto) heaviestSetVolume({required List<ExerciseLogDto> exerciseLogs}) {
   // Return null if there are no past logs
-  if (pastLogs.isEmpty) return ("", const SetDto(0, 0, false));
+  if (exerciseLogs.isEmpty) return ("", const SetDto(0, 0, false));
 
-  SetDto heaviestSet = pastLogs.first.sets.first;
-  String? logId = pastLogs.first.routineLogId;
+  SetDto heaviestSet = exerciseLogs.first.sets.first;
+  String? logId = exerciseLogs.first.routineLogId;
 
   double heaviestVolume = 0.0;
 
-  for (var log in pastLogs) {
+  for (var log in exerciseLogs) {
     final currentSet = heaviestSetVolumeForExerciseLog(exerciseLog: log);
     final currentVolume = currentSet.value1 * currentSet.value2;
     if (currentVolume > heaviestVolume) {
@@ -103,14 +97,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, heaviestSet);
 }
 
-(String?, double) heaviestWeightForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, double) heaviestWeight({required List<ExerciseLogDto> exerciseLogs}) {
   double heaviestWeight = 0;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    heaviestWeight = pastLogs.first.sets.first.value1.toDouble();
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    heaviestWeight = exerciseLogs.first.sets.first.value1.toDouble();
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final weight = heaviestSetWeightForExerciseLog(exerciseLog: log).value1.toDouble();
       if (weight > heaviestWeight) {
         heaviestWeight = weight;
@@ -121,14 +114,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, heaviestWeight);
 }
 
-(String?, int) highestRepsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, int) highestReps({required List<ExerciseLogDto> exerciseLogs}) {
   int highestReps = 0;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    highestReps = pastLogs.first.sets.first.value2.toInt();
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    highestReps = exerciseLogs.first.sets.first.value2.toInt();
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final reps = highestRepsForExerciseLog(exerciseLog: log);
       if (reps > highestReps) {
         highestReps = reps;
@@ -139,14 +131,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, highestReps);
 }
 
-(String?, int) totalRepsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, int) totalReps({required List<ExerciseLogDto> exerciseLogs}) {
   int mostReps = 0;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    mostReps = pastLogs.first.sets.first.value2.toInt();
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    mostReps = exerciseLogs.first.sets.first.value2.toInt();
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final reps = totalRepsForExerciseLog(exerciseLog: log);
       if (reps > mostReps) {
         mostReps = reps;
@@ -157,14 +148,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, mostReps);
 }
 
-(String?, Duration) longestDurationForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, Duration) longestDuration({required List<ExerciseLogDto> exerciseLogs}) {
   Duration longestDuration = Duration.zero;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    longestDuration = Duration(milliseconds: pastLogs.first.sets.first.value1.toInt());
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    longestDuration = Duration(milliseconds: exerciseLogs.first.sets.first.value1.toInt());
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final duration = longestDurationForExerciseLog(exerciseLog: log);
       if (duration > longestDuration) {
         longestDuration = duration;
