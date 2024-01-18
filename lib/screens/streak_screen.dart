@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
@@ -11,9 +9,8 @@ import '../utils/general_utils.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/calender_heatmaps/calendar_heatmap.dart';
 
-class ConsistencyScreen extends StatelessWidget {
-  final int consistencyLevel;
-  const ConsistencyScreen({super.key, required this.consistencyLevel});
+class StreakScreen extends StatelessWidget {
+  const StreakScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +40,8 @@ class ConsistencyScreen extends StatelessWidget {
                     )
                   ]),
                   const SizedBox(height: 10),
-                  Text("Consistency Level $consistencyLevel",
+                  Text("Workout Streaks ${DateTime.now().year}",
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-                  const SizedBox(height: 16),
-                  const InformationContainerLite(
-                    content: 'Your consistency score is determined by counting the weeks with at least one green square over a 50-week period',
-                    color: tealBlueLighter,
-                  ),
                   const SizedBox(height: 20),
                   Expanded(
                     child: GridView.count(
