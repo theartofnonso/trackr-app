@@ -21,32 +21,39 @@ class RoutineLogShareableContainer extends StatefulWidget {
 }
 
 class _RoutineLogShareableContainerState extends State<RoutineLogShareableContainer> {
-
   final _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
-
-    List<Widget> shareables = [];
+    List<Widget> pbShareables = [];
+    final pbShareableKeys = [];
 
     for (final exerciseLog in widget.log.exerciseLogs) {
-      final setAndPBs = calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+      final setAndPBs =
+          calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
       for (final setAndPB in setAndPBs.entries) {
         final pbs = setAndPB.value;
         for (final pb in pbs) {
-          final shareable = RoutineLogShareableThree(set: setAndPB.key, pbDto: pb, globalKey: GlobalKey());
-          shareables.add(shareable);
+          final key = GlobalKey();
+          final shareable = RoutineLogShareableThree(set: setAndPB.key, pbDto: pb, globalKey: key);
+          pbShareables.add(shareable);
+          pbShareableKeys.add(key);
         }
       }
     }
 
     final pages = [
-      ...shareables,
+      ...pbShareables,
       RoutineLogShareableOne(log: widget.log, frequencyData: widget.frequencyData),
       RoutineLogShareableTwo(log: widget.log, frequencyData: widget.frequencyData),
     ];
 
-    final pagesKeys = [routineLogShareableOneKey, routineLogShareableTwoKey, routineLogShareableThreeKey];
+    final pagesKeys = [
+      ...pbShareableKeys,
+      routineLogShareableOneKey,
+      routineLogShareableTwoKey,
+      routineLogShareableThreeKey
+    ];
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
