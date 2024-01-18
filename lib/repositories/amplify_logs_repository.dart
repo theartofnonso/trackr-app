@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -28,9 +29,7 @@ class AmplifyLogsRepository {
 
   Map<ExerciseType, List<ExerciseLogDto>> _exerciseLogsByType = {};
 
-  AmplifyLogsRepository() {
-    _fetchLogs();
-  }
+  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
 
   List<RoutineLogDto> get routineLogs => _routineLogs;
 
@@ -88,8 +87,16 @@ class AmplifyLogsRepository {
     _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.type);
   }
 
-  Future<void> _fetchLogs() async {
-    final logs = await Amplify.DataStore.query(RoutineLog.classType);
+  Future<void> fetchLogs({required void Function() onDone}) async {
+    List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
+    if (logs.isNotEmpty) {
+      _loadLogs(logs: logs);
+    } else {
+      _observeRoutineLogQuery(onDone: onDone);
+    }
+  }
+
+  void _loadLogs({required List<RoutineLog> logs}) {
     _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
   }
@@ -143,6 +150,32 @@ class AmplifyLogsRepository {
   void cacheLog({required RoutineLogDto logDto}) {
     SharedPrefs().cachedRoutineLog = jsonEncode(logDto);
   }
+
+  RoutineLogDto? cachedRoutineLog() {
+    RoutineLogDto? routineLog;
+    final cache = SharedPrefs().cachedRoutineLog;
+    if (cache.isNotEmpty) {
+      final json = jsonDecode(cache);
+      routineLog = RoutineLogDto.fromJson(json);
+    }
+    return routineLog;
+  }
+
+  void _observeRoutineLogQuery({required void Function() onDone}) {
+    _routineLogStream =
+        Amplify.DataStore.observeQuery(RoutineLog.classType).listen((QuerySnapshot<RoutineLog> snapshot) {
+      if (snapshot.items.isNotEmpty) {
+        _loadLogs(logs: snapshot.items);
+        onDone();
+        _routineLogStream?.cancel();
+      }
+    })
+          ..onDone(() {
+            _routineLogStream?.cancel();
+          });
+  }
+
+  /// Helper methods
 
   int _indexWhereRoutineLog({required String id}) {
     return _routineLogs.indexWhere((log) => log.id == id);

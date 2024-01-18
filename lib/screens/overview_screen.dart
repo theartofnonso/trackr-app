@@ -37,7 +37,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _logEmptyRoutine(BuildContext context) async {
-    final log = cachedRoutineLog();
+    final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
     if (log == null) {
       final log = RoutineLogDto(
           id: "",

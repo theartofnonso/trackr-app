@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
@@ -18,7 +19,6 @@ import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../providers/exercise_provider.dart';
-import '../controllers/routine_log_controller.dart';
 import '../providers/routine_template_provider.dart';
 import 'notifications_screen.dart';
 
@@ -54,17 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates(templates: snapshot.items);
       if (snapshot.items.isNotEmpty) {
         _routineTemplateStream?.cancel();
-      }
-    });
-  }
-
-  void _observeRoutineLogQuery() {
-    _routineLogStream = Amplify.DataStore.observeQuery(
-      RoutineLog.classType,
-    ).listen((QuerySnapshot<RoutineLog> snapshot) {
-      Provider.of<RoutineLogController>(context, listen: false).listLogs(logs: snapshot.items);
-      if (snapshot.items.isNotEmpty) {
-        _routineLogStream?.cancel();
       }
     });
   }
@@ -121,12 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
     if (context.mounted) {
       Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
+      Provider.of<RoutineLogController>(context, listen: false).fetchLogs();
     }
   }
 
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      RoutineLogDto? log = cachedRoutineLog();
+      RoutineLogDto? log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
       if (log != null) {
         navigateToRoutineLogEditor(context: context, log: log);
       }
@@ -143,14 +133,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void _observeQueries() {
     _observeExerciseQuery();
     _observeRoutineTemplateQuery();
-    _observeRoutineLogQuery();
   }
 
   void _runSetup() async {
+    _loadAppData();
     if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
-      _observeQueries();
       _cacheUser();
+      _observeQueries();
     } else {
       _loadAppData();
       _loadCachedLog();

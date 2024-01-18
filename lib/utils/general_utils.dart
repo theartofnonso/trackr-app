@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../dtos/routine_log_dto.dart';
 import '../shared_prefs.dart';
 
 bool _isDefaultWeightUnit() {
@@ -110,16 +109,6 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
   }
 
   return monthRanges;
-}
-
-RoutineLogDto? cachedRoutineLog() {
-  RoutineLogDto? routineLog;
-  final cache = SharedPrefs().cachedRoutineLog;
-  if (cache.isNotEmpty) {
-    final json = jsonDecode(cache);
-    routineLog = RoutineLogDto.fromJson(json);
-  }
-  return routineLog;
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {
