@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app_constants.dart';
+import '../../../../dtos/pb_dto.dart';
 import '../../../pbs/pb_icon.dart';
-import '../exercise_log_widget.dart';
 
 class SetRow extends StatelessWidget {
   final EdgeInsets? margin;

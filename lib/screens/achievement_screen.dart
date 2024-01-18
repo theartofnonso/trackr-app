@@ -21,6 +21,8 @@ class AchievementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final completed = achievementDto.progress.remainder == 0;
+
     final monthsHeatMap = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
             return CalendarHeatMap(dates: dates, initialDate: dates.first);
@@ -29,7 +31,7 @@ class AchievementScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _onShareCalendar(context: context, monthsHeatMap: monthsHeatMap),
+        onPressed: () => _onShareCalendar(context: context, monthsHeatMap: monthsHeatMap, completed: completed),
         heroTag: "fab_achievement_screen",
         backgroundColor: tealBlueLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -48,34 +50,40 @@ class AchievementScreen extends StatelessWidget {
                 )
               ]),
               const SizedBox(height: 10),
-              Text(achievementDto.type.title, style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-              Text(achievementDto.type.description, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70)),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: LinearProgressIndicator(
-                        minHeight: 8,
-                        color: achievementDto.progress.remainder == 0 ? Colors.green : Colors.white,
-                        value: achievementDto.progress.value,
-                        borderRadius: const BorderRadius.all(Radius.circular(2)),
-                        backgroundColor: tealBlueLighter,
-                      ),
+              Text(achievementDto.type.title.toUpperCase(),
+                  style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 2),
+              Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
+                  style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              if (!completed)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: LinearProgressIndicator(
+                            minHeight: 8,
+                            color: completed ? Colors.green : Colors.white,
+                            value: achievementDto.progress.value,
+                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            backgroundColor: tealBlueLighter,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text("${achievementDto.progress.remainder} left",
+                            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Text("${achievementDto.progress.remainder} left",
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-                  ],
+                  ),
                 ),
-              ),
               const SizedBox(height: 10),
               GridView.count(
                 shrinkWrap: true,
-                crossAxisCount: 3,
+                crossAxisCount: monthsHeatMap.length > 3 ? 3 : monthsHeatMap.length,
                 childAspectRatio: 1,
                 mainAxisSpacing: 10.0,
                 crossAxisSpacing: 10.0,
@@ -98,7 +106,8 @@ class AchievementScreen extends StatelessWidget {
     );
   }
 
-  void _onShareCalendar({required BuildContext context, required List<CalendarHeatMap> monthsHeatMap}) {
+  void _onShareCalendar(
+      {required BuildContext context, required List<CalendarHeatMap> monthsHeatMap, required bool completed}) {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -113,10 +122,12 @@ class AchievementScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(achievementDto.type.title,
+                      Text(achievementDto.type.title.toUpperCase(),
                           style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-                      Text(achievementDto.type.description,
-                          style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70)),
+                      const SizedBox(height: 2),
+                      Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
+                          style:
+                              GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 10),
                       GridView.count(
                         shrinkWrap: true,
@@ -138,7 +149,10 @@ class AchievementScreen extends StatelessWidget {
                   ))),
           const SizedBox(height: 10),
           CTextButton(
-              onPressed: () => captureImage(key: _achievementKey),
+              onPressed: () {
+                captureImage(key: _achievementKey, pixelRatio: 5);
+                Navigator.of(context).pop();
+              },
               label: "Share",
               buttonColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),

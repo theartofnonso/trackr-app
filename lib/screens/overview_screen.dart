@@ -64,7 +64,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsForTheWeek = weekToLogs[thisWeekDateRange()] ?? [];
     final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
 
-    final consistencyLevel = levelFromXp(daysLogged: weekToLogs.keys.length);
+    final weeksWithLogs = weekToLogs.entries.where((element) => element.value.isNotEmpty);
+    final consistencyLevel = levelFromXp(daysLogged: weeksWithLogs.length);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
