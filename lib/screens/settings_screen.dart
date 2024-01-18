@@ -190,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     SharedPrefs().clear();
     FlutterLocalNotificationsPlugin().cancelAll();
     if (context.mounted) {
-      AppProviders.resetProviders(context);
+      // AppProviders.resetProviders(context);
     }
   }
 

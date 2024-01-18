@@ -18,7 +18,7 @@ import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
 
-class AmplifyLogsRepository {
+class AmplifyLogRepository {
   List<RoutineLogDto> _routineLogs = [];
 
   Map<DateTimeRange, List<RoutineLogDto>> _weeklyLogs = {};

@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/screens/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
@@ -17,9 +16,9 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
+import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
-import '../providers/exercise_provider.dart';
-import '../providers/routine_template_provider.dart';
+import '../controllers/exercise_controller.dart';
 import 'notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -31,40 +30,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentScreenIndex = 0;
-
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
-  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
-  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
-
-  void _observeExerciseQuery() {
-    _exerciseStream = Amplify.DataStore.observeQuery(
-      Exercise.classType,
-    ).listen((QuerySnapshot<Exercise> snapshot) {
-      Provider.of<ExerciseProvider>(context, listen: false).listExercises(exercises: snapshot.items);
-      if (snapshot.items.isNotEmpty) {
-        _exerciseStream?.cancel();
-      }
-    });
-  }
-
-  void _observeRoutineTemplateQuery() {
-    _routineTemplateStream = Amplify.DataStore.observeQuery(
-      RoutineTemplate.classType,
-    ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
-      Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates(templates: snapshot.items);
-      if (snapshot.items.isNotEmpty) {
-        _routineTemplateStream?.cancel();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _exerciseStream?.cancel();
-    _routineTemplateStream?.cancel();
-    _routineLogStream?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 28),
             label: 'Workouts',
           ),
+
           /// Uncomment this to enable achievements
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
@@ -107,9 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadAppData() async {
-    await Provider.of<ExerciseProvider>(context, listen: false).listExercises();
+    await Provider.of<ExerciseController>(context, listen: false).fetchExercises();
     if (context.mounted) {
-      Provider.of<RoutineTemplateProvider>(context, listen: false).listTemplates();
+      Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates();
       Provider.of<RoutineLogController>(context, listen: false).fetchLogs();
     }
   }
@@ -130,21 +96,15 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPrefs().userEmail = signInDetails["username"] as String;
   }
 
-  void _observeQueries() {
-    _observeExerciseQuery();
-    _observeRoutineTemplateQuery();
-  }
-
   void _runSetup() async {
-    _loadAppData();
     if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
       _cacheUser();
-      _observeQueries();
-    } else {
-      _loadAppData();
-      _loadCachedLog();
     }
+
+    _loadAppData();
+    _loadCachedLog();
+
     /// Uncomment this to enable notifications
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndRequestNotificationPermission();
@@ -153,16 +113,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _requestIosNotificationPermission() async {
     final isEnabled = await requestIosNotificationPermission();
-    if(isEnabled) {
-      if(mounted) {
+    if (isEnabled) {
+      if (mounted) {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
       }
     }
-
   }
 
   Future<void> _checkAndRequestNotificationPermission() async {
-
     final result = await checkIosNotificationPermission();
     if (!result.isEnabled) {
       if (mounted) {

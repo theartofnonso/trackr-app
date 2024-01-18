@@ -3,9 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
-import '../../../providers/routine_template_provider.dart';
+import '../../repositories/amplify_template_repository.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../utils/navigation_utils.dart';
@@ -16,7 +17,7 @@ class RoutinesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RoutineTemplateProvider>(builder: (_, provider, __) {
+    return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
       return Scaffold(
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
@@ -80,7 +81,7 @@ class _RoutineWidget extends StatelessWidget {
         data: ThemeData(splashColor: tealBlueLight),
         child: ListTile(
           tileColor: tealBlueLight,
-          onTap: () => navigateToRoutinePreview(context: context, templateId: template.id),
+          onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           leading: GestureDetector(
@@ -121,7 +122,7 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _deleteRoutine(BuildContext context) {
-    Provider.of<RoutineTemplateProvider>(context, listen: false).removeTemplate(id: template.id).onError((_, __) {
+    Provider.of<AmplifyTemplateRepository>(context, listen: false).removeTemplate(template: template).onError((_, __) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, unable to delete workout");
     });
   }

@@ -12,10 +12,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/providers/routine_template_provider.dart';
+import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -53,11 +53,11 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<ExerciseProvider>(
-        create: (BuildContext context) => ExerciseProvider(),
+      ChangeNotifierProvider<ExerciseController>(
+        create: (BuildContext context) => ExerciseController(),
       ),
-      ChangeNotifierProvider<RoutineTemplateProvider>(
-        create: (BuildContext context) => RoutineTemplateProvider(),
+      ChangeNotifierProvider<RoutineTemplateController>(
+        create: (BuildContext context) => RoutineTemplateController(),
       ),
       ChangeNotifierProvider<RoutineLogController>(
         create: (BuildContext context) => RoutineLogController(),

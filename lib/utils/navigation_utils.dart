@@ -22,8 +22,8 @@ void navigateToRoutineLogEditor({required BuildContext context, required Routine
   }
 }
 
-void navigateToRoutinePreview({required BuildContext context, required String templateId}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateScreen(templateId: templateId)));
+void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateScreen(template: template)));
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool finishedLogging = false}) {

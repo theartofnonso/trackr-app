@@ -24,7 +24,7 @@ import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../providers/routine_template_provider.dart';
+import '../repositories/amplify_template_repository.dart';
 import '../widgets/fabs/expandable_fab.dart';
 import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
@@ -272,10 +272,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false)
+      final createdTemplate = await Provider.of<AmplifyTemplateRepository>(context, listen: false)
           .saveTemplate(templateDto: templateToCreate);
       if (mounted) {
-        navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
+        navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
       }
     } catch (_) {
       if (mounted) {
@@ -289,22 +289,22 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   Future<void> _doUpdateTemplate() async {
     final templateToUpdate =
-        Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<AmplifyTemplateRepository>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
       final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
       final newTemplate = templateToUpdate.copyWith(exercises: exerciseLogs);
-      await Provider.of<RoutineTemplateProvider>(context, listen: false).updateTemplate(template: newTemplate);
+      await Provider.of<AmplifyTemplateRepository>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
   Future<void> _doUpdateTemplateExercises() async {
     final templateToUpdate =
-        Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<AmplifyTemplateRepository>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
-      await Provider.of<RoutineTemplateProvider>(context, listen: false)
+      await Provider.of<AmplifyTemplateRepository>(context, listen: false)
           .updateTemplateExerciseLogs(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
     }
   }
@@ -350,7 +350,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return;
     }
 
-    final routineTemplate = Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: templateId);
+    final routineTemplate = Provider.of<AmplifyTemplateRepository>(context, listen: false).templateWhere(id: templateId);
     if (routineTemplate == null) {
       return;
     }

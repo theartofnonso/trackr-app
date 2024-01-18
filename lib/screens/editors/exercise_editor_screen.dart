@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
 
@@ -199,7 +199,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 
       try {
-        await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);
+        await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
         if (mounted) {
           Navigator.of(context).pop();
         }
@@ -229,7 +229,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
       try {
         final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-        await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
+        await Provider.of<ExerciseController>(context, listen: false).updateExercise(exercise: updatedExercise);
         if (mounted) {
           Navigator.of(context).pop();
         }

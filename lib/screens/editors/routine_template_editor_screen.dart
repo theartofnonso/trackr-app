@@ -11,7 +11,7 @@ import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../providers/routine_template_provider.dart';
+import '../../repositories/amplify_template_repository.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../widgets/helper_widgets/routine_helper.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -122,7 +122,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      await Provider.of<RoutineTemplateProvider>(context, listen: false).saveTemplate(templateDto: template);
+      await Provider.of<AmplifyTemplateRepository>(context, listen: false).saveTemplate(templateDto: template);
       if (mounted) _navigateBack();
     } catch (_) {
       _handleRoutineTemplateError("Unable to create workout");
@@ -154,7 +154,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
-    final templateProvider = Provider.of<RoutineTemplateProvider>(context, listen: false);
+    final templateProvider = Provider.of<AmplifyTemplateRepository>(context, listen: false);
     _toggleLoadingState();
     try {
       final updatedRoutineTemplate = template.copyWith(

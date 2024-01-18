@@ -7,20 +7,20 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
-import '../../../providers/routine_template_provider.dart';
+import '../../dtos/routine_template_dto.dart';
+import '../../repositories/amplify_template_repository.dart';
 import '../../../widgets/helper_widgets/dialog_helper.dart';
 import '../../../widgets/helper_widgets/routine_helper.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../providers/exercise_provider.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import 'helper_utils.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
-  final String templateId;
+  final RoutineTemplateDto template;
 
-  const RoutineTemplateScreen({super.key, required this.templateId});
+  const RoutineTemplateScreen({super.key, required this.template});
 
   @override
   State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
@@ -31,7 +31,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _deleteRoutine() async {
     try {
-      await Provider.of<RoutineTemplateProvider>(context, listen: false).removeTemplate(id: widget.templateId);
+      await Provider.of<AmplifyTemplateRepository>(context, listen: false).removeTemplate(template: widget.template);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -52,7 +52,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final template = Provider.of<RoutineTemplateProvider>(context, listen: true).templateWhere(id: widget.templateId);
+    final template = Provider.of<AmplifyTemplateRepository>(context, listen: true).templateWhere(id: widget.template.id);
 
     if (template == null) {
       return const SizedBox.shrink();
@@ -82,15 +82,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
-
-    List<ExerciseLogDto> exerciseLogs = template.exercises.map((exercise) {
-      final exerciseFromLibrary =
-          Provider.of<ExerciseProvider>(context, listen: false).whereExerciseOrNull(exerciseId: exercise.exercise.id);
-      if (exerciseFromLibrary != null) {
-        return exercise.copyWith(exercise: exerciseFromLibrary);
-      }
-      return exercise;
-    }).toList();
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -148,7 +139,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       ))
                       : const SizedBox.shrink(),
                   const SizedBox(height: 5),
-                  ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: exerciseLogs), previewType: RoutinePreviewType.template,),
+                  ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises), previewType: RoutinePreviewType.template,),
                 ],
               ),
             ),

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
   void _deleteExercise(BuildContext context) async {
     Navigator.pop(context);
     try {
-      await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exercise.id);
+      await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: exercise);
       if (context.mounted) {
         Navigator.of(context).pop();
       }
@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foundExercise =
-        Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
+        Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: exercise.id) ?? exercise;
 
     final exerciseLogs =
         Provider.of<RoutineLogController>(context, listen: true).exerciseLogsForExercise(exercise: foundExercise);
