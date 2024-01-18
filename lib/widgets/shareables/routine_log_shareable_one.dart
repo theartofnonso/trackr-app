@@ -41,7 +41,7 @@ class RoutineLogShareableOne extends StatelessWidget {
     return RepaintBoundary(
       key: routineLogShareableOneKey,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.all(16),
         color: tealBlueDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -83,7 +83,6 @@ class RoutineLogShareableOne extends StatelessWidget {
                 fit: BoxFit.contain,
                 height: 8, // Adjust the height as needed
               )),
-          const SizedBox(height: 12),
         ]),
       ),
     );

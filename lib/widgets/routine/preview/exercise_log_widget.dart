@@ -4,45 +4,12 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
-import '../../../dtos/exercise_dto.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../helper_widgets/routine_helper.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/set_headers/double_set_header.dart';
-
-enum PBType {
-  weight("Weight"),
-  volume("Volume"),
-  duration("Duration");
-
-  const PBType(this.name);
-
-  final String name;
-}
-
-class PBDto {
-  final ExerciseDto exercise;
-  final PBType pb;
-
-  PBDto({required this.exercise, required this.pb});
-
-  @override
-  String toString() {
-    return 'PBViewModel{exercise: $exercise, pb: $pb}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(exercise.id, (other as PBDto).exercise.id) && identical(pb.name, (other).pb.name)) return true;
-
-    return exercise.id == other.exercise.id && pb.name == other.pb.name;
-  }
-
-  @override
-  int get hashCode => exercise.id.hashCode ^ pb.hashCode;
-}
 
 class ExerciseLogWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLog;
@@ -97,7 +64,7 @@ class ExerciseLogWidget extends StatelessWidget {
             ExerciseType.duration => const SingleSetHeader(label: 'TIME'),
           },
           const SizedBox(height: 8),
-          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbs: previewType == RoutinePreviewType.log ? pbs : {}, routinePreviewType: previewType),
+          ...setsToWidgets(type: exerciseType, sets: exerciseLog.sets, pbs: previewType == RoutinePreviewType.log ? pbs : [], routinePreviewType: previewType),
         ],
       ),
     );

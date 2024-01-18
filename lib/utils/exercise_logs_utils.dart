@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
+import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
+import '../enums/pb_enums.dart';
 import '../providers/routine_log_provider.dart';
-import '../widgets/routine/preview/exercise_log_widget.dart';
 
 List<ExerciseLogDto> pastExerciseLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
   return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsForExercise(exercise: exercise);
@@ -43,10 +44,7 @@ int totalRepsForExerciseLog({required ExerciseLogDto exerciseLog}) =>
 int highestRepsForExerciseLog({required ExerciseLogDto exerciseLog}) {
   if (exerciseLog.sets.isEmpty) return 0;
 
-  return exerciseLog.sets
-      .map((set) => set.value2)
-      .reduce((curr, next) => curr > next ? curr : next)
-      .toInt();
+  return exerciseLog.sets.map((set) => set.value2).reduce((curr, next) => curr > next ? curr : next).toInt();
 }
 
 double heaviestVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
@@ -177,7 +175,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, longestDuration);
 }
 
-Map<SetDto, List<PBDto>> calculatePBs(
+List<PBDto> calculatePBs(
     {required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
   final provider = Provider.of<RoutineLogProvider>(context, listen: false);
 
@@ -185,7 +183,7 @@ Map<SetDto, List<PBDto>> calculatePBs(
   final pastExerciseLogs =
       provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
-  Map<SetDto, List<PBDto>> pbsMap = {};
+  List<PBDto> pbs = [];
 
   if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
@@ -195,21 +193,17 @@ Map<SetDto, List<PBDto>> calculatePBs(
 
       final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.value1 > pastHeaviestWeight);
       if (currentHeaviestWeightSets.isNotEmpty) {
-        for (final set in currentHeaviestWeightSets) {
-          final pbs = pbsMap[set] ?? [];
-          pbs.add(PBDto(exercise: exerciseLog.exercise, pb: PBType.weight));
-          pbsMap[set] = pbs;
-        }
+        final heaviestWeightSet =
+            currentHeaviestWeightSets.reduce((curr, next) => (curr.value1 * curr.value2) > (next.value1 * next.value2) ? curr : next);
+        pbs.add(PBDto(set: heaviestWeightSet, exercise: exerciseLog.exercise, pb: PBType.weight));
       }
 
       final currentHeaviestVolumeSets =
           exerciseLog.sets.where((set) => (set.value1 * set.value2) > pastHeaviestSetVolume);
       if (currentHeaviestVolumeSets.isNotEmpty) {
-        for (final set in currentHeaviestVolumeSets) {
-          final pbs = pbsMap[set] ?? [];
-          pbs.add(PBDto(exercise: exerciseLog.exercise, pb: PBType.volume));
-          pbsMap[set] = pbs;
-        }
+        final heaviestVolumeSet = currentHeaviestVolumeSets
+            .reduce((curr, next) => (curr.value1 * curr.value2) > (next.value1 * next.value2) ? curr : next);
+        pbs.add(PBDto(set: heaviestVolumeSet, exercise: exerciseLog.exercise, pb: PBType.volume));
       }
     }
 
@@ -219,13 +213,12 @@ Map<SetDto, List<PBDto>> calculatePBs(
       final currentLongestDurations =
           exerciseLog.sets.where((set) => Duration(milliseconds: set.value1.toInt()) > pastLongestDuration);
       if (currentLongestDurations.isNotEmpty) {
-        for (final set in currentLongestDurations) {
-          final pbs = pbsMap[set] ?? [];
-          pbs.add(PBDto(exercise: exerciseLog.exercise, pb: PBType.duration));
-          pbsMap[set] = pbs;
-        }
+        final longestDurationSet = currentLongestDurations.reduce((curr, next) =>
+            Duration(milliseconds: curr.value1.toInt()) > Duration(milliseconds: next.value1.toInt()) ? curr : next);
+        pbs.add(PBDto(set: longestDurationSet, exercise: exerciseLog.exercise, pb: PBType.duration));
       }
     }
   }
-  return pbsMap;
+
+  return pbs;
 }
