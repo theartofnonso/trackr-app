@@ -57,7 +57,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     _routineLogDto = log;
 
     final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
-    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "set", count: numberOfCompletedSets)}";
+    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -158,7 +158,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(
-                                  "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
+                                  "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),

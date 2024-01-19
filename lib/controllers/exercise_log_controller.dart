@@ -71,18 +71,22 @@ class ExerciseLogController extends ChangeNotifier {
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
     _exerciseLogRepository.updateWeight(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+    notifyListeners();
   }
 
   void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
     _exerciseLogRepository.updateReps(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+    notifyListeners();
   }
 
   void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
     _exerciseLogRepository.updateDuration(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+    notifyListeners();
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
     _exerciseLogRepository.updateSetCheck(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
+    notifyListeners();
   }
 
   void onClear() {

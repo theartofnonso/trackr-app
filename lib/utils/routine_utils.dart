@@ -71,7 +71,7 @@ List<TemplateChangesMessageDto> checkForChanges(
 
 ExerciseLogDto? whereOtherExerciseInSuperSet(
     {required ExerciseLogDto firstExercise, required List<ExerciseLogDto> exercises}) {
-  return exercises.firstWhere((exercise) =>
+  return exercises.firstWhereOrNull((exercise) =>
       exercise.superSetId.isNotEmpty &&
       exercise.superSetId == firstExercise.superSetId &&
       exercise.exercise.id != firstExercise.exercise.id);

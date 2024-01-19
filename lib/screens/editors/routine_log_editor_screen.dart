@@ -35,9 +35,6 @@ class RoutineLogEditorScreen extends StatefulWidget {
 }
 
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
-  bool _loading = false;
-  String _loadingMessage = "";
-
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
@@ -94,26 +91,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   Future<void> _doCreateRoutineLog() async {
     final routineLog = _routineLog();
 
-    final createdLog =
-        await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
+    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
 
     _navigateBack(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
-    _toggleLoadingState(message: "Updating log...");
-
     final routineLog = _routineLog();
 
-    try {
-      await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-      _navigateBack();
-    } catch (_) {
-      _handleRoutineLogError("Unable to update log");
-    } finally {
-      _toggleLoadingState();
-    }
+    _navigateBack();
   }
 
   bool _isRoutinePartiallyComplete() {
@@ -158,12 +146,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _showSnackbar(String message) {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
-  }
-
-  void _handleRoutineLogError(String message) {
-    if (mounted) {
-      _showSnackbar(message);
-    }
   }
 
   void _cacheLog() {
@@ -222,14 +204,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
-    if(!mounted) {
+    if (!mounted) {
       return;
     }
     if (orderedList != null) {
       Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
       _cacheLog();
     }
-
   }
 
   void _navigateBack({RoutineLogDto? log}) {
@@ -237,18 +218,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Navigator.of(context).pop(log);
   }
 
-  void _toggleLoadingState({String message = ""}) {
-    setState(() {
-      _loading = !_loading;
-      _loadingMessage = message;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
-    if(routineLogEditorController.errorMessage.isNotEmpty) {
+    if (routineLogEditorController.isLoading) {
       _showSnackbar(routineLogEditorController.errorMessage);
     }
 
@@ -276,7 +250,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white))
               ],
             ),
-            floatingActionButton: isKeyboardOpen || _loading
+            floatingActionButton: isKeyboardOpen || routineLogEditorController.isLoading
                 ? null
                 : FloatingActionButton(
                     heroTag: UniqueKey(),
@@ -325,7 +299,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                           superSet:
                                               whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                           onRemoveSuperSet: (String superSetId) {
-                                           exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId);
                                             _cacheLog();
                                           },
                                           onRemoveLog: () {
@@ -348,7 +322,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                   ),
                 ),
               ),
-              if (routineLogEditorController.isLoading) OverlayBackground(loadingMessage: _loadingMessage),
+              if (routineLogEditorController.isLoading)
+                OverlayBackground(loadingMessage: routineLogEditorController.errorMessage),
             ])));
   }
 

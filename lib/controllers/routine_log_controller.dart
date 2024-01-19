@@ -31,6 +31,7 @@ class RoutineLogController with ChangeNotifier {
 
   void fetchLogs() async {
     isLoading = true;
+    await Future.delayed(const Duration(milliseconds: 500));
     try {
       await _amplifyLogRepository.fetchLogs(onDone: () {
         notifyListeners();
