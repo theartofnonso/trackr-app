@@ -5,8 +5,8 @@ import '../dtos/routine_template_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
-import '../screens/routine_log_screen.dart';
-import '../screens/routine_logs_screen.dart';
+import '../screens/logs/routine_log_screen.dart';
+import '../screens/logs/routine_logs_screen.dart';
 import '../screens/template/routine_template_screen.dart';
 
 void navigateToRoutineEditor({required BuildContext context, RoutineTemplateDto? template}) {

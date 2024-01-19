@@ -5,11 +5,11 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
 
-import '../../utils/navigation_utils.dart';
-import '../dtos/routine_log_dto.dart';
-import '../utils/exercise_logs_utils.dart';
-import '../widgets/pbs/pb_icon.dart';
-import '../widgets/list_tiles/list_tile_solid.dart';
+import '../../../utils/navigation_utils.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../utils/exercise_logs_utils.dart';
+import '../../widgets/pbs/pb_icon.dart';
+import '../../widgets/list_tiles/list_tile_solid.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
   final List<RoutineLogDto> logs;
