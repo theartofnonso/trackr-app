@@ -18,7 +18,7 @@ class ExerciseController with ChangeNotifier {
   Future<void> fetchExercises() async {
     isLoading = true;
     try {
-      _amplifyExerciseRepository.fetchExercises(onDone: () {
+      await _amplifyExerciseRepository.fetchExercises(onDone: () {
         notifyListeners();
       });
     } catch (e) {
