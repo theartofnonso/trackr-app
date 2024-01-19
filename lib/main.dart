@@ -16,6 +16,9 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
+import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
+import 'package:tracker_app/repositories/amplify_log_repository.dart';
+import 'package:tracker_app/repositories/amplify_template_repository.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -54,13 +57,13 @@ void main() async {
     },
     appRunner: () => runApp(MultiProvider(providers: [
       ChangeNotifierProvider<ExerciseController>(
-        create: (BuildContext context) => ExerciseController(),
+        create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
       ),
       ChangeNotifierProvider<RoutineTemplateController>(
-        create: (BuildContext context) => RoutineTemplateController(),
+        create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
       ),
       ChangeNotifierProvider<RoutineLogController>(
-        create: (BuildContext context) => RoutineLogController(),
+        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
         create: (BuildContext context) => ExerciseLogController(),

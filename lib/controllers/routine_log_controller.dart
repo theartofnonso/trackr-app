@@ -13,7 +13,11 @@ class RoutineLogController with ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
-  final AmplifyLogRepository _amplifyLogRepository = AmplifyLogRepository();
+  RoutineLogController(AmplifyLogRepository amplifyLogRepository) {
+    _amplifyLogRepository = amplifyLogRepository;
+  }
+
+  late AmplifyLogRepository _amplifyLogRepository;
 
   UnmodifiableListView<RoutineLogDto> get routineLogs => _amplifyLogRepository.routineLogs;
 
