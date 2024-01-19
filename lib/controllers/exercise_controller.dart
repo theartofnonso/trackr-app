@@ -16,23 +16,21 @@ class ExerciseController with ChangeNotifier {
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
   Future<void> fetchExercises() async {
-
-      isLoading = true;
-      try {
-        await _amplifyExerciseRepository.fetchExercises(onDone: () {
-          notifyListeners();
-        });
-      } catch (e) {
-        errorMessage = "Oops! Something went wrong. Please try again later.";
-      } finally {
-        isLoading = false;
-        errorMessage = "";
+    isLoading = true;
+    try {
+      _amplifyExerciseRepository.fetchExercises(onDone: () {
         notifyListeners();
-      }
+      });
+    } catch (e) {
+      errorMessage = "Oops! Something went wrong. Please try again later.";
+    } finally {
+      isLoading = false;
+      errorMessage = "";
+      notifyListeners();
+    }
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
-
     isLoading = true;
     try {
       await _amplifyExerciseRepository.saveExercise(exerciseDto: exerciseDto);
@@ -79,5 +77,4 @@ class ExerciseController with ChangeNotifier {
     _amplifyExerciseRepository.clear();
     notifyListeners();
   }
-
 }

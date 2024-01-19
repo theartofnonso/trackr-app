@@ -32,7 +32,7 @@ class RoutineLogController with ChangeNotifier {
   void fetchLogs() async {
     isLoading = true;
     try {
-      await _amplifyLogRepository.fetchLogs(onDone: () {
+      _amplifyLogRepository.fetchLogs(onDone: () {
         notifyListeners();
       });
     } catch (e) {

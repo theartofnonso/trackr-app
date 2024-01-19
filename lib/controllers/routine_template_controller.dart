@@ -20,7 +20,7 @@ class RoutineTemplateController with ChangeNotifier {
   void fetchTemplates({List<RoutineTemplate>? templates}) async {
     isLoading = true;
     try {
-      await _amplifyTemplateRepository.fetchTemplates(onDone: () {
+      _amplifyTemplateRepository.fetchTemplates(onDone: () {
         notifyListeners();
       });
     } catch (e) {
