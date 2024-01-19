@@ -72,10 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData() async {
+  void _loadAppData() {
+    Provider.of<RoutineLogController>(context, listen: false).fetchLogs();
     Provider.of<ExerciseController>(context, listen: false).fetchExercises();
     Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates();
-    Provider.of<RoutineLogController>(context, listen: false).fetchLogs();
   }
 
   void _loadCachedLog() {
