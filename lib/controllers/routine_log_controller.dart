@@ -76,7 +76,7 @@ class RoutineLogController with ChangeNotifier {
   Future<void> removeLog({required RoutineLogDto log}) async {
     isLoading = true;
     try {
-      _amplifyLogRepository.removeLog(log: log);
+      await _amplifyLogRepository.removeLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
