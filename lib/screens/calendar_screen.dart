@@ -90,7 +90,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  List<_DateViewModel?> _generateDates({required List<DateTime> logsDates}) {
+  List<_DateViewModel?> _generateDates({required Iterable<DateTime> logsDates}) {
     int year = _currentDate.year;
     int month = _currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -132,8 +132,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
     final allLogDates = routineLogController.routineLogs
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
-        .toList();
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
 
     final dates = _generateDates(logsDates: allLogDates);
 
@@ -216,7 +215,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  void _onShareCalendar({required List<DateTime> logsDates}) {
+  void _onShareCalendar({required Iterable<DateTime> logsDates}) {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

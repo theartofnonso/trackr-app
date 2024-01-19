@@ -131,6 +131,7 @@ class AmplifyLogRepository {
       final index = _indexWhereRoutineLog(id: log.id);
       _routineLogs[index] = log;
     }
+    _normaliseLogs();
   }
 
   Future<void> removeLog({required RoutineLogDto log}) async {
@@ -145,6 +146,7 @@ class AmplifyLogRepository {
       final index = _indexWhereRoutineLog(id: log.id);
       _routineLogs.removeAt(index);
     }
+    _normaliseLogs();
   }
 
   void cacheLog({required RoutineLogDto logDto}) {
