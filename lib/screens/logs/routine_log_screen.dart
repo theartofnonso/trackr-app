@@ -17,6 +17,7 @@ import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart'
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../controllers/routine_template_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
@@ -24,7 +25,6 @@ import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../repositories/amplify_template_repository.dart';
 import '../../widgets/fabs/expandable_fab.dart';
 import '../../widgets/fabs/fab_action.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -50,7 +50,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
 
     final log = foundLog ?? widget.log;
@@ -272,10 +271,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final createdTemplate = await Provider.of<AmplifyTemplateRepository>(context, listen: false)
+      final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
           .saveTemplate(templateDto: templateToCreate);
       if (mounted) {
-        navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+        if (createdTemplate != null) {
+          navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+        }
       }
     } catch (_) {
       if (mounted) {
@@ -289,22 +290,22 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   Future<void> _doUpdateTemplate() async {
     final templateToUpdate =
-        Provider.of<AmplifyTemplateRepository>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
       final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
       final newTemplate = templateToUpdate.copyWith(exercises: exerciseLogs);
-      await Provider.of<AmplifyTemplateRepository>(context, listen: false).updateTemplate(template: newTemplate);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
   Future<void> _doUpdateTemplateExercises() async {
     final templateToUpdate =
-        Provider.of<AmplifyTemplateRepository>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
-      await Provider.of<AmplifyTemplateRepository>(context, listen: false)
+      await Provider.of<RoutineTemplateController>(context, listen: false)
           .updateTemplateExerciseLogs(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
     }
   }
@@ -350,14 +351,15 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return;
     }
 
-    final routineTemplate = Provider.of<AmplifyTemplateRepository>(context, listen: false).templateWhere(id: templateId);
+    final routineTemplate =
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: templateId);
     if (routineTemplate == null) {
       return;
     }
 
     final exerciseLog1 = routineTemplate.exercises;
     final exerciseLog2 = widget.log.exerciseLogs;
-    final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (templateChanges.isNotEmpty) {

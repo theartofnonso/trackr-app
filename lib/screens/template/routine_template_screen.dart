@@ -7,8 +7,8 @@ import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
 import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
+import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
-import '../../repositories/amplify_template_repository.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
@@ -30,7 +30,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   void _deleteRoutine() async {
     try {
-      await Provider.of<AmplifyTemplateRepository>(context, listen: false).removeTemplate(template: widget.template);
+      await Provider.of<RoutineTemplateController>(context, listen: false).removeTemplate(template: widget.template);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -51,7 +51,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final template = Provider.of<AmplifyTemplateRepository>(context, listen: true).templateWhere(id: widget.template.id);
+    final template = Provider.of<RoutineTemplateController>(context, listen: true).templateWhere(id: widget.template.id);
 
     if (template == null) {
       return const SizedBox.shrink();
@@ -85,7 +85,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: "fab_routine_preview_screen",
-            onPressed: () => logRoutine(context: context, template: template),
+            onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log()),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),

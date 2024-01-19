@@ -6,9 +6,11 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
+import '../dtos/template_changes_messages_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/pb_enums.dart';
 import '../controllers/routine_log_controller.dart';
+import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDto]
 
@@ -211,4 +213,97 @@ List<PBDto> calculatePBs(
   }
 
   return pbs;
+}
+
+TemplateChangesMessageDto? hasDifferentExerciseLogsLength(
+    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+  final int difference = exerciseLog2.length - exerciseLog1.length;
+
+  if (difference > 0) {
+    return TemplateChangesMessageDto(
+        message: "Added $difference exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
+  } else if (difference < 0) {
+    return TemplateChangesMessageDto(
+        message: "Removed ${-difference} exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
+  }
+
+  return null; // No change in length
+}
+
+TemplateChangesMessageDto? hasReOrderedExercises(
+    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+  final length = exerciseLog1.length > exerciseLog2.length ? exerciseLog2.length : exerciseLog1.length;
+  for (int i = 0; i < length; i++) {
+    if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
+      return TemplateChangesMessageDto(
+          message: "Exercises have been re-ordered",
+          type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
+    }
+  }
+  return null;
+}
+
+TemplateChangesMessageDto? hasDifferentSetsLength(
+    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+  int addedSetsCount = 0;
+  int removedSetsCount = 0;
+
+  for (ExerciseLogDto proc1 in exerciseLog1) {
+    ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
+
+    if (matchingProc2 == null) continue;
+
+    int difference = matchingProc2.sets.length - proc1.sets.length;
+    if (difference > 0) {
+      addedSetsCount += difference;
+    } else if (difference < 0) {
+      removedSetsCount -= difference; // Subtracting a negative number to add its absolute value
+    }
+  }
+
+  String message = '';
+  if (addedSetsCount > 0) {
+    message = "Added $addedSetsCount set(s)";
+  }
+
+  if (removedSetsCount > 0) {
+    if (message.isNotEmpty) message += ' and ';
+    message += "Removed $removedSetsCount set(s)";
+  }
+
+  return message.isNotEmpty
+      ? TemplateChangesMessageDto(message: message, type: TemplateChangesMessageType.setsLength)
+      : null;
+}
+
+TemplateChangesMessageDto? hasExercisesChanged({
+  required List<ExerciseLogDto> exerciseLog1,
+  required List<ExerciseLogDto> exerciseLog2,
+}) {
+  Set<String> exerciseIds1 = exerciseLog1.map((p) => p.exercise.id).toSet();
+  Set<String> exerciseIds2 = exerciseLog2.map((p) => p.exercise.id).toSet();
+
+  int changes = exerciseIds1.difference(exerciseIds2).length;
+
+  return changes > 0
+      ? TemplateChangesMessageDto(
+      message: "Changed $changes exercise(s)", type: TemplateChangesMessageType.exerciseLogChange)
+      : null;
+}
+
+TemplateChangesMessageDto? hasSuperSetIdChanged({
+  required List<ExerciseLogDto> exerciseLog1,
+  required List<ExerciseLogDto> exerciseLog2,
+}) {
+  Set<String> superSetIds1 =
+  exerciseLog1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+  Set<String> superSetIds2 =
+  exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+
+  final changes = superSetIds2.difference(superSetIds1).length;
+
+  return changes > 0
+      ? TemplateChangesMessageDto(
+      message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
+      : null;
 }

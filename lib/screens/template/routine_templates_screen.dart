@@ -6,11 +6,9 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
-import '../../repositories/amplify_template_repository.dart';
 import '../../utils/dialog_utils.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/routine_utils.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -85,7 +83,7 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           leading: GestureDetector(
-              onTap: () => logRoutine(context: context, template: template),
+              onTap: () => navigateToRoutineLogEditor(context: context, log: template.log()),
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,
@@ -122,7 +120,7 @@ class _RoutineWidget extends StatelessWidget {
   }
 
   void _deleteRoutine(BuildContext context) {
-    Provider.of<AmplifyTemplateRepository>(context, listen: false).removeTemplate(template: template).onError((_, __) {
+    Provider.of<RoutineTemplateController>(context, listen: false).removeTemplate(template: template).onError((_, __) {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Oops, unable to delete workout");
     });
   }

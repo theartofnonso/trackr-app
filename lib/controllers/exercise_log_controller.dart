@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -97,37 +96,5 @@ class ExerciseLogController extends ChangeNotifier {
 
   ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise}) {
     return _exerciseLogRepository.whereOtherExerciseInSuperSet(firstExercise: firstExercise);
-  }
-
-  /// Helper functions
-
-  TemplateChangesMessageDto? hasDifferentExerciseLogsLength(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    return _exerciseLogRepository.hasDifferentExerciseLogsLength(
-        exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  }
-
-  TemplateChangesMessageDto? hasReOrderedExercises(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    return _exerciseLogRepository.hasReOrderedExercises(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  }
-
-  TemplateChangesMessageDto? hasDifferentSetsLength(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    return _exerciseLogRepository.hasDifferentSetsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  }
-
-  TemplateChangesMessageDto? hasExercisesChanged({
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2,
-  }) {
-    return _exerciseLogRepository.hasExercisesChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  }
-
-  TemplateChangesMessageDto? hasSuperSetIdChanged({
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2,
-  }) {
-    return _exerciseLogRepository.hasSuperSetIdChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
   }
 }
