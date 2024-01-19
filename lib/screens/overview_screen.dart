@@ -10,7 +10,7 @@ import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
-import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/string_utils.dart';
 import 'calendar_screen.dart';
 

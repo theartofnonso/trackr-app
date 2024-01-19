@@ -8,7 +8,7 @@ import '../dtos/achievement_dto.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../utils/dialog_utils.dart';
 import '../widgets/information_container.dart';
 import '../widgets/information_container_lite.dart';
 

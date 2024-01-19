@@ -10,7 +10,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../dtos/template_changes_messages_dto.dart';
@@ -18,12 +18,11 @@ import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
-import '../../widgets/helper_widgets/routine_helper.dart';
+import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_picker.dart';
 import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
-import 'helper_utils.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -58,7 +57,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
-    final exercises = whereOtherExerciseLogsExcept(context: context, firstProcedure: firstExerciseLog);
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     displayBottomSheet(
         context: context,
         child: ExercisePicker(
@@ -67,7 +67,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
             final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            Provider.of<ExerciseLogController>(context, listen: false).superSetExerciseLogs(
+            controller.superSetExerciseLogs(
                 firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
             _cacheLog();
           },

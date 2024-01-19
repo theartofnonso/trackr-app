@@ -17,8 +17,8 @@ import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart'
 import '../../app_constants.dart';
 import '../../dtos/exercise_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
-import '../../widgets/helper_widgets/dialog_helper.dart';
-import '../../widgets/helper_widgets/routine_helper.dart';
+import '../utils/dialog_utils.dart';
+import '../utils/routine_utils.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
@@ -29,7 +29,6 @@ import '../widgets/fabs/expandable_fab.dart';
 import '../widgets/fabs/fab_action.dart';
 import '../widgets/routine/preview/exercise_log_listview.dart';
 import '../widgets/shareables/routine_log_shareable_container.dart';
-import 'editors/helper_utils.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;

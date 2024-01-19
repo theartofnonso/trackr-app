@@ -16,7 +16,7 @@ import '../dtos/routine_log_dto.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../utils/dialog_utils.dart';
 
 GlobalKey _calendarKey = GlobalKey();
 

@@ -14,7 +14,7 @@ import '../../../dtos/exercise_dto.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
-import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../../utils/dialog_utils.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 

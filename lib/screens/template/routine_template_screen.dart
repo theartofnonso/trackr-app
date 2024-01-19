@@ -9,13 +9,12 @@ import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../repositories/amplify_template_repository.dart';
-import '../../../widgets/helper_widgets/dialog_helper.dart';
-import '../../../widgets/helper_widgets/routine_helper.dart';
+import '../../utils/dialog_utils.dart';
+import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import 'helper_utils.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
   final RoutineTemplateDto template;

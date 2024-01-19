@@ -7,10 +7,10 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import '../../repositories/amplify_template_repository.dart';
-import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../utils/dialog_utils.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../utils/navigation_utils.dart';
-import 'helper_utils.dart';
+import '../../utils/routine_utils.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});

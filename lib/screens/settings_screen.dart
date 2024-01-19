@@ -15,7 +15,7 @@ import '../controllers/exercise_controller.dart';
 import '../controllers/routine_log_controller.dart';
 import '../controllers/routine_template_controller.dart';
 import '../utils/general_utils.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../utils/dialog_utils.dart';
 import 'exercise/exercise_library_screen.dart';
 
 enum WeightUnit {

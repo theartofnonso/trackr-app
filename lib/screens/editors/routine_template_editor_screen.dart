@@ -6,18 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../repositories/amplify_template_repository.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
-import '../../widgets/helper_widgets/routine_helper.dart';
+import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/routine/editors/exercise_picker.dart';
 import '../exercise/exercise_library_screen.dart';
-import 'helper_utils.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
   final RoutineTemplateDto? template;
@@ -53,7 +52,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
-    final exercises = whereOtherExerciseLogsExcept(context: context, firstProcedure: firstExerciseLog);
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     displayBottomSheet(
         context: context,
         child: ExercisePicker(
@@ -62,7 +62,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           onSelect: (ExerciseLogDto secondExercise) {
             _closeDialog();
             final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            Provider.of<ExerciseLogController>(context, listen: false).superSetExerciseLogs(
+            controller.superSetExerciseLogs(
                 firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
           },
           onSelectExercisesInLibrary: () {
@@ -106,11 +106,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _createRoutineTemplate() async {
-
     if (!_validateRoutineTemplateInputs()) return;
     _toggleLoadingState();
     try {
-
       final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
       final exercises = exerciseLogController.mergeSetsIntoExerciseLogs(includeEmptySets: true);
 
@@ -195,13 +193,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
     final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
-    if(!mounted) {
+    if (!mounted) {
       return;
     }
     if (orderedList != null) {
       Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
     }
-
   }
 
   void _dismissKeyboard() {
@@ -231,7 +228,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       child: Scaffold(
           backgroundColor: tealBlueDark,
           appBar: AppBar(
-            leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28), onPressed: _checkForUnsavedChanges),
+            leading: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                onPressed: _checkForUnsavedChanges),
             actions: [
               CTextButton(
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
@@ -307,28 +306,28 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     const SizedBox(height: 20),
                     exerciseLogs.isNotEmpty
                         ? Expanded(
-                        child: ListView.separated(
-                            padding: const EdgeInsets.only(bottom: 250),
-                            itemBuilder: (BuildContext context, int index) {
-                              final log = exerciseLogs[index];
-                              final logId = log.id;
-                              return ExerciseLogWidget(
-                                  key: ValueKey(logId),
-                                  exerciseLogDto: log,
-                                  editorType: RoutineEditorMode.edit,
-                                  superSet:
-                                  whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
-                                  onRemoveSuperSet: (String superSetId) =>
-                                      exerciseLogController.removeSuperSet(superSetId: log.superSetId),
-                                  onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                  onReOrder: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
-                                  onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
-                            },
-                            separatorBuilder: (_, __) => const SizedBox(height: 10),
-                            itemCount: exerciseLogs.length))
+                            child: ListView.separated(
+                                padding: const EdgeInsets.only(bottom: 250),
+                                itemBuilder: (BuildContext context, int index) {
+                                  final log = exerciseLogs[index];
+                                  final logId = log.id;
+                                  return ExerciseLogWidget(
+                                      key: ValueKey(logId),
+                                      exerciseLogDto: log,
+                                      editorType: RoutineEditorMode.edit,
+                                      superSet:
+                                          whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                      onRemoveSuperSet: (String superSetId) =>
+                                          exerciseLogController.removeSuperSet(superSetId: log.superSetId),
+                                      onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
+                                      onReOrder: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
+                                      onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
+                                },
+                                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                itemCount: exerciseLogs.length))
                         : const ExerciseLogEmptyState(
-                        mode: RoutineEditorMode.edit,
-                        message: "Tap the + button to start adding exercises to your workout"),
+                            mode: RoutineEditorMode.edit,
+                            message: "Tap the + button to start adding exercises to your workout"),
                   ],
                 ),
               ),
@@ -353,7 +352,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       /// Pass [RoutineEditorMode.log] to loadExercises() to prevent the [RoutineTemplateEditorScreen] loading any timers
       /// When in [RoutineEditorMode.log], timers only when run when a set is added
       /// Since this is a template, we don't want to run any timers (The functionality to run timers is only available when logging a workout)
-      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.log);
+      Provider.of<ExerciseLogController>(context, listen: false)
+          .loadExercises(logs: exercises, mode: RoutineEditorMode.log);
     }
   }
 
