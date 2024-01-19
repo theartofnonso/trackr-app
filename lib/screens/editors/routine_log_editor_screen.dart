@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,6 @@ import '../../dtos/exercise_dto.dart';
 import '../../dtos/template_changes_messages_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -222,8 +222,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   Widget build(BuildContext context) {
     final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
 
-    if (routineLogEditorController.isLoading) {
-      _showSnackbar(routineLogEditorController.errorMessage);
+    if (routineLogEditorController.errorMessage.isNotEmpty) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _showSnackbar(routineLogEditorController.errorMessage);
+      });
     }
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
@@ -250,7 +252,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white))
               ],
             ),
-            floatingActionButton: isKeyboardOpen || routineLogEditorController.isLoading
+            floatingActionButton: isKeyboardOpen
                 ? null
                 : FloatingActionButton(
                     heroTag: UniqueKey(),
@@ -321,9 +323,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     ),
                   ),
                 ),
-              ),
-              if (routineLogEditorController.isLoading)
-                OverlayBackground(loadingMessage: routineLogEditorController.errorMessage),
+              )
             ])));
   }
 

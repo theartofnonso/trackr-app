@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
+import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -99,34 +101,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _handleRoutineTemplateError(String message) {
-    if (mounted) {
-      _showSnackbar(message);
-    }
-  }
-
   void _createRoutineTemplate() async {
     if (!_validateRoutineTemplateInputs()) return;
-    _toggleLoadingState();
-    try {
-      final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-      final exercises = exerciseLogController.mergeSetsIntoExerciseLogs(includeEmptySets: true);
 
-      final template = RoutineTemplateDto(
-          id: "",
-          name: _templateNameController.text,
-          exercises: exercises,
-          notes: _templateNotesController.text,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+    final exercises = exerciseLogController.mergeSetsIntoExerciseLogs(includeEmptySets: true);
 
-      await Provider.of<RoutineTemplateController>(context, listen: false).saveTemplate(templateDto: template);
-      if (mounted) _navigateBack();
-    } catch (_) {
-      _handleRoutineTemplateError("Unable to create workout");
-    } finally {
-      _toggleLoadingState();
-    }
+    final template = RoutineTemplateDto(
+        id: "",
+        name: _templateNameController.text,
+        exercises: exercises,
+        notes: _templateNotesController.text,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
+
+    await Provider.of<RoutineTemplateController>(context, listen: false).saveTemplate(templateDto: template);
+    _navigateBack();
   }
 
   void _updateRoutineTemplate() {
@@ -154,18 +144,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
     final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
     _toggleLoadingState();
-    try {
-      final updatedRoutineTemplate = template.copyWith(
-          name: _templateNameController.text.trim(),
-          notes: _templateNotesController.text.trim(),
-          exercises: exerciseLogs,
-          updatedAt: DateTime.now());
-      await templateProvider.updateTemplate(template: updatedRoutineTemplate);
-    } catch (e) {
-      _handleRoutineTemplateError("Unable to update workout");
-    } finally {
-      _toggleLoadingState();
-    }
+    final updatedRoutineTemplate = template.copyWith(
+        name: _templateNameController.text.trim(),
+        notes: _templateNotesController.text.trim(),
+        exercises: exerciseLogs,
+        updatedAt: DateTime.now());
+    await templateProvider.updateTemplate(template: updatedRoutineTemplate);
   }
 
   void _checkForUnsavedChanges() {
@@ -217,6 +201,14 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final template = widget.template;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+
+    final exerciseEditorController = Provider.of<ExerciseController>(context, listen: true);
+
+    if (exerciseEditorController.errorMessage.isNotEmpty) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _showSnackbar(exerciseEditorController.errorMessage);
+      });
+    }
 
     final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 

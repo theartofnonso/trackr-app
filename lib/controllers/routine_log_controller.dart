@@ -10,7 +10,6 @@ import '../dtos/set_dto.dart';
 import '../enums/muscle_group_enums.dart';
 
 class RoutineLogController with ChangeNotifier {
-  bool isLoading = false;
   String errorMessage = '';
 
   late AmplifyLogRepository _amplifyLogRepository;
@@ -30,7 +29,6 @@ class RoutineLogController with ChangeNotifier {
   UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => _amplifyLogRepository.exerciseLogsByType;
 
   void fetchLogs() async {
-    isLoading = true;
     try {
       await _amplifyLogRepository.fetchLogs(onDone: () {
         notifyListeners();
@@ -38,49 +36,38 @@ class RoutineLogController with ChangeNotifier {
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
-      isLoading = false;
-      errorMessage = "";
       notifyListeners();
     }
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto}) async {
     RoutineLogDto? savedLog;
-    isLoading = true;
     try {
       savedLog = await _amplifyLogRepository.saveLog(logDto: logDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
-      isLoading = false;
-      errorMessage = "";
       notifyListeners();
     }
     return savedLog;
   }
 
   Future<void> updateLog({required RoutineLogDto log}) async {
-    isLoading = true;
     try {
       await _amplifyLogRepository.updateLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
-      isLoading = false;
-      errorMessage = "";
       notifyListeners();
     }
   }
 
   Future<void> removeLog({required RoutineLogDto log}) async {
-    isLoading = true;
     try {
       await _amplifyLogRepository.removeLog(log: log);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
-      isLoading = false;
-      errorMessage = "";
       notifyListeners();
     }
   }

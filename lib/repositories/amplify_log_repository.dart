@@ -90,7 +90,6 @@ class AmplifyLogRepository {
   Future<void> fetchLogs({required void Function() onDone}) async {
     List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
     if (logs.isNotEmpty) {
-      print("Fetched ${logs.length} logs");
       _loadLogs(logs: logs);
     } else {
       _observeRoutineLogQuery(onDone: onDone);
