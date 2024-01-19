@@ -6,6 +6,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../app_constants.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../utils/string_utils.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 
 GlobalKey routineLogShareableTwoKey = GlobalKey();
@@ -60,12 +61,12 @@ class RoutineLogShareableTwo extends StatelessWidget {
             children: [
               RichText(
                   text: TextSpan(
-                      text: "${log.exerciseLogs.length} Exercises",
+                      text: "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
                       style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
                       children: [
                     const TextSpan(text: " "),
                     TextSpan(
-                        text: "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} Sets",
+                        text: "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
                         style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
                   ])),
               const Spacer(),

@@ -14,22 +14,21 @@ import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
 
-import '../../app_constants.dart';
-import '../../dtos/exercise_log_dto.dart';
-import '../../providers/routine_log_provider.dart';
-import '../../widgets/helper_widgets/dialog_helper.dart';
-import '../../widgets/helper_widgets/routine_helper.dart';
-import '../dtos/viewmodels/exercise_log_view_model.dart';
-import '../dtos/routine_log_dto.dart';
-import '../dtos/routine_template_dto.dart';
-import '../enums/muscle_group_enums.dart';
-import '../enums/routine_editor_type_enums.dart';
-import '../providers/routine_template_provider.dart';
-import '../widgets/fabs/expandable_fab.dart';
-import '../widgets/fabs/fab_action.dart';
-import '../widgets/routine/preview/exercise_log_listview.dart';
-import '../widgets/shareables/routine_log_shareable_container.dart';
-import 'editors/helper_utils.dart';
+import '../../../app_constants.dart';
+import '../../../dtos/exercise_log_dto.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../controllers/routine_template_controller.dart';
+import '../../utils/dialog_utils.dart';
+import '../../utils/routine_utils.dart';
+import '../../dtos/viewmodels/exercise_log_view_model.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../dtos/routine_template_dto.dart';
+import '../../enums/muscle_group_enums.dart';
+import '../../enums/routine_editor_type_enums.dart';
+import '../../widgets/fabs/expandable_fab.dart';
+import '../../widgets/fabs/fab_action.dart';
+import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../widgets/shareables/routine_log_shareable_container.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -51,14 +50,14 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final foundLog = Provider.of<RoutineLogProvider>(context, listen: true).whereRoutineLog(id: widget.log.id);
+    final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
 
     final log = foundLog ?? widget.log;
 
     _routineLogDto = log;
 
     final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
-    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "set", count: numberOfCompletedSets)}";
+    final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -159,7 +158,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(
-                                  "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
+                                  "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
@@ -272,10 +271,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final createdTemplate = await Provider.of<RoutineTemplateProvider>(context, listen: false)
+      final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
           .saveTemplate(templateDto: templateToCreate);
       if (mounted) {
-        navigateToRoutinePreview(context: context, templateId: createdTemplate.id);
+        if (createdTemplate != null) {
+          navigateToRoutineTemplatePreview(context: context, template: createdTemplate);
+        }
       }
     } catch (_) {
       if (mounted) {
@@ -289,29 +290,29 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   Future<void> _doUpdateTemplate() async {
     final templateToUpdate =
-        Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
       final exerciseLogs = widget.log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
       final newTemplate = templateToUpdate.copyWith(exercises: exerciseLogs);
-      await Provider.of<RoutineTemplateProvider>(context, listen: false).updateTemplate(template: newTemplate);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
 
   Future<void> _doUpdateTemplateExercises() async {
     final templateToUpdate =
-        Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: widget.log.templateId);
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
-      await Provider.of<RoutineTemplateProvider>(context, listen: false)
+      await Provider.of<RoutineTemplateController>(context, listen: false)
           .updateTemplateExerciseLogs(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
     }
   }
 
   void _doDeleteLog() async {
     try {
-      await Provider.of<RoutineLogProvider>(context, listen: false).removeLog(id: widget.log.id);
+      await Provider.of<RoutineLogController>(context, listen: false).removeLog(log: widget.log);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -350,14 +351,15 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return;
     }
 
-    final routineTemplate = Provider.of<RoutineTemplateProvider>(context, listen: false).templateWhere(id: templateId);
+    final routineTemplate =
+        Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: templateId);
     if (routineTemplate == null) {
       return;
     }
 
     final exerciseLog1 = routineTemplate.exercises;
     final exerciseLog2 = widget.log.exerciseLogs;
-    final templateChanges = checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (templateChanges.isNotEmpty) {

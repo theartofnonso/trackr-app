@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
-import '../timers/hour_timer_picker.dart';
-import '../timers/time_picker.dart';
+import '../app_constants.dart';
+import '../widgets/timers/hour_timer_picker.dart';
+import '../widgets/timers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

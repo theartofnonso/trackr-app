@@ -11,7 +11,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../utils/timezone_utils.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../utils/dialog_utils.dart';
 
 Duration _timeForSchedule({required PendingNotificationRequest? schedule}) {
   final payload = _decodeNotificationPayload(schedule: schedule);

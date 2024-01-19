@@ -31,7 +31,7 @@ class RoutineLogShareableOne extends StatelessWidget {
                     const TextSpan(text: " "),
                     TextSpan(
                         text:
-                            "x${exerciseLog.sets.length} ${pluralize(word: "set", count: exerciseLog.sets.length)} ${index == 2 ? "+ ${log.exerciseLogs.length}" : ""}",
+                            "x${exerciseLog.sets.length} ${pluralize(word: "Set", count: exerciseLog.sets.length)} ${index == 2 ? "+ ${log.exerciseLogs.length}" : ""}",
                         style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white70, fontSize: 12))
                   ])),
             )))

@@ -1,24 +1,32 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 
-class RoutineTemplateProvider with ChangeNotifier {
+class AmplifyTemplateRepository {
   List<RoutineTemplateDto> _templates = [];
+
+  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  void listTemplates({List<RoutineTemplate>? templates}) async {
-    final queries = templates ?? await Amplify.DataStore.query(RoutineTemplate.classType);
-    _templates = queries.map((template) => template.dto()).toList();
-    _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    notifyListeners();
+  Future<void> fetchTemplates({required void Function() onDone}) async {
+    List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
+    if (templates.isNotEmpty) {
+      _loadTemplates(templates: templates);
+    } else {
+      _observeRoutineTemplateQuery(onDone: onDone);
+    }
+  }
+
+  void _loadTemplates({required List<RoutineTemplate> templates}) {
+    _templates = templates.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
@@ -31,7 +39,6 @@ class RoutineTemplateProvider with ChangeNotifier {
     final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
 
     _templates.insert(0, updatedWithId);
-    notifyListeners();
 
     return updatedWithId;
   }
@@ -48,7 +55,6 @@ class RoutineTemplateProvider with ChangeNotifier {
       await Amplify.DataStore.save(newTemplate);
       final index = _indexWhereRoutineTemplate(id: template.id);
       _templates[index] = template;
-      notifyListeners();
     }
   }
 
@@ -82,24 +88,39 @@ class RoutineTemplateProvider with ChangeNotifier {
       await Amplify.DataStore.save(newLog);
       final index = _indexWhereRoutineTemplate(id: newLog.id);
       _templates[index] = newTemplateDto;
-      notifyListeners();
     }
   }
 
-  Future<void> removeTemplate({required String id}) async {
+  Future<void> removeTemplate({required RoutineTemplateDto template}) async {
     final result = (await Amplify.DataStore.query(
       RoutineTemplate.classType,
-      where: RoutineTemplate.ID.eq(id),
+      where: RoutineTemplate.ID.eq(template.id),
     ));
 
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete(oldTemplate);
-      final index = _indexWhereRoutineTemplate(id: id);
+      final index = _indexWhereRoutineTemplate(id: template.id);
       _templates.removeAt(index);
-      notifyListeners();
     }
   }
+
+
+  void _observeRoutineTemplateQuery({required void Function() onDone}) {
+    _routineTemplateStream =
+    Amplify.DataStore.observeQuery(RoutineTemplate.classType).listen((QuerySnapshot<RoutineTemplate> snapshot) {
+      if (snapshot.items.isNotEmpty) {
+        _loadTemplates(templates: snapshot.items);
+        onDone();
+        _routineTemplateStream?.cancel();
+      }
+    })
+      ..onDone(() {
+        _routineTemplateStream?.cancel();
+      });
+  }
+
+  /// Helper methods
 
   int _indexWhereRoutineTemplate({required String id}) {
     return _templates.indexWhere((template) => template.id == id);
@@ -109,8 +130,7 @@ class RoutineTemplateProvider with ChangeNotifier {
     return _templates.firstWhereOrNull((dto) => dto.id == id);
   }
 
-  void reset() {
+  void clear() {
     _templates.clear();
-    notifyListeners();
   }
 }

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/consistency_screen.dart';
+import 'package:tracker_app/screens/streak_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
-import '../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
-import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/string_utils.dart';
 import 'calendar_screen.dart';
 
@@ -22,22 +22,22 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  void _navigateToSettings(BuildContext context) async {
+  void _navigateToSettings() async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
     setState(() {});
   }
 
-  void _navigateToMuscleDistribution(BuildContext context) {
+  void _navigateToMuscleDistribution() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void navigateToAllDaysTracked({required BuildContext context, required int consistencyLevel}) {
+  void navigateToAllDaysTracked() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => ConsistencyScreen(consistencyLevel: consistencyLevel)));
+        .push(MaterialPageRoute(builder: (context) => const StreakScreen()));
   }
 
   void _logEmptyRoutine(BuildContext context) async {
-    final log = cachedRoutineLog();
+    final log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
     if (log == null) {
       final log = RoutineLogDto(
           id: "",
@@ -57,15 +57,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final weekToLogs = routineLogProvider.weekToLogs;
+    final weeklyLogs = routineLogController.weeklyLogs;
 
-    final logsForTheWeek = weekToLogs[thisWeekDateRange()] ?? [];
-    final logsForTheMonth = routineLogProvider.monthToLogs[thisMonthDateRange()] ?? [];
-
-    final weeksWithLogs = weekToLogs.entries.where((element) => element.value.isNotEmpty);
-    final consistencyLevel = levelFromXp(daysLogged: weeksWithLogs.length);
+    final logsForTheWeek = weeklyLogs[thisWeekDateRange()] ?? [];
+    final logsForTheMonth = routineLogController.monthlyLogs[thisMonthDateRange()] ?? [];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -84,7 +81,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         centerTitle: false,
         actions: [
           GestureDetector(
-            onTap: () => _navigateToSettings(context),
+            onTap: _navigateToSettings,
             child: const Padding(
               padding: EdgeInsets.only(right: 14.0),
               child: Icon(Icons.settings),
@@ -125,10 +122,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                       "${logsForTheMonth.length} ${pluralize(word: "session", count: logsForTheMonth.length)}",
                                   onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                               _CTableCell(
-                                  title: "Streak",
-                                  subtitle: "$consistencyLevel/50",
-                                  onTap: () =>
-                                      navigateToAllDaysTracked(context: context, consistencyLevel: consistencyLevel)),
+                                  title: "Streaks",
+                                  subtitle: "${routineLogController.routineLogs.length} days",
+                                  onTap: navigateToAllDaysTracked),
                             ])
                           ],
                         )),
@@ -138,7 +134,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
-                      onTap: () => _navigateToMuscleDistribution(context),
+                      onTap: _navigateToMuscleDistribution,
                       tileColor: tealBlueLight,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

@@ -43,7 +43,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        horizontalTitleGap: 4,
+        horizontalTitleGap: 10,
         trailing: SizedBox(
           width: 100,
           child: Row(

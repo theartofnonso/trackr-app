@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-
-final _childKey = GlobalKey();
 
 class MockBuildContext extends Mock implements BuildContext {}
 
-class MockRoutineLogProvider extends Mock implements RoutineLogProvider {
-  MockRoutineLogProvider() : super();
+class MockAmplifyLogsRepository extends Mock implements AmplifyLogRepository {
 
   @override
   List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
@@ -130,17 +126,10 @@ void main() {
     });
   });
 
-  final mockBuildContext = MockBuildContext();
-  final mockRoutineLogProvider = MockRoutineLogProvider();
-
-  // when(Provider.of<RoutineLogProvider>(_childKey.currentContext!)
-  //         .exerciseLogsForExercise(exercise: lyingLegCurlExercise))
-  //     .thenReturn([lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
-
-  // test("Heaviest set volume for exercise", () {
-  //   final result = heaviestSetVolumeForExercise(context: mockBuildContext, exercise: lyingLegCurlExercise);
-  //   expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2]));
-  // });
+  test("Heaviest set volume", () {
+    final result = heaviestSetVolume(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+    expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2]));
+  });
 
   // Add your widget tests here
 }

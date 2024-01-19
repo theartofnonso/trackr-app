@@ -3,7 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
@@ -13,7 +14,7 @@ import '../../../dtos/exercise_dto.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
-import '../../../widgets/helper_widgets/dialog_helper.dart';
+import '../../../utils/dialog_utils.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
@@ -29,7 +30,7 @@ class HomeScreen extends StatelessWidget {
   void _deleteExercise(BuildContext context) async {
     Navigator.pop(context);
     try {
-      await Provider.of<ExerciseProvider>(context, listen: false).removeExercise(id: exercise.id);
+      await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: exercise);
       if (context.mounted) {
         Navigator.of(context).pop();
       }
@@ -46,17 +47,20 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foundExercise =
-        Provider.of<ExerciseProvider>(context, listen: true).whereExerciseOrNull(exerciseId: exercise.id) ?? exercise;
+        Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: exercise.id) ?? exercise;
 
-    final heaviestSetVolumeRecord = heaviestSetVolumeForExercise(context: context, exercise: foundExercise);
+    final exerciseLogs =
+        Provider.of<RoutineLogController>(context, listen: true).exerciseLogsForExercise(exercise: foundExercise);
 
-    final heaviestWeightRecord = heaviestWeightForExercise(context: context, exercise: foundExercise);
+    final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: exerciseLogs);
 
-    final longestDurationRecord = longestDurationForExercise(context: context, exercise: foundExercise);
+    final heaviestWeightRecord = heaviestWeight(exerciseLogs: exerciseLogs);
 
-    final mostRepsSetRecord = highestRepsForExercise(context: context, exercise: foundExercise);
+    final longestDurationRecord = longestDuration(exerciseLogs: exerciseLogs);
 
-    final mostRepsSessionRecord = totalRepsForExercise(context: context, exercise: foundExercise);
+    final mostRepsSetRecord = highestReps(exerciseLogs: exerciseLogs);
+
+    final mostRepsSessionRecord = totalReps(exerciseLogs: exerciseLogs);
 
     final menuActions = [
       MenuItemButton(

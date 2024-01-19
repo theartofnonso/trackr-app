@@ -1,15 +1,12 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/template_changes_messages_dto.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../enums/template_changes_type_message_enums.dart';
 
-class ExerciseLogProvider extends ChangeNotifier {
+class ExerciseLogRepository {
   List<ExerciseLogDto> _exerciseLogs = [];
 
   Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
@@ -51,33 +48,30 @@ class ExerciseLogProvider extends ChangeNotifier {
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
     final logsToAdd = exercises.map((exercise) => _createExerciseLog(exercise)).toList();
     _exerciseLogs = [..._exerciseLogs, ...logsToAdd];
-    notifyListeners();
   }
 
   void reOrderExerciseLogs({required List<ExerciseLogDto> reOrderedList}) {
     _exerciseLogs = reOrderedList;
-    notifyListeners();
   }
 
   void removeExerciseLog({required String logId}) {
     final logIndex = _indexWhereExerciseLog(exerciseLogId: logId);
-    if (logIndex != -1) {
-      final logToBeRemoved = _exerciseLogs[logIndex];
-
-      if (logToBeRemoved.superSetId.isNotEmpty) {
-        _removeSuperSet(superSetId: logToBeRemoved.superSetId);
-      }
-
-      final exerciseLogs = List.from(_exerciseLogs);
-
-      exerciseLogs.removeAt(logIndex);
-
-      _exerciseLogs = [...exerciseLogs];
-
-      _removeAllSetsForExerciseLog(exerciseLogId: logId);
-
-      notifyListeners();
+    if (logIndex == -1) {
+      return;
     }
+    final logToBeRemoved = _exerciseLogs[logIndex];
+
+    if (logToBeRemoved.superSetId.isNotEmpty) {
+      _removeSuperSet(superSetId: logToBeRemoved.superSetId);
+    }
+
+    final exerciseLogs = List.from(_exerciseLogs);
+
+    exerciseLogs.removeAt(logIndex);
+
+    _exerciseLogs = [...exerciseLogs];
+
+    _removeAllSetsForExerciseLog(exerciseLogId: logId);
   }
 
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
@@ -102,7 +96,6 @@ class ExerciseLogProvider extends ChangeNotifier {
     final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
     _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
-    notifyListeners();
   }
 
   void superSetExerciseLogs(
@@ -110,23 +103,21 @@ class ExerciseLogProvider extends ChangeNotifier {
     final firstExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
     final secondExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
 
-    if (firstExerciseLogIndex != -1 && secondExerciseLogIndex != -1) {
-      List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
-
-      updatedExerciseLogs[firstExerciseLogIndex] =
-          updatedExerciseLogs[firstExerciseLogIndex].copyWith(superSetId: superSetId);
-      updatedExerciseLogs[secondExerciseLogIndex] =
-          updatedExerciseLogs[secondExerciseLogIndex].copyWith(superSetId: superSetId);
-
-      _exerciseLogs = [...updatedExerciseLogs];
-
-      notifyListeners();
+    if (firstExerciseLogIndex == -1 && secondExerciseLogIndex == -1) {
+      return;
     }
+    List<ExerciseLogDto> updatedExerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+
+    updatedExerciseLogs[firstExerciseLogIndex] =
+        updatedExerciseLogs[firstExerciseLogIndex].copyWith(superSetId: superSetId);
+    updatedExerciseLogs[secondExerciseLogIndex] =
+        updatedExerciseLogs[secondExerciseLogIndex].copyWith(superSetId: superSetId);
+
+    _exerciseLogs = [...updatedExerciseLogs];
   }
 
-  void removeSuperSetForLogs({required String superSetId}) {
+  void removeSuperSet({required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
-    notifyListeners();
   }
 
   SetDto? _wherePastSetOrNull({required int index, required List<SetDto> pastSets}) {
@@ -168,9 +159,6 @@ class ExerciseLogProvider extends ChangeNotifier {
 
       // Assign the new map to _sets to maintain immutability
       _sets = newMap;
-
-      // Notify listeners about the change
-      notifyListeners();
     }
   }
 
@@ -203,9 +191,6 @@ class ExerciseLogProvider extends ChangeNotifier {
 
     // Assign the new map to _sets to maintain immutability
     _sets = newMap;
-
-    // Notify listeners about the change
-    notifyListeners();
   }
 
   void _updateSetForExerciseLog({required String exerciseLogId, required int index, required SetDto updatedSet}) {
@@ -230,8 +215,6 @@ class ExerciseLogProvider extends ChangeNotifier {
     newMap[exerciseLogId] = updatedSets;
 
     _sets = newMap;
-
-    notifyListeners();
   }
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
@@ -250,9 +233,13 @@ class ExerciseLogProvider extends ChangeNotifier {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
-  void onClearProvider() {
-    _exerciseLogs = [];
-    _sets = <String, List<SetDto>>{};
+  ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise}) {
+    return _exerciseLogs.firstWhereOrNull(
+      (exercise) =>
+          exercise.superSetId.isNotEmpty &&
+          exercise.superSetId == firstExercise.superSetId &&
+          exercise.exercise.id != firstExercise.exercise.id,
+    );
   }
 
   /// Helper functions
@@ -263,26 +250,6 @@ class ExerciseLogProvider extends ChangeNotifier {
 
   List<SetDto> completedSets() {
     return _sets.values.expand((set) => set).where((set) => set.checked).toList();
-  }
-
-  double totalWeight() {
-    double totalWeight = 0.0;
-
-    for (var exerciseLog in _exerciseLogs) {
-      final exerciseType = exerciseLog.exercise.type;
-
-      for (var set in exerciseLog.sets) {
-        if (set.checked) {
-          double weightPerSet = 0.0;
-          if (exerciseType == ExerciseType.weights) {
-            weightPerSet = set.value1.toDouble() * set.value2;
-          }
-          totalWeight += weightPerSet;
-        }
-      }
-    }
-
-    return totalWeight;
   }
 
   void _removeSuperSet({required String superSetId}) {
@@ -308,102 +275,8 @@ class ExerciseLogProvider extends ChangeNotifier {
     return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
-  TemplateChangesMessageDto? hasDifferentExerciseLogsLength(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    final int difference = exerciseLog2.length - exerciseLog1.length;
-
-    if (difference > 0) {
-      return TemplateChangesMessageDto(
-          message: "Added $difference exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
-    } else if (difference < 0) {
-      return TemplateChangesMessageDto(
-          message: "Removed ${-difference} exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
-    }
-
-    return null; // No change in length
-  }
-
-  TemplateChangesMessageDto? hasReOrderedExercises(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    final length = exerciseLog1.length > exerciseLog2.length ? exerciseLog2.length : exerciseLog1.length;
-    for (int i = 0; i < length; i++) {
-      if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
-        return TemplateChangesMessageDto(
-            message: "Exercises have been re-ordered",
-            type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
-      }
-    }
-    return null;
-  }
-
-  TemplateChangesMessageDto? hasDifferentSetsLength(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    int addedSetsCount = 0;
-    int removedSetsCount = 0;
-
-    for (ExerciseLogDto proc1 in exerciseLog1) {
-      ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
-
-      if (matchingProc2 == null) continue;
-
-      int difference = matchingProc2.sets.length - proc1.sets.length;
-      if (difference > 0) {
-        addedSetsCount += difference;
-      } else if (difference < 0) {
-        removedSetsCount -= difference; // Subtracting a negative number to add its absolute value
-      }
-    }
-
-    String message = '';
-    if (addedSetsCount > 0) {
-      message = "Added $addedSetsCount set(s)";
-    }
-
-    if (removedSetsCount > 0) {
-      if (message.isNotEmpty) message += ' and ';
-      message += "Removed $removedSetsCount set(s)";
-    }
-
-    return message.isNotEmpty
-        ? TemplateChangesMessageDto(message: message, type: TemplateChangesMessageType.setsLength)
-        : null;
-  }
-
-  TemplateChangesMessageDto? hasExercisesChanged({
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2,
-  }) {
-    Set<String> exerciseIds1 = exerciseLog1.map((p) => p.exercise.id).toSet();
-    Set<String> exerciseIds2 = exerciseLog2.map((p) => p.exercise.id).toSet();
-
-    int changes = exerciseIds1.difference(exerciseIds2).length;
-
-    return changes > 0
-        ? TemplateChangesMessageDto(
-            message: "Changed $changes exercise(s)", type: TemplateChangesMessageType.exerciseLogChange)
-        : null;
-  }
-
-  TemplateChangesMessageDto? hasSuperSetIdChanged({
-    required List<ExerciseLogDto> exerciseLog1,
-    required List<ExerciseLogDto> exerciseLog2,
-  }) {
-    Set<String> superSetIds1 =
-        exerciseLog1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
-    Set<String> superSetIds2 =
-        exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
-
-    final changes = superSetIds2.difference(superSetIds1).length;
-
-    return changes > 0
-        ? TemplateChangesMessageDto(
-            message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
-        : null;
-  }
-
-  void reset() {
+  void clear() {
     _exerciseLogs.clear();
     _sets.clear();
-    notifyListeners();
   }
 }

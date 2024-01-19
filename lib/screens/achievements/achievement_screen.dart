@@ -3,14 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 
-import '../app_constants.dart';
-import '../dtos/achievement_dto.dart';
-import '../utils/shareables_utils.dart';
-import '../widgets/backgrounds/gradient_background.dart';
-import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
-import '../widgets/information_container.dart';
-import '../widgets/information_container_lite.dart';
+import '../../app_constants.dart';
+import '../../dtos/achievement_dto.dart';
+import '../../utils/shareables_utils.dart';
+import '../../widgets/backgrounds/gradient_background.dart';
+import '../../widgets/buttons/text_button_widget.dart';
+import '../../utils/dialog_utils.dart';
+import '../../widgets/information_container.dart';
+import '../../widgets/information_container_lite.dart';
 
 GlobalKey _achievementKey = GlobalKey();
 

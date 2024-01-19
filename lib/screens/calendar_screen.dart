@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -16,15 +16,16 @@ import '../dtos/routine_log_dto.dart';
 import '../utils/exercise_logs_utils.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../utils/dialog_utils.dart';
 
 GlobalKey _calendarKey = GlobalKey();
 
 class _DateViewModel {
-  DateTime dateTime;
-  DateTime selectedDateTime;
+  final DateTime dateTime;
+  final DateTime selectedDateTime;
+  final bool hasLog;
 
-  _DateViewModel({required this.dateTime, required this.selectedDateTime});
+  _DateViewModel({required this.dateTime, required this.selectedDateTime, required this.hasLog});
 }
 
 class CalendarScreen extends StatefulWidget {
@@ -107,10 +108,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
       datesInMonths.addAll(emptyDated);
     }
 
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+
+    final logsForCurrentDate =
+        (routineLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
+            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate));
+      final hasLog = logsForCurrentDate.contains(date);
+      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate, hasLog: hasLog));
     }
 
     // Add padding to end of month
@@ -126,8 +134,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: true);
-    final logs = routineLogProvider.logsWhereDate(dateTime: _currentDate).reversed.toList();
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
     final dates = _generateDates();
 
@@ -151,7 +159,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         fontWeight: FontWeight.w900,
                       )),
                   IconButton(
-                      onPressed: () => _onShareCalendar(),
+                      onPressed: _onShareCalendar,
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
                 ],
               ),
@@ -171,8 +179,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             : const SizedBox(height: 8),
         _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
         const SizedBox(height: 10),
-        if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
-        if (logs.isEmpty)
+        if (logsForCurrentDate.isNotEmpty) _RoutineLogListView(logs: logsForCurrentDate),
+        if (logsForCurrentDate.isEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -238,7 +246,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             )
                           : const SizedBox(height: 8),
                       _Month(
-                          dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
+                          dates: _generateDates(),
+                          selectedDateTime: _currentDate,
+                          onTap: (_) {},
+                          showSelector: false),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Image.asset(
@@ -292,16 +303,18 @@ class _Date extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
   final bool showSelector;
+  final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
   const _Date(
-      {required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showSelector});
+      {required this.dateTime,
+      required this.selectedDateTime,
+      required this.onTap,
+      required this.showSelector,
+      required this.hasLog});
 
-  Color _getBackgroundColor(bool hasLog) {
-    if (hasLog) {
-      return Colors.green;
-    }
-    return tealBlueLight.withOpacity(0.5);
+  Color _getBackgroundColor() {
+    return hasLog ? Colors.green : tealBlueLight.withOpacity(0.5);
   }
 
   Border? _getBorder() {
@@ -313,12 +326,9 @@ class _Date extends StatelessWidget {
     }
   }
 
-  Color _getTextColor(bool hasLog) {
+  Color _getTextColor() {
     if (SharedPrefs().showCalendarDates) {
-      if (hasLog) {
-        return Colors.white;
-      }
-      return Colors.white70;
+      return hasLog ? Colors.white : Colors.white70;
     }
     return Colors.transparent;
   }
@@ -332,7 +342,6 @@ class _Date extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
@@ -346,13 +355,12 @@ class _Date extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(log != null),
+            color: _getBackgroundColor(),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(
-                    fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor())),
           ),
         ),
       ),
@@ -379,6 +387,7 @@ class _Month extends StatelessWidget {
           onTap: onTap,
           selectedDateTime: selectedDateTime,
           showSelector: showSelector,
+          hasLog: date.hasLog,
         );
       }
     }).toList();

@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
 import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
-import '../app_constants.dart';
-import '../enums/achievement_type_enums.dart';
-import '../providers/achievements_provider.dart';
-import '../providers/routine_log_provider.dart';
-import '../widgets/achievements/achievement_tile.dart';
-import '../widgets/backgrounds/gradient_background.dart';
-import '../widgets/information_container_lite.dart';
+import '../../app_constants.dart';
+import '../../enums/achievement_type_enums.dart';
+import '../../controllers/achievement_controller.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../widgets/achievements/achievement_tile.dart';
+import '../../widgets/backgrounds/gradient_background.dart';
+import '../../widgets/information_container_lite.dart';
 import 'achievement_screen.dart';
 
 class AchievementsScreen extends StatelessWidget {
@@ -25,7 +25,7 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logs = Provider.of<RoutineLogProvider>(context, listen: true).logs;
+    final logs = Provider.of<RoutineLogController>(context, listen: true).routineLogs;
 
     List<AchievementDto> achievements = [];
 
