@@ -38,7 +38,7 @@ class RoutineLogShareableThree extends StatelessWidget {
     return RepaintBoundary(
       key: globalKey,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
         color: tealBlueDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -57,7 +57,7 @@ class RoutineLogShareableThree extends StatelessWidget {
           const SizedBox(height: 8),
           Text(pbDto.pb.description,
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 40),
+          const SizedBox(height: 60),
           Image.asset(
             'assets/trackr.png',
             fit: BoxFit.contain,
