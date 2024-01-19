@@ -19,6 +19,7 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
+import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -66,8 +67,7 @@ void main() async {
         create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
-        create: (BuildContext context) => ExerciseLogController(),
-      ),
+        create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
     ], child: const MyApp())),
   );
 }

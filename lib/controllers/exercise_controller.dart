@@ -7,11 +7,11 @@ class ExerciseController with ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
+  late AmplifyExerciseRepository _amplifyExerciseRepository;
+
   ExerciseController(AmplifyExerciseRepository amplifyExerciseRepository) {
     _amplifyExerciseRepository = amplifyExerciseRepository;
   }
-
-  late AmplifyExerciseRepository _amplifyExerciseRepository;
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 

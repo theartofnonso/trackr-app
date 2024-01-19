@@ -346,7 +346,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     _initializeProcedureData();
 
-    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClearProvider;
+    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _cacheLog();

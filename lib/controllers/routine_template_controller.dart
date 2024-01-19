@@ -9,11 +9,11 @@ class RoutineTemplateController with ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
+  late AmplifyTemplateRepository _amplifyTemplateRepository;
+
   RoutineTemplateController(AmplifyTemplateRepository amplifyTemplateRepository) {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
-
-  late AmplifyTemplateRepository _amplifyTemplateRepository;
 
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 

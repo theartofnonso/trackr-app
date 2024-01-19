@@ -331,7 +331,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     _initializeProcedureData();
     _initializeTextControllers();
 
-    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClearProvider;
+    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
   }
 
   void _initializeProcedureData() {
