@@ -332,7 +332,8 @@ class _Date extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogController>(context, listen: true).logWhereDate(dateTime: dateTime);
+    final controller = Provider.of<RoutineLogController>(context, listen: true);
+    final log = controller.logWhereDate(dateTime: dateTime);
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(

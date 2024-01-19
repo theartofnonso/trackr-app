@@ -8,7 +8,6 @@ import '../enums/routine_editor_type_enums.dart';
 import '../repositories/exercise_log_repository.dart';
 
 class ExerciseLogController extends ChangeNotifier {
-
   late ExerciseLogRepository _exerciseLogRepository;
 
   ExerciseLogController(ExerciseLogRepository exerciseLogRepository) {
@@ -91,7 +90,6 @@ class ExerciseLogController extends ChangeNotifier {
 
   void onClear() {
     _exerciseLogRepository.clear();
-    notifyListeners();
   }
 
   List<SetDto> completedSets() {

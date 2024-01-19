@@ -94,6 +94,8 @@ class RoutineLogController with ChangeNotifier {
     return _amplifyLogRepository.cachedRoutineLog();
   }
 
+  /// Helper methods
+
   RoutineLogDto? logWhereId({required String id}) {
     return _amplifyLogRepository.logWhereId(id: id);
   }
