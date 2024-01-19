@@ -9,9 +9,9 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
+import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../repositories/amplify_template_repository.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -120,7 +120,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      await Provider.of<AmplifyTemplateRepository>(context, listen: false).saveTemplate(templateDto: template);
+      await Provider.of<RoutineTemplateController>(context, listen: false).saveTemplate(templateDto: template);
       if (mounted) _navigateBack();
     } catch (_) {
       _handleRoutineTemplateError("Unable to create workout");
@@ -152,7 +152,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
-    final templateProvider = Provider.of<AmplifyTemplateRepository>(context, listen: false);
+    final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
     _toggleLoadingState();
     try {
       final updatedRoutineTemplate = template.copyWith(
@@ -172,8 +172,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exercises ?? [];
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
-    final unsavedChangesMessage =
-        checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showAlertDialogWithMultiActions(
           context: context,
