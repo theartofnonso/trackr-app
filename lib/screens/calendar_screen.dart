@@ -90,7 +90,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  List<_DateViewModel?> _generateDates({required Iterable<DateTime> logsDates}) {
+  List<_DateViewModel?> _generateDates() {
     int year = _currentDate.year;
     int month = _currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -108,10 +108,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
       datesInMonths.addAll(emptyDated);
     }
 
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+
+    final logsForCurrentDate =
+        (routineLogController.monthlyLogs[DateTimeRange(start: firstDayOfMonth, end: lastDayOfMonth)] ?? [])
+            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
+
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      final hasLog = logsDates.contains(date);
+      final hasLog = logsForCurrentDate.contains(date);
       datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate, hasLog: hasLog));
     }
 
@@ -131,10 +137,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
-    final allLogDates = routineLogController.routineLogs
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    final dates = _generateDates(logsDates: allLogDates);
+    final dates = _generateDates();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +159,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         fontWeight: FontWeight.w900,
                       )),
                   IconButton(
-                      onPressed: () => _onShareCalendar(logsDates: allLogDates),
+                      onPressed: _onShareCalendar,
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
                 ],
               ),
@@ -215,7 +218,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  void _onShareCalendar({required Iterable<DateTime> logsDates}) {
+  void _onShareCalendar() {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -243,7 +246,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             )
                           : const SizedBox(height: 8),
                       _Month(
-                          dates: _generateDates(logsDates: logsDates),
+                          dates: _generateDates(),
                           selectedDateTime: _currentDate,
                           onTap: (_) {},
                           showSelector: false),
