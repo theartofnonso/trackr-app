@@ -21,10 +21,11 @@ import '../utils/dialog_utils.dart';
 GlobalKey _calendarKey = GlobalKey();
 
 class _DateViewModel {
-  DateTime dateTime;
-  DateTime selectedDateTime;
+  final DateTime dateTime;
+  final DateTime selectedDateTime;
+  final bool hasLog;
 
-  _DateViewModel({required this.dateTime, required this.selectedDateTime});
+  _DateViewModel({required this.dateTime, required this.selectedDateTime, required this.hasLog});
 }
 
 class CalendarScreen extends StatefulWidget {
@@ -89,7 +90,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  List<_DateViewModel?> _generateDates() {
+  List<_DateViewModel?> _generateDates({required List<DateTime> logsDates}) {
     int year = _currentDate.year;
     int month = _currentDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -110,7 +111,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     // Add remainder dates
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
-      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate));
+      final hasLog = logsDates.contains(date);
+      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate, hasLog: hasLog));
     }
 
     // Add padding to end of month
@@ -127,9 +129,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
-    final logs = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
+    final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
-    final dates = _generateDates();
+    final allLogDates = routineLogController.routineLogs
+        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
+        .toList();
+
+    final dates = _generateDates(logsDates: allLogDates);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +157,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         fontWeight: FontWeight.w900,
                       )),
                   IconButton(
-                      onPressed: () => _onShareCalendar(),
+                      onPressed: () => _onShareCalendar(logsDates: allLogDates),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
                 ],
               ),
@@ -171,8 +177,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             : const SizedBox(height: 8),
         _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
         const SizedBox(height: 10),
-        if (logs.isNotEmpty) _RoutineLogListView(logs: logs),
-        if (logs.isEmpty)
+        if (logsForCurrentDate.isNotEmpty) _RoutineLogListView(logs: logsForCurrentDate),
+        if (logsForCurrentDate.isEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -210,7 +216,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  void _onShareCalendar() {
+  void _onShareCalendar({required List<DateTime> logsDates}) {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -238,7 +244,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             )
                           : const SizedBox(height: 8),
                       _Month(
-                          dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
+                          dates: _generateDates(logsDates: logsDates),
+                          selectedDateTime: _currentDate,
+                          onTap: (_) {},
+                          showSelector: false),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Image.asset(
@@ -292,16 +301,18 @@ class _Date extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
   final bool showSelector;
+  final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
   const _Date(
-      {required this.dateTime, required this.selectedDateTime, required this.onTap, required this.showSelector});
+      {required this.dateTime,
+      required this.selectedDateTime,
+      required this.onTap,
+      required this.showSelector,
+      required this.hasLog});
 
-  Color _getBackgroundColor(bool hasLog) {
-    if (hasLog) {
-      return Colors.green;
-    }
-    return tealBlueLight.withOpacity(0.5);
+  Color _getBackgroundColor() {
+    return hasLog ? Colors.green : tealBlueLight.withOpacity(0.5);
   }
 
   Border? _getBorder() {
@@ -313,12 +324,9 @@ class _Date extends StatelessWidget {
     }
   }
 
-  Color _getTextColor(bool hasLog) {
+  Color _getTextColor() {
     if (SharedPrefs().showCalendarDates) {
-      if (hasLog) {
-        return Colors.white;
-      }
-      return Colors.white70;
+      return hasLog ? Colors.white : Colors.white70;
     }
     return Colors.transparent;
   }
@@ -332,8 +340,6 @@ class _Date extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<RoutineLogController>(context, listen: true);
-    final log = controller.logWhereDate(dateTime: dateTime);
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
@@ -347,13 +353,12 @@ class _Date extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(log != null),
+            color: _getBackgroundColor(),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(
-                    fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor(log != null))),
+                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor())),
           ),
         ),
       ),
@@ -380,6 +385,7 @@ class _Month extends StatelessWidget {
           onTap: onTap,
           selectedDateTime: selectedDateTime,
           showSelector: showSelector,
+          hasLog: date.hasLog,
         );
       }
     }).toList();
