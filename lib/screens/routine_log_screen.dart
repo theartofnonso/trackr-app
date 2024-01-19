@@ -51,6 +51,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
 
     final log = foundLog ?? widget.log;

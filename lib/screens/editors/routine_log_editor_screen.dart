@@ -221,6 +221,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Navigator.of(context).pop();
   }
 
+  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+    final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
+    if(!mounted) {
+      return;
+    }
+    if (orderedList != null) {
+      Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
+      _cacheLog();
+    }
+
+  }
+
   void _navigateBack({RoutineLogDto? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     Navigator.of(context).pop(log);
@@ -240,6 +252,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     if(routineLogEditorController.errorMessage.isNotEmpty) {
       _showSnackbar(routineLogEditorController.errorMessage);
     }
+
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 
@@ -312,16 +326,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                           superSet:
                                               whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                           onRemoveSuperSet: (String superSetId) {
-                                            removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
+                                           exerciseLogController.removeSuperSet(superSetId: log.superSetId);
                                             _cacheLog();
                                           },
                                           onRemoveLog: () {
-                                            removeExercise(context: context, exerciseId: exerciseId);
+                                            exerciseLogController.removeExerciseLog(logId: exerciseId);
                                             _cacheLog();
                                           },
                                           onReOrder: () {
-                                            reOrderExercises(context: context);
-                                            _cacheLog();
+                                            _reOrderExerciseLogs(exerciseLogs: exerciseLogs);
                                           },
                                           onSuperSet: () => _showExercisePicker(firstExerciseLog: log),
                                           onCache: _cacheLog);

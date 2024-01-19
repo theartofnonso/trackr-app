@@ -118,7 +118,7 @@ class ExerciseLogRepository {
     _exerciseLogs = [...updatedExerciseLogs];
   }
 
-  void removeSuperSetForLogs({required String superSetId}) {
+  void removeSuperSet({required String superSetId}) {
     _removeSuperSet(superSetId: superSetId);
   }
 
@@ -233,6 +233,15 @@ class ExerciseLogRepository {
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
     _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+  }
+
+  ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise}) {
+    return _exerciseLogs.firstWhereOrNull(
+      (exercise) =>
+          exercise.superSetId.isNotEmpty &&
+          exercise.superSetId == firstExercise.superSetId &&
+          exercise.exercise.id != firstExercise.exercise.id,
+    );
   }
 
   /// Helper functions

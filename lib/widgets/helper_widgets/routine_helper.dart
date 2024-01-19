@@ -14,18 +14,11 @@ import '../empty_states/single_set_row_empty_state.dart';
 import '../routine/preview/set_rows/single_set_row.dart';
 import '../routine/preview/set_rows/double_set_row.dart';
 
-ExerciseLogDto? whereOtherExerciseInSuperSet(
-    {required ExerciseLogDto firstExercise, required List<ExerciseLogDto> exercises}) {
-  for (var exercise in exercises) {
-    bool isSameSuperset = exercise.superSetId.isNotEmpty && exercise.superSetId == firstExercise.superSetId;
-    bool isDifferentProcedure = exercise.exercise.id != firstExercise.exercise.id;
-
-    if (isSameSuperset && isDifferentProcedure) {
-      return exercise;
-    }
-  }
-
-  return null; // Explicitly return null if no matching procedure is found
+ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise, required List<ExerciseLogDto> exercises}) {
+  return exercises.firstWhere((exercise) =>
+      exercise.superSetId.isNotEmpty &&
+      exercise.superSetId == firstExercise.superSetId &&
+      exercise.exercise.id != firstExercise.exercise.id);
 }
 
 List<Widget> setsToWidgets(
@@ -55,7 +48,6 @@ List<Widget> setsToWidgets(
   final pbsBySet = groupBy(pbs, (pb) => pb.set);
 
   final widgets = sets.map(((setDto) {
-
     final pbsForSet = pbsBySet[setDto] ?? [];
 
     switch (type) {

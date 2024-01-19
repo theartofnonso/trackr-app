@@ -55,8 +55,8 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeSuperSetForLogs({required String superSetId}) {
-    _exerciseLogRepository.removeSuperSetForLogs(superSetId: superSetId);
+  void removeSuperSet({required String superSetId}) {
+    _exerciseLogRepository.removeSuperSet(superSetId: superSetId);
     notifyListeners();
   }
 
@@ -93,6 +93,10 @@ class ExerciseLogController extends ChangeNotifier {
 
   List<SetDto> completedSets() {
     return _exerciseLogRepository.completedSets();
+  }
+
+  ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise}) {
+    return _exerciseLogRepository.whereOtherExerciseInSuperSet(firstExercise: firstExercise);
   }
 
   /// Helper functions

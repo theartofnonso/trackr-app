@@ -6,26 +6,10 @@ import '../../dtos/exercise_log_dto.dart';
 import '../../dtos/template_changes_messages_dto.dart';
 import '../../controllers/exercise_log_controller.dart';
 
-void reOrderExercises({required BuildContext context}) async {
-  final provider = Provider.of<ExerciseLogController>(context, listen: false);
-  final exercises = List<ExerciseLogDto>.from(provider.exerciseLogs);
-  final reOrderedList = await Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exercises)))
+Future<List<ExerciseLogDto>?> reOrderExerciseLogs({required BuildContext context, required List<ExerciseLogDto> exerciseLogs}) async {
+  return await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exerciseLogs)))
       as List<ExerciseLogDto>?;
-
-  if (reOrderedList != null) {
-    if (context.mounted) {
-      provider.reOrderExerciseLogs(reOrderedList: reOrderedList);
-    }
-  }
-}
-
-void removeExerciseFromSuperSet({required BuildContext context, required String superSetId}) {
-  Provider.of<ExerciseLogController>(context, listen: false).removeSuperSetForLogs(superSetId: superSetId);
-}
-
-void removeExercise({required BuildContext context, required String exerciseId}) {
-  Provider.of<ExerciseLogController>(context, listen: false).removeExerciseLog(logId: exerciseId);
 }
 
 List<ExerciseLogDto> whereOtherExerciseLogsExcept(
@@ -36,7 +20,10 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
       .toList();
 }
 
-List<TemplateChangesMessageDto> checkForChanges({required BuildContext context, required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+List<TemplateChangesMessageDto> checkForChanges(
+    {required BuildContext context,
+    required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2}) {
   List<TemplateChangesMessageDto> unsavedChangesMessage = [];
   final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
 

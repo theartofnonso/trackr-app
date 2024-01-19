@@ -193,6 +193,17 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     }
   }
 
+  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+    final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
+    if(!mounted) {
+      return;
+    }
+    if (orderedList != null) {
+      Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
+    }
+
+  }
+
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
@@ -208,6 +219,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   @override
   Widget build(BuildContext context) {
     final template = widget.template;
+
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
     final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 
@@ -306,9 +319,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                   superSet:
                                   whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                   onRemoveSuperSet: (String superSetId) =>
-                                      removeExerciseFromSuperSet(context: context, superSetId: log.superSetId),
-                                  onRemoveLog: () => removeExercise(context: context, exerciseId: logId),
-                                  onReOrder: () => reOrderExercises(context: context),
+                                      exerciseLogController.removeSuperSet(superSetId: log.superSetId),
+                                  onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
+                                  onReOrder: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
                                   onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
                             },
                             separatorBuilder: (_, __) => const SizedBox(height: 10),
