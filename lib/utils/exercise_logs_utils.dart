@@ -116,7 +116,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, heaviestWeight);
 }
 
-(String?, int) highestReps({required List<ExerciseLogDto> exerciseLogs}) {
+(String?, int) mostRepsInSet({required List<ExerciseLogDto> exerciseLogs}) {
   int highestReps = 0;
   String? logId;
   if (exerciseLogs.isNotEmpty) {
@@ -133,7 +133,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, highestReps);
 }
 
-(String?, int) totalReps({required List<ExerciseLogDto> exerciseLogs}) {
+(String?, int) mostRepsInSession({required List<ExerciseLogDto> exerciseLogs}) {
   int mostReps = 0;
   String? logId;
   if (exerciseLogs.isNotEmpty) {

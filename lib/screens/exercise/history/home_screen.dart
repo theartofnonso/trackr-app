@@ -58,9 +58,9 @@ class HomeScreen extends StatelessWidget {
 
     final longestDurationRecord = longestDuration(exerciseLogs: exerciseLogs);
 
-    final mostRepsSetRecord = highestReps(exerciseLogs: exerciseLogs);
+    final mostRepsSetRecord = mostRepsInSet(exerciseLogs: exerciseLogs);
 
-    final mostRepsSessionRecord = totalReps(exerciseLogs: exerciseLogs);
+    final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: exerciseLogs);
 
     final menuActions = [
       MenuItemButton(

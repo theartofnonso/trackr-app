@@ -76,9 +76,9 @@ void main() {
       ],
       DateTime.now());
 
-  final plankExerciseLog = ExerciseLogDto(
+  final plankExerciseLog1 = ExerciseLogDto(
       plankExercise.id,
-      "routineLogId",
+      "routineLogId1",
       "superSetId",
       plankExercise,
       "notes",
@@ -89,35 +89,48 @@ void main() {
       ],
       DateTime.now());
 
-  group("Test on ExerciseLogDto", () {
+  final plankExerciseLog2 = ExerciseLogDto(
+      plankExercise.id,
+      "routineLogId2",
+      "superSetId",
+      plankExercise,
+      "notes",
+      [
+        const SetDto(110000, 0, true),
+        const SetDto(100000, 0, true),
+        const SetDto(120000, 0, true),
+      ],
+      DateTime.now());
+
+  group("Test on single ExerciseLogDto", () {
     test("Heaviest set weight for exercise log", () {
       final result = heaviestSetWeightForExerciseLog(exerciseLog: lyingLegCurlExerciseLog1);
       expect(result, lyingLegCurlExerciseLog1.sets[1]);
     });
 
     test("Longest duration for exercise log", () {
-      final result = longestDurationForExerciseLog(exerciseLog: plankExerciseLog);
-      expect(result, Duration(milliseconds: plankExerciseLog.sets[1].value1.toInt()));
+      final result = longestDurationForExerciseLog(exerciseLog: plankExerciseLog1);
+      expect(result, Duration(milliseconds: plankExerciseLog1.sets[1].value1.toInt()));
     });
 
     test("Total duration for exercise log", () {
-      final result = totalDurationExerciseLog(exerciseLog: plankExerciseLog);
+      final result = totalDurationExerciseLog(exerciseLog: plankExerciseLog1);
       expect(result, const Duration(milliseconds: 450000));
     });
 
     test("Total reps for exercise log", () {
       final result = totalRepsForExerciseLog(exerciseLog: lyingLegCurlExerciseLog1);
-      expect(result, 26);
+      expect(result, lyingLegCurlExerciseLog1.sets.fold(0, (previousValue, set) => previousValue + set.value2.toInt()));
     });
 
     test("Highest reps for exercise log", () {
       final result = highestRepsForExerciseLog(exerciseLog: lyingLegCurlExerciseLog1);
-      expect(result, 12);
+      expect(result, lyingLegCurlExerciseLog1.sets[0].value2);
     });
 
     test("Heaviest volume for exercise log", () {
       final result = heaviestVolumeForExerciseLog(exerciseLog: lyingLegCurlExerciseLog1);
-      expect(result, 960);
+      expect(result, lyingLegCurlExerciseLog1.sets[0].value1 * lyingLegCurlExerciseLog1.sets[0].value2);
     });
 
     test("Heaviest set volume for exercise log", () {
@@ -126,19 +139,31 @@ void main() {
     });
   });
 
-  test("Heaviest set volume", () {
-    final result = heaviestSetVolume(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
-    expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2]));
-  });
+  group("Test on list of ExerciseLogDto",  () {
+    test("Heaviest set volume", () {
+      final result = heaviestSetVolume(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+      expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2]));
+    });
 
-  test("Heaviest set weight", () {
-    final result = heaviestWeight(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
-    expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2].value1));
-  });
+    test("Heaviest set weight", () {
+      final result = heaviestWeight(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+      expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2].value1));
+    });
 
-  test("highest Reps", () {
-    final result = highestReps(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
-    expect(result, (lyingLegCurlExerciseLog1.routineLogId, lyingLegCurlExerciseLog1.sets[0].value2));
+    test("Most Reps (Set)", () {
+      final result = mostRepsInSet(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+      expect(result, (lyingLegCurlExerciseLog1.routineLogId, lyingLegCurlExerciseLog1.sets[0].value2));
+    });
+
+    test("Most Reps (Session)", () {
+      final result = mostRepsInSession(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+      expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets.fold(0, (previousValue, set) => previousValue + set.value2.toInt())));
+    });
+
+    test("Longest Duration", () {
+      final result = longestDuration(exerciseLogs: [plankExerciseLog1, plankExerciseLog2]);
+      expect(result, (plankExerciseLog1.routineLogId, Duration(milliseconds: plankExerciseLog1.sets[1].value1.toInt())));
+    });
   });
 
   // Add your widget tests here
