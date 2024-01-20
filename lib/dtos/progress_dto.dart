@@ -9,12 +9,4 @@ class ProgressDto {
   String toString() {
     return 'ProgressDto{value: $value, remainder: $remainder, dates: $dates}';
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ProgressDto && runtimeType == other.runtimeType && value == other.value && remainder == other.remainder;
-
-  @override
-  int get hashCode => value.hashCode ^ remainder.hashCode;
 }
