@@ -18,14 +18,14 @@ class AchievementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logs = routineLogController.routineLogs;
 
     List<AchievementDto> achievements = [];
 
     if (logs.isNotEmpty) {
-      achievements = routineLogController.achievements.sorted((a, b) => b.progress.value.compareTo(a.progress.value));
+      achievements = routineLogController.fetchAchievements().sorted((a, b) => b.progress.value.compareTo(a.progress.value));
     }
 
     return Scaffold(

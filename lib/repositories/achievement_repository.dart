@@ -17,12 +17,14 @@ class AchievementRepository {
   UnmodifiableListView<AchievementDto> get achievements => UnmodifiableListView(_achievements);
 
   void loadAchievements({required List<RoutineLogDto> routineLogs}) {
-    final achievements = AchievementType.values.map((achievementType) {
+    _achievements = fetchAchievements(routineLogs: routineLogs);
+  }
+
+  List<AchievementDto> fetchAchievements({required List<RoutineLogDto> routineLogs}) {
+    return AchievementType.values.map((achievementType) {
       final progress = _calculateProgress(routineLogs: routineLogs, type: achievementType);
       return AchievementDto(type: achievementType, progress: progress);
     }).toList();
-
-    _achievements = achievements;
   }
 
   List<AchievementDto> calculateAchievements({required List<RoutineLogDto> routineLogs}) {
