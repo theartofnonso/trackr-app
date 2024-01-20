@@ -25,13 +25,32 @@ class AchievementRepository {
     _achievements = achievements;
   }
 
-  void calculateAchievements({required List<RoutineLogDto> routineLogs}) {
-    final achievements = AchievementType.values.map((achievementType) {
+  List<AchievementDto> calculateAchievements({required List<RoutineLogDto> routineLogs}) {
+    final newAchievements = AchievementType.values.map((achievementType) {
       final progress = _calculateProgress(routineLogs: routineLogs, type: achievementType);
       return AchievementDto(type: achievementType, progress: progress);
-    }).toList();
+    });
 
-    _achievements = achievements;
+    List<AchievementDto> updatedAchievements = [];
+
+    for (var newAchievement in newAchievements) {
+      // Try to find the same achievement in the old list
+      var oldAchievement = _achievements.firstWhereOrNull((old) => old.type == newAchievement.type);
+
+      if(oldAchievement == null) {
+        continue;
+      }
+
+      /// New achievement has a lower remainder value
+      if (newAchievement.progress.remainder < oldAchievement.progress.remainder) {
+        /// New achievement has reached 0 and is now complete
+        if (newAchievement.progress.remainder == 0) {
+          updatedAchievements.add(newAchievement);
+        }
+      }
+    }
+
+    return updatedAchievements;
   }
 
   ProgressDto _calculateProgress({required List<RoutineLogDto> routineLogs, required AchievementType type}) {

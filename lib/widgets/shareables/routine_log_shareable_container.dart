@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tracker_app/widgets/shareables/achievement_share.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_four.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_one.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_three.dart';
@@ -34,7 +35,21 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
   @override
   Widget build(BuildContext context) {
 
-    final allLogs = Provider.of<RoutineLogController>(context, listen: false).routineLogs;
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    final allLogs = routineLogController.routineLogs;
+
+    final achievements = routineLogController.calculateLogAchievements();
+
+    List<Widget> achievementsShareAssets = [];
+    final achievementsShareAssetsKeys = [];
+
+    for (final achievement in achievements) {
+      final key = GlobalKey();
+      final shareable = AchievementShare(globalKey: key, achievementDto: achievement, width: MediaQuery.of(context).size.width - 20);
+      achievementsShareAssets.add(shareable);
+      achievementsShareAssetsKeys.add(key);
+    }
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
@@ -54,6 +69,7 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
     }
 
     final pages = [
+      ...achievementsShareAssets,
       if(isMultipleOfFive(allLogs.length)) RoutineLogShareableFour(label: "${allLogs.length}th"),
       ...pbShareAssets,
       RoutineLogShareableOne(log: widget.log, frequencyData: widget.frequencyData),
@@ -61,6 +77,7 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
     ];
 
     final pagesKeys = [
+      ...achievementsShareAssetsKeys,
       routineLogShareableFourKey,
       ...pbShareAssetsKeys,
       routineLogShareableOneKey,

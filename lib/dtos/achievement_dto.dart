@@ -11,4 +11,12 @@ class AchievementDto {
   String toString() {
     return 'AchievementDto{type: $type, progress: $progress}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AchievementDto && runtimeType == other.runtimeType && type == other.type && progress == other.progress;
+
+  @override
+  int get hashCode => type.hashCode ^ progress.hashCode;
 }
