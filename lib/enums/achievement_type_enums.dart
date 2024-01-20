@@ -86,7 +86,7 @@ enum AchievementType {
       "Outstanding Achievement! You've dedicated 100 hours to training, showcasing remarkable commitment and perseverance. This is more than just a milestone, it's dedication."),
   weekendWarrior(
       "Weekend Warrior",
-      "Log a session on both Saturday and Sunday for eight consecutive weeks",
+      "Log a session on either Saturday or Sunday for eight consecutive weeks",
       8,
       "Weekend Warrior focuses on adhering to a two-month workout regimen for individuals with a busy schedule. Additionally, it serves as an effective method for establishing a consistent weekend exercise routine.",
       "Congratulations on mastering the 'Weekend Warrior' challenge! Your unwavering commitment to fitness over the past eight weeks, even on weekends, is truly commendable."),
