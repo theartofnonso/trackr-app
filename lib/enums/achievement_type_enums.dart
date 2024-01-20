@@ -94,7 +94,7 @@ enum AchievementType {
       "Bodyweight Champion",
       "Accumulate 100 bodyweight exercises",
       100,
-      "Bodyweight Champion focuses on bodyweight exercises. It is designed to encourage you to add bodyweight exercises to your workout routine for a more well-rounded workout.",
+      "Bodyweight Champion is designed to encourage you to add bodyweight exercises to your workout routine for a more well-rounded workout.",
       "Congratulations on reaching a major milestone! You've successfully completed 100 bodyweight exercises."),
   // maxOutMadness("Max Out Madness", "Set a goal to increase the maximum weight lifted in a specific compound exercise", 0),
   // twiceAsStrong("Twice as Strong", "Achieve a 2x body weight deadlift", 0),
