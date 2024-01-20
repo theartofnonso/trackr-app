@@ -380,7 +380,7 @@ class _Month extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesWidgets = dates.map((date) {
       if (date == null) {
-        return const SizedBox(width: 45, height: 45);
+        return const SizedBox();
       } else {
         return _Date(
           dateTime: date.dateTime,
