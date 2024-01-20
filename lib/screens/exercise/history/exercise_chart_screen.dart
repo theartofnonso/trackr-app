@@ -263,7 +263,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
                             onPressed: _totalRepsForLog,
-                            label: "Session Reps",
+                            label: "Most Reps (Session)",
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (_exerciseLogsDuration())

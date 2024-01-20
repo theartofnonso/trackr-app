@@ -44,7 +44,7 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 12, true),
+        const SetDto(80, 15, true),
         const SetDto(100, 8, true),
         const SetDto(100, 6, true),
       ],
@@ -72,7 +72,7 @@ void main() {
       [
         const SetDto(80, 12, true),
         const SetDto(100, 10, true),
-        const SetDto(100, 11, true),
+        const SetDto(150, 11, true),
       ],
       DateTime.now());
 
@@ -129,6 +129,16 @@ void main() {
   test("Heaviest set volume", () {
     final result = heaviestSetVolume(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
     expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2]));
+  });
+
+  test("Heaviest set weight", () {
+    final result = heaviestWeight(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+    expect(result, (lyingLegCurlExerciseLog3.routineLogId, lyingLegCurlExerciseLog3.sets[2].value1));
+  });
+
+  test("highest Reps", () {
+    final result = highestReps(exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+    expect(result, (lyingLegCurlExerciseLog1.routineLogId, lyingLegCurlExerciseLog1.sets[0].value2));
   });
 
   // Add your widget tests here
