@@ -56,8 +56,8 @@ enum AchievementType {
       "Congratulations on Reaching the 15-Minute Milestone in 15 Sessions!"),
   timeUnderTension(
       "Time Under Tension",
-      "Accumulate 100 hours of training for any duration exercises",
-      100,
+      "Accumulate 10 hours of training for any duration exercises",
+      10,
       "Time Under Tension focuses on duration exercises. It is a great way to increase the intensity of your workout.",
       "Fantastic Achievement! You've successfully dedicated 100 hours to duration exercises, showcasing your incredible commitment and endurance."),
   obsessed(
