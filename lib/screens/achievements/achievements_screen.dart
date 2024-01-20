@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -5,8 +6,6 @@ import 'package:tracker_app/dtos/achievement_dto.dart';
 import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
 import '../../app_constants.dart';
-import '../../enums/achievement_type_enums.dart';
-import '../../controllers/achievement_controller.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../widgets/achievements/achievement_tile.dart';
 import '../../widgets/backgrounds/gradient_background.dart';
@@ -16,22 +15,17 @@ import 'achievement_screen.dart';
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
 
-  List<AchievementDto> _achievements({required BuildContext context}) {
-    return AchievementType.values.map((achievementType) {
-      final progress = calculateProgress(context: context, type: achievementType);
-      return AchievementDto(type: achievementType, progress: progress);
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final logs = Provider.of<RoutineLogController>(context, listen: true).routineLogs;
+
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
+
+    final logs = routineLogController.routineLogs;
 
     List<AchievementDto> achievements = [];
 
     if (logs.isNotEmpty) {
-      achievements = _achievements(context: context);
-      achievements.sort((a, b) => b.progress.value.compareTo(a.progress.value));
+      achievements = routineLogController.achievements.sorted((a, b) => b.progress.value.compareTo(a.progress.value));
     }
 
     return Scaffold(

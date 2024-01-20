@@ -4,18 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
+import '../dtos/achievement_dto.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/muscle_group_enums.dart';
+import '../repositories/achievement_repository.dart';
 
-class RoutineLogController with ChangeNotifier {
+class RoutineLogController extends ChangeNotifier {
   String errorMessage = '';
 
   late AmplifyLogRepository _amplifyLogRepository;
+  late AchievementRepository _achievementRepository;
 
-  RoutineLogController(AmplifyLogRepository amplifyLogRepository) {
+  RoutineLogController(AmplifyLogRepository amplifyLogRepository, AchievementRepository achievementRepository) {
     _amplifyLogRepository = amplifyLogRepository;
+    _achievementRepository = achievementRepository;
   }
 
   UnmodifiableListView<RoutineLogDto> get routineLogs => _amplifyLogRepository.routineLogs;
@@ -26,13 +30,18 @@ class RoutineLogController with ChangeNotifier {
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => _amplifyLogRepository.exerciseLogsById;
 
-  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => _amplifyLogRepository.exerciseLogsByType;
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
+      _amplifyLogRepository.exerciseLogsByType;
+
+  UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
   void fetchLogs() async {
     try {
-      await _amplifyLogRepository.fetchLogs(onDone: () {
+      await _amplifyLogRepository.fetchLogs(onSyncCompleted: () {
+        _achievementRepository.loadAchievements(routineLogs: routineLogs);
         notifyListeners();
       });
+      _achievementRepository.loadAchievements(routineLogs: routineLogs);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

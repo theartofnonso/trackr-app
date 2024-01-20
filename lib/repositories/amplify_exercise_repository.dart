@@ -40,7 +40,7 @@ class AmplifyExerciseRepository {
     if (exercises.isNotEmpty) {
       _loadExercises(exercises: exercises);
     } else {
-      _observeExerciseQuery(onDone: onDone);
+      _observeExerciseQuery(onSyncCompleted: onDone);
     }
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
@@ -113,12 +113,12 @@ class AmplifyExerciseRepository {
     }
   }
 
-  void _observeExerciseQuery({required void Function() onDone}) {
+  void _observeExerciseQuery({required void Function() onSyncCompleted}) {
     _exerciseStream = Amplify.DataStore.observeQuery(Exercise.classType).listen((QuerySnapshot<Exercise> snapshot) {
       if (snapshot.items.isNotEmpty) {
         _loadExercises(exercises: snapshot.items);
-        onDone();
         _exerciseStream?.cancel();
+        onSyncCompleted();
       }
     })
       ..onDone(() {

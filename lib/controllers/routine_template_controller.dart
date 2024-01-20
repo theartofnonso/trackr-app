@@ -5,7 +5,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../repositories/amplify_template_repository.dart';
 
-class RoutineTemplateController with ChangeNotifier {
+class RoutineTemplateController extends ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
@@ -20,7 +20,7 @@ class RoutineTemplateController with ChangeNotifier {
   void fetchTemplates({List<RoutineTemplate>? templates}) async {
     isLoading = true;
     try {
-      await _amplifyTemplateRepository.fetchTemplates(onDone: () {
+      await _amplifyTemplateRepository.fetchTemplates(onSyncCompleted: () {
         notifyListeners();
       });
     } catch (e) {

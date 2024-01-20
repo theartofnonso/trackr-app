@@ -16,12 +16,12 @@ class AmplifyTemplateRepository {
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  Future<void> fetchTemplates({required void Function() onDone}) async {
+  Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {
     List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
     if (templates.isNotEmpty) {
       _loadTemplates(templates: templates);
     } else {
-      _observeRoutineTemplateQuery(onDone: onDone);
+      _observeRoutineTemplateQuery(onSyncCompleted: onSyncCompleted);
     }
   }
 
@@ -106,13 +106,13 @@ class AmplifyTemplateRepository {
   }
 
 
-  void _observeRoutineTemplateQuery({required void Function() onDone}) {
+  void _observeRoutineTemplateQuery({required void Function() onSyncCompleted}) {
     _routineTemplateStream =
     Amplify.DataStore.observeQuery(RoutineTemplate.classType).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (snapshot.items.isNotEmpty) {
         _loadTemplates(templates: snapshot.items);
-        onDone();
         _routineTemplateStream?.cancel();
+        onSyncCompleted();
       }
     })
       ..onDone(() {

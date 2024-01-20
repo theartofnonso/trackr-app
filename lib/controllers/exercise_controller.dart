@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import '../repositories/amplify_exercise_repository.dart';
 
-class ExerciseController with ChangeNotifier {
+class ExerciseController extends ChangeNotifier {
   bool isLoading = false;
   String errorMessage = '';
 
