@@ -36,8 +36,8 @@ class AchievementTile extends StatelessWidget {
                                 GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                       ],
                     ),
-                    Text(achievement.type.description,
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+                    Text(achievement.progress.remainder == 0 ? achievement.type.completionMessage: achievement.type.description,
+                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
                       minHeight: 10,

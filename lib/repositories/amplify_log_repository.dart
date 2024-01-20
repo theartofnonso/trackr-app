@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
+import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -16,7 +17,6 @@ import '../enums/muscle_group_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
-import '../utils/general_utils.dart';
 
 class AmplifyLogRepository {
   List<RoutineLogDto> _routineLogs = [];
@@ -42,57 +42,32 @@ class AmplifyLogRepository {
   UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get monthlyLogs => UnmodifiableMapView(_monthlyLogs);
 
   void _normaliseLogs() {
-    _orderExerciseLogs();
-    _loadWeeklyLogs();
-    _loadMonthlyLogs();
+    _groupRoutineLogs();
+    _groupExerciseLogs();
   }
 
-  void _loadWeeklyLogs() {
-    if (_routineLogs.isEmpty) {
+  void _groupRoutineLogs() {
+    if (routineLogs.isEmpty) {
       return;
     }
-
-    final map = <DateTimeRange, List<RoutineLogDto>>{};
-
-    DateTime startDate = _routineLogs.first.createdAt;
-
-    List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
-    for (var weekRange in weekRanges) {
-      map[weekRange] = _routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
-    }
-
-    _weeklyLogs = map;
+    _weeklyLogs = groupRoutineLogsByWeek(routineLogs: _routineLogs);
+    _monthlyLogs = groupRoutineLogsByMonth(routineLogs: _routineLogs);
   }
 
-  void _loadMonthlyLogs() {
-    if (_routineLogs.isEmpty) {
+  void _groupExerciseLogs() {
+    if (routineLogs.isEmpty) {
       return;
     }
-
-    final map = <DateTimeRange, List<RoutineLogDto>>{};
-
-    DateTime startDate = _routineLogs.first.createdAt;
-
-    List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
-
-    for (var monthRange in monthRanges) {
-      map[monthRange] = _routineLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
-    }
-    _monthlyLogs = map;
+    _exerciseLogsById = groupRoutineLogsByExerciseLogId(routineLogs: _routineLogs);
+    _exerciseLogsByType = groupRoutineLogsByExerciseType(routineLogs: _routineLogs);
   }
 
-  void _orderExerciseLogs() {
-    List<ExerciseLogDto> exerciseLogs = _routineLogs.expand((log) => log.exerciseLogs).toList();
-    _exerciseLogsById = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
-    _exerciseLogsByType = groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.type);
-  }
-
-  Future<void> fetchLogs({required void Function() onDone}) async {
+  Future<void> fetchLogs({required void Function() onSyncCompleted}) async {
     List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
     if (logs.isNotEmpty) {
       _loadLogs(logs: logs);
     } else {
-      _observeRoutineLogQuery(onDone: onDone);
+      _observeRoutineLogQuery(onSyncCompleted: onSyncCompleted);
     }
   }
 
@@ -163,13 +138,13 @@ class AmplifyLogRepository {
     return routineLog;
   }
 
-  void _observeRoutineLogQuery({required void Function() onDone}) {
+  void _observeRoutineLogQuery({required void Function() onSyncCompleted}) {
     _routineLogStream =
         Amplify.DataStore.observeQuery(RoutineLog.classType).listen((QuerySnapshot<RoutineLog> snapshot) {
       if (snapshot.items.isNotEmpty) {
         _loadLogs(logs: snapshot.items);
-        onDone();
         _routineLogStream?.cancel();
+        onSyncCompleted();
       }
     })
           ..onDone(() {

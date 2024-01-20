@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
+import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../dtos/template_changes_messages_dto.dart';
 import '../screens/reorder_exercises_screen.dart';
@@ -124,4 +126,43 @@ List<Widget> setsToWidgets(
   })).toList();
 
   return widgets.isNotEmpty ? widgets : [emptyState];
+}
+
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs}) {
+
+  final map = <DateTimeRange, List<RoutineLogDto>>{};
+
+  DateTime startDate = routineLogs.first.createdAt;
+
+  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
+
+  for (final weekRange in weekRanges) {
+    map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
+  }
+
+  return map;
+}
+
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
+
+  final map = <DateTimeRange, List<RoutineLogDto>>{};
+
+  DateTime startDate = routineLogs.first.createdAt;
+
+  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
+
+  for (final monthRange in monthRanges) {
+    map[monthRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();
+  }
+  return map;
+}
+
+Map<String, List<ExerciseLogDto>> groupRoutineLogsByExerciseLogId({required List<RoutineLogDto> routineLogs}) {
+  List<ExerciseLogDto> exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
+}
+
+Map<ExerciseType, List<ExerciseLogDto>> groupRoutineLogsByExerciseType({required List<RoutineLogDto> routineLogs}) {
+  List<ExerciseLogDto> exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
+  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.type);
 }

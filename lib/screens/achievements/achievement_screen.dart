@@ -11,6 +11,7 @@ import '../../widgets/buttons/text_button_widget.dart';
 import '../../utils/dialog_utils.dart';
 import '../../widgets/information_container.dart';
 import '../../widgets/information_container_lite.dart';
+import '../../widgets/shareables/achievement_share.dart';
 
 GlobalKey _achievementKey = GlobalKey();
 
@@ -23,7 +24,7 @@ class AchievementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final completed = achievementDto.progress.remainder == 0;
 
-    final monthsHeatMap = achievementDto.progress.dates.isNotEmpty
+    final monthsHeatMaps = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
             return CalendarHeatMap(dates: dates, initialDate: dates.first);
           }).toList()
@@ -31,7 +32,7 @@ class AchievementScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _onShareCalendar(context: context, monthsHeatMap: monthsHeatMap, completed: completed),
+        onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
         heroTag: "fab_achievement_screen",
         backgroundColor: tealBlueLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -83,12 +84,11 @@ class AchievementScreen extends StatelessWidget {
               const SizedBox(height: 10),
               GridView.count(
                 shrinkWrap: true,
-                crossAxisCount: monthsHeatMap.length > 3 ? 3 : monthsHeatMap.length,
+                crossAxisCount: monthsHeatMaps.length > 3 ? 3 : monthsHeatMaps.length,
                 childAspectRatio: 1,
                 mainAxisSpacing: 10.0,
                 crossAxisSpacing: 10.0,
-                children: List.generate(monthsHeatMap.length, (index) => monthsHeatMap[index]),
-              ),
+                children: monthsHeatMaps),
               const SizedBox(height: 10),
               const InformationContainerLite(
                   content: 'Brightly-coloured squares represent days you logged a session for this achievement',
@@ -107,46 +107,14 @@ class AchievementScreen extends StatelessWidget {
   }
 
   void _onShareCalendar(
-      {required BuildContext context, required List<CalendarHeatMap> monthsHeatMap, required bool completed}) {
+      {required BuildContext context, required List<CalendarHeatMap> monthsHeatMaps, required bool completed}) {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          RepaintBoundary(
-              key: _achievementKey,
-              child: Container(
-                  color: tealBlueDark,
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(achievementDto.type.title.toUpperCase(),
-                          style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-                      const SizedBox(height: 2),
-                      Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
-                          style:
-                              GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-                      const SizedBox(height: 10),
-                      GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: monthsHeatMap.length > 4 ? 4 : monthsHeatMap.length,
-                        childAspectRatio: 1,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        children: List.generate(monthsHeatMap.length, (index) => monthsHeatMap[index]),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Image.asset(
-                          'assets/trackr.png',
-                          fit: BoxFit.contain,
-                          height: 8, // Adjust the height as needed
-                        ),
-                      ),
-                    ],
-                  ))),
+          AchievementShare(globalKey: _achievementKey, achievementDto: achievementDto),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
