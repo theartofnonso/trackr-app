@@ -13,7 +13,7 @@ void navigateToRoutineEditor({required BuildContext context, RoutineTemplateDto?
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateEditorScreen(template: template)));
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, RoutineEditorMode editorMode = RoutineEditorMode.log}) async {
+void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, required RoutineEditorMode editorMode}) async {
   final createdLog = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogEditorScreen(log: log, mode: editorMode))) as RoutineLogDto?;
   if(createdLog != null) {
     if(context.mounted) {

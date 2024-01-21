@@ -11,7 +11,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
-import '../dtos/template_changes_messages_dto.dart';
+import '../enums/template_changes_type_message_enums.dart';
 import '../screens/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
 import 'general_utils.dart';
@@ -31,44 +31,39 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
   return others.where((procedure) => procedure.id != exerciseLog.id && procedure.superSetId.isEmpty).toList();
 }
 
-List<TemplateChangesMessageDto> checkForChanges(
+List<TemplateChange> checkForChanges(
     {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-  List<TemplateChangesMessageDto> unsavedChangesMessage = [];
+  List<TemplateChange?> unsavedChangesMessage = [];
 
   /// Check if [ExerciseLogDto] have been added or removed
   final differentExercisesLengthMessage =
-      hasDifferentExerciseLogsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentExercisesLengthMessage != null) {
-    unsavedChangesMessage.add(differentExercisesLengthMessage);
-  }
+      hasDifferentExerciseLogsLength(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(differentExercisesLengthMessage);
 
   /// Check if [ExerciseLogDto] has been re-ordered
-  final differentExercisesOrderMessage = hasReOrderedExercises(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentExercisesOrderMessage != null) {
-    unsavedChangesMessage.add(differentExercisesOrderMessage);
-  }
+  final differentExercisesOrderMessage =
+      hasReOrderedExercises(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(differentExercisesOrderMessage);
 
   /// Check if [SetDto]'s have been added or removed
-  final differentSetsLengthMessage = hasDifferentSetsLength(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentSetsLengthMessage != null) {
-    unsavedChangesMessage.add(differentSetsLengthMessage);
-  }
+  final differentSetsLengthMessage = hasDifferentSetsLength(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(differentSetsLengthMessage);
 
   /// Check if [ExerciseType] for [Exercise] in [ExerciseLogDto] has been changed
   final differentExerciseTypesChangeMessage =
-      hasExercisesChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentExerciseTypesChangeMessage != null) {
-    unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
-  }
+      hasExercisesChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
 
-  /// Check if superset in [ExerciseLogDto] has been changed
+  /// Check if superset in [ExerciseLogDto] has been changed i.e. added or removed
   final differentSuperSetIdsChangeMessage =
-      hasSuperSetIdChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-  if (differentSuperSetIdsChangeMessage != null) {
-    unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
-  }
+      hasSuperSetIdChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
 
-  return unsavedChangesMessage;
+  /// Check if set values have been changed
+  final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(updatedSetValuesChangeMessage);
+
+  return unsavedChangesMessage.whereType<TemplateChange>().toList();
 }
 
 ExerciseLogDto? whereOtherExerciseInSuperSet(
@@ -129,7 +124,6 @@ List<Widget> setsToWidgets(
 }
 
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs}) {
-
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
   DateTime startDate = routineLogs.first.createdAt;
@@ -144,7 +138,6 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<Ro
 }
 
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
-
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
   DateTime startDate = routineLogs.first.createdAt;

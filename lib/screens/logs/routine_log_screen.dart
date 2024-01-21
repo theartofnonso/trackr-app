@@ -46,18 +46,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
   String _loadingMessage = "";
 
-  RoutineLogDto? _routineLogDto;
-
   @override
   Widget build(BuildContext context) {
     final foundLog = Provider.of<RoutineLogController>(context, listen: true).logWhereId(id: widget.log.id);
 
     final log = foundLog ?? widget.log;
 
-    _routineLogDto = log;
-
     final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
+
+    final completedExerciseLogsAndSets = _completedExerciseLogsAndSets(exerciseLogs: log.exerciseLogs);
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -158,7 +156,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                             verticalAlignment: TableCellVerticalAlignment.middle,
                             child: Center(
                               child: Text(
-                                  "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
+                                  "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
                             ),
@@ -176,9 +174,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  RoutineMuscleGroupSplitChart(frequencyData: calculateFrequency(log.exerciseLogs)),
+                  RoutineMuscleGroupSplitChart(frequencyData: calculateFrequency(completedExerciseLogsAndSets)),
                   ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: log.exerciseLogs),
+                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                       previewType: RoutinePreviewType.log),
                 ],
               ),
@@ -188,16 +186,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ]));
   }
 
-  void _onShareLog({RoutineLogDto? log}) {
-    if (log == null) {
-      return;
-    }
+  void _onShareLog({required RoutineLogDto log}) {
+    final completedExerciseLogsAndSets = _completedExerciseLogsAndSets(exerciseLogs: log.exerciseLogs);
+    final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
+
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: RoutineLogShareableContainer(log: log, frequencyData: calculateFrequency(log.exerciseLogs)));
+        child: RoutineLogShareableContainer(log: updatedLog, frequencyData: calculateFrequency(completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -230,18 +228,21 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return sortedFrequencyMap;
   }
 
-  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+  List<ExerciseLogDto> _completedExerciseLogsAndSets({required List<ExerciseLogDto> exerciseLogs}) {
     return exerciseLogs
         .map((exerciseLog) {
           final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-          if (completedSets.isNotEmpty) {
-            return ExerciseLogViewModel(
-                exerciseLog: exerciseLog = exerciseLog.copyWith(sets: completedSets),
-                superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
-          }
-          return null;
+          return completedSets.isNotEmpty ? exerciseLog.copyWith(sets: completedSets) : null;
         })
-        .whereType<ExerciseLogViewModel>()
+        .whereType<ExerciseLogDto>()
+        .toList();
+  }
+
+  List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+    return exerciseLogs
+        .map((exerciseLog) => ExerciseLogViewModel(
+            exerciseLog: exerciseLog,
+            superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs)))
         .toList();
   }
 
@@ -346,7 +347,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
     if (templateId.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _onShareLog(log: _routineLogDto);
+        _onShareLog(log: widget.log);
       });
       return;
     }
@@ -373,16 +374,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   _doUpdateTemplate();
-                  _onShareLog(log: _routineLogDto);
+                  _onShareLog(log: widget.log);
                 },
                 onDismissed: () {
                   Navigator.of(context).pop();
                   _doUpdateTemplateExercises();
-                  _onShareLog(log: _routineLogDto);
+                  _onShareLog(log: widget.log);
                 }));
       } else {
         _doUpdateTemplateExercises();
-        _onShareLog(log: _routineLogDto);
+        _onShareLog(log: widget.log);
       }
     });
   }

@@ -117,11 +117,11 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.exerciseLogsForExercise(exercise: exercise);
   }
 
-  List<SetDto> wherePastSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
+  List<SetDto> whereSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
     return _amplifyLogRepository.whereSetsForExerciseBefore(exercise: exercise, date: date);
   }
 
-  List<ExerciseLogDto> wherePastExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
+  List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
     return _amplifyLogRepository.whereExerciseLogsBefore(exercise: exercise, date: date);
   }
 

@@ -10,7 +10,7 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
-import '../../controllers/exercise_controller.dart';
+
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -105,7 +105,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (!_validateRoutineTemplateInputs()) return;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseLogController.mergeSetsIntoExerciseLogs(includeEmptySets: true);
+    final exercises = exerciseLogController.mergeExerciseLogsAndSets();
 
     final template = RoutineTemplateDto(
         id: "",
@@ -141,7 +141,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _doUpdateRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
+    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeExerciseLogsAndSets();
     final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
     _toggleLoadingState();
     final updatedRoutineTemplate = template.copyWith(
@@ -155,7 +155,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exercises ?? [];
-    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs(includeEmptySets: true);
+    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showAlertDialogWithMultiActions(
@@ -202,11 +202,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseEditorController = Provider.of<ExerciseController>(context, listen: true);
+    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
 
-    if (exerciseEditorController.errorMessage.isNotEmpty) {
+    if (routineTemplateController.errorMessage.isNotEmpty) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        _showSnackbar(exerciseEditorController.errorMessage);
+        _showSnackbar(routineTemplateController.errorMessage);
       });
     }
 
@@ -340,11 +340,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _initializeProcedureData() {
     final exercises = widget.template?.exercises;
     if (exercises != null && exercises.isNotEmpty) {
-      /// Pass [RoutineEditorMode.log] to loadExercises() to prevent the [RoutineTemplateEditorScreen] loading any timers
-      /// When in [RoutineEditorMode.log], timers only when run when a set is added
-      /// Since this is a template, we don't want to run any timers (The functionality to run timers is only available when logging a workout)
-      Provider.of<ExerciseLogController>(context, listen: false)
-          .loadExercises(logs: exercises, mode: RoutineEditorMode.log);
+      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.edit);
     }
   }
 

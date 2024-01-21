@@ -32,17 +32,11 @@ class ExerciseLogRepository {
     }
   }
 
-  List<ExerciseLogDto> mergeSetsIntoExerciseLogs({bool includeEmptySets = false}) {
-    return _exerciseLogs
-        .map((exercise) {
-          final sets = _sets[exercise.id] ?? [];
-          final hasSets = sets.isNotEmpty;
-          if (hasSets || includeEmptySets) {
-            return exercise.copyWith(sets: sets);
-          }
-        })
-        .whereType<ExerciseLogDto>()
-        .toList();
+  List<ExerciseLogDto> mergeExerciseLogsAndSets() {
+    return _exerciseLogs.map((exercise) {
+      final sets = _sets[exercise.id] ?? [];
+      return exercise.copyWith(sets: sets);
+    }).toList();
   }
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
@@ -276,7 +270,7 @@ class ExerciseLogRepository {
   }
 
   void clear() {
-    _exerciseLogs.clear();
-    _sets.clear();
+    _exerciseLogs = [];
+    _sets = <String, List<SetDto>>{};
   }
 }
