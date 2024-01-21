@@ -284,7 +284,7 @@ class ExerciseLogRepository {
   }
 
   void clear() {
-    _exerciseLogs.clear();
-    _sets.clear();
+    _exerciseLogs = [];
+    _sets = <String, List<SetDto>>{};
   }
 }

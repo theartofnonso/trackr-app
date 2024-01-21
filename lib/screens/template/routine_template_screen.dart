@@ -51,6 +51,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final template = Provider.of<RoutineTemplateController>(context, listen: true).templateWhere(id: widget.template.id);
 
     if (template == null) {
