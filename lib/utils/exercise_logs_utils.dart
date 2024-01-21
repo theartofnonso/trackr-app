@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -9,7 +7,6 @@ import '../dtos/set_dto.dart';
 import '../dtos/template_changes_messages_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/pb_enums.dart';
-import '../controllers/routine_log_controller.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDto]
@@ -168,16 +165,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 List<PBDto> calculatePBs(
-    {required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
-  final provider = Provider.of<RoutineLogController>(context, listen: false);
-
-  final pastSets = provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-  final pastExerciseLogs =
-      provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-
+    {required List<ExerciseLogDto> pastExerciseLogs,
+    required ExerciseType exerciseType,
+    required ExerciseLogDto exerciseLog}) {
   List<PBDto> pbs = [];
 
-  if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
+  if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
       final pastHeaviestWeight =
           pastExerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).map((set) => set.value1).max;
@@ -236,8 +229,7 @@ TemplateChangesMessageDto? hasReOrderedExercises(
   for (int i = 0; i < length; i++) {
     if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
       return TemplateChangesMessageDto(
-          message: "Exercises have been re-ordered",
-          type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
+          message: "Exercises have been re-ordered", type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
     }
   }
   return null;
@@ -287,7 +279,7 @@ TemplateChangesMessageDto? hasExercisesChanged({
 
   return changes > 0
       ? TemplateChangesMessageDto(
-      message: "Changed $changes exercise(s)", type: TemplateChangesMessageType.exerciseLogChange)
+          message: "Changed $changes exercise(s)", type: TemplateChangesMessageType.exerciseLogChange)
       : null;
 }
 
@@ -295,15 +287,12 @@ TemplateChangesMessageDto? hasSuperSetIdChanged({
   required List<ExerciseLogDto> exerciseLog1,
   required List<ExerciseLogDto> exerciseLog2,
 }) {
-  Set<String> superSetIds1 =
-  exerciseLog1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
-  Set<String> superSetIds2 =
-  exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+  Set<String> superSetIds1 = exerciseLog1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+  Set<String> superSetIds2 = exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
 
   final changes = superSetIds2.difference(superSetIds1).length;
 
   return changes > 0
-      ? TemplateChangesMessageDto(
-      message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
+      ? TemplateChangesMessageDto(message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
       : null;
 }

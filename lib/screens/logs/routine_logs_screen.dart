@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_log_empty_state.dart';
 
 import '../../../utils/navigation_utils.dart';
+import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/pbs/pb_icon.dart';
@@ -52,10 +54,15 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pbs = log.exerciseLogs
-        .map((exerciseLog) =>
-            calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .expand((pbs) => pbs);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    final pbs = log.exerciseLogs.map((exerciseLog) {
+      final pastExerciseLogs =
+          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
+      return calculatePBs(
+          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+    }).expand((pbs) => pbs);
 
     return SolidListTile(
         title: log.name,
