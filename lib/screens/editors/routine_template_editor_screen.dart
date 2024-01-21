@@ -10,7 +10,7 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
-import '../../controllers/exercise_controller.dart';
+
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
