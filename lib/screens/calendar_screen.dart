@@ -246,10 +246,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             )
                           : const SizedBox(height: 8),
                       _Month(
-                          dates: _generateDates(),
-                          selectedDateTime: _currentDate,
-                          onTap: (_) {},
-                          showSelector: false),
+                          dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Image.asset(
@@ -433,10 +430,15 @@ class _RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pbs = log.exerciseLogs
-        .map((exerciseLog) =>
-            calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog))
-        .expand((pbs) => pbs);
+    final provider = Provider.of<RoutineLogController>(context, listen: false);
+
+    final pbs = log.exerciseLogs.map((exerciseLog) {
+      final pastExerciseLogs =
+          provider.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+
+      return calculatePBs(
+          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+    }).expand((pbs) => pbs);
 
     return SolidListTile(
         title: log.name,

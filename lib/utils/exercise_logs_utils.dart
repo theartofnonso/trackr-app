@@ -1,15 +1,11 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
-import '../dtos/template_changes_messages_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/pb_enums.dart';
-import '../controllers/routine_log_controller.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDto]
@@ -116,7 +112,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, heaviestWeight);
 }
 
-(String?, int) highestReps({required List<ExerciseLogDto> exerciseLogs}) {
+(String?, int) mostRepsInSet({required List<ExerciseLogDto> exerciseLogs}) {
   int highestReps = 0;
   String? logId;
   if (exerciseLogs.isNotEmpty) {
@@ -133,7 +129,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, highestReps);
 }
 
-(String?, int) totalReps({required List<ExerciseLogDto> exerciseLogs}) {
+(String?, int) mostRepsInSession({required List<ExerciseLogDto> exerciseLogs}) {
   int mostReps = 0;
   String? logId;
   if (exerciseLogs.isNotEmpty) {
@@ -168,16 +164,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 List<PBDto> calculatePBs(
-    {required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
-  final provider = Provider.of<RoutineLogController>(context, listen: false);
-
-  final pastSets = provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-  final pastExerciseLogs =
-      provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-
+    {required List<ExerciseLogDto> pastExerciseLogs,
+    required ExerciseType exerciseType,
+    required ExerciseLogDto exerciseLog}) {
   List<PBDto> pbs = [];
 
-  if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
+  if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
       final pastHeaviestWeight =
           pastExerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).map((set) => set.value1).max;
@@ -215,95 +207,78 @@ List<PBDto> calculatePBs(
   return pbs;
 }
 
-TemplateChangesMessageDto? hasDifferentExerciseLogsLength(
-    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-  final int difference = exerciseLog2.length - exerciseLog1.length;
-
-  if (difference > 0) {
-    return TemplateChangesMessageDto(
-        message: "Added $difference exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
-  } else if (difference < 0) {
-    return TemplateChangesMessageDto(
-        message: "Removed ${-difference} exercise(s)", type: TemplateChangesMessageType.exerciseLogLength);
-  }
-
-  return null; // No change in length
+TemplateChange? hasDifferentExerciseLogsLength(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  return exerciseLogs2.length != exerciseLogs1.length ? TemplateChange.exerciseLogLength : null;
 }
 
-TemplateChangesMessageDto? hasReOrderedExercises(
-    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-  final length = exerciseLog1.length > exerciseLog2.length ? exerciseLog2.length : exerciseLog1.length;
+TemplateChange? hasReOrderedExercises(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  final length = exerciseLogs1.length > exerciseLogs2.length ? exerciseLogs2.length : exerciseLogs1.length;
   for (int i = 0; i < length; i++) {
-    if (exerciseLog1[i].exercise.id != exerciseLog2[i].exercise.id) {
-      return TemplateChangesMessageDto(
-          message: "Exercises have been re-ordered",
-          type: TemplateChangesMessageType.exerciseOrder); // Re-orderedList
+    if (exerciseLogs1[i].exercise.id != exerciseLogs2[i].exercise.id) {
+      return TemplateChange.exerciseOrder; // Re-orderedList
     }
   }
   return null;
 }
 
-TemplateChangesMessageDto? hasDifferentSetsLength(
-    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-  int addedSetsCount = 0;
-  int removedSetsCount = 0;
+TemplateChange? hasDifferentSetsLength(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  final exerciseLog1Sets = exerciseLogs1.expand((logs) => logs.sets);
+  final exerciseLog2Sets = exerciseLogs2.expand((logs) => logs.sets);
 
-  for (ExerciseLogDto proc1 in exerciseLog1) {
-    ExerciseLogDto? matchingProc2 = exerciseLog2.firstWhereOrNull((p) => p.exercise.id == proc1.exercise.id);
-
-    if (matchingProc2 == null) continue;
-
-    int difference = matchingProc2.sets.length - proc1.sets.length;
-    if (difference > 0) {
-      addedSetsCount += difference;
-    } else if (difference < 0) {
-      removedSetsCount -= difference; // Subtracting a negative number to add its absolute value
-    }
-  }
-
-  String message = '';
-  if (addedSetsCount > 0) {
-    message = "Added $addedSetsCount set(s)";
-  }
-
-  if (removedSetsCount > 0) {
-    if (message.isNotEmpty) message += ' and ';
-    message += "Removed $removedSetsCount set(s)";
-  }
-
-  return message.isNotEmpty
-      ? TemplateChangesMessageDto(message: message, type: TemplateChangesMessageType.setsLength)
-      : null;
+  return exerciseLog1Sets.length != exerciseLog2Sets.length ? TemplateChange.setsLength : null;
 }
 
-TemplateChangesMessageDto? hasExercisesChanged({
-  required List<ExerciseLogDto> exerciseLog1,
-  required List<ExerciseLogDto> exerciseLog2,
+TemplateChange? hasExercisesChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
 }) {
-  Set<String> exerciseIds1 = exerciseLog1.map((p) => p.exercise.id).toSet();
-  Set<String> exerciseIds2 = exerciseLog2.map((p) => p.exercise.id).toSet();
+  Set<String> exerciseIds1 = exerciseLogs1.map((p) => p.exercise.id).toSet();
+  Set<String> exerciseIds2 = exerciseLogs2.map((p) => p.exercise.id).toSet();
 
   int changes = exerciseIds1.difference(exerciseIds2).length;
 
-  return changes > 0
-      ? TemplateChangesMessageDto(
-      message: "Changed $changes exercise(s)", type: TemplateChangesMessageType.exerciseLogChange)
-      : null;
+  return changes > 0 ? TemplateChange.exerciseLogChange : null;
 }
 
-TemplateChangesMessageDto? hasSuperSetIdChanged({
-  required List<ExerciseLogDto> exerciseLog1,
-  required List<ExerciseLogDto> exerciseLog2,
+TemplateChange? hasSuperSetIdChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
 }) {
   Set<String> superSetIds1 =
-  exerciseLog1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+      exerciseLogs1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
   Set<String> superSetIds2 =
-  exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+      exerciseLogs2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
 
   final changes = superSetIds2.difference(superSetIds1).length;
 
-  return changes > 0
-      ? TemplateChangesMessageDto(
-      message: "Changed $changes supersets(s)", type: TemplateChangesMessageType.supersetId)
-      : null;
+  return changes > 0 ? TemplateChange.supersetId : null;
+}
+
+TemplateChange? hasCheckedSetsChanged(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  final exerciseLog1CompletedSets = exerciseLogs1.expand((log) => log.sets).where((set) => set.checked).toList();
+  final exerciseLog2CompletedSets = exerciseLogs2.expand((log) => log.sets).where((set) => set.checked).toList();
+
+  if (exerciseLog1CompletedSets.length != exerciseLog2CompletedSets.length) {
+    return TemplateChange.checkedSets;
+  }
+
+  return null;
+}
+
+TemplateChange? hasSetValueChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
+}) {
+  final exerciseLog1Volume = exerciseLogs1
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + (set.value1.toDouble() * set.value2.toDouble()));
+  final exerciseLog2Volume = exerciseLogs2
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + (set.value1.toDouble() * set.value2.toDouble()));
+
+  return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }

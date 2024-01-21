@@ -8,15 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
-import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
-import '../../dtos/template_changes_messages_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -28,7 +27,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
   final RoutineEditorMode mode;
 
-  const RoutineLogEditorScreen({super.key, required this.log, this.mode = RoutineEditorMode.log});
+  const RoutineLogEditorScreen({super.key, required this.log, required this.mode});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -77,13 +76,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   RoutineLogDto _routineLog() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeSetsIntoExerciseLogs();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
     final log = widget.log;
 
     final routineLog = log.copyWith(
         exerciseLogs: exerciseLogs,
-        endTime: widget.mode == RoutineEditorMode.log ? DateTime.now() : log.endTime,
+        endTime: DateTime.now(),
         updatedAt: DateTime.now());
     return routineLog;
   }
@@ -106,7 +105,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeSetsIntoExerciseLogs();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
     return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
   }
 
@@ -154,26 +153,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: routineLog);
   }
 
-  TemplateChangesMessageDto? _completedSetsChanged(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    final exerciseLog1CompletedSets = exerciseLog1.expand((log) => log.sets).where((set) => set.checked).toList();
-    final exerciseLog2CompletedSets = exerciseLog2.expand((log) => log.sets).where((set) => set.checked).toList();
-
-    if (exerciseLog1CompletedSets.length > exerciseLog2CompletedSets.length) {
-      return TemplateChangesMessageDto(type: TemplateChangesMessageType.checkedSets, message: 'Removed completed sets');
-    } else if (exerciseLog1CompletedSets.length < exerciseLog2CompletedSets.length) {
-      return TemplateChangesMessageDto(type: TemplateChangesMessageType.checkedSets, message: 'Added completed sets');
-    }
-
-    return null;
-  }
-
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-    final completedSetsChanged = _completedSetsChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final completedSetsChanged = hasCheckedSetsChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
     if (completedSetsChanged != null) {
       unsavedChangesMessage.add(completedSetsChanged);
     }
@@ -342,7 +327,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    widget.mode == RoutineEditorMode.edit;
     Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
   }
 

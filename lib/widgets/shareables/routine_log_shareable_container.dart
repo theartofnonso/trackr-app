@@ -34,7 +34,6 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final allLogs = routineLogController.routineLogs;
@@ -46,7 +45,8 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
 
     for (final achievement in achievements) {
       final key = GlobalKey();
-      final shareable = AchievementShare(globalKey: key, achievementDto: achievement, width: MediaQuery.of(context).size.width - 20);
+      final shareable =
+          AchievementShare(globalKey: key, achievementDto: achievement, width: MediaQuery.of(context).size.width - 20);
       achievementsShareAssets.add(shareable);
       achievementsShareAssetsKeys.add(key);
     }
@@ -55,7 +55,10 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
     final pbShareAssetsKeys = [];
 
     for (final exerciseLog in widget.log.exerciseLogs) {
-      final pbs = calculatePBs(context: context, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
+      final pastExerciseLogs =
+          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+      final pbs = calculatePBs(
+          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
       final setAndPBs = groupBy(pbs, (pb) => pb.set);
       for (final setAndPB in setAndPBs.entries) {
         final pbs = setAndPB.value;
@@ -70,7 +73,7 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
 
     final pages = [
       ...achievementsShareAssets,
-      if(isMultipleOfFive(allLogs.length)) RoutineLogShareableFour(label: "${allLogs.length}th"),
+      if (isMultipleOfFive(allLogs.length)) RoutineLogShareableFour(label: "${allLogs.length}th"),
       ...pbShareAssets,
       RoutineLogShareableOne(log: widget.log, frequencyData: widget.frequencyData),
       RoutineLogShareableTwo(log: widget.log, frequencyData: widget.frequencyData),
