@@ -8,6 +8,7 @@ import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -49,7 +50,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           endTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      navigateToRoutineLogEditor(context: context, log: log);
+      navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineEditorMode.log);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }

@@ -19,6 +19,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
+import '../enums/routine_editor_type_enums.dart';
 import 'notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -82,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RoutineLogDto? log = Provider.of<RoutineLogController>(context, listen: false).cachedLog();
       if (log != null) {
-        navigateToRoutineLogEditor(context: context, log: log);
+        navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineEditorMode.log);
       }
     });
   }

@@ -4,6 +4,7 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
+import '../enums/routine_editor_type_enums.dart';
 
 class ExerciseLogRepository {
   List<ExerciseLogDto> _exerciseLogs = [];
@@ -14,16 +15,18 @@ class ExerciseLogRepository {
 
   UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
 
-  void loadExercises({required List<ExerciseLogDto> logs}) {
+  void loadExercises({required List<ExerciseLogDto> logs, required RoutineEditorMode mode}) {
     _exerciseLogs = logs;
-    _loadSets();
+    _loadSets(mode: mode);
   }
 
-  void _loadSets() {
+  void _loadSets({required RoutineEditorMode mode}) {
     for (var exerciseLog in _exerciseLogs) {
       if (exerciseLog.exercise.type == ExerciseType.duration) {
-        _sets[exerciseLog.id] = [];
-        continue;
+        if (mode == RoutineEditorMode.log) {
+          _sets[exerciseLog.id] = [];
+          continue;
+        }
       }
       _sets[exerciseLog.id] = exerciseLog.sets;
     }

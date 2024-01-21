@@ -353,6 +353,7 @@ void main() {
     });
   });
 
+group ("Template changes", () {
   test("Different exercise lengths", () {
     final result = hasDifferentExerciseLogsLength(
         exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
@@ -421,6 +422,6 @@ void main() {
         exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
     expect(result, TemplateChange.setValue);
   });
-
+});
   // Add your widget tests here
 }

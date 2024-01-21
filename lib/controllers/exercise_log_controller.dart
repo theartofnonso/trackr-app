@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../repositories/exercise_log_repository.dart';
 
 class ExerciseLogController extends ChangeNotifier {
@@ -17,8 +18,8 @@ class ExerciseLogController extends ChangeNotifier {
 
   UnmodifiableMapView<String, List<SetDto>> get sets => _exerciseLogRepository.sets;
 
-  void loadExercises({required List<ExerciseLogDto> logs}) {
-    _exerciseLogRepository.loadExercises(logs: logs);
+  void loadExercises({required List<ExerciseLogDto> logs, required RoutineEditorMode mode}) {
+    _exerciseLogRepository.loadExercises(logs: logs, mode: mode);
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {

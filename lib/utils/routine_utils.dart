@@ -63,8 +63,6 @@ List<TemplateChange> checkForChanges(
   final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(updatedSetValuesChangeMessage);
 
-  print(unsavedChangesMessage.whereType<TemplateChange>());
-
   return unsavedChangesMessage.whereType<TemplateChange>().toList();
 }
 

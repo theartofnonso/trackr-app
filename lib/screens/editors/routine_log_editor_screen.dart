@@ -27,7 +27,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
   final RoutineEditorMode mode;
 
-  const RoutineLogEditorScreen({super.key, required this.log, this.mode = RoutineEditorMode.log});
+  const RoutineLogEditorScreen({super.key, required this.log, required this.mode});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
@@ -327,7 +327,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs);
+    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
   }
 
   @override

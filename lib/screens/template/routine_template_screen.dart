@@ -9,6 +9,7 @@ import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
+import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
@@ -86,7 +87,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: "fab_routine_preview_screen",
-            onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log()),
+            onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),

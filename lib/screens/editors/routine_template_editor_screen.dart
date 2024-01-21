@@ -340,7 +340,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _initializeProcedureData() {
     final exercises = widget.template?.exercises;
     if (exercises != null && exercises.isNotEmpty) {
-      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises);
+      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.edit);
     }
   }
 

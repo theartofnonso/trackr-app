@@ -6,6 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
+import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../utils/navigation_utils.dart';
@@ -84,7 +85,7 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           leading: GestureDetector(
-              onTap: () => navigateToRoutineLogEditor(context: context, log: template.log()),
+              onTap: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,
