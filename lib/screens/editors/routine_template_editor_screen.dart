@@ -202,11 +202,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseEditorController = Provider.of<ExerciseController>(context, listen: true);
+    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
 
-    if (exerciseEditorController.errorMessage.isNotEmpty) {
+    if (routineTemplateController.errorMessage.isNotEmpty) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        _showSnackbar(exerciseEditorController.errorMessage);
+        _showSnackbar(routineTemplateController.errorMessage);
       });
     }
 
