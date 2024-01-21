@@ -83,13 +83,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   List<Widget> _displaySets({required ExerciseType exerciseType, required List<SetDto> sets}) {
     return sets.mapIndexed((index, setDto) {
-      Widget setWidget = _createSetWidget(index: index, set: setDto, exerciseType: exerciseType);
+      final setWidget = _createSetWidget(index: index, set: setDto, exerciseType: exerciseType);
 
       return Padding(padding: const EdgeInsets.only(bottom: 8.0), child: setWidget);
     }).toList();
   }
 
-  Widget _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
+  Widget? _createSetWidget({required int index, required SetDto set, required ExerciseType exerciseType}) {
     switch (exerciseType) {
       case ExerciseType.weights:
         return WeightsSetRow(
@@ -111,13 +111,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           controllers: _controllers[index],
         );
       case ExerciseType.duration:
-        return DurationSetRow(
-            setDto: set,
-            editorType: widget.editorType,
-            onCheck: () => _updateSetCheck(index: index, setDto: set),
-            onRemoved: () => _removeSet(index),
-            onChangedDuration: (Duration duration) => _updateDuration(index: index, duration: duration, setDto: set),
-            startTime: _durationControllers[index]);
+        return _durationControllers.isNotEmpty
+            ? DurationSetRow(
+                setDto: set,
+                editorType: widget.editorType,
+                onCheck: () => _updateSetCheck(index: index, setDto: set),
+                onRemoved: () => _removeSet(index),
+                onChangedDuration: (Duration duration) =>
+                    _updateDuration(index: index, duration: duration, setDto: set),
+                startTime: _durationControllers[index])
+            : null;
     }
   }
 
@@ -133,8 +136,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
     }
-    final pastSets =
-        Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
+    final pastSets = Provider.of<RoutineLogController>(context, listen: false)
+        .whereSetsForExercise(exercise: widget.exerciseLogDto.exercise);
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: widget.exerciseLogDto.id, pastSets: pastSets);
     _cacheLog();
@@ -192,20 +195,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _controllers.addAll(controllers);
   }
 
-  void _loadDurationControllers() {
-    final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
-    List<DateTime> controllers = [];
-    for (var _ in sets) {
-      controllers.add(DateTime.now());
-    }
-    _durationControllers.addAll(controllers);
-  }
-
   @override
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    _loadDurationControllers();
   }
 
   void _cacheLog() {

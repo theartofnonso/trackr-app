@@ -226,9 +226,7 @@ TemplateChange? hasReOrderedExercises(
 TemplateChange? hasDifferentSetsLength(
     {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
   final exerciseLog1Sets = exerciseLogs1.expand((logs) => logs.sets);
-  print(exerciseLog1Sets);
   final exerciseLog2Sets = exerciseLogs2.expand((logs) => logs.sets);
-  print(exerciseLog2Sets);
 
   return exerciseLog1Sets.length != exerciseLog2Sets.length ? TemplateChange.setsLength : null;
 }

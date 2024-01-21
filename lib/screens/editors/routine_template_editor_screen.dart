@@ -105,7 +105,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (!_validateRoutineTemplateInputs()) return;
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseLogController.mergeSetsIntoExercises();
+    final exercises = exerciseLogController.mergeExerciseLogsAndSets();
 
     final template = RoutineTemplateDto(
         id: "",
@@ -141,7 +141,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _doUpdateRoutineTemplate(
       {required RoutineTemplateDto template, List<ExerciseLogDto>? updatedExerciseLogs}) async {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeSetsIntoExercises();
+    final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeExerciseLogsAndSets();
     final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
     _toggleLoadingState();
     final updatedRoutineTemplate = template.copyWith(
@@ -155,7 +155,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.template?.exercises ?? [];
-    final exerciseLog2 = procedureProvider.mergeSetsIntoExercises();
+    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
       showAlertDialogWithMultiActions(
@@ -340,11 +340,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _initializeProcedureData() {
     final exercises = widget.template?.exercises;
     if (exercises != null && exercises.isNotEmpty) {
-      /// Pass [RoutineEditorMode.log] to loadExercises() to prevent the [RoutineTemplateEditorScreen] loading any timers
-      /// When in [RoutineEditorMode.log], timers only when run when a set is added
-      /// Since this is a template, we don't want to run any timers (The functionality to run timers is only available when logging a workout)
-      Provider.of<ExerciseLogController>(context, listen: false)
-          .loadExercises(logs: exercises, mode: RoutineEditorMode.log);
+      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises);
     }
   }
 

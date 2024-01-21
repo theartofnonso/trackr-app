@@ -76,13 +76,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   RoutineLogDto _routineLog() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeSetsIntoExerciseLogs();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
     final log = widget.log;
 
     final routineLog = log.copyWith(
         exerciseLogs: exerciseLogs,
-        endTime: widget.mode == RoutineEditorMode.log ? DateTime.now() : log.endTime,
+        endTime: DateTime.now(),
         updatedAt: DateTime.now());
     return routineLog;
   }
@@ -105,7 +105,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   bool _isRoutinePartiallyComplete() {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLogs = exerciseLogController.mergeSetsIntoExerciseLogs();
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
     return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
   }
 
@@ -156,7 +156,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     final completedSetsChanged = hasCheckedSetsChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
     if (completedSetsChanged != null) {
@@ -327,8 +327,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    widget.mode == RoutineEditorMode.edit;
-    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
+    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs);
   }
 
   @override
