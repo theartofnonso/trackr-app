@@ -48,7 +48,7 @@ class ExerciseLogController extends ChangeNotifier {
 
   void superSetExerciseLogs(
       {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
-    _exerciseLogRepository.superSetExerciseLogs(
+    _exerciseLogRepository.addSuperSets(
         firstExerciseLogId: firstExerciseLogId, secondExerciseLogId: secondExerciseLogId, superSetId: superSetId);
     notifyListeners();
   }
@@ -64,7 +64,7 @@ class ExerciseLogController extends ChangeNotifier {
   }
 
   void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
-    _exerciseLogRepository.removeSetForExerciseLog(exerciseLogId: exerciseLogId, index: index);
+    _exerciseLogRepository.removeSet(exerciseLogId: exerciseLogId, index: index);
     notifyListeners();
   }
 
@@ -88,15 +88,11 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onClear() {
-    _exerciseLogRepository.clear();
-  }
-
   List<SetDto> completedSets() {
     return _exerciseLogRepository.completedSets();
   }
 
-  ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise}) {
-    return _exerciseLogRepository.whereOtherExerciseInSuperSet(firstExercise: firstExercise);
+  void onClear() {
+    _exerciseLogRepository.clear();
   }
 }

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/pb_dto.dart';
@@ -9,17 +7,7 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
-import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-
-class MockBuildContext extends Mock implements BuildContext {}
-
-class MockAmplifyLogsRepository extends Mock implements AmplifyLogRepository {
-  @override
-  List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
-    return [];
-  }
-}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
