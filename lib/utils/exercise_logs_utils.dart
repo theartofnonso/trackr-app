@@ -226,7 +226,9 @@ TemplateChange? hasReOrderedExercises(
 TemplateChange? hasDifferentSetsLength(
     {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
   final exerciseLog1Sets = exerciseLogs1.expand((logs) => logs.sets);
+  print(exerciseLog1Sets);
   final exerciseLog2Sets = exerciseLogs2.expand((logs) => logs.sets);
+  print(exerciseLog2Sets);
 
   return exerciseLog1Sets.length != exerciseLog2Sets.length ? TemplateChange.setsLength : null;
 }
@@ -245,18 +247,19 @@ TemplateChange? hasExercisesChanged({
 
 TemplateChange? hasSuperSetIdChanged({
   required List<ExerciseLogDto> exerciseLogs1,
-  required List<ExerciseLogDto> exerciseLog2,
+  required List<ExerciseLogDto> exerciseLogs2,
 }) {
   Set<String> superSetIds1 =
       exerciseLogs1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
-  Set<String> superSetIds2 = exerciseLog2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+  Set<String> superSetIds2 =
+      exerciseLogs2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
 
   final changes = superSetIds2.difference(superSetIds1).length;
 
   return changes > 0 ? TemplateChange.supersetId : null;
 }
 
-TemplateChange? checkedSetsChanged(
+TemplateChange? hasCheckedSetsChanged(
     {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
   final exerciseLog1CompletedSets = exerciseLogs1.expand((log) => log.sets).where((set) => set.checked).toList();
   final exerciseLog2CompletedSets = exerciseLogs2.expand((log) => log.sets).where((set) => set.checked).toList();
@@ -266,4 +269,18 @@ TemplateChange? checkedSetsChanged(
   }
 
   return null;
+}
+
+TemplateChange? hasSetValueChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
+}) {
+  final exerciseLog1Volume = exerciseLogs1
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + (set.value1.toDouble() * set.value2.toDouble()));
+  final exerciseLog2Volume = exerciseLogs2
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + (set.value1.toDouble() * set.value2.toDouble()));
+
+  return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }

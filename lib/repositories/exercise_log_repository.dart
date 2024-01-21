@@ -40,9 +40,17 @@ class ExerciseLogRepository {
           if (hasSets || includeEmptySets) {
             return exercise.copyWith(sets: sets);
           }
+          return exercise;
         })
         .whereType<ExerciseLogDto>()
         .toList();
+  }
+
+  List<ExerciseLogDto> mergeSetsIntoExercises() {
+    return _exerciseLogs.map((exercise) {
+      final sets = _sets[exercise.id] ?? [];
+      return exercise.copyWith(sets: sets);
+    }).toList();
   }
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {

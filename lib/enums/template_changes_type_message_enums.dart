@@ -1,3 +1,3 @@
 enum TemplateChange {
-  setsLength, exerciseLogLength, exerciseOrder, exerciseLogChange, supersetId, checkedSets
+  setsLength, exerciseLogLength, exerciseOrder, exerciseLogChange, supersetId, checkedSets, setValue
 }

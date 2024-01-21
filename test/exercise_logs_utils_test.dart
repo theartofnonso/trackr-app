@@ -38,6 +38,13 @@ void main() {
       type: ExerciseType.duration,
       owner: false);
 
+  final benchPressExercise = ExerciseDto(
+      id: "id_benchPressExercise",
+      name: "Bench Press",
+      primaryMuscleGroup: MuscleGroup.chest,
+      type: ExerciseType.weights,
+      owner: false);
+
   final lyingLegCurlExerciseLog1 = ExerciseLogDto(
       lyingLegCurlExercise.id,
       "routineLogId1",
@@ -362,9 +369,57 @@ void main() {
 
   test("Different sets lengths", () {
     final result = hasDifferentSetsLength(
+        exerciseLogs1: [plankExerciseLog1, lyingLegCurlExerciseLog1],
+        exerciseLogs2: [plankExerciseLog1.copyWith(sets: plankExerciseLog1.sets.take(2).toList()), lyingLegCurlExerciseLog1.copyWith(sets: lyingLegCurlExerciseLog1.sets.take(2).toList())]);
+    expect(result, TemplateChange.setsLength);
+  });
+
+  test("Different exercises", () {
+
+    final newExerciseLog = ExerciseLogDto(
+        benchPressExercise.id,
+        "routineLogId1",
+        "superSetId",
+        benchPressExercise,
+        "notes",
+        [
+          const SetDto(80, 12, true),
+          const SetDto(160, 12, true),
+          const SetDto(100, 10, true),
+        ],
+        DateTime.now());
+
+    final result = hasExercisesChanged(
         exerciseLogs1: [lyingLegCurlExerciseLog1, plankExerciseLog1],
-        exerciseLogs2: [plankExerciseLog1, lyingLegCurlExerciseLog1]);
-    expect(result, TemplateChange.exerciseOrder);
+        exerciseLogs2: [lyingLegCurlExerciseLog1, newExerciseLog]);
+    expect(result, TemplateChange.exerciseLogChange);
+  });
+
+  test("Changed super set id", () {
+    final result = hasSuperSetIdChanged(
+        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2.copyWith(superSetId: "123"), plankExerciseLog1.copyWith(superSetId: "123")],
+        exerciseLogs2: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2.copyWith(superSetId: "890"), plankExerciseLog1.copyWith(superSetId: "890")]);
+    expect(result, TemplateChange.supersetId);
+  });
+
+  test("Changed super set id", () {
+
+    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDto(80, 12, true), const SetDto(100, 10, true), const SetDto(150, 11, false)]);
+
+    final result = hasCheckedSetsChanged(
+        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
+        exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
+    expect(result, TemplateChange.checkedSets);
+  });
+
+  test("Changed set value", () {
+
+    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDto(80, 12, true), const SetDto(100, 10, true), const SetDto(160, 11, false)]);
+
+    final result = hasSetValueChanged(
+        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
+        exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
+    expect(result, TemplateChange.setValue);
   });
 
   // Add your widget tests here

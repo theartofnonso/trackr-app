@@ -56,8 +56,14 @@ List<TemplateChange> checkForChanges(
 
   /// Check if superset in [ExerciseLogDto] has been changed i.e. added or removed
   final differentSuperSetIdsChangeMessage =
-      hasSuperSetIdChanged(exerciseLogs1: exerciseLog1, exerciseLog2: exerciseLog2);
+      hasSuperSetIdChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
+
+  /// Check if set values have been changed
+  final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  unsavedChangesMessage.add(updatedSetValuesChangeMessage);
+
+  print(unsavedChangesMessage.whereType<TemplateChange>());
 
   return unsavedChangesMessage.whereType<TemplateChange>().toList();
 }

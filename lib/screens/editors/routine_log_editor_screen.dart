@@ -158,7 +158,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     final exerciseLog1 = widget.log.exerciseLogs;
     final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-    final completedSetsChanged = checkedSetsChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+    final completedSetsChanged = hasCheckedSetsChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
     if (completedSetsChanged != null) {
       unsavedChangesMessage.add(completedSetsChanged);
     }
