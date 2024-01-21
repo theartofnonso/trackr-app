@@ -19,5 +19,6 @@
   {"id": "ABS18", "name": "Oblique Sit-Up", "primaryMuscleGroup": "Abs", "type": "BW"},
   {"id": "ABS19", "name": "Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
   {"id": "ABS20", "name": "Side Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
-  {"id": "ABS21", "name": "Sit-Up", "primaryMuscleGroup": "Abs", "type": "BW"}
+  {"id": "ABS21", "name": "Sit-Up", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS22", "name": "Russian Twist (Weighted)", "primaryMuscleGroup": "Abs", "type": "WR"}
 ]

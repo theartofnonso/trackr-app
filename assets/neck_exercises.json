@@ -1,0 +1,4 @@
+[
+  {"id": "NEC1", "name": "Lying Neck Extension (Weighted)", "primaryMuscleGroup": "Neck", "type": "WR"},
+  {"id": "NEC2", "name": "Lying Neck Curls (Weighted)", "primaryMuscleGroup": "Neck", "type": "WR"}
+]
