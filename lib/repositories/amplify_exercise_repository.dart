@@ -53,6 +53,7 @@ class AmplifyExerciseRepository {
     final absExercises = await loadExercisesFromAssets(file: 'abs_exercises.json');
     final calvesExercises = await loadExercisesFromAssets(file: 'calves_exercises.json');
     final forearmsExercises = await loadExercisesFromAssets(file: 'forearms_exercises.json');
+    final neckExercises = await loadExercisesFromAssets(file: 'neck_exercises.json');
     final fullBodyExercises = await loadExercisesFromAssets(file: 'fullbody_exercises.json');
 
     _exercises.addAll(chestExercises);
@@ -65,6 +66,7 @@ class AmplifyExerciseRepository {
     _exercises.addAll(absExercises);
     _exercises.addAll(calvesExercises);
     _exercises.addAll(forearmsExercises);
+    _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));

@@ -27,5 +27,6 @@
   {"id": "CH26", "name": "Smith Machine Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH27", "name": "Smith Machine Incline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH28", "name": "Standing Cable Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CH29", "name": "Standing Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"}
+  {"id": "CH29", "name": "Standing Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH30", "name": "Bar Dip (Weighted)", "primaryMuscleGroup": "Chest", "type": "WR"}
 ]

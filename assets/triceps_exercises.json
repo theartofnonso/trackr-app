@@ -6,7 +6,9 @@
   {"id": "TRI5", "name": "Dumbbell Lying Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "TRI6", "name": "Dumbbell Standing Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "TRI7", "name": "Overhead Cable Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI8", "name": "Tricep Bodyweight Extension", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI9", "name": "Tricep Pushdown With Bar", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI10", "name": "Tricep Pushdown With Rope", "primaryMuscleGroup": "Triceps", "type": "WR"}
+  {"id": "TRI8", "name": "Triceps Bodyweight Extension", "primaryMuscleGroup": "Triceps", "type": "BW"},
+  {"id": "TRI9", "name": "Triceps Pushdown With Bar", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI10", "name": "Triceps Pushdown With Rope", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI11", "name": "Triceps Dip", "primaryMuscleGroup": "Triceps", "type": "BW"},
+  {"id": "TRI12", "name": "Triceps Dip (Weighted)", "primaryMuscleGroup": "Triceps", "type": "WR"}
 ]
