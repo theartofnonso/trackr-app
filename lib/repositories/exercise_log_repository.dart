@@ -92,7 +92,7 @@ class ExerciseLogRepository {
     _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
   }
 
-  void superSetExerciseLogs(
+  void addSuperSets(
       {required String firstExerciseLogId, required String secondExerciseLogId, required String superSetId}) {
     final firstExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: firstExerciseLogId);
     final secondExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: secondExerciseLogId);
@@ -156,7 +156,7 @@ class ExerciseLogRepository {
     }
   }
 
-  void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
+  void removeSet({required String exerciseLogId, required int index}) {
     // Check if the exercise ID exists in the map
     if (!_sets.containsKey(exerciseLogId)) {
       // Handle the case where the exercise ID does not exist
@@ -187,7 +187,7 @@ class ExerciseLogRepository {
     _sets = newMap;
   }
 
-  void _updateSetForExerciseLog({required String exerciseLogId, required int index, required SetDto updatedSet}) {
+  void _updateSet({required String exerciseLogId, required int index, required SetDto updatedSet}) {
     // Check if the exercise ID exists in the map and if the index is valid
     if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
       // Handle the case where the exercise ID does not exist or index is invalid
@@ -212,28 +212,19 @@ class ExerciseLogRepository {
   }
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSetForExerciseLog(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
-  }
-
-  ExerciseLogDto? whereOtherExerciseInSuperSet({required ExerciseLogDto firstExercise}) {
-    return _exerciseLogs.firstWhereOrNull(
-      (exercise) =>
-          exercise.superSetId.isNotEmpty &&
-          exercise.superSetId == firstExercise.superSetId &&
-          exercise.exercise.id != firstExercise.exercise.id,
-    );
+    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
   }
 
   /// Helper functions
