@@ -77,10 +77,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
       appBar: AppBar(
-        title: Image.asset(
-          'assets/trackr.png',
-          fit: BoxFit.contain,
-          height: 14, // Adjust the height as needed
+        title: GestureDetector(
+          onTap: navigateToAllDaysTracked,
+          child: Row(
+            children: [
+              const FaIcon(FontAwesomeIcons.fire, color: Colors.green),
+              const SizedBox(width: 10),
+              Text("${routineLogController.routineLogs.length} days", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
+            ]
+          ),
         ),
         centerTitle: false,
         actions: [
@@ -114,7 +119,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           columnWidths: const <int, TableColumnWidth>{
                             0: FlexColumnWidth(),
                             1: FlexColumnWidth(),
-                            2: FlexColumnWidth(),
                           },
                           children: [
                             TableRow(children: [
@@ -127,11 +131,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   title: "This Month",
                                   subtitle:
                                       "${logsForTheMonth.length} ${pluralize(word: "session", count: logsForTheMonth.length)}",
-                                  onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
-                              _CTableCell(
-                                  title: "Streak",
-                                  subtitle: "${routineLogController.routineLogs.length} days",
-                                  onTap: navigateToAllDaysTracked),
+                                  onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth))
                             ])
                           ],
                         )),
@@ -152,6 +152,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 20),
+                /// Do not make this a const
                 CalendarScreen()
               ],
             )),
