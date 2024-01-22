@@ -14,11 +14,8 @@ import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../utils/exercise_logs_utils.dart';
-import '../utils/shareables_utils.dart';
-import '../widgets/buttons/text_button_widget.dart';
-import '../utils/dialog_utils.dart';
 
-GlobalKey _calendarKey = GlobalKey();
+GlobalKey calendarKey = GlobalKey();
 
 class _DateViewModel {
   final DateTime dateTime;
@@ -29,8 +26,10 @@ class _DateViewModel {
 }
 
 class CalendarScreen extends StatefulWidget {
-  /// Do no make this a const as it has properties that depends on the state of this parent widget
-  CalendarScreen({super.key});
+  
+  final bool readOnly;
+
+  const CalendarScreen({super.key, this.readOnly = false});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -145,26 +144,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
+            if(!widget.readOnly)
+              IconButton(
                 onPressed: _decrementDate,
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
             Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(_currentDate.formattedMonthAndYear(),
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                      )),
-                  IconButton(
-                      onPressed: _onShareCalendar,
-                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
-                ],
-              ),
+              child: Text(_currentDate.formattedMonthAndYear(),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  )),
             ),
-            IconButton(
+            if(!widget.readOnly)
+              IconButton(
                 onPressed: _incrementDate,
                 icon: _hasLaterDate()
                     ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
@@ -177,10 +170,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: _CalendarHeader(),
               )
             : const SizedBox(height: 8),
-        _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate),
+        _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate, readOnly: widget.readOnly),
         const SizedBox(height: 10),
-        if (logsForCurrentDate.isNotEmpty) _RoutineLogListView(logs: logsForCurrentDate),
-        if (logsForCurrentDate.isEmpty)
+        if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
+        if (logsForCurrentDate.isEmpty && !widget.readOnly)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -216,58 +209,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           )
       ],
     );
-  }
-
-  void _onShareCalendar() {
-    displayBottomSheet(
-        color: tealBlueDark,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        context: context,
-        isScrollControlled: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          RepaintBoundary(
-              key: _calendarKey,
-              child: Container(
-                  color: tealBlueDark,
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(_currentDate.formattedMonthAndYear(),
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.montserrat(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          )),
-                      SharedPrefs().showCalendarDates
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: _CalendarHeader(),
-                            )
-                          : const SizedBox(height: 8),
-                      _Month(
-                          dates: _generateDates(), selectedDateTime: _currentDate, onTap: (_) {}, showSelector: false),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Image.asset(
-                          'assets/trackr.png',
-                          fit: BoxFit.contain,
-                          height: 8, // Adjust the height as needed
-                        ),
-                      ),
-                    ],
-                  ))),
-          const SizedBox(height: 10),
-          CTextButton(
-              onPressed: () {
-                captureImage(key: _calendarKey, pixelRatio: 5);
-                Navigator.of(context).pop();
-              },
-              label: "Share",
-              buttonColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              buttonBorderColor: Colors.transparent)
-        ]));
   }
 }
 
@@ -368,10 +309,10 @@ class _Date extends StatelessWidget {
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> dates;
   final DateTime selectedDateTime;
-  final bool showSelector;
+  final bool readOnly;
   final void Function(DateTime dateTime) onTap;
 
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, this.showSelector = true});
+  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.readOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -383,7 +324,7 @@ class _Month extends StatelessWidget {
           dateTime: date.dateTime,
           onTap: onTap,
           selectedDateTime: selectedDateTime,
-          showSelector: showSelector,
+          showSelector: !readOnly,
           hasLog: date.hasLog,
         );
       }

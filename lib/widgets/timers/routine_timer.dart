@@ -7,8 +7,9 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 class RoutineTimer extends StatefulWidget {
   final DateTime startTime;
   final bool digital;
+  final void Function(Duration duration)? onChangedDuration;
 
-  const RoutineTimer({super.key, required this.startTime, this.digital = false});
+  const RoutineTimer({super.key, required this.startTime, this.digital = false, this.onChangedDuration});
 
   @override
   State<RoutineTimer> createState() => _RoutineTimerState();
@@ -29,6 +30,10 @@ class _RoutineTimerState extends State<RoutineTimer> {
     super.initState();
     _elapsedDuration = DateTime.now().difference(widget.startTime);
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final onChangedDuration = widget.onChangedDuration;
+      if(onChangedDuration != null) {
+        onChangedDuration(_elapsedDuration);
+      }
       setState(() {
         _elapsedDuration = DateTime.now().difference(widget.startTime);
       });

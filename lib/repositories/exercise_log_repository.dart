@@ -35,8 +35,12 @@ class ExerciseLogRepository {
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
     return _exerciseLogs.map((exercise) {
       final sets = _sets[exercise.id] ?? [];
-      return exercise.copyWith(sets: sets);
+      return exercise.copyWith(sets: exercise.exercise.type == ExerciseType.duration ? _checkSets(sets) : sets);
     }).toList();
+  }
+
+  List<SetDto> _checkSets(List<SetDto> sets) {
+    return sets.map((set) => set.copyWith(checked: true)).toList();
   }
 
   void addExerciseLogs({required List<ExerciseDto> exercises}) {
