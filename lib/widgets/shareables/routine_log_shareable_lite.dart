@@ -9,18 +9,18 @@ import '../../enums/muscle_group_enums.dart';
 import '../../utils/string_utils.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 
-GlobalKey routineLogShareableTwoKey = GlobalKey();
+GlobalKey routineLogShareableLiteKey = GlobalKey();
 
-class RoutineLogShareableTwo extends StatelessWidget {
+class RoutineLogShareableLite extends StatelessWidget {
   final RoutineLogDto log;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const RoutineLogShareableTwo({super.key, required this.log, required this.frequencyData});
+  const RoutineLogShareableLite({super.key, required this.log, required this.frequencyData});
 
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      key: routineLogShareableTwoKey,
+      key: routineLogShareableLiteKey,
       child: Container(
         padding: const EdgeInsets.all(16),
         color: tealBlueDark,

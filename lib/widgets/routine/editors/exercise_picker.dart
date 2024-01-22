@@ -12,30 +12,39 @@ class ExercisePicker extends StatelessWidget {
   final void Function(ExerciseLogDto procedure) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const ExercisePicker({super.key, required this.selectedExercise, required this.exercises, required this.onSelect, required this.onSelectExercisesInLibrary});
+  const ExercisePicker(
+      {super.key,
+      required this.selectedExercise,
+      required this.exercises,
+      required this.onSelect,
+      required this.onSelectExercisesInLibrary});
 
   @override
   Widget build(BuildContext context) {
     final listTiles = exercises
         .map((procedure) => ListTile(
-        onTap: () => onSelect(procedure),
-        dense: true,
-        title: Text(procedure.exercise.name, style: GoogleFonts.montserrat(color: Colors.white))))
+              onTap: () => onSelect(procedure),
+              dense: true,
+              title: Text(procedure.exercise.name,
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
+            ))
         .toList();
 
     return exercises.isNotEmpty
         ? SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15, top: 10.0),
-            child: Text("Superset ${selectedExercise.exercise.name} with", style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
-          ),
-          ...listTiles],
-      ),
-    )
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 20.0, bottom: 10),
+                  child: Text("Superset ${selectedExercise.exercise.name} with",
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
+                ),
+                ...listTiles
+              ],
+            ),
+          )
         : _ProceduresPickerEmptyState(onPressed: onSelectExercisesInLibrary);
   }
 }

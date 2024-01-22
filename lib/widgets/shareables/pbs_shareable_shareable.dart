@@ -10,14 +10,14 @@ import '../../app_constants.dart';
 import '../../dtos/pb_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 
-GlobalKey routineLogShareableThreeKey = GlobalKey();
+GlobalKey pbsShareableKey = GlobalKey();
 
-class RoutineLogShareableThree extends StatelessWidget {
+class PBsShareable extends StatelessWidget {
   final GlobalKey globalKey;
   final SetDto set;
   final PBDto pbDto;
 
-  const RoutineLogShareableThree({super.key, required this.globalKey, required this.set, required this.pbDto});
+  const PBsShareable({super.key, required this.globalKey, required this.set, required this.pbDto});
 
   @override
   Widget build(BuildContext context) {

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/widgets/shareables/achievement_share.dart';
-import 'package:tracker_app/widgets/shareables/routine_log_shareable_four.dart';
-import 'package:tracker_app/widgets/shareables/routine_log_shareable_one.dart';
-import 'package:tracker_app/widgets/shareables/routine_log_shareable_three.dart';
-import 'package:tracker_app/widgets/shareables/routine_log_shareable_two.dart';
+import 'package:tracker_app/widgets/shareables/log_milestone_shareable.dart';
+import 'package:tracker_app/widgets/shareables/routine_log_shareable.dart';
+import 'package:tracker_app/widgets/shareables/pbs_shareable_shareable.dart';
+import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -15,17 +15,17 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../buttons/text_button_widget.dart';
 
-class RoutineLogShareableContainer extends StatefulWidget {
+class ShareableContainer extends StatefulWidget {
   final RoutineLogDto log;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const RoutineLogShareableContainer({super.key, required this.log, required this.frequencyData});
+  const ShareableContainer({super.key, required this.log, required this.frequencyData});
 
   @override
-  State<RoutineLogShareableContainer> createState() => _RoutineLogShareableContainerState();
+  State<ShareableContainer> createState() => _ShareableContainerState();
 }
 
-class _RoutineLogShareableContainerState extends State<RoutineLogShareableContainer> {
+class _ShareableContainerState extends State<ShareableContainer> {
   final _controller = PageController();
 
   bool isMultipleOfFive(int number) {
@@ -64,7 +64,7 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
         final pbs = setAndPB.value;
         for (final pb in pbs) {
           final key = GlobalKey();
-          final shareable = RoutineLogShareableThree(set: setAndPB.key, pbDto: pb, globalKey: key);
+          final shareable = PBsShareable(set: setAndPB.key, pbDto: pb, globalKey: key);
           pbShareAssets.add(shareable);
           pbShareAssetsKeys.add(key);
         }
@@ -73,19 +73,18 @@ class _RoutineLogShareableContainerState extends State<RoutineLogShareableContai
 
     final pages = [
       ...achievementsShareAssets,
-      if (isMultipleOfFive(allLogs.length)) RoutineLogShareableFour(label: "${allLogs.length}th"),
+      if (isMultipleOfFive(allLogs.length)) LogMilestoneShareable(label: "${allLogs.length}th"),
       ...pbShareAssets,
-      RoutineLogShareableOne(log: widget.log, frequencyData: widget.frequencyData),
-      RoutineLogShareableTwo(log: widget.log, frequencyData: widget.frequencyData),
+      RoutineLogShareable(log: widget.log, frequencyData: widget.frequencyData),
+      RoutineLogShareableLite(log: widget.log, frequencyData: widget.frequencyData),
     ];
 
     final pagesKeys = [
       ...achievementsShareAssetsKeys,
-      routineLogShareableFourKey,
+      if (isMultipleOfFive(allLogs.length)) logMilestoneShareableKey,
       ...pbShareAssetsKeys,
-      routineLogShareableOneKey,
-      routineLogShareableTwoKey,
-      routineLogShareableThreeKey
+      routineLogShareableKey,
+      routineLogShareableLiteKey,
     ];
 
     return Column(

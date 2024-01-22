@@ -4,18 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_constants.dart';
 
-GlobalKey routineLogShareableFourKey = GlobalKey();
+GlobalKey logMilestoneShareableKey = GlobalKey();
 
-class RoutineLogShareableFour extends StatelessWidget {
+class LogMilestoneShareable extends StatelessWidget {
   final String label;
 
-  const RoutineLogShareableFour({super.key, required this.label});
+  const LogMilestoneShareable({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
 
     return RepaintBoundary(
-      key: routineLogShareableFourKey,
+      key: logMilestoneShareableKey,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
         color: tealBlueDark,

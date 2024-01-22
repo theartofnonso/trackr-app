@@ -25,10 +25,8 @@ import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../widgets/fabs/expandable_fab.dart';
-import '../../widgets/fabs/fab_action.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../../widgets/shareables/routine_log_shareable_container.dart';
+import '../../widgets/shareables/shareable_container.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -71,23 +69,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                   onPressed: () => _onShareLog(log: log),
                   icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18)),
             ]),
-        floatingActionButton: ExpandableFab(
-          distance: 112,
-          children: [
-            ActionButton(
-              onPressed: () => _editLog(log: log),
-              icon: const FaIcon(FontAwesomeIcons.solidPenToSquare, color: Colors.white),
-            ),
-            ActionButton(
-              onPressed: _createTemplate,
-              icon: const FaIcon(FontAwesomeIcons.fileCirclePlus, color: Colors.white),
-            ),
-            ActionButton(
-              onPressed: _deleteLog,
-              icon: FaIcon(FontAwesomeIcons.trash, color: Colors.red.withOpacity(0.9)),
-            ),
-          ],
-        ),
+        floatingActionButton: FloatingActionButton(
+            heroTag: "routine_log_screen",
+            onPressed: _showBottomSheet,
+            backgroundColor: tealBlueLighter,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: const FaIcon(FontAwesomeIcons.circle)),
         body: Stack(children: [
           SafeArea(
             minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
@@ -186,6 +173,37 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ]));
   }
 
+  void _showBottomSheet() {
+    displayBottomSheet(context: context, child: Column(
+      children: [
+        ListTile(
+          dense: true,
+          title: Text("Edit Log", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.of(context).pop();
+            _editLog(log: widget.log);
+          },
+        ),
+        ListTile(
+          dense: true,
+          title: Text("Save as template", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.of(context).pop();
+            _createTemplate();
+          },
+        ),
+        ListTile(
+          dense: true,
+          title: Text("Delete log", style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+          onTap: () {
+            Navigator.of(context).pop();
+            _deleteLog();
+          },
+        ),
+      ]
+    ));
+  }
+
   void _onShareLog({required RoutineLogDto log}) {
     final completedExerciseLogsAndSets = _completedExerciseLogsAndSets(exerciseLogs: log.exerciseLogs);
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
@@ -195,7 +213,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: RoutineLogShareableContainer(log: updatedLog, frequencyData: calculateFrequency(completedExerciseLogsAndSets)));
+        child: ShareableContainer(log: updatedLog, frequencyData: calculateFrequency(completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {
