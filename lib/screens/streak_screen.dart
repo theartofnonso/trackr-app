@@ -40,7 +40,7 @@ class StreakScreen extends StatelessWidget {
                     )
                   ]),
                   const SizedBox(height: 10),
-                  Text("Streaks ${DateTime.now().year}",
+                  Text("Streak ${DateTime.now().year}",
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                   const SizedBox(height: 20),
                   Expanded(
