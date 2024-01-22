@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
@@ -12,7 +13,9 @@ import '../enums/routine_editor_type_enums.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import '../utils/shareables_utils.dart';
 import '../utils/string_utils.dart';
+import '../widgets/buttons/text_button_widget.dart';
 import 'calendar_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -87,7 +90,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
               padding: EdgeInsets.only(right: 14.0),
               child: Icon(Icons.settings),
             ),
-          )
+          ),
+          IconButton(
+              onPressed: _onShareCalendar,
+              icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
         ],
       ),
       body: SafeArea(
@@ -152,6 +158,33 @@ class _OverviewScreenState extends State<OverviewScreen> {
       ),
     );
   }
+
+  void _onShareCalendar() {
+    displayBottomSheet(
+        color: tealBlueDark,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          RepaintBoundary(
+              key: calendarKey,
+              child: Container(
+                  color: tealBlueDark,
+                  padding: const EdgeInsets.all(8),
+                  child: CalendarScreen(readOnly: true))),
+          const SizedBox(height: 10),
+          CTextButton(
+              onPressed: () {
+                captureImage(key: calendarKey, pixelRatio: 5);
+                Navigator.of(context).pop();
+              },
+              label: "Share",
+              buttonColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              buttonBorderColor: Colors.transparent)
+        ]));
+  }
+
 }
 
 class _CTableCell extends StatelessWidget {
