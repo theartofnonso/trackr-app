@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
@@ -73,30 +72,28 @@ void main() {
       DateTime(2023, 12, 1));
 
   test("Load Exercise Logs", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     expect(exerciseLogRepository.exerciseLogs.length, 3);
-
   });
 
   test("Do not load sets for [Exercise.Duration] in [RoutineEditorMode.log]", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     expect(exerciseLogRepository.sets[plankExerciseLog1.id]?.length, 0);
-
   });
 
   test("Remove Exercise Log", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.removeExerciseLog(logId: lyingLegCurlExerciseLog1.id);
 
@@ -105,70 +102,81 @@ void main() {
     expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == lyingLegCurlExerciseLog1.id), null);
 
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id], null);
-
   });
 
   test("Update Exercise Log notes", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.updateExerciseLogNotes(exerciseLogId: plankExerciseLog1.id, value: 'This works your core');
 
-    expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == plankExerciseLog1.id)?.notes, 'This works your core');
-
+    expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == plankExerciseLog1.id)?.notes,
+        'This works your core');
   });
 
   test("Super set Exercise Logs", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
-    exerciseLogRepository.addSuperSets(firstExerciseLogId: lyingLegCurlExerciseLog1.id, secondExerciseLogId: benchPressExerciseLog1.id, superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
+    exerciseLogRepository.addSuperSets(
+        firstExerciseLogId: lyingLegCurlExerciseLog1.id,
+        secondExerciseLogId: benchPressExerciseLog1.id,
+        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
 
-    expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == lyingLegCurlExerciseLog1.id)?.superSetId, "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
+    expect(
+        exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == lyingLegCurlExerciseLog1.id)?.superSetId,
+        "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
 
-    expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == benchPressExerciseLog1.id)?.superSetId, "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
-
+    expect(
+        exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == benchPressExerciseLog1.id)?.superSetId,
+        "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
   });
 
   test("Remove Super set Exercise Logs", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
-    exerciseLogRepository.addSuperSets(firstExerciseLogId: lyingLegCurlExerciseLog1.id, secondExerciseLogId: benchPressExerciseLog1.id, superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
+    exerciseLogRepository.addSuperSets(
+        firstExerciseLogId: lyingLegCurlExerciseLog1.id,
+        secondExerciseLogId: benchPressExerciseLog1.id,
+        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
 
-    exerciseLogRepository.removeSuperSet(superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
+    exerciseLogRepository.removeSuperSet(
+        superSetId: "superset_id_${lyingLegCurlExerciseLog1.exercise.id}_${benchPressExerciseLog1.exercise.id}");
 
-    expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == lyingLegCurlExerciseLog1.id)?.superSetId, "");
+    expect(
+        exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == lyingLegCurlExerciseLog1.id)?.superSetId,
+        "");
 
-    expect(exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == benchPressExerciseLog1.id)?.superSetId, "");
-
+    expect(
+        exerciseLogRepository.exerciseLogs.firstWhereOrNull((log) => log.id == benchPressExerciseLog1.id)?.superSetId,
+        "");
   });
 
   test("Add new set", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.addSet(exerciseLogId: lyingLegCurlExerciseLog1.id, pastSets: lyingLegCurlExerciseLog1.sets);
 
     final newLength = exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?.length;
 
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?.length, newLength);
-
   });
 
   test("Remove set", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.removeSet(exerciseLogId: lyingLegCurlExerciseLog1.id, index: 1);
 
@@ -177,68 +185,88 @@ void main() {
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?.length, newLength);
 
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?[1], const SetDto(100, 6, true));
-
   });
 
   test("Update weight (Value 1)", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
-    exerciseLogRepository.updateWeight(exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(90, 15, false));
+    exerciseLogRepository.updateWeight(
+        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(90, 15, false));
 
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?[0].value1, 90);
-
   });
 
   test("Update reps (Value 2)", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
-    exerciseLogRepository.updateWeight(exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(80, 25, false));
+    exerciseLogRepository.updateWeight(
+        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(80, 25, false));
 
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?[0].value2, 25);
-
   });
 
   test("Update check", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
-    exerciseLogRepository.updateSetCheck(exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(80, 25, true));
+    exerciseLogRepository.updateSetCheck(
+        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(80, 25, true));
 
     expect(exerciseLogRepository.sets[lyingLegCurlExerciseLog1.id]?[0].checked, true);
-
   });
 
   test("Merge exercise and sets", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
 
     expect(mergedLogs.expand((element) => element.sets).length, 6);
+  });
 
+  test("All [ExerciseType.duration] sets must be checked when merging", () {
+    final exerciseLogRepository = ExerciseLogRepository();
+
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+
+    exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog1.id, pastSets: []);
+    exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog1.id, pastSets: []);
+
+    exerciseLogRepository.updateDuration(
+        exerciseLogId: plankExerciseLog1.id, index: 0, setDto: const SetDto(120000, 0, false));
+    exerciseLogRepository.updateDuration(
+        exerciseLogId: plankExerciseLog1.id, index: 1, setDto: const SetDto(100000, 0, false));
+
+    final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
+
+    final plankLog = mergedLogs.firstWhereOrNull((log) => log.id == plankExerciseLog1.id);
+
+    final allChecked = plankLog?.sets.where((set) => set.checked == true);
+
+    expect(allChecked?.length, 2);
   });
 
   test("Clear Controller", () {
-
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.clear();
 
     expect(exerciseLogRepository.sets.length, 0);
 
     expect(exerciseLogRepository.exerciseLogs.length, 0);
-
   });
 }

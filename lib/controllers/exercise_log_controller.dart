@@ -78,9 +78,12 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
+  void updateDuration(
+      {required String exerciseLogId, required int index, required SetDto setDto, required bool notify}) {
     _exerciseLogRepository.updateDuration(exerciseLogId: exerciseLogId, index: index, setDto: setDto);
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {

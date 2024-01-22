@@ -80,10 +80,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final log = widget.log;
 
-    final routineLog = log.copyWith(
-        exerciseLogs: exerciseLogs,
-        endTime: DateTime.now(),
-        updatedAt: DateTime.now());
+    final routineLog = log.copyWith(exerciseLogs: exerciseLogs, endTime: DateTime.now(), updatedAt: DateTime.now());
     return routineLog;
   }
 

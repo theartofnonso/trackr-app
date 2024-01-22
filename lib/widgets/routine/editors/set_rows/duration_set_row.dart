@@ -15,7 +15,7 @@ class DurationSetRow extends StatelessWidget {
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final DateTime startTime;
-  final void Function(Duration duration) onChangedDuration;
+  final void Function(Duration duration, bool notify) onChangedDuration;
 
   const DurationSetRow({
     super.key,
@@ -29,12 +29,11 @@ class DurationSetRow extends StatelessWidget {
 
   void _stopTimer() {
     if (setDto.checked) return;
-    onChangedDuration(DateTime.now().difference(startTime));
+    onChangedDuration(DateTime.now().difference(startTime), true);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Table(
       border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
@@ -63,7 +62,7 @@ class DurationSetRow extends StatelessWidget {
                     : RoutineTimer(
                         startTime: startTime,
                         digital: true,
-                      ),
+                        onChangedDuration: (Duration duration) => onChangedDuration(duration, false)),
               ),
             ),
           ),

@@ -20,7 +20,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/general_utils.dart';
 
-const _logModeTimerMessage = "Tap the + button to add a timer";
+const _logModeTimerMessage = "Tap + to add a timer";
 const _editModeTimerMessage = "Timer will be available in log mode";
 
 class ExerciseLogWidget extends StatefulWidget {
@@ -126,10 +126,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
-    final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: true);
+  void _updateDuration({required int index, required Duration duration, required SetDto setDto, required bool notify}) {
+    final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: notify);
     Provider.of<ExerciseLogController>(context, listen: false)
-        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: notify);
     _cacheLog();
   }
 
@@ -244,25 +244,26 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 const SizedBox(height: 10),
               ],
             ),
-          TextField(
-            controller: TextEditingController(text: widget.exerciseLogDto.notes),
-            onChanged: (value) => _updateProcedureNotes(value: value),
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
-              filled: true,
-              fillColor: tealBlueLighter,
-              hintText: "Enter notes",
-              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
+          if (widget.editorType == RoutineEditorMode.edit)
+            TextField(
+              controller: TextEditingController(text: widget.exerciseLogDto.notes),
+              onChanged: (value) => _updateProcedureNotes(value: value),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                filled: true,
+                fillColor: tealBlueLighter,
+                hintText: "Enter notes",
+                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
+              ),
+              maxLines: null,
+              cursorColor: Colors.white,
+              keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.sentences,
+              style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
             ),
-            maxLines: null,
-            cursorColor: Colors.white,
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.sentences,
-            style:
-                GoogleFonts.montserrat(fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-          ),
           const SizedBox(height: 12),
           switch (exerciseType) {
             ExerciseType.weights => WeightRepsSetHeader(
@@ -322,7 +323,8 @@ class _SetListView extends StatelessWidget {
   final void Function({required int index}) removeSet;
   final void Function({required int index, required num value, required SetDto setDto}) updateReps;
   final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
-  final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
+  final void Function({required int index, required Duration duration, required SetDto setDto, required bool notify})
+      updateDuration;
 
   const _SetListView(
       {required this.exerciseType,
@@ -338,7 +340,6 @@ class _SetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final children = sets.mapIndexed((index, setDto) {
       final setWidget = switch (exerciseType) {
         ExerciseType.weights => WeightsSetRow(
@@ -363,7 +364,8 @@ class _SetListView extends StatelessWidget {
             editorType: editorType,
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
             onRemoved: () => removeSet(index: index),
-            onChangedDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+            onChangedDuration: (Duration duration, bool notify) =>
+                updateDuration(index: index, duration: duration, setDto: setDto, notify: notify),
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
           ),
       };
