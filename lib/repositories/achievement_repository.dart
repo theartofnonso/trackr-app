@@ -340,7 +340,9 @@ class AchievementRepository {
   /// [AchievementType.oneMoreRep]
   ProgressDto _calculateOneMoreRepAchievement(
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-    final achievedLogs = logs[ExerciseType.weights] ?? [];
+    final weightsLogs = logs[ExerciseType.weights] ?? [];
+    final bodyWeightLogs = logs[ExerciseType.bodyWeight] ?? [];
+    final achievedLogs = [...weightsLogs, ...bodyWeightLogs];
 
     final reps = achievedLogs.map((log) {
       final reps = log.sets.map((set) => set.value2).reduce((total, reps) => total + reps);

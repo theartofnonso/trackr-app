@@ -151,6 +151,8 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
+      expect(achievementRepository.achievements.firstWhere((achievement) => achievement.type == AchievementType.fiveMinutesToGo).progress.dates, {});
+
       final plankExerciseLog2 = ExerciseLogDto(
           plankExercise.id,
           "routineLogId1",
@@ -187,6 +189,8 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
+      expect(achievementRepository.achievements.firstWhere((achievement) => achievement.type == AchievementType.tenMinutesToGo).progress.dates, {});
+
       final plankExerciseLog2 = ExerciseLogDto(
           plankExercise.id,
           "routineLogId1",
@@ -222,6 +226,8 @@ void main() {
       final initialRoutineLogs = List.filled(14, coreDayRoutineLog);
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      expect(achievementRepository.achievements.firstWhere((achievement) => achievement.type == AchievementType.fifteenMinutesToGo).progress.dates, {});
 
       final plankExerciseLog2 = ExerciseLogDto(
           plankExercise.id,
@@ -274,7 +280,7 @@ void main() {
     final next15Weeks = _generateWeeklyDateTimes(15);
 
     final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
-      print(next15Weeks[index]);
+
       return RoutineLogDto(
           id: "routineLogId1",
           templateId: "templateId1",
@@ -288,6 +294,8 @@ void main() {
     });
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    print("initialRoutineLogs: ${initialRoutineLogs.map((e) => e.createdAt)}");
 
     final next16Weeks = _generateWeeklyDateTimes(16);
 
