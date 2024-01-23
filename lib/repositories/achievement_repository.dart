@@ -150,7 +150,6 @@ class AchievementRepository {
         achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
   }
 
-  /// [AchievementType.obsessed]
   List<DateTimeRange> _consecutiveDatesWhere(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
       required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation}) {
@@ -189,6 +188,7 @@ class AchievementRepository {
         achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
   }
 
+  /// [AchievementType.obsessed]
   ProgressDto _calculateObsessedAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges =

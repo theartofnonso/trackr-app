@@ -58,7 +58,7 @@ class AmplifyTemplateRepository {
     }
   }
 
-  Future<void> updateTemplateExerciseLogs(
+  Future<void> updateTemplateSetsOnly(
       {required String templateId, required List<ExerciseLogDto> newExercises}) async {
     final result = (await Amplify.DataStore.query(
       RoutineTemplate.classType,
@@ -70,7 +70,11 @@ class AmplifyTemplateRepository {
       final oldTemplateDto = oldTemplate.dto();
 
       final updatedExercises = oldTemplateDto.exercises.map((oldExercise) {
-        final newExercise = newExercises.firstWhere((newExercise) => newExercise.id == oldExercise.id);
+        final newExercise = newExercises.firstWhereOrNull((newExercise) => newExercise.id == oldExercise.id);
+
+        if (newExercise == null) {
+          return oldExercise;
+        }
 
         final updatedSets = <SetDto>[];
 

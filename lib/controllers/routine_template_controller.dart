@@ -60,11 +60,11 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  Future<void> updateTemplateExerciseLogs(
+  Future<void> updateTemplateSetsOnly(
       {required String templateId, required List<ExerciseLogDto> newExercises}) async {
     isLoading = true;
     try {
-      await _amplifyTemplateRepository.updateTemplateExerciseLogs(templateId: templateId, newExercises: newExercises);
+      await _amplifyTemplateRepository.updateTemplateSetsOnly(templateId: templateId, newExercises: newExercises);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

@@ -295,7 +295,9 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    print("initialRoutineLogs: ${initialRoutineLogs.map((e) => e.createdAt)}");
+    // print("initialRoutineLogs: ${initialRoutineLogs.map((e) => e.createdAt)}");
+    //
+    // print("dates: ${achievementRepository.achievements.firstWhere((achievement) => achievement.type == AchievementType.obsessed).progress.dates}");
 
     final next16Weeks = _generateWeeklyDateTimes(16);
 
