@@ -25,7 +25,7 @@ enum AchievementType {
       "Congratulations on logging 100 days with Trackr!"),
   supersetSpecialist(
       "Superset Specialist",
-      "Log 50 sessions with at least one superset in each",
+      "Log 50 sessions with at least one superset",
       50,
       "Superset Specialist focuses on incorporating supersets into your workout routine. Supersets are a great way to increase the intensity of your workout and save time as well.",
       "Congratulations! You've successfully completed a remarkable journey of 50 workout sessions, each powered with the intensity of supersets."),

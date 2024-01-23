@@ -39,7 +39,7 @@ class AchievementRepository {
       // Try to find the same achievement in the old list
       var oldAchievement = _achievements.firstWhereOrNull((old) => old.type == newAchievement.type);
 
-      if(oldAchievement == null) {
+      if (oldAchievement == null) {
         continue;
       }
 
@@ -61,45 +61,36 @@ class AchievementRepository {
 
     /// Group ExerciseLogs by ExerciseType from the current year logs
     final exerciseLogsByType = groupRoutineLogsByExerciseType(routineLogs: routineLogsForCurrentYear);
-    final exerciseLogsByTypeForCurrentYear = exerciseLogsByType.map((key, value) {
-      final logs = value.where((log) => log.createdAt.withinCurrentYear());
-      return MapEntry(key, logs.toList());
-    });
 
     /// Group RoutineLogs by week from the current year logs
     final weeklyRoutineLogs = groupRoutineLogsByWeek(routineLogs: routineLogsForCurrentYear);
-    final weeklyRoutineLogsForCurrentYear = weeklyRoutineLogs
-        .map((key, value) => MapEntry(key, value.where((log) => log.createdAt.withinCurrentYear()).toList()));
 
     final progress = switch (type) {
       AchievementType.days12 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
       AchievementType.days30 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
       AchievementType.days75 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
       AchievementType.days100 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
-      AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
-      AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
-      AchievementType.fifteenMinutesToGo =>
-        _calculateTimeAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
+      AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByType, type: type),
+      AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByType, type: type),
+      AchievementType.fifteenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByType, type: type),
       AchievementType.supersetSpecialist =>
         _calculateSuperSetSpecialistAchievement(logs: routineLogsForCurrentYear, target: type.target),
-      AchievementType.obsessed =>
-        _calculateObsessedAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+      AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.neverSkipAMonday =>
-        _calculateNeverSkipAMondayAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+        _calculateNeverSkipAMondayAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.neverSkipALegDay =>
-        _calculateNeverSkipALegDayAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+        _calculateNeverSkipALegDayAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.weekendWarrior =>
-        _calculateWeekendWarriorAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+        _calculateWeekendWarriorAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.sweatMarathon =>
         _calculateSweatEquityAchievement(logs: routineLogsForCurrentYear, target: type.target),
       AchievementType.bodyweightChampion =>
-        _calculateBodyWeightChampionAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
+        _calculateBodyWeightChampionAchievement(logs: exerciseLogsByType, type: type),
       AchievementType.strongerThanEver =>
-        _calculateStrongerThanEverAchievement(logs: exerciseLogsByTypeForCurrentYear, target: type.target),
+        _calculateStrongerThanEverAchievement(logs: exerciseLogsByType, target: type.target),
       AchievementType.timeUnderTension =>
-        _calculateTimeUnderTensionAchievement(logs: exerciseLogsByTypeForCurrentYear, target: type.target),
-      AchievementType.oneMoreRep =>
-        _calculateOneMoreRepAchievement(logs: exerciseLogsByTypeForCurrentYear, target: type.target)
+        _calculateTimeUnderTensionAchievement(logs: exerciseLogsByType, target: type.target),
+      AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogsByType, target: type.target)
     };
 
     return progress;

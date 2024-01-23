@@ -27,7 +27,7 @@ void main() {
   final lyingLegCurlExerciseLog1 = ExerciseLogDto(
       lyingLegCurlExercise.id,
       "routineLogId1",
-      "superSetId",
+      "${plankExercise.id}${lyingLegCurlExercise.id}",
       lyingLegCurlExercise,
       "notes",
       [
@@ -40,7 +40,7 @@ void main() {
   final plankExerciseLog1 = ExerciseLogDto(
       plankExercise.id,
       "routineLogId1",
-      "superSetId",
+      "${plankExercise.id}${lyingLegCurlExercise.id}",
       plankExercise,
       "notes",
       [
@@ -66,6 +66,17 @@ void main() {
       templateId: "templateId1",
       name: "Core Day",
       exerciseLogs: [plankExerciseLog1],
+      notes: "notes",
+      startTime: DateTime(2024, 12, 1),
+      endTime: DateTime(2024, 12, 1),
+      createdAt: DateTime(2024, 1, 1),
+      updatedAt: DateTime(2024, 1, 1));
+
+  final coreAndLegDayRoutineLog = RoutineLogDto(
+      id: "routineLogId1",
+      templateId: "templateId1",
+      name: "Core And Leg Day",
+      exerciseLogs: [lyingLegCurlExerciseLog1, plankExerciseLog1],
       notes: "notes",
       startTime: DateTime(2024, 12, 1),
       endTime: DateTime(2024, 12, 1),
@@ -130,40 +141,184 @@ void main() {
       expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.days100).progress.remainder, 0);
     });
   });
+  
+  group("Achievement Type Time To Go", () {
+    
+    test("AchievementType.fiveMinutesToGo", () {
+      final achievementRepository = AchievementRepository();
 
-  test("AchievementType.fiveMinutesToGo", () {
+      final initialRoutineLogs = List.filled(4, coreDayRoutineLog);
+
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      final plankExerciseLog2 = ExerciseLogDto(
+          plankExercise.id,
+          "routineLogId1",
+          "superSetId",
+          plankExercise,
+          "notes",
+          [
+            const SetDto(300000, 0, true)
+          ],
+          DateTime(2024, 2, 1));
+
+      final coreDay1RoutineLog = RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core Day",
+          exerciseLogs: [plankExerciseLog2],
+          notes: "notes",
+          startTime: DateTime(2024, 12, 1),
+          endTime: DateTime(2024, 12, 1),
+          createdAt: DateTime(2024, 2, 1),
+          updatedAt: DateTime(2024, 1, 1));
+
+      final recentRoutineLogs = List.filled(5, coreDay1RoutineLog);
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.fiveMinutesToGo).progress.remainder, 0);
+    });
+
+    test("AchievementType.tenMinutesToGo", () {
+      final achievementRepository = AchievementRepository();
+
+      final initialRoutineLogs = List.filled(4, coreDayRoutineLog);
+
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      final plankExerciseLog2 = ExerciseLogDto(
+          plankExercise.id,
+          "routineLogId1",
+          "superSetId",
+          plankExercise,
+          "notes",
+          [
+            const SetDto(600000, 0, true)
+          ],
+          DateTime(2024, 2, 1));
+
+      final coreDay1RoutineLog = RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core Day",
+          exerciseLogs: [plankExerciseLog2],
+          notes: "notes",
+          startTime: DateTime(2024, 12, 1),
+          endTime: DateTime(2024, 12, 1),
+          createdAt: DateTime(2024, 2, 1),
+          updatedAt: DateTime(2024, 1, 1));
+
+      final recentRoutineLogs = List.filled(10, coreDay1RoutineLog);
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.tenMinutesToGo).progress.remainder, 0);
+    });
+
+    test("AchievementType.fifteenMinutesToGo", () {
+      final achievementRepository = AchievementRepository();
+
+      final initialRoutineLogs = List.filled(14, coreDayRoutineLog);
+
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      final plankExerciseLog2 = ExerciseLogDto(
+          plankExercise.id,
+          "routineLogId1",
+          "superSetId",
+          plankExercise,
+          "notes",
+          [
+            const SetDto(900000, 0, true)
+          ],
+          DateTime(2024, 2, 1));
+
+      final coreDay1RoutineLog = RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core Day",
+          exerciseLogs: [plankExerciseLog2],
+          notes: "notes",
+          startTime: DateTime(2024, 12, 1),
+          endTime: DateTime(2024, 12, 1),
+          createdAt: DateTime(2024, 2, 1),
+          updatedAt: DateTime(2024, 1, 1));
+
+      final recentRoutineLogs = List.filled(15, coreDay1RoutineLog);
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.fifteenMinutesToGo).progress.remainder, 0);
+    });
+  });
+  
+  test("AchievementType.supersetSpecialist", () {
     final achievementRepository = AchievementRepository();
 
-    final initialRoutineLogs = List.filled(4, coreDayRoutineLog);
+    final initialRoutineLogs = List.filled(49, coreAndLegDayRoutineLog);
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final plankExerciseLog2 = ExerciseLogDto(
-        plankExercise.id,
-        "routineLogId1",
-        "superSetId",
-        plankExercise,
-        "notes",
-        [
-          const SetDto(300000, 0, true)
-        ],
-        DateTime(2024, 2, 1));
-
-    final coreDay1RoutineLog = RoutineLogDto(
-        id: "routineLogId1",
-        templateId: "templateId1",
-        name: "Core Day",
-        exerciseLogs: [plankExerciseLog2],
-        notes: "notes",
-        startTime: DateTime(2024, 12, 1),
-        endTime: DateTime(2024, 12, 1),
-        createdAt: DateTime(2024, 2, 1),
-        updatedAt: DateTime(2024, 1, 1));
-
-    final recentRoutineLogs = List.filled(5, coreDay1RoutineLog);
+    final recentRoutineLogs = List.filled(50, coreAndLegDayRoutineLog);
 
     final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
 
-    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.fiveMinutesToGo).progress.remainder, 0);
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.supersetSpecialist).progress.remainder, 0);
+
+  });
+
+  test("AchievementType.obsessed", () {
+    final achievementRepository = AchievementRepository();
+
+    final next15Weeks = _generateWeeklyDateTimes(15);
+
+    final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
+      print(next15Weeks[index]);
+      return RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Leg Day",
+          exerciseLogs: [lyingLegCurlExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          createdAt: next15Weeks[index],
+          updatedAt: next15Weeks[index]);
+    });
+
+    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    final next16Weeks = _generateWeeklyDateTimes(16);
+
+    final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
+        id: "routineLogId1",
+        templateId: "templateId1",
+        name: "Core And Leg Day",
+        exerciseLogs: [lyingLegCurlExerciseLog1],
+        notes: "notes",
+        startTime: DateTime.now(),
+        endTime: DateTime.now(),
+        createdAt: next16Weeks[index],
+        updatedAt: next16Weeks[index]));
+
+    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.obsessed).progress.remainder, 0);
+
   });
 }
+
+List<DateTime> _generateWeeklyDateTimes(int n) {
+  List<DateTime> dateTimes = [];
+  DateTime baseDate = DateTime.now();
+
+  for (int i = 0; i < n; i++) {
+    // Add 7 days for each week
+    DateTime nextDate = baseDate.add(Duration(days: 7 * i));
+    dateTimes.add(nextDate);
+  }
+
+  return dateTimes;
+}
+
