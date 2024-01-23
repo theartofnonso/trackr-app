@@ -38,7 +38,7 @@ class _ShareableContainerState extends State<ShareableContainer> {
 
     final allLogs = routineLogController.routineLogs;
 
-    final achievements = routineLogController.calculateLogAchievements();
+    final achievements = routineLogController.calculateNewLogAchievements();
 
     List<Widget> achievementsShareAssets = [];
     final achievementsShareAssetsKeys = [];

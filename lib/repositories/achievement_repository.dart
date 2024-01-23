@@ -27,7 +27,7 @@ class AchievementRepository {
     }).toList();
   }
 
-  List<AchievementDto> calculateAchievements({required List<RoutineLogDto> routineLogs}) {
+  List<AchievementDto> calculateNewLogAchievements({required List<RoutineLogDto> routineLogs}) {
     final newAchievements = AchievementType.values.map((achievementType) {
       final progress = _calculateProgress(routineLogs: routineLogs, type: achievementType);
       return AchievementDto(type: achievementType, progress: progress);
@@ -267,13 +267,13 @@ class AchievementRepository {
   /// [AchievementType.fifteenMinutesToGo]
   ProgressDto _calculateTimeAchievement(
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-    final achievedLogs = logs[ExerciseType.duration] ?? [];
-    List<ExerciseLogDto> durations = achievedLogs.where((log) {
+    final durationLogs = logs[ExerciseType.duration] ?? [];
+    List<ExerciseLogDto> achievedLogs = durationLogs.where((log) {
       return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
     }).toList();
 
-    final progress = durations.length / type.target;
-    final remainder = type.target - durations.length;
+    final progress = achievedLogs.length / type.target;
+    final remainder = type.target - achievedLogs.length;
 
     return generateProgress(
         achievedLogs: achievedLogs,
