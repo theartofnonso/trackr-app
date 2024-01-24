@@ -70,8 +70,8 @@ DateTimeRange thisYearDateRange() {
   return DateTimeRange(start: startOfYear, end: endOfYear);
 }
 
-List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
-  DateTime lastDayOfCurrentWeek = DateTime.now().lastWeekDay();
+List<DateTimeRange> generateWeekRangesFrom({required DateTime startDate, required DateTime endDate}) {
+  DateTime lastDayOfCurrentWeek = endDate.lastWeekDay();
 
   List<DateTimeRange> weekRanges = [];
 
@@ -90,9 +90,9 @@ List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
   return weekRanges;
 }
 
-List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
+List<DateTimeRange> generateMonthRangesFrom({required DateTime startDate, required DateTime endDate}) {
   // Find the last day of the current month
-  DateTime lastDayOfCurrentMonth = DateTime.now().lastMonthDay();
+  DateTime lastDayOfCurrentMonth = endDate.lastMonthDay();
   List<DateTimeRange> monthRanges = [];
 
   // Adjust the start date to the first day of the month

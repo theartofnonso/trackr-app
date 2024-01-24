@@ -126,9 +126,11 @@ List<Widget> setsToWidgets(
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  DateTime startDate = routineLogs.first.createdAt;
+  DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
 
-  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate);
+  DateTime lastDate = routineLogs.lastOrNull?.createdAt ?? DateTime.now();
+
+  List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
 
   for (final weekRange in weekRanges) {
     map[weekRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: weekRange)).toList();
@@ -140,9 +142,11 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<Ro
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  DateTime startDate = routineLogs.first.createdAt;
+  DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
 
-  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate);
+  DateTime lastDate = routineLogs.lastOrNull?.createdAt ?? DateTime.now();
+
+  List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
 
   for (final monthRange in monthRanges) {
     map[monthRange] = routineLogs.where((log) => log.createdAt.isBetweenRange(range: monthRange)).toList();

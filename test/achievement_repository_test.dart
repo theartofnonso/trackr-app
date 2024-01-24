@@ -274,58 +274,135 @@ void main() {
 
   });
 
-  test("AchievementType.obsessed", () {
-    final achievementRepository = AchievementRepository();
+  group("Consecutive Days Achievements", () {
+    test("AchievementType.obsessed", () {
+      final achievementRepository = AchievementRepository();
 
-    final next15Weeks = _generateWeeklyDateTimes(15);
+      final next15Weeks = _generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
 
-    final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
+      final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
 
-      return RoutineLogDto(
+        return RoutineLogDto(
+            id: "routineLogId1",
+            templateId: "templateId1",
+            name: "Leg Day",
+            exerciseLogs: [lyingLegCurlExerciseLog1],
+            notes: "notes",
+            startTime: DateTime.now(),
+            endTime: DateTime.now(),
+            createdAt: next15Weeks[index],
+            updatedAt: next15Weeks[index]);
+      });
+
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      final next16Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
+
+      final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
           id: "routineLogId1",
           templateId: "templateId1",
-          name: "Leg Day",
+          name: "Core And Leg Day",
           exerciseLogs: [lyingLegCurlExerciseLog1],
           notes: "notes",
           startTime: DateTime.now(),
           endTime: DateTime.now(),
-          createdAt: next15Weeks[index],
-          updatedAt: next15Weeks[index]);
+          createdAt: next16Weeks[index],
+          updatedAt: next16Weeks[index]));
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.obsessed).progress.remainder, 0);
+
     });
 
-    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+    test("AchievementType.neverSkipAMonday", () {
+      final achievementRepository = AchievementRepository();
 
-    // print("initialRoutineLogs: ${initialRoutineLogs.map((e) => e.createdAt)}");
-    //
-    // print("dates: ${achievementRepository.achievements.firstWhere((achievement) => achievement.type == AchievementType.obsessed).progress.dates}");
+      final next15Weeks = _generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
 
-    final next16Weeks = _generateWeeklyDateTimes(16);
+      final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
 
-    final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
-        id: "routineLogId1",
-        templateId: "templateId1",
-        name: "Core And Leg Day",
-        exerciseLogs: [lyingLegCurlExerciseLog1],
-        notes: "notes",
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
-        createdAt: next16Weeks[index],
-        updatedAt: next16Weeks[index]));
+        return RoutineLogDto(
+            id: "routineLogId1",
+            templateId: "templateId1",
+            name: "Leg Day",
+            exerciseLogs: [lyingLegCurlExerciseLog1],
+            notes: "notes",
+            startTime: DateTime.now(),
+            endTime: DateTime.now(),
+            createdAt: next15Weeks[index],
+            updatedAt: next15Weeks[index]);
+      });
 
-    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.obsessed).progress.remainder, 0);
+      final next16Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
 
+      final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core And Leg Day",
+          exerciseLogs: [lyingLegCurlExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          createdAt: next16Weeks[index],
+          updatedAt: next16Weeks[index]));
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.neverSkipAMonday).progress.remainder, 0);
+
+    });
+
+    test("AchievementType.neverSkipALegDay", () {
+      final achievementRepository = AchievementRepository();
+
+      final next15Weeks = _generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
+
+      final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
+
+        return RoutineLogDto(
+            id: "routineLogId1",
+            templateId: "templateId1",
+            name: "Leg Day",
+            exerciseLogs: [lyingLegCurlExerciseLog1],
+            notes: "notes",
+            startTime: DateTime.now(),
+            endTime: DateTime.now(),
+            createdAt: next15Weeks[index],
+            updatedAt: next15Weeks[index]);
+      });
+
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      final next16Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
+
+      final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core And Leg Day",
+          exerciseLogs: [lyingLegCurlExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          createdAt: next16Weeks[index],
+          updatedAt: next16Weeks[index]));
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.neverSkipALegDay).progress.remainder, 0);
+
+    });
   });
 }
 
-List<DateTime> _generateWeeklyDateTimes(int n) {
+List<DateTime> _generateWeeklyDateTimes({required int size, required DateTime startDate}) {
   List<DateTime> dateTimes = [];
-  DateTime baseDate = DateTime.now();
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < size; i++) {
     // Add 7 days for each week
-    DateTime nextDate = baseDate.add(Duration(days: 7 * i));
+    DateTime nextDate = startDate.add(Duration(days: 7 * i));
     dateTimes.add(nextDate);
   }
 
