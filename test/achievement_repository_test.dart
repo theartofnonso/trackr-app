@@ -24,6 +24,13 @@ void main() {
       type: ExerciseType.duration,
       owner: false);
 
+  final pullUpExercise = ExerciseDto(
+      id: "id_pullUpExercise",
+      name: "Pull Up",
+      primaryMuscleGroup: MuscleGroup.back,
+      type: ExerciseType.bodyWeight,
+      owner: false);
+
   final lyingLegCurlExerciseLog1 = ExerciseLogDto(
       lyingLegCurlExercise.id,
       "routineLogId1",
@@ -50,6 +57,32 @@ void main() {
       ],
       DateTime.now());
 
+  final pullUpExerciseLog1 = ExerciseLogDto(
+      pullUpExercise.id,
+      "routineLogId1",
+      "superSetId",
+      pullUpExercise,
+      "notes",
+      [
+        const SetDto(100, 15, true),
+        const SetDto(240, 8, true),
+        const SetDto(150, 6, true),
+      ],
+      DateTime(2023, 12, 1));
+
+  final pullUpExerciseLog2 = ExerciseLogDto(
+      pullUpExercise.id,
+      "routineLogId1",
+      "superSetId",
+      pullUpExercise,
+      "notes",
+      [
+        const SetDto(100, 15, true),
+        const SetDto(240, 8, true),
+        const SetDto(150, 6, true),
+      ],
+      DateTime(2023, 12, 1));
+
   final legDayRoutineLog = RoutineLogDto(
       id: "routineLogId1",
       templateId: "templateId1",
@@ -66,6 +99,17 @@ void main() {
       templateId: "templateId1",
       name: "Core Day",
       exerciseLogs: [plankExerciseLog1],
+      notes: "notes",
+      startTime: DateTime(2024, 12, 1),
+      endTime: DateTime(2024, 12, 1),
+      createdAt: DateTime(2024, 1, 1),
+      updatedAt: DateTime(2024, 1, 1));
+
+  final bodyWeightDayRoutineLog = RoutineLogDto(
+      id: "routineLogId1",
+      templateId: "templateId1",
+      name: "BodyWeight Day",
+      exerciseLogs: [pullUpExerciseLog1],
       notes: "notes",
       startTime: DateTime(2024, 12, 1),
       endTime: DateTime(2024, 12, 1),
@@ -394,6 +438,246 @@ void main() {
       expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.neverSkipALegDay).progress.remainder, 0);
 
     });
+
+    test("AchievementType.weekendWarrior", () {
+      final achievementRepository = AchievementRepository();
+
+      final next7Weeks = _generateWeeklyDateTimes(size: 7, startDate: DateTime(2024, 1, 1));
+
+      final initialRoutineLogs = List.generate(next7Weeks.length, (index) {
+
+        return RoutineLogDto(
+            id: "routineLogId1",
+            templateId: "templateId1",
+            name: "Leg Day",
+            exerciseLogs: [lyingLegCurlExerciseLog1],
+            notes: "notes",
+            startTime: DateTime.now(),
+            endTime: DateTime.now(),
+            createdAt: next7Weeks[index],
+            updatedAt: next7Weeks[index]);
+      });
+
+      achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+      final next8Weeks = _generateWeeklyDateTimes(size: 8, startDate: DateTime(2024, 1, 7));
+
+      final recentRoutineLogs = List.generate(next8Weeks.length, (index) => RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core And Leg Day",
+          exerciseLogs: [lyingLegCurlExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          createdAt: next8Weeks[index],
+          updatedAt: next8Weeks[index]));
+
+      final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+      expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.weekendWarrior).progress.remainder, 0);
+
+    });
+  });
+
+  test("AchievementType.sweatMarathon", () {
+    final achievementRepository = AchievementRepository();
+
+    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+
+    final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
+
+      return RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core Day",
+          exerciseLogs: [plankExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(const Duration(hours: 1)),
+          createdAt: nextWeeks[index],
+          updatedAt: nextWeeks[index]);
+    });
+
+    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    final subsequentWeeks = _generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
+
+    final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
+        id: "routineLogId1",
+        templateId: "templateId1",
+        name: "Core Day",
+        exerciseLogs: [plankExerciseLog1],
+        notes: "notes",
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        createdAt: subsequentWeeks[index],
+        updatedAt: subsequentWeeks[index]));
+
+    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.sweatMarathon).progress.remainder, 0);
+
+  });
+
+  test("AchievementType.bodyweightChampion", () {
+    final achievementRepository = AchievementRepository();
+
+    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+
+    final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
+
+      return RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Body Weight Day",
+          exerciseLogs: [pullUpExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(const Duration(hours: 1)),
+          createdAt: nextWeeks[index],
+          updatedAt: nextWeeks[index]);
+    });
+
+    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    final subsequentWeeks = _generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
+
+    final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
+        id: "routineLogId1",
+        templateId: "templateId1",
+        name: "Body Weight Day",
+        exerciseLogs: [pullUpExerciseLog1],
+        notes: "notes",
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        createdAt: subsequentWeeks[index],
+        updatedAt: subsequentWeeks[index]));
+
+    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.bodyweightChampion).progress.remainder, 0);
+
+  });
+
+  test("AchievementType.strongerThanEver", () {
+    final achievementRepository = AchievementRepository();
+
+    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+
+    final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
+
+      return RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Body Weight Day",
+          exerciseLogs: [pullUpExerciseLog1, pullUpExerciseLog2],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(const Duration(hours: 1)),
+          createdAt: nextWeeks[index],
+          updatedAt: nextWeeks[index]);
+    });
+
+    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    final subsequentWeeks = _generateDailyDateTimes(size: 120, startDate: DateTime(2024, 1, 7));
+
+    final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
+        id: "routineLogId1",
+        templateId: "templateId1",
+        name: "Body Weight Day",
+        exerciseLogs: [pullUpExerciseLog1, pullUpExerciseLog2],
+        notes: "notes",
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        createdAt: subsequentWeeks[index],
+        updatedAt: subsequentWeeks[index]));
+
+    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.strongerThanEver).progress.remainder, 0);
+
+  });
+
+  test("AchievementType.timeUnderTension", () {
+    final achievementRepository = AchievementRepository();
+
+    final nextWeeks = _generateDailyDateTimes(size: 30, startDate: DateTime(2024, 1, 1));
+
+    final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
+
+      return RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Core Day",
+          exerciseLogs: [plankExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(const Duration(hours: 1)),
+          createdAt: nextWeeks[index],
+          updatedAt: nextWeeks[index]);
+    });
+
+    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    final subsequentWeeks = _generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
+
+    final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
+        id: "routineLogId1",
+        templateId: "templateId1",
+        name: "Core Day",
+        exerciseLogs: [plankExerciseLog1],
+        notes: "notes",
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        createdAt: subsequentWeeks[index],
+        updatedAt: subsequentWeeks[index]));
+
+    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.timeUnderTension).progress.remainder, 0);
+
+  });
+
+  test("AchievementType.oneMoreRep", () {
+    final achievementRepository = AchievementRepository();
+
+    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+
+    final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
+
+      return RoutineLogDto(
+          id: "routineLogId1",
+          templateId: "templateId1",
+          name: "Body Weight Day",
+          exerciseLogs: [pullUpExerciseLog1, pullUpExerciseLog2, lyingLegCurlExerciseLog1],
+          notes: "notes",
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(const Duration(hours: 1)),
+          createdAt: nextWeeks[index],
+          updatedAt: nextWeeks[index]);
+    });
+
+    achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
+
+    final subsequentWeeks = _generateDailyDateTimes(size: 120, startDate: DateTime(2024, 1, 7));
+
+    final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
+        id: "routineLogId1",
+        templateId: "templateId1",
+        name: "Body Weight Day",
+        exerciseLogs: [pullUpExerciseLog1, pullUpExerciseLog2, lyingLegCurlExerciseLog1],
+        notes: "notes",
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        createdAt: subsequentWeeks[index],
+        updatedAt: subsequentWeeks[index]));
+
+    final achievements = achievementRepository.calculateNewLogAchievements(routineLogs: recentRoutineLogs);
+
+    expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.oneMoreRep).progress.remainder, 0);
+
   });
 }
 
@@ -403,6 +687,18 @@ List<DateTime> _generateWeeklyDateTimes({required int size, required DateTime st
   for (int i = 0; i < size; i++) {
     // Add 7 days for each week
     DateTime nextDate = startDate.add(Duration(days: 7 * i));
+    dateTimes.add(nextDate);
+  }
+
+  return dateTimes;
+}
+
+List<DateTime> _generateDailyDateTimes({required int size, required DateTime startDate}) {
+  List<DateTime> dateTimes = [];
+
+  for (int i = 0; i < size; i++) {
+    // Add 7 days for each week
+    DateTime nextDate = startDate.add(Duration(days: 1 * i));
     dateTimes.add(nextDate);
   }
 
