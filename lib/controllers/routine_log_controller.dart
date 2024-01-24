@@ -95,8 +95,8 @@ class RoutineLogController extends ChangeNotifier {
     return _achievementRepository.fetchAchievements(routineLogs: routineLogs);
   }
 
-  List<AchievementDto> calculateLogAchievements() {
-    return _achievementRepository.calculateAchievements(routineLogs: routineLogs);
+  List<AchievementDto> calculateNewLogAchievements() {
+    return _achievementRepository.calculateNewLogAchievements(routineLogs: routineLogs);
   }
 
   /// Helper methods

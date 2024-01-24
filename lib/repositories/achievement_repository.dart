@@ -27,7 +27,7 @@ class AchievementRepository {
     }).toList();
   }
 
-  List<AchievementDto> calculateAchievements({required List<RoutineLogDto> routineLogs}) {
+  List<AchievementDto> calculateNewLogAchievements({required List<RoutineLogDto> routineLogs}) {
     final newAchievements = AchievementType.values.map((achievementType) {
       final progress = _calculateProgress(routineLogs: routineLogs, type: achievementType);
       return AchievementDto(type: achievementType, progress: progress);
@@ -39,7 +39,7 @@ class AchievementRepository {
       // Try to find the same achievement in the old list
       var oldAchievement = _achievements.firstWhereOrNull((old) => old.type == newAchievement.type);
 
-      if(oldAchievement == null) {
+      if (oldAchievement == null) {
         continue;
       }
 
@@ -56,50 +56,42 @@ class AchievementRepository {
   }
 
   ProgressDto _calculateProgress({required List<RoutineLogDto> routineLogs, required AchievementType type}) {
+
     /// Filter logs to only include ones from the current year
     final routineLogsForCurrentYear = routineLogs.where((log) => log.createdAt.withinCurrentYear()).toList();
 
     /// Group ExerciseLogs by ExerciseType from the current year logs
     final exerciseLogsByType = groupRoutineLogsByExerciseType(routineLogs: routineLogsForCurrentYear);
-    final exerciseLogsByTypeForCurrentYear = exerciseLogsByType.map((key, value) {
-      final logs = value.where((log) => log.createdAt.withinCurrentYear());
-      return MapEntry(key, logs.toList());
-    });
 
     /// Group RoutineLogs by week from the current year logs
     final weeklyRoutineLogs = groupRoutineLogsByWeek(routineLogs: routineLogsForCurrentYear);
-    final weeklyRoutineLogsForCurrentYear = weeklyRoutineLogs
-        .map((key, value) => MapEntry(key, value.where((log) => log.createdAt.withinCurrentYear()).toList()));
 
     final progress = switch (type) {
       AchievementType.days12 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
       AchievementType.days30 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
       AchievementType.days75 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
       AchievementType.days100 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
-      AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
-      AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
-      AchievementType.fifteenMinutesToGo =>
-        _calculateTimeAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
+      AchievementType.fiveMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByType, type: type),
+      AchievementType.tenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByType, type: type),
+      AchievementType.fifteenMinutesToGo => _calculateTimeAchievement(logs: exerciseLogsByType, type: type),
       AchievementType.supersetSpecialist =>
         _calculateSuperSetSpecialistAchievement(logs: routineLogsForCurrentYear, target: type.target),
-      AchievementType.obsessed =>
-        _calculateObsessedAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+      AchievementType.obsessed => _calculateObsessedAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.neverSkipAMonday =>
-        _calculateNeverSkipAMondayAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+        _calculateNeverSkipAMondayAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.neverSkipALegDay =>
-        _calculateNeverSkipALegDayAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+        _calculateNeverSkipALegDayAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.weekendWarrior =>
-        _calculateWeekendWarriorAchievement(weekToLogs: weeklyRoutineLogsForCurrentYear, target: type.target),
+        _calculateWeekendWarriorAchievement(weekToLogs: weeklyRoutineLogs, target: type.target),
       AchievementType.sweatMarathon =>
-        _calculateSweatEquityAchievement(logs: routineLogsForCurrentYear, target: type.target),
+        _calculateSweatMarathonAchievement(logs: routineLogsForCurrentYear, target: type.target),
       AchievementType.bodyweightChampion =>
-        _calculateBodyWeightChampionAchievement(logs: exerciseLogsByTypeForCurrentYear, type: type),
+        _calculateBodyWeightChampionAchievement(logs: exerciseLogsByType, type: type),
       AchievementType.strongerThanEver =>
-        _calculateStrongerThanEverAchievement(logs: exerciseLogsByTypeForCurrentYear, target: type.target),
+        _calculateStrongerThanEverAchievement(logs: exerciseLogsByType, target: type.target),
       AchievementType.timeUnderTension =>
-        _calculateTimeUnderTensionAchievement(logs: exerciseLogsByTypeForCurrentYear, target: type.target),
-      AchievementType.oneMoreRep =>
-        _calculateOneMoreRepAchievement(logs: exerciseLogsByTypeForCurrentYear, target: type.target)
+        _calculateTimeUnderTensionAchievement(logs: exerciseLogsByType, target: type.target),
+      AchievementType.oneMoreRep => _calculateOneMoreRepAchievement(logs: exerciseLogsByType, target: type.target)
     };
 
     return progress;
@@ -159,7 +151,6 @@ class AchievementRepository {
         achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
   }
 
-  /// [AchievementType.obsessed]
   List<DateTimeRange> _consecutiveDatesWhere(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
       required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation}) {
@@ -198,6 +189,7 @@ class AchievementRepository {
         achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
   }
 
+  /// [AchievementType.obsessed]
   ProgressDto _calculateObsessedAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges =
@@ -242,24 +234,22 @@ class AchievementRepository {
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
         weekToRoutineLogs: weekToLogs,
-        evaluation: (entry) => entry.value.where((log) => _loggedOnWeekend(log)).length == 2);
+        evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)));
     return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
   }
 
   /// [AchievementType.sweatMarathon]
-  ProgressDto _calculateSweatEquityAchievement({required List<RoutineLogDto> logs, required int target}) {
-    final targetHours = Duration(hours: target);
+  ProgressDto _calculateSweatMarathonAchievement({required List<RoutineLogDto> logs, required int target}) {
+    final targetDuration = Duration(hours: target);
 
-    final durations = logs.map((log) => log.duration());
+    final totalHours = logs.map((log) => log.duration().inHours).sum;
 
-    final duration = durations.isNotEmpty ? durations.reduce((total, duration) => total + duration) : Duration.zero;
+    final progress = totalHours / targetDuration.inHours;
 
-    final progress = duration.inHours / targetHours.inHours;
-
-    final remainder = targetHours - duration;
+    final remainder = targetDuration.inHours - totalHours;
 
     return generateProgress(
-        achievedLogs: logs, progress: progress, remainder: remainder.inHours, dateSelector: dateExtractorForRoutineLog);
+        achievedLogs: logs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
   }
 
   /// [AchievementType.fiveMinutesToGo]
@@ -267,13 +257,13 @@ class AchievementRepository {
   /// [AchievementType.fifteenMinutesToGo]
   ProgressDto _calculateTimeAchievement(
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
-    final achievedLogs = logs[ExerciseType.duration] ?? [];
-    List<ExerciseLogDto> durations = achievedLogs.where((log) {
+    final durationLogs = logs[ExerciseType.duration] ?? [];
+    List<ExerciseLogDto> achievedLogs = durationLogs.where((log) {
       return log.sets.any((set) => Duration(milliseconds: set.value1.toInt()) == Duration(minutes: type.target));
     }).toList();
 
-    final progress = durations.length / type.target;
-    final remainder = type.target - durations.length;
+    final progress = achievedLogs.length / type.target;
+    final remainder = type.target - achievedLogs.length;
 
     return generateProgress(
         achievedLogs: achievedLogs,
@@ -300,14 +290,14 @@ class AchievementRepository {
   /// [AchievementType.strongerThanEver]
   ProgressDto _calculateStrongerThanEverAchievement(
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-    final achievedLogs = logs[ExerciseType.weights] ?? [];
+    final weightsLogs = logs[ExerciseType.weights] ?? [];
+    final bodyWeightLogs = logs[ExerciseType.bodyWeight] ?? [];
+    final achievedLogs = [...weightsLogs, ...bodyWeightLogs];
 
-    final tonnages = achievedLogs.map((log) {
+    final tonnage = achievedLogs.map((log) {
       final volume = log.sets.map((set) => set.value1 * set.value2).reduce((total, tonnage) => total + tonnage);
       return volume;
-    });
-
-    final tonnage = tonnages.isNotEmpty ? tonnages.reduce((total, tonnage) => total + tonnage) : 0;
+    }).sum;
 
     final progress = tonnage / target;
 
@@ -327,15 +317,11 @@ class AchievementRepository {
 
     final achievedLogs = logs[ExerciseType.duration] ?? [];
 
-    final durations = achievedLogs.map((log) {
-      final duration = log.sets.map((set) => set.value1).reduce((total, tonnage) => total + tonnage);
-      return Duration(milliseconds: duration.toInt());
-    });
+    final milliSeconds = achievedLogs.map((log) => log.sets.map((set) => set.value1).sum).sum;
 
-    final totalDuration =
-        durations.isNotEmpty ? durations.reduce((total, duration) => total + duration) : Duration.zero;
+    final totalDuration = Duration(milliseconds: milliSeconds.toInt());
 
-    final progress = totalDuration.inMilliseconds / targetHours.inMilliseconds;
+    final progress = totalDuration.inHours / targetHours.inHours;
 
     final remainder = targetHours - totalDuration;
 
@@ -349,14 +335,11 @@ class AchievementRepository {
   /// [AchievementType.oneMoreRep]
   ProgressDto _calculateOneMoreRepAchievement(
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-    final achievedLogs = logs[ExerciseType.weights] ?? [];
+    final weightsLogs = logs[ExerciseType.weights] ?? [];
+    final bodyWeightLogs = logs[ExerciseType.bodyWeight] ?? [];
+    final achievedLogs = [...weightsLogs, ...bodyWeightLogs];
 
-    final reps = achievedLogs.map((log) {
-      final reps = log.sets.map((set) => set.value2).reduce((total, reps) => total + reps);
-      return reps;
-    });
-
-    final totalReps = reps.isNotEmpty ? reps.reduce((total, rep) => total + rep) : 0;
+    final totalReps = achievedLogs.map((log) => log.sets.map((set) => set.value2).sum).sum;
 
     final progress = totalReps / target;
 

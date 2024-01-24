@@ -320,12 +320,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     }
   }
 
-  Future<void> _doUpdateTemplateExercises() async {
+  Future<void> _doUpdateTemplateSetsOnly() async {
     final templateToUpdate =
         Provider.of<RoutineTemplateController>(context, listen: false).templateWhere(id: widget.log.templateId);
     if (templateToUpdate != null) {
       await Provider.of<RoutineTemplateController>(context, listen: false)
-          .updateTemplateExerciseLogs(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
+          .updateTemplateSetsOnly(templateId: widget.log.templateId, newExercises: widget.log.exerciseLogs);
     }
   }
 
@@ -387,7 +387,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             enabledDrag: false,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             context: context,
-            child: _TemplateChangesListView(
+            child: _TemplateChangesDialog(
                 templateName: routineTemplate.name,
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -396,11 +396,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 },
                 onDismissed: () {
                   Navigator.of(context).pop();
-                  _doUpdateTemplateExercises();
+                  _doUpdateTemplateSetsOnly();
                   _onShareLog(log: widget.log);
                 }));
       } else {
-        _doUpdateTemplateExercises();
+        _doUpdateTemplate();
         _onShareLog(log: widget.log);
       }
     });
@@ -416,12 +416,12 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 }
 
-class _TemplateChangesListView extends StatelessWidget {
+class _TemplateChangesDialog extends StatelessWidget {
   final String templateName;
   final void Function() onPressed;
   final void Function() onDismissed;
 
-  const _TemplateChangesListView({required this.templateName, required this.onPressed, required this.onDismissed});
+  const _TemplateChangesDialog({required this.templateName, required this.onPressed, required this.onDismissed});
 
   @override
   Widget build(BuildContext context) {

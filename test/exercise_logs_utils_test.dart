@@ -10,7 +10,6 @@ import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
 
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_exercise1",
