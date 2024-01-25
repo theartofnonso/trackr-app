@@ -14,7 +14,6 @@ import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
-import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
 import '../widgets/list_tiles/c_list_tile.dart';
@@ -140,7 +139,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: CalendarScreen(readOnly: true))),
+                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: const CalendarScreen(readOnly: true))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
