@@ -113,13 +113,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                 ]),
-                const SizedBox(height: 20),
-                CListTile(
-                    title: "Muscle insights",
-                    subtitle: "Sets logged per muscle group",
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    onTap: _navigateToMuscleDistribution),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                Theme(
+                  data: ThemeData(splashColor: tealBlueLight),
+                  child: ListTile(
+                      onTap: _navigateToMuscleDistribution,
+                      tileColor: tealBlueLight,
+                      dense: true,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      title: Text("Muscle insights",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                      subtitle: Text("Sets logged per muscle group",
+                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
+                ),
+                const SizedBox(height: 10),
 
                 /// Do not make this a const
                 CalendarScreen()
