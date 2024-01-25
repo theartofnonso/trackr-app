@@ -14,10 +14,10 @@ import '../../app_constants.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../utils/widget_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../../widgets/routine/editors/exercise_picker.dart';
 import '../exercise/exercise_library_screen.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
@@ -56,22 +56,20 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
-    displayBottomSheet(
+    showSuperSetExercisePicker(
         context: context,
-        child: ExercisePicker(
-          selectedExercise: firstExerciseLog,
-          exercises: exercises,
-          onSelect: (ExerciseLogDto secondExercise) {
-            _closeDialog();
-            final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            controller.superSetExerciseLogs(
-                firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
-          },
-          onSelectExercisesInLibrary: () {
-            _closeDialog();
-            _selectExercisesInLibrary();
-          },
-        ));
+        firstExerciseLog: firstExerciseLog,
+        exerciseLogs: exercises,
+        onSelected: (secondExerciseLog) {
+          _closeDialog();
+          final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
+          controller.superSetExerciseLogs(
+              firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
+        },
+        selectExercisesInLibrary: () {
+          _closeDialog();
+          _selectExercisesInLibrary();
+        });
   }
 
   void _toggleLoadingState() {
@@ -340,7 +338,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _initializeProcedureData() {
     final exercises = widget.template?.exercises;
     if (exercises != null && exercises.isNotEmpty) {
-      Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exercises, mode: RoutineEditorMode.edit);
+      Provider.of<ExerciseLogController>(context, listen: false)
+          .loadExercises(logs: exercises, mode: RoutineEditorMode.edit);
     }
   }
 
