@@ -52,7 +52,7 @@ class CustomProgressIndicator extends StatelessWidget {
                 ),
               ),
               Text(
-                "STREAK",
+                "MONTH",
                 style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 10,

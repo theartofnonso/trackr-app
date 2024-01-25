@@ -37,7 +37,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void navigateToAllDaysTracked() {
+  void _navigateToAllDaysTracked() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
   }
 
@@ -64,9 +64,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final weeklyLogs = routineLogController.weeklyLogs;
-
-    final logsForTheWeek = weeklyLogs[thisWeekDateRange()] ?? [];
     final logsForTheMonth = routineLogController.monthlyLogs[thisMonthDateRange()] ?? [];
 
     final monthlyProgress = logsForTheMonth.length / 12;
@@ -93,29 +90,31 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       onPressed: _onShareCalendar,
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20))
                 ]),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  _CTableCell(
-                      title: "WEEK",
-                      subtitle: "${logsForTheWeek.length}",
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
-                  const SizedBox(width: 20),
-                  GestureDetector(
-                    onTap: navigateToAllDaysTracked,
-                    child: CustomProgressIndicator(
-                      value: monthlyProgress,
-                      valueText: "${routineLogController.routineLogs.length}",
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
+                      child: CustomProgressIndicator(
+                        value: monthlyProgress,
+                        valueText: "${routineLogController.routineLogs.length}",
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 20),
-                  _CTableCell(
-                      title: "MONTH",
-                      subtitle: "${logsForTheMonth.length}",
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
-                ]),
+                    const SizedBox(width: 50),
+                    GestureDetector(
+                      onTap: _navigateToAllDaysTracked,
+                      child: _CTableCell(
+                          title: "STREAK",
+                          subtitle: "${routineLogController.routineLogs.length}",
+                          crossAxisAlignment: CrossAxisAlignment.end),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
-                const InformationContainerLite(content: consistencyMonitor, color: Colors.transparent, padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
+                const InformationContainerLite(
+                    content: consistencyMonitor,
+                    color: Colors.transparent,
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
@@ -126,7 +125,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       title: Text("Muscle insights",
                           style:
                               GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      subtitle: Text("Sets logged per muscle group",
+                      trailing: Text("Sets per muscle group",
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 10),
@@ -168,20 +167,14 @@ class _CTableCell extends StatelessWidget {
   final String title;
   final String subtitle;
   final CrossAxisAlignment crossAxisAlignment;
-  final void Function() onTap;
 
-  const _CTableCell(
-      {required this.title, required this.subtitle, required this.crossAxisAlignment, required this.onTap});
+  const _CTableCell({required this.title, required this.subtitle, required this.crossAxisAlignment});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(crossAxisAlignment: crossAxisAlignment, children: [
-        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16)),
-        Text("THIS", style: GoogleFonts.montserrat(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.bold)),
-        Text(title, style: GoogleFonts.montserrat(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.bold)),
-      ]),
-    );
+    return Column(crossAxisAlignment: crossAxisAlignment, children: [
+      Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+      Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
+    ]);
   }
 }
