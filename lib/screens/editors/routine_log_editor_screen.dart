@@ -242,7 +242,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: Colors.green),
+                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
                   ),
             body: Stack(children: [
               SafeArea(

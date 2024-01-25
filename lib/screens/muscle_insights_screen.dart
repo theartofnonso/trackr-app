@@ -28,9 +28,9 @@ class MuscleInsightsScreen extends StatefulWidget {
 
 Color generateDecoration({required int index}) {
   return switch (index) {
-    0 => Colors.blue,
+    0 => vibrantBlue,
     1 => Colors.red,
-    2 => Colors.green,
+    2 => vibrantGreen,
     3 => Colors.orange,
     4 => Colors.purple,
     _ => Colors.transparent,

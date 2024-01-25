@@ -18,9 +18,9 @@ class CustomProgressIndicator extends StatelessWidget {
     } else if (value < 0.5) {
       return Colors.orange;
     } else if (value < 0.8) {
-      return Colors.blue;
+      return vibrantBlue;
     } else {
-      return Colors.green;
+      return vibrantGreen;
     }
   }
 

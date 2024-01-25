@@ -27,7 +27,7 @@ class LineChartWidget extends StatelessWidget {
 
   static const List<Color> gradientColors = [
     Colors.blue,
-    Colors.green,
+    vibrantGreen,
   ];
 
   @override

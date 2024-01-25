@@ -111,7 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     splashColor: Colors.transparent // Disable the splash effect
                   ),
                   child: SwitchListTile(
-                    activeColor: Colors.green,
+                    activeColor: vibrantGreen,
                     title: Text('Show calendar dates',
                         style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                     value: SharedPrefs().showCalendarDates,

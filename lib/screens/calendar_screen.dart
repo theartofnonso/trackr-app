@@ -252,7 +252,7 @@ class _Date extends StatelessWidget {
       required this.hasLog});
 
   Color _getBackgroundColor() {
-    return hasLog ? Colors.green : tealBlueLight.withOpacity(0.5);
+    return hasLog ? vibrantGreen : tealBlueLight.withOpacity(0.5);
   }
 
   Border? _getBorder() {
@@ -266,7 +266,7 @@ class _Date extends StatelessWidget {
 
   Color _getTextColor() {
     if (SharedPrefs().showCalendarDates) {
-      return hasLog ? Colors.white : Colors.white70;
+      return hasLog ? Colors.black : Colors.white70;
     }
     return Colors.transparent;
   }

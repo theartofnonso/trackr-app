@@ -108,7 +108,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       onPressed: _createExercise,
                       label: "Create Exercise",
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      buttonColor: Colors.green),
+                      buttonColor: vibrantGreen),
                 ),
             ]),
           ),

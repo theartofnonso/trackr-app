@@ -450,7 +450,7 @@ class _TemplateChangesDialog extends StatelessWidget {
               onPressed: onPressed,
               label: "Update Template",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              buttonColor: Colors.green)
+              buttonColor: vibrantGreen)
         ])
       ],
     );
