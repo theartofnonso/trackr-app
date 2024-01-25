@@ -6,10 +6,12 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
 import '../enums/routine_editor_type_enums.dart';
+import '../strings.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -112,7 +114,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
                 ]),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
+                const InformationContainerLite(content: consistencyMonitor, color: Colors.transparent, padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
