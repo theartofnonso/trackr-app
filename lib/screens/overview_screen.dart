@@ -16,7 +16,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
-import '../widgets/list_tiles/c_list_tile.dart';
 import 'calendar_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
