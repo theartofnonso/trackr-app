@@ -12,8 +12,9 @@ import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/pbs/pb_icon.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
-import '../dtos/routine_log_dto.dart';
-import '../utils/exercise_logs_utils.dart';
+import '../../controllers/settings_controller.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../utils/exercise_logs_utils.dart';
 
 GlobalKey calendarKey = GlobalKey();
 
@@ -25,17 +26,17 @@ class _DateViewModel {
   _DateViewModel({required this.dateTime, required this.selectedDateTime, required this.hasLog});
 }
 
-class CalendarScreen extends StatefulWidget {
+class Calendar extends StatefulWidget {
   
   final bool readOnly;
 
-  const CalendarScreen({super.key, this.readOnly = false});
+  const Calendar({super.key, this.readOnly = false});
 
   @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
+  State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
+class _CalendarState extends State<Calendar> {
   DateTime _currentDate = DateTime.now();
 
   bool _hasLaterDate() {
@@ -133,6 +134,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<SettingsController>(context, listen: true);
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
     final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 

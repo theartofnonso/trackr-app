@@ -104,17 +104,6 @@ void main() {
       createdAt: DateTime(2024, 1, 1),
       updatedAt: DateTime(2024, 1, 1));
 
-  final bodyWeightDayRoutineLog = RoutineLogDto(
-      id: "routineLogId1",
-      templateId: "templateId1",
-      name: "BodyWeight Day",
-      exerciseLogs: [pullUpExerciseLog1],
-      notes: "notes",
-      startTime: DateTime(2024, 12, 1),
-      endTime: DateTime(2024, 12, 1),
-      createdAt: DateTime(2024, 1, 1),
-      updatedAt: DateTime(2024, 1, 1));
-
   final coreAndLegDayRoutineLog = RoutineLogDto(
       id: "routineLogId1",
       templateId: "templateId1",

@@ -16,6 +16,7 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
+import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
@@ -58,6 +59,9 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<SettingsController>(
+        create: (BuildContext context) => SettingsController(),
+      ),
       ChangeNotifierProvider<ExerciseController>(
         create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
       ),

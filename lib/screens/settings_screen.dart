@@ -14,6 +14,7 @@ import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_log_controller.dart';
 import '../controllers/routine_template_controller.dart';
+import '../controllers/settings_controller.dart';
 import '../utils/general_utils.dart';
 import '../utils/dialog_utils.dart';
 import 'exercise/exercise_library_screen.dart';
@@ -119,6 +120,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     onChanged: (bool value) {
                       setState(() {
                         SharedPrefs().showCalendarDates = value;
+                        Provider.of<SettingsController>(context, listen: false).notify();
                       });
                     },
                   ),

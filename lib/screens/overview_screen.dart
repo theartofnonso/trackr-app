@@ -18,7 +18,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
-import 'calendar_screen.dart';
+import '../widgets/calendar/calendar.dart';
 
 class OverviewScreen extends StatefulWidget {
   const OverviewScreen({super.key});
@@ -29,8 +29,7 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
   void _navigateToSettings() async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-    setState(() {});
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
   }
 
   void _navigateToMuscleDistribution() {
@@ -131,7 +130,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 const SizedBox(height: 10),
 
                 /// Do not make this a const
-                CalendarScreen()
+                const Calendar()
               ],
             )),
       ),
@@ -148,7 +147,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: const CalendarScreen(readOnly: true))),
+                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: const Calendar(readOnly: true))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
