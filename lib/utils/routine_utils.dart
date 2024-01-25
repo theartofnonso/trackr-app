@@ -163,3 +163,7 @@ Map<ExerciseType, List<ExerciseLogDto>> groupRoutineLogsByExerciseType({required
   List<ExerciseLogDto> exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.type);
 }
+
+String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
+  return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
+}

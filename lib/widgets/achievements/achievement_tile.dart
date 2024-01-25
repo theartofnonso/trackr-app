@@ -41,7 +41,7 @@ class AchievementTile extends StatelessWidget {
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
                       minHeight: 10,
-                      color: achievement.progress.remainder == 0 ? Colors.green : Colors.white,
+                      color: achievement.progress.remainder == 0 ? vibrantGreen : Colors.white,
                       value: achievement.progress.value,
                       borderRadius: const BorderRadius.all(Radius.circular(3)),
                       backgroundColor: tealBlueLighter,

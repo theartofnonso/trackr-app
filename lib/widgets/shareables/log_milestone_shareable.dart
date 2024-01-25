@@ -21,7 +21,7 @@ class LogMilestoneShareable extends StatelessWidget {
         color: tealBlueDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const FaIcon(FontAwesomeIcons.award, color: Colors.green, size: 40),
+          const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
           const SizedBox(height: 10),
           Text(label, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
           Text("Workout",

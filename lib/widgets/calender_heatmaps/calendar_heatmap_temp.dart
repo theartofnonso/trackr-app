@@ -69,7 +69,7 @@ class _DateWidget extends StatelessWidget {
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
-      return Colors.green;
+      return vibrantGreen;
     }
     return tealBlueLighter;
   }

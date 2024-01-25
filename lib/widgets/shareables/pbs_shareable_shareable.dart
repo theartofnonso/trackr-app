@@ -42,12 +42,12 @@ class PBsShareable extends StatelessWidget {
         color: tealBlueDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            FaIcon(FontAwesomeIcons.solidStar, color: Colors.green.shade700, size: 14),
-            const SizedBox(width: 8),
-            FaIcon(FontAwesomeIcons.solidStar, color: Colors.green.shade500, size: 16),
-            const SizedBox(width: 8),
-            FaIcon(FontAwesomeIcons.solidStar, color: Colors.green.shade700, size: 14)
+           const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            FaIcon(FontAwesomeIcons.solidStar, color: Colors.green, size: 14),
+            SizedBox(width: 8),
+            FaIcon(FontAwesomeIcons.solidStar, color: vibrantGreen, size: 16),
+            SizedBox(width: 8),
+            FaIcon(FontAwesomeIcons.solidStar, color: Colors.green, size: 14)
           ]),
           const SizedBox(height: 30),
           Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),

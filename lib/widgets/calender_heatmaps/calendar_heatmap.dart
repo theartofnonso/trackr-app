@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
+import '../../app_constants.dart';
+
 class _DateViewModel {
   final DateTime dateTime;
   final bool active;
@@ -74,7 +76,7 @@ class _Day extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: date.active ? Colors.green : Colors.green.withOpacity(0.1),
+        color: date.active ? vibrantGreen : vibrantGreen.withOpacity(0.1),
         borderRadius: BorderRadius.circular(1),
       ),
     );

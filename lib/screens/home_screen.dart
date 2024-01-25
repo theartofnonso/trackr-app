@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   label: "Always remind me",
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  buttonColor: Colors.green),
+                  buttonColor: vibrantGreen),
             ]));
       }
     }

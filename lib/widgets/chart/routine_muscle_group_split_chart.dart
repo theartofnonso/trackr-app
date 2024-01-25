@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../app_constants.dart';
 import '../../enums/muscle_group_enums.dart';
 
 class RoutineMuscleGroupSplitChart extends StatelessWidget {
@@ -52,8 +53,8 @@ class _LinearBar extends StatelessWidget {
           children: [
             LinearProgressIndicator(
               value: frequency,
-              backgroundColor: Colors.green.withOpacity(0.1),
-              color: Colors.green,
+              backgroundColor: vibrantGreen.withOpacity(0.1),
+              color: vibrantGreen,
               minHeight: 24,
               borderRadius: BorderRadius.circular(3.0), // Border r
             ),

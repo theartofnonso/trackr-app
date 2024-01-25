@@ -28,9 +28,9 @@ class MuscleInsightsScreen extends StatefulWidget {
 
 Color generateDecoration({required int index}) {
   return switch (index) {
-    0 => Colors.blue,
+    0 => vibrantBlue,
     1 => Colors.red,
-    2 => Colors.green,
+    2 => vibrantGreen,
     3 => Colors.orange,
     4 => Colors.purple,
     _ => Colors.transparent,
@@ -60,7 +60,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           CupertinoSlidingSegmentedControl<ChartTimePeriod>(
             backgroundColor: tealBlueLight,
-            thumbColor: Colors.blue,
+            thumbColor: vibrantBlue,
             groupValue: _selectedChartTimePeriod,
             children: {
               ChartTimePeriod.thisWeek: SizedBox(

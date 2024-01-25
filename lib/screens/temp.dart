@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_constants.dart';
+
 class MonthGrid extends StatelessWidget {
 
   const MonthGrid({super.key});
@@ -45,8 +47,8 @@ class MonthGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         return Container(
           decoration: BoxDecoration(
-            color: index.isEven ? Colors.green : Colors.transparent, // Alternate colors for demonstration
-            border: Border.all(color: Colors.green, width: 1.0),
+            color: index.isEven ? vibrantGreen : Colors.transparent, // Alternate colors for demonstration
+            border: Border.all(color: vibrantGreen, width: 1.0),
           ),
         );
       },

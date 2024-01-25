@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../app_constants.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../buttons/text_button_widget.dart';
 import '../../empty_states/list_tile_empty_state.dart';
 
-class ExercisePicker extends StatelessWidget {
-  final ExerciseLogDto selectedExercise;
+class SuperSetExerciseLogPicker extends StatelessWidget {
+  final String title;
   final List<ExerciseLogDto> exercises;
-  final void Function(ExerciseLogDto procedure) onSelect;
+  final void Function(ExerciseLogDto exericseLog) onSelect;
   final void Function() onSelectExercisesInLibrary;
 
-  const ExercisePicker(
+  const SuperSetExerciseLogPicker(
       {super.key,
-      required this.selectedExercise,
+      required this.title,
       required this.exercises,
       required this.onSelect,
       required this.onSelectExercisesInLibrary});
@@ -22,10 +21,12 @@ class ExercisePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final listTiles = exercises
-        .map((procedure) => ListTile(
-              onTap: () => onSelect(procedure),
+        .map((exercise) => ListTile(
+              onTap: () {
+                onSelect(exercise);
+              },
               dense: true,
-              title: Text(procedure.exercise.name,
+              title: Text(exercise.exercise.name,
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
             ))
         .toList();
@@ -38,21 +39,21 @@ class ExercisePicker extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 15, top: 20.0, bottom: 10),
-                  child: Text("Superset ${selectedExercise.exercise.name} with",
+                  child: Text(title,
                       style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),
                 ...listTiles
               ],
             ),
           )
-        : _ProceduresPickerEmptyState(onPressed: onSelectExercisesInLibrary);
+        : _EmptyState(onPressed: onSelectExercisesInLibrary);
   }
 }
 
-class _ProceduresPickerEmptyState extends StatelessWidget {
+class _EmptyState extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const _ProceduresPickerEmptyState({required this.onPressed});
+  const _EmptyState({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +61,7 @@ class _ProceduresPickerEmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 16),
           const Padding(
             padding: EdgeInsets.only(left: 18.0),
             child: ListTileEmptyState(),
@@ -74,7 +76,11 @@ class _ProceduresPickerEmptyState extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
               width: double.infinity,
-              child: CTextButton(onPressed: onPressed, label: "Add more exercises", buttonColor: tealBlueLighter),
+              child: CTextButton(
+                  onPressed: onPressed,
+                  label: "Add more exercises",
+                  buttonColor: Colors.transparent,
+                  buttonBorderColor: Colors.transparent),
             ),
           )
         ],

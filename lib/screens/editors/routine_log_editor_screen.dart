@@ -11,6 +11,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/utils/widget_utils.dart';
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -19,7 +20,6 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../../widgets/routine/editors/exercise_picker.dart';
 import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
 
@@ -52,26 +52,24 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     }
   }
 
-  void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
-    displayBottomSheet(
+    showSuperSetExercisePicker(
         context: context,
-        child: ExercisePicker(
-          selectedExercise: firstExerciseLog,
-          exercises: exercises,
-          onSelect: (ExerciseLogDto secondExercise) {
-            _closeDialog();
-            final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            controller.superSetExerciseLogs(
-                firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
-            _cacheLog();
-          },
-          onSelectExercisesInLibrary: () {
-            _closeDialog();
-            _selectExercisesInLibrary();
-          },
-        ));
+        firstExerciseLog: firstExerciseLog,
+        exerciseLogs: exercises,
+        onSelected: (secondExerciseLog) {
+          _closeDialog();
+          final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
+          controller.superSetExerciseLogs(
+              firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
+          _cacheLog();
+        },
+        selectExercisesInLibrary: () {
+          _closeDialog();
+          _selectExercisesInLibrary();
+        });
   }
 
   RoutineLogDto _routineLog() {
@@ -242,7 +240,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: Colors.green),
+                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
                   ),
             body: Stack(children: [
               SafeArea(
@@ -293,7 +291,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                           onReOrder: () {
                                             _reOrderExerciseLogs(exerciseLogs: exerciseLogs);
                                           },
-                                          onSuperSet: () => _showExercisePicker(firstExerciseLog: log),
+                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
                                           onCache: _cacheLog);
                                     },
                                     separatorBuilder: (_, __) => const SizedBox(height: 10),

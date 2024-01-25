@@ -176,9 +176,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _showBottomSheet() {
     displayBottomSheet(context: context, child: Column(
       children: [
+        const SizedBox(height: 10),
         ListTile(
           dense: true,
-          title: Text("Edit Log", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          title: Text("Edit Log", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop();
             _editLog(log: widget.log);
@@ -186,7 +187,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ),
         ListTile(
           dense: true,
-          title: Text("Save as template", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+          title: Text("Save as template", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop();
             _createTemplate();
@@ -194,7 +195,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ),
         ListTile(
           dense: true,
-          title: Text("Delete log", style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+          title: Text("Delete log", style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop();
             _deleteLog();
@@ -449,7 +450,7 @@ class _TemplateChangesDialog extends StatelessWidget {
               onPressed: onPressed,
               label: "Update Template",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              buttonColor: Colors.green)
+              buttonColor: vibrantGreen)
         ])
       ],
     );

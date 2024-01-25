@@ -123,7 +123,7 @@ class _NotificationSwitch extends StatelessWidget {
             ]),
         ]),
         Switch(
-          activeColor: Colors.green,
+          activeColor: vibrantGreen,
           inactiveThumbColor: Colors.white70,
           value: enabled,
           onChanged: onChanged,

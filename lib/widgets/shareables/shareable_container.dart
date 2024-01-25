@@ -8,6 +8,7 @@ import 'package:tracker_app/widgets/shareables/routine_log_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 
+import '../../app_constants.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -95,7 +96,7 @@ class _ShareableContainerState extends State<ShareableContainer> {
         SmoothPageIndicator(
           controller: _controller,
           count: pages.length,
-          effect: const ExpandingDotsEffect(activeDotColor: Colors.green),
+          effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
         ),
         const SizedBox(height: 30),
         CTextButton(

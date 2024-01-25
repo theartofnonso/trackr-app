@@ -6,17 +6,19 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
 import '../enums/routine_editor_type_enums.dart';
+import '../strings.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
-import '../utils/string_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
-import 'calendar_screen.dart';
+import '../widgets/custom_progress_indicator.dart';
+import '../widgets/calendar/calendar.dart';
 
 class OverviewScreen extends StatefulWidget {
   const OverviewScreen({super.key});
@@ -27,17 +29,15 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
   void _navigateToSettings() async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-    setState(() {});
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
   }
 
   void _navigateToMuscleDistribution() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void navigateToAllDaysTracked() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const StreakScreen()));
+  void _navigateToAllDaysTracked() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -63,10 +63,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final weeklyLogs = routineLogController.weeklyLogs;
-
-    final logsForTheWeek = weeklyLogs[thisWeekDateRange()] ?? [];
     final logsForTheMonth = routineLogController.monthlyLogs[thisMonthDateRange()] ?? [];
+
+    final monthlyProgress = logsForTheMonth.length / 12;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -76,68 +75,45 @@ class _OverviewScreenState extends State<OverviewScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
-      appBar: AppBar(
-        title: GestureDetector(
-          onTap: navigateToAllDaysTracked,
-          child: Row(
-            children: [
-              const FaIcon(FontAwesomeIcons.fire, color: Colors.green),
-              const SizedBox(width: 10),
-              Text("${routineLogController.routineLogs.length} days", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
-            ]
-          ),
-        ),
-        centerTitle: false,
-        actions: [
-          GestureDetector(
-            onTap: _navigateToSettings,
-            child: const Padding(
-              padding: EdgeInsets.only(right: 14.0),
-              child: Icon(Icons.settings),
-            ),
-          ),
-          IconButton(
-              onPressed: _onShareCalendar,
-              icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18))
-        ],
-      ),
       body: SafeArea(
         minimum: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 150),
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings)),
+                  IconButton(
+                      onPressed: _onShareCalendar,
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20))
+                ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Table(
-                          border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
-                          columnWidths: const <int, TableColumnWidth>{
-                            0: FlexColumnWidth(),
-                            1: FlexColumnWidth(),
-                          },
-                          children: [
-                            TableRow(children: [
-                              _CTableCell(
-                                  title: "This Week",
-                                  subtitle:
-                                      "${logsForTheWeek.length} ${pluralize(word: "session", count: logsForTheWeek.length)}",
-                                  onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
-                              _CTableCell(
-                                  title: "This Month",
-                                  subtitle:
-                                      "${logsForTheMonth.length} ${pluralize(word: "session", count: logsForTheMonth.length)}",
-                                  onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth))
-                            ])
-                          ],
-                        )),
+                    GestureDetector(
+                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
+                      child: CustomProgressIndicator(
+                        value: monthlyProgress,
+                        valueText: "${routineLogController.routineLogs.length}",
+                      ),
+                    ),
+                    const SizedBox(width: 50),
+                    GestureDetector(
+                      onTap: _navigateToAllDaysTracked,
+                      child: _CTableCell(
+                          title: "STREAK",
+                          subtitle: "${routineLogController.routineLogs.length}",
+                          crossAxisAlignment: CrossAxisAlignment.end),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
+                const InformationContainerLite(
+                    content: consistencyMonitor,
+                    color: Colors.transparent,
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
@@ -148,12 +124,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       title: Text("Muscle insights",
                           style:
                               GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      subtitle: Text("Number of sets logged per muscle group",
+                      trailing: Text("Sets per muscle group",
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+
                 /// Do not make this a const
-                CalendarScreen()
+                const Calendar()
               ],
             )),
       ),
@@ -170,9 +147,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: tealBlueDark,
-                  padding: const EdgeInsets.all(8),
-                  child: CalendarScreen(readOnly: true))),
+                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: const Calendar(readOnly: true))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
@@ -185,24 +160,20 @@ class _OverviewScreenState extends State<OverviewScreen> {
               buttonBorderColor: Colors.transparent)
         ]));
   }
-
 }
 
 class _CTableCell extends StatelessWidget {
   final String title;
   final String subtitle;
-  final void Function() onTap;
+  final CrossAxisAlignment crossAxisAlignment;
 
-  const _CTableCell({required this.title, required this.subtitle, required this.onTap});
+  const _CTableCell({required this.title, required this.subtitle, required this.crossAxisAlignment});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Text(title, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.white70, fontWeight: FontWeight.w500)),
-        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15))
-      ]),
-    );
+    return Column(crossAxisAlignment: crossAxisAlignment, children: [
+      Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+      Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
+    ]);
   }
 }
