@@ -15,8 +15,10 @@ class CustomProgressIndicator extends StatelessWidget {
   Color get color {
     if (value < 0.3) {
       return Colors.red;
-    } else if (value < 0.6) {
+    } else if (value < 0.5) {
       return Colors.orange;
+    } else if (value < 0.8) {
+      return Colors.blue;
     } else {
       return Colors.green;
     }
