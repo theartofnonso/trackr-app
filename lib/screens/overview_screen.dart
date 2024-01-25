@@ -79,57 +79,53 @@ class _OverviewScreenState extends State<OverviewScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
-      body: Stack(
-        children: [
-          const Positioned.fill(child: GradientBackground()),
-          SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 150),
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings)),
-                      IconButton(
-                          onPressed: _onShareCalendar,
-                          icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20))
-                    ]),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      _CTableCell(
-                          title: "WEEK",
-                          subtitle: "${logsForTheWeek.length}",
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
-                      const SizedBox(width: 20),
-                      GestureDetector(
-                        onTap: navigateToAllDaysTracked,
-                        child: CustomProgressIndicator(
-                          value: monthlyProgress,
-                          valueText: "${routineLogController.routineLogs.length}",
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      _CTableCell(
-                          title: "MONTH",
-                          subtitle: "${logsForTheMonth.length}",
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
-                    ]),
-                    const SizedBox(height: 20),
-                    CListTile(
-                        title: "Muscle insights",
-                        subtitle: "Sets logged per muscle group",
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        onTap: _navigateToMuscleDistribution),
-                    const SizedBox(height: 20),
-                    /// Do not make this a const
-                    CalendarScreen()
-                  ],
-                )),
-          )
-        ],
+      body: SafeArea(
+        minimum: const EdgeInsets.all(10.0),
+        child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 150),
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings)),
+                  IconButton(
+                      onPressed: _onShareCalendar,
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20))
+                ]),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  _CTableCell(
+                      title: "WEEK",
+                      subtitle: "${logsForTheWeek.length}",
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheWeek)),
+                  const SizedBox(width: 20),
+                  GestureDetector(
+                    onTap: navigateToAllDaysTracked,
+                    child: CustomProgressIndicator(
+                      value: monthlyProgress,
+                      valueText: "${routineLogController.routineLogs.length}",
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  _CTableCell(
+                      title: "MONTH",
+                      subtitle: "${logsForTheMonth.length}",
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth)),
+                ]),
+                const SizedBox(height: 20),
+                CListTile(
+                    title: "Muscle insights",
+                    subtitle: "Sets logged per muscle group",
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    onTap: _navigateToMuscleDistribution),
+                const SizedBox(height: 20),
+
+                /// Do not make this a const
+                CalendarScreen()
+              ],
+            )),
       ),
     );
   }
