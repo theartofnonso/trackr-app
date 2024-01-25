@@ -161,7 +161,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? Colors.blueAccent : tealBlueLight;
+    return _summaryType == type ? vibrantBlue : tealBlueLight;
   }
 
   void _navigateTo({required String? routineLogId}) {

@@ -60,7 +60,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           CupertinoSlidingSegmentedControl<ChartTimePeriod>(
             backgroundColor: tealBlueLight,
-            thumbColor: Colors.blue,
+            thumbColor: vibrantBlue,
             groupValue: _selectedChartTimePeriod,
             children: {
               ChartTimePeriod.thisWeek: SizedBox(
