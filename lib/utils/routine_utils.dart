@@ -79,9 +79,12 @@ List<Widget> setsToWidgets(
     required List<SetDto> sets,
     List<PBDto> pbs = const [],
     required RoutinePreviewType routinePreviewType}) {
-  final durationTemplate = Center(
-    child: Text("Timer will be available in log mode",
-        style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+  final durationTemplate = Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    child: Center(
+      child: Text("Timer will be available in log mode",
+          style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+    ),
   );
 
   Widget emptyState;
