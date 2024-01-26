@@ -38,7 +38,7 @@ class AmplifyExerciseRepository {
   Future<void> fetchExercises({required void Function() onDone}) async {
     final exercises = await Amplify.DataStore.query(Exercise.classType);
     if (exercises.isNotEmpty) {
-      _loadExercises(exercises: exercises);
+     _loadExercises(exercises: exercises);
     } else {
       _observeExerciseQuery(onSyncCompleted: onDone);
     }
