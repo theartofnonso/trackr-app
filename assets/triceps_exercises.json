@@ -17,7 +17,7 @@
   {"id": "TRI16", "name": "Triceps Kickback (Cable)", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "TRI17", "name": "Triceps Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "TRI18", "name": "Floor Triceps Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI19", "name": "Ring Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI19", "name": "Ring Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "BW"},
   {"id": "CH4", "name": "Close-Grip Bench Press", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "CH5", "name": "Close-Grip Feet-Up Bench Press", "primaryMuscleGroup": "Triceps", "type": "WR"}
 ]
