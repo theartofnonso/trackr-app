@@ -21,7 +21,7 @@
   {"id": "SH20", "name": "Machine Lateral Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH21", "name": "Machine Shoulder Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH22", "name": "Monkey Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SH23", "name": "Overhead Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH23", "name": "Overhead Press (Dumbbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH24", "name": "Plate Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH25", "name": "Power Jerk", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH26", "name": "Push Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
@@ -32,6 +32,12 @@
   {"id": "SH31", "name": "Seated Barbell Overhead Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH32", "name": "Seated Smith Machine Shoulder Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH33", "name": "Snatch Grip Behind the Neck Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SH34", "name": "Squat Jerk", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SH35", "name": "Split Jerk", "primaryMuscleGroup": "Shoulders", "type": "WR"}
+  {"id": "SH34", "name": "Arnold Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH35", "name": "Shoulder Taps", "primaryMuscleGroup": "Shoulders", "type": "BW"},
+  {"id": "SH36", "name": "Upright Row (Cable)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH37", "name": "Upright Row (Dumbbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH38", "name": "Single Arm Lateral Raise (Cable)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH39", "name": "Overhead Press (Barbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH39", "name": "Overhead Press (Smith Machine)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH40", "name": "Cable Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"}
 ]

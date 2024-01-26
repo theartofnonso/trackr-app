@@ -77,7 +77,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ? searchResults
               .where((exerciseItem) =>
                   exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup ||
-                  exerciseItem.exercise.primaryMuscleGroup.family == _selectedMuscleGroup?.family)
+                  exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup)
               .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
           : searchResults;
 
@@ -197,15 +197,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final muscleGroups = MuscleGroup.values
-        .whereNot((muscleGroup) =>
-            muscleGroup == MuscleGroup.glutes ||
-            muscleGroup == MuscleGroup.abductors ||
-            muscleGroup == MuscleGroup.adductors ||
-            muscleGroup == MuscleGroup.hamstrings ||
-            muscleGroup == MuscleGroup.quadriceps ||
-            muscleGroup == MuscleGroup.calves ||
-            muscleGroup == MuscleGroup.traps ||
-            muscleGroup == MuscleGroup.lats)
+        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
         .sorted((a, b) => a.name.compareTo(b.name));
 
     return Scaffold(
@@ -258,6 +250,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   borderRadius: BorderRadius.circular(5), // Border radius
                 ),
                 child: DropdownButton<MuscleGroup>(
+                  menuMaxHeight: 400,
                   isExpanded: true,
                   isDense: true,
                   value: _selectedMuscleGroup,

@@ -14,7 +14,7 @@ void main() {
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_exercise1",
       name: "Lying Leg Curl",
-      primaryMuscleGroup: MuscleGroup.legs,
+      primaryMuscleGroup: MuscleGroup.hamstrings,
       type: ExerciseType.weights,
       owner: false);
 

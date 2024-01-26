@@ -84,10 +84,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings)),
                   IconButton(
                       onPressed: _onShareCalendar,
-                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20))
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+                  IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings))
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +109,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 const InformationContainerLite(
                     content: consistencyMonitor,
                     color: Colors.transparent,

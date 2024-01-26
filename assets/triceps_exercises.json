@@ -10,5 +10,15 @@
   {"id": "TRI9", "name": "Triceps Pushdown With Bar", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "TRI10", "name": "Triceps Pushdown With Rope", "primaryMuscleGroup": "Triceps", "type": "WR"},
   {"id": "TRI11", "name": "Triceps Dip", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI12", "name": "Triceps Dip (Weighted)", "primaryMuscleGroup": "Triceps", "type": "WR"}
+  {"id": "TRI12", "name": "Triceps Dip (Weighted)", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI13", "name": "Skullcrusher (Barbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI14", "name": "Skullcrusher (Dumbbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI15", "name": "Seated Dip Machine", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI16", "name": "Barbell Seated Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI17", "name": "Dumbbell Seated Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI18", "name": "Triceps Extension", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI19", "name": "Triceps Kickback (Dumbbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "TRI20", "name": "Triceps Kickback (Cable)", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "CH4", "name": "Close-Grip Bench Press", "primaryMuscleGroup": "Triceps", "type": "WR"},
+  {"id": "CH5", "name": "Close-Grip Feet-Up Bench Press", "primaryMuscleGroup": "Triceps", "type": "WR"}
 ]

@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.grey, size: 28),
+            icon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.grey, size: 24),
             selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 28),
             label: 'Workouts',
           ),
