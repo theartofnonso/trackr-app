@@ -23,8 +23,9 @@ class CalendarHeatMap extends StatelessWidget {
   final DateTime initialDate;
   final double spacing;
   final double borderRadius;
+  final bool dynamicColor;
 
-  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.borderRadius = 5});
+  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.borderRadius = 5, this.dynamicColor = false});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -49,7 +50,7 @@ class CalendarHeatMap extends StatelessWidget {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
       final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : tealBlueLight;
-      datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: color));
+      datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: dynamicColor ? color : vibrantGreen));
     }
 
     // Add padding to end of month
