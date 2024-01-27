@@ -451,6 +451,7 @@ class _TemplateChangesDialog extends StatelessWidget {
               onPressed: onPressed,
               label: "Update Template",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
               buttonColor: vibrantGreen)
         ])
       ],
