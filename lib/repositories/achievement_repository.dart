@@ -56,7 +56,6 @@ class AchievementRepository {
   }
 
   ProgressDto _calculateProgress({required List<RoutineLogDto> routineLogs, required AchievementType type}) {
-
     /// Filter logs to only include ones from the current year
     final routineLogsForCurrentYear = routineLogs.where((log) => log.createdAt.withinCurrentYear()).toList();
 
@@ -161,15 +160,9 @@ class AchievementRepository {
       if (evaluated) {
         dateRanges.add(entry.key);
       } else {
-        /// Only restart when we are at the end of the week
-        /// This means that if we are at the end of the week
-        /// and there has been no logs then this week is not consecutive
-        if (DateTime.now().weekday == 7) {
-          dateRanges = [];
-        }
+        dateRanges = [];
       }
     }
-
     return dateRanges;
   }
 
@@ -233,8 +226,7 @@ class AchievementRepository {
   ProgressDto _calculateWeekendWarriorAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
-        weekToRoutineLogs: weekToLogs,
-        evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)));
+        weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)));
     return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
   }
 
