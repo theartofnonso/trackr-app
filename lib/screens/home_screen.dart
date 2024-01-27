@@ -138,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _requestIosNotificationPermission();
                   },
                   label: "Always remind me",
+                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   buttonColor: vibrantGreen),
             ]));
