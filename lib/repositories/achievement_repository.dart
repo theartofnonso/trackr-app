@@ -56,7 +56,6 @@ class AchievementRepository {
   }
 
   ProgressDto _calculateProgress({required List<RoutineLogDto> routineLogs, required AchievementType type}) {
-
     /// Filter logs to only include ones from the current year
     final routineLogsForCurrentYear = routineLogs.where((log) => log.createdAt.withinCurrentYear()).toList();
 
@@ -161,25 +160,21 @@ class AchievementRepository {
       if (evaluated) {
         dateRanges.add(entry.key);
       } else {
-        /// Only restart when we are at the end of the week
-        /// This means that if we are at the end of the week
-        /// and there has been no logs then this week is not consecutive
-        if (DateTime.now().weekday == 7) {
-          dateRanges = [];
-        }
+        dateRanges = [];
       }
     }
-
     return dateRanges;
   }
 
   ProgressDto _consecutiveAchievementProgress(
       {required List<DateTimeRange> dateTimeRanges,
       required int target,
-      required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs}) {
+      required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs,
+      required bool Function(RoutineLogDto log) evaluation}) {
     final achievedLogs = dateTimeRanges
         .map((DateTimeRange range) => weekToLogs[range] ?? <RoutineLogDto>[])
-        .expand((List<RoutineLogDto> logs) => logs);
+        .expand((List<RoutineLogDto> logs) => logs)
+        .where((log) => evaluation(log));
 
     int remainder = target - dateTimeRanges.length;
 
@@ -194,7 +189,13 @@ class AchievementRepository {
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges =
         _consecutiveDatesWhere(weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.isNotEmpty);
-    return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
+    return _consecutiveAchievementProgress(
+        dateTimeRanges: dateTimeRanges,
+        target: target,
+        weekToLogs: weekToLogs,
+        evaluation: (log) {
+          return log.exerciseLogs.isNotEmpty;
+        });
   }
 
   bool _hasLegExercise(RoutineLogDto log) {
@@ -210,7 +211,8 @@ class AchievementRepository {
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
         weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _hasLegExercise(log)));
-    return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
+    return _consecutiveAchievementProgress(
+        dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs, evaluation: _hasLegExercise);
   }
 
   /// [AchievementType.neverSkipAMonday]
@@ -222,7 +224,8 @@ class AchievementRepository {
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
         weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnMonday(log)));
-    return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
+    return _consecutiveAchievementProgress(
+        dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs, evaluation: _loggedOnMonday);
   }
 
   /// [AchievementType.weekendWarrior]
@@ -233,9 +236,9 @@ class AchievementRepository {
   ProgressDto _calculateWeekendWarriorAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
-        weekToRoutineLogs: weekToLogs,
-        evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)));
-    return _consecutiveAchievementProgress(dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs);
+        weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)));
+    return _consecutiveAchievementProgress(
+        dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs, evaluation: _loggedOnWeekend);
   }
 
   /// [AchievementType.sweatMarathon]
