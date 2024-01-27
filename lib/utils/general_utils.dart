@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../dtos/routine_log_dto.dart';
+import '../app_constants.dart';
 import '../shared_prefs.dart';
 
 bool _isDefaultWeightUnit() {
@@ -71,8 +71,8 @@ DateTimeRange thisYearDateRange() {
   return DateTimeRange(start: startOfYear, end: endOfYear);
 }
 
-List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
-  DateTime lastDayOfCurrentWeek = DateTime.now().lastWeekDay();
+List<DateTimeRange> generateWeekRangesFrom({required DateTime startDate, required DateTime endDate}) {
+  DateTime lastDayOfCurrentWeek = endDate.lastWeekDay();
 
   List<DateTimeRange> weekRanges = [];
 
@@ -91,9 +91,9 @@ List<DateTimeRange> generateWeekRangesFrom(DateTime startDate) {
   return weekRanges;
 }
 
-List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
+List<DateTimeRange> generateMonthRangesFrom({required DateTime startDate, required DateTime endDate}) {
   // Find the last day of the current month
-  DateTime lastDayOfCurrentMonth = DateTime.now().lastMonthDay();
+  DateTime lastDayOfCurrentMonth = endDate.lastMonthDay();
   List<DateTimeRange> monthRanges = [];
 
   // Adjust the start date to the first day of the month
@@ -110,16 +110,6 @@ List<DateTimeRange> generateMonthRangesFrom(DateTime startDate) {
   }
 
   return monthRanges;
-}
-
-RoutineLogDto? cachedRoutineLog() {
-  RoutineLogDto? routineLog;
-  final cache = SharedPrefs().cachedRoutineLog;
-  if (cache.isNotEmpty) {
-    final json = jsonDecode(cache);
-    routineLog = RoutineLogDto.fromJson(json);
-  }
-  return routineLog;
 }
 
 Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {
@@ -185,4 +175,16 @@ List<DateTimeRange> monthRangesForYear(int year) {
 
 int levelFromXp({required int daysLogged}) {
   return daysLogged > 50 ? 50 : daysLogged;
+}
+
+Color consistencyHealthColor({required double value}) {
+  if (value < 0.3) {
+    return Colors.red;
+  } else if (value < 0.5) {
+    return Colors.orange;
+  } else if (value < 0.8) {
+    return vibrantBlue;
+  } else {
+    return vibrantGreen;
+  }
 }

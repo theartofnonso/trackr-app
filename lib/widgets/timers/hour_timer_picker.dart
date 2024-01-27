@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
+import '../../app_constants.dart';
 import '../buttons/text_button_widget.dart';
 
 class HourTimerPicker extends StatefulWidget {
@@ -53,7 +53,7 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
                     widget.onSelect(Duration(hours: _hours));
                   },
                   label: "Remind me at this hour",
-                  buttonColor: Colors.green,
+                  buttonColor: vibrantGreen,
                   padding: const EdgeInsets.all(10.0)))
         ],
       ),

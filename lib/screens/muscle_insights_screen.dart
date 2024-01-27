@@ -9,7 +9,7 @@ import 'package:tracker_app/widgets/chart/pie_chart_widget.dart';
 import '../app_constants.dart';
 import '../enums/charts_time_period.dart';
 import '../enums/muscle_group_enums.dart';
-import '../providers/routine_log_provider.dart';
+import '../controllers/routine_log_controller.dart';
 import '../utils/general_utils.dart';
 
 class _MuscleInsightTileViewModel {
@@ -28,9 +28,9 @@ class MuscleInsightsScreen extends StatefulWidget {
 
 Color generateDecoration({required int index}) {
   return switch (index) {
-    0 => Colors.blue,
+    0 => vibrantBlue,
     1 => Colors.red,
-    2 => Colors.green,
+    2 => vibrantGreen,
     3 => Colors.orange,
     4 => Colors.purple,
     _ => Colors.transparent,
@@ -60,7 +60,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           CupertinoSlidingSegmentedControl<ChartTimePeriod>(
             backgroundColor: tealBlueLight,
-            thumbColor: Colors.blue,
+            thumbColor: vibrantBlue,
             groupValue: _selectedChartTimePeriod,
             children: {
               ChartTimePeriod.thisWeek: SizedBox(
@@ -97,13 +97,13 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
   }
 
   void _calculateBodySplitPercentageForDateRange({DateTimeRange? range}) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final Map<MuscleGroupFamily, int> frequencyMap = {};
 
     // Count the occurrences of each MuscleGroup
     for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
-      frequencyMap[muscleGroupFamily] = routineLogProvider
+      frequencyMap[muscleGroupFamily] = routineLogController
           .setsForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range)
           .length;
     }

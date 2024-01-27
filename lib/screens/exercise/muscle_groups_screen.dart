@@ -35,7 +35,6 @@ class MuscleGroupsScreen extends StatefulWidget {
 }
 
 class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
-
   late TextEditingController _searchController;
 
   late List<MuscleGroupDto> _muscleGroups = [];
@@ -80,7 +79,11 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
         minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(
           children: [
-            CSearchBar(hintText: 'Search muscle groups', onChanged: _runSearch, onClear: _clearSearch, controller: _searchController),
+            CSearchBar(
+                hintText: 'Search muscle groups',
+                onChanged: _runSearch,
+                onClear: _clearSearch,
+                controller: _searchController),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
@@ -103,7 +106,10 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
     _searchController = TextEditingController();
 
-    _muscleGroups = MuscleGroup.values.sorted((a, b) => a.name.compareTo(b.name)).map((muscleGroup) {
+    _muscleGroups = MuscleGroup.values
+        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
+        .sorted((a, b) => a.name.compareTo(b.name))
+        .map((muscleGroup) {
       return MuscleGroupDto(muscleGroup: muscleGroup, selected: widget.previousMuscleGroup == muscleGroup);
     }).toList();
 

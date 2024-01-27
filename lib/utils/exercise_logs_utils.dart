@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -8,11 +6,7 @@ import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/pb_enums.dart';
-import '../providers/routine_log_provider.dart';
-
-List<ExerciseLogDto> pastExerciseLogsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  return Provider.of<RoutineLogProvider>(context, listen: false).exerciseLogsForExercise(exercise: exercise);
-}
+import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDto]
 
@@ -80,18 +74,16 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 
 /// Highest value across all [ExerciseDto]
 
-(String?, SetDto) heaviestSetVolumeForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
-
+(String?, SetDto) heaviestSetVolume({required List<ExerciseLogDto> exerciseLogs}) {
   // Return null if there are no past logs
-  if (pastLogs.isEmpty) return ("", const SetDto(0, 0, false));
+  if (exerciseLogs.isEmpty) return ("", const SetDto(0, 0, false));
 
-  SetDto heaviestSet = pastLogs.first.sets.first;
-  String? logId = pastLogs.first.routineLogId;
+  SetDto heaviestSet = exerciseLogs.first.sets.first;
+  String? logId = exerciseLogs.first.routineLogId;
 
   double heaviestVolume = 0.0;
 
-  for (var log in pastLogs) {
+  for (var log in exerciseLogs) {
     final currentSet = heaviestSetVolumeForExerciseLog(exerciseLog: log);
     final currentVolume = currentSet.value1 * currentSet.value2;
     if (currentVolume > heaviestVolume) {
@@ -103,14 +95,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, heaviestSet);
 }
 
-(String?, double) heaviestWeightForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, double) heaviestWeight({required List<ExerciseLogDto> exerciseLogs}) {
   double heaviestWeight = 0;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    heaviestWeight = pastLogs.first.sets.first.value1.toDouble();
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    heaviestWeight = exerciseLogs.first.sets.first.value1.toDouble();
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final weight = heaviestSetWeightForExerciseLog(exerciseLog: log).value1.toDouble();
       if (weight > heaviestWeight) {
         heaviestWeight = weight;
@@ -121,14 +112,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, heaviestWeight);
 }
 
-(String?, int) highestRepsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, int) mostRepsInSet({required List<ExerciseLogDto> exerciseLogs}) {
   int highestReps = 0;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    highestReps = pastLogs.first.sets.first.value2.toInt();
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    highestReps = exerciseLogs.first.sets.first.value2.toInt();
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final reps = highestRepsForExerciseLog(exerciseLog: log);
       if (reps > highestReps) {
         highestReps = reps;
@@ -139,14 +129,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, highestReps);
 }
 
-(String?, int) totalRepsForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, int) mostRepsInSession({required List<ExerciseLogDto> exerciseLogs}) {
   int mostReps = 0;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    mostReps = pastLogs.first.sets.first.value2.toInt();
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    mostReps = exerciseLogs.first.sets.first.value2.toInt();
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final reps = totalRepsForExerciseLog(exerciseLog: log);
       if (reps > mostReps) {
         mostReps = reps;
@@ -157,14 +146,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   return (logId, mostReps);
 }
 
-(String?, Duration) longestDurationForExercise({required BuildContext context, required ExerciseDto exercise}) {
-  final pastLogs = pastExerciseLogsForExercise(context: context, exercise: exercise);
+(String?, Duration) longestDuration({required List<ExerciseLogDto> exerciseLogs}) {
   Duration longestDuration = Duration.zero;
   String? logId;
-  if (pastLogs.isNotEmpty) {
-    longestDuration = Duration(milliseconds: pastLogs.first.sets.first.value1.toInt());
-    logId = pastLogs.first.routineLogId;
-    for (var log in pastLogs) {
+  if (exerciseLogs.isNotEmpty) {
+    longestDuration = Duration(milliseconds: exerciseLogs.first.sets.first.value1.toInt());
+    logId = exerciseLogs.first.routineLogId;
+    for (var log in exerciseLogs) {
       final duration = longestDurationForExerciseLog(exerciseLog: log);
       if (duration > longestDuration) {
         longestDuration = duration;
@@ -176,16 +164,12 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 }
 
 List<PBDto> calculatePBs(
-    {required BuildContext context, required ExerciseType exerciseType, required ExerciseLogDto exerciseLog}) {
-  final provider = Provider.of<RoutineLogProvider>(context, listen: false);
-
-  final pastSets = provider.wherePastSetsForExerciseBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-  final pastExerciseLogs =
-      provider.wherePastExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-
+    {required List<ExerciseLogDto> pastExerciseLogs,
+    required ExerciseType exerciseType,
+    required ExerciseLogDto exerciseLog}) {
   List<PBDto> pbs = [];
 
-  if (pastSets.isNotEmpty && pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
+  if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (exerciseType == ExerciseType.weights) {
       final pastHeaviestWeight =
           pastExerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).map((set) => set.value1).max;
@@ -193,8 +177,8 @@ List<PBDto> calculatePBs(
 
       final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.value1 > pastHeaviestWeight);
       if (currentHeaviestWeightSets.isNotEmpty) {
-        final heaviestWeightSet =
-            currentHeaviestWeightSets.reduce((curr, next) => (curr.value1 * curr.value2) > (next.value1 * next.value2) ? curr : next);
+        final heaviestWeightSet = currentHeaviestWeightSets
+            .reduce((curr, next) => (curr.value1 * curr.value2) > (next.value1 * next.value2) ? curr : next);
         pbs.add(PBDto(set: heaviestWeightSet, exercise: exerciseLog.exercise, pb: PBType.weight));
       }
 
@@ -221,4 +205,80 @@ List<PBDto> calculatePBs(
   }
 
   return pbs;
+}
+
+TemplateChange? hasDifferentExerciseLogsLength(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  return exerciseLogs2.length != exerciseLogs1.length ? TemplateChange.exerciseLogLength : null;
+}
+
+TemplateChange? hasReOrderedExercises(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  final length = exerciseLogs1.length > exerciseLogs2.length ? exerciseLogs2.length : exerciseLogs1.length;
+  for (int i = 0; i < length; i++) {
+    if (exerciseLogs1[i].exercise.id != exerciseLogs2[i].exercise.id) {
+      return TemplateChange.exerciseOrder; // Re-orderedList
+    }
+  }
+  return null;
+}
+
+TemplateChange? hasDifferentSetsLength(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  final exerciseLog1Sets = exerciseLogs1.expand((logs) => logs.sets);
+  final exerciseLog2Sets = exerciseLogs2.expand((logs) => logs.sets);
+
+  return exerciseLog1Sets.length != exerciseLog2Sets.length ? TemplateChange.setsLength : null;
+}
+
+TemplateChange? hasExercisesChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
+}) {
+  Set<String> exerciseIds1 = exerciseLogs1.map((p) => p.exercise.id).toSet();
+  Set<String> exerciseIds2 = exerciseLogs2.map((p) => p.exercise.id).toSet();
+
+  int changes = exerciseIds1.difference(exerciseIds2).length;
+
+  return changes > 0 ? TemplateChange.exerciseLogChange : null;
+}
+
+TemplateChange? hasSuperSetIdChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
+}) {
+  Set<String> superSetIds1 =
+      exerciseLogs1.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+  Set<String> superSetIds2 =
+      exerciseLogs2.map((p) => p.superSetId).where((superSetId) => superSetId.isNotEmpty).toSet();
+
+  final changes = superSetIds2.difference(superSetIds1).length;
+
+  return changes > 0 ? TemplateChange.supersetId : null;
+}
+
+TemplateChange? hasCheckedSetsChanged(
+    {required List<ExerciseLogDto> exerciseLogs1, required List<ExerciseLogDto> exerciseLogs2}) {
+  final exerciseLog1CompletedSets = exerciseLogs1.expand((log) => log.sets).where((set) => set.checked).toList();
+  final exerciseLog2CompletedSets = exerciseLogs2.expand((log) => log.sets).where((set) => set.checked).toList();
+
+  if (exerciseLog1CompletedSets.length != exerciseLog2CompletedSets.length) {
+    return TemplateChange.checkedSets;
+  }
+
+  return null;
+}
+
+TemplateChange? hasSetValueChanged({
+  required List<ExerciseLogDto> exerciseLogs1,
+  required List<ExerciseLogDto> exerciseLogs2,
+}) {
+  final exerciseLog1Volume = exerciseLogs1
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + (set.value1.toDouble() * set.value2.toDouble()));
+  final exerciseLog2Volume = exerciseLogs2
+      .expand((logs) => logs.sets)
+      .fold(0.0, (previousValue, set) => previousValue + (set.value1.toDouble() * set.value2.toDouble()));
+
+  return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }

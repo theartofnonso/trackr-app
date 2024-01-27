@@ -20,7 +20,7 @@ class MuscleGroupWidget extends StatelessWidget {
         title: Text(muscleGroupDto.muscleGroup.name,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
         trailing: muscleGroupDto.selected
-            ? const Icon(Icons.check_box_rounded, color: Colors.green)
+            ? const Icon(Icons.check_box_rounded, color: vibrantGreen)
             : const Icon(Icons.check_box_rounded, color: tealBlueLighter),
       ),
     );

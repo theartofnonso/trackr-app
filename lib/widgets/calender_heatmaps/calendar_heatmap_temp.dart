@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 
 class _DateViewModel {
   DateTime dateTime;
@@ -69,14 +69,14 @@ class _DateWidget extends StatelessWidget {
 
   Color _getBackgroundColor(bool hasLog) {
     if (hasLog) {
-      return Colors.green;
+      return vibrantGreen;
     }
     return tealBlueLighter;
   }
 
   @override
   Widget build(BuildContext context) {
-    final log = Provider.of<RoutineLogProvider>(context, listen: true).logWhereDate(dateTime: dateTime);
+    final log = Provider.of<RoutineLogController>(context, listen: true).logWhereDate(dateTime: dateTime);
     return SizedBox(
       width: 16,
       height: 16,

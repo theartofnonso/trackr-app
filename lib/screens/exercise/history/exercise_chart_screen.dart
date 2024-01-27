@@ -12,12 +12,12 @@ import '../../../app_constants.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/exercise_type_enums.dart';
-import '../../../providers/routine_log_provider.dart';
+import '../../../controllers/routine_log_controller.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/chart/line_chart_widget.dart';
-import '../../routine_log_screen.dart';
+import '../../logs/routine_log_screen.dart';
 import 'home_screen.dart';
 
 enum SummaryType {
@@ -132,7 +132,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
     }
 
-    _exerciseLogs = Provider.of<RoutineLogProvider>(context, listen: false)
+    _exerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
         .exerciseLogsForExercise(exercise: widget.exercise)
         .toList();
 
@@ -161,12 +161,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? Colors.blueAccent : tealBlueLight;
+    return _summaryType == type ? vibrantBlue : tealBlueLight;
   }
 
   void _navigateTo({required String? routineLogId}) {
     if (routineLogId != null) {
-      final routineLog = Provider.of<RoutineLogProvider>(context, listen: false).whereRoutineLog(id: routineLogId);
+      final routineLog = Provider.of<RoutineLogController>(context, listen: false).logWhereId(id: routineLogId);
       if (routineLog != null) {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => RoutineLogPreviewScreen(log: routineLog, previousRouteName: exerciseRouteName)));
@@ -263,7 +263,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 5.0),
                         child: CTextButton(
                             onPressed: _totalRepsForLog,
-                            label: "Session Reps",
+                            label: "Most Reps (Session)",
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
                     if (_exerciseLogsDuration())

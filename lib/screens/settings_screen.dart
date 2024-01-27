@@ -4,15 +4,19 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 
-import '../providers/app_provider.dart';
+import '../controllers/exercise_controller.dart';
+import '../controllers/routine_log_controller.dart';
+import '../controllers/routine_template_controller.dart';
+import '../controllers/settings_controller.dart';
 import '../utils/general_utils.dart';
-import '../widgets/helper_widgets/dialog_helper.dart';
+import '../utils/dialog_utils.dart';
 import 'exercise/exercise_library_screen.dart';
 
 enum WeightUnit {
@@ -108,7 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     splashColor: Colors.transparent // Disable the splash effect
                   ),
                   child: SwitchListTile(
-                    activeColor: Colors.green,
+                    activeColor: vibrantGreen,
                     title: Text('Show calendar dates',
                         style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                     value: SharedPrefs().showCalendarDates,
@@ -116,6 +120,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     onChanged: (bool value) {
                       setState(() {
                         SharedPrefs().showCalendarDates = value;
+                        Provider.of<SettingsController>(context, listen: false).notify();
                       });
                     },
                   ),
@@ -190,7 +195,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     SharedPrefs().clear();
     FlutterLocalNotificationsPlugin().cancelAll();
     if (context.mounted) {
-      AppProviders.resetProviders(context);
+      Provider.of<RoutineTemplateController>(context, listen: false).clear();
+      Provider.of<RoutineLogController>(context, listen: false).clear();
+      Provider.of<ExerciseController>(context, listen: false).clear();
     }
   }
 

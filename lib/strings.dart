@@ -1,0 +1,1 @@
+const consistencyMonitor = "Your consistency health score is based on training sessions logged in a month, with an optimal target of 12 days for maintaining health.";

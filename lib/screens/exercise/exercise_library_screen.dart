@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
@@ -77,7 +77,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ? searchResults
               .where((exerciseItem) =>
                   exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup ||
-                  exerciseItem.exercise.primaryMuscleGroup.family == _selectedMuscleGroup?.family)
+                  exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup)
               .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
           : searchResults;
 
@@ -175,7 +175,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   List<ExerciseInLibraryDto> _updateSelections() {
-    final exercises = Provider.of<ExerciseProvider>(context, listen: false).exercises;
+    final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
     return exercises.map((exercise) {
       final exerciseInLibrary =
           _exercisesInLibrary.firstWhereOrNull((exerciseInLibrary) => exerciseInLibrary.exercise.id == exercise.id);
@@ -197,15 +197,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final muscleGroups = MuscleGroup.values
-        .whereNot((muscleGroup) =>
-            muscleGroup == MuscleGroup.glutes ||
-            muscleGroup == MuscleGroup.abductors ||
-            muscleGroup == MuscleGroup.adductors ||
-            muscleGroup == MuscleGroup.hamstrings ||
-            muscleGroup == MuscleGroup.quadriceps ||
-            muscleGroup == MuscleGroup.calves ||
-            muscleGroup == MuscleGroup.traps ||
-            muscleGroup == MuscleGroup.lats)
+        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
         .sorted((a, b) => a.name.compareTo(b.name));
 
     return Scaffold(
@@ -258,6 +250,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   borderRadius: BorderRadius.circular(5), // Border radius
                 ),
                 child: DropdownButton<MuscleGroup>(
+                  menuMaxHeight: 400,
                   isExpanded: true,
                   isDense: true,
                   value: _selectedMuscleGroup,
@@ -323,7 +316,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     final preSelectedExerciseIds = widget.preSelectedExercises.map((exercise) => exercise.id).toList();
 
-    _exercisesInLibrary = Provider.of<ExerciseProvider>(context, listen: false)
+    _exercisesInLibrary = Provider.of<ExerciseController>(context, listen: false)
         .exercises
         .whereNot((exercise) => preSelectedExerciseIds.contains(exercise.id))
         .map((exercise) => ExerciseInLibraryDto(exercise: exercise))

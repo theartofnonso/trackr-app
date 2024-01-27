@@ -1,13 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
-import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
@@ -31,13 +32,18 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   late MuscleGroup _primaryMuscleGroup;
   late ExerciseType _exerciseType;
 
-  bool _loading = false;
-  String _loadingLabel = "";
-
   bool _isInputFieldVisible = false;
 
   @override
   Widget build(BuildContext context) {
+    final exerciseEditorController = Provider.of<ExerciseController>(context, listen: true);
+
+    if (exerciseEditorController.errorMessage.isNotEmpty) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _showSnackbar(exerciseEditorController.errorMessage);
+      });
+    }
+
     final exercise = widget.exercise;
 
     final inactiveStyle = GoogleFonts.montserrat(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600);
@@ -57,9 +63,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       onPressed: _updateExercise,
                       label: "Update",
                       buttonColor: Colors.transparent,
-                      buttonBorderColor: Colors.transparent,
-                      loading: _loading,
-                      loadingLabel: _loadingLabel)
+                      buttonBorderColor: Colors.transparent)
                   : const SizedBox.shrink()
             ],
           ),
@@ -103,21 +107,16 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   child: CTextButton(
                       onPressed: _createExercise,
                       label: "Create Exercise",
-                      loading: _loading,
-                      loadingLabel: _loadingLabel,
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      buttonColor: Colors.green),
+                      buttonColor: vibrantGreen),
                 ),
             ]),
           ),
         ));
   }
 
-  void _toggleLoadingState() {
-    setState(() {
-      _loading = !_loading;
-      _loadingLabel = widget.exercise != null ? "Updating" : "Creating";
-    });
+  void _showSnackbar(String message) {
+    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
   void _navigateToMuscleGroupsScreen() async {
@@ -133,7 +132,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _navigateToExerciseTypeScreen() async {
-    if (widget.exercise != null) return; /// We don't want to allow editing of exercise type once created.
+    if (widget.exercise != null) return;
+
+    /// We don't want to allow editing of exercise type once created.
     final type = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseTypeScreen()))
         as ExerciseType?;
     if (type != null) {
@@ -190,25 +191,14 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if (exerciseName == null) return;
 
     if (exerciseName.isEmpty) {
-      showSnackbar(
-          context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
+      _showSnackbar("Please provide a name for this exercise");
     } else {
-      _toggleLoadingState();
-
       final exercise = ExerciseDto(
           id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 
-      try {
-        await Provider.of<ExerciseProvider>(context, listen: false).saveExercise(exerciseDto: exercise);
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      } catch (e) {
-        if (mounted) {
-          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to create exercise");
-        }
-      } finally {
-        _toggleLoadingState();
+      await Provider.of<ExerciseController>(context, listen: false).saveExercise(exerciseDto: exercise);
+      if (mounted) {
+        Navigator.of(context).pop();
       }
     }
   }
@@ -219,26 +209,15 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if (exerciseName == null) return;
 
     if (exerciseName.isEmpty) {
-      showSnackbar(
-          context: context, icon: const Icon(Icons.info_outline), message: "Please provide a name for this exercise");
+      _showSnackbar("Please provide a name for this exercise");
     } else {
       final exercise = widget.exercise;
       if (exercise == null) return;
 
-      _toggleLoadingState();
-
-      try {
-        final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
-        await Provider.of<ExerciseProvider>(context, listen: false).updateExercise(exercise: updatedExercise);
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      } catch (_) {
-        if (mounted) {
-          showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to update exercise");
-        }
-      } finally {
-        _toggleLoadingState();
+      final updatedExercise = exercise.copyWith(name: exerciseName.trim(), primaryMuscleGroup: _primaryMuscleGroup);
+      await Provider.of<ExerciseController>(context, listen: false).updateExercise(exercise: updatedExercise);
+      if (mounted) {
+        Navigator.of(context).pop();
       }
     }
   }

@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/widgets/empty_states/list_view_empty_state.dart';
 
 import '../../dtos/exercise_log_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../utils/general_utils.dart';
-import '../helper_widgets/routine_helper.dart';
+import '../../utils/routine_utils.dart';
 import '../routine/preview/set_headers/double_set_header.dart';
 import '../routine/preview/set_headers/single_set_header.dart';
 
@@ -24,8 +24,8 @@ class RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogProvider = Provider.of<RoutineLogProvider>(context, listen: false);
-    final routineLog = routineLogProvider.whereRoutineLog(id: exerciseLog.routineLogId ?? "");
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLog = routineLogController.logWhereId(id: exerciseLog.routineLogId ?? "");
 
     if(routineLog == null) {
       return const ListViewEmptyState();

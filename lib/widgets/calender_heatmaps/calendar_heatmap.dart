@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
+
+import '../../app_constants.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
   final bool active;
+  final Color color;
 
-  const _DateViewModel({required this.active, required this.dateTime});
+  const _DateViewModel({required this.active, required this.dateTime, required this.color});
 
   @override
   String toString() {
-    return '_DateViewModel{dateTime: $dateTime, active: $active}';
+    return '_DateViewModel{dateTime: $dateTime, active: $active, color: $color}';
   }
 }
 
 class CalendarHeatMap extends StatelessWidget {
   final List<DateTime> dates;
   final DateTime initialDate;
+  final double spacing;
+  final double borderRadius;
+  final bool dynamicColor;
 
-  const CalendarHeatMap({super.key, required this.initialDate, required this.dates});
+  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.borderRadius = 5, this.dynamicColor = false});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -42,7 +49,8 @@ class CalendarHeatMap extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
-      datesInMonths.add(_DateViewModel(dateTime: date, active: active));
+      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : tealBlueLight;
+      datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: dynamicColor ? color : vibrantGreen));
     }
 
     // Add padding to end of month
@@ -60,31 +68,17 @@ class CalendarHeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
 
-    return _Month(days: datesForMonth, initialDate: initialDate);
-  }
-}
-
-class _Day extends StatelessWidget {
-  final _DateViewModel date;
-
-  const _Day({required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: date.active ? Colors.green : Colors.green.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(1),
-      ),
-    );
+    return _Month(days: datesForMonth, initialDate: initialDate, spacing: spacing, borderRadius: borderRadius);
   }
 }
 
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> days;
   final DateTime initialDate;
+  final double spacing;
+  final double borderRadius;
 
-  const _Month({required this.days, required this.initialDate});
+  const _Month({required this.days, required this.initialDate, required this.spacing, required this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -92,28 +86,46 @@ class _Month extends StatelessWidget {
       if (day == null) {
         return const SizedBox();
       } else {
-        return _Day(date: day);
+        return _Day(date: day, borderRadius: borderRadius);
       }
     }).toList();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(initialDate.abbreviatedMonth().toUpperCase(),
           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-      Expanded(
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-            childAspectRatio: 1, // for square shape
-            crossAxisSpacing: 4.0,
-            mainAxisSpacing: 4.0,
-          ),
-          itemCount: daysWidgets.length, // Just an example to vary the number of squares
-          itemBuilder: (context, index) {
-            return daysWidgets[index];
-          },
+      GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        // to disable GridView's scrolling
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          childAspectRatio: 1, // for square shape
+          crossAxisSpacing: spacing,
+          mainAxisSpacing: spacing,
         ),
+        itemCount: daysWidgets.length,
+        // Just an example to vary the number of squares
+        itemBuilder: (context, index) {
+          return daysWidgets[index];
+        },
       )
     ]);
+  }
+}
+
+class _Day extends StatelessWidget {
+  final _DateViewModel date;
+  final double borderRadius;
+
+  const _Day({required this.date, required this.borderRadius});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: date.active ? date.color : date.color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+    );
   }
 }

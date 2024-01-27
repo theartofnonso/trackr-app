@@ -2,8 +2,6 @@
   {"id": "CH1", "name": "Bar Dip", "primaryMuscleGroup": "Chest", "type": "BW"},
   {"id": "CH2", "name": "Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH3", "name": "Cable Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CH4", "name": "Close-Grip Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CH5", "name": "Close-Grip Feet-Up Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH6", "name": "Decline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH7", "name": "Dumbbell Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH8", "name": "Dumbbell Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
@@ -27,5 +25,14 @@
   {"id": "CH26", "name": "Smith Machine Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH27", "name": "Smith Machine Incline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CH28", "name": "Standing Cable Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CH29", "name": "Standing Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"}
+  {"id": "CH29", "name": "Standing Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH30", "name": "Bar Dip (Weighted)", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH31", "name": "Around The World", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH32", "name": "Bar Dip (Weighted)", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH33", "name": "Seated Chest Flys (Cable)", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH34", "name": "Low Cable Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH35", "name": "Iso-Lateral Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH36", "name": "Smith Machine Decline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CH37", "name": "Decline Push-Up", "primaryMuscleGroup": "Chest", "type": "BW"},
+  {"id": "CH38", "name": "Hex Press", "primaryMuscleGroup": "Chest", "type": "WR"}
 ]

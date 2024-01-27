@@ -5,6 +5,8 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_log_empty_state.dart';
 
+import '../app_constants.dart';
+
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
   final VoidCallback onComplete;
@@ -76,7 +78,7 @@ class IntroScreen extends StatelessWidget {
                 onPressed: onComplete,
                 label: "Start Tracking",
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                buttonColor: Colors.green,
+                buttonColor: vibrantGreen,
                 textStyle: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),

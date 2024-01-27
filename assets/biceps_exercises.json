@@ -7,8 +7,21 @@
   {"id": "BIC6", "name": "Concentration Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
   {"id": "BIC7", "name": "Dumbbell Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
   {"id": "BIC8", "name": "Dumbbell Preacher Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
-  {"id": "BIC9", "name": "Hammer Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC9", "name": "Hammer Curl (Dumbbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
   {"id": "BIC10", "name": "Incline Dumbbell Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
   {"id": "BIC11", "name": "Machine Bicep Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
-  {"id": "BIC12", "name": "Spider Curl", "primaryMuscleGroup": "Biceps", "type": "WR"}
+  {"id": "BIC12", "name": "Spider Curl (Barbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC13", "name": "Zottman Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC14", "name": "Spider Curl (Barbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC15", "name": "Spider Curl (Dumbbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC16", "name": "EZ Bar Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC17", "name": "Cross Body Hammer Curl", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC18", "name": "Hammer Curl (Band)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC19", "name": "Hammer Curl (Cable)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC20", "name": "Overhead Curl (Barbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC21", "name": "Preacher Curl (Dumbbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC22", "name": "Reverse Curl (Barbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC23", "name": "Reverse Curl (Dumbbell)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC24", "name": "Reverse Curl (Cable)", "primaryMuscleGroup": "Biceps", "type": "WR"},
+  {"id": "BIC25", "name": "Preacher Curl (Machine)", "primaryMuscleGroup": "Biceps", "type": "WR"}
 ]

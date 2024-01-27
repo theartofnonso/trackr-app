@@ -25,7 +25,7 @@ enum AchievementType {
       "Congratulations on logging 100 days with Trackr!"),
   supersetSpecialist(
       "Superset Specialist",
-      "Log 50 sessions with at least one superset in each",
+      "Log 50 sessions with at least one superset",
       50,
       "Superset Specialist focuses on incorporating supersets into your workout routine. Supersets are a great way to increase the intensity of your workout and save time as well.",
       "Congratulations! You've successfully completed a remarkable journey of 50 workout sessions, each powered with the intensity of supersets."),
@@ -56,8 +56,8 @@ enum AchievementType {
       "Congratulations on Reaching the 15-Minute Milestone in 15 Sessions!"),
   timeUnderTension(
       "Time Under Tension",
-      "Accumulate 100 hours of training for any duration exercises",
-      100,
+      "Accumulate 10 hours of training for any duration exercises",
+      10,
       "Time Under Tension focuses on duration exercises. It is a great way to increase the intensity of your workout.",
       "Fantastic Achievement! You've successfully dedicated 100 hours to duration exercises, showcasing your incredible commitment and endurance."),
   obsessed(
@@ -86,7 +86,7 @@ enum AchievementType {
       "Outstanding Achievement! You've dedicated 100 hours to training, showcasing remarkable commitment and perseverance. This is more than just a milestone, it's dedication."),
   weekendWarrior(
       "Weekend Warrior",
-      "Log a session on both Saturday and Sunday for eight consecutive weeks",
+      "Log a session on either Saturday or Sunday for eight consecutive weeks",
       8,
       "Weekend Warrior focuses on adhering to a two-month workout regimen for individuals with a busy schedule. Additionally, it serves as an effective method for establishing a consistent weekend exercise routine.",
       "Congratulations on mastering the 'Weekend Warrior' challenge! Your unwavering commitment to fitness over the past eight weeks, even on weekends, is truly commendable."),
@@ -94,7 +94,7 @@ enum AchievementType {
       "Bodyweight Champion",
       "Accumulate 100 bodyweight exercises",
       100,
-      "Bodyweight Champion focuses on bodyweight exercises. It is designed to encourage you to add bodyweight exercises to your workout routine for a more well-rounded workout.",
+      "Bodyweight Champion is designed to encourage you to add bodyweight exercises to your workout routine for a more well-rounded workout.",
       "Congratulations on reaching a major milestone! You've successfully completed 100 bodyweight exercises."),
   // maxOutMadness("Max Out Madness", "Set a goal to increase the maximum weight lifted in a specific compound exercise", 0),
   // twiceAsStrong("Twice as Strong", "Achieve a 2x body weight deadlift", 0),

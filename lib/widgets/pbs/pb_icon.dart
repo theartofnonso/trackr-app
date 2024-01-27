@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../app_constants.dart';
+
 class PBIcon extends StatelessWidget {
   final Color color;
   final String label;
@@ -11,7 +13,7 @@ class PBIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      const FaIcon(FontAwesomeIcons.solidStar, color: Colors.green, size: 14),
+      const FaIcon(FontAwesomeIcons.solidStar, color: vibrantGreen, size: 14),
       const SizedBox(width: 4),
       Text(label, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600))
     ]);

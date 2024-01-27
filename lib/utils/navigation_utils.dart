@@ -5,15 +5,15 @@ import '../dtos/routine_template_dto.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
-import '../screens/routine_log_screen.dart';
-import '../screens/routine_logs_screen.dart';
+import '../screens/logs/routine_log_screen.dart';
+import '../screens/logs/routine_logs_screen.dart';
 import '../screens/template/routine_template_screen.dart';
 
 void navigateToRoutineEditor({required BuildContext context, RoutineTemplateDto? template}) {
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateEditorScreen(template: template)));
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, RoutineEditorMode editorMode = RoutineEditorMode.log}) async {
+void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, required RoutineEditorMode editorMode}) async {
   final createdLog = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogEditorScreen(log: log, mode: editorMode))) as RoutineLogDto?;
   if(createdLog != null) {
     if(context.mounted) {
@@ -22,8 +22,8 @@ void navigateToRoutineLogEditor({required BuildContext context, required Routine
   }
 }
 
-void navigateToRoutinePreview({required BuildContext context, required String templateId}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateScreen(templateId: templateId)));
+void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateScreen(template: template)));
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool finishedLogging = false}) {

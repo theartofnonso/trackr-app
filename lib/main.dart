@@ -12,10 +12,16 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/providers/exercise_provider.dart';
-import 'package:tracker_app/providers/exercise_log_provider.dart';
-import 'package:tracker_app/providers/routine_log_provider.dart';
-import 'package:tracker_app/providers/routine_template_provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/controllers/routine_template_controller.dart';
+import 'package:tracker_app/controllers/settings_controller.dart';
+import 'package:tracker_app/repositories/achievement_repository.dart';
+import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
+import 'package:tracker_app/repositories/amplify_log_repository.dart';
+import 'package:tracker_app/repositories/amplify_template_repository.dart';
+import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -53,18 +59,20 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<ExerciseProvider>(
-        create: (BuildContext context) => ExerciseProvider(),
+      ChangeNotifierProvider<SettingsController>(
+        create: (BuildContext context) => SettingsController(),
       ),
-      ChangeNotifierProvider<RoutineTemplateProvider>(
-        create: (BuildContext context) => RoutineTemplateProvider(),
+      ChangeNotifierProvider<ExerciseController>(
+        create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
       ),
-      ChangeNotifierProvider<RoutineLogProvider>(
-        create: (BuildContext context) => RoutineLogProvider(),
+      ChangeNotifierProvider<RoutineTemplateController>(
+        create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
       ),
-      ChangeNotifierProvider<ExerciseLogProvider>(
-        create: (BuildContext context) => ExerciseLogProvider(),
+      ChangeNotifierProvider<RoutineLogController>(
+        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository(), AchievementRepository()),
       ),
+      ChangeNotifierProvider<ExerciseLogController>(
+          create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
     ], child: const MyApp())),
   );
 }
@@ -86,7 +94,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
-
     /// Only sync data from the last 12 months
     DateTime currentDate = DateTime.now();
     DateTime date12MonthsAgo = DateTime(currentDate.year - 1, currentDate.month, currentDate.day);

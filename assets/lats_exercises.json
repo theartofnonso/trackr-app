@@ -1,0 +1,20 @@
+[
+  {"id": "BAC4", "name": "Straight Arm Lat Pulldown", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC5", "name": "Pull Up (Assisted)", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC5", "name": "Pull Up (Band)", "primaryMuscleGroup": "Lats", "type": "BW"},
+  {"id": "BAC6", "name": "Chin Up", "primaryMuscleGroup": "Lats", "type": "BW"},
+  {"id": "BAC14", "name": "Lat Pulldown With Pronated Grip", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC15", "name": "Lat Pulldown With Supinated Grip", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC16", "name": "One-Handed Cable Row", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC17", "name": "One-Handed Lat Pulldown", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC18", "name": "Pendlay Row", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC19", "name": "Pull Up", "primaryMuscleGroup": "Lats", "type": "BW"},
+  {"id": "BAC20", "name": "Rack Pull", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC23", "name": "Straight Arm Lat Pulldown", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC25", "name": "Chin-Up (Weighted)", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC26", "name": "Iso-Lateral High Row", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC27", "name": "Iso-Lateral Low Row", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC28", "name": "Kneeling Pulldown", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC29", "name": "Pull Up (Weighted)", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "BAC30", "name": "Iso-Lateral Row", "primaryMuscleGroup": "Lats", "type": "WR"}
+]

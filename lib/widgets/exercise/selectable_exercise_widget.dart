@@ -43,7 +43,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        horizontalTitleGap: 4,
+        horizontalTitleGap: 10,
         trailing: SizedBox(
           width: 100,
           child: Row(
@@ -63,7 +63,7 @@ class SelectableExerciseWidget extends StatelessWidget {
               ),
             const SizedBox(width: 8),
             exerciseInLibraryDto.selected
-                ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: Colors.green)
+                ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
                 : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: tealBlueLighter)
           ]),
         ),

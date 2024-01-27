@@ -2,47 +2,42 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
-import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
-import 'package:tracker_app/providers/exercise_log_provider.dart';
+import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/widgets/helper_widgets/dialog_helper.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/utils/widget_utils.dart';
 import '../../app_constants.dart';
 import '../../dtos/exercise_dto.dart';
-import '../../dtos/template_changes_messages_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../providers/routine_log_provider.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
-import '../../widgets/helper_widgets/routine_helper.dart';
+import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../../widgets/routine/editors/exercise_picker.dart';
 import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
-import 'helper_utils.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   final RoutineLogDto log;
   final RoutineEditorMode mode;
 
-  const RoutineLogEditorScreen({super.key, required this.log, this.mode = RoutineEditorMode.log});
+  const RoutineLogEditorScreen({super.key, required this.log, required this.mode});
 
   @override
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
 }
 
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
-  bool _loading = false;
-  String _loadingMessage = "";
-
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final provider = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
     final exercises = await Navigator.of(context).push(
@@ -57,75 +52,55 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     }
   }
 
-  void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
-    final exercises = whereOtherExerciseLogsExcept(context: context, firstProcedure: firstExerciseLog);
-    displayBottomSheet(
+  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
+    showSuperSetExercisePicker(
         context: context,
-        child: ExercisePicker(
-          selectedExercise: firstExerciseLog,
-          exercises: exercises,
-          onSelect: (ExerciseLogDto secondExercise) {
-            _closeDialog();
-            final id = "superset_id_${firstExerciseLog.exercise.id}_${secondExercise.exercise.id}";
-            Provider.of<ExerciseLogProvider>(context, listen: false).superSetExerciseLogs(
-                firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExercise.id, superSetId: id);
-            _cacheLog();
-          },
-          onSelectExercisesInLibrary: () {
-            _closeDialog();
-            _selectExercisesInLibrary();
-          },
-        ));
+        firstExerciseLog: firstExerciseLog,
+        exerciseLogs: exercises,
+        onSelected: (secondExerciseLog) {
+          _closeDialog();
+          final id = superSetId(firstExerciseLog: firstExerciseLog, secondExerciseLog: secondExerciseLog);
+          controller.superSetExerciseLogs(
+              firstExerciseLogId: firstExerciseLog.id, secondExerciseLogId: secondExerciseLog.id, superSetId: id);
+          _cacheLog();
+        },
+        selectExercisesInLibrary: () {
+          _closeDialog();
+          _selectExercisesInLibrary();
+        });
   }
 
   RoutineLogDto _routineLog() {
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
     final log = widget.log;
 
-    final routineLog = log.copyWith(
-        exerciseLogs: exerciseLogs,
-        endTime: widget.mode == RoutineEditorMode.log ? DateTime.now() : log.endTime,
-        updatedAt: DateTime.now());
+    final routineLog = log.copyWith(exerciseLogs: exerciseLogs, endTime: DateTime.now(), updatedAt: DateTime.now());
     return routineLog;
   }
 
   Future<void> _doCreateRoutineLog() async {
-    _toggleLoadingState(message: "Saving log...");
-
     final routineLog = _routineLog();
-    try {
-      final createdLog =
-          await Provider.of<RoutineLogProvider>(context, listen: false).saveRoutineLog(logDto: routineLog);
 
-      _navigateBack(log: createdLog);
-    } catch (_) {
-      _handleRoutineLogError("Unable to log workout");
-    } finally {
-      _toggleLoadingState();
-    }
+    final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
+
+    _navigateBack(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
-    _toggleLoadingState(message: "Updating log...");
-
     final routineLog = _routineLog();
 
-    try {
-      await Provider.of<RoutineLogProvider>(context, listen: false).updateRoutineLog(log: routineLog);
+    await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
-      _navigateBack();
-    } catch (_) {
-      _handleRoutineLogError("Unable to update log");
-    } finally {
-      _toggleLoadingState();
-    }
+    _navigateBack();
   }
 
   bool _isRoutinePartiallyComplete() {
-    final exerciseLogsProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
-    final exerciseLogs = exerciseLogsProvider.mergeSetsIntoExerciseLogs();
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+    final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
     return exerciseLogs.any((log) => log.sets.any((set) => set.checked));
   }
 
@@ -167,39 +142,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
   }
 
-  void _handleRoutineLogError(String message) {
-    if (mounted) {
-      _showSnackbar(message);
-    }
-  }
-
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.edit) return;
     final routineLog = _routineLog();
-    Provider.of<RoutineLogProvider>(context, listen: false).cacheRoutineLog(logDto: routineLog);
-  }
-
-  TemplateChangesMessageDto? _completedSetsChanged(
-      {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
-    final exerciseLog1CompletedSets = exerciseLog1.expand((log) => log.sets).where((set) => set.checked).toList();
-    final exerciseLog2CompletedSets = exerciseLog2.expand((log) => log.sets).where((set) => set.checked).toList();
-
-    if (exerciseLog1CompletedSets.length > exerciseLog2CompletedSets.length) {
-      return TemplateChangesMessageDto(type: TemplateChangesMessageType.checkedSets, message: 'Removed completed sets');
-    } else if (exerciseLog1CompletedSets.length < exerciseLog2CompletedSets.length) {
-      return TemplateChangesMessageDto(type: TemplateChangesMessageType.checkedSets, message: 'Added completed sets');
-    }
-
-    return null;
+    Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: routineLog);
   }
 
   void _checkForUnsavedChanges() {
-    final procedureProvider = Provider.of<ExerciseLogProvider>(context, listen: false);
+    final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLog1 = widget.log.exerciseLogs;
-    final exerciseLog2 = procedureProvider.mergeSetsIntoExerciseLogs();
-    final unsavedChangesMessage =
-        checkForChanges(context: context, exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
-    final completedSetsChanged = _completedSetsChanged(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
+    final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final completedSetsChanged = hasCheckedSetsChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
     if (completedSetsChanged != null) {
       unsavedChangesMessage.add(completedSetsChanged);
     }
@@ -228,21 +182,35 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     Navigator.of(context).pop();
   }
 
+  void _reOrderExerciseLogs({required List<ExerciseLogDto> exerciseLogs}) async {
+    final orderedList = await reOrderExerciseLogs(context: context, exerciseLogs: exerciseLogs);
+    if (!mounted) {
+      return;
+    }
+    if (orderedList != null) {
+      Provider.of<ExerciseLogController>(context, listen: false).reOrderExerciseLogs(reOrderedList: orderedList);
+      _cacheLog();
+    }
+  }
+
   void _navigateBack({RoutineLogDto? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     Navigator.of(context).pop(log);
   }
 
-  void _toggleLoadingState({String message = ""}) {
-    setState(() {
-      _loading = !_loading;
-      _loadingMessage = message;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final exerciseLogs = context.select((ExerciseLogProvider provider) => provider.exerciseLogs);
+    final routineLogEditorController = Provider.of<RoutineLogController>(context, listen: true);
+
+    if (routineLogEditorController.errorMessage.isNotEmpty) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _showSnackbar(routineLogEditorController.errorMessage);
+      });
+    }
+
+    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
+
+    final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
@@ -258,9 +226,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                 widget.log.name,
                 style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
-              actions: [IconButton(onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white))],
+              actions: [
+                IconButton(
+                    onPressed: _selectExercisesInLibrary,
+                    icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white))
+              ],
             ),
-            floatingActionButton: isKeyboardOpen || _loading
+            floatingActionButton: isKeyboardOpen
                 ? null
                 : FloatingActionButton(
                     heroTag: UniqueKey(),
@@ -268,7 +240,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     backgroundColor: tealBlueLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: Colors.green),
+                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
                   ),
             body: Stack(children: [
               SafeArea(
@@ -286,54 +258,52 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                       children: [
                         if (widget.mode == RoutineEditorMode.log)
                           Column(children: [
-                            Consumer<ExerciseLogProvider>(
-                                builder: (BuildContext context, ExerciseLogProvider provider, Widget? child) {
-                                  return _RoutineLogOverview(
-                                    sets: provider.completedSets().length,
-                                    timer: RoutineTimer(startTime: widget.log.startTime),
-                                  );
-                                }),
+                            Consumer<ExerciseLogController>(
+                                builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
+                              return _RoutineLogOverview(
+                                sets: provider.completedSets().length,
+                                timer: RoutineTimer(startTime: widget.log.startTime),
+                              );
+                            }),
                             const SizedBox(height: 20),
                           ]),
                         exerciseLogs.isNotEmpty
                             ? Expanded(
-                            child: ListView.separated(
-                                padding: const EdgeInsets.only(bottom: 250),
-                                itemBuilder: (BuildContext context, int index) {
-                                  final log = exerciseLogs[index];
-                                  final exerciseId = log.id;
-                                  return ExerciseLogWidget(
-                                      key: ValueKey(exerciseId),
-                                      exerciseLogDto: log,
-                                      editorType: RoutineEditorMode.log,
-                                      superSet: whereOtherExerciseInSuperSet(
-                                          firstExercise: log, exercises: exerciseLogs),
-                                      onRemoveSuperSet: (String superSetId) {
-                                        removeExerciseFromSuperSet(context: context, superSetId: log.superSetId);
-                                        _cacheLog();
-                                      },
-                                      onRemoveLog: () {
-                                        removeExercise(context: context, exerciseId: exerciseId);
-                                        _cacheLog();
-                                      },
-                                      onReOrder: () {
-                                        reOrderExercises(context: context);
-                                        _cacheLog();
-                                      },
-                                      onSuperSet: () => _showExercisePicker(firstExerciseLog: log),
-                                      onCache: _cacheLog);
-                                },
-                                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                itemCount: exerciseLogs.length))
+                                child: ListView.separated(
+                                    padding: const EdgeInsets.only(bottom: 250),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      final log = exerciseLogs[index];
+                                      final exerciseId = log.id;
+                                      return ExerciseLogWidget(
+                                          key: ValueKey(exerciseId),
+                                          exerciseLogDto: log,
+                                          editorType: RoutineEditorMode.log,
+                                          superSet:
+                                              whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                          onRemoveSuperSet: (String superSetId) {
+                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                            _cacheLog();
+                                          },
+                                          onRemoveLog: () {
+                                            exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                            _cacheLog();
+                                          },
+                                          onReOrder: () {
+                                            _reOrderExerciseLogs(exerciseLogs: exerciseLogs);
+                                          },
+                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                          onCache: _cacheLog);
+                                    },
+                                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                    itemCount: exerciseLogs.length))
                             : const ExerciseLogEmptyState(
-                            mode: RoutineEditorMode.log,
-                            message: "Tap the + button to start adding exercises to your log"),
+                                mode: RoutineEditorMode.log,
+                                message: "Tap the + button to start adding exercises to your log"),
                       ],
                     ),
                   ),
                 ),
-              ),
-              if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
+              )
             ])));
   }
 
@@ -343,7 +313,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     _initializeProcedureData();
 
-    _onDisposeCallback = Provider.of<ExerciseLogProvider>(context, listen: false).onClearProvider;
+    _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _cacheLog();
@@ -352,8 +322,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    widget.mode == RoutineEditorMode.edit;
-    Provider.of<ExerciseLogProvider>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
+    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
   }
 
   @override

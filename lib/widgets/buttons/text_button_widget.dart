@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../app_constants.dart';
 
 class CTextButton extends StatelessWidget {
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final String label;
   final String loadingLabel;
   final bool loading;
@@ -37,7 +37,7 @@ class CTextButton extends StatelessWidget {
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
                 side: BorderSide(color: buttonBorderColor ?? buttonColor.withOpacity(0.3), width: 2)))),
-        onPressed: loading ? () {} : onPressed,
+        onPressed: loading ? null : onPressed,
         child: Container(
           padding: padding,
           child: Row(
