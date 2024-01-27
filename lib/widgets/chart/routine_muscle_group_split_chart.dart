@@ -64,7 +64,7 @@ class _LinearBar extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 1, right: 14),
                   child: Text(muscleGroupFamily.name,
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 12)),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 12)),
                 ),
               ),
             )
