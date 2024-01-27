@@ -6,7 +6,6 @@ import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 import '../../app_constants.dart';
 import '../../dtos/achievement_dto.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/backgrounds/gradient_background.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../utils/dialog_utils.dart';
 import '../../widgets/information_container.dart';
@@ -38,71 +37,68 @@ class AchievementScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
       ),
-      body: Stack(children: [
-        const Positioned.fill(child: GradientBackground()),
-        SafeArea(
-          minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-          child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              ]),
-              const SizedBox(height: 10),
-              Text(achievementDto.type.title.toUpperCase(),
-                  style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 2),
-              Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
-                  style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-              if (!completed)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: LinearProgressIndicator(
-                            minHeight: 8,
-                            color: completed ? Colors.green : Colors.white,
-                            value: achievementDto.progress.value,
-                            borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            backgroundColor: tealBlueLighter,
-                          ),
+      body: SafeArea(
+        minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+        child: SingleChildScrollView(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ]),
+            const SizedBox(height: 10),
+            Text(achievementDto.type.title.toUpperCase(),
+                style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 2),
+            Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
+                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+            if (!completed)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: LinearProgressIndicator(
+                          minHeight: 8,
+                          color: completed ? Colors.green : Colors.white,
+                          value: achievementDto.progress.value,
+                          borderRadius: const BorderRadius.all(Radius.circular(2)),
+                          backgroundColor: tealBlueLighter,
                         ),
-                        const SizedBox(width: 10),
-                        Text("${achievementDto.progress.remainder} left",
-                            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text("${achievementDto.progress.remainder} left",
+                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+                    ],
                   ),
                 ),
-              const SizedBox(height: 10),
-              GridView.count(
+              ),
+            const SizedBox(height: 10),
+            GridView.count(
                 shrinkWrap: true,
                 crossAxisCount: monthsHeatMaps.length > 3 ? 3 : monthsHeatMaps.length,
                 childAspectRatio: 1,
                 mainAxisSpacing: 10.0,
                 crossAxisSpacing: 10.0,
                 children: monthsHeatMaps),
-              const SizedBox(height: 10),
-              const InformationContainerLite(
-                  content: 'Brightly-coloured squares represent days you logged a session for this achievement',
-                  color: tealBlueLight),
-              const SizedBox(height: 10),
-              InformationContainer(
-                  icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                  title: 'Tip',
-                  description: achievementDto.type.tip,
-                  color: tealBlue),
-            ]),
-          ),
-        )
-      ]),
+            const SizedBox(height: 10),
+            const InformationContainerLite(
+                content: 'Brightly-coloured squares represent days you logged a session for this achievement',
+                color: tealBlueLight),
+            const SizedBox(height: 10),
+            InformationContainer(
+                icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                title: 'Tip',
+                description: achievementDto.type.tip,
+                color: tealBlue),
+          ]),
+        ),
+      ),
     );
   }
 

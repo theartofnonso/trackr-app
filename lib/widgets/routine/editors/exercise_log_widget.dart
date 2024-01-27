@@ -244,7 +244,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 const SizedBox(height: 10),
               ],
             ),
-          if (widget.editorType == RoutineEditorMode.edit)
             TextField(
               controller: TextEditingController(text: widget.exerciseLogDto.notes),
               onChanged: (value) => _updateProcedureNotes(value: value),

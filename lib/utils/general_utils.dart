@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
+import '../app_constants.dart';
 import '../shared_prefs.dart';
 
 bool _isDefaultWeightUnit() {
@@ -174,4 +175,16 @@ List<DateTimeRange> monthRangesForYear(int year) {
 
 int levelFromXp({required int daysLogged}) {
   return daysLogged > 50 ? 50 : daysLogged;
+}
+
+Color consistencyHealthColor({required double value}) {
+  if (value < 0.3) {
+    return Colors.red;
+  } else if (value < 0.5) {
+    return Colors.orange;
+  } else if (value < 0.8) {
+    return vibrantBlue;
+  } else {
+    return vibrantGreen;
+  }
 }

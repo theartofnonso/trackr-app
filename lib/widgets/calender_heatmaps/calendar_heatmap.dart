@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../app_constants.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
   final bool active;
+  final Color color;
 
-  const _DateViewModel({required this.active, required this.dateTime});
+  const _DateViewModel({required this.active, required this.dateTime, required this.color});
 
   @override
   String toString() {
-    return '_DateViewModel{dateTime: $dateTime, active: $active}';
+    return '_DateViewModel{dateTime: $dateTime, active: $active, color: $color}';
   }
 }
 
@@ -45,7 +47,8 @@ class CalendarHeatMap extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
-      datesInMonths.add(_DateViewModel(dateTime: date, active: active));
+      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : tealBlueLight;
+      datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: color));
     }
 
     // Add padding to end of month
@@ -67,22 +70,6 @@ class CalendarHeatMap extends StatelessWidget {
   }
 }
 
-class _Day extends StatelessWidget {
-  final _DateViewModel date;
-
-  const _Day({required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: date.active ? vibrantGreen : vibrantGreen.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(1),
-      ),
-    );
-  }
-}
-
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> days;
   final DateTime initialDate;
@@ -100,24 +87,41 @@ class _Month extends StatelessWidget {
       }
     }).toList();
 
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(initialDate.abbreviatedMonth().toUpperCase(),
           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
       GridView.builder(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+        physics: const NeverScrollableScrollPhysics(),
+        // to disable GridView's scrolling
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
           childAspectRatio: 1, // for square shape
           crossAxisSpacing: spacing,
           mainAxisSpacing: spacing,
         ),
-        itemCount: daysWidgets.length, // Just an example to vary the number of squares
+        itemCount: daysWidgets.length,
+        // Just an example to vary the number of squares
         itemBuilder: (context, index) {
           return daysWidgets[index];
         },
       )
     ]);
+  }
+}
+
+class _Day extends StatelessWidget {
+  final _DateViewModel date;
+
+  const _Day({required this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: date.active ? date.color : date.color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(1.5),
+      ),
+    );
   }
 }

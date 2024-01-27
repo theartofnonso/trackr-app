@@ -8,7 +8,6 @@ import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 import '../../app_constants.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../widgets/achievements/achievement_tile.dart';
-import '../../widgets/backgrounds/gradient_background.dart';
 import '../../widgets/information_container_lite.dart';
 import 'achievement_screen.dart';
 
@@ -17,7 +16,6 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final logs = routineLogController.routineLogs;
@@ -25,29 +23,27 @@ class AchievementsScreen extends StatelessWidget {
     List<AchievementDto> achievements = [];
 
     if (logs.isNotEmpty) {
-      achievements = routineLogController.fetchAchievements().sorted((a, b) => b.progress.value.compareTo(a.progress.value));
+      achievements =
+          routineLogController.fetchAchievements().sorted((a, b) => b.progress.value.compareTo(a.progress.value));
     }
 
     return Scaffold(
-        body: Stack(children: [
-      const Positioned.fill(child: GradientBackground()),
-      SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(height: 10),
-              Text("Milestones ${DateTime.now().year}",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 16),
-              const InformationContainerLite(
-                content: 'Only workouts logged in the current year will count towards your milestones.',
-                color: tealBlueLighter,
-              ),
-              const SizedBox(height: 20),
-              logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
-            ]),
-          ))
-    ]));
+        body: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const SizedBox(height: 10),
+                Text("Milestones ${DateTime.now().year}",
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 16),
+                const InformationContainerLite(
+                  content: 'Only workouts logged in the current year will count towards your milestones.',
+                  color: tealBlueLighter,
+                ),
+                const SizedBox(height: 20),
+                logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
+              ]),
+            )));
   }
 }
 
