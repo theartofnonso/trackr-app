@@ -79,7 +79,7 @@ class IntroScreen extends StatelessWidget {
                 label: "Start Tracking",
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                 buttonColor: vibrantGreen,
-                textStyle: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
               ),
             ),
             const SizedBox(height: 10),
