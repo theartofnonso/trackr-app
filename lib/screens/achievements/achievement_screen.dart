@@ -25,9 +25,9 @@ class AchievementScreen extends StatelessWidget {
 
     final monthsHeatMaps = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
-            return CalendarHeatMap(dates: dates, initialDate: dates.first);
+            return CalendarHeatMap(dates: dates, initialDate: dates.first, spacing: 4);
           }).toList()
-        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now())];
+        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -80,11 +80,12 @@ class AchievementScreen extends StatelessWidget {
               ),
             const SizedBox(height: 10),
             GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 crossAxisCount: monthsHeatMaps.length > 3 ? 3 : monthsHeatMaps.length,
                 childAspectRatio: 1,
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 12.0,
+                crossAxisSpacing: 12.0,
                 children: monthsHeatMaps),
             const SizedBox(height: 10),
             const InformationContainerLite(

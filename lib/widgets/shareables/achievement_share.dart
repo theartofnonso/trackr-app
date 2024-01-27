@@ -14,14 +14,13 @@ class AchievementShare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final completed = achievementDto.progress.remainder == 0;
 
     final monthsHeatMaps = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
-      return CalendarHeatMap(dates: dates, initialDate: dates.first);
-    }).toList()
-        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now())];
+            return CalendarHeatMap(dates: dates, initialDate: dates.first, spacing: 4);
+          }).toList()
+        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
 
     return RepaintBoundary(
         key: globalKey,
@@ -36,15 +35,15 @@ class AchievementShare extends StatelessWidget {
                     style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 2),
                 Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
-                    style:
-                    GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+                    style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
                 const SizedBox(height: 10),
                 GridView.count(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: monthsHeatMaps.length > 4 ? 4 : monthsHeatMaps.length,
                   childAspectRatio: 1,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 12.0,
+                  crossAxisSpacing: 12.0,
                   children: List.generate(monthsHeatMaps.length, (index) => monthsHeatMaps[index]),
                 ),
                 Align(

@@ -43,15 +43,15 @@ class StreakScreen extends StatelessWidget {
             child: GridView.count(
               crossAxisCount: 3,
               childAspectRatio: 1,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 12.0,
               children: List.generate(12, (index) {
                 final monthAndLogs = monthsToLogs[index];
                 final dates = monthAndLogs.value
                     .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
                     .toList();
                 // Generate 12 containers for each month.
-                return CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates);
+                return CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates, spacing: 4, borderRadius: 2);
               }),
             ),
           )

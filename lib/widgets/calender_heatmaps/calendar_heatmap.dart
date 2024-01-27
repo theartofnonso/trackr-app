@@ -22,8 +22,9 @@ class CalendarHeatMap extends StatelessWidget {
   final List<DateTime> dates;
   final DateTime initialDate;
   final double spacing;
+  final double borderRadius;
 
-  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 4});
+  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.borderRadius = 5});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -66,7 +67,7 @@ class CalendarHeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
 
-    return _Month(days: datesForMonth, initialDate: initialDate, spacing: spacing);
+    return _Month(days: datesForMonth, initialDate: initialDate, spacing: spacing, borderRadius: borderRadius);
   }
 }
 
@@ -74,8 +75,9 @@ class _Month extends StatelessWidget {
   final List<_DateViewModel?> days;
   final DateTime initialDate;
   final double spacing;
+  final double borderRadius;
 
-  const _Month({required this.days, required this.initialDate, this.spacing = 4});
+  const _Month({required this.days, required this.initialDate, required this.spacing, required this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +85,7 @@ class _Month extends StatelessWidget {
       if (day == null) {
         return const SizedBox();
       } else {
-        return _Day(date: day);
+        return _Day(date: day, borderRadius: borderRadius);
       }
     }).toList();
 
@@ -112,15 +114,16 @@ class _Month extends StatelessWidget {
 
 class _Day extends StatelessWidget {
   final _DateViewModel date;
+  final double borderRadius;
 
-  const _Day({required this.date});
+  const _Day({required this.date, required this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: date.active ? date.color : date.color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(1.5),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
     );
   }

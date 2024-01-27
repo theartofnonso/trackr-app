@@ -215,10 +215,12 @@ class _CalendarState extends State<Calendar> {
 }
 
 class _CalendarHeader extends StatelessWidget {
-  final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
   @override
   Widget build(BuildContext context) {
+
+    final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
     return SizedBox(
         height: 25,
         child: GridView.builder(
@@ -226,8 +228,8 @@ class _CalendarHeader extends StatelessWidget {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
             childAspectRatio: 1, // for square shape
-            crossAxisSpacing: 4.0,
-            mainAxisSpacing: 4.0,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
           ),
           itemCount: daysOfWeek.length, // Just an example to vary the number of squares
           itemBuilder: (context, index) {
@@ -239,19 +241,62 @@ class _CalendarHeader extends StatelessWidget {
   }
 }
 
-class _Date extends StatelessWidget {
+class _Month extends StatelessWidget {
+  final List<_DateViewModel?> dates;
+  final DateTime selectedDateTime;
+  final bool readOnly;
+  final void Function(DateTime dateTime) onTap;
+
+  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.readOnly});
+
+  @override
+  Widget build(BuildContext context) {
+    final datesWidgets = dates.map((date) {
+      if (date == null) {
+        return const SizedBox();
+      } else {
+        return _Day(
+          dateTime: date.dateTime,
+          onTap: onTap,
+          selectedDateTime: selectedDateTime,
+          showSelector: !readOnly,
+          hasLog: date.hasLog,
+        );
+      }
+    }).toList();
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      // to disable GridView's scrolling
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        childAspectRatio: 1, // for square shape
+        crossAxisSpacing: 14.0,
+        mainAxisSpacing: 14.0,
+      ),
+      itemCount: datesWidgets.length,
+      // Just an example to vary the number of squares
+      itemBuilder: (context, index) {
+        return datesWidgets[index];
+      },
+    );
+  }
+}
+
+class _Day extends StatelessWidget {
   final DateTime dateTime;
   final DateTime selectedDateTime;
   final bool showSelector;
   final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
-  const _Date(
+  const _Day(
       {required this.dateTime,
-      required this.selectedDateTime,
-      required this.onTap,
-      required this.showSelector,
-      required this.hasLog});
+        required this.selectedDateTime,
+        required this.onTap,
+        required this.showSelector,
+        required this.hasLog});
 
   Color _getBackgroundColor() {
     return hasLog ? vibrantGreen : tealBlueLight.withOpacity(0.5);
@@ -285,15 +330,14 @@ class _Date extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
-        padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(1) : null,
+        padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(4) : null,
         decoration: showSelector
             ? BoxDecoration(
-                border: _getBorder(),
-                borderRadius: BorderRadius.circular(5),
-              )
+          border: _getBorder(),
+          borderRadius: BorderRadius.circular(5),
+        )
             : null,
         child: Container(
-          margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: _getBackgroundColor(),
             borderRadius: BorderRadius.circular(5),
@@ -304,49 +348,6 @@ class _Date extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _Month extends StatelessWidget {
-  final List<_DateViewModel?> dates;
-  final DateTime selectedDateTime;
-  final bool readOnly;
-  final void Function(DateTime dateTime) onTap;
-
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.readOnly});
-
-  @override
-  Widget build(BuildContext context) {
-    final datesWidgets = dates.map((date) {
-      if (date == null) {
-        return const SizedBox();
-      } else {
-        return _Date(
-          dateTime: date.dateTime,
-          onTap: onTap,
-          selectedDateTime: selectedDateTime,
-          showSelector: !readOnly,
-          hasLog: date.hasLog,
-        );
-      }
-    }).toList();
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      // to disable GridView's scrolling
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 7,
-        childAspectRatio: 1, // for square shape
-        crossAxisSpacing: 4.0,
-        mainAxisSpacing: 4.0,
-      ),
-      itemCount: datesWidgets.length,
-      // Just an example to vary the number of squares
-      itemBuilder: (context, index) {
-        return datesWidgets[index];
-      },
     );
   }
 }
