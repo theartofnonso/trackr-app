@@ -443,7 +443,7 @@ class _TemplateChangesDialog extends StatelessWidget {
               onPressed: onDismissed,
               label: "Cancel",
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
+              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),
               buttonColor: Colors.transparent,
               buttonBorderColor: Colors.transparent),
           const SizedBox(width: 10),
