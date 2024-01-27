@@ -38,6 +38,6 @@
   {"id": "SH37", "name": "Upright Row (Dumbbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH38", "name": "Single Arm Lateral Raise (Cable)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH39", "name": "Overhead Press (Barbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SH39", "name": "Overhead Press (Smith Machine)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SH40", "name": "Cable Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"}
+  {"id": "SH40", "name": "Overhead Press (Smith Machine)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH41", "name": "Cable Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"}
 ]
