@@ -37,7 +37,7 @@ class AchievementsScreen extends StatelessWidget {
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 16),
                 const InformationContainerLite(
-                  content: 'Only workouts logged in the current year will count towards your milestones.',
+                  content: 'Only workouts logged in the current year will count towards your achievements.',
                   color: tealBlueLighter,
                 ),
                 const SizedBox(height: 20),
