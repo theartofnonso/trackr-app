@@ -39,5 +39,8 @@
   {"id": "SH38", "name": "Single Arm Lateral Raise (Cable)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH39", "name": "Overhead Press (Barbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
   {"id": "SH40", "name": "Overhead Press (Smith Machine)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SH41", "name": "Cable Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"}
+  {"id": "SH41", "name": "Cable Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH42", "name": "Chest Supported Y Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH43", "name": "Front Raise (Band)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
+  {"id": "SH44", "name": "Plate Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"}
 ]
