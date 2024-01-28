@@ -95,8 +95,7 @@ class HomeScreen extends StatelessWidget {
             title: Text(foundExercise.name,
                 style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
             bottom: const TabBar(
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white70,
+              dividerColor: Colors.transparent,
               tabs: [
                 Tab(
                   text: "Summary",

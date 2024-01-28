@@ -228,8 +228,8 @@ class _CalendarHeader extends StatelessWidget {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
             childAspectRatio: 1, // for square shape
-            crossAxisSpacing: 14,
-            mainAxisSpacing: 14,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
           ),
           itemCount: daysOfWeek.length, // Just an example to vary the number of squares
           itemBuilder: (context, index) {
@@ -272,8 +272,8 @@ class _Month extends StatelessWidget {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
         childAspectRatio: 1, // for square shape
-        crossAxisSpacing: 14.0,
-        mainAxisSpacing: 14.0,
+        crossAxisSpacing: 10.0,
+        mainAxisSpacing: 10.0,
       ),
       itemCount: datesWidgets.length,
       // Just an example to vary the number of squares
@@ -318,33 +318,27 @@ class _Day extends StatelessWidget {
     return Colors.transparent;
   }
 
-  FontWeight? _getFontWeight() {
-    if (dateTime.isSameDateAs(DateTime.now())) {
-      return FontWeight.bold;
-    }
-    return FontWeight.w500;
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
-        padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(4) : null,
+        padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(2) : null,
         decoration: showSelector
             ? BoxDecoration(
           border: _getBorder(),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(2),
         )
             : null,
         child: Container(
+          margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             color: _getBackgroundColor(),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(2),
           ),
           child: Center(
             child: Text("${dateTime.day}",
-                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: _getFontWeight(), color: _getTextColor())),
+                style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor())),
           ),
         ),
       ),
