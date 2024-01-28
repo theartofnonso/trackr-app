@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_constants.dart';
 import '../buttons/text_button_widget.dart';
@@ -54,6 +56,7 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
                   },
                   label: "Remind me at this hour",
                   buttonColor: vibrantGreen,
+                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                   padding: const EdgeInsets.all(10.0)))
         ],
       ),

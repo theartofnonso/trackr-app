@@ -25,13 +25,9 @@ class AchievementScreen extends StatelessWidget {
 
     final monthsHeatMaps = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
-            return CalendarHeatMap(
-                dates: dates,
-                initialDate: dates.first,
-                spacing: 4,
-                borderRadius: achievementDto.progress.dates.length > 2 ? 2 : 5);
+            return CalendarHeatMap(dates: dates, initialDate: dates.first, spacing: 4);
           }).toList()
-        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4, borderRadius: 5)];
+        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
