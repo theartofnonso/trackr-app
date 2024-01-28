@@ -41,7 +41,7 @@ class StreakScreen extends StatelessWidget {
           const SizedBox(height: 20),
           Expanded(
             child: GridView.count(
-              crossAxisCount: 2,
+              crossAxisCount: 1,
               childAspectRatio: 1,
               mainAxisSpacing: 12.0,
               crossAxisSpacing: 12.0,
@@ -51,7 +51,7 @@ class StreakScreen extends StatelessWidget {
                     .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
                     .toList();
                 // Generate 12 containers for each month.
-                return CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates, spacing: 4, borderRadius: 2, dynamicColor: true);
+                return CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates, spacing: 4, dynamicColor: true);
               }),
             ),
           )

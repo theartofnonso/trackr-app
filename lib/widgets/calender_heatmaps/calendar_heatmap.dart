@@ -22,10 +22,9 @@ class CalendarHeatMap extends StatelessWidget {
   final List<DateTime> dates;
   final DateTime initialDate;
   final double spacing;
-  final double borderRadius;
   final bool dynamicColor;
 
-  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.borderRadius = 5, this.dynamicColor = false});
+  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -68,7 +67,7 @@ class CalendarHeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
 
-    return _Month(days: datesForMonth, initialDate: initialDate, spacing: spacing, borderRadius: borderRadius);
+    return _Month(days: datesForMonth, initialDate: initialDate, spacing: spacing);
   }
 }
 
@@ -76,9 +75,8 @@ class _Month extends StatelessWidget {
   final List<_DateViewModel?> days;
   final DateTime initialDate;
   final double spacing;
-  final double borderRadius;
 
-  const _Month({required this.days, required this.initialDate, required this.spacing, required this.borderRadius});
+  const _Month({required this.days, required this.initialDate, required this.spacing});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +84,7 @@ class _Month extends StatelessWidget {
       if (day == null) {
         return const SizedBox();
       } else {
-        return _Day(date: day, borderRadius: borderRadius);
+        return _Day(date: day);
       }
     }).toList();
 
@@ -115,16 +113,15 @@ class _Month extends StatelessWidget {
 
 class _Day extends StatelessWidget {
   final _DateViewModel date;
-  final double borderRadius;
 
-  const _Day({required this.date, required this.borderRadius});
+  const _Day({required this.date});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: date.active ? date.color : date.color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(2),
       ),
     );
   }
