@@ -94,16 +94,11 @@ class HomeScreen extends StatelessWidget {
             ),
             title: Text(foundExercise.name,
                 style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
-            bottom: const TabBar(
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white70,
+            bottom: TabBar(
+              dividerColor: Colors.transparent,
               tabs: [
-                Tab(
-                  text: "Summary",
-                ),
-                Tab(
-                  text: "History",
-                )
+                Tab(child: Text("Summary", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(child: Text("History", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
             actions: foundExercise.owner
