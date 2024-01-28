@@ -24,7 +24,8 @@ class CalendarHeatMap extends StatelessWidget {
   final double spacing;
   final bool dynamicColor;
 
-  const CalendarHeatMap({super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false});
+  const CalendarHeatMap(
+      {super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -67,16 +68,22 @@ class CalendarHeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final datesForMonth = _generateDates();
 
-    return _Month(days: datesForMonth, initialDate: initialDate, spacing: spacing);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(initialDate.abbreviatedMonth().toUpperCase(),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+        _Month(days: datesForMonth, spacing: spacing),
+      ],
+    );
   }
 }
 
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> days;
-  final DateTime initialDate;
   final double spacing;
 
-  const _Month({required this.days, required this.initialDate, required this.spacing});
+  const _Month({required this.days, required this.spacing});
 
   @override
   Widget build(BuildContext context) {
@@ -88,26 +95,22 @@ class _Month extends StatelessWidget {
       }
     }).toList();
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(initialDate.abbreviatedMonth().toUpperCase(),
-          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-      GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        // to disable GridView's scrolling
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          childAspectRatio: 1, // for square shape
-          crossAxisSpacing: spacing,
-          mainAxisSpacing: spacing,
-        ),
-        itemCount: daysWidgets.length,
-        // Just an example to vary the number of squares
-        itemBuilder: (context, index) {
-          return daysWidgets[index];
-        },
-      )
-    ]);
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      // to disable GridView's scrolling
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        childAspectRatio: 1, // for square shape
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
+      ),
+      itemCount: daysWidgets.length,
+      // Just an example to vary the number of squares
+      itemBuilder: (context, index) {
+        return daysWidgets[index];
+      },
+    );
   }
 }
 
