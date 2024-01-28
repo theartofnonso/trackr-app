@@ -52,6 +52,11 @@ class AchievementRepository {
       }
     }
 
+    /// Update achievements
+    /// Achievements are only loaded when the app starts, this is to ensure that we can calculate new achievements by comparing the old and new list
+    /// Once we have calculated the new achievements, we can update the list
+    loadAchievements(routineLogs: routineLogs);
+
     return updatedAchievements;
   }
 
