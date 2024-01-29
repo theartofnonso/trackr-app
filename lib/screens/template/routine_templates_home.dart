@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/screens/template/routine_template_library.dart';
+import 'package:tracker_app/screens/template/default/routine_template_library.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 
 class RoutineTemplatesHome extends StatelessWidget {

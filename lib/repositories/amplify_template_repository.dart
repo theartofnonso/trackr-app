@@ -12,7 +12,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 
 class AmplifyTemplateRepository {
-  List<RoutineTemplateDto> _defaultTemplates = [];
+  final List<RoutineTemplateDto> _defaultTemplates = [];
 
   List<RoutineTemplateDto> _templates = [];
 
@@ -22,16 +22,15 @@ class AmplifyTemplateRepository {
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  Future<RoutineTemplateDto> loadTemplatesFromAssets({required String file, required List<ExerciseDto> exercises}) async {
+  Future<RoutineTemplateDto> _loadTemplatesFromAssets({required String file, required List<ExerciseDto> exercises}) async {
     String jsonString = await rootBundle.loadString('workouts/$file');
     final templateJson = json.decode(jsonString) as dynamic;
-
     final id = templateJson["id"] as String;
     final name = templateJson["name"] as String;
     final notes = templateJson["notes"] as String;
     final exerciseLogs = templateJson["exercises"] as List<dynamic>;
     final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
-      final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exerciseId"]);
+      final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exercise"]);
       return ExerciseLogDto(foundExercise.id, id, "", foundExercise, notes, [], DateTime.now());
     }).toList();
 
@@ -42,6 +41,15 @@ class AmplifyTemplateRepository {
         notes: notes,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
+  }
+
+  Future<void> loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
+    final pushTemplate = await _loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
+    final pullTemplate = await _loadTemplatesFromAssets(file: "pull_workout.json", exercises: exercises);
+    final legsTemplate = await _loadTemplatesFromAssets(file: "legs_workout.json", exercises: exercises);
+    _defaultTemplates.add(pushTemplate);
+    _defaultTemplates.add(pullTemplate);
+    _defaultTemplates.add(legsTemplate);
   }
 
   Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {

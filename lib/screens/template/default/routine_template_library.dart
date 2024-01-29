@@ -3,12 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
-import 'package:tracker_app/repositories/amplify_template_repository.dart';
+import 'package:tracker_app/screens/template/default/routine_template_library_screen.dart';
 import 'package:tracker_app/strings.dart';
 
-import '../../controllers/exercise_controller.dart';
-import '../../dtos/routine_template_dto.dart';
-import '../../utils/navigation_utils.dart';
+import '../../../controllers/exercise_controller.dart';
+import '../../../dtos/routine_template_dto.dart';
 
 class RoutineTemplateLibrary extends StatefulWidget {
   const RoutineTemplateLibrary({super.key});
@@ -20,6 +19,8 @@ class RoutineTemplateLibrary extends StatefulWidget {
 class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
   @override
   Widget build(BuildContext context) {
+    final templates = Provider.of<RoutineTemplateController>(context, listen: true).defaultTemplates;
+
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10.0),
@@ -28,38 +29,39 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
           Text(exploreWorkouts,
               style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500)),
           const SizedBox(height: 20),
-          const _WorkoutListView(templates: [])
+          _WorkoutListView(templates: templates)
         ]),
       ),
     );
   }
 
-  void loadTemplates() async {
-    final exercises = Provider.of<ExerciseController>(context).exercises;
-    Provider.of<RoutineTemplateController>(context).fetchDefaultWorkouts(exercises: exercises);
+  void loadTemplates() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+      Provider.of<RoutineTemplateController>(context, listen: false).loadTemplatesFromAssets(exercises: exercises);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-
     loadTemplates();
-
   }
 }
 
 class _WorkoutListView extends StatelessWidget {
   final List<RoutineTemplateDto> templates;
+
   const _WorkoutListView({required this.templates});
 
   @override
   Widget build(BuildContext context) {
-
     final children = templates.map((template) => _WorkoutCard(template: template)).toList();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Push Pull Legs",
               style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
@@ -79,19 +81,21 @@ class _WorkoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+      onTap: () => _navigateToRoutineTemplatePreview(context: context, template: template),
       child: Container(
-        width: 200,
-        height: 120,
+        width: 150,
+        height: 80,
+        margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           color: tealBlueLight,
         ),
         child: Stack(children: [
-          Positioned.fill(child: ClipRRect(
+          Positioned.fill(
+              child: ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
             child: Image.asset(
-              'assets/img.jpg',
+              'assets/squat.jpg',
               fit: BoxFit.cover,
             ),
           )),
@@ -113,12 +117,16 @@ class _WorkoutCard extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("PUSH",
+              child: Text(template.name.toUpperCase(),
                   style: GoogleFonts.montserrat(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w800)),
             ),
           )
         ]),
       ),
     );
+  }
+
+  void _navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(template: template)));
   }
 }

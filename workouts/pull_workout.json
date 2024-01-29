@@ -1,7 +1,7 @@
 {
-  "id": "PUSHDAY_1",
-  "name": "Push",
-  "notes": "A push day workout is an effective way to improve strength and muscle size in many of the major muscles in your upper body",
+  "id": "PULLDAY_1",
+  "name": "Pull",
+  "notes": "A pull day workout is an effective way to improve strength and muscle size in many of the major muscles in your upper bodyy",
   "exercises": [
     {
       "exercise": "CH2"

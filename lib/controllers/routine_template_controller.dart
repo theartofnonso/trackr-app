@@ -16,12 +16,15 @@ class RoutineTemplateController extends ChangeNotifier {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
 
+  UnmodifiableListView<RoutineTemplateDto> get defaultTemplates => _amplifyTemplateRepository.defaultTemplates;
+
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 
-  Future<List<RoutineTemplateDto>> fetchDefaultWorkouts({required List<ExerciseDto> exercises}) async {
-    final template =
-        await _amplifyTemplateRepository.loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
-    return [template];
+  void loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
+    if(_amplifyTemplateRepository.defaultTemplates.isEmpty) {
+      await _amplifyTemplateRepository.loadTemplatesFromAssets(exercises: exercises);
+      notifyListeners();
+    }
   }
 
   void fetchTemplates({List<RoutineTemplate>? templates}) async {
