@@ -99,8 +99,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         valueText: "${routineLogController.routineLogs.length}",
                       ),
                     ),
-                    const SizedBox(width: 50),
-                    GestureDetector(
+                    const SizedBox(width: 20),
+                    InkWell(
                       onTap: _navigateToAllDaysTracked,
                       child: _CTableCell(
                           title: "STREAK",
@@ -171,9 +171,12 @@ class _CTableCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: crossAxisAlignment, children: [
-      Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
-      Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
-    ]);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      child: Column(crossAxisAlignment: crossAxisAlignment, children: [
+        Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
+      ]),
+    );
   }
 }
