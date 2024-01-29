@@ -12,7 +12,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 
 class AmplifyTemplateRepository {
-  final List<RoutineTemplateDto> _defaultTemplates = [];
+  final Map<RoutineRoutineTemplateDto> _defaultTemplates = [];
 
   List<RoutineTemplateDto> _templates = [];
 

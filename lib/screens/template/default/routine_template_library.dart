@@ -95,22 +95,19 @@ class _WorkoutCard extends StatelessWidget {
               child: ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
             child: Image.asset(
-              'assets/squat.jpg',
+              'images/squat.jpg',
               fit: BoxFit.cover,
             ),
           )),
-          Opacity(
-            opacity: 0.9,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    tealBlueDark,
-                    tealBlueLight,
-                  ],
-                ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  tealBlueDark.withOpacity(0.4),
+                  tealBlueDark,
+                ],
               ),
             ),
           ),
@@ -127,6 +124,7 @@ class _WorkoutCard extends StatelessWidget {
   }
 
   void _navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(template: template)));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(template: template)));
   }
 }
