@@ -8,6 +8,7 @@ import 'package:tracker_app/strings.dart';
 
 import '../../../controllers/exercise_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
+import '../../../enums/routine_template_library_workout_enum.dart';
 
 class RoutineTemplateLibrary extends StatefulWidget {
   const RoutineTemplateLibrary({super.key});
@@ -19,17 +20,31 @@ class RoutineTemplateLibrary extends StatefulWidget {
 class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
   @override
   Widget build(BuildContext context) {
-    final templates = Provider.of<RoutineTemplateController>(context, listen: true).defaultTemplates;
+    final templates = Provider.of<RoutineTemplateController>(context, listen: true)
+        .defaultTemplates
+        .map((template) => template.entries)
+        .expand((element) => element)
+        .toList();
 
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10.0),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
           Text(exploreWorkouts,
               style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500)),
           const SizedBox(height: 20),
-          _WorkoutListView(templates: templates)
+          Expanded(
+            child: ListView.separated(
+                padding: const EdgeInsets.only(bottom: 250),
+                itemBuilder: (BuildContext context, int index) =>
+                    _WorkoutListView(templateName: templates[index].key, templateRoutines: templates[index].value),
+                separatorBuilder: (BuildContext context, int index) => const Divider(
+                      thickness: 1.0,
+                      color: tealBlueLight,
+                    ),
+                itemCount: templates.length),
+          )
         ]),
       ),
     );
@@ -50,20 +65,21 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
 }
 
 class _WorkoutListView extends StatelessWidget {
-  final List<RoutineTemplateDto> templates;
+  final RoutineTemplateLibraryWorkoutEnum templateName;
+  final List<RoutineTemplateDto> templateRoutines;
 
-  const _WorkoutListView({required this.templates});
+  const _WorkoutListView({required this.templateName, required this.templateRoutines});
 
   @override
   Widget build(BuildContext context) {
-    final children = templates.map((template) => _WorkoutCard(template: template)).toList();
+    final children = templateRoutines.map((template) => _WorkoutCard(template: template)).toList();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Push Pull Legs",
+          Text(templateName.name.toUpperCase(),
               style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(children: children),

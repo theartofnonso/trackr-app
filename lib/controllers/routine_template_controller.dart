@@ -4,6 +4,7 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
+import '../enums/routine_template_library_workout_enum.dart';
 import '../repositories/amplify_template_repository.dart';
 
 class RoutineTemplateController extends ChangeNotifier {
@@ -16,7 +17,7 @@ class RoutineTemplateController extends ChangeNotifier {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
 
-  UnmodifiableListView<RoutineTemplateDto> get defaultTemplates => _amplifyTemplateRepository.defaultTemplates;
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates => _amplifyTemplateRepository.defaultTemplates;
 
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 

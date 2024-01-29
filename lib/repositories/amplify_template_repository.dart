@@ -10,15 +10,16 @@ import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
+import '../enums/routine_template_library_workout_enum.dart';
 
 class AmplifyTemplateRepository {
-  final Map<RoutineRoutineTemplateDto> _defaultTemplates = [];
+  final List<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> _defaultTemplates = [];
 
   List<RoutineTemplateDto> _templates = [];
 
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
-  UnmodifiableListView<RoutineTemplateDto> get defaultTemplates => UnmodifiableListView(_defaultTemplates);
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates => UnmodifiableListView(_defaultTemplates);
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
@@ -47,9 +48,7 @@ class AmplifyTemplateRepository {
     final pushTemplate = await _loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
     final pullTemplate = await _loadTemplatesFromAssets(file: "pull_workout.json", exercises: exercises);
     final legsTemplate = await _loadTemplatesFromAssets(file: "legs_workout.json", exercises: exercises);
-    _defaultTemplates.add(pushTemplate);
-    _defaultTemplates.add(pullTemplate);
-    _defaultTemplates.add(legsTemplate);
+    _defaultTemplates.add({RoutineTemplateLibraryWorkoutEnum.ppl: [pushTemplate, pullTemplate, legsTemplate]});
   }
 
   Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {
