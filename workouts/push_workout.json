@@ -1,0 +1,36 @@
+{
+  "name": "Push Day",
+  "notes": "A push day workout is an effective way to improve strength and muscle size in many of the major muscles in your upper body",
+  "exercises": [
+    {
+      "exercise": {
+        "id": "CH2"
+      }
+    },
+    {
+      "exercise": {
+        "id": "SH39"
+      }
+    },
+    {
+      "exercise": {
+        "id": "CH15"
+      }
+    },
+    {
+      "exercise": {
+        "id": "SH13"
+      }
+    },
+    {
+      "exercise": {
+        "id": "CH7"
+      }
+    },
+    {
+      "exercise": {
+        "id": "TRI2"
+      }
+    }
+  ]
+}

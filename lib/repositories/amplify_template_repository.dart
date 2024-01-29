@@ -3,20 +3,49 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 
 class AmplifyTemplateRepository {
+  List<RoutineTemplateDto> _defaultTemplates = [];
+
   List<RoutineTemplateDto> _templates = [];
 
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
+  UnmodifiableListView<RoutineTemplateDto> get defaultTemplates => UnmodifiableListView(_defaultTemplates);
+
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
+  Future<RoutineTemplateDto> loadTemplatesFromAssets({required String file, required List<ExerciseDto> exercises}) async {
+    String jsonString = await rootBundle.loadString('workouts/$file');
+    final templateJson = json.decode(jsonString) as dynamic;
+
+    final id = templateJson["id"] as String;
+    final name = templateJson["name"] as String;
+    final notes = templateJson["notes"] as String;
+    final exerciseLogs = templateJson["exercises"] as List<dynamic>;
+    final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
+      final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exerciseId"]);
+      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, notes, [], DateTime.now());
+    }).toList();
+
+    return RoutineTemplateDto(
+        id: id,
+        name: name,
+        exercises: exerciseLogDtos,
+        notes: notes,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now());
+  }
+
   Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {
+
     List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
     if (templates.isNotEmpty) {
       _loadTemplates(templates: templates);
@@ -58,8 +87,7 @@ class AmplifyTemplateRepository {
     }
   }
 
-  Future<void> updateTemplateSetsOnly(
-      {required String templateId, required List<ExerciseLogDto> newExercises}) async {
+  Future<void> updateTemplateSetsOnly({required String templateId, required List<ExerciseLogDto> newExercises}) async {
     final result = (await Amplify.DataStore.query(
       RoutineTemplate.classType,
       where: RoutineTemplate.ID.eq(templateId),
@@ -109,19 +137,18 @@ class AmplifyTemplateRepository {
     }
   }
 
-
   void _observeRoutineTemplateQuery({required void Function() onSyncCompleted}) {
     _routineTemplateStream =
-    Amplify.DataStore.observeQuery(RoutineTemplate.classType).listen((QuerySnapshot<RoutineTemplate> snapshot) {
+        Amplify.DataStore.observeQuery(RoutineTemplate.classType).listen((QuerySnapshot<RoutineTemplate> snapshot) {
       if (snapshot.items.isNotEmpty) {
         _loadTemplates(templates: snapshot.items);
         _routineTemplateStream?.cancel();
         onSyncCompleted();
       }
     })
-      ..onDone(() {
-        _routineTemplateStream?.cancel();
-      });
+          ..onDone(() {
+            _routineTemplateStream?.cancel();
+          });
   }
 
   /// Helper methods
