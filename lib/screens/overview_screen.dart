@@ -20,23 +20,18 @@ import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
 import '../widgets/calendar/calendar.dart';
 
-class OverviewScreen extends StatefulWidget {
+class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
 
-  @override
-  State<OverviewScreen> createState() => _OverviewScreenState();
-}
-
-class _OverviewScreenState extends State<OverviewScreen> {
-  void _navigateToSettings() async {
+  void _navigateToSettings({required BuildContext context}) async {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
   }
 
-  void _navigateToMuscleDistribution() {
+  void _navigateToMuscleDistribution({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void _navigateToAllDaysTracked() {
+  void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
   }
 
@@ -85,9 +80,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   IconButton(
-                      onPressed: _onShareCalendar,
+                      onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                  IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings))
+                  IconButton(onPressed: () => _navigateToSettings(context: context), icon: const Icon(Icons.settings))
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +96,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     ),
                     const SizedBox(width: 20),
                     InkWell(
-                      onTap: _navigateToAllDaysTracked,
+                      onTap: () => _navigateToAllDaysTracked(context: context),
                       child: _CTableCell(
                           title: "STREAK",
                           subtitle: "${routineLogController.routineLogs.length}",
@@ -117,7 +112,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
-                      onTap: _navigateToMuscleDistribution,
+                      onTap: () => _navigateToMuscleDistribution(context: context),
                       tileColor: tealBlueLight,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -137,7 +132,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  void _onShareCalendar() {
+  void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
