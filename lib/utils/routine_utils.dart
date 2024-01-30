@@ -126,12 +126,12 @@ List<Widget> setsToWidgets(
   return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, DateTime? endDate}) {
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
   DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
 
-  DateTime lastDate = endDate ?? routineLogs.lastOrNull?.createdAt ?? DateTime.now();
+  DateTime lastDate = routineLogs.lastOrNull?.createdAt ?? DateTime.now();
 
   List<DateTimeRange> weekRanges = generateWeekRangesFrom(startDate: startDate, endDate: lastDate);
 

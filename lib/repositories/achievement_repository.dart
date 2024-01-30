@@ -68,7 +68,7 @@ class AchievementRepository {
     final exerciseLogsByType = groupRoutineLogsByExerciseType(routineLogs: routineLogsForCurrentYear);
 
     /// Group RoutineLogs by week from the current year logs
-    final weeklyRoutineLogs = groupRoutineLogsByWeek(routineLogs: routineLogsForCurrentYear, endDate: DateTime.now().lastMonthDay());
+    final weeklyRoutineLogs = groupRoutineLogsByWeek(routineLogs: routineLogsForCurrentYear);
 
     final progress = switch (type) {
       AchievementType.days12 => _calculateDaysAchievement(logs: routineLogsForCurrentYear, type: type),
@@ -164,8 +164,6 @@ class AchievementRepository {
       final evaluated = evaluation(entry);
       if (evaluated) {
         dateRanges.add(entry.key);
-      } else {
-        dateRanges = [];
       }
     }
     return dateRanges;
