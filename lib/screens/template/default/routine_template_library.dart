@@ -9,6 +9,7 @@ import 'package:tracker_app/strings.dart';
 import '../../../controllers/exercise_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_template_library_workout_enum.dart';
+import '../../../widgets/information_container_lite.dart';
 
 class RoutineLibraryTemplate {
   final RoutineTemplateDto template;
@@ -38,8 +39,10 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
         padding: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
-          Text(exploreWorkouts,
-              style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w500)),
+          const InformationContainerLite(
+            content: exploreWorkouts,
+            color: tealBlueLight,
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
