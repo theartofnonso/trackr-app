@@ -45,7 +45,7 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  Future<RoutineTemplateDto?> saveTemplate({required RoutineTemplateDto templateDto, bool notify = true}) async {
+  Future<RoutineTemplateDto?> saveTemplate({required RoutineTemplateDto templateDto}) async {
     RoutineTemplateDto? savedTemplate;
     isLoading = true;
     try {
@@ -55,9 +55,7 @@ class RoutineTemplateController extends ChangeNotifier {
     } finally {
       isLoading = false;
       errorMessage = "";
-      if (notify) {
-        notifyListeners();
-      }
+      notifyListeners();
     }
     return savedTemplate;
   }

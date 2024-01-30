@@ -5,7 +5,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_dto.dart';
@@ -98,6 +97,7 @@ class AmplifyTemplateRepository {
 
   void _loadTemplates({required List<RoutineTemplate> templates}) {
     _templates = templates.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {

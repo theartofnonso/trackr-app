@@ -15,7 +15,6 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final exercises = libraryTemplate.template.exercises
         .map((exercise) => ListTile(
               contentPadding: const EdgeInsets.only(left: 10),
@@ -78,7 +77,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                           'images/trackr.png',
                           fit: BoxFit.contain,
                           height: 9, //
-                          color: vibrantGreen,// Adjust the height as needed
+                          color: vibrantGreen, // Adjust the height as needed
                         )
                       ],
                     )
@@ -122,11 +121,11 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
 
   void _saveTemplate({required BuildContext context}) async {
     final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
-    await templateController.saveTemplate(templateDto: libraryTemplate.template, notify: false);
-    print("object");
-    if(context.mounted) {
-      print("object");
-      //navigateToRoutineTemplatePreview(context: context, template: libraryTemplate.template);
+    final template = await templateController.saveTemplate(templateDto: libraryTemplate.template);
+    if (template != null) {
+      if (context.mounted) {
+        navigateToRoutineTemplatePreview(context: context, template: template);
+      }
     }
   }
 }
