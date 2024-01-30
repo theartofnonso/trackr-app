@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/screens/template/default/routine_template_library.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../app_constants.dart';
 import '../../../controllers/routine_template_controller.dart';
 
 class RoutineTemplateLibraryScreen extends StatelessWidget {
-  final RoutineTemplateDto template;
+  final RoutineLibraryTemplate libraryTemplate;
 
-  const RoutineTemplateLibraryScreen({super.key, required this.template});
+  const RoutineTemplateLibraryScreen({super.key, required this.libraryTemplate});
 
   @override
   Widget build(BuildContext context) {
 
-    final exercises = template.exercises
+    final exercises = libraryTemplate.template.exercises
         .map((exercise) => ListTile(
               contentPadding: const EdgeInsets.only(left: 10),
               title: Text(exercise.exercise.name, style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white)),
@@ -38,7 +38,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
           child: Stack(children: [
             Positioned.fill(
                 child: Image.asset(
-              'images/squat.jpg',
+              'images/${libraryTemplate.image}',
               fit: BoxFit.cover,
             )),
             Container(
@@ -62,10 +62,10 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(template.name.toUpperCase(),
+                    Text(libraryTemplate.template.name.toUpperCase(),
                         style: GoogleFonts.montserrat(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
                     const SizedBox(height: 5),
-                    Text(template.notes,
+                    Text(libraryTemplate.template.notes,
                         style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 10),
                     Row(
@@ -122,11 +122,11 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
 
   void _saveTemplate({required BuildContext context}) async {
     final provider = Provider.of<RoutineTemplateController>(context, listen: false);
-    await provider.saveTemplate(templateDto: template, notify: false);
+    await provider.saveTemplate(templateDto: libraryTemplate.template, notify: false);
     print("object");
     if(context.mounted) {
       print("object");
-      navigateToRoutineTemplatePreview(context: context, template: template);
+      navigateToRoutineTemplatePreview(context: context, template: libraryTemplate.template);
     }
   }
 }

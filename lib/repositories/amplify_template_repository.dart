@@ -11,15 +11,16 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/routine_template_library_workout_enum.dart';
+import '../screens/template/default/routine_template_library.dart';
 
 class AmplifyTemplateRepository {
-  final List<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> _defaultTemplates = [];
+  final List<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibraryTemplate>>> _defaultTemplates = [];
 
   List<RoutineTemplateDto> _templates = [];
 
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
-  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates =>
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibraryTemplate>>> get defaultTemplates =>
       UnmodifiableListView(_defaultTemplates);
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
@@ -48,27 +49,41 @@ class AmplifyTemplateRepository {
   }
 
   Future<void> loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
+    final pushTemplate = await _loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
+    final pullTemplate = await _loadTemplatesFromAssets(file: "pull_workout.json", exercises: exercises);
+    final legsTemplate = await _loadTemplatesFromAssets(file: "legs_workout.json", exercises: exercises);
 
-      final pushTemplate = await _loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
-      final pullTemplate = await _loadTemplatesFromAssets(file: "pull_workout.json", exercises: exercises);
-      final legsTemplate = await _loadTemplatesFromAssets(file: "legs_workout.json", exercises: exercises);
-      _defaultTemplates.add({
-        RoutineTemplateLibraryWorkoutEnum.ppl: [pushTemplate, pullTemplate, legsTemplate]
-      });
+    _defaultTemplates.add({
+      RoutineTemplateLibraryWorkoutEnum.ppl: [
+        RoutineLibraryTemplate(template: pushTemplate, image: "bench_press.jpg"),
+        RoutineLibraryTemplate(template: pullTemplate, image: "pull_up.jpg"),
+        RoutineLibraryTemplate(template: legsTemplate, image: "squat.jpg")
+      ]
+    });
 
     final upperOneTemplate = await _loadTemplatesFromAssets(file: "upper_one_workout.json", exercises: exercises);
     final lowerOneTemplate = await _loadTemplatesFromAssets(file: "lower_one_workout.json", exercises: exercises);
     final upperTwoTemplate = await _loadTemplatesFromAssets(file: "upper_two_workout.json", exercises: exercises);
     final lowerTwoTemplate = await _loadTemplatesFromAssets(file: "lower_two_workout.json", exercises: exercises);
     _defaultTemplates.add({
-      RoutineTemplateLibraryWorkoutEnum.upperLower: [upperOneTemplate, lowerOneTemplate, upperTwoTemplate, lowerTwoTemplate]
+      RoutineTemplateLibraryWorkoutEnum.upperLower: [
+        RoutineLibraryTemplate(template: upperOneTemplate, image: "bicep_curl.jpg"),
+        RoutineLibraryTemplate(template: lowerOneTemplate, image: "deadlift.jpg"),
+        RoutineLibraryTemplate(template: upperTwoTemplate, image: "pull_up.jpg"),
+        RoutineLibraryTemplate(template: lowerTwoTemplate, image: "squat.jpg"),
+      ]
     });
 
-      final noEquipmentFullBodyTemplate = await _loadTemplatesFromAssets(file: "no_equipment_fullbody_workout.json", exercises: exercises);
-      final noEquipmentCoreTemplate = await _loadTemplatesFromAssets(file: "no_equipment_core_workout.json", exercises: exercises);
-      _defaultTemplates.add({
-        RoutineTemplateLibraryWorkoutEnum.noEquipment: [noEquipmentFullBodyTemplate, noEquipmentCoreTemplate]
-      });
+    final noEquipmentFullBodyTemplate =
+        await _loadTemplatesFromAssets(file: "no_equipment_fullbody_workout.json", exercises: exercises);
+    final noEquipmentCoreTemplate =
+        await _loadTemplatesFromAssets(file: "no_equipment_core_workout.json", exercises: exercises);
+    _defaultTemplates.add({
+      RoutineTemplateLibraryWorkoutEnum.noEquipment: [
+        RoutineLibraryTemplate(template: noEquipmentFullBodyTemplate, image: "plank.jpg"),
+        RoutineLibraryTemplate(template: noEquipmentCoreTemplate, image: "sit_ups.jpg")
+      ]
+    });
   }
 
   Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {

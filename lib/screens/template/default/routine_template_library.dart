@@ -10,6 +10,13 @@ import '../../../controllers/exercise_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_template_library_workout_enum.dart';
 
+class RoutineLibraryTemplate {
+  final RoutineTemplateDto template;
+  final String image;
+
+  const RoutineLibraryTemplate({required this.template, required this.image});
+}
+
 class RoutineTemplateLibrary extends StatefulWidget {
   const RoutineTemplateLibrary({super.key});
 
@@ -63,13 +70,17 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
 
 class _WorkoutListView extends StatelessWidget {
   final RoutineTemplateLibraryWorkoutEnum templateName;
-  final List<RoutineTemplateDto> templateRoutines;
+  final List<RoutineLibraryTemplate> templateRoutines;
 
   const _WorkoutListView({required this.templateName, required this.templateRoutines});
 
   @override
   Widget build(BuildContext context) {
-    final children = templateRoutines.map((template) => _WorkoutCard(template: template)).toList();
+
+    final children = templateRoutines.map((libraryTemplate) {
+
+      return _WorkoutCard(libraryTemplate: libraryTemplate);
+    }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,14 +95,14 @@ class _WorkoutListView extends StatelessWidget {
 }
 
 class _WorkoutCard extends StatelessWidget {
-  final RoutineTemplateDto template;
+  final RoutineLibraryTemplate libraryTemplate;
 
-  const _WorkoutCard({required this.template});
+  const _WorkoutCard({required this.libraryTemplate});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _navigateToRoutineTemplatePreview(context: context, template: template),
+      onTap: () => _navigateToRoutineTemplatePreview(context: context, libraryTemplate: libraryTemplate),
       child: Container(
         width: 150,
         height: 80,
@@ -105,7 +116,7 @@ class _WorkoutCard extends StatelessWidget {
               child: ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
             child: Image.asset(
-              'images/squat.jpg',
+              'images/${libraryTemplate.image}',
               fit: BoxFit.cover,
             ),
           )),
@@ -124,7 +135,7 @@ class _WorkoutCard extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(template.name.toUpperCase(),
+              child: Text(libraryTemplate.template.name.toUpperCase(),
                   style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w800)),
             ),
           )
@@ -133,8 +144,8 @@ class _WorkoutCard extends StatelessWidget {
     );
   }
 
-  void _navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
+  void _navigateToRoutineTemplatePreview({required BuildContext context, required RoutineLibraryTemplate libraryTemplate}) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(template: template)));
+        .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(libraryTemplate: libraryTemplate)));
   }
 }
