@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_dto.dart';
@@ -35,8 +36,9 @@ class AmplifyTemplateRepository {
     final exerciseLogs = templateJson["exercises"] as List<dynamic>;
     final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
       final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exercise"]);
+      final sets = foundExercise.type == ExerciseType.duration ? [const SetDto(0, 0, false)] : List.filled(3, const SetDto(0, 0, false));
       return ExerciseLogDto(
-          foundExercise.id, id, "", foundExercise, "", List.filled(3, const SetDto(0, 0, false)), DateTime.now());
+          foundExercise.id, id, "", foundExercise, "", sets, DateTime.now());
     }).toList();
 
     return RoutineTemplateDto(

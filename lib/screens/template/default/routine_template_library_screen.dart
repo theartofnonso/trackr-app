@@ -25,7 +25,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-          heroTag: "fab_routine_template_library_screen",
+          heroTag: UniqueKey,
           onPressed: () => _saveTemplate(context: context),
           backgroundColor: tealBlueLighter,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -121,12 +121,12 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
   }
 
   void _saveTemplate({required BuildContext context}) async {
-    final provider = Provider.of<RoutineTemplateController>(context, listen: false);
-    await provider.saveTemplate(templateDto: libraryTemplate.template, notify: false);
+    final templateController = Provider.of<RoutineTemplateController>(context, listen: false);
+    await templateController.saveTemplate(templateDto: libraryTemplate.template, notify: false);
     print("object");
     if(context.mounted) {
       print("object");
-      navigateToRoutineTemplatePreview(context: context, template: libraryTemplate.template);
+      //navigateToRoutineTemplatePreview(context: context, template: libraryTemplate.template);
     }
   }
 }

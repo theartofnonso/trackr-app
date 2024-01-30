@@ -86,7 +86,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-            heroTag: "fab_routine_preview_screen",
+            heroTag: UniqueKey,
             onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
