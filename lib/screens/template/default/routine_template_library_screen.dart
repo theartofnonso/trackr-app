@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../app_constants.dart';
+import '../../../controllers/routine_template_controller.dart';
 
 class RoutineTemplateLibraryScreen extends StatelessWidget {
   final RoutineTemplateDto template;
@@ -12,6 +15,9 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     final exercises = template.exercises
         .map((exercise) => ListTile(
               contentPadding: const EdgeInsets.only(left: 10),
@@ -22,7 +28,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           heroTag: "fab_routine_preview_screen",
-          onPressed: () {},
+          onPressed: () => _saveTemplate(context: context),
           backgroundColor: tealBlueLighter,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: const FaIcon(FontAwesomeIcons.download, size: 20)),
@@ -34,7 +40,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
           child: Stack(children: [
             Positioned.fill(
                 child: Image.asset(
-              'assets/squat.jpg',
+              'images/squat.jpg',
               fit: BoxFit.cover,
             )),
             Container(
@@ -114,5 +120,13 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
         )
       ]),
     );
+  }
+
+  void _saveTemplate({required BuildContext context}) async {
+    final provider = Provider.of<RoutineTemplateController>(context, listen: false);
+    await provider.saveTemplate(templateDto: template, notify: false);
+    if(context.mounted) {
+      navigateToRoutineTemplatePreview(context: context, template: template);
+    }
   }
 }

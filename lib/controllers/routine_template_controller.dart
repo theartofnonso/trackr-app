@@ -17,12 +17,13 @@ class RoutineTemplateController extends ChangeNotifier {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
 
-  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates => _amplifyTemplateRepository.defaultTemplates;
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates =>
+      _amplifyTemplateRepository.defaultTemplates;
 
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
 
   void loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
-    if(_amplifyTemplateRepository.defaultTemplates.isEmpty) {
+    if (_amplifyTemplateRepository.defaultTemplates.isEmpty) {
       await _amplifyTemplateRepository.loadTemplatesFromAssets(exercises: exercises);
       notifyListeners();
     }
@@ -43,7 +44,7 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  Future<RoutineTemplateDto?> saveTemplate({required RoutineTemplateDto templateDto}) async {
+  Future<RoutineTemplateDto?> saveTemplate({required RoutineTemplateDto templateDto, bool notify = true}) async {
     RoutineTemplateDto? savedTemplate;
     isLoading = true;
     try {
@@ -53,7 +54,9 @@ class RoutineTemplateController extends ChangeNotifier {
     } finally {
       isLoading = false;
       errorMessage = "";
-      notifyListeners();
+      if (notify) {
+        notifyListeners();
+      }
     }
     return savedTemplate;
   }
