@@ -156,10 +156,6 @@ class AchievementRepository {
         achievedLogs: achievedLogs, progress: progress, remainder: remainder, dateSelector: dateExtractorForRoutineLog);
   }
 
-  bool _isNextWeek({required DateTimeRange range, required DateTime start}) {
-    return range.start.isAfter(start);
-  }
-
   List<DateTimeRange> _consecutiveDatesWhere(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
       required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation, required AchievementType type}) {
