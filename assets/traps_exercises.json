@@ -1,7 +1,0 @@
-[
-  {"id": "BAC3", "name": "Shrug (Barbell)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "BAC8", "name": "Shrug (Dumbbell)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "BAC36", "name": "Shrug (Cable)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "BAC37", "name": "Shrug (Machine)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "BAC38", "name": "Shrug (Smith Machine)", "primaryMuscleGroup": "Traps", "type": "WR"}
-]

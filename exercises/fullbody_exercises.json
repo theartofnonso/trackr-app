@@ -22,6 +22,6 @@
   {"id": "FLB21", "name": "Clean and Press", "primaryMuscleGroup": "Full Body", "type": "WR"},
   {"id": "FLB22", "name": "Landmine Squat and Press", "primaryMuscleGroup": "Full Body", "type": "WR"},
   {"id": "FLB23", "name": "Sled Push", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "SH34", "name": "Squat Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "SH35", "name": "Split Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"}
+  {"id": "FLB24", "name": "Squat Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"},
+  {"id": "FLB25", "name": "Split Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"}
 ]

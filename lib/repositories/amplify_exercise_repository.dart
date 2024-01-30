@@ -19,7 +19,7 @@ class AmplifyExerciseRepository {
   StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   Future<List<ExerciseDto>> loadExercisesFromAssets({required String file}) async {
-    String jsonString = await rootBundle.loadString('assets/$file');
+    String jsonString = await rootBundle.loadString('exercises/$file');
     final exerciseJsons = json.decode(jsonString) as List<dynamic>;
     return exerciseJsons.map((exerciseJson) {
       final id = exerciseJson["id"];

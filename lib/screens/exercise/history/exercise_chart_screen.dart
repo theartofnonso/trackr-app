@@ -237,47 +237,65 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (_exerciseLogsWithWeightsOnly())
-                      CTextButton(
-                          onPressed: _heaviestWeightPerLog,
-                          label: "Heaviest Weight",
-                          textStyle: buttonStyle,
-                          padding: const EdgeInsets.only(right: 5.0),
-                          buttonColor: _buttonColor(type: SummaryType.weight)),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CTextButton(
+                            onPressed: _heaviestWeightPerLog,
+                            label: "Heaviest Weight",
+                            textStyle: buttonStyle,
+                            padding: const EdgeInsets.only(right: 5.0),
+                            buttonColor: _buttonColor(type: SummaryType.weight)),
+                      ),
                     if (_exerciseLogsWithWeightsOnly())
-                      CTextButton(
-                          onPressed: _heaviestSetVolumePerLog,
-                          label: "Heaviest Volume (Set)",
-                          textStyle: buttonStyle,
-                          padding: const EdgeInsets.only(right: 5.0),
-                          buttonColor: _buttonColor(type: SummaryType.setVolume)),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CTextButton(
+                            onPressed: _heaviestSetVolumePerLog,
+                            label: "Heaviest Volume (Set)",
+                            textStyle: buttonStyle,
+                            padding: const EdgeInsets.only(right: 5.0),
+                            buttonColor: _buttonColor(type: SummaryType.setVolume)),
+                      ),
                     if (_exerciseLogsWithReps())
-                      CTextButton(
-                          onPressed: _highestRepsForLog,
-                          label: "Most Reps (Set)",
-                          textStyle: buttonStyle,
-                          padding: const EdgeInsets.only(right: 5.0),
-                          buttonColor: _buttonColor(type: SummaryType.mostReps)),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CTextButton(
+                            onPressed: _highestRepsForLog,
+                            label: "Most Reps (Set)",
+                            textStyle: buttonStyle,
+                            padding: const EdgeInsets.only(right: 5.0),
+                            buttonColor: _buttonColor(type: SummaryType.mostReps)),
+                      ),
                     if (_exerciseLogsWithRepsOnly())
-                      CTextButton(
-                          onPressed: _totalRepsForLog,
-                          label: "Most Reps (Session)",
-                          textStyle: buttonStyle,
-                          padding: const EdgeInsets.only(right: 5.0),
-                          buttonColor: _buttonColor(type: SummaryType.sessionReps)),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CTextButton(
+                            onPressed: _totalRepsForLog,
+                            label: "Most Reps (Session)",
+                            textStyle: buttonStyle,
+                            padding: const EdgeInsets.only(right: 5.0),
+                            buttonColor: _buttonColor(type: SummaryType.sessionReps)),
+                      ),
                     if (_exerciseLogsDuration())
-                      CTextButton(
-                          onPressed: _longestDurationPerLog,
-                          label: "Best Time",
-                          textStyle: buttonStyle,
-                          padding: const EdgeInsets.only(right: 5.0),
-                          buttonColor: _buttonColor(type: SummaryType.bestTime)),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CTextButton(
+                            onPressed: _longestDurationPerLog,
+                            label: "Best Time",
+                            textStyle: buttonStyle,
+                            padding: const EdgeInsets.only(right: 5.0),
+                            buttonColor: _buttonColor(type: SummaryType.bestTime)),
+                      ),
                     if (_exerciseLogsDuration())
-                      CTextButton(
-                          onPressed: _totalTimePerLog,
-                          label: "Total Time",
-                          textStyle: buttonStyle,
-                          padding: const EdgeInsets.only(right: 5.0),
-                          buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CTextButton(
+                            onPressed: _totalTimePerLog,
+                            label: "Total Time",
+                            textStyle: buttonStyle,
+                            padding: const EdgeInsets.only(right: 5.0),
+                            buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
+                      ),
                   ],
                 )),
           const SizedBox(height: 10),

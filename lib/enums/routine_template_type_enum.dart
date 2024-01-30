@@ -1,0 +1,3 @@
+enum RoutineTemplateTypeEnum {
+  defaultTemplate, customTemplate,
+}

@@ -9,7 +9,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
-import 'package:tracker_app/screens/template/routine_templates_screen.dart';
+import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const OverviewScreen(), const RoutinesScreen(), const AchievementsScreen()];
+    final screens = [const OverviewScreen(), const RoutineTemplatesHome(), const AchievementsScreen()];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(

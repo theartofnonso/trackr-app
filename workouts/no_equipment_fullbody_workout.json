@@ -1,0 +1,22 @@
+{
+  "id": "NO_EQUIPMENT_FULL_BODY_1",
+  "name": "Full Body",
+  "notes": "Theses exercises are a dynamic and efficient way to engage multiple muscle groups, promote cardiovascular health, and improve overall fitness",
+  "exercises": [
+    {
+      "exercise": "CHT20"
+    },
+    {
+      "exercise": "LAT10"
+    },
+    {
+      "exercise": "SHD35"
+    },
+    {
+      "exercise": "QUD30"
+    },
+    {
+      "exercise": "ABS19"
+    }
+  ]
+}

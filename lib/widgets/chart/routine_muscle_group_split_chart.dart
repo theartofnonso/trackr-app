@@ -7,6 +7,7 @@ import '../../enums/muscle_group_enums.dart';
 class RoutineMuscleGroupSplitChart extends StatelessWidget {
   final Map<MuscleGroupFamily, double> frequencyData;
   final bool showInfo;
+
   const RoutineMuscleGroupSplitChart({super.key, required this.frequencyData, this.showInfo = true});
 
   @override
@@ -24,7 +25,7 @@ class _HorizontalBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children =
-    frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ...children,
@@ -61,10 +62,15 @@ class _LinearBar extends StatelessWidget {
             Positioned.fill(
               child: Align(
                 alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 1, right: 14),
-                  child: Text(muscleGroupFamily.name,
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.black, fontSize: 12)),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
+                  margin: const EdgeInsets.only(right: 6),
+                  decoration: BoxDecoration(
+                    color: tealBlueDark.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(3.0),
+                  ),
+                  child: Text(muscleGroupFamily.name.toUpperCase(),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: vibrantGreen, fontSize: 12)),
                 ),
               ),
             )

@@ -1,0 +1,22 @@
+{
+  "id": "UPPER_TWO_1",
+  "name": "Upper 2",
+  "notes": "These exercises are essential for developing strength and enhancing overall fitness. They target the chest, back, shoulders, arms, and core",
+    "exercises": [
+      {
+        "exercise": "BAC20"
+      },
+      {
+        "exercise": "LAT5"
+      },
+      {
+        "exercise": "BIC7"
+      },
+      {
+        "exercise": "LAT10"
+      },
+      {
+        "exercise": "BIC9"
+      }
+    ]
+}

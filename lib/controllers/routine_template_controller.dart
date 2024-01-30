@@ -1,9 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
+import '../enums/routine_template_library_workout_enum.dart';
 import '../repositories/amplify_template_repository.dart';
+import '../screens/template/default/routine_template_library.dart';
 
 class RoutineTemplateController extends ChangeNotifier {
   bool isLoading = false;
@@ -15,7 +18,17 @@ class RoutineTemplateController extends ChangeNotifier {
     _amplifyTemplateRepository = amplifyTemplateRepository;
   }
 
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibraryTemplate>>> get defaultTemplates =>
+      _amplifyTemplateRepository.defaultTemplates;
+
   UnmodifiableListView<RoutineTemplateDto> get templates => _amplifyTemplateRepository.templates;
+
+  void loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
+    if (_amplifyTemplateRepository.defaultTemplates.isEmpty) {
+      await _amplifyTemplateRepository.loadTemplatesFromAssets(exercises: exercises);
+      notifyListeners();
+    }
+  }
 
   void fetchTemplates({List<RoutineTemplate>? templates}) async {
     isLoading = true;
@@ -60,8 +73,7 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  Future<void> updateTemplateSetsOnly(
-      {required String templateId, required List<ExerciseLogDto> newExercises}) async {
+  Future<void> updateTemplateSetsOnly({required String templateId, required List<ExerciseLogDto> newExercises}) async {
     isLoading = true;
     try {
       await _amplifyTemplateRepository.updateTemplateSetsOnly(templateId: templateId, newExercises: newExercises);
