@@ -71,17 +71,14 @@ class _WorkoutListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = templateRoutines.map((template) => _WorkoutCard(template: template)).toList();
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(templateName.name.toUpperCase(),
-              style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 12),
-          Row(children: children),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(templateName.name.toUpperCase(),
+            style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
+        const SizedBox(height: 12),
+        SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: children)),
+      ],
     );
   }
 }
