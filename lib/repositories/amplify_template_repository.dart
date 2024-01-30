@@ -63,6 +63,12 @@ class AmplifyTemplateRepository {
     _defaultTemplates.add({
       RoutineTemplateLibraryWorkoutEnum.upperLower: [upperOneTemplate, lowerOneTemplate, upperTwoTemplate, lowerTwoTemplate]
     });
+
+      final noEquipmentFullBodyTemplate = await _loadTemplatesFromAssets(file: "no_equipment_fullbody_workout.json", exercises: exercises);
+      final noEquipmentCoreTemplate = await _loadTemplatesFromAssets(file: "no_equipment_core_workout.json", exercises: exercises);
+      _defaultTemplates.add({
+        RoutineTemplateLibraryWorkoutEnum.noEquipment: [noEquipmentFullBodyTemplate, noEquipmentCoreTemplate]
+      });
   }
 
   Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {

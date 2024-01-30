@@ -1,22 +1,22 @@
 {
-  "id": "NO_EQUIPMENT_FULL_BODY_1",
-  "name": "Full Body",
+  "id": "NO_EQUIPMENT_ABS_1",
+  "name": "ABS",
   "notes": "A leg day workout is an effective way to improve strength and muscle size in all the major muscles in your lower body",
   "exercises": [
     {
-      "exercise": "CHT20"
-    },
-    {
-      "exercise": "LAT10"
-    },
-    {
-      "exercise": "SHD35"
-    },
-    {
-      "exercise": "QUD30"
-    },
-    {
       "exercise": "ABS19"
+    },
+    {
+      "exercise": "ABS20"
+    },
+    {
+      "exercise": "ABS21"
+    },
+    {
+      "exercise": "ABS2"
+    },
+    {
+      "exercise": "ABS12"
     }
   ]
 }
