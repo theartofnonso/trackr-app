@@ -41,7 +41,7 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
           const SizedBox(height: 20),
           const InformationContainerLite(
             content: exploreWorkouts,
-            color: tealBlueLight,
+            color: tealBlueDark,
           ),
           const SizedBox(height: 20),
           Expanded(
