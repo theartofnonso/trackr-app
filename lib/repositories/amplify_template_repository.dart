@@ -32,7 +32,7 @@ class AmplifyTemplateRepository {
     final exerciseLogs = templateJson["exercises"] as List<dynamic>;
     final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
       final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exercise"]);
-      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, "", [], DateTime.now());
+      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, "", [const SetDto(0, 0, false), const SetDto(0, 0, false), const SetDto(0, 0, false)], DateTime.now());
     }).toList();
 
     return RoutineTemplateDto(

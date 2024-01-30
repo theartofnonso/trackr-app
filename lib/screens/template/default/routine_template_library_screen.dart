@@ -16,8 +16,6 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
-
     final exercises = template.exercises
         .map((exercise) => ListTile(
               contentPadding: const EdgeInsets.only(left: 10),
@@ -27,7 +25,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-          heroTag: "fab_routine_preview_screen",
+          heroTag: "fab_routine_template_library_screen",
           onPressed: () => _saveTemplate(context: context),
           backgroundColor: tealBlueLighter,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -77,7 +75,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                                 GoogleFonts.montserrat(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
                         const SizedBox(width: 5),
                         Image.asset(
-                          'assets/trackr.png',
+                          'images/trackr.png',
                           fit: BoxFit.contain,
                           height: 9, //
                           color: vibrantGreen,// Adjust the height as needed
@@ -125,7 +123,9 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
   void _saveTemplate({required BuildContext context}) async {
     final provider = Provider.of<RoutineTemplateController>(context, listen: false);
     await provider.saveTemplate(templateDto: template, notify: false);
+    print("object");
     if(context.mounted) {
+      print("object");
       navigateToRoutineTemplatePreview(context: context, template: template);
     }
   }
