@@ -1,6 +1,6 @@
 {
-  "id": "LEGSDAY_1",
-  "name": "Legs",
+  "id": "LOWER_TWO_1",
+  "name": "Lower 2",
   "notes": "A leg day workout is an effective way to improve strength and muscle size in all the major muscles in your lower body",
   "exercises": [
     {
@@ -8,12 +8,6 @@
     },
     {
       "exercise": "HAM2"
-    },
-    {
-      "exercise": "QUD19"
-    },
-    {
-      "exercise": "HAM3"
     },
     {
       "exercise": "CAL4"

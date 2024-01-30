@@ -39,10 +39,7 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
                 padding: const EdgeInsets.only(bottom: 250),
                 itemBuilder: (BuildContext context, int index) =>
                     _WorkoutListView(templateName: templates[index].key, templateRoutines: templates[index].value),
-                separatorBuilder: (BuildContext context, int index) => const Divider(
-                      thickness: 1.0,
-                      color: tealBlueLight,
-                    ),
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 20),
                 itemCount: templates.length),
           )
         ]),
@@ -80,7 +77,7 @@ class _WorkoutListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(templateName.name.toUpperCase(),
-              style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+              style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(children: children),
         ],
@@ -131,7 +128,7 @@ class _WorkoutCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(template.name.toUpperCase(),
-                  style: GoogleFonts.montserrat(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w800)),
+                  style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w800)),
             ),
           )
         ]),

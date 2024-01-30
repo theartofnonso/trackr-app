@@ -19,11 +19,13 @@ class AmplifyTemplateRepository {
 
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
-  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates => UnmodifiableListView(_defaultTemplates);
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineTemplateDto>>> get defaultTemplates =>
+      UnmodifiableListView(_defaultTemplates);
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
-  Future<RoutineTemplateDto> _loadTemplatesFromAssets({required String file, required List<ExerciseDto> exercises}) async {
+  Future<RoutineTemplateDto> _loadTemplatesFromAssets(
+      {required String file, required List<ExerciseDto> exercises}) async {
     String jsonString = await rootBundle.loadString('workouts/$file');
     final templateJson = json.decode(jsonString) as dynamic;
     final id = templateJson["id"] as String;
@@ -32,7 +34,8 @@ class AmplifyTemplateRepository {
     final exerciseLogs = templateJson["exercises"] as List<dynamic>;
     final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
       final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exercise"]);
-      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, "", [const SetDto(0, 0, false), const SetDto(0, 0, false), const SetDto(0, 0, false)], DateTime.now());
+      return ExerciseLogDto(
+          foundExercise.id, id, "", foundExercise, "", List.filled(3, const SetDto(0, 0, false)), DateTime.now());
     }).toList();
 
     return RoutineTemplateDto(
@@ -45,14 +48,24 @@ class AmplifyTemplateRepository {
   }
 
   Future<void> loadTemplatesFromAssets({required List<ExerciseDto> exercises}) async {
-    final pushTemplate = await _loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
-    final pullTemplate = await _loadTemplatesFromAssets(file: "pull_workout.json", exercises: exercises);
-    final legsTemplate = await _loadTemplatesFromAssets(file: "legs_workout.json", exercises: exercises);
-    _defaultTemplates.add({RoutineTemplateLibraryWorkoutEnum.ppl: [pushTemplate, pullTemplate, legsTemplate]});
+
+      final pushTemplate = await _loadTemplatesFromAssets(file: "push_workout.json", exercises: exercises);
+      final pullTemplate = await _loadTemplatesFromAssets(file: "pull_workout.json", exercises: exercises);
+      final legsTemplate = await _loadTemplatesFromAssets(file: "legs_workout.json", exercises: exercises);
+      _defaultTemplates.add({
+        RoutineTemplateLibraryWorkoutEnum.ppl: [pushTemplate, pullTemplate, legsTemplate]
+      });
+
+    final upperOneTemplate = await _loadTemplatesFromAssets(file: "upper_one_workout.json", exercises: exercises);
+    final lowerOneTemplate = await _loadTemplatesFromAssets(file: "lower_one_workout.json", exercises: exercises);
+    final upperTwoTemplate = await _loadTemplatesFromAssets(file: "upper_two_workout.json", exercises: exercises);
+    final lowerTwoTemplate = await _loadTemplatesFromAssets(file: "lower_two_workout.json", exercises: exercises);
+    _defaultTemplates.add({
+      RoutineTemplateLibraryWorkoutEnum.upperLower: [upperOneTemplate, lowerOneTemplate, upperTwoTemplate, lowerTwoTemplate]
+    });
   }
 
   Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {
-
     List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
     if (templates.isNotEmpty) {
       _loadTemplates(templates: templates);

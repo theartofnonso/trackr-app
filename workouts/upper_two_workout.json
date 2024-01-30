@@ -1,0 +1,22 @@
+{
+  "id": "UPPER_TWO_1",
+  "name": "Upper 2",
+  "notes": "A leg day workout is an effective way to improve strength and muscle size in all the major muscles in your lower body",
+    "exercises": [
+      {
+        "exercise": "BAC20"
+      },
+      {
+        "exercise": "LAT5"
+      },
+      {
+        "exercise": "BIC7"
+      },
+      {
+        "exercise": "LAT10"
+      },
+      {
+        "exercise": "BIC9"
+      }
+    ]
+}
