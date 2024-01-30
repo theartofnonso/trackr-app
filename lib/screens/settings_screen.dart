@@ -135,7 +135,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     title: "Notifications",
                     trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                 const SizedBox(height: 8),
-                const SizedBox(height: 16),
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _delete, title: "Delete Account"),
