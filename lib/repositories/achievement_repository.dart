@@ -160,7 +160,7 @@ class AchievementRepository {
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
       required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation, required AchievementType type}) {
     List<DateTimeRange> dateRanges = [];
-    
+
     for (var entry in weekToRoutineLogs.entries) {
 
       final evaluated = evaluation(entry);
@@ -168,7 +168,11 @@ class AchievementRepository {
         dateRanges.add(entry.key);
       } else {
         if(type == AchievementType.obsessed || type == AchievementType.neverSkipALegDay || type == AchievementType.weekendWarrior) {
-          final lastDayOfWeek = entry.key.dates.where((date) => date.isBefore(DateTime.now())).last;
+          final now = DateTime.now();
+          final lastDayOfWeek = entry.key.dates.where((date) => date.isBeforeOrEqual(DateTime(now.year, now.month, now.day))).lastOrNull;
+          if(lastDayOfWeek == null) {
+            continue;
+          }
           if (lastDayOfWeek.weekday == 7) {
             dateRanges = [];
           }

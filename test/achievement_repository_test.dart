@@ -173,9 +173,9 @@ void main() {
       expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.days100).progress.remainder, 0);
     });
   });
-  
+
   group("Achievement Type Time To Go", () {
-    
+
     test("AchievementType.fiveMinutesToGo", () {
       final achievementRepository = AchievementRepository();
 
@@ -290,7 +290,7 @@ void main() {
       expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.fifteenMinutesToGo).progress.remainder, 0);
     });
   });
-  
+
   test("AchievementType.supersetSpecialist", () {
     final achievementRepository = AchievementRepository();
 
@@ -692,4 +692,3 @@ List<DateTime> _generateDailyDateTimes({required int size, required DateTime sta
 
   return dateTimes;
 }
-
