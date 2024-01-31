@@ -1,0 +1,22 @@
+{
+  "id": "PULLDAY_1",
+  "name": "Pull",
+  "notes": "This is a crucial component of any well-rounded fitness regimen to enhance strength and definition, specifically targeting the back and biceps",
+  "exercises": [
+    {
+      "exercise": "BAC20"
+    },
+    {
+      "exercise": "LAT5"
+    },
+    {
+      "exercise": "BIC7"
+    },
+    {
+      "exercise": "LAT10"
+    },
+    {
+      "exercise": "BIC9"
+    }
+  ]
+}

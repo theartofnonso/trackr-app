@@ -1,0 +1,16 @@
+{
+  "id": "LOWER_TWO_1",
+  "name": "Lower 2",
+  "notes": "These exercises are essential components of a comprehensive fitness regimen, offering benefits from improved muscular strength enhanced balance",
+  "exercises": [
+    {
+      "exercise": "QUD26"
+    },
+    {
+      "exercise": "HAM2"
+    },
+    {
+      "exercise": "CAL4"
+    }
+  ]
+}

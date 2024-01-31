@@ -11,8 +11,8 @@ import '../../utils/dialog_utils.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../utils/navigation_utils.dart';
 
-class RoutinesScreen extends StatelessWidget {
-  const RoutinesScreen({super.key});
+class RoutineTemplatesScreen extends StatelessWidget {
+  const RoutineTemplatesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

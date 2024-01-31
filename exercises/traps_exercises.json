@@ -1,0 +1,7 @@
+[
+  {"id": "TRP1", "name": "Shrug (Barbell)", "primaryMuscleGroup": "Traps", "type": "WR"},
+  {"id": "TRP2", "name": "Shrug (Dumbbell)", "primaryMuscleGroup": "Traps", "type": "WR"},
+  {"id": "TRP3", "name": "Shrug (Cable)", "primaryMuscleGroup": "Traps", "type": "WR"},
+  {"id": "TRP4", "name": "Shrug (Machine)", "primaryMuscleGroup": "Traps", "type": "WR"},
+  {"id": "TRP5", "name": "Shrug (Smith Machine)", "primaryMuscleGroup": "Traps", "type": "WR"}
+]

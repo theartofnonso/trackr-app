@@ -1,0 +1,4 @@
+[
+  {"id": "ABD1", "name": "Hip Abduction Against Band", "primaryMuscleGroup": "Abductors", "type": "BW"},
+  {"id": "ABD2", "name": "Hip Abduction Machine", "primaryMuscleGroup": "Abductors", "type": "WR"}
+]

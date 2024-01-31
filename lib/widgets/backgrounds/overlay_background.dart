@@ -4,9 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../app_constants.dart';
 
 class OverlayBackground extends StatelessWidget {
-  const OverlayBackground({super.key, required String loadingMessage}) : _loadingMessage = loadingMessage;
+  const OverlayBackground({super.key, this.loadingMessage, this.opacity = 0.7});
 
-  final String _loadingMessage;
+  final String? loadingMessage;
+  final double opacity;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class OverlayBackground extends StatelessWidget {
         child: Container(
             width: double.infinity,
             height: double.infinity,
-            color: tealBlueDark.withOpacity(0.7),
-            child: Center(child: Text(_loadingMessage, style: GoogleFonts.montserrat(fontSize: 14)))));
+            color: tealBlueDark.withOpacity(opacity),
+            child: loadingMessage != null ? Center(child: Text("$loadingMessage", style: GoogleFonts.montserrat(fontSize: 14))) : null));
   }
 }

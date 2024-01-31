@@ -8,7 +8,6 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import '../../app_constants.dart';
 
 import '../../controllers/routine_template_controller.dart';
@@ -32,9 +31,6 @@ class RoutineTemplateEditorScreen extends StatefulWidget {
 class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScreen> {
   late TextEditingController _templateNameController;
   late TextEditingController _templateNotesController;
-
-  bool _loading = false;
-  String _loadingLabel = "";
 
   late Function _onDisposeCallback;
 
@@ -70,14 +66,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           _closeDialog();
           _selectExercisesInLibrary();
         });
-  }
-
-  void _toggleLoadingState() {
-    final template = widget.template;
-    setState(() {
-      _loading = !_loading;
-      _loadingLabel = template != null ? "Updating" : "Creating";
-    });
   }
 
   bool _validateRoutineTemplateInputs() {
@@ -141,12 +129,13 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = updatedExerciseLogs ?? procedureProvider.mergeExerciseLogsAndSets();
     final templateProvider = Provider.of<RoutineTemplateController>(context, listen: false);
-    _toggleLoadingState();
+
     final updatedRoutineTemplate = template.copyWith(
         name: _templateNameController.text.trim(),
         notes: _templateNotesController.text.trim(),
         exercises: exerciseLogs,
         updatedAt: DateTime.now());
+
     await templateProvider.updateTemplate(template: updatedRoutineTemplate);
   }
 
@@ -221,23 +210,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
                 onPressed: _checkForUnsavedChanges),
             actions: [
-              CTextButton(
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  label: template != null ? "Update" : "Save",
-                  buttonColor: Colors.transparent,
-                  buttonBorderColor: Colors.transparent,
-                  loading: _loading,
-                  loadingLabel: _loadingLabel)
+              IconButton(
+                  onPressed: _selectExercisesInLibrary,
+                  icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
+              IconButton(
+                  onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
+                  icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
             ],
           ),
           floatingActionButton: isKeyboardOpen
               ? null
               : FloatingActionButton(
                   heroTag: "fab_select_exercise_log_screen",
-                  onPressed: _selectExercisesInLibrary,
+                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
                   backgroundColor: tealBlueLighter,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
+                  child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
                 ),
           body: SafeArea(
             minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
@@ -309,7 +297,6 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                       onRemoveSuperSet: (String superSetId) =>
                                           exerciseLogController.removeSuperSet(superSetId: log.superSetId),
                                       onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                      onReOrder: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
                                       onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
                                 },
                                 separatorBuilder: (_, __) => const SizedBox(height: 10),

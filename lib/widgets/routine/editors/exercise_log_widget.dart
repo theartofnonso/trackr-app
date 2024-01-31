@@ -33,7 +33,6 @@ class ExerciseLogWidget extends StatefulWidget {
   final VoidCallback onRemoveLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
-  final VoidCallback onReOrder;
   final VoidCallback? onCache;
 
   const ExerciseLogWidget(
@@ -43,7 +42,6 @@ class ExerciseLogWidget extends StatefulWidget {
       this.superSet,
       required this.onSuperSet,
       required this.onRemoveSuperSet,
-      required this.onReOrder,
       required this.onRemoveLog,
       this.onCache});
 
@@ -58,10 +56,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
-      MenuItemButton(
-        onPressed: widget.onReOrder,
-        child: Text("Re-order", style: GoogleFonts.montserrat()),
-      ),
       widget.exerciseLogDto.superSetId.isNotEmpty
           ? MenuItemButton(
               onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),

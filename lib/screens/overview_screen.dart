@@ -20,23 +20,18 @@ import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
 import '../widgets/calendar/calendar.dart';
 
-class OverviewScreen extends StatefulWidget {
+class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
 
-  @override
-  State<OverviewScreen> createState() => _OverviewScreenState();
-}
-
-class _OverviewScreenState extends State<OverviewScreen> {
-  void _navigateToSettings() async {
+  void _navigateToSettings({required BuildContext context}) async {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
   }
 
-  void _navigateToMuscleDistribution() {
+  void _navigateToMuscleDistribution({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
   }
 
-  void _navigateToAllDaysTracked() {
+  void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
   }
 
@@ -85,9 +80,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   IconButton(
-                      onPressed: _onShareCalendar,
+                      onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                  IconButton(onPressed: _navigateToSettings, icon: const Icon(Icons.settings))
+                  IconButton(onPressed: () => _navigateToSettings(context: context), icon: const Icon(Icons.settings))
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -99,9 +94,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         valueText: "${routineLogController.routineLogs.length}",
                       ),
                     ),
-                    const SizedBox(width: 50),
-                    GestureDetector(
-                      onTap: _navigateToAllDaysTracked,
+                    const SizedBox(width: 20),
+                    InkWell(
+                      onTap: () => _navigateToAllDaysTracked(context: context),
                       child: _CTableCell(
                           title: "STREAK",
                           subtitle: "${routineLogController.routineLogs.length}",
@@ -117,14 +112,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Theme(
                   data: ThemeData(splashColor: tealBlueLight),
                   child: ListTile(
-                      onTap: _navigateToMuscleDistribution,
+                      onTap: () => _navigateToMuscleDistribution(context: context),
                       tileColor: tealBlueLight,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       title: Text("Muscle insights",
                           style:
                               GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      trailing: Text("Sets per muscle group",
+                      trailing: Text("sets",
                           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 10),
@@ -137,7 +132,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  void _onShareCalendar() {
+  void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
         color: tealBlueDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -171,9 +166,12 @@ class _CTableCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: crossAxisAlignment, children: [
-      Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
-      Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
-    ]);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      child: Column(crossAxisAlignment: crossAxisAlignment, children: [
+        Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
+      ]),
+    );
   }
 }

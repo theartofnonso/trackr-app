@@ -10,6 +10,7 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../enums/routine_template_type_enum.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
@@ -18,9 +19,10 @@ import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 
 class RoutineTemplateScreen extends StatefulWidget {
+  final RoutineTemplateTypeEnum templateType;
   final RoutineTemplateDto template;
 
-  const RoutineTemplateScreen({super.key, required this.template});
+  const RoutineTemplateScreen({super.key, this.templateType = RoutineTemplateTypeEnum.customTemplate, required this.template});
 
   @override
   State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
@@ -53,7 +55,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final template = Provider.of<RoutineTemplateController>(context, listen: true).templateWhere(id: widget.template.id);
+    final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
+
+    RoutineTemplateDto? template = routineTemplateController.templateWhere(id: widget.template.id);
 
     if (template == null) {
       return const SizedBox.shrink();
@@ -86,7 +90,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-            heroTag: "fab_routine_preview_screen",
+            heroTag: UniqueKey,
             onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
             backgroundColor: tealBlueLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

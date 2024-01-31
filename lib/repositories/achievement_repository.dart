@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
 import 'package:tracker_app/dtos/progress_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../dtos/exercise_log_dto.dart';
@@ -157,15 +158,32 @@ class AchievementRepository {
 
   List<DateTimeRange> _consecutiveDatesWhere(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
-      required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation}) {
+      required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation, required AchievementType type}) {
     List<DateTimeRange> dateRanges = [];
 
     for (var entry in weekToRoutineLogs.entries) {
+
       final evaluated = evaluation(entry);
       if (evaluated) {
         dateRanges.add(entry.key);
       } else {
-        dateRanges = [];
+        if(type == AchievementType.obsessed || type == AchievementType.neverSkipALegDay || type == AchievementType.weekendWarrior) {
+          final now = DateTime.now();
+          final lastDayOfWeek = entry.key.dates.where((date) => date.isBeforeOrEqual(DateTime(now.year, now.month, now.day))).lastOrNull;
+          if(lastDayOfWeek == null) {
+            continue;
+          }
+          if (lastDayOfWeek.weekday == 7) {
+            dateRanges = [];
+          }
+        } else {
+          if(type == AchievementType.neverSkipAMonday) {
+            final secondDayOfWeek = entry.key.dates[1];
+            if (secondDayOfWeek.weekday == 2) {
+              dateRanges = [];
+            }
+          }
+        }
       }
     }
     return dateRanges;
@@ -193,7 +211,9 @@ class AchievementRepository {
   ProgressDto _calculateObsessedAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges =
-        _consecutiveDatesWhere(weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.isNotEmpty);
+        _consecutiveDatesWhere(weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.isNotEmpty, type: AchievementType.obsessed)
+            .take(target)
+            .toList();
     return _consecutiveAchievementProgress(
         dateTimeRanges: dateTimeRanges,
         target: target,
@@ -211,11 +231,12 @@ class AchievementRepository {
     });
   }
 
-  /// [AchievementType.neverSkipAMonday]
+  /// [AchievementType.neverSkipALegDay]
   ProgressDto _calculateNeverSkipALegDayAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
-        weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _hasLegExercise(log)));
+        weekToRoutineLogs: weekToLogs,
+        evaluation: (entry) => entry.value.any((log) => _hasLegExercise(log)), type: AchievementType.neverSkipALegDay).take(target).toList();
     return _consecutiveAchievementProgress(
         dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs, evaluation: _hasLegExercise);
   }
@@ -228,7 +249,8 @@ class AchievementRepository {
   ProgressDto _calculateNeverSkipAMondayAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
-        weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnMonday(log)));
+        weekToRoutineLogs: weekToLogs,
+        evaluation: (entry) => entry.value.any((log) => _loggedOnMonday(log)), type: AchievementType.neverSkipAMonday).take(target).toList();
     return _consecutiveAchievementProgress(
         dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs, evaluation: _loggedOnMonday);
   }
@@ -241,7 +263,8 @@ class AchievementRepository {
   ProgressDto _calculateWeekendWarriorAchievement(
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToLogs, required int target}) {
     final dateTimeRanges = _consecutiveDatesWhere(
-        weekToRoutineLogs: weekToLogs, evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)));
+        weekToRoutineLogs: weekToLogs,
+        evaluation: (entry) => entry.value.any((log) => _loggedOnWeekend(log)), type: AchievementType.weekendWarrior).take(target).toList();
     return _consecutiveAchievementProgress(
         dateTimeRanges: dateTimeRanges, target: target, weekToLogs: weekToLogs, evaluation: _loggedOnWeekend);
   }

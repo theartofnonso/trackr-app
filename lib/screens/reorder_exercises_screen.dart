@@ -78,6 +78,6 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
   @override
   void initState() {
     super.initState();
-    _exercises = widget.exercises;
+    _exercises = List.from(widget.exercises);
   }
 }
