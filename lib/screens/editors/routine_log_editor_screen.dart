@@ -229,7 +229,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
               actions: [
                 IconButton(
                     onPressed: _selectExercisesInLibrary,
-                    icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white))
+                    icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
+                IconButton(
+                    onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
+                    icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white))
               ],
             ),
             floatingActionButton: isKeyboardOpen
@@ -287,9 +290,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                                           onRemoveLog: () {
                                             exerciseLogController.removeExerciseLog(logId: exerciseId);
                                             _cacheLog();
-                                          },
-                                          onReOrder: () {
-                                            _reOrderExerciseLogs(exerciseLogs: exerciseLogs);
                                           },
                                           onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
                                           onCache: _cacheLog);
