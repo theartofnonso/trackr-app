@@ -136,6 +136,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .exerciseLogsForExercise(exercise: widget.exercise)
         .toList();
 
+    _exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: _exerciseLogs);
+
     _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 
     switch (_summaryType) {
