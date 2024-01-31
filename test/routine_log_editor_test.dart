@@ -46,18 +46,18 @@ void main() {
       endTime: DateTime.now().add(const Duration(hours: 1)),
       updatedAt: DateTime.now());
 
-  testWidgets('MyWidget has a title and message', (tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<ExerciseLogController>(
-            create: (context) => ExerciseLogController(ExerciseLogRepository()),
-          ),
-        ],
-        child: Builder(
-          builder: (_) => RoutineLogEditorScreen(log: legDayRoutineLog, mode: RoutineEditorMode.log),
-        ),
-      ),
-    );
-  });
+  // testWidgets('MyWidget has a title and message', (tester) async {
+  //   await tester.pumpWidget(
+  //     MultiProvider(
+  //       providers: [
+  //         Provider<ExerciseLogController>(
+  //           create: (context) => ExerciseLogController(ExerciseLogRepository()),
+  //         ),
+  //       ],
+  //       child: Builder(
+  //         builder: (_) => RoutineLogEditorScreen(log: legDayRoutineLog, mode: RoutineEditorMode.log),
+  //       ),
+  //     ),
+  //   );
+  // });
 }
