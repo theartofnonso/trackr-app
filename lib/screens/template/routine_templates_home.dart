@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/template/default/routine_template_library.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 
-class RoutineTemplatesHome extends StatelessWidget {
+import '../../controllers/exercise_controller.dart';
+import '../../controllers/routine_template_controller.dart';
+
+class RoutineTemplatesHome extends StatefulWidget {
   const RoutineTemplatesHome({super.key});
 
+  @override
+  State<RoutineTemplatesHome> createState() => _RoutineTemplatesHomeState();
+}
+
+class _RoutineTemplatesHomeState extends State<RoutineTemplatesHome> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -30,5 +39,18 @@ class RoutineTemplatesHome extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  void loadTemplates() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
+      Provider.of<RoutineTemplateController>(context, listen: false).loadTemplatesFromAssets(exercises: exercises);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadTemplates();
   }
 }

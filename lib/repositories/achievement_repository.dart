@@ -169,7 +169,7 @@ class AchievementRepository {
         dateRanges.add(entry.key);
       } else {
         if(type == AchievementType.obsessed || type == AchievementType.neverSkipALegDay || type == AchievementType.weekendWarrior) {
-          final lastDayOfWeek = entry.key.dates.last;
+          final lastDayOfWeek = entry.key.dates.where((date) => date.isBefore(DateTime.now())).last;
           if (lastDayOfWeek.weekday == 7) {
             dateRanges = [];
           }

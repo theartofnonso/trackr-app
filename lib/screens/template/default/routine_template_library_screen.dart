@@ -72,7 +72,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                         Text("Curated by",
                             style:
                                 GoogleFonts.montserrat(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 3),
                         Image.asset(
                           'images/trackr.png',
                           fit: BoxFit.contain,

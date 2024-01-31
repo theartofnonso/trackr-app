@@ -6,7 +6,6 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/screens/template/default/routine_template_library_screen.dart';
 import 'package:tracker_app/strings.dart';
 
-import '../../../controllers/exercise_controller.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_template_library_workout_enum.dart';
 import '../../../widgets/information_container_lite.dart';
@@ -18,14 +17,9 @@ class RoutineLibraryTemplate {
   const RoutineLibraryTemplate({required this.template, required this.image});
 }
 
-class RoutineTemplateLibrary extends StatefulWidget {
+class RoutineTemplateLibrary extends StatelessWidget {
   const RoutineTemplateLibrary({super.key});
 
-  @override
-  State<RoutineTemplateLibrary> createState() => _RoutineTemplateLibraryState();
-}
-
-class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
   @override
   Widget build(BuildContext context) {
     final templates = Provider.of<RoutineTemplateController>(context, listen: true)
@@ -55,19 +49,6 @@ class _RoutineTemplateLibraryState extends State<RoutineTemplateLibrary> {
         ]),
       ),
     );
-  }
-
-  void loadTemplates() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final exercises = Provider.of<ExerciseController>(context, listen: false).exercises;
-      Provider.of<RoutineTemplateController>(context, listen: false).loadTemplatesFromAssets(exercises: exercises);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadTemplates();
   }
 }
 
