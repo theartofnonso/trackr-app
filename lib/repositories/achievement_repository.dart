@@ -160,8 +160,7 @@ class AchievementRepository {
       {required Map<DateTimeRange, List<RoutineLogDto>> weekToRoutineLogs,
       required bool Function(MapEntry<DateTimeRange, List<RoutineLogDto>> week) evaluation, required AchievementType type}) {
     List<DateTimeRange> dateRanges = [];
-
-
+    
     for (var entry in weekToRoutineLogs.entries) {
 
       final evaluated = evaluation(entry);
