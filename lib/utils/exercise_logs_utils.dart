@@ -286,9 +286,9 @@ TemplateChange? hasSetValueChanged({
 List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> exerciseLogs}) {
   return exerciseLogs
       .map((exerciseLog) {
-    final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-    return completedSets.isNotEmpty ? exerciseLog.copyWith(sets: completedSets) : null;
-  })
+        final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
+        return completedSets.isNotEmpty ? exerciseLog.copyWith(sets: completedSets) : null;
+      })
       .whereType<ExerciseLogDto>()
       .toList();
 }
