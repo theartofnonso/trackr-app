@@ -72,18 +72,18 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
         });
   }
 
-  RoutineLogDto _routineLog() {
+  RoutineLogDto _routineLog({required DateTime endTime}) {
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
     final exerciseLogs = exerciseLogController.mergeExerciseLogsAndSets();
 
     final log = widget.log;
 
-    final routineLog = log.copyWith(exerciseLogs: exerciseLogs, endTime: DateTime.now(), updatedAt: DateTime.now());
+    final routineLog = log.copyWith(exerciseLogs: exerciseLogs, endTime: endTime, updatedAt: DateTime.now());
     return routineLog;
   }
 
   Future<void> _doCreateRoutineLog() async {
-    final routineLog = _routineLog();
+    final routineLog = _routineLog(endTime: DateTime.now());
 
     final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
 
@@ -91,7 +91,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   }
 
   Future<void> _doUpdateRoutineLog() async {
-    final routineLog = _routineLog();
+    final routineLog = _routineLog(endTime: widget.log.endTime);
 
     await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
 
@@ -144,7 +144,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _cacheLog() {
     if (widget.mode == RoutineEditorMode.edit) return;
-    final routineLog = _routineLog();
+    final routineLog = _routineLog(endTime: DateTime.now());
     Provider.of<RoutineLogController>(context, listen: false).cacheLog(logDto: routineLog);
   }
 

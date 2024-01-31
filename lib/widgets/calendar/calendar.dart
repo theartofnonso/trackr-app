@@ -3,18 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/pbs/pb_icon.dart';
-import 'package:tracker_app/widgets/list_tiles/list_tile_solid.dart';
 
 import '../../controllers/settings_controller.dart';
 import '../../dtos/routine_log_dto.dart';
-import '../../utils/exercise_logs_utils.dart';
+import '../routine/preview/routine_log_widget.dart';
 
 GlobalKey calendarKey = GlobalKey();
 
@@ -354,37 +350,9 @@ class _RoutineLogListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgets = logs.map((log) {
-      return _RoutineLogWidget(log: log);
+      return RoutineLogWidget(log: log, color: tealBlueLight, trailing: log.duration().hmsAnalog());
     }).toList();
 
     return Column(children: widgets);
-  }
-}
-
-class _RoutineLogWidget extends StatelessWidget {
-  final RoutineLogDto log;
-
-  const _RoutineLogWidget({required this.log});
-
-  @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<RoutineLogController>(context, listen: false);
-
-    final pbs = log.exerciseLogs.map((exerciseLog) {
-      final pastExerciseLogs =
-          provider.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
-
-      return calculatePBs(
-          pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
-    }).expand((pbs) => pbs);
-
-    return SolidListTile(
-        title: log.name,
-        subtitle: "${log.exerciseLogs.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
-        trailing: log.duration().hmsAnalog(),
-        trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: tealBlueLight, label: "${pbs.length}") : null,
-        margin: const EdgeInsets.only(bottom: 8.0),
-        tileColor: tealBlueLight,
-        onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }

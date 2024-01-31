@@ -19,6 +19,7 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../utils/dialog_utils.dart';
+import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -53,7 +54,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final numberOfCompletedSets = _calculateCompletedSets(procedures: log.exerciseLogs);
     final completedSetsSummary = "$numberOfCompletedSets ${pluralize(word: "Set", count: numberOfCompletedSets)}";
 
-    final completedExerciseLogsAndSets = _completedExerciseLogsAndSets(exerciseLogs: log.exerciseLogs);
+    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
     return Scaffold(
         backgroundColor: tealBlueDark,
@@ -206,7 +207,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _onShareLog({required RoutineLogDto log}) {
-    final completedExerciseLogsAndSets = _completedExerciseLogsAndSets(exerciseLogs: log.exerciseLogs);
+    final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     displayBottomSheet(
@@ -245,16 +246,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
 
     return sortedFrequencyMap;
-  }
-
-  List<ExerciseLogDto> _completedExerciseLogsAndSets({required List<ExerciseLogDto> exerciseLogs}) {
-    return exerciseLogs
-        .map((exerciseLog) {
-          final completedSets = exerciseLog.sets.where((set) => set.isNotEmpty() && set.checked).toList();
-          return completedSets.isNotEmpty ? exerciseLog.copyWith(sets: completedSets) : null;
-        })
-        .whereType<ExerciseLogDto>()
-        .toList();
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
