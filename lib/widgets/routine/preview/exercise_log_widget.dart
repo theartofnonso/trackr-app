@@ -65,8 +65,10 @@ class ExerciseLogWidget extends StatelessWidget {
           exerciseLog.notes.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(exerciseLog.notes,
-                      style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                  child: Center(
+                    child: Text(exerciseLog.notes,
+                        style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontSize: 15)),
+                  ),
                 )
               : const SizedBox.shrink(),
           switch (exerciseType) {
