@@ -20,8 +20,16 @@ import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
 import '../widgets/calendar/calendar.dart';
 
-class OverviewScreen extends StatelessWidget {
+class OverviewScreen extends StatefulWidget {
   const OverviewScreen({super.key});
+
+  @override
+  State<OverviewScreen> createState() => _OverviewScreenState();
+}
+
+class _OverviewScreenState extends State<OverviewScreen> {
+
+  late DateTimeRange _dateTimeRange;
 
   void _navigateToSettings({required BuildContext context}) async {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
@@ -58,7 +66,7 @@ class OverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final logsForTheMonth = routineLogController.monthlyLogs[thisMonthDateRange()] ?? [];
+    final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
 
     final monthlyProgress = logsForTheMonth.length / 12;
 
@@ -125,11 +133,17 @@ class OverviewScreen extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 /// Do not make this a const
-                const Calendar()
+                Calendar(onChangedDateTimeRange: _onChangedDateTimeRange)
               ],
             )),
       ),
     );
+  }
+
+  void _onChangedDateTimeRange(DateTimeRange range) {
+    setState(() {
+      _dateTimeRange = range;
+    });
   }
 
   void _onShareCalendar({required BuildContext context}) {
@@ -154,6 +168,12 @@ class OverviewScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               buttonBorderColor: Colors.transparent)
         ]));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _dateTimeRange = thisMonthDateRange();
   }
 }
 

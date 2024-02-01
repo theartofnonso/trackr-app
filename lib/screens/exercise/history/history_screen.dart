@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../../../dtos/exercise_dto.dart';
 import '../../../controllers/routine_log_controller.dart';
@@ -15,7 +16,7 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ExerciseLogDto> pastLogs = Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
-    pastLogs = pastLogs.reversed.toList();
+    pastLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastLogs.reversed.toList());
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
