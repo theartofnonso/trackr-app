@@ -91,7 +91,7 @@ class OverviewScreen extends StatelessWidget {
                       onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
                       child: CustomProgressIndicator(
                         value: monthlyProgress,
-                        valueText: "${routineLogController.routineLogs.length}",
+                        valueText: "${logsForTheMonth.length}",
                       ),
                     ),
                     const SizedBox(width: 20),
