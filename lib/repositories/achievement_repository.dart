@@ -321,12 +321,9 @@ class AchievementRepository {
   /// [AchievementType.strongerThanEver]
   ProgressDto _calculateStrongerThanEverAchievement(
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required int target}) {
-    final weightsLogs = logs[ExerciseType.weights] ?? [];
-    final bodyWeightLogs = logs[ExerciseType.bodyWeight] ?? [];
-    final achievedLogs = [...weightsLogs, ...bodyWeightLogs];
-
+    final achievedLogs = logs[ExerciseType.weights] ?? [];
     final tonnage = achievedLogs.map((log) {
-      final volume = log.sets.map((set) => set.value1 * set.value2).reduce((total, tonnage) => total + tonnage);
+      final volume = log.sets.map((set) => set.value1 * set.value2).sum;
       return volume;
     }).sum;
 
