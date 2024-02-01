@@ -25,8 +25,9 @@ class _DateViewModel {
 class Calendar extends StatefulWidget {
   
   final bool readOnly;
+  final void Function(DateTimeRange range)? onChangedDateTimeRange;
 
-  const Calendar({super.key, this.readOnly = false});
+  const Calendar({super.key, this.readOnly = false, this.onChangedDateTimeRange});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -61,6 +62,12 @@ class _CalendarState extends State<Calendar> {
     setState(() {
       _currentDate = DateTime(year, month);
     });
+
+    final onChangedDateTimeRange = widget.onChangedDateTimeRange;
+
+    if(onChangedDateTimeRange != null) {
+      onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
+    }
   }
 
   void _incrementDate() {
@@ -77,6 +84,11 @@ class _CalendarState extends State<Calendar> {
       setState(() {
         _currentDate = DateTime(year, month);
       });
+
+      final onChangedDateTimeRange = widget.onChangedDateTimeRange;
+      if(onChangedDateTimeRange != null) {
+        onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
+      }
     }
   }
 
