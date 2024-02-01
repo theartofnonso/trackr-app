@@ -558,8 +558,8 @@ void main() {
       return RoutineLogDto(
           id: "routineLogId1",
           templateId: "templateId1",
-          name: "Body Weight Day",
-          exerciseLogs: [pullUpExerciseLog1, pullUpExerciseLog2],
+          name: "Weight Day",
+          exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog1],
           notes: "notes",
           startTime: DateTime.now(),
           endTime: DateTime.now().add(const Duration(hours: 1)),
@@ -569,13 +569,13 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final subsequentWeeks = _generateDailyDateTimes(size: 120, startDate: DateTime(2024, 1, 7));
+    final subsequentWeeks = _generateDailyDateTimes(size: 220, startDate: DateTime(2024, 1, 7));
 
     final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
         id: "routineLogId1",
         templateId: "templateId1",
-        name: "Body Weight Day",
-        exerciseLogs: [pullUpExerciseLog1, pullUpExerciseLog2],
+        name: "Weight Day",
+        exerciseLogs: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog1],
         notes: "notes",
         startTime: DateTime.now(),
         endTime: DateTime.now().add(const Duration(hours: 1)),
