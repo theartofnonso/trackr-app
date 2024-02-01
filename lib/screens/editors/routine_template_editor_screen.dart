@@ -213,7 +213,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               IconButton(
                   onPressed: _selectExercisesInLibrary,
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
-              IconButton(
+              if(exerciseLogs.length > 1)
+                IconButton(
                   onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
                   icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
             ],

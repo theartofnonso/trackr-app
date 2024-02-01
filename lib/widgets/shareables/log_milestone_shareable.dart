@@ -28,7 +28,7 @@ class LogMilestoneShareable extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 60),
           Image.asset(
-            'assets/trackr.png',
+            'images/trackr.png',
             fit: BoxFit.contain,
             height: 8, // Adjust the height as needed
           ),

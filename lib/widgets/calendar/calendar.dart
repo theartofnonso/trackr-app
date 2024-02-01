@@ -350,7 +350,10 @@ class _RoutineLogListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgets = logs.map((log) {
-      return RoutineLogWidget(log: log, color: tealBlueLight, trailing: log.duration().hmsAnalog());
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: RoutineLogWidget(log: log, color: tealBlueLight, trailing: log.duration().hmsAnalog()),
+      );
     }).toList();
 
     return Column(children: widgets);
