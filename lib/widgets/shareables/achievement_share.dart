@@ -49,7 +49,7 @@ class AchievementShare extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
-                    'assets/trackr.png',
+                    'images/trackr.png',
                     fit: BoxFit.contain,
                     height: 8, // Adjust the height as needed
                   ),

@@ -228,6 +228,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
               ),
               actions: [
                 IconButton(
+                  key: const Key('select_exercises_in_library_btn'),
                     onPressed: _selectExercisesInLibrary,
                     icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
                 if(exerciseLogs.length > 1)

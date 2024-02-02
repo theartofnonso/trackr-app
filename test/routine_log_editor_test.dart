@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
@@ -9,6 +10,9 @@ import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
+import 'package:tracker_app/main.dart';
+import 'package:tracker_app/repositories/achievement_repository.dart';
+import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 
@@ -46,18 +50,40 @@ void main() {
       endTime: DateTime.now().add(const Duration(hours: 1)),
       updatedAt: DateTime.now());
 
-  // testWidgets('MyWidget has a title and message', (tester) async {
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         Provider<ExerciseLogController>(
-  //           create: (context) => ExerciseLogController(ExerciseLogRepository()),
-  //         ),
-  //       ],
-  //       child: Builder(
-  //         builder: (_) => RoutineLogEditorScreen(log: legDayRoutineLog, mode: RoutineEditorMode.log),
-  //       ),
-  //     ),
-  //   );
-  // });
+  testWidgets('Select exercises from Exercise Library', (tester) async {
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ExerciseLogController>(
+            create: (context) => ExerciseLogController(ExerciseLogRepository()),
+          ),
+          ChangeNotifierProvider<RoutineLogController>(
+              create: (context) => RoutineLogController(AmplifyLogRepository(), AchievementRepository())
+          ),
+        ],
+        builder: (context, child) {
+          return MaterialApp(
+            home: RoutineLogEditorScreen(
+              log: legDayRoutineLog,
+              mode: RoutineEditorMode.log,
+            ),
+          );
+        },
+      ),
+    );
+
+    final selectExercisesInLibraryButton = find.byKey(const Key("select_exercises_in_library_btn"));
+    await tester.tap(selectExercisesInLibraryButton);
+
+    final airSquat = find.byKey(const Key("Air Squat"));
+    final arnoldPress = find.byKey(const Key("Arnold Press"));
+
+    await tester.tap(airSquat);
+    await tester.tap(arnoldPress);
+
+    final addExercisesButton = find.byKey(const Key("add_exercises_button"));
+    await tester.tap(addExercisesButton);
+
+  });
 }
