@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
-import 'package:tracker_app/screens/template/default/routine_template_library_screen.dart';
+import 'package:tracker_app/screens/template/library/routine_template_library_screen.dart';
 import 'package:tracker_app/strings.dart';
 
 import '../../../dtos/routine_template_dto.dart';
@@ -36,6 +36,7 @@ class RoutineTemplateLibrary extends StatelessWidget {
           const InformationContainerLite(
             content: exploreWorkouts,
             color: tealBlueDark,
+            padding: EdgeInsets.zero,
           ),
           const SizedBox(height: 20),
           Expanded(

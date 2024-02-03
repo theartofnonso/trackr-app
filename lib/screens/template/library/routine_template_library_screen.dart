@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/template/default/routine_template_library.dart';
+import 'package:tracker_app/screens/template/library/routine_template_library.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../app_constants.dart';

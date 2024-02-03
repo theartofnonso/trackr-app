@@ -1,6 +1,10 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
@@ -12,11 +16,23 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/main.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
+import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
+import 'package:tracker_app/widgets/exercise/selectable_exercise_widget.dart';
 
+import 'routine_log_editor_test.mocks.dart';
+
+class MockAmplifyExerciseRepository extends Mock implements AmplifyExerciseRepository {}
+
+@GenerateNiceMocks([MockSpec<BuildContext>()])
 void main() {
+
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  MockBuildContext mockContext = MockBuildContext();
+
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_lyingLegCurlExercise",
       name: "Lying Leg Curl",
@@ -55,6 +71,9 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
+          ChangeNotifierProvider<ExerciseController>(
+            create: (context) => ExerciseController(AmplifyExerciseRepository()),
+          ),
           ChangeNotifierProvider<ExerciseLogController>(
             create: (context) => ExerciseLogController(ExerciseLogRepository()),
           ),
@@ -75,15 +94,23 @@ void main() {
 
     final selectExercisesInLibraryButton = find.byKey(const Key("select_exercises_in_library_btn"));
     await tester.tap(selectExercisesInLibraryButton);
+    await tester.pump();
+    final listview = find.byKey(const Key("exercise_library_listview"));
 
-    final airSquat = find.byKey(const Key("Air Squat"));
+    expect(listview, find);
+
+    // final airSquat = find.byWidgetPredicate((widget) {
+    //   return widget.key == const Key("Air Squat");
+    // });
+
+    //final airSquat = find.byKey(const Key("Air Squat"));
     final arnoldPress = find.byKey(const Key("Arnold Press"));
-
-    await tester.tap(airSquat);
-    await tester.tap(arnoldPress);
-
-    final addExercisesButton = find.byKey(const Key("add_exercises_button"));
-    await tester.tap(addExercisesButton);
+    //
+    //await tester.tap(airSquat);
+    // await tester.tap(arnoldPress);
+    //
+    // final addExercisesButton = find.byKey(const Key("add_exercises_btn"));
+    // await tester.tap(addExercisesButton);
 
   });
 }

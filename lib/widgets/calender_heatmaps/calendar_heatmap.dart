@@ -23,9 +23,10 @@ class CalendarHeatMap extends StatelessWidget {
   final DateTime initialDate;
   final double spacing;
   final bool dynamicColor;
+  final bool showMonth;
 
   const CalendarHeatMap(
-      {super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false});
+      {super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false, this.showMonth = true});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -71,7 +72,8 @@ class CalendarHeatMap extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(initialDate.abbreviatedMonth().toUpperCase(),
+        if(showMonth)
+          Text(initialDate.abbreviatedMonth().toUpperCase(),
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         _Month(days: datesForMonth, spacing: spacing),
       ],

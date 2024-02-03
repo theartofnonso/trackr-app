@@ -31,6 +31,10 @@ class SetDto {
     return value1 > 0 || value2 > 0;
   }
 
+  double volume() {
+    return (value1 * value2).toDouble();
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

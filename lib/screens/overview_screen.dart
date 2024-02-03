@@ -3,9 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/screens/streak_screen.dart';
+import 'package:tracker_app/screens/month_insight_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/screens/streak_screen.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../dtos/routine_log_dto.dart';
@@ -28,12 +28,7 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-
   late DateTimeRange _dateTimeRange;
-
-  void _navigateToSettings({required BuildContext context}) async {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-  }
 
   void _navigateToMuscleDistribution({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
@@ -86,11 +81,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   IconButton(
                       onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                  IconButton(onPressed: () => _navigateToSettings(context: context), icon: const Icon(Icons.settings))
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -127,13 +121,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       title: Text("Muscle insights",
                           style:
                               GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      trailing: Text("sets",
-                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
+                      trailing: Text("sets", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
                 ),
                 const SizedBox(height: 10),
-
-                /// Do not make this a const
-                Calendar(onChangedDateTimeRange: _onChangedDateTimeRange)
+                Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
+                const SizedBox(height: 28),
+                MonthInsightsScreen(monthAndLogs: logsForTheMonth),
               ],
             )),
       ),
