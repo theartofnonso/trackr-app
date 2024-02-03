@@ -126,7 +126,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 ),
                 const SizedBox(height: 10),
                 Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
-                const SizedBox(height: 28),
+                const SizedBox(height: 12),
                 MonthInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
               ],
             )),
