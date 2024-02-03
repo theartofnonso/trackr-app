@@ -130,7 +130,7 @@ class RoutineLogController extends ChangeNotifier {
   }
 
   List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, DateTimeRange? range}) {
-    return _amplifyLogRepository.setsForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range);
+    return _amplifyLogRepository.setsForMuscleGroupFamilyWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range);
   }
 
   void clear() {

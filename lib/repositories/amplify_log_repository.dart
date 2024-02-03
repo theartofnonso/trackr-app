@@ -176,7 +176,7 @@ class AmplifyLogRepository {
     return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
   }
 
-  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, DateTimeRange? range}) {
+  List<SetDto> setsForMuscleGroupFamilyWhereDateRange({required MuscleGroupFamily muscleGroupFamily, DateTimeRange? range}) {
     bool hasMatchingBodyPart(ExerciseLogDto log) {
       final primaryMuscle = log.exercise.primaryMuscleGroup;
       return primaryMuscle.family == muscleGroupFamily;

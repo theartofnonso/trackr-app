@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
 
 import '../dtos/exercise_dto.dart';
@@ -5,6 +7,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
+import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
@@ -291,4 +294,51 @@ List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> 
       })
       .whereType<ExerciseLogDto>()
       .toList();
+}
+
+Map<MuscleGroupFamily, double> muscleGroupFrequency({required List<ExerciseLogDto> exerciseLogs}) {
+  var frequencyMap = <MuscleGroupFamily, int>{};
+
+  // Counting the occurrences of each MuscleGroup
+  for (var log in exerciseLogs) {
+    frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+  }
+
+  int totalCount = exerciseLogs.length;
+  var scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+  // Scaling the frequencies from 0 to 1
+  frequencyMap.forEach((key, value) {
+    scaledFrequencyMap[key] = value / totalCount;
+  });
+
+  var sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+  var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+
+  return sortedFrequencyMap;
+}
+
+List<SetDto> setsForMuscleGroupFamily(
+    {required List<ExerciseLogDto> exerciseLogs, required MuscleGroupFamily muscleGroupFamily}) {
+
+  bool hasMatchingBodyPart(ExerciseLogDto log) {
+    final primaryMuscle = log.exercise.primaryMuscleGroup;
+    return primaryMuscle.family == muscleGroupFamily;
+  }
+
+  return exerciseLogs.where((log) => hasMatchingBodyPart(log)).expand((log) => log.sets).toList();
+}
+
+Map<MuscleGroupFamily, int> groupMuscleGroupFamilyBySets({required List<ExerciseLogDto> exerciseLogs}) {
+  final Map<MuscleGroupFamily, int> frequencyMap = {};
+
+  // Count the occurrences of each MuscleGroup
+  for (MuscleGroupFamily muscleGroupFamily in MuscleGroupFamily.values) {
+    frequencyMap[muscleGroupFamily] =
+        setsForMuscleGroupFamily(exerciseLogs: exerciseLogs, muscleGroupFamily: muscleGroupFamily).length;
+  }
+
+  final entries = frequencyMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value));
+  return Map.fromEntries(entries);
 }

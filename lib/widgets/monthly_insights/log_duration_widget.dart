@@ -11,60 +11,67 @@ class LogDurationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final minHours = Duration(milliseconds: logHours.min);
     final maxHours = Duration(milliseconds: logHours.max);
     final avgHours = Duration(milliseconds: logHours.average.toInt());
 
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        decoration: BoxDecoration(
-          color: sapphireLight,
-          border: Border.all(color: sapphireLighter, width: 2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Table(
-          border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
-          columnWidths: const <int, TableColumnWidth>{
-            0: FlexColumnWidth(),
-            1: FlexColumnWidth(),
-            2: FlexColumnWidth(),
-          },
-          children: [
-            TableRow(children: [
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Center(
-                  child: SleepTimeColumn(
-                      title: 'LEAST TIME',
-                      subTitle: minHours.hmDigital(),
-                      titleColor: Colors.white,
-                      subTitleColor: Colors.white70),
-                ),
-              ),
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Center(
-                  child: SleepTimeColumn(
-                      title: 'AVG TIME',
-                      subTitle: avgHours.hmDigital(),
-                      titleColor: sapphireBlue,
-                      subTitleColor: sapphireBlue.withOpacity(0.8)),
-                ),
-              ),
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Center(
-                  child: SleepTimeColumn(
-                      title: 'MOST TIME',
-                      subTitle: maxHours.hmDigital(),
-                      titleColor: Colors.white,
-                      subTitleColor: Colors.white70),
-                ),
-              )
-            ]),
-          ],
-        ));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("How many hours did you train?".toUpperCase(),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            decoration: BoxDecoration(
+              color: sapphireLight,
+              border: Border.all(color: sapphireLighter, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Table(
+              border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FlexColumnWidth(),
+                1: FlexColumnWidth(),
+                2: FlexColumnWidth(),
+              },
+              children: [
+                TableRow(children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'LEAST TIME',
+                          subTitle: minHours.hmDigital(),
+                          titleColor: Colors.white,
+                          subTitleColor: Colors.white70),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'AVG TIME',
+                          subTitle: avgHours.hmDigital(),
+                          titleColor: sapphireBlue,
+                          subTitleColor: sapphireBlue.withOpacity(0.8)),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: SleepTimeColumn(
+                          title: 'MOST TIME',
+                          subTitle: maxHours.hmDigital(),
+                          titleColor: Colors.white,
+                          subTitleColor: Colors.white70),
+                    ),
+                  )
+                ]),
+              ],
+            )),
+      ],
+    );
   }
 }
 

@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
@@ -9,12 +8,13 @@ import '../dtos/routine_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../utils/string_utils.dart';
 import '../widgets/monthly_insights/log_duration_widget.dart';
+import '../widgets/monthly_insights/muscle_groups_widget.dart';
 
-class MonthInsightsScreen extends StatelessWidget {
+class MonthlyInsightsScreen extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;
   final int daysInMonth;
 
-  const MonthInsightsScreen({super.key, required this.monthAndLogs, required this.daysInMonth});
+  const MonthlyInsightsScreen({super.key, required this.monthAndLogs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,8 @@ class MonthInsightsScreen extends StatelessWidget {
 
     final exerciseLogs = monthAndLogs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
-        .expand((exerciseLogs) => exerciseLogs);
+        .expand((exerciseLogs) => exerciseLogs)
+        .toList();
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
     final numberOfExercises = exerciseLogs.length;
     final numberOfSets = sets.length;
@@ -41,39 +42,17 @@ class MonthInsightsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("How many hours did you train?".toUpperCase(),
-                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            LogDurationWidget(logHours: logHours.isEmpty ? [0] : logHours.toList())
-          ],
-        ),
+        LogDurationWidget(logHours: logHours.isEmpty ? [0] : logHours.toList()),
         const SizedBox(height: 28),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Training vs Rest Days".toUpperCase(),
-                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            TrainingAndRestDaysWidget(monthAndLogs: monthAndLogs, daysInMonth: daysInMonth,),
-          ],
-        ),
+        TrainingAndRestDaysWidget(monthAndLogs: monthAndLogs, daysInMonth: daysInMonth),
         const SizedBox(height: 28),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Summary of Sessions".toUpperCase(),
-                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            ExercisesSetsHoursVolumeWidget(
-                numberOfExercises: numberOfExercises,
-                numberOfSets: numberOfSets,
-                totalHours: totalHours,
-                totalVolume: totalVolumeInKg)
-          ],
-        )
+        ExercisesSetsHoursVolumeWidget(
+            numberOfExercises: numberOfExercises,
+            numberOfSets: numberOfSets,
+            totalHours: totalHours,
+            totalVolume: totalVolumeInKg),
+        const SizedBox(height: 28),
+        MuscleGroupsWidget(exerciseLogs: exerciseLogs),
       ],
     );
   }

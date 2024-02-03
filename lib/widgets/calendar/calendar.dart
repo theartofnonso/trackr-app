@@ -307,7 +307,7 @@ class _Day extends StatelessWidget {
         required this.hasLog});
 
   Color _getBackgroundColor() {
-    return hasLog ? vibrantGreen : sapphireLight.withOpacity(0.5);
+    return hasLog ? vibrantGreen : sapphireLight;
   }
 
   Border? _getBorder() {

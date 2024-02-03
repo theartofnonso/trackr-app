@@ -4,8 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
-import 'package:tracker_app/screens/month_insight_screen.dart';
-import 'package:tracker_app/screens/muscle_insights_screen.dart';
+import 'package:tracker_app/screens/monthly_insights_screen.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
@@ -17,6 +16,7 @@ import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
+import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import '../widgets/custom_progress_indicator.dart';
 import '../widgets/calendar/calendar.dart';
@@ -30,10 +30,6 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
   late DateTimeRange _dateTimeRange;
-
-  void _navigateToMuscleDistribution({required BuildContext context}) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
-  }
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
@@ -74,63 +70,52 @@ class _OverviewScreenState extends State<OverviewScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 150),
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  IconButton(
-                      onPressed: () => _onShareCalendar(context: context),
-                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                ]),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                      child: CustomProgressIndicator(
-                        value: monthlyProgress,
-                        valueText: "${logsForTheMonth.length}",
+      body: Stack(children: [
+        const Positioned.fill(child: GradientBackground()),
+        SafeArea(
+          minimum: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 150),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    IconButton(
+                        onPressed: () => _onShareCalendar(context: context),
+                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+                  ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
+                        child: CustomProgressIndicator(
+                          value: monthlyProgress,
+                          valueText: "${logsForTheMonth.length}",
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    InkWell(
-                      onTap: () => _navigateToAllDaysTracked(context: context),
-                      child: _CTableCell(
-                          title: "STREAK",
-                          subtitle: "${routineLogController.routineLogs.length}",
-                          crossAxisAlignment: CrossAxisAlignment.end),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const InformationContainerLite(
-                    content: consistencyMonitor,
-                    color: Colors.transparent,
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
-                Theme(
-                  data: ThemeData(splashColor: sapphireLight),
-                  child: ListTile(
-                      onTap: () => _navigateToMuscleDistribution(context: context),
-                      tileColor: sapphireLight,
-                      dense: true,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      title: Text("Muscle insights",
-                          style:
-                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      trailing: Text("sets", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
-                ),
-                const SizedBox(height: 10),
-                Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
-                const SizedBox(height: 12),
-                MonthInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
-              ],
-            )),
-      ),
+                      const SizedBox(width: 20),
+                      InkWell(
+                        onTap: () => _navigateToAllDaysTracked(context: context),
+                        child: _CTableCell(
+                            title: "STREAK",
+                            subtitle: "${routineLogController.routineLogs.length}",
+                            crossAxisAlignment: CrossAxisAlignment.end),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  const InformationContainerLite(
+                      content: consistencyMonitor,
+                      color: Colors.transparent,
+                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
+                  Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  const SizedBox(height: 12),
+                  MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
+                ],
+              )),
+        )
+      ]),
     );
   }
 
