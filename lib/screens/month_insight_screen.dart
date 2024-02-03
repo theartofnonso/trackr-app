@@ -2,13 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/widgets/streak_insights/exercises_sets_hours_volume_widget.dart';
-import 'package:tracker_app/widgets/streak_insights/training_and_rest_days_widget.dart';
+import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
+import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../utils/string_utils.dart';
-import '../widgets/streak_insights/log_duration_widget.dart';
+import '../widgets/monthly_insights/log_duration_widget.dart';
 
 class MonthInsightsScreen extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;

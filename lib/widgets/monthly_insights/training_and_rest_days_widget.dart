@@ -13,8 +13,8 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
         decoration: BoxDecoration(
-          color: tealBlueLight,
-          border: Border.all(color: tealBlueLighter, width: 1),
+          color: tealBlueDark,
+          border: Border.all(color: tealBlueLighter, width: 2),
           borderRadius: BorderRadius.circular(3),
         ),
         child: Table(

@@ -1,26 +1,22 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 
-class LogDurationWidget extends StatelessWidget {
-  final Iterable<int> logHours;
+class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
+  final int numberOfExercises;
+  final int numberOfSets;
+  final Duration totalHours;
+  final String totalVolume;
 
-  const LogDurationWidget({super.key, required this.logHours});
+  const ExercisesSetsHoursVolumeWidget({super.key, required this.numberOfExercises, required this.numberOfSets, required this.totalHours, required this.totalVolume});
 
   @override
   Widget build(BuildContext context) {
-
-    final minHours = Duration(milliseconds: logHours.min);
-    final maxHours = Duration(milliseconds: logHours.max);
-    final avgHours = Duration(milliseconds: logHours.average.toInt());
-
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
         decoration: BoxDecoration(
-          color: tealBlueLight,
-          border: Border.all(color: tealBlueLighter, width: 1),
+          color: tealBlueDark,
+          border: Border.all(color: tealBlueLighter, width: 2),
           borderRadius: BorderRadius.circular(3),
         ),
         child: Table(
@@ -29,6 +25,7 @@ class LogDurationWidget extends StatelessWidget {
             0: FlexColumnWidth(),
             1: FlexColumnWidth(),
             2: FlexColumnWidth(),
+            3: FlexColumnWidth(),
           },
           children: [
             TableRow(children: [
@@ -36,8 +33,8 @@ class LogDurationWidget extends StatelessWidget {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Center(
                   child: SleepTimeColumn(
-                      title: 'LEAST TIME',
-                      subTitle: minHours.hmDigital(),
+                      title: 'EXERCISES',
+                      subTitle: "$numberOfExercises",
                       titleColor: Colors.white,
                       subTitleColor: Colors.white70),
                 ),
@@ -46,18 +43,28 @@ class LogDurationWidget extends StatelessWidget {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Center(
                   child: SleepTimeColumn(
-                      title: 'AVG TIME',
-                      subTitle: avgHours.hmDigital(),
-                      titleColor: tealBlue,
-                      subTitleColor: tealBlue.withOpacity(0.8)),
+                      title: 'SETS',
+                      subTitle: "$numberOfSets",
+                      titleColor: Colors.white,
+                      subTitleColor: Colors.white70),
                 ),
               ),
               TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Center(
                   child: SleepTimeColumn(
-                      title: 'MOST TIME',
-                      subTitle: maxHours.hmDigital(),
+                      title: 'HOURS',
+                      subTitle: "${totalHours.inHours}",
+                      titleColor: Colors.white,
+                      subTitleColor: Colors.white70),
+                ),
+              ),
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Center(
+                  child: SleepTimeColumn(
+                      title: 'VOLUME',
+                      subTitle: "$totalVolume",
                       titleColor: Colors.white,
                       subTitleColor: Colors.white70),
                 ),
