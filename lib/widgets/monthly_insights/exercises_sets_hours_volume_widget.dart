@@ -13,7 +13,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 30),
         decoration: BoxDecoration(
           color: tealBlueDark,
           border: Border.all(color: tealBlueLighter, width: 2),
