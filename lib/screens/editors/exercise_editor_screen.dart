@@ -98,7 +98,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                       title: 'Tip',
                       description: "Tap text in white to edit.\nExercise type is not editable once created.",
-                      color: tealBlueDark),
+                      color: sapphireDark),
                   SizedBox(height: 20),
                 ]),
               if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
@@ -170,9 +170,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
               filled: true,
-              fillColor: tealBlueLighter,
+              fillColor: sapphireLighter,
               hintText: "New Exercise",
               hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
           onChanged: (value) => _updateExerciseName(value),

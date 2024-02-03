@@ -20,9 +20,6 @@ class MonthInsightsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final logHours = monthAndLogs.map((log) => log.duration().inMilliseconds);
 
-    final trainingDays = monthAndLogs.length;
-    final restDays = daysInMonth - trainingDays;
-
     final exerciseLogs = monthAndLogs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
@@ -60,7 +57,7 @@ class MonthInsightsScreen extends StatelessWidget {
             Text("Training vs Rest Days".toUpperCase(),
                 style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
-            TrainingAndRestDaysWidget(trainingDays: trainingDays, restDays: restDays),
+            TrainingAndRestDaysWidget(monthAndLogs: monthAndLogs, daysInMonth: daysInMonth,),
           ],
         ),
         const SizedBox(height: 28),

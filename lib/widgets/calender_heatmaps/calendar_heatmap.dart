@@ -50,7 +50,7 @@ class CalendarHeatMap extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
-      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : tealBlueLight;
+      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : sapphireLight;
       datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: dynamicColor ? color : vibrantGreen));
     }
 

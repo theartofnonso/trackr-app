@@ -19,7 +19,7 @@ class ExerciseWidget extends StatelessWidget {
     final navigateToExercise = onNavigateToExercise;
 
     return Theme(
-        data: ThemeData(splashColor: tealBlueLight),
+        data: ThemeData(splashColor: sapphireLight),
         child: ListTile(
           leading: IconButton(
             iconSize: 24,
@@ -41,7 +41,7 @@ class ExerciseWidget extends StatelessWidget {
           trailing: exerciseInLibraryDto.exercise.owner ? Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: tealBlueLighter,
+              color: sapphireLighter,
               borderRadius: BorderRadius.circular(3),
             ),
             child: Text("owner",

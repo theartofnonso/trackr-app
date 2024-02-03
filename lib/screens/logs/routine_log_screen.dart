@@ -58,7 +58,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
     return Scaffold(
-        backgroundColor: tealBlueDark,
+        backgroundColor: sapphireDark,
         appBar: AppBar(
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -74,7 +74,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
             onPressed: _showBottomSheet,
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.circle)),
         body: Stack(children: [
@@ -121,11 +121,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     margin: const EdgeInsets.only(top: 24, bottom: 12),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: tealBlueLight, // Set the background color
+                      color: sapphireLight, // Set the background color
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
-                      border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                      border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),
@@ -212,7 +212,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     displayBottomSheet(
-        color: tealBlueDark,
+        color: sapphireDark,
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,

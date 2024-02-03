@@ -70,7 +70,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
         onPressed: () => _logEmptyRoutine(context),
-        backgroundColor: tealBlueLighter,
+        backgroundColor: sapphireLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
@@ -113,10 +113,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     color: Colors.transparent,
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
                 Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
+                  data: ThemeData(splashColor: sapphireLight),
                   child: ListTile(
                       onTap: () => _navigateToMuscleDistribution(context: context),
-                      tileColor: tealBlueLight,
+                      tileColor: sapphireLight,
                       dense: true,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       title: Text("Muscle insights",
@@ -142,7 +142,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
-        color: tealBlueDark,
+        color: sapphireDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
@@ -150,7 +150,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: const Calendar(readOnly: true))),
+                  color: sapphireDark, padding: const EdgeInsets.all(8), child: const Calendar(readOnly: true))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {

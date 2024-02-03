@@ -92,10 +92,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),
-        backgroundColor: tealBlueDark,
+        backgroundColor: sapphireDark,
         appBar: AppBar(
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -106,7 +106,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           actions: [
             MenuAnchor(
               style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                backgroundColor: MaterialStateProperty.all(sapphireLighter),
               ),
               builder: (BuildContext context, MenuController controller, Widget? child) {
                 return IconButton(

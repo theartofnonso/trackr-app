@@ -18,7 +18,7 @@ class LogMilestoneShareable extends StatelessWidget {
       key: logMilestoneShareableKey,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
-        color: tealBlueDark,
+        color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),

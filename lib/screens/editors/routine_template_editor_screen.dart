@@ -204,7 +204,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     return PopScope(
       canPop: false,
       child: Scaffold(
-          backgroundColor: tealBlueDark,
+          backgroundColor: sapphireDark,
           appBar: AppBar(
             leading: IconButton(
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -224,7 +224,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               : FloatingActionButton(
                   heroTag: "fab_select_exercise_log_screen",
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  backgroundColor: tealBlueLighter,
+                  backgroundColor: sapphireLighter,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
                 ),
@@ -249,9 +249,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                                  borderSide: const BorderSide(color: sapphireLighter)),
                               filled: true,
-                              fillColor: tealBlueLighter,
+                              fillColor: sapphireLighter,
                               hintText: "New workout",
                               hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
                           cursorColor: Colors.white,
@@ -267,9 +267,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: tealBlueLighter)),
+                                  borderSide: const BorderSide(color: sapphireLighter)),
                               filled: true,
-                              fillColor: tealBlueLighter,
+                              fillColor: sapphireLighter,
                               hintText: "Notes",
                               hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
                           maxLines: null,

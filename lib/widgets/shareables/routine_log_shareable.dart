@@ -42,7 +42,7 @@ class RoutineLogShareable extends StatelessWidget {
       key: routineLogShareableKey,
       child: Container(
         padding: const EdgeInsets.all(16),
-        color: tealBlueDark,
+        color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(

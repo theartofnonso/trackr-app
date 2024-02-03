@@ -30,7 +30,7 @@ class RepsSetRow extends StatelessWidget {
     int reps = setDto.value2.toInt();
 
     return Table(
-      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(color: sapphireLighter, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),

@@ -23,7 +23,7 @@ class SetRecordWidget extends StatelessWidget {
       return const InformationContainerLite(
           content:
               "You haven't logged any sessions for this exercise yet. Your personal bests will be displayed here once you begin tracking them",
-          color: tealBlue);
+          color: sapphireBlue);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

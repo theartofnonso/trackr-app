@@ -20,7 +20,7 @@ class AchievementTile extends StatelessWidget {
           margin: margin,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0), //
-              border: Border.all(color: tealBlueLighter, width: 2) // Set the border radius here
+              border: Border.all(color: sapphireLighter, width: 2) // Set the border radius here
               ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -44,7 +44,7 @@ class AchievementTile extends StatelessWidget {
                       color: achievement.progress.remainder == 0 ? vibrantGreen : Colors.white,
                       value: achievement.progress.value,
                       borderRadius: const BorderRadius.all(Radius.circular(3)),
-                      backgroundColor: tealBlueLighter,
+                      backgroundColor: sapphireLighter,
                     ),
                   ],
                 ),

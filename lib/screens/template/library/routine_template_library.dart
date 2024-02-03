@@ -35,7 +35,7 @@ class RoutineTemplateLibrary extends StatelessWidget {
           const SizedBox(height: 20),
           const InformationContainerLite(
             content: exploreWorkouts,
-            color: tealBlueDark,
+            color: sapphireDark,
             padding: EdgeInsets.zero,
           ),
           const SizedBox(height: 20),
@@ -94,7 +94,7 @@ class _WorkoutCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          color: tealBlueLight,
+          color: sapphireLight,
         ),
         child: Stack(children: [
           Positioned.fill(
@@ -111,8 +111,8 @@ class _WorkoutCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  tealBlueDark.withOpacity(0.4),
-                  tealBlueDark,
+                  sapphireDark.withOpacity(0.4),
+                  sapphireDark,
                 ],
               ),
             ),

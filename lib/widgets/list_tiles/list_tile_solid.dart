@@ -30,7 +30,7 @@ class SolidListTile extends StatelessWidget {
     final trailing = this.trailing;
 
     return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
+      data: ThemeData(splashColor: sapphireLight),
       child: Container(
         margin: margin,
         child: ListTile(

@@ -217,7 +217,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     return PopScope(
         canPop: false,
         child: Scaffold(
-            backgroundColor: tealBlueDark,
+            backgroundColor: sapphireDark,
             appBar: AppBar(
               leading: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -242,7 +242,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                 : FloatingActionButton(
                     heroTag: UniqueKey(),
                     onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: tealBlueLighter,
+                    backgroundColor: sapphireLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),

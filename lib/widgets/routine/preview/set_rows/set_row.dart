@@ -16,15 +16,15 @@ class SetRow extends StatelessWidget {
 
     final pbsForSet = pbs.map((pb) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: PBIcon(color: tealBlueLight, label: pb.pb.name),
+      child: PBIcon(color: sapphireLight, label: pb.pb.name),
     )).toList();
 
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: pbs.isNotEmpty ? tealBlueDark : tealBlueLight, // Container color
+        color: pbs.isNotEmpty ? sapphireDark : sapphireLight, // Container color
         borderRadius: BorderRadius.circular(5.0),
-        border: pbs.isNotEmpty ? Border.all(color: tealBlueLight, width: 2) : null, // Border color
+        border: pbs.isNotEmpty ? Border.all(color: sapphireLight, width: 2) : null, // Border color
         // Radius for rounded corners
       ),
       padding: pbs.isNotEmpty ? const EdgeInsets.only(top: 16) : const EdgeInsets.symmetric(vertical: 16.0),

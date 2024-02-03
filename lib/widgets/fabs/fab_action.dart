@@ -17,12 +17,12 @@ class ActionButton extends StatelessWidget {
     return Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       clipBehavior: Clip.antiAlias,
-      color: tealBlueLighter,
+      color: sapphireLighter,
       elevation: 4,
       child: IconButton(
         onPressed: onPressed,
         icon: icon,
-        color: tealBlueLighter,
+        color: sapphireLighter,
       ),
     );
   }

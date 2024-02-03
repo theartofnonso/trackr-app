@@ -190,7 +190,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: tealBlueLight, // Set the background color
+        color: sapphireLight, // Set the background color
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
@@ -211,7 +211,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                    backgroundColor: MaterialStateProperty.all(sapphireLighter),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
@@ -244,9 +244,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                    borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
                 filled: true,
-                fillColor: tealBlueLighter,
+                fillColor: sapphireLighter,
                 hintText: "Enter notes",
                 hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
               ),
@@ -296,7 +296,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                      backgroundColor: MaterialStateProperty.all(sapphireLighter),
                       shape:
                           MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             )

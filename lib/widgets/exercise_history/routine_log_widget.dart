@@ -35,7 +35,7 @@ class RoutineLogWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Theme(
-          data: ThemeData(splashColor: tealBlueLight),
+          data: ThemeData(splashColor: sapphireLight),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,

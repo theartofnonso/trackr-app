@@ -129,7 +129,7 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireLighter,
             onPressed: _toggle,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.circle, color: Colors.white),

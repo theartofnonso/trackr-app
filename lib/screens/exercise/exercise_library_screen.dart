@@ -195,7 +195,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
         onPressed: _navigateToExerciseEditor,
-        backgroundColor: tealBlueLighter,
+        backgroundColor: sapphireLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
       ),
@@ -221,7 +221,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
-                  color: tealBlueLighter, // Background color
+                  color: sapphireLighter, // Background color
                   borderRadius: BorderRadius.circular(5), // Border radius
                 ),
                 child: DropdownButton<MuscleGroup>(
@@ -276,7 +276,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                               onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                           separatorBuilder: (BuildContext context, int index) => const Divider(
                                 thickness: 1.0,
-                                color: tealBlueLight,
+                                color: sapphireLight,
                               ),
                           itemCount: _filteredExercises.length),
                     )

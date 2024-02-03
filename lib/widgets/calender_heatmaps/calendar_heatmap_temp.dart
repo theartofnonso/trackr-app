@@ -71,7 +71,7 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return vibrantGreen;
     }
-    return tealBlueLighter;
+    return sapphireLighter;
   }
 
   @override

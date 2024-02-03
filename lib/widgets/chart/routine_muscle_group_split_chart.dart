@@ -66,7 +66,7 @@ class _LinearBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
                   margin: const EdgeInsets.only(right: 6),
                   decoration: BoxDecoration(
-                    color: tealBlueDark.withOpacity(0.8),
+                    color: sapphireDark.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(3.0),
                   ),
                   child: Text(muscleGroupFamily.name.toUpperCase(),

@@ -29,7 +29,7 @@ class PieChartWidget extends StatelessWidget {
           )
         : Container(
             padding: const EdgeInsets.only(top: 22.0),
-            child: const FaIcon(FontAwesomeIcons.chartPie, color: tealBlueLighter, size: 120),
+            child: const FaIcon(FontAwesomeIcons.chartPie, color: sapphireLighter, size: 120),
           );
   }
 

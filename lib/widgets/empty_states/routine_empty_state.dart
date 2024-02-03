@@ -18,7 +18,7 @@ class RoutineEmptyState extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                tileColor: tealBlueLight,
+                tileColor: sapphireLight,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 leading: const Icon(
@@ -33,7 +33,7 @@ class RoutineEmptyState extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               ListTile(
-                tileColor: tealBlueLight,
+                tileColor: sapphireLight,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                 leading: const Icon(

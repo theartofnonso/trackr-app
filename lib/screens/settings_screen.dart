@@ -143,7 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               child: Container(
                   width: double.infinity,
                   height: double.infinity,
-                  color: tealBlueDark.withOpacity(0.7),
+                  color: sapphireDark.withOpacity(0.7),
                   child: Center(child: Text(_loadingMessage, style: GoogleFonts.montserrat(fontSize: 14)))))
       ]),
     );

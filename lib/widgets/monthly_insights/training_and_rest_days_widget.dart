@@ -2,23 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 
-class TrainingAndRestDaysWidget extends StatelessWidget {
-  final int trainingDays;
-  final int restDays;
+import '../../dtos/routine_log_dto.dart';
 
-  const TrainingAndRestDaysWidget({super.key, required this.trainingDays, required this.restDays});
+class TrainingAndRestDaysWidget extends StatelessWidget {
+  final List<RoutineLogDto> monthAndLogs;
+  final int daysInMonth;
+
+  const TrainingAndRestDaysWidget({super.key, required this.monthAndLogs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
+
+    final numberOfTrainingDays = monthAndLogs.length;
+    final numberOfRestDays = daysInMonth - numberOfTrainingDays;
+
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         decoration: BoxDecoration(
-          color: tealBlueDark,
-          border: Border.all(color: tealBlueLighter, width: 2),
+          color: sapphireLight,
+          border: Border.all(color: sapphireLighter, width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Table(
-          border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+          border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(),
             1: FlexColumnWidth(),
@@ -29,8 +35,8 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Center(
                   child: SleepTimeColumn(
-                      title: 'TRAINING DAYS',
-                      subTitle: "$trainingDays",
+                      title: 'TRAINING',
+                      subTitle: "$numberOfTrainingDays",
                       titleColor: Colors.white,
                       subTitleColor: Colors.white70),
                 ),
@@ -39,10 +45,20 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Center(
                   child: SleepTimeColumn(
-                      title: 'REST DAYS',
-                      subTitle: "$restDays",
-                      titleColor: Colors.deepOrangeAccent,
-                      subTitleColor: Colors.deepOrangeAccent.withOpacity(0.8)),
+                      title: 'AVG REST',
+                      subTitle: "${numberOfRestDays~/4}",
+                      titleColor: Colors.white,
+                      subTitleColor: Colors.white70),
+                ),
+              ),
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Center(
+                  child: SleepTimeColumn(
+                      title: 'REST',
+                      subTitle: "$numberOfRestDays",
+                      titleColor: Colors.white,
+                      subTitleColor: Colors.white70),
                 ),
               )
             ]),
@@ -73,8 +89,8 @@ class SleepTimeColumn extends StatelessWidget {
           subTitle,
           style: GoogleFonts.montserrat(
             color: titleColor,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
           ),
         ),
         const SizedBox(height: 4),
@@ -83,7 +99,7 @@ class SleepTimeColumn extends StatelessWidget {
           textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
             color: subTitleColor,
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: FontWeight.bold,
           ),
         )

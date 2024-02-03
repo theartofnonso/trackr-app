@@ -26,10 +26,10 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           heroTag: UniqueKey,
           onPressed: () => _saveTemplate(context: context),
-          backgroundColor: tealBlueLighter,
+          backgroundColor: sapphireLighter,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: const FaIcon(FontAwesomeIcons.download, size: 20)),
-      backgroundColor: tealBlueDark,
+      backgroundColor: sapphireDark,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
           height: 300,
@@ -46,9 +46,9 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    tealBlueDark.withOpacity(0.4),
-                    tealBlueDark.withOpacity(0.8),
-                    tealBlueDark,
+                    sapphireDark.withOpacity(0.4),
+                    sapphireDark.withOpacity(0.8),
+                    sapphireDark,
                   ],
                 ),
               ),
@@ -109,7 +109,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                       itemBuilder: (BuildContext context, int index) => exercises[index],
                       separatorBuilder: (BuildContext context, int index) => const Divider(
                             thickness: 1.0,
-                            color: tealBlueLight,
+                            color: sapphireLight,
                           ),
                       itemCount: exercises.length),
                 )

@@ -26,7 +26,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
           child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: tealBlueLight, // Set the background color
+                color: sapphireLight, // Set the background color
                 borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -41,7 +41,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
                     //height: 45,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                     decoration: BoxDecoration(
-                      color: tealBlueLighter, // Container background color
+                      color: sapphireLighter, // Container background color
                       borderRadius: BorderRadius.circular(5.0), // Border radius
                     ),
                     child: Text("Enter notes",

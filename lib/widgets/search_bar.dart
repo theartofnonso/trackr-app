@@ -25,8 +25,8 @@ class CSearchBar extends StatelessWidget {
       hintText: hintText,
       hintStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white70)),
       textStyle: MaterialStatePropertyAll<TextStyle>(GoogleFonts.montserrat(color: Colors.white)),
-      surfaceTintColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
-      backgroundColor: const MaterialStatePropertyAll<Color>(tealBlueLight),
+      surfaceTintColor: const MaterialStatePropertyAll<Color>(sapphireLight),
+      backgroundColor: const MaterialStatePropertyAll<Color>(sapphireLight),
       shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
       )),

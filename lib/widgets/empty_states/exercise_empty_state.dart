@@ -34,7 +34,7 @@ class ExerciseEmptyState extends StatelessWidget {
                           )),
                     ],
                   )),
-              const Divider(thickness: 1.0, color: tealBlueLight),
+              const Divider(thickness: 1.0, color: sapphireLight),
               ListTile(
                   leading: const Icon(
                     Icons.timeline_rounded,

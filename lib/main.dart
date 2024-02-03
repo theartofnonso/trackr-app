@@ -117,7 +117,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   final _themeData = ThemeData(
-    scaffoldBackgroundColor: tealBlueDark,
+    scaffoldBackgroundColor: sapphireDark,
     colorScheme: const ColorScheme(
       brightness: Brightness.dark,
       primary: Colors.white,
@@ -126,37 +126,37 @@ class _MyAppState extends State<MyApp> {
       onSecondary: Colors.white,
       error: Colors.white,
       onError: Colors.black,
-      background: tealBlueDark,
+      background: sapphireDark,
       onBackground: Colors.white,
-      surface: tealBlueLighter,
+      surface: sapphireLighter,
       onSurface: Colors.white,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: tealBlueDark,
-      surfaceTintColor: tealBlueDark,
+      backgroundColor: sapphireDark,
+      surfaceTintColor: sapphireDark,
     ),
     scrollbarTheme: ScrollbarThemeData(
       thumbColor: MaterialStateProperty.all(Colors.green),
       trackColor: MaterialStateProperty.all(Colors.white.withOpacity(0.2)),
     ),
     snackBarTheme: const SnackBarThemeData(
-        backgroundColor: tealBlueDark,
-        actionBackgroundColor: tealBlueLighter,
-        contentTextStyle: TextStyle(color: tealBlueDark)),
+        backgroundColor: sapphireDark,
+        actionBackgroundColor: sapphireLighter,
+        contentTextStyle: TextStyle(color: sapphireDark)),
     tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
+      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
       enabledBorder:
           OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
       filled: true,
-      fillColor: tealBlueLighter,
+      fillColor: sapphireLighter,
       hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all(Colors.white),
-          backgroundColor: MaterialStateProperty.all(tealBlueLight),
+          backgroundColor: MaterialStateProperty.all(sapphireLight),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
     ),
     useMaterial3: true,

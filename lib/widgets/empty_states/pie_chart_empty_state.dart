@@ -13,7 +13,7 @@ class PieChartEmptyState extends StatelessWidget {
         child: CircularProgressIndicator(
           value: 1,
           strokeWidth: 10,
-          color: tealBlueLighter,
+          color: sapphireLighter,
         ));
   }
 }

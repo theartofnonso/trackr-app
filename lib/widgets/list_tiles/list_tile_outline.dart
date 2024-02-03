@@ -18,7 +18,7 @@ class OutlineListTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: tealBlueLight, // Background color
+          color: sapphireLight, // Background color
           width: 2, // Border width
         ),
         borderRadius: BorderRadius.circular(5), // Border radius
@@ -26,7 +26,7 @@ class OutlineListTile extends StatelessWidget {
       child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          splashColor: tealBlueLighter,
+          splashColor: sapphireLighter,
           onTap: onTap,
           title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
           trailing: trailing != null ? Text(trailing, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)) : null),

@@ -163,7 +163,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? vibrantBlue : tealBlueLight;
+    return _summaryType == type ? vibrantBlue : sapphireLight;
   }
 
   void _navigateTo({required String? routineLogId}) {
@@ -383,10 +383,10 @@ class _MetricListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
+      data: ThemeData(splashColor: sapphireLight),
       child: ListTile(
         onTap: enabled ? onTap : () {},
-        tileColor: tealBlueLight,
+        tileColor: sapphireLight,
         title:
             Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
         subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),

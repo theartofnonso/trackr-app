@@ -19,7 +19,7 @@ class DoubleSetRow extends StatelessWidget {
         margin: margin,
         pbs: pbs,
         child: Table(
-            border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+            border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(1),
               1: FlexColumnWidth(1),

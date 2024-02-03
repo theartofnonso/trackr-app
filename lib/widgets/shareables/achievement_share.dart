@@ -25,7 +25,7 @@ class AchievementShare extends StatelessWidget {
     return RepaintBoundary(
         key: globalKey,
         child: Container(
-            color: tealBlueDark,
+            color: sapphireDark,
             padding: const EdgeInsets.all(8),
             width: width,
             child: Column(

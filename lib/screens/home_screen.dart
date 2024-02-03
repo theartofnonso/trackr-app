@@ -47,8 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         indicatorColor: Colors.transparent,
-        backgroundColor: tealBlueDark,
-        surfaceTintColor: tealBlueLighter,
+        backgroundColor: sapphireDark,
+        surfaceTintColor: sapphireLighter,
         overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
         destinations: const [
           NavigationDestination(

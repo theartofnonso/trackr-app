@@ -59,7 +59,7 @@ class _MuscleInsightsScreenState extends State<MuscleInsightsScreen> {
         minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           CupertinoSlidingSegmentedControl<ChartTimePeriod>(
-            backgroundColor: tealBlueLight,
+            backgroundColor: sapphireLight,
             thumbColor: vibrantBlue,
             groupValue: _selectedChartTimePeriod,
             children: {

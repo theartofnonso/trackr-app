@@ -38,7 +38,7 @@ class AchievementsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 const InformationContainerLite(
                   content: 'Only workouts logged in the current year will count towards your achievements.',
-                  color: tealBlueLighter,
+                  color: sapphireLighter,
                 ),
                 const SizedBox(height: 20),
                 logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()

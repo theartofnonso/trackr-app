@@ -105,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                 ? [
                     MenuAnchor(
                       style: MenuStyle(
-                        backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                        backgroundColor: MaterialStateProperty.all(sapphireLighter),
                       ),
                       builder: (BuildContext context, MenuController controller, Widget? child) {
                         return IconButton(

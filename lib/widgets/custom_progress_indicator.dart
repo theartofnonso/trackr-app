@@ -26,7 +26,7 @@ class CustomProgressIndicator extends StatelessWidget {
             child: CircularProgressIndicator(
               value: value,
               strokeWidth: 8,
-              backgroundColor: tealBlueLighter,
+              backgroundColor: sapphireLighter,
               valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: value)),
             ),
           ),
