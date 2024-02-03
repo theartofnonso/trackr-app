@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/month_insight_screen.dart';
 import 'package:tracker_app/screens/muscle_insights_screen.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
@@ -126,7 +127,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 const SizedBox(height: 10),
                 Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
                 const SizedBox(height: 28),
-                MonthInsightsScreen(monthAndLogs: logsForTheMonth),
+                MonthInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
               ],
             )),
       ),

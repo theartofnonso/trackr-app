@@ -12,15 +12,16 @@ import '../widgets/monthly_insights/log_duration_widget.dart';
 
 class MonthInsightsScreen extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;
+  final int daysInMonth;
 
-  const MonthInsightsScreen({super.key, required this.monthAndLogs});
+  const MonthInsightsScreen({super.key, required this.monthAndLogs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
     final logHours = monthAndLogs.map((log) => log.duration().inMilliseconds);
 
     final trainingDays = monthAndLogs.length;
-    final restDays = 30 - trainingDays;
+    final restDays = daysInMonth - trainingDays;
 
     final exerciseLogs = monthAndLogs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
