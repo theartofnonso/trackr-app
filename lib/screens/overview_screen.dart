@@ -6,6 +6,7 @@ import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/monthly_insights_screen.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
+import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
 import 'package:tracker_app/widgets/information_container_lite.dart';
 
 import '../dtos/routine_log_dto.dart';
@@ -29,7 +30,7 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  late DateTimeRange _dateTimeRange;
+  DateTimeRange _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
@@ -77,36 +78,39 @@ class _OverviewScreenState extends State<OverviewScreen> {
           child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 150),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    InkWell(
-                      onTap: () => _navigateToAllDaysTracked(context: context),
-                      child: _CTableCell(title: "STREAK", subtitle: "${routineLogController.routineLogs.length}"),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    IconButton(
+                      onPressed: () => _navigateToAllDaysTracked(context: context),
+                      icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
+                        const SizedBox(width: 4),
+                        Text("${routineLogController.routineLogs.length}",
+                            style:
+                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                      ]),
                     ),
-                    const Spacer(),
+                    CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
                     IconButton(
                         onPressed: () => _onShareCalendar(context: context),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
                   ]),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                        child: CustomProgressIndicator(
-                          value: monthlyProgress,
-                          valueText: "${logsForTheMonth.length}",
-                        ),
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
+                    child: CustomProgressIndicator(
+                      value: monthlyProgress,
+                      valueText: "${logsForTheMonth.length}",
+                    ),
                   ),
                   const SizedBox(height: 10),
                   const InformationContainerLite(
                       content: consistencyMonitor,
                       color: Colors.transparent,
                       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
-                  Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  Calendar(
+                    range: _dateTimeRange,
+                  ),
                   const SizedBox(height: 12),
                   MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
                   // Add more widgets here for exercise insights
@@ -133,7 +137,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: sapphireDark, padding: const EdgeInsets.all(8), child: Calendar(readOnly: true, startDateTime: _dateTimeRange.start))),
+                  color: sapphireDark,
+                  padding: const EdgeInsets.all(8),
+                  child: Calendar(readOnly: true, range: _dateTimeRange))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
@@ -151,21 +157,5 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _dateTimeRange = thisMonthDateRange();
-  }
-}
-
-class _CTableCell extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _CTableCell({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
-      const SizedBox(width: 8),
-      Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
-    ]);
   }
 }

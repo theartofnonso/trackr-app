@@ -29,10 +29,9 @@ class _DateViewModel {
 
 class Calendar extends StatefulWidget {
   final bool readOnly;
-  final DateTime? startDateTime;
-  final void Function(DateTimeRange range)? onChangedDateTimeRange;
+  final DateTimeRange range;
 
-  const Calendar({super.key, this.readOnly = false, this.startDateTime, this.onChangedDateTimeRange});
+  const Calendar({super.key, this.readOnly = false, required this.range});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -41,74 +40,6 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   DateTime _currentDate = DateTime.now();
 
-  bool _hasLaterDate() {
-    final laterDate = DateTime.now();
-    int laterMonth = laterDate.month;
-    int laterYear = laterDate.year;
-    if (laterYear == _currentDate.year) {
-      return laterMonth > _currentDate.month;
-    } else if (laterYear > _currentDate.year) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  DateTime _currentMonth(DateTime dateTime) {
-    final now = DateTime.now();
-    if (dateTime.isSameDateAs(DateTime(now.year, now.month))) {
-      return DateTime(dateTime.year, dateTime.month, DateTime.now().day);
-    }
-    return dateTime;
-  }
-
-  void _decrementDate() {
-    int month = _currentDate.month - 1;
-    int year = _currentDate.year;
-
-    /// We need to go to previous year
-    if (month == 0) {
-      month = 12;
-      year = year - 1;
-    }
-
-    final currentMonth = DateTime(year, month);
-
-    setState(() {
-      _currentDate = _currentMonth(currentMonth);
-    });
-
-    final onChangedDateTimeRange = widget.onChangedDateTimeRange;
-
-    if (onChangedDateTimeRange != null) {
-      onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
-    }
-  }
-
-  void _incrementDate() {
-    if (_hasLaterDate()) {
-      int month = _currentDate.month + 1;
-      int year = _currentDate.year;
-
-      /// We need to go to next year
-      if (month == 12) {
-        month = 0;
-        year = year + 1;
-      }
-
-      final currentMonth = DateTime(year, month);
-
-      setState(() {
-        _currentDate = _currentMonth(currentMonth);
-      });
-
-      final onChangedDateTimeRange = widget.onChangedDateTimeRange;
-      if (onChangedDateTimeRange != null) {
-        onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
-      }
-    }
-  }
-
   void _selectDate(DateTime dateTime) {
     setState(() {
       _currentDate = dateTime;
@@ -116,8 +47,11 @@ class _CalendarState extends State<Calendar> {
   }
 
   List<_DateViewModel?> _generateDates() {
-    int year = _currentDate.year;
-    int month = _currentDate.month;
+    final startDate = widget.range.start;
+    final endDate = widget.range.end;
+
+    int year = startDate.year;
+    int month = startDate.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
 
     DateTime firstDayOfMonth = DateTime(year, month, 1);
@@ -168,29 +102,6 @@ class _CalendarState extends State<Calendar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (!widget.readOnly)
-              IconButton(
-                  onPressed: _decrementDate,
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
-            Expanded(
-              child: Text(_currentDate.formattedMonthAndYear(),
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                  )),
-            ),
-            if (!widget.readOnly)
-              IconButton(
-                  onPressed: _incrementDate,
-                  icon: _hasLaterDate()
-                      ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
-                      : const SizedBox()),
-          ],
-        ),
         SharedPrefs().showCalendarDates
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -236,12 +147,6 @@ class _CalendarState extends State<Calendar> {
           )
       ],
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _currentDate = widget.startDateTime ?? DateTime.now();
   }
 }
 
