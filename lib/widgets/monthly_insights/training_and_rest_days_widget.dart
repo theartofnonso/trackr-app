@@ -60,7 +60,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: SleepTimeColumn(
-                          title: 'REST',
+                          title: 'TOTAL REST',
                           subTitle: "$numberOfRestDays",
                           titleColor: Colors.white,
                           subTitleColor: Colors.white70),
