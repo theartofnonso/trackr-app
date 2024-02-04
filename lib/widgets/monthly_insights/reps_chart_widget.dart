@@ -9,7 +9,6 @@ import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../utils/general_utils.dart';
 import '../chart/line_chart_widget.dart';
 
 class RepsChartWidget extends StatelessWidget {
