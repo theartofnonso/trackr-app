@@ -29,7 +29,7 @@ class _MuscleGroupsWidgetState extends State<MuscleGroupsWidget> {
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         const Spacer(),
         GestureDetector(
-            onTap: _onTap, child: const FaIcon(FontAwesomeIcons.angleDown, color: Colors.white70, size: 16)),
+            onTap: _onTap, child: FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp, color: Colors.white70, size: 16)),
       ]),
       const SizedBox(height: 10),
       widget.exerciseLogs.isNotEmpty
