@@ -16,5 +16,6 @@
     {"id": "HAM15", "name": "Stiff-Legged Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
     {"id": "HAM16", "name": "Trap Bar Deadlift With High Handles", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
     {"id": "HAM17", "name": "Trap Bar Deadlift With Low Handles", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM18", "name": "Pause Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"}
+    {"id": "HAM18", "name": "Pause Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
+    {"id": "HAM19", "name": "Romanian Deadlift (Smith Machine)", "primaryMuscleGroup": "Hamstrings", "type": "WR"}
 ]
