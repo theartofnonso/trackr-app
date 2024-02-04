@@ -28,8 +28,8 @@ class RepsChartWidget extends StatelessWidget {
           .expand((exerciseLogs) => exerciseLogs)
           .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight)
           .map((log) {
-        final volume = log.sets.map((set) => set.value2).sum;
-        return volume.toDouble();
+        final reps = log.sets.map((set) => set.value2).sum;
+        return reps;
       }).sum;
 
       monthlyReps.add(repsForMonth);

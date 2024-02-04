@@ -4,16 +4,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/app_constants.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-class LogDurationWidget extends StatelessWidget {
-  final Iterable<int> logHours;
+import '../../dtos/routine_log_dto.dart';
 
-  const LogDurationWidget({super.key, required this.logHours});
+class LogDurationWidget extends StatelessWidget {
+  final List<RoutineLogDto> monthAndLogs;
+
+  const LogDurationWidget({super.key, required this.monthAndLogs});
 
   @override
   Widget build(BuildContext context) {
-    final minHours = Duration(milliseconds: logHours.min);
-    final maxHours = Duration(milliseconds: logHours.max);
-    final avgHours = Duration(milliseconds: logHours.average.toInt());
+
+    final logHours = monthAndLogs.map((log) => log.duration().inMilliseconds);
+
+    final minHours = Duration(milliseconds: logHours.isNotEmpty ? logHours.min : 0);
+    final maxHours = Duration(milliseconds:  logHours.isNotEmpty ? logHours.max : 0);
+    final avgHours = Duration(milliseconds:  logHours.isNotEmpty ? logHours.average.toInt() : 0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
