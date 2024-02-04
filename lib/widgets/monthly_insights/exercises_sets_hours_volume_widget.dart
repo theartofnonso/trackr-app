@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
-import 'package:tracker_app/utils/sets_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';

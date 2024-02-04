@@ -133,7 +133,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: sapphireDark, padding: const EdgeInsets.all(8), child: const Calendar(readOnly: true))),
+                  color: sapphireDark, padding: const EdgeInsets.all(8), child: Calendar(readOnly: true, startDateTime: _dateTimeRange.start))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
