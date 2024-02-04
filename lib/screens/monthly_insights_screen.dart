@@ -9,6 +9,8 @@ import '../enums/exercise_type_enums.dart';
 import '../utils/string_utils.dart';
 import '../widgets/monthly_insights/log_duration_widget.dart';
 import '../widgets/monthly_insights/muscle_groups_widget.dart';
+import '../widgets/monthly_insights/reps_chart_widget.dart';
+import '../widgets/monthly_insights/volume_chart_widget.dart';
 
 class MonthlyInsightsScreen extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;
@@ -53,6 +55,10 @@ class MonthlyInsightsScreen extends StatelessWidget {
             totalVolume: totalVolumeInKg),
         const SizedBox(height: 28),
         MuscleGroupsWidget(exerciseLogs: exerciseLogs),
+        const SizedBox(height: 16),
+        const RepsChartWidget(),
+        const SizedBox(height: 20),
+        const VolumeChartWidget(),
       ],
     );
   }

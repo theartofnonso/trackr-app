@@ -18,10 +18,6 @@ import '../../../utils/dialog_utils.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
-ChartUnitLabel weightUnit() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
-}
-
 class HomeScreen extends StatelessWidget {
   final ExerciseDto exercise;
 

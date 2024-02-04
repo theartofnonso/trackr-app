@@ -66,7 +66,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.value1.toDouble())).toList();
       _summaryType = SummaryType.weight;
-      _chartUnit = weightUnit();
+      _chartUnit = chartWeightUnitLabel();
     });
   }
 
@@ -75,7 +75,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.setVolume;
-      _chartUnit = weightUnit();
+      _chartUnit = chartWeightUnitLabel();
     });
   }
 
@@ -103,7 +103,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = SummaryType.bestTime;
-      _chartUnit = ChartUnitLabel.mins;
+      _chartUnit = ChartUnitLabel.m;
     });
   }
 
@@ -113,7 +113,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = SummaryType.sessionTimes;
-      _chartUnit = ChartUnitLabel.mins;
+      _chartUnit = ChartUnitLabel.m;
     });
   }
 

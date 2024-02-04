@@ -7,13 +7,14 @@ import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../app_constants.dart';
+import '../../utils/string_utils.dart';
 
 enum ChartUnitLabel {
   kg,
   lbs,
   reps,
-  mins,
-  hrs,
+  m,
+  h,
   yd,
   mi,
 }
@@ -22,8 +23,9 @@ class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> dateTimes;
   final ChartUnitLabel unit;
+  final bool bigData;
 
-  const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit});
+  const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit, this.bigData = false});
 
   static const List<Color> gradientColors = [
     vibrantBlue,
@@ -32,55 +34,56 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return chartPoints.isNotEmpty ? Center(
-      child: AspectRatio(
-        aspectRatio: 1.5,
-        child: LineChart(LineChartData(
-            titlesData: FlTitlesData(
-              show: true,
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: _leftTitleWidgets,
-                  reservedSize: 50,
-                ),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  interval: 1,
-                  getTitlesWidget: _bottomTitleWidgets,
-                ),
-              ),
-            ),
-            borderData: FlBorderData(
-              show: false,
-            ),
-            lineBarsData: [
-              LineChartBarData(
-                  spots: chartPoints.map((point) {
-                    final y = unit == ChartUnitLabel.lbs || unit == ChartUnitLabel.kg ? weightWithConversion(value: point.y) : point.y;
-                    return FlSpot(point.x, y);
-                  }).toList(),
-                  gradient: const LinearGradient(
-                    colors: gradientColors,
-                  ),
-                  belowBarData: BarAreaData(
+    return chartPoints.isNotEmpty
+        ? Center(
+            child: AspectRatio(
+              aspectRatio: 1.5,
+              child: LineChart(LineChartData(
+                  titlesData: FlTitlesData(
                     show: true,
-                    gradient: LinearGradient(
-                      colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: _leftTitleWidgets,
+                        reservedSize: 40,
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 10,
+                        getTitlesWidget: _bottomTitleWidgets,
+                      ),
                     ),
                   ),
-                  isCurved: true)
-            ])),
-      ),
-    ) : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireLighter, size: 120));
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  lineBarsData: [
+                    LineChartBarData(
+                        spots: chartPoints.map((point) {
+                          return FlSpot(point.x, weightWithConversion(value: point.y));
+                        }).toList(),
+                        gradient: const LinearGradient(
+                          colors: gradientColors,
+                        ),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          gradient: LinearGradient(
+                            colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                          ),
+                        ),
+                        isCurved: true)
+                  ])),
+            ),
+          )
+        : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireLighter, size: 120));
   }
 
   double _interval() {
@@ -107,10 +110,23 @@ class LineChartWidget extends StatelessWidget {
       fontWeight: FontWeight.w600,
       fontSize: 9,
     );
+
     return SideTitleWidget(
+      fitInside:SideTitleFitInsideData.fromTitleMeta(meta),
       axisSide: meta.axisSide,
-      child: Text("${value.toInt()} ${unit.name}", style: style),
+      child: Text(_weightTitle(chartUnitLabel: unit, value: value), style: style),
     );
+  }
+
+  String _weightTitle({required ChartUnitLabel chartUnitLabel, required double value}) {
+
+    if(bigData) {
+      if (chartUnitLabel == ChartUnitLabel.kg || chartUnitLabel == ChartUnitLabel.lbs) {
+        return volumeInKOrM(value);
+      }
+    }
+
+    return "${value.toInt()} ${unit.name}";
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
@@ -120,6 +136,7 @@ class LineChartWidget extends StatelessWidget {
       fontSize: 10,
     );
     return SideTitleWidget(
+      fitInside:SideTitleFitInsideData.fromTitleMeta(meta),
       axisSide: meta.axisSide,
       child: Text(modifiedDateTimes[value.toInt()], style: style),
     );

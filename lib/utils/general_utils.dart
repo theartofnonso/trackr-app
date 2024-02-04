@@ -8,6 +8,11 @@ import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../app_constants.dart';
 import '../shared_prefs.dart';
+import '../widgets/chart/line_chart_widget.dart';
+
+ChartUnitLabel chartWeightUnitLabel() {
+  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
+}
 
 bool _isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
