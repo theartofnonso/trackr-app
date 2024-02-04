@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -120,7 +121,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                     child: Center(
                       child: SleepTimeColumn(
                           title: 'HOURS',
-                          subTitle: "${totalHours.inHours}",
+                          subTitle: totalHours.hmDigital(),
                           titleColor: Colors.white,
                           subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
                     ),
