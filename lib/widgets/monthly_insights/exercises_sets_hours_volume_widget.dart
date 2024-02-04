@@ -63,7 +63,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
             decoration: BoxDecoration(
               color: sapphireLight,
-              border: Border.all(color: sapphireLighter, width: 2),
+              border: Border.all(color: sapphireDark.withOpacity(0.8), width: 2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Table(
