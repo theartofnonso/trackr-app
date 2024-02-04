@@ -74,50 +74,53 @@ class _OverviewScreenState extends State<OverviewScreen> {
       body: Stack(children: [
         const Positioned.fill(child: GradientBackground()),
         SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 150),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    IconButton(
-                      onPressed: () => _navigateToAllDaysTracked(context: context),
-                      icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                        const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
-                        const SizedBox(width: 4),
-                        Text("${routineLogController.routineLogs.length}",
-                            style:
-                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
-                      ]),
-                    ),
-                    CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                    IconButton(
-                        onPressed: () => _onShareCalendar(context: context),
-                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                  ]),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                    child: CustomProgressIndicator(
-                      value: monthlyProgress,
-                      valueText: "${logsForTheMonth.length}",
-                    ),
+            minimum: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  IconButton(
+                    onPressed: () => _navigateToAllDaysTracked(context: context),
+                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
+                      const SizedBox(width: 4),
+                      Text("${routineLogController.routineLogs.length}",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                    ]),
                   ),
-                  const SizedBox(height: 10),
-                  const InformationContainerLite(
-                      content: consistencyMonitor,
-                      color: Colors.transparent,
-                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
-                  Calendar(
-                    range: _dateTimeRange,
-                  ),
-                  const SizedBox(height: 12),
-                  MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
-                  // Add more widgets here for exercise insights
-                ],
-              )),
-        )
+                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  IconButton(
+                      onPressed: () => _onShareCalendar(context: context),
+                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
+                ]),
+                Expanded(
+                  child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 150),
+                      child: Column(children: [
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
+                          child: CustomProgressIndicator(
+                            value: monthlyProgress,
+                            valueText: "${logsForTheMonth.length}",
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const InformationContainerLite(
+                            content: consistencyMonitor,
+                            color: Colors.transparent,
+                            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
+                        Calendar(
+                          range: _dateTimeRange,
+                        ),
+                        const SizedBox(height: 12),
+                        MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
+                      ])),
+                )
+                // Add more widgets here for exercise insights
+              ],
+            ))
       ]),
     );
   }
