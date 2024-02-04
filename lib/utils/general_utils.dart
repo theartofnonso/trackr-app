@@ -93,7 +93,7 @@ List<DateTimeRange> generateWeekRangesFrom({required DateTime startDate, require
 
 List<DateTimeRange> generateMonthRangesFrom({required DateTime startDate, required DateTime endDate}) {
   // Find the last day of the current month
-  DateTime lastDayOfCurrentMonth = endDate.lastMonthDay();
+  DateTime lastDayOfCurrentMonth = endDate.lastDayOfMonth();
   List<DateTimeRange> monthRanges = [];
 
   // Adjust the start date to the first day of the month

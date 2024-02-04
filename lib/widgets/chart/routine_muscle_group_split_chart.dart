@@ -6,29 +6,33 @@ import '../../enums/muscle_group_enums.dart';
 
 class RoutineMuscleGroupSplitChart extends StatelessWidget {
   final Map<MuscleGroupFamily, double> frequencyData;
+  final bool minimized;
   final bool showInfo;
 
-  const RoutineMuscleGroupSplitChart({super.key, required this.frequencyData, this.showInfo = true});
+  const RoutineMuscleGroupSplitChart({super.key, required this.frequencyData, this.minimized = false, this.showInfo = true});
 
   @override
   Widget build(BuildContext context) {
-    return _HorizontalBarChart(frequencyData: frequencyData, showInfo: showInfo);
+    return _HorizontalBarChart(frequencyData: frequencyData, showInfo: showInfo, minimized: minimized,);
   }
 }
 
 class _HorizontalBarChart extends StatelessWidget {
   final bool showInfo;
+  final bool minimized;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const _HorizontalBarChart({required this.frequencyData, required this.showInfo});
+  const _HorizontalBarChart({required this.frequencyData, required this.showInfo, required this.minimized});
 
   @override
   Widget build(BuildContext context) {
     final children =
-        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value));
+
+    final count = minimized ? children.take(3) : children;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ...children,
+      ...count,
       if (showInfo)
         Padding(
           padding: const EdgeInsets.only(top: 2.0),

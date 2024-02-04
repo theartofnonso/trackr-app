@@ -80,6 +80,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    InkWell(
+                      onTap: () => _navigateToAllDaysTracked(context: context),
+                      child: _CTableCell(title: "STREAK", subtitle: "${routineLogController.routineLogs.length}"),
+                    ),
+                    const Spacer(),
                     IconButton(
                         onPressed: () => _onShareCalendar(context: context),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
@@ -94,14 +99,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           valueText: "${logsForTheMonth.length}",
                         ),
                       ),
-                      const SizedBox(width: 20),
-                      InkWell(
-                        onTap: () => _navigateToAllDaysTracked(context: context),
-                        child: _CTableCell(
-                            title: "STREAK",
-                            subtitle: "${routineLogController.routineLogs.length}",
-                            crossAxisAlignment: CrossAxisAlignment.end),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -112,6 +109,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   Calendar(onChangedDateTimeRange: _onChangedDateTimeRange),
                   const SizedBox(height: 12),
                   MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
+                  // Add more widgets here for exercise insights
                 ],
               )),
         )
@@ -159,18 +157,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
 class _CTableCell extends StatelessWidget {
   final String title;
   final String subtitle;
-  final CrossAxisAlignment crossAxisAlignment;
 
-  const _CTableCell({required this.title, required this.subtitle, required this.crossAxisAlignment});
+  const _CTableCell({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      child: Column(crossAxisAlignment: crossAxisAlignment, children: [
-        Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
-        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
-      ]),
-    );
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
+      const SizedBox(width: 8),
+      Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
+    ]);
   }
 }

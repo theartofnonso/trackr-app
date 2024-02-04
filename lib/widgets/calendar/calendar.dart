@@ -20,10 +20,14 @@ class _DateViewModel {
   final bool hasLog;
 
   _DateViewModel({required this.dateTime, required this.selectedDateTime, required this.hasLog});
+
+  @override
+  String toString() {
+    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasLog}';
+  }
 }
 
 class Calendar extends StatefulWidget {
-  
   final bool readOnly;
   final void Function(DateTimeRange range)? onChangedDateTimeRange;
 
@@ -49,6 +53,14 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
+  DateTime _currentMonth(DateTime dateTime) {
+    final now = DateTime.now();
+    if (dateTime.isSameDateAs(DateTime(now.year, now.month))) {
+      return DateTime(dateTime.year, dateTime.month, DateTime.now().day);
+    }
+    return dateTime;
+  }
+
   void _decrementDate() {
     int month = _currentDate.month - 1;
     int year = _currentDate.year;
@@ -59,13 +71,15 @@ class _CalendarState extends State<Calendar> {
       year = year - 1;
     }
 
+    final currentMonth = DateTime(year, month);
+
     setState(() {
-      _currentDate = DateTime(year, month);
+      _currentDate = _currentMonth(currentMonth);
     });
 
     final onChangedDateTimeRange = widget.onChangedDateTimeRange;
 
-    if(onChangedDateTimeRange != null) {
+    if (onChangedDateTimeRange != null) {
       onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
     }
   }
@@ -81,12 +95,14 @@ class _CalendarState extends State<Calendar> {
         year = year + 1;
       }
 
+      final currentMonth = DateTime(year, month);
+
       setState(() {
-        _currentDate = DateTime(year, month);
+        _currentDate = _currentMonth(currentMonth);
       });
 
       final onChangedDateTimeRange = widget.onChangedDateTimeRange;
-      if(onChangedDateTimeRange != null) {
+      if (onChangedDateTimeRange != null) {
         onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
       }
     }
@@ -126,7 +142,7 @@ class _CalendarState extends State<Calendar> {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final hasLog = logsForCurrentDate.contains(date);
-      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate, hasLog: hasLog));
+      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate.dateOnly(), hasLog: hasLog));
     }
 
     // Add padding to end of month
@@ -154,10 +170,10 @@ class _CalendarState extends State<Calendar> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if(!widget.readOnly)
+            if (!widget.readOnly)
               IconButton(
-                onPressed: _decrementDate,
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
+                  onPressed: _decrementDate,
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28)),
             Expanded(
               child: Text(_currentDate.formattedMonthAndYear(),
                   textAlign: TextAlign.center,
@@ -166,12 +182,12 @@ class _CalendarState extends State<Calendar> {
                     fontWeight: FontWeight.w900,
                   )),
             ),
-            if(!widget.readOnly)
+            if (!widget.readOnly)
               IconButton(
-                onPressed: _incrementDate,
-                icon: _hasLaterDate()
-                    ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
-                    : const SizedBox()),
+                  onPressed: _incrementDate,
+                  icon: _hasLaterDate()
+                      ? const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 28)
+                      : const SizedBox()),
           ],
         ),
         SharedPrefs().showCalendarDates
@@ -180,7 +196,7 @@ class _CalendarState extends State<Calendar> {
                 child: _CalendarHeader(),
               )
             : const SizedBox(height: 8),
-        _Month(dates: dates, selectedDateTime: _currentDate, onTap: _selectDate, readOnly: widget.readOnly),
+        _Month(dates: dates, selectedDateTime: _currentDate.dateOnly(), onTap: _selectDate, readOnly: widget.readOnly),
         const SizedBox(height: 10),
         if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
         if (logsForCurrentDate.isEmpty && !widget.readOnly)
@@ -223,10 +239,8 @@ class _CalendarState extends State<Calendar> {
 }
 
 class _CalendarHeader extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-
     final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
     return SizedBox(
@@ -266,7 +280,7 @@ class _Month extends StatelessWidget {
         return _Day(
           dateTime: date.dateTime,
           onTap: onTap,
-          selectedDateTime: selectedDateTime,
+          selected: date.dateTime.isSameDateAs(selectedDateTime),
           showSelector: !readOnly,
           hasLog: date.hasLog,
         );
@@ -294,29 +308,20 @@ class _Month extends StatelessWidget {
 
 class _Day extends StatelessWidget {
   final DateTime dateTime;
-  final DateTime selectedDateTime;
+  final bool selected;
   final bool showSelector;
   final bool hasLog;
   final void Function(DateTime dateTime) onTap;
 
   const _Day(
       {required this.dateTime,
-        required this.selectedDateTime,
-        required this.onTap,
-        required this.showSelector,
-        required this.hasLog});
+      required this.selected,
+      required this.onTap,
+      required this.showSelector,
+      required this.hasLog});
 
   Color _getBackgroundColor() {
     return hasLog ? vibrantGreen : sapphireLight;
-  }
-
-  Border? _getBorder() {
-    final selectedDate = selectedDateTime;
-    if (selectedDate.isSameDateAs(dateTime)) {
-      return Border.all(color: Colors.white70, width: 2.0);
-    } else {
-      return null;
-    }
   }
 
   Color _getTextColor() {
@@ -331,12 +336,12 @@ class _Day extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(dateTime),
       child: Container(
-        padding: selectedDateTime.isSameDateAs(dateTime) && showSelector ? const EdgeInsets.all(2) : null,
+        padding: selected && showSelector ? const EdgeInsets.all(2) : null,
         decoration: showSelector
             ? BoxDecoration(
-          border: _getBorder(),
-          borderRadius: BorderRadius.circular(2),
-        )
+                border: selected ? Border.all(color: Colors.white70, width: 2.0) : null,
+                borderRadius: BorderRadius.circular(2),
+              )
             : null,
         child: Container(
           margin: const EdgeInsets.all(2),

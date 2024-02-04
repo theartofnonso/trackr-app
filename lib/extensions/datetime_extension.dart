@@ -112,7 +112,7 @@ extension DateTimeExtension on DateTime {
     return endOfWeek;
   }
 
-  DateTime lastMonthDay() {
+  DateTime lastDayOfMonth() {
     // Calculate the first day of the next month
     DateTime firstDayNextMonth = (month < 12) ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
 
@@ -148,5 +148,9 @@ extension DateTimeExtension on DateTime {
     final currentYearRange = DateTimeRange(start: startOfYear, end: endOfYear);
 
     return datetime.isBetweenRange(range: currentYearRange);
+  }
+
+  DateTime dateOnly() {
+    return DateTime(year, month, day);
   }
 }
