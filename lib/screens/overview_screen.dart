@@ -96,6 +96,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         onPressed: () => _onShareCalendar(context: context),
                         icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
                   ]),
+                  const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
                     child: CustomProgressIndicator(
