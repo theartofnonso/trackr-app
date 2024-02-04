@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
@@ -55,6 +56,9 @@ class MonthlyInsightsScreen extends StatelessWidget {
             totalVolume: totalVolumeInKg),
         const SizedBox(height: 28),
         MuscleGroupsWidget(exerciseLogs: exerciseLogs),
+        const SizedBox(height: 16),
+        Text("Intensity of training for ${DateTime.now().year}".toUpperCase(),
+            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         const RepsChartWidget(),
         const SizedBox(height: 20),

@@ -51,7 +51,7 @@ class RepsChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Number of reps for ${DateTime.now().year}".toUpperCase(),
+          Text("Reps Trend",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           Padding(
@@ -59,7 +59,7 @@ class RepsChartWidget extends StatelessWidget {
             child: LineChartWidget(
               chartPoints: chartPoints,
               dateTimes: dateTimes,
-              unit: chartWeightUnitLabel(),
+              unit: ChartUnitLabel.reps,
               bigData: true,
             ),
           ),

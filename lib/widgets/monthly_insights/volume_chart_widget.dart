@@ -51,7 +51,7 @@ class VolumeChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Intensity of training for ${DateTime.now().year}".toUpperCase(),
+          Text("Volume Trend",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           Padding(
