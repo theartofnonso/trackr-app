@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/template/library/routine_template_library.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../controllers/routine_template_controller.dart';
 
 class RoutineTemplateLibraryScreen extends StatelessWidget {

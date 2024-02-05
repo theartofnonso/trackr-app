@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';

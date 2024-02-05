@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
 import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../widgets/achievements/achievement_tile.dart';
 import '../../widgets/information_container_lite.dart';

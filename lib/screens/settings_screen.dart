@@ -1,14 +1,17 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/urls.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/exercise_controller.dart';
 import '../controllers/routine_log_controller.dart';
@@ -57,7 +60,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ListTile(
                   title: Text("Weight",
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  subtitle: Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                  subtitle:
+                      Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
                   trailing: SegmentedButton(
                     showSelectedIcon: false,
                     style: ButtonStyle(
@@ -98,9 +102,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 const SizedBox(height: 8),
                 Theme(
-                  data: Theme.of(context).copyWith(
-                    splashColor: Colors.transparent // Disable the splash effect
-                  ),
+                  data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
+                      ),
                   child: SwitchListTile(
                     activeColor: vibrantGreen,
                     title: Text('Show calendar dates',
@@ -116,10 +119,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                 ),
                 const SizedBox(height: 8),
-                OutlineListTile(
-                    onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
                 const SizedBox(height: 8),
-                /// Uncomment this to enable notifications
                 OutlineListTile(
                     onTap: _navigateToNotificationSettings,
                     title: "Notifications",
@@ -128,6 +129,21 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                 const SizedBox(height: 8),
                 OutlineListTile(onTap: _delete, title: "Delete Account"),
+                const SizedBox(height: 50),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  GestureDetector(
+                    onTap: () => _launchUrl(url: trackrWebUrl),
+                    child: Image.asset(
+                      'images/trackr.png',
+                      fit: BoxFit.contain,
+                      height: 12, //
+                    ),
+                  ),
+                  const SizedBox(width: 18),
+                  GestureDetector(
+                      onTap: () => _launchUrl(url: instagramUrl),
+                      child: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 24)),
+                ]),
                 const SizedBox(height: 50),
                 Center(
                   child: Text(_appVersion,
@@ -204,6 +220,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Logout',
         isRightActionDestructive: true);
+  }
+
+  /// Launch the tickers url
+  Future<void> _launchUrl({required String url}) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Oops! Couldn't open the page!")));
+      }
+    }
   }
 
   void _delete() async {

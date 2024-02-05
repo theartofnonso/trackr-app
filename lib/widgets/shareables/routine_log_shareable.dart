@@ -6,7 +6,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 

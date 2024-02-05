@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../controllers/routine_log_controller.dart';
 import '../../../dtos/routine_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';

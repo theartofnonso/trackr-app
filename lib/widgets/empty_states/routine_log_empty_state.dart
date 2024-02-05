@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class RoutineLogEmptyState extends StatelessWidget {
   const RoutineLogEmptyState({super.key});

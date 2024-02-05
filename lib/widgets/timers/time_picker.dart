@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../buttons/text_button_widget.dart';
 
 class TimePicker extends StatefulWidget {

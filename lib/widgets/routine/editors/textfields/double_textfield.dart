@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 import '../../../../utils/general_utils.dart';
 
 class DoubleTextField extends StatelessWidget {

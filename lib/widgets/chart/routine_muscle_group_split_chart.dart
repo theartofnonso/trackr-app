@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
 class RoutineMuscleGroupSplitChart extends StatelessWidget {

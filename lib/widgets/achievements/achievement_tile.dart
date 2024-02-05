@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/achievement_dto.dart';
 
 class AchievementTile extends StatelessWidget {

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';

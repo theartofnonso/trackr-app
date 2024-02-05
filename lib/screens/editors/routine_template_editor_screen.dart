@@ -8,7 +8,7 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';

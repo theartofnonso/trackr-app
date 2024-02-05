@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
-import '../app_constants.dart';
+import '../colors.dart';
 import '../shared_prefs.dart';
 import '../widgets/chart/line_chart_widget.dart';
 

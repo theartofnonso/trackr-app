@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/achievement_dto.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class ListTileEmptyState extends StatelessWidget {
   const ListTileEmptyState({super.key});

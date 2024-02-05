@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 
 class MuscleGroupWidget extends StatelessWidget {

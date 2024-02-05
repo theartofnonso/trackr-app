@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 
 class GradientBackground extends StatelessWidget {
   const GradientBackground({super.key});

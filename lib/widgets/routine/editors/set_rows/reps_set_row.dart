@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';

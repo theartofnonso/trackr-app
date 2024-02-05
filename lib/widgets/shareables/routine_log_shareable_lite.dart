@@ -4,7 +4,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/string_utils.dart';
 import '../chart/routine_muscle_group_split_chart.dart';

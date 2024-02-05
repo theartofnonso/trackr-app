@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class _DateViewModel {
   final DateTime dateTime;

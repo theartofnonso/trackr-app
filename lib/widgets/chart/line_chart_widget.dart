@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../utils/string_utils.dart';
 
 enum ChartUnitLabel {

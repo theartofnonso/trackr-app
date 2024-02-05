@@ -10,7 +10,7 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';

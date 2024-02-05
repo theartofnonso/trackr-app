@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:math' as math;
 
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 
 @immutable
 class ExpandableFab extends StatefulWidget {

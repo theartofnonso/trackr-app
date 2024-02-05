@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class SingleSetRowEmptyState extends StatelessWidget {
   const SingleSetRowEmptyState({super.key});

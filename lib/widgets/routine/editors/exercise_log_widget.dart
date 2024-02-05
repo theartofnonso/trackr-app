@@ -14,7 +14,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';

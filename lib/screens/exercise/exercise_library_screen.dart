@@ -8,7 +8,7 @@ import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';

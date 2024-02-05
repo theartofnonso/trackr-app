@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/exercise_type_enums.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/monthly_insights_screen.dart';
 import 'package:tracker_app/screens/streak_screen.dart';

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../routine/editors/set_headers/weight_reps_set_header.dart';
 

@@ -5,7 +5,7 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_log_empty_state.dart';
 
-import '../app_constants.dart';
+import '../colors.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;

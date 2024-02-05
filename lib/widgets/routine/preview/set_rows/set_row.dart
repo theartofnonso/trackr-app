@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
 import '../../../pbs/pb_icon.dart';
 

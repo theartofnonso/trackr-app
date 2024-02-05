@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 import '../../../../dtos/pb_dto.dart';
 import '../../preview/set_rows/set_row.dart';
 

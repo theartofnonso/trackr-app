@@ -13,7 +13,7 @@ import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
