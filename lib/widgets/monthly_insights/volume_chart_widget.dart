@@ -53,7 +53,7 @@ class VolumeChartWidget extends StatelessWidget {
         children: [
           Text("Volume Trend",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.only(right: 30.0),
             child: LineChartWidget(

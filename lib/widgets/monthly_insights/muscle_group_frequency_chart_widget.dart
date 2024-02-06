@@ -8,12 +8,11 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/line_chart_widget.dart';
 
-class RepsChartWidget extends StatelessWidget {
-  const RepsChartWidget({super.key});
+class MuscleGroupFrequencyWidget extends StatelessWidget {
+  const MuscleGroupFrequencyWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,23 +20,19 @@ class RepsChartWidget extends StatelessWidget {
 
     final monthlyLogs = routineLogController.monthlyLogs;
 
-    final monthlyReps = [];
+    final muscleGroupsSplitFrequencyScores = [];
 
     for (var monthAndLogs in monthlyLogs.entries) {
-      final repsForMonth = monthAndLogs.value
-          .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
-          .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight)
-          .map((log) {
-        final reps = log.sets.map((set) => set.value2).sum;
-        return reps;
-      }).sum;
+      final exerciseLogsForTheMonth = monthAndLogs.value.expand((log) => log.exerciseLogs).toList();
 
-      monthlyReps.add(repsForMonth);
+      final muscleGroupsSplitFrequencyScore = muscleGroupFrequencyScore(exerciseLogs: exerciseLogsForTheMonth);
+      final percentageScore = (muscleGroupsSplitFrequencyScore * 100).toInt();
+      muscleGroupsSplitFrequencyScores.add(percentageScore);
     }
 
-    final chartPoints =
-        monthlyReps.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    final chartPoints = muscleGroupsSplitFrequencyScores
+        .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
+        .toList();
 
     final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
 
@@ -51,7 +46,7 @@ class RepsChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Reps Trend",
+          Text("Muscle Split",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(
@@ -59,8 +54,8 @@ class RepsChartWidget extends StatelessWidget {
             child: LineChartWidget(
               chartPoints: chartPoints,
               dateTimes: dateTimes,
-              unit: ChartUnit.reps,
-              bigData: true,
+              unit: ChartUnit.percentage,
+              bigData: false,
             ),
           ),
         ],

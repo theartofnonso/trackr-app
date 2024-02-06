@@ -11,6 +11,7 @@ import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 import '../../../colors.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../controllers/routine_log_controller.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -57,7 +58,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  late ChartUnitLabel _chartUnit;
+  late ChartUnit _chartUnit;
 
   late SummaryType _summaryType;
 
@@ -84,7 +85,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;
-      _chartUnit = ChartUnitLabel.reps;
+      _chartUnit = ChartUnit.reps;
     });
   }
 
@@ -93,7 +94,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.mostReps;
-      _chartUnit = ChartUnitLabel.reps;
+      _chartUnit = ChartUnit.reps;
     });
   }
 
@@ -103,7 +104,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = SummaryType.bestTime;
-      _chartUnit = ChartUnitLabel.m;
+      _chartUnit = ChartUnit.m;
     });
   }
 
@@ -113,7 +114,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = SummaryType.sessionTimes;
-      _chartUnit = ChartUnitLabel.m;
+      _chartUnit = ChartUnit.m;
     });
   }
 

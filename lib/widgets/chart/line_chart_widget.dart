@@ -7,22 +7,13 @@ import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
+import '../../enums/chart_unit_enum.dart';
 import '../../utils/string_utils.dart';
-
-enum ChartUnitLabel {
-  kg,
-  lbs,
-  reps,
-  m,
-  h,
-  yd,
-  mi,
-}
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> dateTimes;
-  final ChartUnitLabel unit;
+  final ChartUnit unit;
   final bool bigData;
 
   const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit, this.bigData = false});
@@ -37,7 +28,7 @@ class LineChartWidget extends StatelessWidget {
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
-              aspectRatio: 1.5,
+              aspectRatio: 2,
               child: LineChart(LineChartData(
                   titlesData: FlTitlesData(
                     show: true,
@@ -112,21 +103,21 @@ class LineChartWidget extends StatelessWidget {
     );
 
     return SideTitleWidget(
-      fitInside:SideTitleFitInsideData.fromTitleMeta(meta),
+      fitInside:SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
       axisSide: meta.axisSide,
-      child: Text(_weightTitle(chartUnitLabel: unit, value: value), style: style),
+      child: Text(_weightTitle(chartUnit: unit, value: value), style: style),
     );
   }
 
-  String _weightTitle({required ChartUnitLabel chartUnitLabel, required double value}) {
+  String _weightTitle({required ChartUnit chartUnit, required double value}) {
 
     if(bigData) {
-      if (chartUnitLabel == ChartUnitLabel.kg || chartUnitLabel == ChartUnitLabel.lbs || chartUnitLabel == ChartUnitLabel.reps) {
+      if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs || chartUnit == ChartUnit.reps) {
         return volumeInKOrM(value);
       }
     }
 
-    return "${value.toInt()} ${unit.name}";
+    return "${value.toInt()} ${unit.label}";
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {

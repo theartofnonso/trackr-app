@@ -7,12 +7,12 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../colors.dart';
+import '../enums/chart_unit_enum.dart';
 import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
-import '../widgets/chart/line_chart_widget.dart';
 
-ChartUnitLabel chartWeightUnitLabel() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
+ChartUnit chartWeightUnitLabel() {
+  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
 }
 
 bool _isDefaultWeightUnit() {
