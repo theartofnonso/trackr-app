@@ -343,7 +343,8 @@ Map<MuscleGroupFamily, double> scaledMuscleGroupFrequencyAcrossSessions({require
 
   // Scaling the frequencies from 0 to 1
   frequencyMap.forEach((key, value) {
-    scaledFrequencyMap[key] = value / 8;
+    final scaledValue = value / 8;
+    scaledFrequencyMap[key] = scaledValue > 1 ? 1 : scaledValue;
   });
 
   final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
