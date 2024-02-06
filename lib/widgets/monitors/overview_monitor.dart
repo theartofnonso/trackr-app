@@ -5,7 +5,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import 'consistency_health_monitor.dart';
+import 'streak_health_monitor.dart';
 import 'muscle_group_frequency_monitor.dart';
 
 class OverviewMonitor extends StatelessWidget {
@@ -30,24 +30,30 @@ class OverviewMonitor extends StatelessWidget {
       children: [
         GestureDetector(
             onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
-            child: _MonitorScore(
-              value: "${routineLogs.length}",
-              title: "Consistency",
-              color: consistencyHealthColor(value: monthlyProgress),
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: SizedBox(
+              width: 85,
+              child: _MonitorScore(
+                value: "${routineLogs.length}",
+                title: "Streak",
+                color: consistencyHealthColor(value: monthlyProgress),
+                crossAxisAlignment: CrossAxisAlignment.end,
+              ),
             )),
         Stack(alignment: Alignment.center, children: [
-          ConsistencyHealthMonitor(value: monthlyProgress),
+          StreakHealthMonitor(value: monthlyProgress),
           MuscleGroupFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
         ]),
         GestureDetector(
             onTap: () =>
                 navigateToMuscleInsights(context: context, muscleGroupSplitFrequency: muscleGroupsSplitFrequency),
-            child: _MonitorScore(
-              value: "$splitPercentage%",
-              color: Colors.white70,
-              title: "Muscle Split",
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: SizedBox(
+              width: 85,
+              child: _MonitorScore(
+                value: "$splitPercentage%",
+                color: Colors.white70,
+                title: "Muscle Split",
+                crossAxisAlignment: CrossAxisAlignment.start,
+              ),
             )),
       ],
     );

@@ -3,10 +3,10 @@ import 'package:tracker_app/colors.dart';
 
 import '../../utils/general_utils.dart';
 
-class ConsistencyHealthMonitor extends StatelessWidget {
+class StreakHealthMonitor extends StatelessWidget {
   final double value;
 
-  const ConsistencyHealthMonitor({
+  const StreakHealthMonitor({
     Key? key,
     required this.value,
   }) : super(key: key);
