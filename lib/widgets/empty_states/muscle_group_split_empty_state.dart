@@ -20,7 +20,7 @@ class MuscleGroupSplitEmptyState extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GradientWidget(
-          child: RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFamilySplit, showInfo: false),
+          child: RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFamilySplit),
         )
       ],
     );

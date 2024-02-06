@@ -48,7 +48,6 @@ class _CalendarState extends State<Calendar> {
 
   List<_DateViewModel?> _generateDates() {
     final startDate = widget.range.start;
-    final endDate = widget.range.end;
 
     int year = startDate.year;
     int month = startDate.month;

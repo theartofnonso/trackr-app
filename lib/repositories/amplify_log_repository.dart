@@ -13,7 +13,6 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
-import '../enums/muscle_group_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutineTemplate.dart';
 import '../shared_prefs.dart';
@@ -174,21 +173,6 @@ class AmplifyLogRepository {
 
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
     return _exerciseLogsById[exercise.id]?.where((log) => log.createdAt.isBefore(date)).toList() ?? [];
-  }
-
-  List<SetDto> setsForMuscleGroupFamilyWhereDateRange({required MuscleGroupFamily muscleGroupFamily, DateTimeRange? range}) {
-    bool hasMatchingBodyPart(ExerciseLogDto log) {
-      final primaryMuscle = log.exercise.primaryMuscleGroup;
-      return primaryMuscle.family == muscleGroupFamily;
-    }
-
-    List<List<ExerciseLogDto>> allLogs = _exerciseLogsById.values.toList();
-
-    return allLogs.flattened
-        .where((log) => hasMatchingBodyPart(log))
-        .where((log) => range != null ? log.createdAt.isBetweenRange(range: range) : true)
-        .expand((log) => log.sets)
-        .toList();
   }
 
   List<RoutineLogDto> logsWhereDate({required DateTime dateTime}) {

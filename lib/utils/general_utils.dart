@@ -7,6 +7,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../colors.dart';
+import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
 import '../widgets/chart/line_chart_widget.dart';
 
@@ -170,7 +171,9 @@ List<DateTimeRange> monthRangesForYear(int year) {
 
   for (int month = 1; month <= 12; month++) {
     DateTime start = DateTime(year, month, 1);
-    DateTime end = (month < 12) ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1)) : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
+    DateTime end = (month < 12)
+        ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1))
+        : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
 
     monthRanges.add(DateTimeRange(start: start, end: end));
   }
@@ -192,4 +195,15 @@ Color consistencyHealthColor({required double value}) {
   } else {
     return vibrantGreen;
   }
+}
+
+List<MuscleGroupFamily> popularMuscleGroupFamilies() {
+  return [
+    MuscleGroupFamily.chest,
+    MuscleGroupFamily.back,
+    MuscleGroupFamily.legs,
+    MuscleGroupFamily.shoulders,
+    MuscleGroupFamily.arms,
+    MuscleGroupFamily.core
+  ];
 }

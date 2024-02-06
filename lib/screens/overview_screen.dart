@@ -4,10 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
-import 'package:tracker_app/screens/monthly_insights_screen.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
+import 'package:tracker_app/widgets/monitors/overview_monitor.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
@@ -19,8 +18,9 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/custom_progress_indicator.dart';
 import '../widgets/calendar/calendar.dart';
+import '../widgets/information_container_lite.dart';
+import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
   const OverviewScreen({super.key});
@@ -61,8 +61,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
 
-    final monthlyProgress = logsForTheMonth.length / 12;
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
@@ -99,13 +97,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                          child: CustomProgressIndicator(
-                            value: monthlyProgress,
-                            valueText: "${logsForTheMonth.length}",
-                          ),
-                        ),
+                        OverviewMonitor(routineLogs: logsForTheMonth),
                         const SizedBox(height: 10),
                         const InformationContainerLite(
                             content: consistencyMonitor,

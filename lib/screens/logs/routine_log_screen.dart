@@ -160,7 +160,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFrequency(exerciseLogs: completedExerciseLogsAndSets)),
+                  RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                       previewType: RoutinePreviewType.log),
@@ -213,7 +213,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: ShareableContainer(log: updatedLog, frequencyData: muscleGroupFrequency(exerciseLogs: completedExerciseLogsAndSets)));
+        child: ShareableContainer(log: updatedLog, frequencyData: muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {

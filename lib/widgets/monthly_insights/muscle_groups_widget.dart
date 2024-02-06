@@ -26,7 +26,7 @@ class _MuscleGroupsWidgetState extends State<MuscleGroupsWidget> {
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilySplit = muscleGroupFrequency(exerciseLogs: exerciseLogs);
+    final muscleGroupFamilySplit = scaledMuscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogs);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
@@ -40,7 +40,7 @@ class _MuscleGroupsWidgetState extends State<MuscleGroupsWidget> {
       ]),
       const SizedBox(height: 10),
       exerciseLogs.isNotEmpty
-          ? RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFamilySplit, showInfo: false, minimized: _minimized)
+          ? RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFamilySplit, minimized: _minimized)
           : const MuscleGroupSplitEmptyState()
     ]);
   }

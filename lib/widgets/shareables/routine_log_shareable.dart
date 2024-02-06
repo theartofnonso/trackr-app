@@ -73,7 +73,7 @@ class RoutineLogShareable extends StatelessWidget {
               ],
             ),
           ),
-          RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
+          RoutineMuscleGroupSplitChart(frequencyData: frequencyData),
           const SizedBox(height: 8),
           ...exerciseLogs,
           Align(
