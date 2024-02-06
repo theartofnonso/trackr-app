@@ -26,7 +26,7 @@ class OverviewMonitor extends StatelessWidget {
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).toInt();
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
             onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
@@ -39,10 +39,12 @@ class OverviewMonitor extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
               ),
             )),
+        const SizedBox(width: 20),
         Stack(alignment: Alignment.center, children: [
           StreakHealthMonitor(value: monthlyProgress),
           MuscleGroupFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
         ]),
+        const SizedBox(width: 20),
         GestureDetector(
             onTap: () =>
                 navigateToMuscleInsights(context: context, muscleGroupSplitFrequency: muscleGroupsSplitFrequency),
@@ -51,7 +53,7 @@ class OverviewMonitor extends StatelessWidget {
               child: _MonitorScore(
                 value: "$splitPercentage%",
                 color: Colors.white70,
-                title: "Muscle Split",
+                title: "Muscle",
                 crossAxisAlignment: CrossAxisAlignment.start,
               ),
             )),
@@ -77,8 +79,8 @@ class _MonitorScore extends StatelessWidget {
           value,
           style: GoogleFonts.montserrat(
             color: color,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
           ),
         ),
         Text(
@@ -86,8 +88,8 @@ class _MonitorScore extends StatelessWidget {
           textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
             color: color.withOpacity(0.9),
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
           ),
         )
       ],
