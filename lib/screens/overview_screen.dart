@@ -100,7 +100,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         OverviewMonitor(routineLogs: logsForTheMonth),
                         const SizedBox(height: 10),
                         const InformationContainerLite(
-                            content: consistencyMonitor,
+                            content: overviewMonitor,
                             color: Colors.transparent,
                             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
                         Calendar(

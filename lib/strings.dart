@@ -1,4 +1,4 @@
-const consistencyMonitor =
+const overviewMonitor =
     "Streak is based on training sessions, "
     "with an optimal target of 12. "
     "Muscle is the frequency of muscle groups trained.";
