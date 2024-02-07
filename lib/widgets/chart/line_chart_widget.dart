@@ -28,7 +28,7 @@ class LineChartWidget extends StatelessWidget {
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
-              aspectRatio: 2,
+              aspectRatio: 1.5,
               child: LineChart(LineChartData(
                   titlesData: FlTitlesData(
                     show: true,

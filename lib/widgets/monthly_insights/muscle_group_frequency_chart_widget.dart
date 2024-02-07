@@ -18,7 +18,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.weeklyLogs;
+    final monthlyLogs = routineLogController.monthlyLogs;
 
     final muscleGroupsSplitFrequencyScores = [];
 
@@ -37,7 +37,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
     final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
         color: sapphireLight,
         border: Border.all(color: sapphireDark.withOpacity(0.8), width: 2),
@@ -50,7 +50,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.only(right: 30.0),
+            padding: const EdgeInsets.only(right: 12),
             child: LineChartWidget(
               chartPoints: chartPoints,
               dateTimes: dateTimes,
@@ -58,6 +58,10 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
               bigData: false,
             ),
           ),
+          const SizedBox(height: 12),
+          Text(
+              "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by counting the number of times a muscle group is trained.",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
         ],
       ),
     );

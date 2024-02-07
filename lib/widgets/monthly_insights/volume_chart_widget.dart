@@ -55,7 +55,7 @@ class VolumeChartWidget extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.only(right: 30.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: LineChartWidget(
               chartPoints: chartPoints,
               dateTimes: dateTimes,
@@ -63,6 +63,10 @@ class VolumeChartWidget extends StatelessWidget {
               bigData: true,
             ),
           ),
+          const SizedBox(height: 12),
+          Text(
+              "The total volume indicates the intensity of your workouts. Trackr calculates this by multiplying the weight lifted by the number of reps.",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
         ],
       ),
     );

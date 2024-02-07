@@ -55,14 +55,18 @@ class RepsChartWidget extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.only(right: 30.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: LineChartWidget(
-              chartPoints: chartPoints,
-              dateTimes: dateTimes,
-              unit: ChartUnit.reps,
-              bigData: true,
-            ),
+                chartPoints: chartPoints,
+                dateTimes: dateTimes,
+                unit: ChartUnit.reps,
+                bigData: true,
+              ),
           ),
+          const SizedBox(height: 12),
+          Text(
+              "The total number of reps is an indicator of the volume of work done, A higher number of reps indicates a higher volume of work done.",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
         ],
       ),
     );
