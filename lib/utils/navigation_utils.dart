@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/screens/muscle_groups_insights.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
-import '../enums/muscle_group_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
@@ -35,8 +33,4 @@ void navigateToRoutineLogPreview({required BuildContext context, required Routin
 void navigateToRoutineLogs({required BuildContext context, required List<RoutineLogDto> logs}) {
   final descendingLogs = logs.reversed.toList();
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogsScreen(logs: descendingLogs)));
-}
-
-void navigateToMuscleInsights({required BuildContext context, required Map<MuscleGroupFamily, int> muscleGroupSplitFrequency}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MuscleGroupsFrequencyInsights(muscleGroupSplitFrequency: muscleGroupSplitFrequency)));
 }

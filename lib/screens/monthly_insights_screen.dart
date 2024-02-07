@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/muscle_group_frequency_chart_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
@@ -29,7 +28,7 @@ class MonthlyInsightsScreen extends StatelessWidget {
         ExercisesSetsHoursVolumeWidget(monthAndLogs: monthAndLogs),
         const SizedBox(height: 28),
         MuscleGroupsWidget(monthAndLogs: monthAndLogs),
-        const SizedBox(height: 10),
+        const SizedBox(height: 28),
         const MuscleGroupFrequencyWidget(),
         const SizedBox(height: 16),
         const RepsChartWidget(),

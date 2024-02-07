@@ -19,8 +19,6 @@ class OverviewMonitor extends StatelessWidget {
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
-    final muscleGroupsSplitFrequency = muscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogsForTheMonth);
-
     final muscleGroupsSplitFrequencyScore = muscleGroupFrequencyScore(exerciseLogs: exerciseLogsForTheMonth);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).toInt();
@@ -45,18 +43,15 @@ class OverviewMonitor extends StatelessWidget {
           MuscleGroupFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
         ]),
         const SizedBox(width: 20),
-        GestureDetector(
-            onTap: () =>
-                navigateToMuscleInsights(context: context, muscleGroupSplitFrequency: muscleGroupsSplitFrequency),
-            child: SizedBox(
-              width: 85,
-              child: _MonitorScore(
-                value: "$splitPercentage%",
-                color: Colors.white70,
-                title: "Muscle",
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            )),
+        SizedBox(
+          width: 85,
+          child: _MonitorScore(
+            value: "$splitPercentage%",
+            color: Colors.white70,
+            title: "Muscle",
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ),
       ],
     );
   }
@@ -68,7 +63,8 @@ class _MonitorScore extends StatelessWidget {
   final Color color;
   final CrossAxisAlignment crossAxisAlignment;
 
-  const _MonitorScore({required this.value, required this.title, required this.color, required this.crossAxisAlignment});
+  const _MonitorScore(
+      {required this.value, required this.title, required this.color, required this.crossAxisAlignment});
 
   @override
   Widget build(BuildContext context) {
