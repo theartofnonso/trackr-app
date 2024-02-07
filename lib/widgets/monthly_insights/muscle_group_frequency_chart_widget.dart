@@ -18,7 +18,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.monthlyLogs;
+    final monthlyLogs = routineLogController.weeklyLogs;
 
     final muscleGroupsSplitFrequencyScores = [];
 
@@ -46,7 +46,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Muscle Split",
+          Text("Muscle frequency",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(

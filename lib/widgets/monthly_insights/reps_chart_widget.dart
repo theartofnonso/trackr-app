@@ -19,7 +19,7 @@ class RepsChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.monthlyLogs;
+    final monthlyLogs = routineLogController.weeklyLogs;
 
     final monthlyReps = [];
 
