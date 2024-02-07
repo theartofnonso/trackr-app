@@ -22,6 +22,7 @@ class StreakHealthMonitor extends StatelessWidget {
           value: value,
           strokeWidth: 14,
           backgroundColor: sapphireLight,
+          strokeCap: StrokeCap.round,
           valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: value)),
         ),
       ),
