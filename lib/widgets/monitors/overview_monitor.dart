@@ -6,7 +6,7 @@ import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import 'streak_health_monitor.dart';
-import 'muscle_group_frequency_monitor.dart';
+import 'muscle_group_family_frequency_monitor.dart';
 
 class OverviewMonitor extends StatelessWidget {
   final List<RoutineLogDto> routineLogs;
@@ -40,7 +40,7 @@ class OverviewMonitor extends StatelessWidget {
         const SizedBox(width: 20),
         Stack(alignment: Alignment.center, children: [
           StreakHealthMonitor(value: monthlyProgress),
-          MuscleGroupFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
+          MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
         ]),
         const SizedBox(width: 20),
         SizedBox(

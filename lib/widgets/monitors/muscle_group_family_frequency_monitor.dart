@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 
-class MuscleGroupFrequencyMonitor extends StatelessWidget {
+class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
   final double value;
 
-  const MuscleGroupFrequencyMonitor({
+  const MuscleGroupFamilyFrequencyMonitor({
     Key? key,
     required this.value,
   }) : super(key: key);

@@ -8,16 +8,16 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 
-class MuscleGroupsWidget extends StatefulWidget {
+class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
   final List<RoutineLogDto> monthAndLogs;
 
-  const MuscleGroupsWidget({super.key, required this.monthAndLogs});
+  const MuscleGroupFamilyFrequencyWidget({super.key, required this.monthAndLogs});
 
   @override
-  State<MuscleGroupsWidget> createState() => _MuscleGroupsWidgetState();
+  State<MuscleGroupFamilyFrequencyWidget> createState() => _MuscleGroupFamilyFrequencyWidgetState();
 }
 
-class _MuscleGroupsWidgetState extends State<MuscleGroupsWidget> {
+class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFrequencyWidget> {
   bool _minimized = true;
 
   @override
