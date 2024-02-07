@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
@@ -355,7 +356,9 @@ Map<MuscleGroupFamily, double> scaledMuscleGroupFrequencyAcrossSessions({require
 }
 
 double muscleGroupFrequencyScore({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyMap = muscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogs);
+  final frequencyEntries = muscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogs).entries.where((entry) => popularMuscleGroupFamilies().contains(entry.key));
+
+  final frequencyMap = Map.fromEntries(frequencyEntries);
 
   final frequencies =  frequencyMap.entries.map((entry) => entry.value).sum;
 

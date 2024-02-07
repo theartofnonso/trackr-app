@@ -12,12 +12,12 @@ class MuscleGroupFrequencyMonitor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 110,
-      height: 110,
+      width: 100,
+      height: 100,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: 8,
-        backgroundColor: sapphireDark.withOpacity(0.6),
+        backgroundColor: sapphireLight,
         valueColor: const AlwaysStoppedAnimation<Color>(Colors.white70),
       ),
     );
