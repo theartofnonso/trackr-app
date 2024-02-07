@@ -16,8 +16,8 @@ class StreakHealthMonitor extends StatelessWidget {
     return ClipOval(
       child: Container(
         color: sapphireDark.withOpacity(0.7),
-        width: 140,
-        height: 140,
+        width: 120,
+        height: 120,
         child: CircularProgressIndicator(
           value: value,
           strokeWidth: 14,
