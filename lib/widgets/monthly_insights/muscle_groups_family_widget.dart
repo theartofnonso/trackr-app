@@ -34,7 +34,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
     final untrainedMuscleGroups =
         popularMuscleGroupFamilies().where((family) => !muscleGroupFamilies.contains(family)).toList();
 
-    final untrainedMuscleGroupsMessage = untrainedMuscleGroups.length < popularMuscleGroupFamilies().length
+    final untrainedMuscleGroupsMessage = untrainedMuscleGroups.isNotEmpty && untrainedMuscleGroups.length < popularMuscleGroupFamilies().length
         ? "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}"
         : "any muscle groups";
 
