@@ -8,7 +8,7 @@ import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';
@@ -99,12 +99,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   /// Select an exercise
-  void _navigateBackWithSelectedExercise({required ExerciseInLibraryDto selectedExercise}) {
+  void _navigateBackWithSelectedExercise(ExerciseInLibraryDto selectedExercise) {
     Navigator.of(context).pop([selectedExercise.exercise]);
   }
 
   /// Select up to many exercise
-  void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
+  void _selectCheckedExercise(ExerciseInLibraryDto exerciseInLibraryDto, bool selected) {
     final exerciseIndex = _exercisesInLibrary
         .indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
     final filteredIndex = _filteredExercises
@@ -122,31 +122,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         _filteredExercises[filteredIndex] = exerciseInLibraryDto.copyWith(selected: false);
       });
     }
-  }
-
-  Widget _exerciseWidget(ExerciseInLibraryDto exerciseInLibraryDto) {
-    if (widget.multiSelect) {
-      return SelectableExerciseWidget(
-          exerciseInLibraryDto: exerciseInLibraryDto,
-          onTap: (selected) {
-            if (!widget.readOnly) {
-              _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto);
-            }
-          },
-          onNavigateToExercise: () {
-            _navigateToExerciseHistory(exerciseInLibraryDto);
-          });
-    }
-    return ExerciseWidget(
-        exerciseInLibraryDto: exerciseInLibraryDto,
-        onTap: () {
-          if (!widget.readOnly) {
-            _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto);
-          }
-        },
-        onNavigateToExercise: () {
-          _navigateToExerciseHistory(exerciseInLibraryDto);
-        });
   }
 
   void _dismissKeyboard(BuildContext context) {
@@ -207,20 +182,20 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          _selectedExercises.isNotEmpty
-              ? CTextButton(
+          if(_selectedExercises.isNotEmpty)
+            CTextButton(
+                  key: const Key("add_exercises_button"),
                   onPressed: _navigateBackWithSelectedExercises,
                   label: "Add (${_selectedExercises.length})",
                   buttonColor: Colors.transparent,
                   buttonBorderColor: Colors.transparent,
                 )
-              : const SizedBox.shrink()
         ],
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
         onPressed: _navigateToExerciseEditor,
-        backgroundColor: tealBlueLighter,
+        backgroundColor: sapphireLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
       ),
@@ -246,7 +221,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
-                  color: tealBlueLighter, // Background color
+                  color: sapphireLighter, // Background color
                   borderRadius: BorderRadius.circular(5), // Border radius
                 ),
                 child: DropdownButton<MuscleGroup>(
@@ -293,10 +268,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   ? Expanded(
                       child: ListView.separated(
                           padding: const EdgeInsets.only(bottom: 250),
-                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
+                          itemBuilder: (BuildContext context, int index) => _ExerciseListItem(
+                              exerciseInLibraryDto: _filteredExercises[index],
+                              multiSelect: widget.multiSelect,
+                              onNavigateToExerciseHistory: _navigateToExerciseHistory,
+                              onMultiSelectExercise: _selectCheckedExercise,
+                              onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                           separatorBuilder: (BuildContext context, int index) => const Divider(
                                 thickness: 1.0,
-                                color: tealBlueLight,
+                                color: sapphireLight,
                               ),
                           itemCount: _filteredExercises.length),
                     )
@@ -328,5 +308,35 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void dispose() {
     super.dispose();
     _searchController.dispose();
+  }
+}
+
+class _ExerciseListItem extends StatelessWidget {
+  final ExerciseInLibraryDto exerciseInLibraryDto;
+  final bool multiSelect;
+  final void Function(ExerciseInLibraryDto) onNavigateToExerciseHistory;
+  final void Function(ExerciseInLibraryDto exerciseInLibraryDto, bool selected)? onMultiSelectExercise;
+  final void Function(ExerciseInLibraryDto selectedExercise)? onSelectExercise;
+
+  const _ExerciseListItem(
+      {required this.exerciseInLibraryDto,
+      required this.multiSelect,
+      required this.onNavigateToExerciseHistory,
+      required this.onMultiSelectExercise,
+      required this.onSelectExercise});
+
+  @override
+  Widget build(BuildContext context) {
+    if (multiSelect) {
+      return SelectableExerciseWidget(
+          key: Key(exerciseInLibraryDto.exercise.name),
+          exerciseInLibraryDto: exerciseInLibraryDto,
+          onSelect: onMultiSelectExercise,
+          onNavigateToExercise: onNavigateToExerciseHistory);
+    }
+    return ExerciseWidget(
+        exerciseInLibraryDto: exerciseInLibraryDto,
+        onSelect: onSelectExercise,
+        onNavigateToExercise: onNavigateToExerciseHistory);
   }
 }

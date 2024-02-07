@@ -6,7 +6,7 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../chart/routine_muscle_group_split_chart.dart';
 
@@ -42,7 +42,7 @@ class RoutineLogShareable extends StatelessWidget {
       key: routineLogShareableKey,
       child: Container(
         padding: const EdgeInsets.all(16),
-        color: tealBlueDark,
+        color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(
@@ -73,7 +73,7 @@ class RoutineLogShareable extends StatelessWidget {
               ],
             ),
           ),
-          RoutineMuscleGroupSplitChart(frequencyData: frequencyData, showInfo: false),
+          RoutineMuscleGroupSplitChart(frequencyData: frequencyData),
           const SizedBox(height: 8),
           ...exerciseLogs,
           Align(

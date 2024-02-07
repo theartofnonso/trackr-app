@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../controllers/routine_log_controller.dart';
 import '../../../dtos/routine_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -36,7 +36,7 @@ class RoutineLogWidget extends StatelessWidget {
         subtitle: "${completedExerciseLogsAndSets.length} ${pluralize(word: "exercise", count: log.exerciseLogs.length)}",
         trailing: trailing,
         tileColor: color,
-        trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: tealBlueLight, label: "${pbs.length}") : null,
+        trailingSubtitle: pbs.isNotEmpty ? PBIcon(color: sapphireLight, label: "${pbs.length}") : null,
         onTap: () => navigateToRoutineLogPreview(context: context, log: log));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class CTextButton extends StatelessWidget {
   final void Function()? onPressed;
@@ -29,7 +29,7 @@ class CTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultTextStyle = textStyle ?? GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16);
-    final buttonColor = this.buttonColor ?? tealBlueLight;
+    final buttonColor = this.buttonColor ?? sapphireLight;
     return TextButton(
         style: ButtonStyle(
             visualDensity: visualDensity,

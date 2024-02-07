@@ -1,10 +1,14 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
+import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
@@ -291,4 +295,73 @@ List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> 
       })
       .whereType<ExerciseLogDto>()
       .toList();
+}
+
+Map<MuscleGroupFamily, double> muscleGroupFrequencyAcrossExercises({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyMap = <MuscleGroupFamily, int>{};
+
+  // Counting the occurrences of each MuscleGroup
+  for (var log in exerciseLogs) {
+    frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+  }
+
+  int totalCount = exerciseLogs.length;
+  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+  // Scaling the frequencies from 0 to 1
+  frequencyMap.forEach((key, value) {
+    scaledFrequencyMap[key] = value / totalCount;
+  });
+
+  final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+  return sortedFrequencyMap;
+}
+
+Map<MuscleGroupFamily, int> muscleGroupFrequencyAcrossSessions({required List<ExerciseLogDto> exerciseLogs}) {
+
+  final frequencyMap = <MuscleGroupFamily, int>{};
+
+  final exerciseLogsByDate = groupBy(exerciseLogs, (log) => log.createdAt);
+
+  // Counting the occurrences of each MuscleGroup
+  for (var logAndDate in exerciseLogsByDate.entries) {
+    final muscleGroupFamilies = logAndDate.value.map((log) => log.exercise.primaryMuscleGroup.family).toSet();
+    for (var family in muscleGroupFamilies) {
+      frequencyMap.update(family, (value) => value + 1, ifAbsent: () => 1);
+    }
+  }
+
+  return frequencyMap;
+}
+
+Map<MuscleGroupFamily, double> scaledMuscleGroupFrequencyAcrossSessions({required List<ExerciseLogDto> exerciseLogs}) {
+
+  final frequencyMap = muscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogs);
+
+  final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+  // Scaling the frequencies from 0 to 1
+  frequencyMap.forEach((key, value) {
+    final scaledValue = value / 8;
+    scaledFrequencyMap[key] = scaledValue > 1 ? 1 : scaledValue;
+  });
+
+  final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+  final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+
+  return sortedFrequencyMap;
+}
+
+double muscleGroupFrequencyScore({required List<ExerciseLogDto> exerciseLogs}) {
+  final frequencyEntries = muscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogs).entries.where((entry) => popularMuscleGroupFamilies().contains(entry.key));
+
+  final frequencyMap = Map.fromEntries(frequencyEntries);
+
+  final frequencies =  frequencyMap.entries.map((entry) => entry.value).sum;
+
+  return frequencies / 48;
+
 }

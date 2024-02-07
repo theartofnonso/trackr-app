@@ -1,41 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
 class RoutineMuscleGroupSplitChart extends StatelessWidget {
   final Map<MuscleGroupFamily, double> frequencyData;
-  final bool showInfo;
+  final bool minimized;
 
-  const RoutineMuscleGroupSplitChart({super.key, required this.frequencyData, this.showInfo = true});
+  const RoutineMuscleGroupSplitChart({super.key, required this.frequencyData, this.minimized = false});
 
   @override
   Widget build(BuildContext context) {
-    return _HorizontalBarChart(frequencyData: frequencyData, showInfo: showInfo);
+    return _HorizontalBarChart(frequencyData: frequencyData, minimized: minimized,);
   }
 }
 
 class _HorizontalBarChart extends StatelessWidget {
-  final bool showInfo;
+  final bool minimized;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const _HorizontalBarChart({required this.frequencyData, required this.showInfo});
+  const _HorizontalBarChart({required this.frequencyData, required this.minimized});
 
   @override
   Widget build(BuildContext context) {
     final children =
-        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value)).toList();
+        frequencyData.entries.map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value));
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ...children,
-      if (showInfo)
-        Padding(
-          padding: const EdgeInsets.only(top: 2.0),
-          child: Text("Calculations are based on primary muscle groups",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 12)),
-        ),
-    ]);
+    final count = minimized ? children.take(3) : children;
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: count.toList());
   }
 }
 
@@ -55,7 +49,7 @@ class _LinearBar extends StatelessWidget {
             LinearProgressIndicator(
               value: frequency,
               backgroundColor: vibrantGreen.withOpacity(0.1),
-              color: vibrantGreen,
+              color: frequency > 0 ? vibrantGreen : sapphireLight,
               minHeight: 24,
               borderRadius: BorderRadius.circular(3.0), // Border r
             ),
@@ -66,7 +60,7 @@ class _LinearBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
                   margin: const EdgeInsets.only(right: 6),
                   decoration: BoxDecoration(
-                    color: tealBlueDark.withOpacity(0.8),
+                    color: sapphireDark.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(3.0),
                   ),
                   child: Text(muscleGroupFamily.name.toUpperCase(),

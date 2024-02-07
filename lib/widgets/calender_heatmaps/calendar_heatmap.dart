@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
@@ -23,9 +23,10 @@ class CalendarHeatMap extends StatelessWidget {
   final DateTime initialDate;
   final double spacing;
   final bool dynamicColor;
+  final bool showMonth;
 
   const CalendarHeatMap(
-      {super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false});
+      {super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false, this.showMonth = true});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -49,7 +50,7 @@ class CalendarHeatMap extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
-      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : tealBlueLight;
+      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : sapphireLight;
       datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: dynamicColor ? color : vibrantGreen));
     }
 
@@ -71,7 +72,8 @@ class CalendarHeatMap extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(initialDate.abbreviatedMonth().toUpperCase(),
+        if(showMonth)
+          Text(initialDate.abbreviatedMonth().toUpperCase(),
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         _Month(days: datesForMonth, spacing: spacing),
       ],

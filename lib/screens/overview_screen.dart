@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/streak_screen.dart';
-import 'package:tracker_app/screens/muscle_insights_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
-import 'package:tracker_app/widgets/information_container_lite.dart';
+import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
+import 'package:tracker_app/widgets/monitors/overview_monitor.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../controllers/routine_log_controller.dart';
@@ -16,9 +16,11 @@ import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../utils/shareables_utils.dart';
+import '../widgets/backgrounds/gradient_background.dart';
 import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/custom_progress_indicator.dart';
 import '../widgets/calendar/calendar.dart';
+import '../widgets/information_container_lite.dart';
+import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
   const OverviewScreen({super.key});
@@ -28,16 +30,7 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-
-  late DateTimeRange _dateTimeRange;
-
-  void _navigateToSettings({required BuildContext context}) async {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-  }
-
-  void _navigateToMuscleDistribution({required BuildContext context}) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MuscleInsightsScreen()));
-  }
+  DateTimeRange _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
@@ -68,75 +61,59 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
 
-    final monthlyProgress = logsForTheMonth.length / 12;
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
         onPressed: () => _logEmptyRoutine(context),
-        backgroundColor: tealBlueLighter,
+        backgroundColor: sapphireLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 150),
-            physics: const AlwaysScrollableScrollPhysics(),
+      body: Stack(children: [
+        const Positioned.fill(child: GradientBackground()),
+        SafeArea(
+            minimum: const EdgeInsets.all(10.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   IconButton(
+                    onPressed: () => _navigateToAllDaysTracked(context: context),
+                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
+                      const SizedBox(width: 4),
+                      Text("${routineLogController.routineLogs.length}",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                    ]),
+                  ),
+                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  IconButton(
                       onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                  IconButton(onPressed: () => _navigateToSettings(context: context), icon: const Icon(Icons.settings))
                 ]),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => navigateToRoutineLogs(context: context, logs: logsForTheMonth),
-                      child: CustomProgressIndicator(
-                        value: monthlyProgress,
-                        valueText: "${logsForTheMonth.length}",
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    InkWell(
-                      onTap: () => _navigateToAllDaysTracked(context: context),
-                      child: _CTableCell(
-                          title: "STREAK",
-                          subtitle: "${routineLogController.routineLogs.length}",
-                          crossAxisAlignment: CrossAxisAlignment.end),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const InformationContainerLite(
-                    content: consistencyMonitor,
-                    color: Colors.transparent,
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
-                Theme(
-                  data: ThemeData(splashColor: tealBlueLight),
-                  child: ListTile(
-                      onTap: () => _navigateToMuscleDistribution(context: context),
-                      tileColor: tealBlueLight,
-                      dense: true,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      title: Text("Muscle insights",
-                          style:
-                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                      trailing: Text("sets",
-                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))),
-                ),
-                const SizedBox(height: 10),
-
-                /// Do not make this a const
-                Calendar(onChangedDateTimeRange: _onChangedDateTimeRange)
+                Expanded(
+                  child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 150),
+                      child: Column(children: [
+                        const SizedBox(height: 10),
+                        OverviewMonitor(routineLogs: logsForTheMonth),
+                        const SizedBox(height: 10),
+                        const InformationContainerLite(
+                            content: overviewMonitor,
+                            color: Colors.transparent,
+                            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
+                        Calendar(
+                          range: _dateTimeRange,
+                        ),
+                        const SizedBox(height: 12),
+                        MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
+                      ])),
+                )
+                // Add more widgets here for exercise insights
               ],
-            )),
-      ),
+            ))
+      ]),
     );
   }
 
@@ -148,7 +125,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
-        color: tealBlueDark,
+        color: sapphireDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
@@ -156,7 +133,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: tealBlueDark, padding: const EdgeInsets.all(8), child: const Calendar(readOnly: true))),
+                  color: sapphireDark,
+                  padding: const EdgeInsets.all(8),
+                  child: Calendar(readOnly: true, range: _dateTimeRange))),
           const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
@@ -174,24 +153,5 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _dateTimeRange = thisMonthDateRange();
-  }
-}
-
-class _CTableCell extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final CrossAxisAlignment crossAxisAlignment;
-
-  const _CTableCell({required this.title, required this.subtitle, required this.crossAxisAlignment});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      child: Column(crossAxisAlignment: crossAxisAlignment, children: [
-        Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w600)),
-        Text(subtitle, style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 24)),
-      ]),
-    );
   }
 }

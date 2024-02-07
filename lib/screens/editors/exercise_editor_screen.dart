@@ -10,7 +10,7 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';
@@ -98,7 +98,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                       title: 'Tip',
                       description: "Tap text in white to edit.\nExercise type is not editable once created.",
-                      color: tealBlueDark),
+                      color: sapphireDark),
                   SizedBox(height: 20),
                 ]),
               if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
@@ -170,9 +170,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
               filled: true,
-              fillColor: tealBlueLighter,
+              fillColor: sapphireLighter,
               hintText: "New Exercise",
               hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
           onChanged: (value) => _updateExerciseName(value),

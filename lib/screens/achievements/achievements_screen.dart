@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/achievement_dto.dart';
 import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../widgets/achievements/achievement_tile.dart';
 import '../../widgets/information_container_lite.dart';
@@ -38,7 +38,7 @@ class AchievementsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 const InformationContainerLite(
                   content: 'Only workouts logged in the current year will count towards your achievements.',
-                  color: tealBlueLighter,
+                  color: sapphireLighter,
                 ),
                 const SizedBox(height: 20),
                 logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()

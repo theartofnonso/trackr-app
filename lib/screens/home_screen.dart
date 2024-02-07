@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/overview_screen.dart';
+import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -34,15 +35,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const OverviewScreen(), const RoutineTemplatesHome(), const AchievementsScreen()];
+    final screens = [
+      const OverviewScreen(),
+      const RoutineTemplatesHome(),
+      const AchievementsScreen(),
+      const SettingsScreen(),
+    ];
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         indicatorColor: Colors.transparent,
-        backgroundColor: tealBlueDark,
-        surfaceTintColor: tealBlueLighter,
+        backgroundColor: sapphireDark,
+        surfaceTintColor: sapphireLighter,
         overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
         destinations: const [
           NavigationDestination(
@@ -55,12 +61,16 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 24),
             label: 'Workouts',
           ),
-
-          /// Uncomment this to enable achievements
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
             selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
             label: 'Achievements',
+          ),
+          /// Uncomment this to enable Monthly Reports
+          NavigationDestination(
+            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),
+            label: 'Settings',
           )
         ],
         onDestinationSelected: (int index) {

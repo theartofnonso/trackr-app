@@ -8,9 +8,10 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/exercise_history/personal_best_widget.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/graph/chart_point_dto.dart';
 import '../../../dtos/set_dto.dart';
+import '../../../enums/chart_unit_enum.dart';
 import '../../../enums/exercise_type_enums.dart';
 import '../../../controllers/routine_log_controller.dart';
 import '../../../utils/exercise_logs_utils.dart';
@@ -57,7 +58,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   List<ChartPointDto> _chartPoints = [];
 
-  late ChartUnitLabel _chartUnit;
+  late ChartUnit _chartUnit;
 
   late SummaryType _summaryType;
 
@@ -66,7 +67,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.value1.toDouble())).toList();
       _summaryType = SummaryType.weight;
-      _chartUnit = weightUnit();
+      _chartUnit = chartWeightUnitLabel();
     });
   }
 
@@ -75,7 +76,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.setVolume;
-      _chartUnit = weightUnit();
+      _chartUnit = chartWeightUnitLabel();
     });
   }
 
@@ -84,7 +85,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;
-      _chartUnit = ChartUnitLabel.reps;
+      _chartUnit = ChartUnit.reps;
     });
   }
 
@@ -93,7 +94,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.mostReps;
-      _chartUnit = ChartUnitLabel.reps;
+      _chartUnit = ChartUnit.reps;
     });
   }
 
@@ -103,7 +104,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = SummaryType.bestTime;
-      _chartUnit = ChartUnitLabel.mins;
+      _chartUnit = ChartUnit.m;
     });
   }
 
@@ -113,7 +114,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       _chartPoints =
           values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
       _summaryType = SummaryType.sessionTimes;
-      _chartUnit = ChartUnitLabel.mins;
+      _chartUnit = ChartUnit.m;
     });
   }
 
@@ -163,7 +164,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? vibrantBlue : tealBlueLight;
+    return _summaryType == type ? vibrantBlue : sapphireLight;
   }
 
   void _navigateTo({required String? routineLogId}) {
@@ -383,10 +384,10 @@ class _MetricListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
+      data: ThemeData(splashColor: sapphireLight),
       child: ListTile(
         onTap: enabled ? onTap : () {},
-        tileColor: tealBlueLight,
+        tileColor: sapphireLight,
         title:
             Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
         subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),

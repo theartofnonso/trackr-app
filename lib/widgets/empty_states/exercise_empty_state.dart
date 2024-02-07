@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class ExerciseEmptyState extends StatelessWidget {
   const ExerciseEmptyState({super.key});
@@ -34,7 +34,7 @@ class ExerciseEmptyState extends StatelessWidget {
                           )),
                     ],
                   )),
-              const Divider(thickness: 1.0, color: tealBlueLight),
+              const Divider(thickness: 1.0, color: sapphireLight),
               ListTile(
                   leading: const Icon(
                     Icons.timeline_rounded,

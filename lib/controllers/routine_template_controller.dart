@@ -6,7 +6,7 @@ import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/routine_template_library_workout_enum.dart';
 import '../repositories/amplify_template_repository.dart';
-import '../screens/template/default/routine_template_library.dart';
+import '../screens/template/library/routine_template_library.dart';
 
 class RoutineTemplateController extends ChangeNotifier {
   bool isLoading = false;

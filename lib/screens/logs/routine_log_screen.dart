@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +13,7 @@ import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
@@ -24,7 +23,6 @@ import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
-import '../../enums/muscle_group_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../widgets/shareables/shareable_container.dart';
@@ -57,7 +55,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
     return Scaffold(
-        backgroundColor: tealBlueDark,
+        backgroundColor: sapphireDark,
         appBar: AppBar(
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -73,7 +71,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
             onPressed: _showBottomSheet,
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.circle)),
         body: Stack(children: [
@@ -120,11 +118,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     margin: const EdgeInsets.only(top: 24, bottom: 12),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: tealBlueLight, // Set the background color
+                      color: sapphireLight, // Set the background color
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Table(
-                      border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
+                      border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
                       columnWidths: const <int, TableColumnWidth>{
                         0: FlexColumnWidth(),
                         1: FlexColumnWidth(),
@@ -162,7 +160,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  RoutineMuscleGroupSplitChart(frequencyData: calculateFrequency(completedExerciseLogsAndSets)),
+                  RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                       previewType: RoutinePreviewType.log),
@@ -211,11 +209,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     displayBottomSheet(
-        color: tealBlueDark,
+        color: sapphireDark,
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: ShareableContainer(log: updatedLog, frequencyData: calculateFrequency(completedExerciseLogsAndSets)));
+        child: ShareableContainer(log: updatedLog, frequencyData: muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -223,29 +221,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       _loading = !_loading;
       _loadingMessage = message;
     });
-  }
-
-  Map<MuscleGroupFamily, double> calculateFrequency(List<ExerciseLogDto> logList) {
-    var frequencyMap = <MuscleGroupFamily, int>{};
-
-    // Counting the occurrences of each MuscleGroup
-    for (var log in logList) {
-      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-    }
-
-    int totalCount = logList.length;
-    var scaledFrequencyMap = <MuscleGroupFamily, double>{};
-
-    // Scaling the frequencies from 0 to 1
-    frequencyMap.forEach((key, value) {
-      scaledFrequencyMap[key] = value / totalCount;
-    });
-
-    var sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-    var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
-
-    return sortedFrequencyMap;
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {

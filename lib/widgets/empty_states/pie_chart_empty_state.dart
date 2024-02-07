@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class PieChartEmptyState extends StatelessWidget {
   const PieChartEmptyState({super.key});
@@ -13,7 +13,7 @@ class PieChartEmptyState extends StatelessWidget {
         child: CircularProgressIndicator(
           value: 1,
           strokeWidth: 10,
-          color: tealBlueLighter,
+          color: sapphireLighter,
         ));
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
@@ -103,7 +103,7 @@ class _NotificationSwitch extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: tealBlueLight, // Background color
+          color: sapphireLight, // Background color
           width: 1, // Border width
         ),
         borderRadius: BorderRadius.circular(5), // Border radius

@@ -6,7 +6,7 @@ import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 
@@ -39,7 +39,7 @@ class PBsShareable extends StatelessWidget {
       key: globalKey,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
-        color: tealBlueDark,
+        color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [

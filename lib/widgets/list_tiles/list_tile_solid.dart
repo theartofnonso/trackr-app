@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
-
 class SolidListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -29,31 +27,31 @@ class SolidListTile extends StatelessWidget {
     final trailingSubtitle = this.trailingSubtitle;
     final trailing = this.trailing;
 
-    return Theme(
-      data: ThemeData(splashColor: tealBlueLight),
-      child: Container(
-        margin: margin,
-        child: ListTile(
-          tileColor: tileColor,
-          onTap: onTap,
-          dense: true,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          title: Text(title,
-              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-          subtitle: Row(
-            children: [
-              if (subtitle != null)
-                Text(subtitle,
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        color: tileColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        dense: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        title: Text(title,
+            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+        subtitle: Row(
+          children: [
+            if (subtitle != null)
+              Text(subtitle,
                   style: GoogleFonts.montserrat(
                       color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)),
-              const SizedBox(width: 8),
-              if (trailingSubtitle != null) trailingSubtitle
-            ],
-          ),
-          trailing: trailing != null ? Text(trailing,
-              style: GoogleFonts.montserrat(
-                  color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)) : null,
+            const SizedBox(width: 8),
+            if (trailingSubtitle != null) trailingSubtitle
+          ],
         ),
+        trailing: trailing != null ? Text(trailing,
+            style: GoogleFonts.montserrat(
+                color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14)) : null,
       ),
     );
   }

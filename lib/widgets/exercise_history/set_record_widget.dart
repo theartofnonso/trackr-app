@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -23,7 +23,7 @@ class SetRecordWidget extends StatelessWidget {
       return const InformationContainerLite(
           content:
               "You haven't logged any sessions for this exercise yet. Your personal bests will be displayed here once you begin tracking them",
-          color: tealBlue);
+          color: sapphireBlue);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/template/default/routine_template_library.dart';
+import 'package:tracker_app/screens/template/library/routine_template_library.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 
 import '../../controllers/exercise_controller.dart';

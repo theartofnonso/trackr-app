@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
@@ -21,7 +21,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineEditor(context: context),
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
           ),
@@ -78,9 +78,9 @@ class _RoutineWidget extends StatelessWidget {
     ];
 
     return Theme(
-        data: ThemeData(splashColor: tealBlueLight),
+        data: ThemeData(splashColor: sapphireLight),
         child: ListTile(
-          tileColor: tealBlueLight,
+          tileColor: sapphireLight,
           onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -97,7 +97,7 @@ class _RoutineWidget extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
           trailing: MenuAnchor(
             style: MenuStyle(
-              backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+              backgroundColor: MaterialStateProperty.all(sapphireLighter),
             ),
             builder: (BuildContext context, MenuController controller, Widget? child) {
               return IconButton(

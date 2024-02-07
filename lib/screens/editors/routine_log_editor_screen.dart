@@ -12,7 +12,7 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/widget_utils.dart';
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -217,7 +217,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     return PopScope(
         canPop: false,
         child: Scaffold(
-            backgroundColor: tealBlueDark,
+            backgroundColor: sapphireDark,
             appBar: AppBar(
               leading: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -228,6 +228,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
               ),
               actions: [
                 IconButton(
+                  key: const Key('select_exercises_in_library_btn'),
                     onPressed: _selectExercisesInLibrary,
                     icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
                 if(exerciseLogs.length > 1)
@@ -241,7 +242,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                 : FloatingActionButton(
                     heroTag: UniqueKey(),
                     onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: tealBlueLighter,
+                    backgroundColor: sapphireLighter,
                     enableFeedback: true,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),

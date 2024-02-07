@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class ListTileEmptyState extends StatelessWidget {
   const ListTileEmptyState({super.key});
@@ -13,7 +13,7 @@ class ListTileEmptyState extends StatelessWidget {
           width: 30,
           height: 30,
            decoration: BoxDecoration(
-             color: tealBlueLighter, // Container color
+             color: sapphireLighter, // Container color
              borderRadius: BorderRadius.circular(5), // Border radius
            ),
         ),
@@ -25,7 +25,7 @@ class ListTileEmptyState extends StatelessWidget {
                 width: 160,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: tealBlueLighter,
+                  color: sapphireLighter,
                   borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
                 )),
             const SizedBox(height: 5),
@@ -33,7 +33,7 @@ class ListTileEmptyState extends StatelessWidget {
                 width: 100,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: tealBlueLighter,
+                  color: sapphireLighter,
                   borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
                 ))
           ],
@@ -43,7 +43,7 @@ class ListTileEmptyState extends StatelessWidget {
             width: 30,
             height: 10,
             decoration: BoxDecoration(
-              color: tealBlueLighter,
+              color: sapphireLighter,
               borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
             ))
       ],

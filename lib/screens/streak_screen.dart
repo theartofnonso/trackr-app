@@ -36,23 +36,22 @@ class StreakScreen extends StatelessWidget {
     });
 
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: SafeArea(
-      minimum: const EdgeInsets.all(10.0),
-      child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ]),
-          const SizedBox(height: 10),
-          Text("Streak ${DateTime.now().year}",
-              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 20),
-          ...children
-        ]),
-      ),
-    ));
+          minimum: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text("Streak ${DateTime.now().year}",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 20),
+              ...children
+            ]),
+          ),
+        ));
   }
 }

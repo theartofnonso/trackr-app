@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../buttons/text_button_widget.dart';
 
 class TimePicker extends StatefulWidget {
@@ -31,7 +31,7 @@ class _TimerPickerState extends State<TimePicker> {
             ),
             child: CupertinoTimerPicker(
               initialTimerDuration: _duration,
-              backgroundColor: tealBlueLight,
+              backgroundColor: sapphireLight,
               mode: widget.mode,
               // This is called when the user changes the timer's
               // duration.

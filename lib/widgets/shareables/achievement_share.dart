@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/achievement_dto.dart';
 import '../calender_heatmaps/calendar_heatmap.dart';
 
@@ -25,7 +25,7 @@ class AchievementShare extends StatelessWidget {
     return RepaintBoundary(
         key: globalKey,
         child: Container(
-            color: tealBlueDark,
+            color: sapphireDark,
             padding: const EdgeInsets.all(8),
             width: width,
             child: Column(
@@ -49,7 +49,7 @@ class AchievementShare extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
-                    'assets/trackr.png',
+                    'images/trackr.png',
                     fit: BoxFit.contain,
                     height: 8, // Adjust the height as needed
                   ),

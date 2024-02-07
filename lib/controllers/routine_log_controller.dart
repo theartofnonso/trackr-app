@@ -8,7 +8,6 @@ import '../dtos/achievement_dto.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
-import '../enums/muscle_group_enums.dart';
 import '../repositories/achievement_repository.dart';
 
 class RoutineLogController extends ChangeNotifier {
@@ -117,20 +116,12 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.exerciseLogsForExercise(exercise: exercise);
   }
 
-  List<SetDto> whereSetsForExerciseBefore({required ExerciseDto exercise, required DateTime date}) {
-    return _amplifyLogRepository.whereSetsForExerciseBefore(exercise: exercise, date: date);
-  }
-
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {
     return _amplifyLogRepository.whereExerciseLogsBefore(exercise: exercise, date: date);
   }
 
   List<SetDto> whereSetsForExercise({required ExerciseDto exercise}) {
     return _amplifyLogRepository.whereSetsForExercise(exercise: exercise);
-  }
-
-  List<SetDto> setsForMuscleGroupWhereDateRange({required MuscleGroupFamily muscleGroupFamily, DateTimeRange? range}) {
-    return _amplifyLogRepository.setsForMuscleGroupWhereDateRange(muscleGroupFamily: muscleGroupFamily, range: range);
   }
 
   void clear() {

@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/calender_heatmaps/calendar_heatmap.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/achievement_dto.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
@@ -33,7 +33,7 @@ class AchievementScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
         heroTag: "fab_achievement_screen",
-        backgroundColor: tealBlueLighter,
+        backgroundColor: sapphireLighter,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
       ),
@@ -59,7 +59,7 @@ class AchievementScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), border: Border.all(color: tealBlueLighter, width: 2.0)),
+                      borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
                   child: Row(
                     children: [
                       Expanded(
@@ -68,7 +68,7 @@ class AchievementScreen extends StatelessWidget {
                           color: completed ? Colors.green : Colors.white,
                           value: achievementDto.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(2)),
-                          backgroundColor: tealBlueLighter,
+                          backgroundColor: sapphireLighter,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -90,13 +90,13 @@ class AchievementScreen extends StatelessWidget {
             const SizedBox(height: 10),
             const InformationContainerLite(
                 content: 'Brightly-coloured squares represent days you logged a session for this achievement',
-                color: tealBlueLight),
+                color: sapphireLight),
             const SizedBox(height: 10),
             InformationContainer(
                 icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                 title: 'Tip',
                 description: achievementDto.type.tip,
-                color: tealBlueDark),
+                color: sapphireDark),
           ]),
         ),
       ),
@@ -106,7 +106,7 @@ class AchievementScreen extends StatelessWidget {
   void _onShareCalendar(
       {required BuildContext context, required List<CalendarHeatMap> monthsHeatMaps, required bool completed}) {
     displayBottomSheet(
-        color: tealBlueDark,
+        color: sapphireDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,

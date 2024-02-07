@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class RoutineLogEmptyState extends StatelessWidget {
   const RoutineLogEmptyState({super.key});
@@ -17,7 +17,7 @@ class RoutineLogEmptyState extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                tileColor: tealBlueLight,
+                tileColor: sapphireLight,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 title: Text("Legs Day 1", style: Theme.of(context).textTheme.labelLarge),
@@ -29,7 +29,7 @@ class RoutineLogEmptyState extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               ListTile(
-                tileColor: tealBlueLight,
+                tileColor: sapphireLight,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                 title: Text("Push Day", style: Theme.of(context).textTheme.labelLarge),

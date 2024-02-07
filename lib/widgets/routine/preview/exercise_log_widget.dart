@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
@@ -41,7 +41,7 @@ class ExerciseLogWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Theme(
-            data: ThemeData(splashColor: tealBlueLight),
+            data: ThemeData(splashColor: sapphireLight),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               dense: true,

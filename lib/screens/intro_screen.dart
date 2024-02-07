@@ -5,7 +5,7 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_log_empty_state.dart';
 
-import '../app_constants.dart';
+import '../colors.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
@@ -35,7 +35,7 @@ class IntroScreen extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             const SizedBox(height: 10),
             Image.asset(
-              'assets/trackr.png',
+              'images/trackr.png',
               fit: BoxFit.contain,
               height: 16, // Adjust the height as needed
             ),

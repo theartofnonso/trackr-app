@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
@@ -92,10 +92,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireLighter,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),
-        backgroundColor: tealBlueDark,
+        backgroundColor: sapphireDark,
         appBar: AppBar(
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
@@ -106,7 +106,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           actions: [
             MenuAnchor(
               style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                backgroundColor: MaterialStateProperty.all(sapphireLighter),
               ),
               builder: (BuildContext context, MenuController controller, Widget? child) {
                 return IconButton(

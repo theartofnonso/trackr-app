@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class CListTile extends StatelessWidget {
   final String title;
@@ -21,7 +21,7 @@ class CListTile extends StatelessWidget {
           padding: padding,
           margin: margin,
           decoration: BoxDecoration(
-             color: tealBlueLight,
+             color: sapphireLight,
             borderRadius: BorderRadius.circular(5),
               ),
           child: Column(
