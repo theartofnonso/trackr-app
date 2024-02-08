@@ -27,8 +27,8 @@ class LineChartWidget extends StatelessWidget {
       this.extraLinesData, this.maxY});
 
   static const List<Color> gradientColors = [
-    Colors.white,
-    Colors.white,
+    Colors.white30,
+    Colors.white
   ];
 
   @override
@@ -79,7 +79,7 @@ class LineChartWidget extends StatelessWidget {
                         belowBarData: BarAreaData(
                           show: true,
                           gradient: LinearGradient(
-                            colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                            colors: [gradientColors[0].withOpacity(0.1), gradientColors[1].withOpacity(0.2)],
                           ),
                         ),
                         isCurved: true)
