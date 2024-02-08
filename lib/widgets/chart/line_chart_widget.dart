@@ -33,6 +33,9 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final isWeight = unit == ChartUnit.kg || unit == ChartUnit.lbs;
+
     return chartPoints.isNotEmpty
         ? Center(
             child: AspectRatio(
@@ -71,7 +74,7 @@ class LineChartWidget extends StatelessWidget {
                     LineChartBarData(
                         isStepLineChart: true,
                         spots: chartPoints.map((point) {
-                          return FlSpot(point.x, weightWithConversion(value: point.y));
+                          return FlSpot(point.x, isWeight ? weightWithConversion(value: point.y) : point.y);
                         }).toList(),
                         gradient: const LinearGradient(
                           colors: gradientColors,

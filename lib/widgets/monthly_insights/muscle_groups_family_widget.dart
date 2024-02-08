@@ -52,7 +52,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       const SizedBox(height: 10),
       Text(
           "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
-          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
       const SizedBox(height: 10),
       exerciseLogs.isNotEmpty
           ? RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFamilySplit, minimized: _minimized)
@@ -64,7 +64,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         RichText(
             text: TextSpan(
                 text: "You haven't trained",
-                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
+                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                 children: [
               const TextSpan(text: " "),
               TextSpan(
