@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -35,7 +36,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
       return volume;
     }).sum;
 
-    final totalVolumeInKg = volumeInKOrM(tonnage.toDouble());
+    final totalVolume = volumeInKOrM(weightWithConversion(value: tonnage));
 
     final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight);
     final totalReps = exerciseLogsWithReps.map((log) {
@@ -112,7 +113,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                     child: Center(
                       child: SleepTimeColumn(
                           title: 'VOLUME',
-                          subTitle: totalVolumeInKg,
+                          subTitle: totalVolume,
                           titleColor: Colors.white,
                           subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
