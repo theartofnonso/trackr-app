@@ -82,7 +82,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'EXERCISES',
                           subTitle: "$numberOfExercises",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                   TableCell(
@@ -92,7 +92,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'SETS',
                           subTitle: "$numberOfSets",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                   TableCell(
@@ -102,7 +102,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'REPS',
                           subTitle: "$totalReps",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                 ]),
@@ -114,7 +114,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'VOLUME',
                           subTitle: totalVolumeInKg,
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
@@ -123,7 +123,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'HOURS',
                           subTitle: totalHours.hmDigital(),
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),
                   TableCell(
@@ -133,7 +133,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'Personal Bests',
                           subTitle: "${numberOfPbs.length}",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),
                 ]),
@@ -180,7 +180,7 @@ class SleepTimeColumn extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: GoogleFonts.montserrat(
-              color: subTitleColor,
+              color: subTitleColor.withOpacity(0.6),
               fontSize: 10,
               fontWeight: FontWeight.bold,
             ),
