@@ -19,8 +19,8 @@ class LineChartWidget extends StatelessWidget {
   const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit, this.bigData = false});
 
   static const List<Color> gradientColors = [
-    vibrantBlue,
-    vibrantGreen,
+    Colors.white,
+    Colors.white,
   ];
 
   @override
@@ -58,6 +58,7 @@ class LineChartWidget extends StatelessWidget {
                   ),
                   lineBarsData: [
                     LineChartBarData(
+                      isStepLineChart: true,
                         spots: chartPoints.map((point) {
                           return FlSpot(point.x, weightWithConversion(value: point.y));
                         }).toList(),

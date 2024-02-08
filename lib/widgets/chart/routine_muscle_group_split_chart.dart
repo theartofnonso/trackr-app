@@ -48,8 +48,8 @@ class _LinearBar extends StatelessWidget {
           children: [
             LinearProgressIndicator(
               value: frequency,
-              backgroundColor: vibrantGreen.withOpacity(0.1),
-              color: frequency > 0 ? vibrantGreen : sapphireLight,
+              backgroundColor: Colors.white60.withOpacity(0.1),
+              color: frequency > 0 ? Colors.white70 : sapphireLight,
               minHeight: 24,
               borderRadius: BorderRadius.circular(3.0), // Border r
             ),
@@ -64,7 +64,7 @@ class _LinearBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(3.0),
                   ),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: vibrantGreen, fontSize: 12)),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 12)),
                 ),
               ),
             )
