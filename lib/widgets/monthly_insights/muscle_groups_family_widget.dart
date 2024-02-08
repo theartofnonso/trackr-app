@@ -36,9 +36,10 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
     String untrainedMuscleGroupsMessage = "";
 
-    if(untrainedMuscleGroups.isNotEmpty && untrainedMuscleGroups.length < popularMuscleGroupFamilies().length) {
-      if(untrainedMuscleGroups.length > 1) {
-        untrainedMuscleGroupsMessage = "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
+    if (untrainedMuscleGroups.isNotEmpty && untrainedMuscleGroups.length < popularMuscleGroupFamilies().length) {
+      if (untrainedMuscleGroups.length > 1) {
+        untrainedMuscleGroupsMessage =
+            "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
       } else {
         untrainedMuscleGroupsMessage = untrainedMuscleGroups.first.name;
       }
@@ -69,14 +70,17 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       if (untrainedMuscleGroups.isNotEmpty)
         RichText(
             text: TextSpan(
-                text: "You haven't trained any muscle group",
+                text: "You have not trained",
                 style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                 children: [
               const TextSpan(text: " "),
               TextSpan(
                   text: untrainedMuscleGroupsMessage,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600))
-            ]))
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+            ])),
+      if (untrainedMuscleGroups.isEmpty)
+        Text("You have not trained any muscle group",
+            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500))
     ]);
   }
 
