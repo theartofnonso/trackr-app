@@ -123,7 +123,7 @@ class LineChartWidget extends StatelessWidget {
 
   String _weightTitle({required ChartUnit chartUnit, required double value}) {
     if (bigData) {
-      if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs || chartUnit == ChartUnit.reps) {
+      if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs) {
         return volumeInKOrM(value);
       }
     }

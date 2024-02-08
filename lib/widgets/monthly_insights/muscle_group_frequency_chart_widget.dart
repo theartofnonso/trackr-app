@@ -61,10 +61,28 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
               extraLinesData: ExtraLinesData(
                 horizontalLines: [
                   HorizontalLine(
-                    y: 80,
+                    y: 70,
                     color: vibrantGreen,
-                    strokeWidth: 3,
-                    dashArray: [20, 10],
+                    strokeWidth: 1.5,
+                    strokeCap: StrokeCap.round,
+                    dashArray: [10],
+                    label: HorizontalLineLabel(
+                      show: true,
+                      alignment: Alignment.topRight,
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  HorizontalLine(
+                    y: 30,
+                    color: Colors.orange,
+                    strokeWidth: 1.5,
+                    strokeCap: StrokeCap.round,
+                    dashArray: [10],
+                    label: HorizontalLineLabel(
+                      show: true,
+                      alignment: Alignment.topRight,
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
