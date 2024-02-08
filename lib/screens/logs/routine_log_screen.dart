@@ -245,6 +245,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _createTemplate() async {
     final log = widget.log;
+
+    _toggleLoadingState(message: "Creating template");
+
     try {
       final exercises = log.exerciseLogs.map((exerciseLog) {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
