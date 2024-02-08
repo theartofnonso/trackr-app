@@ -30,7 +30,7 @@ class StreakScreen extends StatelessWidget {
           .toList();
       // Generate 12 containers for each month.
       return Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
+        padding: const EdgeInsets.only(bottom: 16.0),
         child: CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates, spacing: 4, dynamicColor: true),
       );
     });

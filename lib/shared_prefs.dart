@@ -41,7 +41,7 @@ class SharedPrefs {
 
   /// Show calendar dates
   final String _showCalendarDatesKey = "show_calendar_dates_key";
-  bool get showCalendarDates => _sharedPrefs?.getBool(_showCalendarDatesKey) ?? false;
+  bool get showCalendarDates => _sharedPrefs?.getBool(_showCalendarDatesKey) ?? true;
   set showCalendarDates(bool value) {
     _sharedPrefs?.setBool(_showCalendarDatesKey, value);
   }

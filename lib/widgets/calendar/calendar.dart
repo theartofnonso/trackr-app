@@ -204,9 +204,9 @@ class _Month extends StatelessWidget {
       // to disable GridView's scrolling
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1, // for square shape
-        crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0,
+        childAspectRatio: 1.1, // for square shape
+        crossAxisSpacing: 4.0,
+        mainAxisSpacing: 4.0,
       ),
       itemCount: datesWidgets.length,
       // Just an example to vary the number of squares
