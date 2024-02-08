@@ -34,9 +34,15 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
     final untrainedMuscleGroups =
         popularMuscleGroupFamilies().where((family) => !muscleGroupFamilies.contains(family)).toList();
 
-    final untrainedMuscleGroupsMessage = untrainedMuscleGroups.isNotEmpty && untrainedMuscleGroups.length < popularMuscleGroupFamilies().length
-        ? "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}"
-        : "any muscle groups";
+    String untrainedMuscleGroupsMessage = "";
+
+    if(untrainedMuscleGroups.isNotEmpty && untrainedMuscleGroups.length < popularMuscleGroupFamilies().length) {
+      if(untrainedMuscleGroups.length > 1) {
+        untrainedMuscleGroupsMessage = "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
+      } else {
+        untrainedMuscleGroupsMessage = untrainedMuscleGroups.first.name;
+      }
+    }
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
@@ -63,7 +69,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
       if (untrainedMuscleGroups.isNotEmpty)
         RichText(
             text: TextSpan(
-                text: "You haven't trained",
+                text: "You haven't trained any muscle group",
                 style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                 children: [
               const TextSpan(text: " "),

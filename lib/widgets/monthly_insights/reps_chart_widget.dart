@@ -65,7 +65,7 @@ class RepsChartWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-              "The total number of reps is an indicator of the volume of work done, A higher number of reps indicates a higher volume of work done.",
+              "Reps trend is an indicator of the volume of work done, A higher number of reps indicates a higher intensity",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),

@@ -73,7 +73,7 @@ class VolumeChartWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-              "The total volume indicates the intensity of your workouts. Trackr calculates this by multiplying the weight lifted by the number of reps.",
+              "Volume trend indicates the intensity of your workouts. Trackr calculates this by multiplying the weight lifted by the number of reps.",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
