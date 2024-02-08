@@ -5,3 +5,9 @@ const overviewMonitor =
 
 const exploreWorkouts =
     "Explore curated workouts, from daily splits to focusing on particular muscle groups and classic routines";
+
+const lowAverageWorkoutDuration =
+    "The average duration of a workout is 30 minutes. "
+    "Try to include more exercises in your workouts.";
+
+const highAverageWorkoutDuration = "You are doing great!";

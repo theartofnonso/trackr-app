@@ -19,12 +19,12 @@ class VolumeChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = routineLogController.weeklyLogs;
 
-    final monthlyTonnage = [];
+    final periodicalTonnage = [];
 
-    for (var monthAndLogs in monthlyLogs.entries) {
-      final tonnageForMonth = monthAndLogs.value
+    for (var periodAndLogs in periodicalLogs.entries) {
+      final tonnageForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
           .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights)
@@ -33,13 +33,13 @@ class VolumeChartWidget extends StatelessWidget {
         return volume.toDouble();
       }).sum;
 
-      monthlyTonnage.add(tonnageForMonth);
+      periodicalTonnage.add(tonnageForPeriod);
     }
 
     final chartPoints =
-        monthlyTonnage.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        periodicalTonnage.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
+    final dateTimes = periodicalLogs.entries.map((periodEntry) => periodEntry.key.end.abbreviatedMonth()).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

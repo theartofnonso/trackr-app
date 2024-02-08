@@ -12,11 +12,19 @@ import '../../utils/string_utils.dart';
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
+  final ExtraLinesData? extraLinesData;
   final List<String> dateTimes;
   final ChartUnit unit;
   final bool bigData;
+  final double? maxY;
 
-  const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit, this.bigData = false});
+  const LineChartWidget(
+      {super.key,
+      required this.chartPoints,
+      required this.dateTimes,
+      required this.unit,
+      this.bigData = false,
+      this.extraLinesData, this.maxY});
 
   static const List<Color> gradientColors = [
     Colors.white,
@@ -30,6 +38,8 @@ class LineChartWidget extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1.5,
               child: LineChart(LineChartData(
+                maxY: maxY,
+                  minY: 0,
                   titlesData: FlTitlesData(
                     show: true,
                     rightTitles: const AxisTitles(
@@ -56,9 +66,10 @@ class LineChartWidget extends StatelessWidget {
                   borderData: FlBorderData(
                     show: false,
                   ),
+                  extraLinesData: extraLinesData,
                   lineBarsData: [
                     LineChartBarData(
-                      isStepLineChart: true,
+                        isStepLineChart: true,
                         spots: chartPoints.map((point) {
                           return FlSpot(point.x, weightWithConversion(value: point.y));
                         }).toList(),
@@ -104,15 +115,14 @@ class LineChartWidget extends StatelessWidget {
     );
 
     return SideTitleWidget(
-      fitInside:SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
       axisSide: meta.axisSide,
       child: Text(_weightTitle(chartUnit: unit, value: value), style: style),
     );
   }
 
   String _weightTitle({required ChartUnit chartUnit, required double value}) {
-
-    if(bigData) {
+    if (bigData) {
       if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs || chartUnit == ChartUnit.reps) {
         return volumeInKOrM(value);
       }
@@ -128,7 +138,7 @@ class LineChartWidget extends StatelessWidget {
       fontSize: 10,
     );
     return SideTitleWidget(
-      fitInside:SideTitleFitInsideData.fromTitleMeta(meta),
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
       axisSide: meta.axisSide,
       child: Text(modifiedDateTimes[value.toInt()], style: style),
     );

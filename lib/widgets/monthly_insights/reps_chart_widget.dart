@@ -19,12 +19,12 @@ class RepsChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = routineLogController.weeklyLogs;
 
-    final monthlyReps = [];
+    final periodicalReps = [];
 
-    for (var monthAndLogs in monthlyLogs.entries) {
-      final repsForMonth = monthAndLogs.value
+    for (var periodAndLogs in periodicalLogs.entries) {
+      final repsForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
           .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight)
@@ -33,13 +33,13 @@ class RepsChartWidget extends StatelessWidget {
         return reps;
       }).sum;
 
-      monthlyReps.add(repsForMonth);
+      periodicalReps.add(repsForPeriod);
     }
 
     final chartPoints =
-        monthlyReps.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        periodicalReps.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
+    final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

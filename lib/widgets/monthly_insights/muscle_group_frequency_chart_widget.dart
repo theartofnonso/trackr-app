@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -18,12 +19,12 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = routineLogController.monthlyLogs;
 
     final muscleGroupsSplitFrequencyScores = [];
 
-    for (var monthAndLogs in monthlyLogs.entries) {
-      final exerciseLogsForTheMonth = monthAndLogs.value.expand((log) => log.exerciseLogs).toList();
+    for (var periodAndLogs in periodicalLogs.entries) {
+      final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
 
       final muscleGroupsSplitFrequencyScore = muscleGroupFrequencyScore(exerciseLogs: exerciseLogsForTheMonth);
       final percentageScore = (muscleGroupsSplitFrequencyScore * 100).toInt();
@@ -34,7 +35,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
         .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
         .toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
+    final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -56,6 +57,17 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
               dateTimes: dateTimes,
               unit: ChartUnit.percentage,
               bigData: false,
+              maxY: 100,
+              extraLinesData: ExtraLinesData(
+                horizontalLines: [
+                  HorizontalLine(
+                    y: 80,
+                    color: vibrantGreen,
+                    strokeWidth: 3,
+                    dashArray: [20, 10],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 12),
