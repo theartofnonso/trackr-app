@@ -11,3 +11,9 @@ const lowAverageWorkoutDuration =
     "Try to include more exercises in your workouts.";
 
 const highAverageWorkoutDuration = "You are doing great!";
+
+const lowStreak =
+    "The optimal number of a training sessions is 3 per week. "
+    "Try to train on more days.";
+
+const highStreak = "You are doing great!";

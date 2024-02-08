@@ -53,7 +53,7 @@ class LogDurationWidget extends StatelessWidget {
                               title: 'LEAST TIME',
                               subTitle: minHours.hmDigital(),
                               titleColor: Colors.white,
-                              subTitleColor: Colors.white70),
+                              subTitleColor: Colors.white),
                         ),
                       ),
                       TableCell(
@@ -62,8 +62,8 @@ class LogDurationWidget extends StatelessWidget {
                           child: SleepTimeColumn(
                               title: 'AVG TIME',
                               subTitle: avgHours.hmDigital(),
-                              titleColor: avgHours.inMinutes < 30 ? Colors.orange: sapphireBlue,
-                              subTitleColor: avgHours.inMinutes < 30 ? Colors.orange.withOpacity(0.8) : sapphireBlue.withOpacity(0.8)),
+                              titleColor: avgHours.inMinutes < 30 ? Colors.orange: Colors.white70,
+                              subTitleColor: avgHours.inMinutes < 30 ? Colors.orange.withOpacity(0.8) : Colors.white70),
                         ),
                       ),
                       TableCell(
@@ -73,7 +73,7 @@ class LogDurationWidget extends StatelessWidget {
                               title: 'MOST TIME',
                               subTitle: maxHours.hmDigital(),
                               titleColor: Colors.white,
-                              subTitleColor: Colors.white70),
+                              subTitleColor: Colors.white),
                         ),
                       )
                     ]),
@@ -120,7 +120,7 @@ class SleepTimeColumn extends StatelessWidget {
           title,
           textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
-            color: subTitleColor,
+            color: subTitleColor.withOpacity(0.6),
             fontSize: 10,
             fontWeight: FontWeight.bold,
           ),
