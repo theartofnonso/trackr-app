@@ -85,12 +85,13 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   SetDto heaviestSet = exerciseLogs.first.sets.first;
   String? logId = exerciseLogs.first.routineLogId;
 
-  double heaviestVolume = 0.0;
+  num heaviestVolume = 0.0;
 
   for (var log in exerciseLogs) {
     final currentSet = heaviestSetVolumeForExerciseLog(exerciseLog: log);
     final currentVolume = currentSet.value1 * currentSet.value2;
     if (currentVolume > heaviestVolume) {
+      heaviestVolume = currentVolume;
       heaviestSet = currentSet;
       logId = log.routineLogId;
     }
