@@ -1,6 +1,6 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 class SharedPrefs {
   static SharedPreferences? _sharedPrefs;

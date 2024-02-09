@@ -8,7 +8,7 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
 import '../../../shared_prefs.dart';
