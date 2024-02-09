@@ -10,7 +10,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -22,7 +22,7 @@ import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../enums/routine_editor_type_enums.dart';
-import 'notifications_screen.dart';
+import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -7,19 +7,19 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/notifications_screen.dart';
+import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../controllers/exercise_controller.dart';
-import '../controllers/routine_log_controller.dart';
-import '../controllers/routine_template_controller.dart';
-import '../controllers/settings_controller.dart';
-import '../utils/general_utils.dart';
-import '../utils/dialog_utils.dart';
-import 'exercise/exercise_library_screen.dart';
+import '../../controllers/exercise_controller.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../controllers/routine_template_controller.dart';
+import '../../controllers/settings_controller.dart';
+import '../../utils/general_utils.dart';
+import '../../utils/dialog_utils.dart';
+import '../exercise/exercise_library_screen.dart';
 
 enum WeightUnit {
   kg,
