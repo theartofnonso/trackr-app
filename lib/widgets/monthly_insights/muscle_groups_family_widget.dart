@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/widgets/chart/routine_muscle_group_Frequency_chart.dart';
 import 'package:tracker_app/widgets/empty_states/muscle_group_split_empty_state.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../chart/routine_muscle_group_split_chart.dart';
 
 class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
   final List<RoutineLogDto> monthAndLogs;
@@ -27,21 +27,21 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilySplit = scaledMuscleGroupFrequencyAcrossSessions(exerciseLogs: exerciseLogs);
+    final muscleGroupFamilyFrequencies = scaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
 
-    final muscleGroupFamilies = muscleGroupFamilySplit.keys;
+    final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys;
 
     final untrainedMuscleGroups =
         popularMuscleGroupFamilies().where((family) => !muscleGroupFamilies.contains(family)).toList();
 
-    String untrainedMuscleGroupsMessage = "";
+    String untrainedMuscleGroupsNames = "";
 
-    if (untrainedMuscleGroups.isNotEmpty && untrainedMuscleGroups.length < popularMuscleGroupFamilies().length) {
+    if (untrainedMuscleGroups.isNotEmpty) {
       if (untrainedMuscleGroups.length > 1) {
-        untrainedMuscleGroupsMessage =
+        untrainedMuscleGroupsNames =
             "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
       } else {
-        untrainedMuscleGroupsMessage = untrainedMuscleGroups.first.name;
+        untrainedMuscleGroupsNames = untrainedMuscleGroups.first.name;
       }
     }
 
@@ -50,7 +50,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         Text("Muscle Groups Frequency".toUpperCase(),
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         const Spacer(),
-        if (muscleGroupFamilySplit.length > 3)
+        if (muscleGroupFamilyFrequencies.length > 3)
           GestureDetector(
               onTap: _onTap,
               child: FaIcon(_minimized ? FontAwesomeIcons.angleDown : FontAwesomeIcons.angleUp,
@@ -62,7 +62,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
       const SizedBox(height: 10),
       exerciseLogs.isNotEmpty
-          ? RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFamilySplit, minimized: _minimized)
+          ? RoutineMuscleGroupFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized)
           : const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: MuscleGroupSplitEmptyState(),
@@ -75,12 +75,9 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
                 children: [
               const TextSpan(text: " "),
               TextSpan(
-                  text: untrainedMuscleGroupsMessage,
+                  text: untrainedMuscleGroupsNames,
                   style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
             ])),
-      if (untrainedMuscleGroups.isEmpty)
-        Text("You have not trained any muscle group",
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500))
     ]);
   }
 

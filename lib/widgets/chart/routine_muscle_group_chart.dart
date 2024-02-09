@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
-class RoutineMuscleGroupSplitChart extends StatelessWidget {
+class RoutineMuscleGroupChart extends StatelessWidget {
   final Map<MuscleGroupFamily, double> frequencyData;
   final bool minimized;
 
-  const RoutineMuscleGroupSplitChart({super.key, required this.frequencyData, this.minimized = false});
+  const RoutineMuscleGroupChart({super.key, required this.frequencyData, this.minimized = false});
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +49,8 @@ class _LinearBar extends StatelessWidget {
             LinearProgressIndicator(
               value: frequency,
               backgroundColor: Colors.white60.withOpacity(0.1),
-              color: frequency > 0 ? Colors.white70 : sapphireLight,
-              minHeight: 24,
+              color: Colors.white,
+              minHeight: 25,
               borderRadius: BorderRadius.circular(3.0), // Border r
             ),
             Positioned.fill(

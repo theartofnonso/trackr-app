@@ -1,4 +1,6 @@
 
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,12 +13,13 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
+import 'package:tracker_app/widgets/chart/routine_muscle_group_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../enums/muscle_group_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -160,7 +163,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  RoutineMuscleGroupSplitChart(frequencyData: muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)),
+                  RoutineMuscleGroupChart(frequencyData: _muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                       previewType: RoutinePreviewType.log),
@@ -170,6 +173,28 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           ),
           if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
         ]));
+  }
+
+  Map<MuscleGroupFamily, double> _muscleGroupFrequencyAcrossExercises({required List<ExerciseLogDto> exerciseLogs}) {
+    final frequencyMap = <MuscleGroupFamily, int>{};
+
+    // Counting the occurrences of each MuscleGroup
+    for (var log in exerciseLogs) {
+      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    }
+
+    int totalCount = exerciseLogs.length;
+    final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+    // Scaling the frequencies from 0 to 1
+    frequencyMap.forEach((key, value) {
+      scaledFrequencyMap[key] = value / totalCount;
+    });
+
+    final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+    final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+    return sortedFrequencyMap;
   }
 
   void _showBottomSheet() {
@@ -213,7 +238,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: ShareableContainer(log: updatedLog, frequencyData: muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)));
+        child: ShareableContainer(log: updatedLog, frequencyData: _muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {

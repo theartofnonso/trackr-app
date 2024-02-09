@@ -26,7 +26,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
     for (var periodAndLogs in periodicalLogs.entries) {
       final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
 
-      final muscleGroupsSplitFrequencyScore = muscleGroupFrequencyScore(exerciseLogs: exerciseLogsForTheMonth);
+      final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
       final percentageScore = (muscleGroupsSplitFrequencyScore * 100).toInt();
       muscleGroupsSplitFrequencyScores.add(percentageScore);
     }

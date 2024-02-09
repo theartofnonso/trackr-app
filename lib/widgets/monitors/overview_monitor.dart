@@ -19,7 +19,7 @@ class OverviewMonitor extends StatelessWidget {
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
-    final muscleGroupsSplitFrequencyScore = muscleGroupFrequencyScore(exerciseLogs: exerciseLogsForTheMonth);
+    final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).toInt();
 
@@ -47,7 +47,7 @@ class OverviewMonitor extends StatelessWidget {
           width: 85,
           child: _MonitorScore(
             value: "$splitPercentage%",
-            color: Colors.white70,
+            color: Colors.white,
             title: "Muscle",
             crossAxisAlignment: CrossAxisAlignment.start,
           ),
