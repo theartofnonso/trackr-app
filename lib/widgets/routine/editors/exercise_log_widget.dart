@@ -290,7 +290,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           const SizedBox(height: 8),
           /// Do not remove this condition
-          if (withDurationOnly(type: exerciseType) || widget.editorType == RoutineEditorMode.log)
+          if (!withDurationOnly(type: exerciseType) || widget.editorType == RoutineEditorMode.log)
             Align(
               alignment: Alignment.bottomRight,
               child: IconButton(
