@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
-class RoutineMuscleGroupFrequencyChart extends StatelessWidget {
+class MuscleGroupFamilyChart extends StatelessWidget {
   final Map<MuscleGroupFamily, double> frequencyData;
   final bool minimized;
 
-  const RoutineMuscleGroupFrequencyChart({super.key, required this.frequencyData, this.minimized = false});
+  const MuscleGroupFamilyChart({super.key, required this.frequencyData, this.minimized = false});
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +44,6 @@ class _LinearBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unscaledFrequency = frequency * 8;
-
-    final remainder = 8 - unscaledFrequency.toInt();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,56 +70,11 @@ class _LinearBar extends StatelessWidget {
                   ),
                 ),
               ),
-              if (remainder > 0)
-                Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+              Text("${(frequency * 100).round()}%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-      ],
-    );
-  }
-}
-
-class TextWithOutline extends StatelessWidget {
-  final String text;
-  final double fontSize;
-  final Color textColor;
-  final Color outlineColor;
-  final double outlineWidth;
-
-  const TextWithOutline({
-    Key? key,
-    required this.text,
-    required this.fontSize,
-    required this.textColor,
-    required this.outlineColor,
-    this.outlineWidth = 2,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        // Stroked text as border.
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: fontSize,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = outlineWidth
-              ..color = outlineColor,
-          ),
-        ),
-        // Solid text as fill.
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: fontSize,
-            color: textColor,
-          ),
-        ),
+        const SizedBox(height: 8),
       ],
     );
   }

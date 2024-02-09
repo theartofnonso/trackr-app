@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/chart/routine_muscle_group_Frequency_chart.dart';
 import 'package:tracker_app/widgets/empty_states/muscle_group_split_empty_state.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
+import '../chart/muscle_group_family_frequency_chart.dart';
 
 class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
   final List<RoutineLogDto> monthAndLogs;
@@ -62,7 +62,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
           style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
       const SizedBox(height: 10),
       exerciseLogs.isNotEmpty
-          ? RoutineMuscleGroupFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized)
+          ? MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized)
           : const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: MuscleGroupSplitEmptyState(),

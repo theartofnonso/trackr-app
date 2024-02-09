@@ -13,7 +13,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/chart/routine_muscle_group_chart.dart';
+import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -163,7 +163,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  RoutineMuscleGroupChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
+                  MuscleGroupFamilyChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                       previewType: RoutinePreviewType.log),

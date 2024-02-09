@@ -8,7 +8,7 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
-import '../chart/routine_muscle_group_chart.dart';
+import '../chart/muscle_group_family_chart.dart';
 
 GlobalKey routineLogShareableKey = GlobalKey();
 
@@ -73,7 +73,7 @@ class RoutineLogShareable extends StatelessWidget {
               ],
             ),
           ),
-          RoutineMuscleGroupChart(frequencyData: frequencyData),
+          MuscleGroupFamilyChart(frequencyData: frequencyData),
           const SizedBox(height: 8),
           ...exerciseLogs,
           Align(

@@ -12,8 +12,8 @@ import '../../enums/chart_unit_enum.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/line_chart_widget.dart';
 
-class MuscleGroupFrequencyWidget extends StatelessWidget {
-  const MuscleGroupFrequencyWidget({super.key});
+class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
+  const MuscleGroupFamilyFrequencyChartWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
