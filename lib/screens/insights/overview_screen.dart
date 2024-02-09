@@ -4,22 +4,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
-import 'package:tracker_app/screens/streak_screen.dart';
+import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
 import 'package:tracker_app/widgets/monitors/overview_monitor.dart';
 
-import '../dtos/routine_log_dto.dart';
-import '../controllers/routine_log_controller.dart';
-import '../enums/routine_editor_type_enums.dart';
-import '../strings.dart';
-import '../utils/general_utils.dart';
-import '../utils/navigation_utils.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../enums/routine_editor_type_enums.dart';
+import '../../strings.dart';
+import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import '../utils/shareables_utils.dart';
-import '../widgets/backgrounds/gradient_background.dart';
-import '../widgets/buttons/text_button_widget.dart';
-import '../widgets/calendar/calendar.dart';
-import '../widgets/information_container_lite.dart';
+import '../../utils/shareables_utils.dart';
+import '../../widgets/backgrounds/gradient_background.dart';
+import '../../widgets/buttons/text_button_widget.dart';
+import '../../widgets/calendar/calendar.dart';
+import '../../widgets/information_container_lite.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {

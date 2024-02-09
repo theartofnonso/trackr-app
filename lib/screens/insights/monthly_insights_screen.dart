@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
 
-import '../dtos/routine_log_dto.dart';
-import '../widgets/monthly_insights/log_duration_widget.dart';
-import '../widgets/monthly_insights/muscle_group_family_frequency_chart_widget.dart';
-import '../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
-import '../widgets/monthly_insights/reps_chart_widget.dart';
-import '../widgets/monthly_insights/volume_chart_widget.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../widgets/monthly_insights/log_duration_widget.dart';
+import '../../widgets/monthly_insights/muscle_group_family_frequency_chart_widget.dart';
+import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
+import '../../widgets/monthly_insights/reps_chart_widget.dart';
+import '../../widgets/monthly_insights/volume_chart_widget.dart';
 
 class MonthlyInsightsScreen extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;

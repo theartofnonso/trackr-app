@@ -9,7 +9,7 @@ import 'package:testsweets/testsweets.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
-import 'package:tracker_app/screens/overview_screen.dart';
+import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
