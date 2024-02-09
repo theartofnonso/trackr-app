@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/screens/insights/sets_and%20_reps_insights_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../dtos/routine_log_dto.dart';
@@ -43,13 +44,16 @@ class OverviewMonitor extends StatelessWidget {
           MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
         ]),
         const SizedBox(width: 20),
-        SizedBox(
-          width: 85,
-          child: _MonitorScore(
-            value: "$splitPercentage%",
-            color: Colors.white,
-            title: "Muscle",
-            crossAxisAlignment: CrossAxisAlignment.start,
+        GestureDetector(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
+          child: SizedBox(
+            width: 85,
+            child: _MonitorScore(
+              value: "$splitPercentage%",
+              color: Colors.white,
+              title: "Muscle",
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
           ),
         ),
       ],

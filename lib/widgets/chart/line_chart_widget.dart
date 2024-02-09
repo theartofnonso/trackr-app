@@ -27,7 +27,7 @@ class LineChartWidget extends StatelessWidget {
       this.extraLinesData, this.maxY});
 
   static const List<Color> gradientColors = [
-    Colors.white30,
+    vibrantBlue,
     Colors.white
   ];
 
