@@ -64,7 +64,7 @@ class AchievementScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: LinearProgressIndicator(
-                          minHeight: 8,
+                          minHeight: 18,
                           color: completed ? Colors.green : Colors.white,
                           value: achievementDto.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(2)),
