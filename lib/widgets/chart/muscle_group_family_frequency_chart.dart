@@ -78,7 +78,8 @@ class _LinearBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              SizedBox(
+              if(remainder > 0)
+                SizedBox(
                   width: 35,
                   child: Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
             ],
