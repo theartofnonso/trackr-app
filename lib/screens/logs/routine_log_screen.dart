@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -275,8 +276,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
     try {
       final exercises = log.exerciseLogs.map((exerciseLog) {
-        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: newSets);
+        final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        /// [Exercise.duration] exercises do not have sets in templates
+        /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
+        final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+        return exerciseLog.copyWith(sets: sets);
       }).toList();
       final templateToCreate = RoutineTemplateDto(
           id: "",

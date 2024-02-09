@@ -129,8 +129,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
-    final checked = setDto.checked;
-    final updatedSet = setDto.copyWith(checked: !checked);
+    final checked = !setDto.checked;
+    final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
@@ -184,7 +184,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<RoutineLogController>(context, listen: true);
 
     final sets = context.select((ExerciseLogController provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
 
