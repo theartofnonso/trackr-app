@@ -32,7 +32,7 @@ List<ExerciseLogDto> whereOtherExerciseLogsExcept(
 }
 
 List<TemplateChange> checkForChanges(
-    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2}) {
+    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2, bool isEditor = true}) {
   List<TemplateChange?> unsavedChangesMessage = [];
 
   /// Check if [ExerciseLogDto] have been added or removed
@@ -60,8 +60,10 @@ List<TemplateChange> checkForChanges(
   unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
 
   /// Check if set values have been changed
-  final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
-  unsavedChangesMessage.add(updatedSetValuesChangeMessage);
+  if(isEditor) {
+    final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+    unsavedChangesMessage.add(updatedSetValuesChangeMessage);
+  }
 
   return unsavedChangesMessage.whereType<TemplateChange>().toList();
 }
@@ -89,10 +91,10 @@ List<Widget> setsToWidgets(
 
   Widget emptyState;
 
-  if (type == ExerciseType.weights) {
+  if (withWeightsOnly(type: type)) {
     emptyState = const DoubleSetRowEmptyState();
   } else {
-    if (type == ExerciseType.duration) {
+    if (withDurationOnly(type: type)) {
       emptyState = durationTemplate;
     } else {
       emptyState = const SingleSetRowEmptyState();

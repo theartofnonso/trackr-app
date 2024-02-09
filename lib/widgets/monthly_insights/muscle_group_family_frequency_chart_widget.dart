@@ -56,7 +56,6 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               chartPoints: chartPoints,
               dateTimes: dateTimes,
               unit: ChartUnit.percentage,
-              bigData: false,
               maxY: 100,
               extraLinesData: ExtraLinesData(
                 horizontalLines: [
@@ -69,7 +68,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
                     label: HorizontalLineLabel(
                       show: true,
                       alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
                   HorizontalLine(
@@ -81,7 +80,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
                     label: HorizontalLineLabel(
                       show: true,
                       alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.montserrat(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

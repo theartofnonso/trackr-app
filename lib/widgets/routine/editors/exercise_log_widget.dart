@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -82,7 +83,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _addSet() {
-    if (widget.exerciseLogDto.exercise.type == ExerciseType.duration) {
+    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _durationControllers.add(DateTime.now());
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
@@ -95,7 +96,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet({required int index}) {
-    if (widget.exerciseLogDto.exercise.type == ExerciseType.duration) {
+    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _durationControllers.removeAt(index);
     } else {
       _controllers.removeAt(index);
@@ -282,13 +283,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               durationControllers: _durationControllers,
             ),
           const SizedBox(height: 8),
-          if (exerciseType == ExerciseType.duration && sets.isEmpty)
+          if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text(_timerMessage(),
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
-          if (exerciseType != ExerciseType.duration || widget.editorType == RoutineEditorMode.log)
+          /// Do not remove this condition
+          if (withDurationOnly(type: exerciseType) || widget.editorType == RoutineEditorMode.log)
             Align(
               alignment: Alignment.bottomRight,
               child: IconButton(

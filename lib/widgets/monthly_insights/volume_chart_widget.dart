@@ -7,7 +7,6 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../chart/line_chart_widget.dart';
@@ -27,9 +26,9 @@ class VolumeChartWidget extends StatelessWidget {
       final tonnageForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights)
+          .where((exerciseLog) => withWeightsOnly(type: exerciseLog.exercise.type))
           .map((log) {
-        final volume = log.sets.map((set) => set.value1 * set.value2).sum;
+        final volume = log.sets.map((set) => set.volume()).sum;
         return volume.toDouble();
       }).sum;
 
@@ -68,7 +67,6 @@ class VolumeChartWidget extends StatelessWidget {
               chartPoints: chartPoints,
               dateTimes: dateTimes,
               unit: chartWeightUnitLabel(),
-              bigData: true,
             ),
           ),
           const SizedBox(height: 12),

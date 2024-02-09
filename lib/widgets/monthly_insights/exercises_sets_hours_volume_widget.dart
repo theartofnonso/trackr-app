@@ -8,7 +8,6 @@ import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
@@ -30,17 +29,17 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
     final totalHoursInMilliSeconds = monthAndLogs.map((log) => log.duration().inMilliseconds).sum;
     final totalHours = Duration(milliseconds: totalHoursInMilliSeconds);
 
-    final exerciseLogsWithWeights = exerciseLogs.where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights);
+    final exerciseLogsWithWeights = exerciseLogs.where((exerciseLog) => withWeightsOnly(type: exerciseLog.exercise.type));
     final tonnage = exerciseLogsWithWeights.map((log) {
-      final volume = log.sets.map((set) => set.value1 * set.value2).sum;
+      final volume = log.sets.map((set) => set.volume()).sum;
       return volume;
     }).sum;
 
     final totalVolume = volumeInKOrM(weightWithConversion(value: tonnage));
 
-    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight);
+    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(type: exerciseLog.exercise.type));
     final totalReps = exerciseLogsWithReps.map((log) {
-      final reps = log.sets.map((set) => set.value2).sum;
+      final reps = log.sets.map((set) => set.reps()).sum;
       return reps;
     }).sum;
 

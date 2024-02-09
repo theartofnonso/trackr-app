@@ -24,15 +24,27 @@ class SetDto {
   }
 
   bool isEmpty() {
-    return value1 == 0 && value2 == 0;
+    return value1 + value2 == 0;
   }
 
   bool isNotEmpty() {
-    return value1 > 0 || value2 > 0;
+    return value1 + value2 > 0;
   }
 
   double volume() {
     return (value1 * value2).toDouble();
+  }
+
+  double weight() {
+    return value1.toDouble();
+  }
+
+  int duration() {
+    return value1.toInt();
+  }
+
+  int reps() {
+    return value2.toInt();
   }
 
   @override
@@ -44,7 +56,7 @@ class SetDto {
           value2 == other.value2;
 
   @override
-  int get hashCode => value1.hashCode ^ value2.hashCode ^ checked.hashCode;
+  int get hashCode => value1.hashCode ^ value2.hashCode;
 
   @override
   String toString() {

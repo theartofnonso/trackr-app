@@ -15,7 +15,6 @@ class LineChartWidget extends StatelessWidget {
   final ExtraLinesData? extraLinesData;
   final List<String> dateTimes;
   final ChartUnit unit;
-  final bool bigData;
   final double? maxY;
 
   const LineChartWidget(
@@ -23,7 +22,6 @@ class LineChartWidget extends StatelessWidget {
       required this.chartPoints,
       required this.dateTimes,
       required this.unit,
-      this.bigData = false,
       this.extraLinesData, this.maxY});
 
   static const List<Color> gradientColors = [
@@ -125,11 +123,9 @@ class LineChartWidget extends StatelessWidget {
   }
 
   String _weightTitle({required ChartUnit chartUnit, required double value}) {
-    if (bigData) {
       if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs) {
         return volumeInKOrM(value);
       }
-    }
 
     return "${value.toInt()} ${unit.label}";
   }

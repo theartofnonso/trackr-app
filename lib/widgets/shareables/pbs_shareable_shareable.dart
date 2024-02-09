@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 
 GlobalKey pbsShareableKey = GlobalKey();
 
@@ -24,13 +24,13 @@ class PBsShareable extends StatelessWidget {
 
     String value = "";
 
-    if(pbDto.exercise.type == ExerciseType.duration) {
-      value = Duration(milliseconds: set.value1.toInt()).hmsAnalog();
-    } else if(pbDto.exercise.type == ExerciseType.weights) {
+    if(withDurationOnly(type: pbDto.exercise.type)) {
+      value = Duration(milliseconds: set.duration()).hmsAnalog();
+    } else if(withWeightsOnly(type: pbDto.exercise.type)) {
       if(pbDto.pb == PBType.weight) {
-        value = "${set.value1.toDouble()}${weightLabel().toUpperCase()}";
+        value = "${set.weight()}${weightLabel().toUpperCase()}";
       } else {
-        value = "${set.value1}${weightLabel().toUpperCase()} x ${set.value2}";
+        value = "${set.weight()}${weightLabel().toUpperCase()} x ${set.reps()}";
       }
 
     }

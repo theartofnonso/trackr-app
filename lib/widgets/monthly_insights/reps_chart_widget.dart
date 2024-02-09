@@ -8,7 +8,6 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/line_chart_widget.dart';
 
@@ -27,9 +26,9 @@ class RepsChartWidget extends StatelessWidget {
       final repsForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight)
+          .where((exerciseLog) => withReps(type: exerciseLog.exercise.type))
           .map((log) {
-        final reps = log.sets.map((set) => set.value2).sum;
+        final reps = log.sets.map((set) => set.reps()).sum;
         return reps;
       }).sum;
 
@@ -60,7 +59,6 @@ class RepsChartWidget extends StatelessWidget {
                 chartPoints: chartPoints,
                 dateTimes: dateTimes,
                 unit: ChartUnit.reps,
-                bigData: true,
               ),
           ),
           const SizedBox(height: 12),

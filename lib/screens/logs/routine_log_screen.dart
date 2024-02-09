@@ -373,7 +373,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
     final exerciseLog1 = routineTemplate.exercises;
     final exerciseLog2 = widget.log.exerciseLogs;
-    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2, isEditor: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (templateChanges.isNotEmpty) {
