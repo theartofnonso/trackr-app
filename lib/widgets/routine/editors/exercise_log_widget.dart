@@ -178,6 +178,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
+  bool _canAddSets({required ExerciseType type}) {
+    return withWeightsOnly(type: type) || withReps(type: type) || widget.editorType == RoutineEditorMode.log;
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<RoutineLogController>(context, listen: true);
@@ -290,7 +294,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           const SizedBox(height: 8),
           /// Do not remove this condition
-          if (!withDurationOnly(type: exerciseType) || widget.editorType == RoutineEditorMode.log)
+          if (_canAddSets(type: exerciseType))
             Align(
               alignment: Alignment.bottomRight,
               child: IconButton(
