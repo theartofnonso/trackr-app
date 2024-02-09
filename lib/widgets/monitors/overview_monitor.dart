@@ -21,7 +21,7 @@ class OverviewMonitor extends StatelessWidget {
 
     final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
 
-    final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).toInt();
+    final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -52,42 +52,33 @@ class _LinearBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            LinearProgressIndicator(
-              value: frequency,
-              backgroundColor: Colors.white60.withOpacity(0.1),
-              color: Colors.white,
-              minHeight: 25,
-              borderRadius: BorderRadius.circular(3.0), // Border r
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  margin: const EdgeInsets.only(right: 8),
-                  decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(3.0),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 50,
+                child: Text(muscleGroupFamily.name.toUpperCase(),
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: Colors.white70, fontSize: 12)),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: LinearProgressIndicator(
+                    value: frequency,
+                    backgroundColor: Colors.white60.withOpacity(0.1),
+                    color: Colors.white,
+                    minHeight: 25,
+                    borderRadius: BorderRadius.circular(3.0), // Border r
                   ),
-                  child: remainder == 0
-                      ? null
-                      : Text("$remainder ${pluralize(word: "session", count: remainder)} left",
-                          style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              fontSize: 12)),
-                )
-              ],
-            )
-          ],
+                ),
+              ),
+              if (remainder > 0)
+                Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+            ],
+          ),
         ),
         const SizedBox(height: 12),
       ],

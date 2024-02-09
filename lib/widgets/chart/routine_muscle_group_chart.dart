@@ -12,7 +12,10 @@ class RoutineMuscleGroupChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _HorizontalBarChart(frequencyData: frequencyData, minimized: minimized,);
+    return _HorizontalBarChart(
+      frequencyData: frequencyData,
+      minimized: minimized,
+    );
   }
 }
 
@@ -44,31 +47,32 @@ class _LinearBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Stack(
-          children: [
-            LinearProgressIndicator(
-              value: frequency,
-              backgroundColor: Colors.white60.withOpacity(0.1),
-              color: Colors.white,
-              minHeight: 25,
-              borderRadius: BorderRadius.circular(3.0), // Border r
-            ),
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
-                  margin: const EdgeInsets.only(right: 6),
-                  decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(3.0),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 50,
+                child: Text(muscleGroupFamily.name.toUpperCase(),
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: Colors.white70, fontSize: 12)),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: LinearProgressIndicator(
+                    value: frequency,
+                    backgroundColor: Colors.white60.withOpacity(0.1),
+                    color: Colors.white,
+                    minHeight: 25,
+                    borderRadius: BorderRadius.circular(3.0), // Border r
                   ),
-                  child: Text(muscleGroupFamily.name.toUpperCase(),
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 12)),
                 ),
               ),
-            )
-          ],
+              Text("${(frequency * 100).round()}%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
       ],

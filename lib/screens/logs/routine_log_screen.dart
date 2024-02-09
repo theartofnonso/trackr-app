@@ -163,7 +163,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  RoutineMuscleGroupChart(frequencyData: _muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)),
+                  RoutineMuscleGroupChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
                   ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                       previewType: RoutinePreviewType.log),
@@ -175,7 +175,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         ]));
   }
 
-  Map<MuscleGroupFamily, double> _muscleGroupFrequencyAcrossExercises({required List<ExerciseLogDto> exerciseLogs}) {
+  Map<MuscleGroupFamily, double> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
     final frequencyMap = <MuscleGroupFamily, int>{};
 
     // Counting the occurrences of each MuscleGroup
@@ -238,7 +238,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: ShareableContainer(log: updatedLog, frequencyData: _muscleGroupFrequencyAcrossExercises(exerciseLogs: completedExerciseLogsAndSets)));
+        child: ShareableContainer(log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {

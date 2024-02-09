@@ -27,7 +27,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
       final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
 
       final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
-      final percentageScore = (muscleGroupsSplitFrequencyScore * 100).toInt();
+      final percentageScore = (muscleGroupsSplitFrequencyScore * 100).round();
       muscleGroupsSplitFrequencyScores.add(percentageScore);
     }
 
@@ -61,7 +61,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
               extraLinesData: ExtraLinesData(
                 horizontalLines: [
                   HorizontalLine(
-                    y: 70,
+                    y: 80,
                     color: vibrantGreen,
                     strokeWidth: 1.5,
                     strokeCap: StrokeCap.round,
@@ -73,7 +73,7 @@ class MuscleGroupFrequencyWidget extends StatelessWidget {
                     ),
                   ),
                   HorizontalLine(
-                    y: 30,
+                    y: 50,
                     color: Colors.orange,
                     strokeWidth: 1.5,
                     strokeCap: StrokeCap.round,
