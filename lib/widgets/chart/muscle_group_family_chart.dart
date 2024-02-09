@@ -53,24 +53,30 @@ class _LinearBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
           child: Row(
             children: [
-              SizedBox(
-                width: 50,
-                child: Text(muscleGroupFamily.name.toUpperCase(),
-                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: Colors.white70, fontSize: 12)),
-              ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: LinearProgressIndicator(
-                    value: frequency,
-                    backgroundColor: Colors.white60.withOpacity(0.1),
-                    color: Colors.white,
-                    minHeight: 25,
-                    borderRadius: BorderRadius.circular(3.0), // Border r
-                  ),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    LinearProgressIndicator(
+                      value: frequency,
+                      backgroundColor: Colors.white60.withOpacity(0.1),
+                      color: Colors.white,
+                      minHeight: 25,
+                      borderRadius: BorderRadius.circular(3.0), // Border r
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(muscleGroupFamily.name.toUpperCase(),
+                          style:
+                          GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                    )
+                  ],
                 ),
               ),
-              Text("${(frequency * 100).round()}%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+              const SizedBox(width: 10),
+              SizedBox(
+                  width: 35,
+                  child: Text("${(frequency * 100).round()}%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),),
             ],
           ),
         ),

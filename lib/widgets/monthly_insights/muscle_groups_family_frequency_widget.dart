@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/empty_states/muscle_group_split_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/muscle_group_split_frequency_empty_state.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -65,7 +65,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
           ? MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized)
           : const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
-              child: MuscleGroupSplitEmptyState(),
+              child: MuscleGroupSplitFrequencyEmptyState(),
             ),
       if (untrainedMuscleGroups.isNotEmpty)
         RichText(
