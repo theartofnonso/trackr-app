@@ -31,13 +31,16 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
     final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys;
 
-    final untrainedMuscleGroups =
-        popularMuscleGroupFamilies().where((family) => !muscleGroupFamilies.contains(family)).toList();
+    final listOfPopularMuscleGroupFamilies =  popularMuscleGroupFamilies();
+
+    final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.where((family) => !muscleGroupFamilies.contains(family)).toList();
 
     String untrainedMuscleGroupsNames = "";
 
     if (untrainedMuscleGroups.isNotEmpty) {
-      if (untrainedMuscleGroups.length > 1) {
+      if (untrainedMuscleGroups.length == listOfPopularMuscleGroupFamilies.length) {
+        untrainedMuscleGroupsNames = "any muscle groups";
+      } else if (untrainedMuscleGroups.length > 1) {
         untrainedMuscleGroupsNames =
             "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
       } else {
