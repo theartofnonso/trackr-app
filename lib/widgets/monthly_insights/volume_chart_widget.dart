@@ -26,7 +26,6 @@ class VolumeChartWidget extends StatelessWidget {
       final tonnageForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => withWeightsOnly(type: exerciseLog.exercise.type))
           .map((log) {
         final volume = log.sets.map((set) => set.volume()).sum;
         return volume.toDouble();

@@ -29,8 +29,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
     final totalHoursInMilliSeconds = monthAndLogs.map((log) => log.duration().inMilliseconds).sum;
     final totalHours = Duration(milliseconds: totalHoursInMilliSeconds);
 
-    final exerciseLogsWithWeights = exerciseLogs.where((exerciseLog) => withWeightsOnly(type: exerciseLog.exercise.type));
-    final tonnage = exerciseLogsWithWeights.map((log) {
+    final tonnage = exerciseLogs.map((log) {
       final volume = log.sets.map((set) => set.volume()).sum;
       return volume;
     }).sum;
