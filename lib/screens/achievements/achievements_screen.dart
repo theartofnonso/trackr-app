@@ -28,22 +28,34 @@ class AchievementsScreen extends StatelessWidget {
     }
 
     return Scaffold(
-        body: SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const SizedBox(height: 10),
-                Text("Milestones ${DateTime.now().year}",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 16),
-                const InformationContainerLite(
-                  content: 'Only workouts logged in the current year will count towards your achievements.',
-                  color: sapphireLighter,
-                ),
-                const SizedBox(height: 20),
-                logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
-              ]),
-            )));
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+              minimum: const EdgeInsets.all(10.0),
+              child: SingleChildScrollView(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const SizedBox(height: 10),
+                  Text("Milestones ${DateTime.now().year}",
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 16),
+                  const InformationContainerLite(
+                    content: 'Only workouts logged in the current year will count towards your achievements.',
+                    color: sapphireDark80,
+                  ),
+                  const SizedBox(height: 20),
+                  logs.isNotEmpty ? _AchievementListView(children: achievements) : const AchievementsEmptyState()
+                ]),
+              )),
+        ));
   }
 }
 

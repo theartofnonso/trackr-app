@@ -43,8 +43,8 @@ class RepsChartWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       decoration: BoxDecoration(
-        color: sapphireLight,
-        border: Border.all(color: sapphireDark.withOpacity(0.8), width: 2),
+        color: sapphireDark80,
+        border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(

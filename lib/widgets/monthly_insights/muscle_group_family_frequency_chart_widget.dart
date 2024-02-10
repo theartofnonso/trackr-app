@@ -44,8 +44,8 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-        color: sapphireLight,
-        border: Border.all(color: sapphireDark.withOpacity(0.8), width: 2),
+        color: sapphireDark80,
+        border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -115,10 +115,10 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
           CTextButton(
               onPressed: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
-              buttonColor: sapphireLighter,
+              buttonColor: sapphireDark80,
               label: "See more insights",
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-              textStyle: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
+              padding: EdgeInsets.zero,
+              textStyle: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
         ],
       ),
     );

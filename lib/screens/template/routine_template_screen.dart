@@ -92,11 +92,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
             onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
-            backgroundColor: sapphireLighter,
+            backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),
         backgroundColor: sapphireDark,
         appBar: AppBar(
+          backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
             onPressed: () => Navigator.of(context).pop(),
@@ -106,7 +107,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           actions: [
             MenuAnchor(
               style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(sapphireLighter),
+                backgroundColor: MaterialStateProperty.all(sapphireDark80),
+                surfaceTintColor: MaterialStateProperty.all(sapphireDark),
               ),
               builder: (BuildContext context, MenuController controller, Widget? child) {
                 return IconButton(
@@ -129,28 +131,40 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             )
           ],
         ),
-        body: Stack(children: [
-          SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  template.notes.isNotEmpty
-                      ? Text(template.notes,
-                      style: GoogleFonts.montserrat(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ))
-                      : const SizedBox.shrink(),
-                  const SizedBox(height: 5),
-                  ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises), previewType: RoutinePreviewType.template,),
-                ],
-              ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
             ),
           ),
-          if (_loading) const OverlayBackground(loadingMessage: "Deleting workout...")
-        ]));
+          child: Stack(children: [
+            SafeArea(
+              minimum: const EdgeInsets.all(10.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    template.notes.isNotEmpty
+                        ? Text(template.notes,
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ))
+                        : const SizedBox.shrink(),
+                    const SizedBox(height: 5),
+                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises), previewType: RoutinePreviewType.template,),
+                  ],
+                ),
+              ),
+            ),
+            if (_loading) const OverlayBackground(loadingMessage: "Deleting workout...")
+          ]),
+        ));
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {

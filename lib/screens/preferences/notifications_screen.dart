@@ -65,20 +65,34 @@ class NotificationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: sapphireDark,
         appBar: AppBar(
+            backgroundColor: sapphireDark80,
             leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => Navigator.of(context).pop(),
-        )),
-        body: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("Notifications",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 16),
-              const _NotificationListView()
-            ]),
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              onPressed: () => Navigator.of(context).pop(),
+            )),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text("Notifications",
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 16),
+                const _NotificationListView()
+              ]),
+            ),
           ),
         ));
   }
@@ -100,36 +114,25 @@ class _NotificationSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: sapphireLight, // Background color
-          width: 1, // Border width
-        ),
-        borderRadius: BorderRadius.circular(5), // Border radius
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
-          if (enabled)
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(height: 8),
-              CTextButton(
-                  onPressed: onPressed,
-                  label: subtitle,
-                  textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
-            ]),
-        ]),
-        Switch(
-          activeColor: vibrantGreen,
-          inactiveThumbColor: Colors.white70,
-          value: enabled,
-          onChanged: onChanged,
-        )
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
+        if (enabled)
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 8),
+            CTextButton(
+                onPressed: onPressed,
+                label: subtitle,
+                textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
+          ]),
       ]),
-    );
+      Switch(
+        activeColor: vibrantGreen,
+        inactiveThumbColor: Colors.white70,
+        value: enabled,
+        onChanged: onChanged,
+      )
+    ]);
   }
 }
 

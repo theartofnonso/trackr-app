@@ -29,13 +29,14 @@ class RoutineTemplateLibrary extends StatelessWidget {
         .toList();
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(10),
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        minimum: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
           const InformationContainerLite(
             content: exploreWorkouts,
-            color: sapphireDark,
+            color: Colors.transparent,
             padding: EdgeInsets.zero,
           ),
           const SizedBox(height: 20),

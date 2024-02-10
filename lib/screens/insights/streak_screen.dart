@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../colors.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../utils/general_utils.dart';
@@ -37,20 +38,33 @@ class StreakScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("Streak ${DateTime.now().year}",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 20),
-              ...children
-            ]),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text("Streak ${DateTime.now().year}",
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 20),
+                ...children
+              ]),
+            ),
           ),
         ));
   }

@@ -232,7 +232,7 @@ class _Day extends StatelessWidget {
       required this.hasLog});
 
   Color _getBackgroundColor() {
-    return hasLog ? vibrantGreen : sapphireLight;
+    return hasLog ? vibrantGreen : sapphireDark80.withOpacity(0.5);
   }
 
   Color _getTextColor() {
@@ -280,7 +280,7 @@ class _RoutineLogListView extends StatelessWidget {
     final widgets = logs.map((log) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: RoutineLogWidget(log: log, color: sapphireLight, trailing: log.duration().hmsAnalog()),
+        child: RoutineLogWidget(log: log, color: sapphireDark80, trailing: log.duration().hmsAnalog()),
       );
     }).toList();
 

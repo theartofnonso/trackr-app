@@ -26,96 +26,108 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           heroTag: UniqueKey,
           onPressed: () => _saveTemplate(context: context),
-          backgroundColor: sapphireLighter,
+          backgroundColor: sapphireDark,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: const FaIcon(FontAwesomeIcons.download, size: 20)),
       backgroundColor: sapphireDark,
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SizedBox(
-          height: 300,
-          width: double.infinity,
-          child: Stack(children: [
-            Positioned.fill(
-                child: Image.asset(
-              'images/${libraryTemplate.image}',
-              fit: BoxFit.cover,
-            )),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    sapphireDark.withOpacity(0.4),
-                    sapphireDark.withOpacity(0.8),
-                    sapphireDark,
-                  ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(libraryTemplate.template.name.toUpperCase(),
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
-                    const SizedBox(height: 5),
-                    Text(libraryTemplate.template.notes,
-                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Text("Curated by",
-                            style:
-                                GoogleFonts.montserrat(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
-                        const SizedBox(width: 3),
-                        Image.asset(
-                          'images/trackr.png',
-                          fit: BoxFit.contain,
-                          height: 9, //
-                          color: vibrantGreen, // Adjust the height as needed
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ]),
-              ),
-            )
-          ]),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
         ),
-        Expanded(
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(children: [
-                const SizedBox(height: 10),
-                Expanded(
-                  child: ListView.separated(
-                      padding: const EdgeInsets.only(bottom: 250),
-                      itemBuilder: (BuildContext context, int index) => exercises[index],
-                      separatorBuilder: (BuildContext context, int index) => const Divider(
-                            thickness: 1.0,
-                            color: sapphireLight,
-                          ),
-                      itemCount: exercises.length),
-                )
-              ])),
-        )
-      ]),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(
+            height: 300,
+            width: double.infinity,
+            child: Stack(children: [
+              Positioned.fill(
+                  child: Image.asset(
+                'images/${libraryTemplate.image}',
+                fit: BoxFit.cover,
+              )),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark.withOpacity(0.4),
+                      sapphireDark.withOpacity(0.8),
+                      sapphireDark,
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(libraryTemplate.template.name.toUpperCase(),
+                          style: GoogleFonts.montserrat(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+                      const SizedBox(height: 5),
+                      Text(libraryTemplate.template.notes,
+                          style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Text("Curated by",
+                              style:
+                                  GoogleFonts.montserrat(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
+                          const SizedBox(width: 3),
+                          Image.asset(
+                            'images/trackr.png',
+                            fit: BoxFit.contain,
+                            height: 9, //
+                            color: vibrantGreen, // Adjust the height as needed
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  ]),
+                ),
+              )
+            ]),
+          ),
+          Expanded(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Column(children: [
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: ListView.separated(
+                        padding: const EdgeInsets.only(bottom: 250),
+                        itemBuilder: (BuildContext context, int index) => exercises[index],
+                        separatorBuilder: (BuildContext context, int index) => const Divider(
+                              thickness: 1.0,
+                              color: sapphireLight,
+                            ),
+                        itemCount: exercises.length),
+                  )
+                ])),
+          )
+        ]),
+      ),
     );
   }
 

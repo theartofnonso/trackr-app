@@ -33,70 +33,82 @@ class AchievementScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
         heroTag: "fab_achievement_screen",
-        backgroundColor: sapphireLighter,
+        backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
       ),
-      body: SafeArea(
-        minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-        child: SingleChildScrollView(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ]),
-            const SizedBox(height: 10),
-            Text(achievementDto.type.title.toUpperCase(),
-                style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 2),
-            Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
-                style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-            if (!completed)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: LinearProgressIndicator(
-                          minHeight: 18,
-                          color: completed ? Colors.green : Colors.white,
-                          value: achievementDto.progress.value,
-                          borderRadius: const BorderRadius.all(Radius.circular(2)),
-                          backgroundColor: sapphireLighter,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+          child: SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ]),
+              const SizedBox(height: 10),
+              Text(achievementDto.type.title.toUpperCase(),
+                  style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 2),
+              Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
+                  style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+              if (!completed)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: LinearProgressIndicator(
+                            minHeight: 18,
+                            color: completed ? Colors.green : Colors.white,
+                            value: achievementDto.progress.value,
+                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            backgroundColor: sapphireLighter,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text("${achievementDto.progress.remainder} left",
-                          style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-                    ],
+                        const SizedBox(width: 10),
+                        Text("${achievementDto.progress.remainder} left",
+                            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            const SizedBox(height: 10),
-            GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                crossAxisCount: 1,
-                childAspectRatio: 1.2,
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
-                children: monthsHeatMaps),
-            const InformationContainerLite(
-                content: 'Brightly-coloured squares represent days you logged a session for this achievement',
-                color: sapphireLight),
-            const SizedBox(height: 10),
-            InformationContainer(
-                icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                title: 'Tip',
-                description: achievementDto.type.tip,
-                color: sapphireDark),
-          ]),
+              const SizedBox(height: 10),
+              GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 1,
+                  childAspectRatio: 1.2,
+                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 4.0,
+                  children: monthsHeatMaps),
+              const InformationContainerLite(
+                  content: 'Brightly-coloured squares represent days you logged a session for this achievement',
+                  color: sapphireDark80),
+              const SizedBox(height: 10),
+              InformationContainer(
+                  icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                  title: 'Tip',
+                  description: achievementDto.type.tip,
+                  color: sapphireDark),
+            ]),
+          ),
         ),
       ),
     );

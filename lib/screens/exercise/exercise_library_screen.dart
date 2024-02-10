@@ -177,6 +177,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
@@ -195,7 +196,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
         onPressed: _navigateToExerciseEditor,
-        backgroundColor: sapphireLighter,
+        backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
       ),
@@ -206,82 +207,94 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           }
           return false;
         },
-        child: SafeArea(
-          minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              CSearchBar(
-                  hintText: "Search exercises",
-                  onChanged: _runSearch,
-                  onClear: _clearSearch,
-                  controller: _searchController),
-              const SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                  color: sapphireLighter, // Background color
-                  borderRadius: BorderRadius.circular(5), // Border radius
-                ),
-                child: DropdownButton<MuscleGroup>(
-                  menuMaxHeight: 400,
-                  isExpanded: true,
-                  isDense: true,
-                  value: _selectedMuscleGroup,
-                  hint: Text("Filter by muscle group",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                  icon: GestureDetector(
-                    onTap: () {
-                      _selectedMuscleGroup = null;
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                CSearchBar(
+                    hintText: "Search exercises",
+                    onChanged: _runSearch,
+                    onClear: _clearSearch,
+                    controller: _searchController),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: sapphireDark, // Background color
+                    borderRadius: BorderRadius.circular(5), // Border radius
+                  ),
+                  child: DropdownButton<MuscleGroup>(
+                    menuMaxHeight: 400,
+                    isExpanded: true,
+                    isDense: true,
+                    value: _selectedMuscleGroup,
+                    hint: Text("Filter by muscle group",
+                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                    icon: GestureDetector(
+                      onTap: () {
+                        _selectedMuscleGroup = null;
+                        _runSearch(null);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: _selectedMuscleGroup == null
+                            ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
+                            : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
+                      ),
+                    ),
+                    underline: Container(
+                      color: Colors.transparent,
+                    ),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                    onChanged: (MuscleGroup? value) {
+                      _selectedMuscleGroup = value;
                       _runSearch(null);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: _selectedMuscleGroup == null
-                          ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
-                          : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
-                    ),
+                    items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
+                      return DropdownMenuItem<MuscleGroup>(
+                        value: muscleGroup,
+                        child: Text(muscleGroup.name,
+                            style: GoogleFonts.montserrat(
+                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
+                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                                fontSize: 14)),
+                      );
+                    }).toList(),
                   ),
-                  underline: Container(
-                    color: Colors.transparent,
-                  ),
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                  onChanged: (MuscleGroup? value) {
-                    _selectedMuscleGroup = value;
-                    _runSearch(null);
-                  },
-                  items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                    return DropdownMenuItem<MuscleGroup>(
-                      value: muscleGroup,
-                      child: Text(muscleGroup.name,
-                          style: GoogleFonts.montserrat(
-                              color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                              fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                              fontSize: 14)),
-                    );
-                  }).toList(),
                 ),
-              ),
-              const SizedBox(height: 12),
-              _filteredExercises.isNotEmpty
-                  ? Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 250),
-                          itemBuilder: (BuildContext context, int index) => _ExerciseListItem(
-                              exerciseInLibraryDto: _filteredExercises[index],
-                              multiSelect: widget.multiSelect,
-                              onNavigateToExerciseHistory: _navigateToExerciseHistory,
-                              onMultiSelectExercise: _selectCheckedExercise,
-                              onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
-                          separatorBuilder: (BuildContext context, int index) => const Divider(
-                                thickness: 1.0,
-                                color: sapphireLight,
-                              ),
-                          itemCount: _filteredExercises.length),
-                    )
-                  : const ExerciseEmptyState(),
-            ],
+                const SizedBox(height: 12),
+                _filteredExercises.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 250),
+                            itemBuilder: (BuildContext context, int index) => _ExerciseListItem(
+                                exerciseInLibraryDto: _filteredExercises[index],
+                                multiSelect: widget.multiSelect,
+                                onNavigateToExerciseHistory: _navigateToExerciseHistory,
+                                onMultiSelectExercise: _selectCheckedExercise,
+                                onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
+                            separatorBuilder: (BuildContext context, int index) => const Divider(
+                                  thickness: 1.0,
+                                  color: sapphireLight,
+                                ),
+                            itemCount: _filteredExercises.length),
+                      )
+                    : const ExerciseEmptyState(),
+              ],
+            ),
           ),
         ),
       ),

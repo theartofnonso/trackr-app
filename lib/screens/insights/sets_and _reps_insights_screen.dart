@@ -67,6 +67,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
@@ -74,168 +75,180 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
         title: Text("Muscle Trend".toUpperCase(),
             style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
       ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: sapphireLight, // Background color
-                borderRadius: BorderRadius.circular(5), // Border radius
-              ),
-              child: DropdownButton<MuscleGroupFamily>(
-                menuMaxHeight: 400,
-                isExpanded: true,
-                isDense: true,
-                value: _selectedMuscleGroupFamily,
-                hint: Text("Muscle group",
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                underline: Container(
-                  color: Colors.transparent,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          minimum: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                decoration: BoxDecoration(
+                  color: sapphireDark.withOpacity(0.6), // Background color
+                  borderRadius: BorderRadius.circular(5), // Border radius
                 ),
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                onChanged: (MuscleGroupFamily? value) {
-                  if (value != null) _updateChart(value);
-                },
-                items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
-                  return DropdownMenuItem<MuscleGroupFamily>(
-                    value: muscleGroup,
-                    child: Text(muscleGroup.name,
-                        style: GoogleFonts.montserrat(
-                            color: _selectedMuscleGroupFamily == muscleGroup ? Colors.white : Colors.white70,
-                            fontWeight: _selectedMuscleGroupFamily == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                            fontSize: 14)),
-                  );
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "$avgValue",
-                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
-                        children: [
-                          TextSpan(
-                            text: " ",
-                            style:
-                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
-                          TextSpan(
-                            text: _selectedSetsOrReps.name,
-                            style:
-                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      "WEEKLY AVERAGE",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
-                    ),
-                  ],
-                ),
-                CupertinoSlidingSegmentedControl<SetAndReps>(
-                  backgroundColor: sapphireLighter,
-                  thumbColor: sapphireLight,
-                  groupValue: _selectedSetsOrReps,
-                  children: {
-                    SetAndReps.sets: SizedBox(
-                        width: 40, child: Text(SetAndReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                    SetAndReps.reps: SizedBox(
-                        width: 40, child: Text(SetAndReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                child: DropdownButton<MuscleGroupFamily>(
+                  menuMaxHeight: 400,
+                  isExpanded: true,
+                  isDense: true,
+                  value: _selectedMuscleGroupFamily,
+                  hint: Text("Muscle group",
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                  underline: Container(
+                    color: Colors.transparent,
+                  ),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                  onChanged: (MuscleGroupFamily? value) {
+                    if (value != null) _updateChart(value);
                   },
-                  onValueChanged: (SetAndReps? value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedSetsOrReps = value;
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: LineChartWidget(
-                chartPoints: chartPoints,
-                dateTimes: dateTimes,
-                unit: ChartUnit.reps,
-                extraLinesData: ExtraLinesData(
-                  horizontalLines: [
-                    HorizontalLine(
-                      y: _averageMaximumWeeklyValue(),
-                      color: vibrantGreen,
-                      strokeWidth: 1.5,
-                      strokeCap: StrokeCap.round,
-                      dashArray: [10],
-                      label: HorizontalLineLabel(
-                        show: true,
-                        alignment: Alignment.topRight,
-                        style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    HorizontalLine(
-                      y: _averageMedianWeeklyValue(),
-                      color: vibrantBlue,
-                      strokeWidth: 1.5,
-                      strokeCap: StrokeCap.round,
-                      dashArray: [10],
-                      label: HorizontalLineLabel(
-                        show: true,
-                        alignment: Alignment.topRight,
-                        style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    HorizontalLine(
-                      y: _averageMinimumWeeklyValue(),
-                      color: Colors.red,
-                      strokeWidth: 1.5,
-                      strokeCap: StrokeCap.round,
-                      dashArray: [10],
-                      label: HorizontalLineLabel(
-                        show: true,
-                        alignment: Alignment.topRight,
-                        style: GoogleFonts.montserrat(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
+                  items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
+                    return DropdownMenuItem<MuscleGroupFamily>(
+                      value: muscleGroup,
+                      child: Text(muscleGroup.name,
+                          style: GoogleFonts.montserrat(
+                              color: _selectedMuscleGroupFamily == muscleGroup ? Colors.white : Colors.white70,
+                              fontWeight: _selectedMuscleGroupFamily == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                              fontSize: 14)),
+                    );
+                  }).toList(),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Column(children: [
-              Legend(
-                title: "${_averageMinimumWeeklyValue().toInt()}", //
-                suffix: "x",
-                subTitle: 'Minimum',
-                color: Colors.red,
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: "$avgValue",
+                          style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                          children: [
+                            TextSpan(
+                              text: " ",
+                              style:
+                                  GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                            TextSpan(
+                              text: _selectedSetsOrReps.name,
+                              style:
+                                  GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "WEEKLY AVERAGE",
+                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  CupertinoSlidingSegmentedControl<SetAndReps>(
+                    backgroundColor: sapphireDark,
+                    thumbColor: sapphireLight,
+                    groupValue: _selectedSetsOrReps,
+                    children: {
+                      SetAndReps.sets: SizedBox(
+                          width: 40, child: Text(SetAndReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                      SetAndReps.reps: SizedBox(
+                          width: 40, child: Text(SetAndReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                    },
+                    onValueChanged: (SetAndReps? value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedSetsOrReps = value;
+                        });
+                      }
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 6),
-              Legend(
-                title: "${_averageMedianWeeklyValue().toInt()}",
-                suffix: "x",
-                subTitle: 'Sufficient',
-                color: vibrantBlue,
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: LineChartWidget(
+                  chartPoints: chartPoints,
+                  dateTimes: dateTimes,
+                  unit: ChartUnit.reps,
+                  extraLinesData: ExtraLinesData(
+                    horizontalLines: [
+                      HorizontalLine(
+                        y: _averageMaximumWeeklyValue(),
+                        color: vibrantGreen,
+                        strokeWidth: 1.5,
+                        strokeCap: StrokeCap.round,
+                        dashArray: [10],
+                        label: HorizontalLineLabel(
+                          show: true,
+                          alignment: Alignment.topRight,
+                          style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      HorizontalLine(
+                        y: _averageMedianWeeklyValue(),
+                        color: vibrantBlue,
+                        strokeWidth: 1.5,
+                        strokeCap: StrokeCap.round,
+                        dashArray: [10],
+                        label: HorizontalLineLabel(
+                          show: true,
+                          alignment: Alignment.topRight,
+                          style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      HorizontalLine(
+                        y: _averageMinimumWeeklyValue(),
+                        color: Colors.red,
+                        strokeWidth: 1.5,
+                        strokeCap: StrokeCap.round,
+                        dashArray: [10],
+                        label: HorizontalLineLabel(
+                          show: true,
+                          alignment: Alignment.topRight,
+                          style: GoogleFonts.montserrat(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 6),
-              Legend(
-                title: "${_averageMaximumWeeklyValue().toInt()}",
-                suffix: "x",
-                subTitle: 'Optimal',
-                color: vibrantGreen,
-              ),
-            ])
-          ],
+              const SizedBox(height: 20),
+              Column(children: [
+                Legend(
+                  title: "${_averageMinimumWeeklyValue().toInt()}", //
+                  suffix: "x",
+                  subTitle: 'Minimum',
+                  color: Colors.red,
+                ),
+                const SizedBox(height: 6),
+                Legend(
+                  title: "${_averageMedianWeeklyValue().toInt()}",
+                  suffix: "x",
+                  subTitle: 'Sufficient',
+                  color: vibrantBlue,
+                ),
+                const SizedBox(height: 6),
+                Legend(
+                  title: "${_averageMaximumWeeklyValue().toInt()}",
+                  suffix: "x",
+                  subTitle: 'Optimal',
+                  color: vibrantGreen,
+                ),
+              ])
+            ],
+          ),
         ),
       ),
     );

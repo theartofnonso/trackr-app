@@ -22,7 +22,8 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      color: sapphireDark,
       padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

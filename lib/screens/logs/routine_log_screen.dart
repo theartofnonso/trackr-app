@@ -60,6 +60,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return Scaffold(
         backgroundColor: sapphireDark,
         appBar: AppBar(
+          backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: () => Navigator.of(context).pop(),
@@ -74,105 +75,117 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
             onPressed: _showBottomSheet,
-            backgroundColor: sapphireLighter,
+            backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.circle)),
-        body: Stack(children: [
-          SafeArea(
-            minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (log.notes.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Text(log.notes,
-                          style: GoogleFonts.montserrat(
-                            color: Colors.white,
-                            fontSize: 14,
-                          )),
-                    ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.date_range_rounded,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(log.createdAt.formattedDayAndMonthAndYear(),
-                          style: GoogleFonts.montserrat(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                      const SizedBox(width: 10),
-                      const Icon(
-                        Icons.access_time_rounded,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(log.endTime.formattedTime(),
-                          style: GoogleFonts.montserrat(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 24, bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: sapphireLight, // Set the background color
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                        2: FlexColumnWidth(),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(completedSetsSummary,
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(
-                                  "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(log.duration().hmsAnalog(),
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          )
-                        ]),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  MuscleGroupFamilyChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
-                  ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
-                      previewType: RoutinePreviewType.log),
-                ],
-              ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
             ),
           ),
-          if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
-        ]));
+          child: Stack(children: [
+            SafeArea(
+              minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (log.notes.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Text(log.notes,
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontSize: 14,
+                            )),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.date_range_rounded,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(log.createdAt.formattedDayAndMonthAndYear(),
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                        const SizedBox(width: 10),
+                        const Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(log.endTime.formattedTime(),
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 24, bottom: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: sapphireDark80, // Set the background color
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Table(
+                        border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(),
+                          1: FlexColumnWidth(),
+                          2: FlexColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children: [
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(completedSetsSummary,
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(
+                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(log.duration().hmsAnalog(),
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            )
+                          ]),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    MuscleGroupFamilyChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
+                    ExerciseLogListView(
+                        exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
+                        previewType: RoutinePreviewType.log),
+                  ],
+                ),
+              ),
+            ),
+            if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
+          ]),
+        ));
   }
 
   Map<MuscleGroupFamily, double> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
@@ -198,7 +211,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _showBottomSheet() {
-    displayBottomSheet(context: context, child: Column(
+    displayBottomSheet(
+      color: sapphireDark,
+        context: context, child: Column(
       children: [
         const SizedBox(height: 10),
         ListTile(

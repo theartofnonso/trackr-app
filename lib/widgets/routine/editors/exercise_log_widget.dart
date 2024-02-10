@@ -194,7 +194,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: sapphireLight, // Set the background color
+        color: sapphireDark80, // Set the background color
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
@@ -250,7 +250,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
                 filled: true,
-                fillColor: sapphireLighter,
+                fillColor: sapphireDark,
                 hintText: "Enter notes",
                 hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
               ),
@@ -301,7 +301,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(sapphireLighter),
+                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
                       shape:
                           MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             )

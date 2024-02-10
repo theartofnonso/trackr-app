@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/template/library/routine_template_library.dart';
 import 'package:tracker_app/screens/template/routine_templates_screen.dart';
 
+import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 
@@ -21,6 +22,7 @@ class _RoutineTemplatesHomeState extends State<RoutineTemplatesHome> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: sapphireDark80,
             toolbarHeight: 0,
             bottom: TabBar(
               dividerColor: Colors.transparent,
@@ -30,12 +32,24 @@ class _RoutineTemplatesHomeState extends State<RoutineTemplatesHome> {
               ],
             ),
           ),
-          body: const SafeArea(
-            child: TabBarView(
-              children: [
-                RoutineTemplatesScreen(),
-                RoutineTemplateLibrary(),
-              ],
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
+              ),
+            ),
+            child: const SafeArea(
+              child: TabBarView(
+                children: [
+                  RoutineTemplatesScreen(),
+                  RoutineTemplateLibrary(),
+                ],
+              ),
             ),
           ),
         ));

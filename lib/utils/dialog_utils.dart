@@ -82,6 +82,7 @@ void displayNotificationTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
+      color: sapphireDark,
       child: HourTimerPicker(
           initialDuration: initialDuration,
           onSelect: (Duration duration) {

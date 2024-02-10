@@ -22,7 +22,7 @@ class SetRow extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: pbs.isNotEmpty ? sapphireDark : sapphireLight, // Container color
+        color: sapphireDark80, // Container color
         borderRadius: BorderRadius.circular(5.0),
         border: pbs.isNotEmpty ? Border.all(color: sapphireLight, width: 2) : null, // Border color
         // Radius for rounded corners

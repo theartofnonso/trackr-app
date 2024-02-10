@@ -50,118 +50,130 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  title: Text("Weight",
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                  subtitle:
-                      Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
-                  trailing: SegmentedButton(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-                      shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      )),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.white;
-                          }
-                          return Colors.transparent;
-                        },
-                      ),
-                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.black;
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                    ),
-                    segments: [
-                      ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
-                      ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
-                    ],
-                    selected: <WeightUnit>{_weightUnitType},
-                    onSelectionChanged: (Set<WeightUnit> unitType) {
-                      setState(() {
-                        _weightUnitType = unitType.first;
-                      });
-                      toggleWeightUnit(unit: _weightUnitType);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Theme(
-                  data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
-                      ),
-                  child: SwitchListTile(
-                    activeColor: vibrantGreen,
-                    title: Text('Show calendar dates',
-                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-                    value: SharedPrefs().showCalendarDates,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    onChanged: (bool value) {
-                      setState(() {
-                        SharedPrefs().showCalendarDates = value;
-                        Provider.of<SettingsController>(context, listen: false).notify();
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
-                const SizedBox(height: 8),
-                OutlineListTile(
-                    onTap: _navigateToNotificationSettings,
-                    title: "Notifications",
-                    trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
-                const SizedBox(height: 8),
-                OutlineListTile(onTap: _delete, title: "Delete Account"),
-                const SizedBox(height: 50),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  GestureDetector(
-                    onTap: () => _launchUrl(url: trackrWebUrl),
-                    child: Image.asset(
-                      'images/trackr.png',
-                      fit: BoxFit.contain,
-                      height: 12, //
-                    ),
-                  ),
-                  const SizedBox(width: 18),
-                  GestureDetector(
-                      onTap: () => _launchUrl(url: instagramUrl),
-                      child: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 24)),
-                ]),
-                const SizedBox(height: 50),
-                Center(
-                  child: Text(_appVersion,
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
           ),
         ),
-        if (_loading)
-          Align(
-              alignment: Alignment.center,
-              child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: sapphireDark.withOpacity(0.7),
-                  child: Center(child: Text(_loadingMessage, style: GoogleFonts.montserrat(fontSize: 14)))))
-      ]),
+        child: Stack(children: [
+          SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: Text("Weight",
+                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                    subtitle:
+                        Text("Choose kg or lbs", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+                    trailing: SegmentedButton(
+                      showSelectedIcon: false,
+                      style: ButtonStyle(
+                        visualDensity: const VisualDensity(
+                            horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+                        shape: MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        )),
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.white;
+                            }
+                            return Colors.transparent;
+                          },
+                        ),
+                        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.black;
+                            }
+                            return Colors.white;
+                          },
+                        ),
+                      ),
+                      segments: [
+                        ButtonSegment<WeightUnit>(value: WeightUnit.kg, label: Text(WeightUnit.kg.name)),
+                        ButtonSegment<WeightUnit>(value: WeightUnit.lbs, label: Text(WeightUnit.lbs.name)),
+                      ],
+                      selected: <WeightUnit>{_weightUnitType},
+                      onSelectionChanged: (Set<WeightUnit> unitType) {
+                        setState(() {
+                          _weightUnitType = unitType.first;
+                        });
+                        toggleWeightUnit(unit: _weightUnitType);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Theme(
+                    data: Theme.of(context).copyWith(splashColor: Colors.transparent // Disable the splash effect
+                        ),
+                    child: SwitchListTile(
+                      activeColor: vibrantGreen,
+                      title: Text('Show calendar dates',
+                          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                      value: SharedPrefs().showCalendarDates,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      onChanged: (bool value) {
+                        setState(() {
+                          SharedPrefs().showCalendarDates = value;
+                          Provider.of<SettingsController>(context, listen: false).notify();
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
+                  const SizedBox(height: 8),
+                  OutlineListTile(
+                      onTap: _navigateToNotificationSettings,
+                      title: "Notifications",
+                      trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                  const SizedBox(height: 8),
+                  OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                  const SizedBox(height: 8),
+                  OutlineListTile(onTap: _delete, title: "Delete Account"),
+                  const SizedBox(height: 50),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    GestureDetector(
+                      onTap: () => _launchUrl(url: trackrWebUrl),
+                      child: Image.asset(
+                        'images/trackr.png',
+                        fit: BoxFit.contain,
+                        height: 12, //
+                      ),
+                    ),
+                    const SizedBox(width: 18),
+                    GestureDetector(
+                        onTap: () => _launchUrl(url: instagramUrl),
+                        child: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 24)),
+                  ]),
+                  const SizedBox(height: 50),
+                  Center(
+                    child: Text(_appVersion,
+                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_loading)
+            Align(
+                alignment: Alignment.center,
+                child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: sapphireDark.withOpacity(0.7),
+                    child: Center(child: Text(_loadingMessage, style: GoogleFonts.montserrat(fontSize: 14)))))
+        ]),
+      ),
     );
   }
 

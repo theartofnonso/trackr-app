@@ -56,8 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         indicatorColor: Colors.transparent,
-        backgroundColor: sapphireDark,
-        surfaceTintColor: sapphireLighter,
+        backgroundColor: sapphireDark80,
+        surfaceTintColor: Colors.black,
         overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
         destinations: const [
           NavigationDestination(
@@ -146,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         displayBottomSheet(
             context: context,
+            color: sapphireDark,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",

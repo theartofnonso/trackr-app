@@ -24,7 +24,7 @@ class DoubleTextField extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: sapphireLight)),
-          fillColor: sapphireLight,
+          fillColor: Colors.transparent,
           hintText: "${value > 0 ? weightWithConversion(value: value) : '-'}",
           hintStyle: GoogleFonts.montserrat(color: Colors.white70)),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),

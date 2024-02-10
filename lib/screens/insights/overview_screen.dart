@@ -16,7 +16,6 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../widgets/backgrounds/gradient_background.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/information_container_lite.dart';
@@ -65,13 +64,22 @@ class _OverviewScreenState extends State<OverviewScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
         onPressed: () => _logEmptyRoutine(context),
-        backgroundColor: sapphireLighter,
+        backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
-      body: Stack(children: [
-        const Positioned.fill(child: GradientBackground()),
-        SafeArea(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
+        child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,8 +120,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 )
                 // Add more widgets here for exercise insights
               ],
-            ))
-      ]),
+            )),
+      ),
     );
   }
 
