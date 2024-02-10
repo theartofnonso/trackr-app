@@ -114,25 +114,33 @@ class _NotificationSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
-        if (enabled)
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+          color: sapphireDark.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: sapphireLight)),
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 8),
-            CTextButton(
-                onPressed: onPressed,
-                label: subtitle,
-                textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
+            if (enabled)
+              CTextButton(
+                  onPressed: onPressed,
+                  label: subtitle,
+                  textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
           ]),
+        ]),
+        Switch(
+          activeColor: vibrantGreen,
+          inactiveThumbColor: Colors.white70,
+          value: enabled,
+          onChanged: onChanged,
+        )
       ]),
-      Switch(
-        activeColor: vibrantGreen,
-        inactiveThumbColor: Colors.white70,
-        value: enabled,
-        onChanged: onChanged,
-      )
-    ]);
+    );
   }
 }
 

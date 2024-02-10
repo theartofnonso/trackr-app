@@ -40,9 +40,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
     final provider = Provider.of<ExerciseLogController>(context, listen: false);
     final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
-    final exercises = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<ExerciseDto>?;
+    final exercises = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises),
+        settings: const RouteSettings(name: 'ExerciseLibraryScreen'))) as List<ExerciseDto>?;
 
     if (exercises != null && exercises.isNotEmpty) {
       if (context.mounted) {

@@ -21,7 +21,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
-            onPressed: () => navigateToRoutineEditor(context: context),
+            onPressed: () => navigateToRoutineTemplateEditor(context: context),
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
@@ -56,7 +56,7 @@ class _RoutineWidget extends StatelessWidget {
     final menuActions = [
       MenuItemButton(
         onPressed: () {
-          navigateToRoutineEditor(context: context, template: template);
+          navigateToRoutineTemplateEditor(context: context, template: template);
         },
         child: Text("Edit", style: GoogleFonts.montserrat(color: Colors.white)),
       ),

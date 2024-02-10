@@ -66,7 +66,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final menuActions = [
       MenuItemButton(
           onPressed: () {
-            navigateToRoutineEditor(context: context, template: template);
+            navigateToRoutineTemplateEditor(context: context, template: template);
           },
           child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(

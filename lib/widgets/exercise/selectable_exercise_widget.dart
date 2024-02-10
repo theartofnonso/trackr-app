@@ -55,7 +55,7 @@ class SelectableExerciseWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: sapphireLighter,
+                  color: sapphireDark80,
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: Text(
@@ -66,7 +66,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             const SizedBox(width: 8),
             exerciseInLibraryDto.selected
                 ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
-                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireLighter)
+                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireDark80)
           ]),
         ),
       ),

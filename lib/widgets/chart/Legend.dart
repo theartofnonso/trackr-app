@@ -29,17 +29,18 @@ class Legend extends StatelessWidget {
         ),
         const SizedBox(width: 6),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               width: 35,
               child: RichText(
                 text: TextSpan(
                   text: title,
-                  style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                   children: <TextSpan>[
                     TextSpan(
                       text: suffix,
-                      style: GoogleFonts.montserrat(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
                     ),
                   ],
                 ),
@@ -47,7 +48,7 @@ class Legend extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(subTitle.toUpperCase(),
-                style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white70)),
+                style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white70)),
           ],
         ),
       ],

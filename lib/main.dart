@@ -32,14 +32,11 @@ import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
 
 void main() async {
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // if(tsCaptureModeActive) {
-  //   WidgetsFlutterBinding.ensureInitialized();
-  // }
-
   //await setupTestSweets();
+
+  //if (tsCaptureModeActive) {
+    WidgetsFlutterBinding.ensureInitialized();
+  //}
 
   await SharedPrefs().init();
 
@@ -183,10 +180,12 @@ class _MyAppState extends State<MyApp> {
         : Authenticator(
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              // builder: (context, child) => TestSweetsOverlayView(
-              //   projectId: 'YZNrPm745FV89LZZlNup', // <==== Use your ProjectId here
-              //   child: child!,
-              // ),
+              // builder: kDebugMode
+              //     ? (context, child) => TestSweetsOverlayView(
+              //           projectId: 'waibptYGeWyNjUzUFRKw', // <==== Use your ProjectId here
+              //           child: child!,
+              //         )
+              //     : Authenticator.builder(),
               builder: Authenticator.builder(),
               theme: _themeData,
               home: const HomeScreen(),

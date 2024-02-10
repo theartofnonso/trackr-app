@@ -225,6 +225,9 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              Text("Recommended weekly values",
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 12)),
+              const SizedBox(height: 10),
               Column(children: [
                 Legend(
                   title: "${_averageMinimumWeeklyValue().toInt()}", //
