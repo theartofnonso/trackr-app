@@ -44,7 +44,7 @@ class AchievementTile extends StatelessWidget {
                       color: achievement.progress.remainder == 0 ? vibrantGreen : Colors.white,
                       value: achievement.progress.value,
                       borderRadius: const BorderRadius.all(Radius.circular(3)),
-                      backgroundColor: sapphireLighter,
+                      backgroundColor: sapphireDark80,
                     ),
                   ],
                 ),

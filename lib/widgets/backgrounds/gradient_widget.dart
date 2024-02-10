@@ -18,8 +18,8 @@ class GradientWidget extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  sapphireDark.withOpacity(0.2),
-                  sapphireDark,
+                  sapphireDark80.withOpacity(0.2),
+                  sapphireDark80.withOpacity(0.1),
                 ],
               ),
             ),

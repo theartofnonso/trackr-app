@@ -79,7 +79,7 @@ class AchievementScreen extends StatelessWidget {
                             color: completed ? Colors.green : Colors.white,
                             value: achievementDto.progress.value,
                             borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            backgroundColor: sapphireLighter,
+                            backgroundColor: sapphireDark,
                           ),
                         ),
                         const SizedBox(width: 10),

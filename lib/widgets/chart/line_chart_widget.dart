@@ -87,7 +87,7 @@ class LineChartWidget extends StatelessWidget {
                   ])),
             ),
           )
-        : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireLighter, size: 120));
+        : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120));
   }
 
   double _interval() {

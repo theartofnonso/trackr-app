@@ -26,7 +26,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
           child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: sapphireLight, // Set the background color
+                color: sapphireDark80, // Set the background color
                 borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -38,14 +38,14 @@ class ExerciseLogEmptyState extends StatelessWidget {
                 const SizedBox(height: 10),
                 Container(
                     width: double.infinity,
-                    //height: 45,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                     decoration: BoxDecoration(
-                      color: sapphireLighter, // Container background color
+                      color: sapphireDark, // Container background color
                       borderRadius: BorderRadius.circular(5.0), // Border radius
                     ),
                     child: Text("Enter notes",
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14))),
+                        style:
+                            GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14))),
                 const SizedBox(height: 10),
                 WeightRepsSetHeader(editorType: mode, firstLabel: 'KG', secondLabel: 'REPS')
               ])),
