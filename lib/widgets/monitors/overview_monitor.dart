@@ -29,7 +29,8 @@ class OverviewMonitor extends StatelessWidget {
       children: [
         GestureDetector(
             onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
-            child: SizedBox(
+            child: Container(
+              color: Colors.transparent,
               width: 85,
               child: _MonitorScore(
                 value: "${routineLogs.length}",
@@ -46,7 +47,8 @@ class OverviewMonitor extends StatelessWidget {
         const SizedBox(width: 20),
         GestureDetector(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
-          child: SizedBox(
+          child: Container(
+            color: Colors.transparent,
             width: 85,
             child: _MonitorScore(
               value: "$splitPercentage%",
