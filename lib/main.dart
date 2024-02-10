@@ -39,7 +39,7 @@ void main() async {
   //   WidgetsFlutterBinding.ensureInitialized();
   // }
 
-  await setupTestSweets();
+  //await setupTestSweets();
 
   await SharedPrefs().init();
 

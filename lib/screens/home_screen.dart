@@ -83,10 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
         onDestinationSelected: (int index) {
-          TestSweetsNavigatorObserver.instance.setBottomNavIndex(
-            viewName: screenNames[index],
-            index: index,
-          );
+          // TestSweetsNavigatorObserver.instance.setBottomNavIndex(
+          //   viewName: screenNames[index],
+          //   index: index,
+          // );
           setState(() {
             _currentScreenIndex = index;
           });

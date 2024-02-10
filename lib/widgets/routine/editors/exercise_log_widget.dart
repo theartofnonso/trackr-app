@@ -185,7 +185,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   Widget build(BuildContext context) {
 
-    final sets = Provider.of<ExerciseLogController>(context, listen: true).sets[widget.exerciseLogDto.id] ?? [];
+    final sets = context.select((ExerciseLogController controller) => controller.sets)[widget.exerciseLogDto.id] ?? [];
 
     final superSetExerciseDto = widget.superSet;
 
