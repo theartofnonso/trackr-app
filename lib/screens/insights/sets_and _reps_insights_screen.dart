@@ -186,14 +186,14 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                     ),
                     HorizontalLine(
                       y: _averageMedianWeeklyValue(),
-                      color: Colors.orange,
+                      color: vibrantBlue,
                       strokeWidth: 1.5,
                       strokeCap: StrokeCap.round,
                       dashArray: [10],
                       label: HorizontalLineLabel(
                         show: true,
                         alignment: Alignment.topRight,
-                        style: GoogleFonts.montserrat(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold),
+                        style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ),
                     HorizontalLine(
@@ -225,7 +225,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                 title: "${_averageMedianWeeklyValue().toInt()}",
                 suffix: "x",
                 subTitle: 'Sufficient',
-                color: Colors.orange,
+                color: vibrantBlue,
               ),
               const SizedBox(height: 6),
               Legend(

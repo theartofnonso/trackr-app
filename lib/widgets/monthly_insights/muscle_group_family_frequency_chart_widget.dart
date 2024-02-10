@@ -12,6 +12,7 @@ import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_and _reps_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../chart/Legend.dart';
 import '../chart/line_chart_widget.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
@@ -76,14 +77,14 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
                   ),
                   HorizontalLine(
                     y: 50,
-                    color: Colors.orange,
+                    color: vibrantBlue,
                     strokeWidth: 1.5,
                     strokeCap: StrokeCap.round,
                     dashArray: [10],
                     label: HorizontalLineLabel(
                       show: true,
                       alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -98,6 +99,22 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               label: "See more insights",
               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
               textStyle: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
+          const SizedBox(height: 12),
+          const Column(children: [
+            Legend(
+              title: "50", //
+              suffix: "%",
+              subTitle: 'Sufficient',
+              color: vibrantBlue,
+            ),
+            SizedBox(height: 6),
+            Legend(
+              title: "80",
+              suffix: "%",
+              subTitle: 'Optimal',
+              color: Colors.orange,
+            ),
+          ]),
           const SizedBox(height: 12),
           Text(
               "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",
