@@ -92,14 +92,6 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          CTextButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
-              buttonColor: sapphireLighter,
-              label: "See more insights",
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-              textStyle: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
-          const SizedBox(height: 12),
           const Column(children: [
             Legend(
               title: "50", //
@@ -119,6 +111,14 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
           Text(
               "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 12),
+          CTextButton(
+              onPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
+              buttonColor: sapphireLighter,
+              label: "See more insights",
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+              textStyle: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
         ],
       ),
     );
