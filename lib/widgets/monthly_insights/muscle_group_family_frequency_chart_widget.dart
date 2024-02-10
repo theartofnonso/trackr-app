@@ -112,7 +112,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               title: "80",
               suffix: "%",
               subTitle: 'Optimal',
-              color: Colors.orange,
+              color: vibrantGreen,
             ),
           ]),
           const SizedBox(height: 12),
