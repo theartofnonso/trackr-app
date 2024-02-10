@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../screens/insights/sets_and _reps_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/line_chart_widget.dart';
 
@@ -26,7 +28,8 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
     for (var periodAndLogs in periodicalLogs.entries) {
       final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
 
-      final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
+      final muscleGroupsSplitFrequencyScore =
+          cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
       final percentageScore = (muscleGroupsSplitFrequencyScore * 100).round();
       muscleGroupsSplitFrequencyScores.add(percentageScore);
     }
@@ -87,6 +90,14 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 10),
+          CTextButton(
+              onPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
+              buttonColor: sapphireLighter,
+              label: "See more insights",
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+              textStyle: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
           const SizedBox(height: 12),
           Text(
               "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",

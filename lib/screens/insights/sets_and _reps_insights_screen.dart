@@ -12,30 +12,28 @@ import 'package:tracker_app/widgets/chart/line_chart_widget.dart';
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../dtos/routine_log_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_and_reps_enum.dart';
+import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../widgets/chart/Legend.dart';
 
 class SetsAndRepsInsightsScreen extends StatefulWidget {
-  final List<RoutineLogDto>? monthAndLogs;
 
-  const SetsAndRepsInsightsScreen({super.key, this.monthAndLogs});
+  const SetsAndRepsInsightsScreen({super.key});
 
   @override
   State<SetsAndRepsInsightsScreen> createState() => _SetsAndRepsInsightsScreenState();
 }
 
 class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
-
   SetAndReps _selectedSetsOrReps = SetAndReps.sets;
 
   late MuscleGroupFamily _selectedMuscleGroupFamily;
 
   @override
   Widget build(BuildContext context) {
-
     final textStyle = GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
     final muscleGroups = popularMuscleGroupFamilies();
@@ -52,7 +50,8 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
           .expand((exerciseLogs) => exerciseLogs)
           .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family == _selectedMuscleGroupFamily)
           .map((log) {
-        final values = log.sets.map((set) => _selectedSetsOrReps == SetAndReps.reps ? set.reps() : set.volume()).sum.toInt();
+        final values =
+            _selectedSetsOrReps == SetAndReps.sets ? log.sets.length : log.sets.map((set) => set.reps()).sum.toInt();
         return values;
       }).sum;
 
@@ -62,7 +61,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
     final avgValue = periodicalValues.average.round();
 
     final chartPoints =
-    periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
     final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
@@ -72,6 +71,8 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        title: Text("Muscle Trend".toUpperCase(),
+            style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(10),
@@ -82,7 +83,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
-                color: sapphireLighter, // Background color
+                color: sapphireLight, // Background color
                 borderRadius: BorderRadius.circular(5), // Border radius
               ),
               child: DropdownButton<MuscleGroupFamily>(
@@ -97,7 +98,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                 ),
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                 onChanged: (MuscleGroupFamily? value) {
-                  if(value != null) _updateChart(value);
+                  if (value != null) _updateChart(value);
                 },
                 items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
                   return DropdownMenuItem<MuscleGroupFamily>(
@@ -118,10 +119,6 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "AVERAGE",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
                     RichText(
                       text: TextSpan(
                         text: "$avgValue",
@@ -129,14 +126,20 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                         children: [
                           TextSpan(
                             text: " ",
-                            style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            style:
+                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                           TextSpan(
                             text: _selectedSetsOrReps.name,
-                            style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            style:
+                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                         ],
                       ),
+                    ),
+                    Text(
+                      "WEEKLY AVERAGE",
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
                     ),
                   ],
                 ),
@@ -146,11 +149,9 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                   groupValue: _selectedSetsOrReps,
                   children: {
                     SetAndReps.sets: SizedBox(
-                        width: 40,
-                        child: Text(SetAndReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                        width: 40, child: Text(SetAndReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
                     SetAndReps.reps: SizedBox(
-                        width: 40,
-                        child: Text(SetAndReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                        width: 40, child: Text(SetAndReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
                   },
                   onValueChanged: (SetAndReps? value) {
                     if (value != null) {
@@ -172,7 +173,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                 extraLinesData: ExtraLinesData(
                   horizontalLines: [
                     HorizontalLine(
-                      y: 150,
+                      y: _averageMaximumWeeklyValue(),
                       color: vibrantGreen,
                       strokeWidth: 1.5,
                       strokeCap: StrokeCap.round,
@@ -184,7 +185,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                       ),
                     ),
                     HorizontalLine(
-                      y: 60,
+                      y: _averageMedianWeeklyValue(),
                       color: Colors.orange,
                       strokeWidth: 1.5,
                       strokeCap: StrokeCap.round,
@@ -196,7 +197,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                       ),
                     ),
                     HorizontalLine(
-                      y: 30,
+                      y: _averageMinimumWeeklyValue(),
                       color: Colors.red,
                       strokeWidth: 1.5,
                       strokeCap: StrokeCap.round,
@@ -211,10 +212,57 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            Column(children: [
+              Legend(
+                title: "${_averageMinimumWeeklyValue().toInt()}", //
+                suffix: "x",
+                subTitle: 'Minimum',
+                color: Colors.red,
+              ),
+              const SizedBox(height: 6),
+              Legend(
+                title: "${_averageMedianWeeklyValue().toInt()}",
+                suffix: "x",
+                subTitle: 'Sufficient',
+                color: Colors.orange,
+              ),
+              const SizedBox(height: 6),
+              Legend(
+                title: "${_averageMaximumWeeklyValue().toInt()}",
+                suffix: "x",
+                subTitle: 'Optimal',
+                color: vibrantGreen,
+              ),
+            ])
           ],
         ),
       ),
     );
+  }
+
+  double _averageMinimumWeeklyValue() {
+    if (_selectedSetsOrReps == SetAndReps.sets) {
+      return averageMinimumWeeklySets.toDouble();
+    } else {
+      return averageMinimumWeeklyReps.toDouble();
+    }
+  }
+
+  double _averageMaximumWeeklyValue() {
+    if (_selectedSetsOrReps == SetAndReps.sets) {
+      return averageMaximumWeeklySets.toDouble();
+    } else {
+      return averageMaximumWeeklyReps.toDouble();
+    }
+  }
+
+  double _averageMedianWeeklyValue() {
+    if (_selectedSetsOrReps == SetAndReps.sets) {
+      return averageMedianWeeklySets.toDouble();
+    } else {
+      return averageMedianWeeklyReps.toDouble();
+    }
   }
 
   void _updateChart(MuscleGroupFamily muscleGroupFamily) {
