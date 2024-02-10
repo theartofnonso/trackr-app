@@ -81,7 +81,7 @@ class LogDurationWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 26),
                 Text(avgHours.inMinutes < 30 ? lowAverageWorkoutDuration : highAverageWorkoutDuration,
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
               ],
             )),
       ],
