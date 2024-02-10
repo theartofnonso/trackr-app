@@ -16,7 +16,7 @@ class SetCheckButton extends StatelessWidget {
       child: Center(
         child: FaIcon(
           setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-          color: setDto.checked ? vibrantGreen : sapphireLighter,
+          color: setDto.checked ? vibrantGreen : sapphireDark.withOpacity(0.5),
           size: 30,
         ),
       ),

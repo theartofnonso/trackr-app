@@ -22,7 +22,7 @@ class PBsShareable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    String value = "";
+    String? value;
 
     if(withDurationOnly(type: pbDto.exercise.type)) {
       value = Duration(milliseconds: set.duration()).hmsAnalog();
@@ -38,7 +38,7 @@ class PBsShareable extends StatelessWidget {
     return RepaintBoundary(
       key: globalKey,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
         color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -49,15 +49,16 @@ class PBsShareable extends StatelessWidget {
             SizedBox(width: 8),
             FaIcon(FontAwesomeIcons.solidStar, color: Colors.green, size: 14)
           ]),
-          const SizedBox(height: 30),
-          Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          value != null ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
+          ) : const SizedBox(height: 10),
           Text(pbDto.exercise.name,
               style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Text(pbDto.pb.description,
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 60),
+          const SizedBox(height: 20),
           Image.asset(
             'images/trackr.png',
             fit: BoxFit.contain,

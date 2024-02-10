@@ -215,7 +215,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(sapphireLighter),
+                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
+                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
@@ -250,7 +251,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
                 filled: true,
-                fillColor: sapphireDark,
+                fillColor: sapphireDark.withOpacity(0.5),
                 hintText: "Enter notes",
                 hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
               ),
@@ -301,7 +302,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
+                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.5)),
                       shape:
                           MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             )

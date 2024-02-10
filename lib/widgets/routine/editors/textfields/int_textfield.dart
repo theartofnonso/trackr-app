@@ -22,7 +22,7 @@ class IntTextField extends StatelessWidget {
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: sapphireLight)),
+              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
           fillColor: Colors.transparent,
           hintText: "${value > 0 ? value : '-'}",
           hintStyle: GoogleFonts.montserrat(color: Colors.white70)),
