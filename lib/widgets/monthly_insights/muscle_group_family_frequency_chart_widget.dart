@@ -51,7 +51,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Muscle frequency Trend",
+          Text("Muscle Frequency Trend",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(
