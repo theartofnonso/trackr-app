@@ -5,6 +5,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../dtos/routine_log_dto.dart';
+import '../../strings.dart';
 
 class LogDurationWidget extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;
@@ -33,46 +34,54 @@ class LogDurationWidget extends StatelessWidget {
               border: Border.all(color: sapphireDark.withOpacity(0.8), width: 2),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Table(
-              border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(),
-                1: FlexColumnWidth(),
-                2: FlexColumnWidth(),
-              },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                TableRow(children: [
-                  TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(
-                      child: SleepTimeColumn(
-                          title: 'LEAST TIME',
-                          subTitle: minHours.hmDigital(),
-                          titleColor: Colors.white,
-                          subTitleColor: Colors.white70),
-                    ),
-                  ),
-                  TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(
-                      child: SleepTimeColumn(
-                          title: 'AVG TIME',
-                          subTitle: avgHours.hmDigital(),
-                          titleColor: sapphireBlue,
-                          subTitleColor: sapphireBlue.withOpacity(0.8)),
-                    ),
-                  ),
-                  TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(
-                      child: SleepTimeColumn(
-                          title: 'MOST TIME',
-                          subTitle: maxHours.hmDigital(),
-                          titleColor: Colors.white,
-                          subTitleColor: Colors.white70),
-                    ),
-                  )
-                ]),
+                Table(
+                  border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: FlexColumnWidth(),
+                    1: FlexColumnWidth(),
+                    2: FlexColumnWidth(),
+                  },
+                  children: [
+                    TableRow(children: [
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Center(
+                          child: SleepTimeColumn(
+                              title: 'LEAST TIME',
+                              subTitle: minHours.hmDigital(),
+                              titleColor: Colors.white,
+                              subTitleColor: Colors.white),
+                        ),
+                      ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Center(
+                          child: SleepTimeColumn(
+                              title: 'AVG TIME',
+                              subTitle: avgHours.hmDigital(),
+                              titleColor: avgHours.inMinutes < 30 ? Colors.orange: Colors.white70,
+                              subTitleColor: avgHours.inMinutes < 30 ? Colors.orange.withOpacity(0.8) : Colors.white70),
+                        ),
+                      ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Center(
+                          child: SleepTimeColumn(
+                              title: 'MOST TIME',
+                              subTitle: maxHours.hmDigital(),
+                              titleColor: Colors.white,
+                              subTitleColor: Colors.white),
+                        ),
+                      )
+                    ]),
+                  ],
+                ),
+                const SizedBox(height: 26),
+                Text(avgHours.inMinutes < 30 ? lowAverageWorkoutDuration : highAverageWorkoutDuration,
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
               ],
             )),
       ],
@@ -111,7 +120,7 @@ class SleepTimeColumn extends StatelessWidget {
           title,
           textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
-            color: subTitleColor,
+            color: subTitleColor.withOpacity(0.6),
             fontSize: 10,
             fontWeight: FontWeight.bold,
           ),

@@ -20,7 +20,7 @@ class AchievementTile extends StatelessWidget {
           margin: margin,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0), //
-              border: Border.all(color: sapphireLighter, width: 2) // Set the border radius here
+              border: Border.all(color: sapphireLight, width: 2) // Set the border radius here
               ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -40,7 +40,7 @@ class AchievementTile extends StatelessWidget {
                         style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
-                      minHeight: 10,
+                      minHeight: 18,
                       color: achievement.progress.remainder == 0 ? vibrantGreen : Colors.white,
                       value: achievement.progress.value,
                       borderRadius: const BorderRadius.all(Radius.circular(3)),

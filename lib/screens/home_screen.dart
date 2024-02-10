@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:testsweets/testsweets.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
-import 'package:tracker_app/screens/overview_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/screens/insights/overview_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -21,7 +22,7 @@ import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../enums/routine_editor_type_enums.dart';
-import 'notifications_screen.dart';
+import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,6 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
       const AchievementsScreen(),
       const SettingsScreen(),
     ];
+
+    final screenNames = [
+      "Overview",
+      "Templates",
+      "Achievements",
+      "Settings",
+    ];
+
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
@@ -74,6 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
         onDestinationSelected: (int index) {
+          // TestSweetsNavigatorObserver.instance.setBottomNavIndex(
+          //   viewName: screenNames[index],
+          //   index: index,
+          // );
           setState(() {
             _currentScreenIndex = index;
           });

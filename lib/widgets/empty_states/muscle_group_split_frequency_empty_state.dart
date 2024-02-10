@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
+import 'package:tracker_app/widgets/chart/muscle_group_family_frequency_chart.dart';
 
 import '../../enums/muscle_group_enums.dart';
 import '../chart/muscle_group_family_chart.dart';
 
-class MuscleGroupSplitEmptyState extends StatelessWidget {
-  const MuscleGroupSplitEmptyState({super.key});
+class MuscleGroupSplitFrequencyEmptyState extends StatelessWidget {
+  const MuscleGroupSplitFrequencyEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class MuscleGroupSplitEmptyState extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GradientWidget(
-          child: MuscleGroupFamilyChart(frequencyData: muscleGroupFamilySplit),
+          child: MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilySplit),
         )
       ],
     );

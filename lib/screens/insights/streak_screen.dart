@@ -3,10 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../dtos/routine_log_dto.dart';
-import '../controllers/routine_log_controller.dart';
-import '../utils/general_utils.dart';
-import '../widgets/calender_heatmaps/calendar_heatmap.dart';
+import '../../dtos/routine_log_dto.dart';
+import '../../controllers/routine_log_controller.dart';
+import '../../utils/general_utils.dart';
+import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class StreakScreen extends StatelessWidget {
   const StreakScreen({super.key});
@@ -30,7 +30,7 @@ class StreakScreen extends StatelessWidget {
           .toList();
       // Generate 12 containers for each month.
       return Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
+        padding: const EdgeInsets.only(bottom: 16.0),
         child: CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates, spacing: 4, dynamicColor: true),
       );
     });

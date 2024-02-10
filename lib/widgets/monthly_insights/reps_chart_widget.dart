@@ -8,7 +8,6 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/line_chart_widget.dart';
 
@@ -19,27 +18,27 @@ class RepsChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = routineLogController.weeklyLogs;
 
-    final monthlyReps = [];
+    final periodicalReps = [];
 
-    for (var monthAndLogs in monthlyLogs.entries) {
-      final repsForMonth = monthAndLogs.value
+    for (var periodAndLogs in periodicalLogs.entries) {
+      final repsForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight)
+          .where((exerciseLog) => withReps(type: exerciseLog.exercise.type))
           .map((log) {
-        final reps = log.sets.map((set) => set.value2).sum;
+        final reps = log.sets.map((set) => set.reps()).sum;
         return reps;
       }).sum;
 
-      monthlyReps.add(repsForMonth);
+      periodicalReps.add(repsForPeriod);
     }
 
     final chartPoints =
-        monthlyReps.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        periodicalReps.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
+    final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -60,13 +59,12 @@ class RepsChartWidget extends StatelessWidget {
                 chartPoints: chartPoints,
                 dateTimes: dateTimes,
                 unit: ChartUnit.reps,
-                bigData: true,
               ),
           ),
           const SizedBox(height: 12),
           Text(
-              "The total number of reps is an indicator of the volume of work done, A higher number of reps indicates a higher volume of work done.",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+              "Reps trend is an indicator of the volume of work done, A higher number of reps indicates a higher intensity",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );

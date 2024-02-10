@@ -210,7 +210,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
     final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
 
-    final exerciseLogs = context.select((ExerciseLogController provider) => provider.exerciseLogs);
+    final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 

@@ -1,7 +1,7 @@
 enum ChartUnit {
   kg("kg"),
   lbs("lbs"),
-  reps("reps"),
+  reps(""),
   m("m"),
   h("h"),
   yd("yd"),

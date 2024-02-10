@@ -64,7 +64,7 @@ class AchievementScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: LinearProgressIndicator(
-                          minHeight: 8,
+                          minHeight: 18,
                           color: completed ? Colors.green : Colors.white,
                           value: achievementDto.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(2)),
@@ -82,12 +82,11 @@ class AchievementScreen extends StatelessWidget {
             GridView.count(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                crossAxisCount: monthsHeatMaps.length > 3 ? 3 : monthsHeatMaps.length,
-                childAspectRatio: 1,
-                mainAxisSpacing: 12.0,
-                crossAxisSpacing: 12.0,
+                crossAxisCount: 1,
+                childAspectRatio: 1.2,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
                 children: monthsHeatMaps),
-            const SizedBox(height: 10),
             const InformationContainerLite(
                 content: 'Brightly-coloured squares represent days you logged a session for this achievement',
                 color: sapphireLight),

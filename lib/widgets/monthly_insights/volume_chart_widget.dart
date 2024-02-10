@@ -7,7 +7,6 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../chart/line_chart_widget.dart';
@@ -19,27 +18,26 @@ class VolumeChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final monthlyLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = routineLogController.weeklyLogs;
 
-    final monthlyTonnage = [];
+    final periodicalTonnage = [];
 
-    for (var monthAndLogs in monthlyLogs.entries) {
-      final tonnageForMonth = monthAndLogs.value
+    for (var periodAndLogs in periodicalLogs.entries) {
+      final tonnageForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights)
           .map((log) {
-        final volume = log.sets.map((set) => set.value1 * set.value2).sum;
+        final volume = log.sets.map((set) => set.volume()).sum;
         return volume.toDouble();
       }).sum;
 
-      monthlyTonnage.add(tonnageForMonth);
+      periodicalTonnage.add(tonnageForPeriod);
     }
 
     final chartPoints =
-        monthlyTonnage.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+        periodicalTonnage.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = monthlyLogs.entries.map((monthEntry) => monthEntry.key.start.abbreviatedMonth()).toList();
+    final dateTimes = periodicalLogs.entries.map((periodEntry) => periodEntry.key.end.abbreviatedMonth()).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -51,8 +49,16 @@ class VolumeChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Volume Trend",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+          RichText(
+              text: TextSpan(
+                  text: "Volume Trend",
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+                  children: [
+                    const TextSpan(text: " "),
+                    TextSpan(
+                        text: weightLabel().toUpperCase(),
+                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold))
+                  ])),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
@@ -60,13 +66,12 @@ class VolumeChartWidget extends StatelessWidget {
               chartPoints: chartPoints,
               dateTimes: dateTimes,
               unit: chartWeightUnitLabel(),
-              bigData: true,
             ),
           ),
           const SizedBox(height: 12),
           Text(
-              "The total volume indicates the intensity of your workouts. Trackr calculates this by multiplying the weight lifted by the number of reps.",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+              "Volume trend indicates the intensity of your workouts. Trackr calculates this by multiplying the weight lifted by the number of reps.",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );

@@ -4,10 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
@@ -29,17 +29,16 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
     final totalHoursInMilliSeconds = monthAndLogs.map((log) => log.duration().inMilliseconds).sum;
     final totalHours = Duration(milliseconds: totalHoursInMilliSeconds);
 
-    final exerciseLogsWithWeights = exerciseLogs.where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights);
-    final tonnage = exerciseLogsWithWeights.map((log) {
-      final volume = log.sets.map((set) => set.value1 * set.value2).sum;
+    final tonnage = exerciseLogs.map((log) {
+      final volume = log.sets.map((set) => set.volume()).sum;
       return volume;
     }).sum;
 
-    final totalVolumeInKg = volumeInKOrM(tonnage.toDouble());
+    final totalVolume = volumeInKOrM(weightWithConversion(value: tonnage));
 
-    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => exerciseLog.exercise.type == ExerciseType.weights || exerciseLog.exercise.type == ExerciseType.bodyWeight);
+    final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(type: exerciseLog.exercise.type));
     final totalReps = exerciseLogsWithReps.map((log) {
-      final reps = log.sets.map((set) => set.value2).sum;
+      final reps = log.sets.map((set) => set.reps()).sum;
       return reps;
     }).sum;
 
@@ -82,7 +81,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'EXERCISES',
                           subTitle: "$numberOfExercises",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                   TableCell(
@@ -92,7 +91,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'SETS',
                           subTitle: "$numberOfSets",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                   TableCell(
@@ -102,7 +101,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'REPS',
                           subTitle: "$totalReps",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                 ]),
@@ -112,9 +111,9 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                     child: Center(
                       child: SleepTimeColumn(
                           title: 'VOLUME',
-                          subTitle: totalVolumeInKg,
+                          subTitle: totalVolume,
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
@@ -123,7 +122,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'HOURS',
                           subTitle: totalHours.hmDigital(),
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),
                   TableCell(
@@ -133,7 +132,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                           title: 'Personal Bests',
                           subTitle: "${numberOfPbs.length}",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white70, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),
                 ]),
@@ -180,7 +179,7 @@ class SleepTimeColumn extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: GoogleFonts.montserrat(
-              color: subTitleColor,
+              color: subTitleColor.withOpacity(0.6),
               fontSize: 10,
               fontWeight: FontWeight.bold,
             ),

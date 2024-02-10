@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dto.dart';
-import '../enums/exercise_type_enums.dart';
 import '../enums/routine_editor_type_enums.dart';
 
 class ExerciseLogRepository {
@@ -22,7 +22,7 @@ class ExerciseLogRepository {
 
   void _loadSets({required RoutineEditorMode mode}) {
     for (var exerciseLog in _exerciseLogs) {
-      if (exerciseLog.exercise.type == ExerciseType.duration) {
+      if (withDurationOnly(type: exerciseLog.exercise.type)) {
         if (mode == RoutineEditorMode.log) {
           _sets[exerciseLog.id] = [];
           continue;
@@ -33,9 +33,9 @@ class ExerciseLogRepository {
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
-    return _exerciseLogs.map((exercise) {
-      final sets = _sets[exercise.id] ?? [];
-      return exercise.copyWith(sets: exercise.exercise.type == ExerciseType.duration ? _checkSets(sets) : sets);
+    return _exerciseLogs.map((exerciseLog) {
+      final sets = _sets[exerciseLog.id] ?? [];
+      return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(sets) : sets);
     }).toList();
   }
 
