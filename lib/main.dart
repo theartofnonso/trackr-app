@@ -33,7 +33,7 @@ import 'models/ModelProvider.dart';
 
 void main() async {
 
-  //WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   // if(tsCaptureModeActive) {
   //   WidgetsFlutterBinding.ensureInitialized();
