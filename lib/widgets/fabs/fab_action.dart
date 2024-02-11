@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 
 @immutable
 class ActionButton extends StatelessWidget {
@@ -17,12 +17,12 @@ class ActionButton extends StatelessWidget {
     return Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       clipBehavior: Clip.antiAlias,
-      color: tealBlueLighter,
+      color: sapphireLighter,
       elevation: 4,
       child: IconButton(
         onPressed: onPressed,
         icon: icon,
-        color: tealBlueLighter,
+        color: sapphireLighter,
       ),
     );
   }

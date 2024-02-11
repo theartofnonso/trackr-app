@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class OverlayBackground extends StatelessWidget {
   const OverlayBackground({super.key, this.loadingMessage, this.opacity = 0.7});
@@ -16,7 +16,7 @@ class OverlayBackground extends StatelessWidget {
         child: Container(
             width: double.infinity,
             height: double.infinity,
-            color: tealBlueDark.withOpacity(opacity),
+            color: sapphireDark.withOpacity(opacity),
             child: loadingMessage != null ? Center(child: Text("$loadingMessage", style: GoogleFonts.montserrat(fontSize: 14))) : null));
   }
 }

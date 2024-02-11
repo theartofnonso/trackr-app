@@ -2,25 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
-import '../../../shared_prefs.dart';
 import '../../../utils/exercise_logs_utils.dart';
-import '../../../widgets/chart/line_chart_widget.dart';
 import '../../../utils/dialog_utils.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
-
-ChartUnitLabel weightUnit() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnitLabel.kg : ChartUnitLabel.lbs;
-}
 
 class HomeScreen extends StatelessWidget {
   final ExerciseDto exercise;
@@ -88,6 +81,7 @@ class HomeScreen extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: () => Navigator.of(context).pop(),
@@ -105,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                 ? [
                     MenuAnchor(
                       style: MenuStyle(
-                        backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                        backgroundColor: MaterialStateProperty.all(sapphireLighter),
                       ),
                       builder: (BuildContext context, MenuController controller, Widget? child) {
                         return IconButton(
@@ -129,19 +123,31 @@ class HomeScreen extends StatelessWidget {
                   ]
                 : null,
           ),
-          body: SafeArea(
-            child: TabBarView(
-              children: [
-                ExerciseChartScreen(
-                  heaviestWeight: heaviestWeightRecord,
-                  heaviestSet: heaviestSetVolumeRecord,
-                  longestDuration: longestDurationRecord,
-                  mostRepsSet: mostRepsSetRecord,
-                  mostRepsSession: mostRepsSessionRecord,
-                  exercise: foundExercise,
-                ),
-                HistoryScreen(exercise: foundExercise),
-              ],
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
+              ),
+            ),
+            child: SafeArea(
+              child: TabBarView(
+                children: [
+                  ExerciseChartScreen(
+                    heaviestWeight: heaviestWeightRecord,
+                    heaviestSet: heaviestSetVolumeRecord,
+                    longestDuration: longestDurationRecord,
+                    mostRepsSet: mostRepsSetRecord,
+                    mostRepsSession: mostRepsSessionRecord,
+                    exercise: foundExercise,
+                  ),
+                  HistoryScreen(exercise: foundExercise),
+                ],
+              ),
             ),
           ),
         ));

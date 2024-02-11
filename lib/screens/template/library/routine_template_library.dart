@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
-import 'package:tracker_app/screens/template/default/routine_template_library_screen.dart';
+import 'package:tracker_app/screens/template/library/routine_template_library_screen.dart';
 import 'package:tracker_app/strings.dart';
 
 import '../../../dtos/routine_template_dto.dart';
@@ -29,13 +29,15 @@ class RoutineTemplateLibrary extends StatelessWidget {
         .toList();
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(10),
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        minimum: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
           const InformationContainerLite(
             content: exploreWorkouts,
-            color: tealBlueDark,
+            color: Colors.transparent,
+            padding: EdgeInsets.zero,
           ),
           const SizedBox(height: 20),
           Expanded(
@@ -93,7 +95,7 @@ class _WorkoutCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          color: tealBlueLight,
+          color: sapphireLight,
         ),
         child: Stack(children: [
           Positioned.fill(
@@ -110,8 +112,8 @@ class _WorkoutCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  tealBlueDark.withOpacity(0.4),
-                  tealBlueDark,
+                  sapphireDark.withOpacity(0.4),
+                  sapphireDark,
                 ],
               ),
             ),

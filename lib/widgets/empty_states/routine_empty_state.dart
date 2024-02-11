@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class RoutineEmptyState extends StatelessWidget {
   const RoutineEmptyState({super.key});
@@ -18,7 +18,7 @@ class RoutineEmptyState extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                tileColor: tealBlueLight,
+                tileColor: sapphireDark80,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 leading: const Icon(
@@ -33,7 +33,7 @@ class RoutineEmptyState extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               ListTile(
-                tileColor: tealBlueLight,
+                tileColor: sapphireDark80,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                 leading: const Icon(

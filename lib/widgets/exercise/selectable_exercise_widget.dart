@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 
 import '../../screens/exercise/exercise_library_screen.dart';
 
 class SelectableExerciseWidget extends StatelessWidget {
   final ExerciseInLibraryDto exerciseInLibraryDto;
-  final void Function(bool selected) onTap;
-  final void Function() onNavigateToExercise;
+  final void Function(ExerciseInLibraryDto exerciseInLibraryDto, bool selected)? onSelect;
+  final void Function(ExerciseInLibraryDto exerciseInLibraryDto)? onNavigateToExercise;
 
   const SelectableExerciseWidget(
-      {super.key, required this.exerciseInLibraryDto, required this.onTap, required this.onNavigateToExercise});
+      {super.key, required this.exerciseInLibraryDto, required this.onSelect, required this.onNavigateToExercise});
 
   void _onTap() {
-    final isSelected = !exerciseInLibraryDto.selected;
-    onTap(isSelected);
+    final selectExercise = onSelect;
+    if (selectExercise != null) {
+      selectExercise(exerciseInLibraryDto, !exerciseInLibraryDto.selected);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final navigateToExercise = onNavigateToExercise;
+
     return Theme(
       data: ThemeData(
         splashColor: Colors.transparent,
@@ -37,7 +41,7 @@ class SelectableExerciseWidget extends StatelessWidget {
         ),
         leading: IconButton(
           iconSize: 24,
-          onPressed: onNavigateToExercise,
+          onPressed: () => navigateToExercise != null ? navigateToExercise(exerciseInLibraryDto) : null,
           icon: const Icon(
             Icons.timeline_rounded,
             color: Colors.white,
@@ -46,14 +50,12 @@ class SelectableExerciseWidget extends StatelessWidget {
         horizontalTitleGap: 10,
         trailing: SizedBox(
           width: 100,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             if (exerciseInLibraryDto.exercise.owner)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: tealBlueLighter,
+                  color: sapphireDark80,
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: Text(
@@ -64,7 +66,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             const SizedBox(width: 8),
             exerciseInLibraryDto.selected
                 ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
-                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: tealBlueLighter)
+                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireDark80)
           ]),
         ),
       ),

@@ -10,7 +10,7 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';
@@ -53,6 +53,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         canPop: false,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: () => Navigator.of(context).pop(),
@@ -67,50 +68,62 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   : const SizedBox.shrink()
             ],
           ),
-          body: SafeArea(
-            minimum: const EdgeInsets.all(10),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RichText(
-                    text: TextSpan(style: const TextStyle(height: 2.0), children: [
-                  TextSpan(text: "Train ", style: inactiveStyle),
-                  TextSpan(
-                      text: "${_primaryMuscleGroup.name} \n",
-                      recognizer: TapGestureRecognizer()..onTap = _navigateToMuscleGroupsScreen,
-                      style: activeStyle),
-                  TextSpan(text: "with ", style: inactiveStyle),
-                  TextSpan(
-                      text: "${_exerciseName ?? "exercise name"} \n",
-                      recognizer: TapGestureRecognizer()..onTap = _showInputTextField,
-                      style: activeStyle),
-                  TextSpan(text: "using ", style: inactiveStyle),
-                  TextSpan(
-                      text: _exerciseType.name,
-                      recognizer: TapGestureRecognizer()..onTap = _navigateToExerciseTypeScreen,
-                      style: exercise == null ? activeStyle : inactiveStyle),
-                ])),
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
               ),
-              const Spacer(),
-              if (!_isInputFieldVisible)
-                const Column(children: [
-                  InformationContainer(
-                      icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                      title: 'Tip',
-                      description: "Tap text in white to edit.\nExercise type is not editable once created.",
-                      color: tealBlueDark),
-                  SizedBox(height: 20),
-                ]),
-              if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
-                SizedBox(
-                  width: double.infinity,
-                  child: CTextButton(
-                      onPressed: _createExercise,
-                      label: "Create Exercise",
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      buttonColor: vibrantGreen),
+            ),
+            child: SafeArea(
+              minimum: const EdgeInsets.all(10),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RichText(
+                      text: TextSpan(style: const TextStyle(height: 2.0), children: [
+                    TextSpan(text: "Train ", style: inactiveStyle),
+                    TextSpan(
+                        text: "${_primaryMuscleGroup.name} \n",
+                        recognizer: TapGestureRecognizer()..onTap = _navigateToMuscleGroupsScreen,
+                        style: activeStyle),
+                    TextSpan(text: "with ", style: inactiveStyle),
+                    TextSpan(
+                        text: "${_exerciseName ?? "exercise name"} \n",
+                        recognizer: TapGestureRecognizer()..onTap = _showInputTextField,
+                        style: activeStyle),
+                    TextSpan(text: "using ", style: inactiveStyle),
+                    TextSpan(
+                        text: _exerciseType.name,
+                        recognizer: TapGestureRecognizer()..onTap = _navigateToExerciseTypeScreen,
+                        style: exercise == null ? activeStyle : inactiveStyle),
+                  ])),
                 ),
-            ]),
+                const Spacer(),
+                if (!_isInputFieldVisible)
+                  const Column(children: [
+                    InformationContainer(
+                        icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                        title: 'Tip',
+                        description: "Tap text in white to edit.\nExercise type is not editable once created.",
+                        color: sapphireDark),
+                    SizedBox(height: 20),
+                  ]),
+                if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
+                  SizedBox(
+                    width: double.infinity,
+                    child: CTextButton(
+                        onPressed: _createExercise,
+                        label: "Create Exercise",
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                        buttonColor: vibrantGreen),
+                  ),
+              ]),
+            ),
           ),
         ));
   }
@@ -170,9 +183,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                  borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
               filled: true,
-              fillColor: tealBlueLighter,
+              fillColor: sapphireDark,
               hintText: "New Exercise",
               hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
           onChanged: (value) => _updateExerciseName(value),

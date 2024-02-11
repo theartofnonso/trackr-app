@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../dtos/exercise_log_dto.dart';
@@ -52,6 +53,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
@@ -67,11 +69,23 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
               : const SizedBox.shrink()
         ],
       ),
-      body: ReorderableListView(
-          physics: const NeverScrollableScrollPhysics(),
-          buildDefaultDragHandles: true,
-          children: widgets,
-          onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
+        child: ReorderableListView(
+            physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: true,
+            children: widgets,
+            onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
+      ),
     );
   }
 

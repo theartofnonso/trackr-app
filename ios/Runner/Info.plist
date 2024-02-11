@@ -48,6 +48,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Allow Trackr to save your photos</string>
+    <string>Allow trkr to save your photos</string>
 </dict>
 </plist>

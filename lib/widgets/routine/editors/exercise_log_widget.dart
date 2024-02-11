@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -14,7 +15,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
@@ -82,7 +83,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _addSet() {
-    if (widget.exerciseLogDto.exercise.type == ExerciseType.duration) {
+    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _durationControllers.add(DateTime.now());
     } else {
       _controllers.add((TextEditingController(), TextEditingController()));
@@ -95,7 +96,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _removeSet({required int index}) {
-    if (widget.exerciseLogDto.exercise.type == ExerciseType.duration) {
+    if (withDurationOnly(type: widget.exerciseLogDto.exercise.type)) {
       _durationControllers.removeAt(index);
     } else {
       _controllers.removeAt(index);
@@ -128,8 +129,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
-    final checked = setDto.checked;
-    final updatedSet = setDto.copyWith(checked: !checked);
+    final checked = !setDto.checked;
+    final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     _cacheLog();
@@ -177,11 +178,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
+  bool _canAddSets({required ExerciseType type}) {
+    return withWeightsOnly(type: type) || withReps(type: type) || widget.editorType == RoutineEditorMode.log;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Provider.of<RoutineLogController>(context, listen: true);
 
-    final sets = context.select((ExerciseLogController provider) => provider.sets)[widget.exerciseLogDto.id] ?? [];
+    final sets = context.select((ExerciseLogController controller) => controller.sets)[widget.exerciseLogDto.id] ?? [];
 
     final superSetExerciseDto = widget.superSet;
 
@@ -190,7 +194,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: tealBlueLight, // Set the background color
+        color: sapphireDark80, // Set the background color
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
@@ -211,7 +215,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
+                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
@@ -244,9 +249,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: tealBlueLighter)),
+                    borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
                 filled: true,
-                fillColor: tealBlueLighter,
+                fillColor: sapphireDark.withOpacity(0.5),
                 hintText: "Enter notes",
                 hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
               ),
@@ -282,13 +287,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               durationControllers: _durationControllers,
             ),
           const SizedBox(height: 8),
-          if (exerciseType == ExerciseType.duration && sets.isEmpty)
+          if (withDurationOnly(type: exerciseType) && sets.isEmpty)
             Center(
               child: Text(_timerMessage(),
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
-          if (exerciseType != ExerciseType.duration || widget.editorType == RoutineEditorMode.log)
+          /// Do not remove this condition
+          if (_canAddSets(type: exerciseType))
             Align(
               alignment: Alignment.bottomRight,
               child: IconButton(
@@ -296,7 +302,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(tealBlueLighter),
+                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.5)),
                       shape:
                           MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             )

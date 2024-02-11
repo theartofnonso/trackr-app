@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../buttons/text_button_widget.dart';
 
 class HourTimerPicker extends StatefulWidget {
@@ -22,7 +22,8 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      color: sapphireDark,
       padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

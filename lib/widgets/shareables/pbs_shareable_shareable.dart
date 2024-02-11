@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
 import 'package:tracker_app/enums/pb_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/pb_dto.dart';
-import '../../enums/exercise_type_enums.dart';
 
 GlobalKey pbsShareableKey = GlobalKey();
 
@@ -22,15 +22,15 @@ class PBsShareable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    String value = "";
+    String? value;
 
-    if(pbDto.exercise.type == ExerciseType.duration) {
-      value = Duration(milliseconds: set.value1.toInt()).hmsAnalog();
-    } else if(pbDto.exercise.type == ExerciseType.weights) {
+    if(withDurationOnly(type: pbDto.exercise.type)) {
+      value = Duration(milliseconds: set.duration()).hmsAnalog();
+    } else if(withWeightsOnly(type: pbDto.exercise.type)) {
       if(pbDto.pb == PBType.weight) {
-        value = "${set.value1.toDouble()}${weightLabel().toUpperCase()}";
+        value = "${set.weight()}${weightLabel().toUpperCase()}";
       } else {
-        value = "${set.value1}${weightLabel().toUpperCase()} x ${set.value2}";
+        value = "${set.weight()}${weightLabel().toUpperCase()} x ${set.reps()}";
       }
 
     }
@@ -38,8 +38,8 @@ class PBsShareable extends StatelessWidget {
     return RepaintBoundary(
       key: globalKey,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
-        color: tealBlueDark,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+        color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -49,15 +49,16 @@ class PBsShareable extends StatelessWidget {
             SizedBox(width: 8),
             FaIcon(FontAwesomeIcons.solidStar, color: Colors.green, size: 14)
           ]),
-          const SizedBox(height: 30),
-          Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          value != null ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600)),
+          ) : const SizedBox(height: 10),
           Text(pbDto.exercise.name,
               style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Text(pbDto.pb.description,
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 60),
+          const SizedBox(height: 20),
           Image.asset(
             'images/trackr.png',
             fit: BoxFit.contain,

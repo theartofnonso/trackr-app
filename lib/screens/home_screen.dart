@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:testsweets/testsweets.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
-import 'package:tracker_app/screens/overview_screen.dart';
+import 'package:tracker_app/screens/insights/overview_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -20,7 +22,7 @@ import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../enums/routine_editor_type_enums.dart';
-import 'notifications_screen.dart';
+import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,15 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screens = [const OverviewScreen(), const RoutineTemplatesHome(), const AchievementsScreen()];
+    final screens = [
+      const OverviewScreen(),
+      const RoutineTemplatesHome(),
+      const AchievementsScreen(),
+      const SettingsScreen(),
+    ];
+
+    final screenNames = [
+      "Overview",
+      "Templates",
+      "Achievements",
+      "Settings",
+    ];
+
     return Scaffold(
       body: screens[_currentScreenIndex],
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         height: 60,
         indicatorColor: Colors.transparent,
-        backgroundColor: tealBlueDark,
-        surfaceTintColor: tealBlueLighter,
+        backgroundColor: sapphireDark80,
+        surfaceTintColor: Colors.black,
         overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
         destinations: const [
           NavigationDestination(
@@ -55,15 +70,23 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 24),
             label: 'Workouts',
           ),
-
-          /// Uncomment this to enable achievements
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
             selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
             label: 'Achievements',
+          ),
+          /// Uncomment this to enable Monthly Reports
+          NavigationDestination(
+            icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
+            selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),
+            label: 'Settings',
           )
         ],
         onDestinationSelected: (int index) {
+          // TestSweetsNavigatorObserver.instance.setBottomNavIndex(
+          //   viewName: screenNames[index],
+          //   index: index,
+          // );
           setState(() {
             _currentScreenIndex = index;
           });
@@ -123,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         displayBottomSheet(
             context: context,
+            color: sapphireDark,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",

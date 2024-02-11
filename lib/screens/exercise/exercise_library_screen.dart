@@ -8,7 +8,7 @@ import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../widgets/buttons/text_button_widget.dart';
@@ -99,12 +99,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   /// Select an exercise
-  void _navigateBackWithSelectedExercise({required ExerciseInLibraryDto selectedExercise}) {
+  void _navigateBackWithSelectedExercise(ExerciseInLibraryDto selectedExercise) {
     Navigator.of(context).pop([selectedExercise.exercise]);
   }
 
   /// Select up to many exercise
-  void _selectCheckedExercise({required bool selected, required ExerciseInLibraryDto exerciseInLibraryDto}) {
+  void _selectCheckedExercise(ExerciseInLibraryDto exerciseInLibraryDto, bool selected) {
     final exerciseIndex = _exercisesInLibrary
         .indexWhere((exerciseInLibrary) => exerciseInLibrary.exercise.id == exerciseInLibraryDto.exercise.id);
     final filteredIndex = _filteredExercises
@@ -122,31 +122,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         _filteredExercises[filteredIndex] = exerciseInLibraryDto.copyWith(selected: false);
       });
     }
-  }
-
-  Widget _exerciseWidget(ExerciseInLibraryDto exerciseInLibraryDto) {
-    if (widget.multiSelect) {
-      return SelectableExerciseWidget(
-          exerciseInLibraryDto: exerciseInLibraryDto,
-          onTap: (selected) {
-            if (!widget.readOnly) {
-              _selectCheckedExercise(selected: selected, exerciseInLibraryDto: exerciseInLibraryDto);
-            }
-          },
-          onNavigateToExercise: () {
-            _navigateToExerciseHistory(exerciseInLibraryDto);
-          });
-    }
-    return ExerciseWidget(
-        exerciseInLibraryDto: exerciseInLibraryDto,
-        onTap: () {
-          if (!widget.readOnly) {
-            _navigateBackWithSelectedExercise(selectedExercise: exerciseInLibraryDto);
-          }
-        },
-        onNavigateToExercise: () {
-          _navigateToExerciseHistory(exerciseInLibraryDto);
-        });
   }
 
   void _dismissKeyboard(BuildContext context) {
@@ -202,25 +177,26 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: sapphireDark80,
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          _selectedExercises.isNotEmpty
-              ? CTextButton(
+          if(_selectedExercises.isNotEmpty)
+            CTextButton(
+                  key: const Key("add_exercises_button"),
                   onPressed: _navigateBackWithSelectedExercises,
                   label: "Add (${_selectedExercises.length})",
                   buttonColor: Colors.transparent,
                   buttonBorderColor: Colors.transparent,
                 )
-              : const SizedBox.shrink()
         ],
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_exercise_library_screen",
         onPressed: _navigateToExerciseEditor,
-        backgroundColor: tealBlueLighter,
+        backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
       ),
@@ -231,77 +207,94 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           }
           return false;
         },
-        child: SafeArea(
-          minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              CSearchBar(
-                  hintText: "Search exercises",
-                  onChanged: _runSearch,
-                  onClear: _clearSearch,
-                  controller: _searchController),
-              const SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                  color: tealBlueLighter, // Background color
-                  borderRadius: BorderRadius.circular(5), // Border radius
-                ),
-                child: DropdownButton<MuscleGroup>(
-                  menuMaxHeight: 400,
-                  isExpanded: true,
-                  isDense: true,
-                  value: _selectedMuscleGroup,
-                  hint: Text("Filter by muscle group",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                  icon: GestureDetector(
-                    onTap: () {
-                      _selectedMuscleGroup = null;
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.only(right: 10.0, bottom: 10, left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                CSearchBar(
+                    hintText: "Search exercises",
+                    onChanged: _runSearch,
+                    onClear: _clearSearch,
+                    controller: _searchController),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: sapphireDark, // Background color
+                    borderRadius: BorderRadius.circular(5), // Border radius
+                  ),
+                  child: DropdownButton<MuscleGroup>(
+                    menuMaxHeight: 400,
+                    isExpanded: true,
+                    isDense: true,
+                    value: _selectedMuscleGroup,
+                    hint: Text("Filter by muscle group",
+                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                    icon: GestureDetector(
+                      onTap: () {
+                        _selectedMuscleGroup = null;
+                        _runSearch(null);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: _selectedMuscleGroup == null
+                            ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
+                            : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
+                      ),
+                    ),
+                    underline: Container(
+                      color: Colors.transparent,
+                    ),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                    onChanged: (MuscleGroup? value) {
+                      _selectedMuscleGroup = value;
                       _runSearch(null);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: _selectedMuscleGroup == null
-                          ? const FaIcon(FontAwesomeIcons.chevronDown, color: Colors.white70, size: 16)
-                          : const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.white, size: 18),
-                    ),
+                    items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
+                      return DropdownMenuItem<MuscleGroup>(
+                        value: muscleGroup,
+                        child: Text(muscleGroup.name,
+                            style: GoogleFonts.montserrat(
+                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
+                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                                fontSize: 14)),
+                      );
+                    }).toList(),
                   ),
-                  underline: Container(
-                    color: Colors.transparent,
-                  ),
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                  onChanged: (MuscleGroup? value) {
-                    _selectedMuscleGroup = value;
-                    _runSearch(null);
-                  },
-                  items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
-                    return DropdownMenuItem<MuscleGroup>(
-                      value: muscleGroup,
-                      child: Text(muscleGroup.name,
-                          style: GoogleFonts.montserrat(
-                              color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
-                              fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                              fontSize: 14)),
-                    );
-                  }).toList(),
                 ),
-              ),
-              const SizedBox(height: 12),
-              _filteredExercises.isNotEmpty
-                  ? Expanded(
-                      child: ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 250),
-                          itemBuilder: (BuildContext context, int index) => _exerciseWidget(_filteredExercises[index]),
-                          separatorBuilder: (BuildContext context, int index) => const Divider(
-                                thickness: 1.0,
-                                color: tealBlueLight,
-                              ),
-                          itemCount: _filteredExercises.length),
-                    )
-                  : const ExerciseEmptyState(),
-            ],
+                const SizedBox(height: 12),
+                _filteredExercises.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(bottom: 250),
+                            itemBuilder: (BuildContext context, int index) => _ExerciseListItem(
+                                exerciseInLibraryDto: _filteredExercises[index],
+                                multiSelect: widget.multiSelect,
+                                onNavigateToExerciseHistory: _navigateToExerciseHistory,
+                                onMultiSelectExercise: _selectCheckedExercise,
+                                onSelectExercise: widget.readOnly ? null : _navigateBackWithSelectedExercise),
+                            separatorBuilder: (BuildContext context, int index) => const Divider(
+                                  thickness: 1.0,
+                                  color: sapphireLight,
+                                ),
+                            itemCount: _filteredExercises.length),
+                      )
+                    : const ExerciseEmptyState(),
+              ],
+            ),
           ),
         ),
       ),
@@ -328,5 +321,35 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void dispose() {
     super.dispose();
     _searchController.dispose();
+  }
+}
+
+class _ExerciseListItem extends StatelessWidget {
+  final ExerciseInLibraryDto exerciseInLibraryDto;
+  final bool multiSelect;
+  final void Function(ExerciseInLibraryDto) onNavigateToExerciseHistory;
+  final void Function(ExerciseInLibraryDto exerciseInLibraryDto, bool selected)? onMultiSelectExercise;
+  final void Function(ExerciseInLibraryDto selectedExercise)? onSelectExercise;
+
+  const _ExerciseListItem(
+      {required this.exerciseInLibraryDto,
+      required this.multiSelect,
+      required this.onNavigateToExerciseHistory,
+      required this.onMultiSelectExercise,
+      required this.onSelectExercise});
+
+  @override
+  Widget build(BuildContext context) {
+    if (multiSelect) {
+      return SelectableExerciseWidget(
+          key: Key(exerciseInLibraryDto.exercise.name),
+          exerciseInLibraryDto: exerciseInLibraryDto,
+          onSelect: onMultiSelectExercise,
+          onNavigateToExercise: onNavigateToExerciseHistory);
+    }
+    return ExerciseWidget(
+        exerciseInLibraryDto: exerciseInLibraryDto,
+        onSelect: onSelectExercise,
+        onNavigateToExercise: onNavigateToExerciseHistory);
   }
 }

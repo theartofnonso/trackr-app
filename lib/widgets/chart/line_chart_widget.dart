@@ -6,81 +6,88 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
-
-enum ChartUnitLabel {
-  kg,
-  lbs,
-  reps,
-  mins,
-  hrs,
-  yd,
-  mi,
-}
+import '../../colors.dart';
+import '../../enums/chart_unit_enum.dart';
+import '../../utils/string_utils.dart';
 
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
+  final ExtraLinesData? extraLinesData;
   final List<String> dateTimes;
-  final ChartUnitLabel unit;
+  final ChartUnit unit;
+  final double? maxY;
 
-  const LineChartWidget({super.key, required this.chartPoints, required this.dateTimes, required this.unit});
+  const LineChartWidget(
+      {super.key,
+      required this.chartPoints,
+      required this.dateTimes,
+      required this.unit,
+      this.extraLinesData, this.maxY});
 
   static const List<Color> gradientColors = [
+    Colors.white,
     vibrantBlue,
-    vibrantGreen,
   ];
 
   @override
   Widget build(BuildContext context) {
-    return chartPoints.isNotEmpty ? Center(
-      child: AspectRatio(
-        aspectRatio: 1.5,
-        child: LineChart(LineChartData(
-            titlesData: FlTitlesData(
-              show: true,
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: _leftTitleWidgets,
-                  reservedSize: 50,
-                ),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  interval: 1,
-                  getTitlesWidget: _bottomTitleWidgets,
-                ),
-              ),
-            ),
-            borderData: FlBorderData(
-              show: false,
-            ),
-            lineBarsData: [
-              LineChartBarData(
-                  spots: chartPoints.map((point) {
-                    final y = unit == ChartUnitLabel.lbs || unit == ChartUnitLabel.kg ? weightWithConversion(value: point.y) : point.y;
-                    return FlSpot(point.x, y);
-                  }).toList(),
-                  gradient: const LinearGradient(
-                    colors: gradientColors,
-                  ),
-                  belowBarData: BarAreaData(
+
+    final isWeight = unit == ChartUnit.kg || unit == ChartUnit.lbs;
+
+    return chartPoints.isNotEmpty
+        ? Center(
+            child: AspectRatio(
+              aspectRatio: 1.5,
+              child: LineChart(LineChartData(
+                maxY: maxY,
+                  minY: 0,
+                  titlesData: FlTitlesData(
                     show: true,
-                    gradient: LinearGradient(
-                      colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: _leftTitleWidgets,
+                        reservedSize: 40,
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 10,
+                        getTitlesWidget: _bottomTitleWidgets,
+                      ),
                     ),
                   ),
-                  isCurved: true)
-            ])),
-      ),
-    ) : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: tealBlueLighter, size: 120));
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  extraLinesData: extraLinesData,
+                  lineBarsData: [
+                    LineChartBarData(
+                        isStepLineChart: true,
+                        spots: chartPoints.map((point) {
+                          return FlSpot(point.x, isWeight ? weightWithConversion(value: point.y) : point.y);
+                        }).toList(),
+                        gradient: const LinearGradient(
+                          colors: gradientColors,
+                        ),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          gradient: LinearGradient(
+                            colors: [gradientColors[0].withOpacity(0.1), gradientColors[1].withOpacity(0.2)],
+                          ),
+                        ),
+                        isCurved: true)
+                  ])),
+            ),
+          )
+        : const Center(child: FaIcon(FontAwesomeIcons.chartSimple, color: sapphireDark, size: 120));
   }
 
   double _interval() {
@@ -107,10 +114,20 @@ class LineChartWidget extends StatelessWidget {
       fontWeight: FontWeight.w600,
       fontSize: 9,
     );
+
     return SideTitleWidget(
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
       axisSide: meta.axisSide,
-      child: Text("${value.toInt()} ${unit.name}", style: style),
+      child: Text(_weightTitle(chartUnit: unit, value: value), style: style),
     );
+  }
+
+  String _weightTitle({required ChartUnit chartUnit, required double value}) {
+      if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs) {
+        return volumeInKOrM(value);
+      }
+
+    return "${value.toInt()} ${unit.label}";
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
@@ -120,6 +137,7 @@ class LineChartWidget extends StatelessWidget {
       fontSize: 10,
     );
     return SideTitleWidget(
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
       axisSide: meta.axisSide,
       child: Text(modifiedDateTimes[value.toInt()], style: style),
     );

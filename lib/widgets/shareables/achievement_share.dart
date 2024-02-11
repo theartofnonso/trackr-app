@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 import '../../dtos/achievement_dto.dart';
 import '../calender_heatmaps/calendar_heatmap.dart';
 
@@ -18,14 +18,14 @@ class AchievementShare extends StatelessWidget {
 
     final monthsHeatMaps = achievementDto.progress.dates.isNotEmpty
         ? achievementDto.progress.dates.values.map((dates) {
-            return CalendarHeatMap(dates: dates, initialDate: dates.first, spacing: 4);
+            return CalendarHeatMap(dates: dates, initialDate: dates.first, spacing: 4, minifyLabels: true,);
           }).toList()
         : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
 
     return RepaintBoundary(
         key: globalKey,
         child: Container(
-            color: tealBlueDark,
+            color: sapphireDark,
             padding: const EdgeInsets.all(8),
             width: width,
             child: Column(
@@ -40,7 +40,7 @@ class AchievementShare extends StatelessWidget {
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: monthsHeatMaps.length > 4 ? 4 : monthsHeatMaps.length,
+                  crossAxisCount: monthsHeatMaps.length > 2 ? 2 : monthsHeatMaps.length,
                   childAspectRatio: 1,
                   mainAxisSpacing: 12.0,
                   crossAxisSpacing: 12.0,
@@ -49,7 +49,7 @@ class AchievementShare extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
-                    'assets/trackr.png',
+                    'images/trackr.png',
                     fit: BoxFit.contain,
                     height: 8, // Adjust the height as needed
                   ),

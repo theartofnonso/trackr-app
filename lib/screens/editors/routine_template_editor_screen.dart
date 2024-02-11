@@ -8,7 +8,7 @@ import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
@@ -204,8 +204,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     return PopScope(
       canPop: false,
       child: Scaffold(
-          backgroundColor: tealBlueDark,
+          backgroundColor: sapphireDark,
           appBar: AppBar(
+            backgroundColor: sapphireDark80,
             leading: IconButton(
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
                 onPressed: _checkForUnsavedChanges),
@@ -224,88 +225,100 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
               : FloatingActionButton(
                   heroTag: "fab_select_exercise_log_screen",
                   onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  backgroundColor: tealBlueLighter,
+                  backgroundColor: sapphireDark,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
                 ),
-          body: SafeArea(
-            minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
-            child: NotificationListener<UserScrollNotification>(
-              onNotification: (scrollNotification) {
-                if (scrollNotification.direction != ScrollDirection.idle) {
-                  _dismissKeyboard();
-                }
-                return false;
-              },
-              child: GestureDetector(
-                onTap: _dismissKeyboard,
-                child: Column(
-                  children: [
-                    Column(
-                      children: [
-                        TextField(
-                          controller: _templateNameController,
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: tealBlueLighter)),
-                              filled: true,
-                              fillColor: tealBlueLighter,
-                              hintText: "New workout",
-                              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
-                          cursorColor: Colors.white,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                        ),
-                        const SizedBox(height: 10),
-                        TextField(
-                          controller: _templateNotesController,
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: tealBlueLighter)),
-                              filled: true,
-                              fillColor: tealBlueLighter,
-                              hintText: "Notes",
-                              hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
-                          maxLines: null,
-                          cursorColor: Colors.white,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.sentences,
-                          style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    exerciseLogs.isNotEmpty
-                        ? Expanded(
-                            child: ListView.separated(
-                                padding: const EdgeInsets.only(bottom: 250),
-                                itemBuilder: (BuildContext context, int index) {
-                                  final log = exerciseLogs[index];
-                                  final logId = log.id;
-                                  return ExerciseLogWidget(
-                                      key: ValueKey(logId),
-                                      exerciseLogDto: log,
-                                      editorType: RoutineEditorMode.edit,
-                                      superSet:
-                                          whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
-                                      onRemoveSuperSet: (String superSetId) =>
-                                          exerciseLogController.removeSuperSet(superSetId: log.superSetId),
-                                      onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                      onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
-                                },
-                                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                itemCount: exerciseLogs.length))
-                        : const ExerciseLogEmptyState(
-                            mode: RoutineEditorMode.edit,
-                            message: "Tap the + button to start adding exercises to your workout"),
-                  ],
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
+              ),
+            ),
+            child: SafeArea(
+              minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+              child: NotificationListener<UserScrollNotification>(
+                onNotification: (scrollNotification) {
+                  if (scrollNotification.direction != ScrollDirection.idle) {
+                    _dismissKeyboard();
+                  }
+                  return false;
+                },
+                child: GestureDetector(
+                  onTap: _dismissKeyboard,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          TextField(
+                            controller: _templateNameController,
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(color: sapphireLighter)),
+                                filled: true,
+                                fillColor: sapphireDark,
+                                hintText: "New workout",
+                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+                            cursorColor: Colors.white,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: _templateNotesController,
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(color: sapphireLighter)),
+                                filled: true,
+                                fillColor: sapphireDark,
+                                hintText: "Notes",
+                                hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14)),
+                            maxLines: null,
+                            cursorColor: Colors.white,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.8), fontSize: 14),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      exerciseLogs.isNotEmpty
+                          ? Expanded(
+                              child: ListView.separated(
+                                  padding: const EdgeInsets.only(bottom: 250),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final log = exerciseLogs[index];
+                                    final logId = log.id;
+                                    return ExerciseLogWidget(
+                                        key: ValueKey(logId),
+                                        exerciseLogDto: log,
+                                        editorType: RoutineEditorMode.edit,
+                                        superSet:
+                                            whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                        onRemoveSuperSet: (String superSetId) =>
+                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId),
+                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
+                                        onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
+                                  },
+                                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                  itemCount: exerciseLogs.length))
+                          : const ExerciseLogEmptyState(
+                              mode: RoutineEditorMode.edit,
+                              message: "Tap the + button to start adding exercises to your workout"),
+                    ],
+                  ),
                 ),
               ),
             ),

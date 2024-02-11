@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
@@ -30,7 +30,7 @@ class RepsSetRow extends StatelessWidget {
     int reps = setDto.value2.toInt();
 
     return Table(
-      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),

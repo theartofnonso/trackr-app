@@ -43,7 +43,7 @@
   {"id": "ABS42", "name": "Landmine 180", "primaryMuscleGroup": "Abs", "type": "WR"},
   {"id": "ABS43", "name": "Leg Raise Parallel Bars", "primaryMuscleGroup": "Abs", "type": "BW"},
   {"id": "ABS44", "name": "Reverse Crunch", "primaryMuscleGroup": "Abs", "type": "BW"},
-  {"id": "ABS45", "name": "Reverse Plank", "primaryMuscleGroup": "Abs", "type": "BW"},
+  {"id": "ABS45", "name": "Reverse Plank", "primaryMuscleGroup": "Abs", "type": "DR"},
   {"id": "ABS47", "name": "Russian Twist", "primaryMuscleGroup": "Abs", "type": "BW"},
   {"id": "ABS48", "name": "Side Bend", "primaryMuscleGroup": "Abs", "type": "BW"},
   {"id": "ABS49", "name": "Side Bend (Dumbbell)", "primaryMuscleGroup": "Abs", "type": "WR"},

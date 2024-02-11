@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../app_constants.dart';
+import '../colors.dart';
 import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
@@ -53,7 +53,7 @@ Future<void> displayBottomSheet(
                 margin: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
-                color: color ?? tealBlueLight,
+                color: color ?? sapphireLight,
                 child: SafeArea(
                   child: child,
                 ),
@@ -82,6 +82,7 @@ void displayNotificationTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
+      color: sapphireDark,
       child: HourTimerPicker(
           initialDuration: initialDuration,
           onSelect: (Duration duration) {
@@ -119,12 +120,12 @@ void showAlertDialogWithMultiActions(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
           side: const BorderSide(
-            color: tealBlueLighter, // Border color
+            color: sapphireLighter, // Border color
             width: 1.5, // Border width
           ),
         ),
-        backgroundColor: tealBlueDark.withOpacity(0.7),
-        surfaceTintColor: tealBlueDark.withOpacity(0.7),
+        backgroundColor: sapphireDark.withOpacity(0.7),
+        surfaceTintColor: sapphireDark.withOpacity(0.7),
         content: Text(
           message,
           style: GoogleFonts.montserrat(fontSize: 16),
@@ -158,12 +159,12 @@ void showAlertDialogWithSingleAction(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
           side: const BorderSide(
-            color: tealBlueLighter, // Border color
+            color: sapphireLighter, // Border color
             width: 1.5, // Border width
           ),
         ),
-        backgroundColor: tealBlueDark.withOpacity(0.7),
-        surfaceTintColor: tealBlueDark.withOpacity(0.7),
+        backgroundColor: sapphireDark.withOpacity(0.7),
+        surfaceTintColor: sapphireDark.withOpacity(0.7),
         content: Text(
           message,
           style: GoogleFonts.montserrat(fontSize: 16),

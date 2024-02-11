@@ -1,3 +1,4 @@
+
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
@@ -12,19 +13,19 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/chart/routine_muscle_group_split_chart.dart';
+import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
-import '../../../app_constants.dart';
+import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../enums/muscle_group_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
-import '../../enums/muscle_group_enums.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../widgets/shareables/shareable_container.dart';
@@ -57,8 +58,9 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
 
     return Scaffold(
-        backgroundColor: tealBlueDark,
+        backgroundColor: sapphireDark,
         appBar: AppBar(
+          backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: () => Navigator.of(context).pop(),
@@ -73,109 +75,145 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: "routine_log_screen",
             onPressed: _showBottomSheet,
-            backgroundColor: tealBlueLighter,
+            backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.circle)),
-        body: Stack(children: [
-          SafeArea(
-            minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (log.notes.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Text(log.notes,
-                          style: GoogleFonts.montserrat(
-                            color: Colors.white,
-                            fontSize: 14,
-                          )),
-                    ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.date_range_rounded,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(log.createdAt.formattedDayAndMonthAndYear(),
-                          style: GoogleFonts.montserrat(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                      const SizedBox(width: 10),
-                      const Icon(
-                        Icons.access_time_rounded,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 1),
-                      Text(log.endTime.formattedTime(),
-                          style: GoogleFonts.montserrat(
-                              color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 24, bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
-                      color: tealBlueLight, // Set the background color
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Table(
-                      border: TableBorder.symmetric(inside: const BorderSide(color: tealBlueLighter, width: 2)),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: FlexColumnWidth(),
-                        1: FlexColumnWidth(),
-                        2: FlexColumnWidth(),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(completedSetsSummary,
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(
-                                  "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: Text(log.duration().hmsAnalog(),
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-                            ),
-                          )
-                        ]),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  RoutineMuscleGroupSplitChart(frequencyData: calculateFrequency(completedExerciseLogsAndSets)),
-                  ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
-                      previewType: RoutinePreviewType.log),
-                ],
-              ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
             ),
           ),
-          if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
-        ]));
+          child: Stack(children: [
+            SafeArea(
+              minimum: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (log.notes.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Text(log.notes,
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontSize: 14,
+                            )),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.date_range_rounded,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(log.createdAt.formattedDayAndMonthAndYear(),
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                        const SizedBox(width: 10),
+                        const Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 1),
+                        Text(log.endTime.formattedTime(),
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 24, bottom: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), // Use BorderRadius.circular for a rounded container
+                        color: sapphireDark.withOpacity(0.3), // Set the background color
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Table(
+                        border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(),
+                          1: FlexColumnWidth(),
+                          2: FlexColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children: [
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(completedSetsSummary,
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(
+                                    "${completedExerciseLogsAndSets.length} ${pluralize(word: "Exercise", count: completedExerciseLogsAndSets.length)}",
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Center(
+                                child: Text(log.duration().hmsAnalog(),
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+                              ),
+                            )
+                          ]),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    MuscleGroupFamilyChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
+                    ExerciseLogListView(
+                        exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
+                        previewType: RoutinePreviewType.log),
+                  ],
+                ),
+              ),
+            ),
+            if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
+          ]),
+        ));
+  }
+
+  Map<MuscleGroupFamily, double> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
+    final frequencyMap = <MuscleGroupFamily, int>{};
+
+    // Counting the occurrences of each MuscleGroup
+    for (var log in exerciseLogs) {
+      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
+    }
+
+    int totalCount = exerciseLogs.length;
+    final scaledFrequencyMap = <MuscleGroupFamily, double>{};
+
+    // Scaling the frequencies from 0 to 1
+    frequencyMap.forEach((key, value) {
+      scaledFrequencyMap[key] = value / totalCount;
+    });
+
+    final sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+    final sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
+    return sortedFrequencyMap;
   }
 
   void _showBottomSheet() {
-    displayBottomSheet(context: context, child: Column(
+    displayBottomSheet(
+      color: sapphireDark,
+        context: context, child: Column(
       children: [
         const SizedBox(height: 10),
         ListTile(
@@ -211,11 +249,11 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     displayBottomSheet(
-        color: tealBlueDark,
+        color: sapphireDark,
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,
-        child: ShareableContainer(log: updatedLog, frequencyData: calculateFrequency(completedExerciseLogsAndSets)));
+        child: ShareableContainer(log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -223,29 +261,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       _loading = !_loading;
       _loadingMessage = message;
     });
-  }
-
-  Map<MuscleGroupFamily, double> calculateFrequency(List<ExerciseLogDto> logList) {
-    var frequencyMap = <MuscleGroupFamily, int>{};
-
-    // Counting the occurrences of each MuscleGroup
-    for (var log in logList) {
-      frequencyMap.update(log.exercise.primaryMuscleGroup.family, (value) => value + 1, ifAbsent: () => 1);
-    }
-
-    int totalCount = logList.length;
-    var scaledFrequencyMap = <MuscleGroupFamily, double>{};
-
-    // Scaling the frequencies from 0 to 1
-    frequencyMap.forEach((key, value) {
-      scaledFrequencyMap[key] = value / totalCount;
-    });
-
-    var sortedEntries = scaledFrequencyMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-    var sortedFrequencyMap = LinkedHashMap<MuscleGroupFamily, double>.fromEntries(sortedEntries);
-
-    return sortedFrequencyMap;
   }
 
   List<ExerciseLogViewModel> _exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
@@ -270,10 +285,16 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _createTemplate() async {
     final log = widget.log;
+
+    _toggleLoadingState(message: "Creating template");
+
     try {
       final exercises = log.exerciseLogs.map((exerciseLog) {
-        final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: newSets);
+        final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+        /// [Exercise.duration] exercises do not have sets in templates
+        /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
+        final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
+        return exerciseLog.copyWith(sets: sets);
       }).toList();
       final templateToCreate = RoutineTemplateDto(
           id: "",
@@ -370,7 +391,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
     final exerciseLog1 = routineTemplate.exercises;
     final exerciseLog2 = widget.log.exerciseLogs;
-    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
+    final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2, isEditor: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (templateChanges.isNotEmpty) {

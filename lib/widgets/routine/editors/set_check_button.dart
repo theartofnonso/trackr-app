@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import '../../../dtos/set_dto.dart';
 
 class SetCheckButton extends StatelessWidget {
@@ -16,7 +16,7 @@ class SetCheckButton extends StatelessWidget {
       child: Center(
         child: FaIcon(
           setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-          color: setDto.checked ? vibrantGreen : tealBlueLighter,
+          color: setDto.checked ? vibrantGreen : sapphireDark.withOpacity(0.5),
           size: 30,
         ),
       ),

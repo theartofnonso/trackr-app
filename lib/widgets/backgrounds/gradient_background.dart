@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 
 class GradientBackground extends StatelessWidget {
   const GradientBackground({super.key});
@@ -12,8 +12,8 @@ class GradientBackground extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            tealBlueLight,
-            tealBlueDark,
+            sapphireDark80,
+            sapphireDark,
           ],
         ),
       ),

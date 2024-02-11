@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 
 class IntTextField extends StatelessWidget {
   final int value;
@@ -22,8 +22,8 @@ class IntTextField extends StatelessWidget {
       decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: tealBlueLight)),
-          fillColor: tealBlueLight,
+              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
+          fillColor: Colors.transparent,
           hintText: "${value > 0 ? value : '-'}",
           hintStyle: GoogleFonts.montserrat(color: Colors.white70)),
       keyboardType: TextInputType.number,

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:tracker_app/colors.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../widgets/routine/editors/superset_exercise_log_picker.dart';
@@ -13,6 +14,7 @@ void showSuperSetExercisePicker(
 
   displayBottomSheet(
     context: context,
+    color: sapphireDark,
     child: SuperSetExerciseLogPicker(
       title: "Superset ${firstExerciseLog.exercise.name} with",
       exercises: exerciseLogs,

@@ -11,7 +11,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:testsweets/testsweets.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
@@ -31,7 +32,11 @@ import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  //await setupTestSweets();
+
+  //if (tsCaptureModeActive) {
+    WidgetsFlutterBinding.ensureInitialized();
+  //}
 
   await SharedPrefs().init();
 
@@ -117,7 +122,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   final _themeData = ThemeData(
-    scaffoldBackgroundColor: tealBlueDark,
+    scaffoldBackgroundColor: sapphireDark,
     colorScheme: const ColorScheme(
       brightness: Brightness.dark,
       primary: Colors.white,
@@ -126,37 +131,37 @@ class _MyAppState extends State<MyApp> {
       onSecondary: Colors.white,
       error: Colors.white,
       onError: Colors.black,
-      background: tealBlueDark,
+      background: sapphireDark,
       onBackground: Colors.white,
-      surface: tealBlueLighter,
+      surface: sapphireLighter,
       onSurface: Colors.white,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: tealBlueDark,
-      surfaceTintColor: tealBlueDark,
+      backgroundColor: sapphireDark,
+      surfaceTintColor: sapphireDark,
     ),
     scrollbarTheme: ScrollbarThemeData(
       thumbColor: MaterialStateProperty.all(Colors.green),
       trackColor: MaterialStateProperty.all(Colors.white.withOpacity(0.2)),
     ),
     snackBarTheme: const SnackBarThemeData(
-        backgroundColor: tealBlueDark,
-        actionBackgroundColor: tealBlueLighter,
-        contentTextStyle: TextStyle(color: tealBlueDark)),
+        backgroundColor: sapphireDark,
+        actionBackgroundColor: sapphireLighter,
+        contentTextStyle: TextStyle(color: sapphireDark)),
     tabBarTheme: const TabBarTheme(labelColor: Colors.white, unselectedLabelColor: Colors.white70),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: tealBlueLight)),
+      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: sapphireLight)),
       enabledBorder:
           OutlineInputBorder(borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.black)),
       filled: true,
-      fillColor: tealBlueLighter,
+      fillColor: sapphireLighter,
       hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all(Colors.white),
-          backgroundColor: MaterialStateProperty.all(tealBlueLight),
+          backgroundColor: MaterialStateProperty.all(sapphireLight),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
     ),
     useMaterial3: true,
@@ -175,9 +180,18 @@ class _MyAppState extends State<MyApp> {
         : Authenticator(
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
+              // builder: kDebugMode
+              //     ? (context, child) => TestSweetsOverlayView(
+              //           projectId: 'waibptYGeWyNjUzUFRKw', // <==== Use your ProjectId here
+              //           child: child!,
+              //         )
+              //     : Authenticator.builder(),
               builder: Authenticator.builder(),
               theme: _themeData,
               home: const HomeScreen(),
+              // navigatorObservers: [
+              //   TestSweetsNavigatorObserver(),
+              // ],
             ),
           );
   }

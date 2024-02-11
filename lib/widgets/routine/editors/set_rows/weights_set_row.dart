@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
@@ -34,7 +34,7 @@ class WeightsSetRow extends StatelessWidget {
     int reps = setDto.value2.toInt();
 
     return Table(
-      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),

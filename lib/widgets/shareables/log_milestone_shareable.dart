@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 GlobalKey logMilestoneShareableKey = GlobalKey();
 
@@ -17,8 +17,8 @@ class LogMilestoneShareable extends StatelessWidget {
     return RepaintBoundary(
       key: logMilestoneShareableKey,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 60),
-        color: tealBlueDark,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+        color: sapphireDark,
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
@@ -26,7 +26,7 @@ class LogMilestoneShareable extends StatelessWidget {
           Text(label, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
           Text("Workout",
               style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 60),
+          const SizedBox(height: 20),
           Image.asset(
             'images/trackr.png',
             fit: BoxFit.contain,

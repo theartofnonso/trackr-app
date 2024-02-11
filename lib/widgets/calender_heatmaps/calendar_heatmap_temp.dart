@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 
 class _DateViewModel {
@@ -71,7 +71,7 @@ class _DateWidget extends StatelessWidget {
     if (hasLog) {
       return vibrantGreen;
     }
-    return tealBlueLighter;
+    return sapphireLighter;
   }
 
   @override

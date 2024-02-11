@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 
 class BarChartEmptyState extends StatelessWidget {
   const BarChartEmptyState({super.key});
@@ -25,7 +25,7 @@ class BarChartEmptyState extends StatelessWidget {
         width: 10,
         margin: const EdgeInsets.symmetric(horizontal: 10),
         height: value.toDouble(), // Height of the bar is based on the value
-        color: tealBlueLight // Color of the bar
+        color: sapphireLight // Color of the bar
         );
   }
 }

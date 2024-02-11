@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-import '../../../../app_constants.dart';
+import '../../../../colors.dart';
 import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../timers/routine_timer.dart';
@@ -35,7 +35,7 @@ class DurationSetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Table(
-      border: TableBorder.all(color: tealBlueLighter, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
               0: const FixedColumnWidth(50),

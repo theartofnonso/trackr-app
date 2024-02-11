@@ -4,10 +4,16 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/screens/settings_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
-import '../app_constants.dart';
+import '../colors.dart';
+import '../enums/chart_unit_enum.dart';
+import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
+
+ChartUnit chartWeightUnitLabel() {
+  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
+}
 
 bool _isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
@@ -93,7 +99,7 @@ List<DateTimeRange> generateWeekRangesFrom({required DateTime startDate, require
 
 List<DateTimeRange> generateMonthRangesFrom({required DateTime startDate, required DateTime endDate}) {
   // Find the last day of the current month
-  DateTime lastDayOfCurrentMonth = endDate.lastMonthDay();
+  DateTime lastDayOfCurrentMonth = endDate.lastDayOfMonth();
   List<DateTimeRange> monthRanges = [];
 
   // Adjust the start date to the first day of the month
@@ -165,7 +171,9 @@ List<DateTimeRange> monthRangesForYear(int year) {
 
   for (int month = 1; month <= 12; month++) {
     DateTime start = DateTime(year, month, 1);
-    DateTime end = (month < 12) ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1)) : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
+    DateTime end = (month < 12)
+        ? DateTime(year, month + 1, 1).subtract(const Duration(days: 1))
+        : DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
 
     monthRanges.add(DateTimeRange(start: start, end: end));
   }
@@ -187,4 +195,15 @@ Color consistencyHealthColor({required double value}) {
   } else {
     return vibrantGreen;
   }
+}
+
+List<MuscleGroupFamily> popularMuscleGroupFamilies() {
+  return [
+    MuscleGroupFamily.chest,
+    MuscleGroupFamily.back,
+    MuscleGroupFamily.legs,
+    MuscleGroupFamily.shoulders,
+    MuscleGroupFamily.arms,
+    MuscleGroupFamily.core
+  ];
 }

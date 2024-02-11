@@ -1,29 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
-import 'package:tracker_app/widgets/empty_states/exercise_log_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/achievements_empty_state.dart';
+import 'package:tracker_app/widgets/empty_states/muscle_group_split_frequency_empty_state.dart';
 
-import '../app_constants.dart';
+import '../colors.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
   final VoidCallback onComplete;
 
-  IntroScreen({super.key, required this.themeData, required this.onComplete});
-
-  final _headers = ["CREATE", "LOG", "TRACK"];
-
-  final _contents = [
-    "TRACKR helps you create workouts with custom exercises, sets, reps, and weights.",
-    "A user-friendly way to keep note of every detail about your workout sessions.",
-    "Measure and gain insights on your performance across all training sessions and exercises.",
-  ];
-
-  final _titleStyle = GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16);
-
-  final _subTitleStyle = GoogleFonts.montserrat(fontSize: 15, color: Colors.white.withOpacity(0.8));
+  const IntroScreen({super.key, required this.themeData, required this.onComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -31,59 +18,35 @@ class IntroScreen extends StatelessWidget {
       theme: themeData,
       home: Scaffold(
         body: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            const SizedBox(height: 10),
-            Image.asset(
-              'assets/trackr.png',
-              fit: BoxFit.contain,
-              height: 16, // Adjust the height as needed
-            ),
-            const SizedBox(height: 20),
-            const ExerciseLogEmptyState(mode: RoutineEditorMode.log, message: ""),
-            ListTile(
-                leading: const FaIcon(FontAwesomeIcons.plus, color: Colors.white),
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: Text(_headers[0]),
+          minimum: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                Image.asset(
+                  'images/trackr.png',
+                  fit: BoxFit.contain,
+                  height: 16, // Adjust the height as needed
                 ),
-                subtitle: Text(_contents[0]),
-                titleTextStyle: _titleStyle,
-                subtitleTextStyle: _subTitleStyle),
-            const SizedBox(height: 8),
-            ListTile(
-                leading: const Icon(Icons.history),
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: Text(_headers[1]),
+                const Spacer(),
+                const Column(
+                  children: [AchievementsEmptyState(), SizedBox(height: 20), MuscleGroupSplitFrequencyEmptyState()],
                 ),
-                subtitle: Text(_contents[1]),
-                titleTextStyle: _titleStyle,
-                subtitleTextStyle: _subTitleStyle),
-            const SizedBox(height: 8),
-            ListTile(
-                leading: const Icon(Icons.timeline_rounded),
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: Text(_headers[2]),
+                const Spacer(),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: CTextButton(
+                    onPressed: onComplete,
+                    label: "Start training better",
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                    buttonColor: vibrantGreen,
+                    textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                  ),
                 ),
-                subtitle: Text(_contents[2]),
-                titleTextStyle: _titleStyle,
-                subtitleTextStyle: _subTitleStyle),
-            const Spacer(),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: CTextButton(
-                onPressed: onComplete,
-                label: "Start Tracking",
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                buttonColor: vibrantGreen,
-                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ]),
+                const SizedBox(height: 10),
+              ]),
         ),
       ),
     );

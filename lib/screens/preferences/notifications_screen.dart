@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/app_constants.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../utils/timezone_utils.dart';
-import '../utils/dialog_utils.dart';
+import '../../utils/timezone_utils.dart';
+import '../../utils/dialog_utils.dart';
 
 Duration _timeForSchedule({required PendingNotificationRequest? schedule}) {
   final payload = _decodeNotificationPayload(schedule: schedule);
@@ -65,20 +65,34 @@ class NotificationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: sapphireDark,
         appBar: AppBar(
+            backgroundColor: sapphireDark80,
             leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-          onPressed: () => Navigator.of(context).pop(),
-        )),
-        body: SafeArea(
-          minimum: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("Notifications",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 16),
-              const _NotificationListView()
-            ]),
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+              onPressed: () => Navigator.of(context).pop(),
+            )),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                sapphireDark80,
+                sapphireDark,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text("Notifications",
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 16),
+                const _NotificationListView()
+              ]),
+            ),
           ),
         ));
   }
@@ -101,26 +115,23 @@ class _NotificationSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: tealBlueLight, // Background color
-          width: 1, // Border width
-        ),
-        borderRadius: BorderRadius.circular(5), // Border radius
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
+          color: sapphireDark.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: sapphireLight)),
+      margin: const EdgeInsets.only(bottom: 10),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16)),
-          if (enabled)
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(height: 8),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 8),
+            if (enabled)
               CTextButton(
                   onPressed: onPressed,
                   label: subtitle,
                   textStyle: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14))
-            ]),
+          ]),
         ]),
         Switch(
           activeColor: vibrantGreen,

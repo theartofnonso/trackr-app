@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
-import '../../app_constants.dart';
+import '../../colors.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
@@ -23,9 +23,16 @@ class CalendarHeatMap extends StatelessWidget {
   final DateTime initialDate;
   final double spacing;
   final bool dynamicColor;
+  final bool showMonth;
+  final bool minifyLabels;
 
   const CalendarHeatMap(
-      {super.key, required this.initialDate, required this.dates, this.spacing = 16, this.dynamicColor = false});
+      {super.key,
+      required this.initialDate,
+      required this.dates,
+      this.spacing = 16,
+      this.dynamicColor = false,
+      this.showMonth = true, this.minifyLabels = false});
 
   List<_DateViewModel?> _generateDates() {
     int year = initialDate.year;
@@ -49,7 +56,7 @@ class CalendarHeatMap extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
-      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : tealBlueLight;
+      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : sapphireDark;
       datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: dynamicColor ? color : vibrantGreen));
     }
 
@@ -71,9 +78,10 @@ class CalendarHeatMap extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(initialDate.abbreviatedMonth().toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        _Month(days: datesForMonth, spacing: spacing),
+        if (showMonth)
+          Text(initialDate.abbreviatedMonth().toUpperCase(),
+              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+        _Month(days: datesForMonth, spacing: spacing, minifyLabels: minifyLabels,),
       ],
     );
   }
@@ -82,8 +90,9 @@ class CalendarHeatMap extends StatelessWidget {
 class _Month extends StatelessWidget {
   final List<_DateViewModel?> days;
   final double spacing;
+  final bool minifyLabels;
 
-  const _Month({required this.days, required this.spacing});
+  const _Month({required this.days, required this.spacing, required this.minifyLabels});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +100,7 @@ class _Month extends StatelessWidget {
       if (day == null) {
         return const SizedBox();
       } else {
-        return _Day(date: day);
+        return _Day(date: day, minifyLabels: minifyLabels);
       }
     }).toList();
 
@@ -116,15 +125,24 @@ class _Month extends StatelessWidget {
 
 class _Day extends StatelessWidget {
   final _DateViewModel date;
+  final bool minifyLabels;
 
-  const _Day({required this.date});
+  const _Day({required this.date, required this.minifyLabels});
+
+  Color _getTextColor() {
+    return date.active ? Colors.black : Colors.white70;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: date.active ? date.color : date.color.withOpacity(0.1),
+        color: date.active ? date.color : sapphireDark80.withOpacity(0.5),
         borderRadius: BorderRadius.circular(2),
+      ),
+      child: Center(
+        child: Text("${date.dateTime.day}",
+            style: GoogleFonts.montserrat(fontSize: minifyLabels ? 12 : 16, fontWeight: FontWeight.bold, color: _getTextColor())),
       ),
     );
   }
