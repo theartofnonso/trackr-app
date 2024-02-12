@@ -110,17 +110,17 @@ List<Widget> setsToWidgets(
 
     switch (type) {
       case ExerciseType.weights:
-        final firstLabel = weightWithConversion(value: setDto.value1);
-        final secondLabel = setDto.value2;
+        final firstLabel = weightWithConversion(value: setDto.weightValue());
+        final secondLabel = setDto.repsValue();
         return DoubleSetRow(first: "$firstLabel", second: "$secondLabel", margin: margin, pbs: pbsForSet);
       case ExerciseType.bodyWeight:
-        final label = setDto.value2;
+        final label = setDto.repsValue();
         return SingleSetRow(label: "$label", margin: margin);
       case ExerciseType.duration:
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
-        final label = Duration(milliseconds: setDto.value1.toInt()).hmsAnalog();
+        final label = Duration(milliseconds: setDto.durationValue().toInt()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
     }
   })).toList();

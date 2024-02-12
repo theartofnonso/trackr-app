@@ -35,15 +35,15 @@ class SetDto {
     return (value1 * value2).toDouble();
   }
 
-  double weight() {
+  double weightValue() {
     return value1.toDouble();
   }
 
-  int duration() {
+  int durationValue() {
     return value1.toInt();
   }
 
-  int reps() {
+  int repsValue() {
     return value2.toInt();
   }
 

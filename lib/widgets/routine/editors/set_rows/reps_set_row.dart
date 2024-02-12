@@ -27,7 +27,7 @@ class RepsSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int reps = setDto.value2.toInt();
+    int reps = setDto.repsValue().toInt();
 
     return Table(
       border: TableBorder.all(color: sapphireLighter, borderRadius: BorderRadius.circular(5)),

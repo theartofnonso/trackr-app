@@ -25,12 +25,12 @@ class PBsShareable extends StatelessWidget {
     String value = "";
 
     if(withDurationOnly(type: pbDto.exercise.type)) {
-      value = Duration(milliseconds: set.duration()).hmsAnalog();
+      value = Duration(milliseconds: set.durationValue()).hmsAnalog();
     } else if(withWeightsOnly(type: pbDto.exercise.type)) {
       if(pbDto.pb == PBType.weight) {
-        value = "${set.weight()}${weightLabel().toUpperCase()}";
+        value = "${set.weightValue()}${weightLabel().toUpperCase()}";
       } else {
-        value = "${set.weight()}${weightLabel().toUpperCase()} x ${set.reps()}";
+        value = "${set.weightValue()}${weightLabel().toUpperCase()} x ${set.repsValue()}";
       }
 
     }

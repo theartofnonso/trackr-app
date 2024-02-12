@@ -51,7 +51,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
           .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family == _selectedMuscleGroupFamily)
           .map((log) {
         final values =
-            _selectedSetsOrReps == SetAndReps.sets ? log.sets.length : log.sets.map((set) => set.reps()).sum.toInt();
+            _selectedSetsOrReps == SetAndReps.sets ? log.sets.length : log.sets.map((set) => set.repsValue()).sum.toInt();
         return values;
       }).sum;
 

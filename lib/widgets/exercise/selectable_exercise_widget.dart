@@ -66,7 +66,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             const SizedBox(width: 8),
             exerciseInLibraryDto.selected
                 ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
-                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireLighter)
+                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireDark)
           ]),
         ),
       ),

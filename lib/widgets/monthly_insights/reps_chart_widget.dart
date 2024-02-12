@@ -28,7 +28,7 @@ class RepsChartWidget extends StatelessWidget {
           .expand((exerciseLogs) => exerciseLogs)
           .where((exerciseLog) => withReps(type: exerciseLog.exercise.type))
           .map((log) {
-        final reps = log.sets.map((set) => set.reps()).sum;
+        final reps = log.sets.map((set) => set.repsValue()).sum;
         return reps;
       }).sum;
 
