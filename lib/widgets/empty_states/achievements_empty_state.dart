@@ -22,8 +22,8 @@ class AchievementsEmptyState extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AchievementTile(achievement: AchievementDto(type: AchievementType.days75, progress: ProgressDto(value: 0.7, remainder: 4, dates: {})), margin: margin),
-              AchievementTile(achievement: AchievementDto(type: AchievementType.timeUnderTension, progress: ProgressDto(value: 0.2, remainder: 8, dates: {})), margin: margin),
+              AchievementTile(achievement: AchievementDto(type: AchievementType.days75, progress: ProgressDto(value: 0.7, remainder: 4, dates: {})), margin: margin, color: Colors.white54),
+              AchievementTile(achievement: AchievementDto(type: AchievementType.timeUnderTension, progress: ProgressDto(value: 0.2, remainder: 8, dates: {})), margin: margin, color: Colors.white54),
             ],
           ),
         ),

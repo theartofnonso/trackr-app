@@ -58,7 +58,7 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
       periodicalValues.add(valuesForPeriod);
     }
 
-    final avgValue = periodicalValues.average.round();
+    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.average.round() : 0;
 
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
