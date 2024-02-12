@@ -76,7 +76,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 26),
                 Text(numberOfTrainingDays < 12 ? lowStreak : highStreak,
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
 
               ],
             )),
