@@ -78,7 +78,7 @@ void main() {
 
   final hamstringExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       hamstringExercise.id,
-      "routineLogId1",
+      "legDayOneSession$index",
       "",
       hamstringExercise,
       "notes",
@@ -90,7 +90,7 @@ void main() {
       dayOneDateTimes[index]));
   final quadExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       quadExercise.id,
-      "routineLogId1",
+      "legDayTwoSession$index",
       "",
       quadExercise,
       "notes",
@@ -103,7 +103,7 @@ void main() {
 
   final chest1ExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       chestExercise.id,
-      "routineLogId1",
+      "chestDayOneSession$index",
       "",
       chestExercise,
       "notes",
@@ -115,7 +115,7 @@ void main() {
       dayOneDateTimes[index]));
   final chest2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       chestExercise.id,
-      "routineLogId1",
+      "chestDayTwoSession$index",
       "",
       chestExercise,
       "notes",
@@ -128,7 +128,7 @@ void main() {
 
   final backExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       backExercise.id,
-      "routineLogId1",
+      "backDayOneSession$index",
       "",
       backExercise,
       "notes",
@@ -140,7 +140,7 @@ void main() {
       dayOneDateTimes[index]));
   final trapsExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       trapsExercise.id,
-      "routineLogId1",
+      "backDayTwoSession$index",
       "",
       trapsExercise,
       "notes",
@@ -153,7 +153,7 @@ void main() {
 
   final shoulders1ExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       shouldersExercise.id,
-      "routineLogId1",
+      "shouldersDayOneSession$index",
       "",
       shouldersExercise,
       "notes",
@@ -165,7 +165,7 @@ void main() {
       dayOneDateTimes[index]));
   final shoulders2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       shouldersExercise.id,
-      "routineLogId1",
+      "shouldersDayTwoSession$index",
       "",
       shouldersExercise,
       "notes",
@@ -178,7 +178,7 @@ void main() {
 
   final biceps1ExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       bicepsExercise.id,
-      "routineLogId1",
+      "bicepsDayOneSession$index",
       "",
       bicepsExercise,
       "notes",
@@ -190,7 +190,7 @@ void main() {
       dayTwoDateTimes[index]));
   final biceps2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       bicepsExercise.id,
-      "routineLogId1",
+      "bicepsDayTwoSession$index",
       "",
       bicepsExercise,
       "notes",
@@ -203,7 +203,7 @@ void main() {
 
   final triceps1ExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       tricepsExercise.id,
-      "routineLogId1",
+      "tricepsDayOneSession$index",
       "",
       tricepsExercise,
       "notes",
@@ -215,7 +215,7 @@ void main() {
       dayOneDateTimes[index]));
   final triceps2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       tricepsExercise.id,
-      "routineLogId1",
+      "tricepsDayTwoSession$index",
       "",
       tricepsExercise,
       "notes",
@@ -228,7 +228,7 @@ void main() {
 
   final abs1ExerciseLogs = List.generate(dayOneDateTimes.length, (index) => ExerciseLogDto(
       abs.id,
-      "routineLogId1",
+      "coreDayOneSession$index",
       "",
       abs,
       "notes",
@@ -240,7 +240,7 @@ void main() {
       dayOneDateTimes[index]));
   final abs2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
       abs.id,
-      "routineLogId1",
+      "coreDayTwoSession$index",
       "",
       abs,
       "notes",
@@ -259,6 +259,8 @@ void main() {
     ];
 
     final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
+
+    print(frequencyDistribution);
 
     final legMuscleGroup = frequencyDistribution.entries;
 
