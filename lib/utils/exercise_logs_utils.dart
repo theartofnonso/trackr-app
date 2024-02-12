@@ -302,20 +302,20 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyFrequencies({required List<Exercis
 
   final frequencyMap = <MuscleGroupFamily, int>{};
 
-  final exerciseLogsByDate = groupBy(exerciseLogs, (log) => log.createdAt);
+  final exerciseLogsBySession = groupBy(exerciseLogs, (log) => log.routineLogId);
 
   // Counting the occurrences of each MuscleGroup
-  for (var logAndDate in exerciseLogsByDate.entries) {
-    final muscleGroupFamilies = logAndDate.value.map((log) => log.exercise.primaryMuscleGroup.family).toSet();
+  for (var logAndDate in exerciseLogsBySession.entries) {
+    final muscleGroupFamilies = logAndDate.value.map((log) => log.exercise.primaryMuscleGroup.family);
     for (var family in muscleGroupFamilies) {
-      frequencyMap.update(family, (value) => value > 7 ? 8 : value + 1, ifAbsent: () => 1);
+      frequencyMap.update(family, (value) => value > 8 ? 8 : value + 1, ifAbsent: () => 1);
     }
   }
 
   return frequencyMap;
 }
 
-Map<MuscleGroupFamily, double> scaledMuscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
+Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
 
   final frequencyMap = _muscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
 
