@@ -17,7 +17,7 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_and_reps_enum.dart';
 import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../widgets/chart/Legend.dart';
+import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsInsightsScreen extends StatefulWidget {
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/screens/insights/sets_and%20_reps_insights_screen.dart';
+import 'package:tracker_app/screens/insights/sets_and_reps_insights_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../dtos/routine_log_dto.dart';

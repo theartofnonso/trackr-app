@@ -260,8 +260,6 @@ void main() {
 
     final frequencyDistribution = weeklyScaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
 
-    print(frequencyDistribution);
-
     final legMuscleGroup = frequencyDistribution.entries;
 
     expect(legMuscleGroup.first.key, MuscleGroupFamily.legs);
