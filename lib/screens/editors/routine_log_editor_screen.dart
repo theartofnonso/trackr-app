@@ -121,7 +121,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void _saveLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      _doCreateRoutineLog();
+      showAlertDialogWithMultiActions(
+          context: context,
+          message: "Do you want to end workout?",
+          leftAction: Navigator.of(context).pop,
+          rightAction: () {
+            _closeDialog();
+            _doCreateRoutineLog();
+          },
+          leftActionLabel: 'Cancel',
+          rightActionLabel: 'End',
+          rightActionColor: vibrantGreen);
     } else {
       showAlertDialogWithSingleAction(
           context: context, message: "Complete some sets!", actionLabel: 'Ok', action: _closeDialog);
