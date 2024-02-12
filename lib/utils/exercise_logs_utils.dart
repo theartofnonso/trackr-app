@@ -306,7 +306,7 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyFrequencies({required List<Exercis
 
   // Counting the occurrences of each MuscleGroup
   for (var logAndDate in exerciseLogsBySession.entries) {
-    final muscleGroupFamilies = logAndDate.value.map((log) => log.exercise.primaryMuscleGroup.family);
+    final muscleGroupFamilies = logAndDate.value.map((log) => log.exercise.primaryMuscleGroup.family).toSet();
     for (var family in muscleGroupFamilies) {
       frequencyMap.update(family, (value) => value > 8 ? 8 : value + 1, ifAbsent: () => 1);
     }
