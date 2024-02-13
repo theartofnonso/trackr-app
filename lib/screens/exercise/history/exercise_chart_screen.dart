@@ -67,7 +67,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.weightValue())).toList();
       _summaryType = SummaryType.weight;
-      _chartUnit = chartWeightUnitLabel();
+      _chartUnit = ChartUnit.weight;
     });
   }
 
@@ -76,7 +76,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.setVolume;
-      _chartUnit = chartWeightUnitLabel();
+      _chartUnit = ChartUnit.weight;
     });
   }
 
@@ -85,7 +85,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.sessionReps;
-      _chartUnit = ChartUnit.reps;
+      _chartUnit = ChartUnit.weight;
     });
   }
 
@@ -94,7 +94,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
       _summaryType = SummaryType.mostReps;
-      _chartUnit = ChartUnit.reps;
+      _chartUnit = ChartUnit.weight;
     });
   }
 
@@ -102,9 +102,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final values = _exerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints =
-          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
+          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMilliseconds.toDouble())).toList();
       _summaryType = SummaryType.bestTime;
-      _chartUnit = ChartUnit.m;
+      _chartUnit = ChartUnit.duration;
     });
   }
 
@@ -112,9 +112,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     final values = _exerciseLogs.map((log) => totalDurationExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints =
-          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMinutes.toDouble())).toList();
+          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMilliseconds.toDouble())).toList();
       _summaryType = SummaryType.sessionTimes;
-      _chartUnit = ChartUnit.m;
+      _chartUnit = ChartUnit.duration;
     });
   }
 

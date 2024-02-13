@@ -35,11 +35,11 @@ class Legend extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: title,
-                  style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
                   children: <TextSpan>[
                     TextSpan(
                       text: suffix,
-                      style: GoogleFonts.montserrat(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
                     ),
                   ],
                 ),

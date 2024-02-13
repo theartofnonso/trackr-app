@@ -7,13 +7,8 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
-import '../enums/chart_unit_enum.dart';
 import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
-
-ChartUnit chartWeightUnitLabel() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
-}
 
 bool _isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;

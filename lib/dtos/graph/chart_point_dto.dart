@@ -1,7 +1,7 @@
 
 class ChartPointDto {
-  final double x;
-  final double y;
+  final num x;
+  final num y;
 
   ChartPointDto(this.x, this.y);
 

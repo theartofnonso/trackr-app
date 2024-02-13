@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/screens/insights/sets_and_reps_insights_screen.dart';
+import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../dtos/routine_log_dto.dart';
@@ -45,7 +45,7 @@ class OverviewMonitor extends StatelessWidget {
         ]),
         const SizedBox(width: 20),
         GestureDetector(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SetsAndRepsVolumeInsightsScreen())),
           child: SizedBox(
             width: 85,
             child: _MonitorScore(

@@ -10,7 +10,7 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../screens/insights/sets_and_reps_insights_screen.dart';
+import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/legend.dart';
 import '../chart/line_chart_widget.dart';
@@ -59,7 +59,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
             child: LineChartWidget(
               chartPoints: chartPoints,
               dateTimes: dateTimes,
-              unit: ChartUnit.percentage,
+              unit: ChartUnit.number,
               maxY: 100,
               extraLinesData: ExtraLinesData(
                 horizontalLines: [
@@ -114,7 +114,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
           const SizedBox(height: 12),
           CTextButton(
               onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
+                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsVolumeInsightsScreen())),
               buttonColor: sapphireDark80,
               label: "See more insights",
               padding: EdgeInsets.zero,
