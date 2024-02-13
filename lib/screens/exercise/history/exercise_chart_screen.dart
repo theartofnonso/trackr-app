@@ -65,7 +65,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestWeightPerLog() {
     final sets = _exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.weight())).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.weightValue())).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = chartWeightUnitLabel();
     });
@@ -299,7 +299,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               child: _MetricListTile(
                   title: 'Heaviest Set Volume',
                   trailing:
-                      "${weightWithConversion(value: widget.heaviestSet.$2.value1)}$weightUnitLabel x ${widget.heaviestSet.$2.value2}",
+                      "${weightWithConversion(value: widget.heaviestSet.$2.weightValue())}$weightUnitLabel x ${widget.heaviestSet.$2.repsValue()}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
                   enabled: _exerciseLogs.isNotEmpty),

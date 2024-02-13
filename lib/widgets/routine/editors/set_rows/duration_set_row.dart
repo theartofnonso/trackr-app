@@ -57,7 +57,7 @@ class DurationSetRow extends StatelessWidget {
               height: 50,
               child: Center(
                 child: setDto.checked
-                    ? Text(Duration(milliseconds: setDto.value1.toInt()).hmsDigital(),
+                    ? Text(Duration(milliseconds: setDto.durationValue().toInt()).hmsDigital(),
                         style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
                     : RoutineTimer(
                         startTime: startTime,

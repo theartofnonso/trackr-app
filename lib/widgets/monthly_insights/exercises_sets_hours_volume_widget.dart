@@ -38,7 +38,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
 
     final exerciseLogsWithReps = exerciseLogs.where((exerciseLog) => withReps(type: exerciseLog.exercise.type));
     final totalReps = exerciseLogsWithReps.map((log) {
-      final reps = log.sets.map((set) => set.reps()).sum;
+      final reps = log.sets.map((set) => set.repsValue()).sum;
       return reps;
     }).sum;
 

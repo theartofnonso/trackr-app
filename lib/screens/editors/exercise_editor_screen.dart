@@ -119,6 +119,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     child: CTextButton(
                         onPressed: _createExercise,
                         label: "Create Exercise",
+                        textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                         buttonColor: vibrantGreen),
                   ),

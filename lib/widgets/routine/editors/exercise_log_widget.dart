@@ -140,8 +140,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in sets) {
-      final value1Controller = TextEditingController(text: set.value1.toString());
-      final value2Controller = TextEditingController(text: set.value2.toString());
+      final value1Controller = TextEditingController(text: set.weightValue().toString());
+      final value2Controller = TextEditingController(text: set.repsValue().toString());
       controllers.add((value1Controller, value2Controller));
     }
     _controllers.addAll(controllers);
@@ -150,8 +150,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _loadDurationControllers() {
     final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
     List<DateTime> controllers = [];
-    for (var _ in sets) {
-      controllers.add(DateTime.now());
+    for (var set in sets) {
+      final duration = set.durationValue();
+      final startTime = DateTime.now().subtract(Duration(milliseconds: duration.toInt()));
+      controllers.add(startTime);
     }
     _durationControllers.addAll(controllers);
   }
@@ -215,8 +217,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
-                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+                    backgroundColor: MaterialStateProperty.all(sapphireLighter),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
@@ -251,7 +252,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: sapphireLighter)),
                 filled: true,
-                fillColor: sapphireDark.withOpacity(0.5),
+                fillColor: sapphireDark.withOpacity(0.4),
                 hintText: "Enter notes",
                 hintStyle: GoogleFonts.montserrat(color: Colors.grey, fontSize: 14),
               ),
@@ -302,7 +303,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.5)),
+                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
                       shape:
                           MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             )
@@ -339,6 +340,7 @@ class _SetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final children = sets.mapIndexed((index, setDto) {
       final setWidget = switch (exerciseType) {
         ExerciseType.weights => WeightsSetRow(

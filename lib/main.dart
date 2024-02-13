@@ -11,7 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:testsweets/testsweets.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -32,11 +31,8 @@ import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
 
 void main() async {
-  //await setupTestSweets();
 
-  //if (tsCaptureModeActive) {
-    WidgetsFlutterBinding.ensureInitialized();
-  //}
+  WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefs().init();
 
@@ -180,18 +176,9 @@ class _MyAppState extends State<MyApp> {
         : Authenticator(
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              // builder: kDebugMode
-              //     ? (context, child) => TestSweetsOverlayView(
-              //           projectId: 'waibptYGeWyNjUzUFRKw', // <==== Use your ProjectId here
-              //           child: child!,
-              //         )
-              //     : Authenticator.builder(),
               builder: Authenticator.builder(),
               theme: _themeData,
               home: const HomeScreen(),
-              // navigatorObservers: [
-              //   TestSweetsNavigatorObserver(),
-              // ],
             ),
           );
   }

@@ -98,7 +98,7 @@ void showAlertDialogWithMultiActions(
     required String leftActionLabel,
     required String rightActionLabel,
     bool isLeftActionDestructive = false,
-    bool isRightActionDestructive = false}) {
+    bool isRightActionDestructive = false, Color? rightActionColor}) {
   final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
@@ -109,7 +109,7 @@ void showAlertDialogWithMultiActions(
       onPressed: rightAction,
       child: Text(rightActionLabel,
           style: GoogleFonts.montserrat(
-              color: isRightActionDestructive ? Colors.red : Colors.white, fontWeight: FontWeight.w600)),
+              color: isRightActionDestructive ? Colors.red : rightActionColor ?? Colors.white, fontWeight: FontWeight.w600)),
     ),
   ];
 

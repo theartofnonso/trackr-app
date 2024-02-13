@@ -30,7 +30,7 @@ class ExerciseEmptyState extends StatelessWidget {
                           width: 300,
                           child: Text(
                             "Primary: Quadriceps",
-                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
+                            style: GoogleFonts.montserrat(color: Colors.white54).copyWith(overflow: TextOverflow.ellipsis),
                           )),
                     ],
                   )),
@@ -38,26 +38,9 @@ class ExerciseEmptyState extends StatelessWidget {
               ListTile(
                   leading: const Icon(
                     Icons.timeline_rounded,
-                    color: Colors.white,
+                    color: Colors.white54,
                   ),
-                  title: Text("Romanian Deadlift", style: GoogleFonts.montserrat(color: Colors.white)),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                          width: 300,
-                          child: Text(
-                            "Primary: Hamstrings",
-                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                          )),
-                      SizedBox(
-                          width: 300,
-                          child: Text(
-                            "Secondary: Glutes",
-                            style: GoogleFonts.montserrat(color: Colors.white70).copyWith(overflow: TextOverflow.ellipsis),
-                          )),
-                    ],
-                  )),
+                  title: Text("Romanian Deadlift", style: GoogleFonts.montserrat(color: Colors.white54))),
             ],
           ),
         ),

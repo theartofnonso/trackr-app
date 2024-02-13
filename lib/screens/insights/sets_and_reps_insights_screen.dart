@@ -17,7 +17,7 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_and_reps_enum.dart';
 import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../widgets/chart/Legend.dart';
+import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsInsightsScreen extends StatefulWidget {
 
@@ -51,14 +51,14 @@ class _SetsAndRepsInsightsScreenState extends State<SetsAndRepsInsightsScreen> {
           .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family == _selectedMuscleGroupFamily)
           .map((log) {
         final values =
-            _selectedSetsOrReps == SetAndReps.sets ? log.sets.length : log.sets.map((set) => set.reps()).sum.toInt();
+            _selectedSetsOrReps == SetAndReps.sets ? log.sets.length : log.sets.map((set) => set.repsValue()).sum.toInt();
         return values;
       }).sum;
 
       periodicalValues.add(valuesForPeriod);
     }
 
-    final avgValue = periodicalValues.average.round();
+    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.average.round() : 0;
 
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();

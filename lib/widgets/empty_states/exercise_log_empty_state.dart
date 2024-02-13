@@ -40,7 +40,7 @@ class ExerciseLogEmptyState extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                     decoration: BoxDecoration(
-                      color: sapphireDark.withOpacity(0.2), // Container background color
+                      color: sapphireDark.withOpacity(0.6), // Container background color
                       borderRadius: BorderRadius.circular(5.0), // Border radius
                     ),
                     child: Text("Enter notes",

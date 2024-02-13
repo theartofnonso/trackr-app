@@ -27,7 +27,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
 
-    final muscleGroupFamilyFrequencies = scaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
+    final muscleGroupFamilyFrequencies = weeklyScaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
 
     final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys;
 

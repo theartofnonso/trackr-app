@@ -290,7 +290,7 @@ class AchievementRepository {
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
     final durationLogs = logs[ExerciseType.duration] ?? [];
     List<ExerciseLogDto> achievedLogs = durationLogs.where((log) {
-      return log.sets.any((set) => Duration(milliseconds: set.duration()) == Duration(minutes: type.target));
+      return log.sets.any((set) => Duration(milliseconds: set.durationValue()) == Duration(minutes: type.target));
     }).toList();
 
     final progress = achievedLogs.length / type.target;
@@ -345,7 +345,7 @@ class AchievementRepository {
 
     final achievedLogs = logs[ExerciseType.duration] ?? [];
 
-    final milliSeconds = achievedLogs.map((log) => log.sets.map((set) => set.duration()).sum).sum;
+    final milliSeconds = achievedLogs.map((log) => log.sets.map((set) => set.durationValue()).sum).sum;
 
     final totalDuration = Duration(milliseconds: milliSeconds.toInt());
 
@@ -367,7 +367,7 @@ class AchievementRepository {
     final bodyWeightLogs = logs[ExerciseType.bodyWeight] ?? [];
     final achievedLogs = [...weightsLogs, ...bodyWeightLogs];
 
-    final totalReps = achievedLogs.map((log) => log.sets.map((set) => set.reps()).sum).sum;
+    final totalReps = achievedLogs.map((log) => log.sets.map((set) => set.repsValue()).sum).sum;
 
     final progress = totalReps / target;
 

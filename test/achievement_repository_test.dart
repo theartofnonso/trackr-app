@@ -8,6 +8,8 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
 
+import 'date_utils.dart';
+
 void main() {
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_lyingLegCurlExercise",
@@ -310,7 +312,7 @@ void main() {
     test("AchievementType.obsessed", () {
       final achievementRepository = AchievementRepository();
 
-      final next15Weeks = _generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
+      final next15Weeks = generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
 
       final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
 
@@ -328,7 +330,7 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-      final next16Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
+      final next16Weeks = generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
 
       final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
           id: "routineLogId1",
@@ -350,7 +352,7 @@ void main() {
     test("AchievementType.neverSkipAMonday", () {
       final achievementRepository = AchievementRepository();
 
-      final next15Weeks = _generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
+      final next15Weeks = generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
 
       final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
 
@@ -368,7 +370,7 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-      final next16Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
+      final next16Weeks = generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
 
       final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
           id: "routineLogId1",
@@ -390,7 +392,7 @@ void main() {
     test("AchievementType.neverSkipALegDay", () {
       final achievementRepository = AchievementRepository();
 
-      final next15Weeks = _generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
+      final next15Weeks = generateWeeklyDateTimes(size: 15, startDate: DateTime(2024, 1, 1));
 
       final initialRoutineLogs = List.generate(next15Weeks.length, (index) {
 
@@ -408,7 +410,7 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-      final next16Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
+      final next16Weeks = generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 1));
 
       final recentRoutineLogs = List.generate(next16Weeks.length, (index) => RoutineLogDto(
           id: "routineLogId1",
@@ -430,7 +432,7 @@ void main() {
     test("AchievementType.weekendWarrior", () {
       final achievementRepository = AchievementRepository();
 
-      final next7Weeks = _generateWeeklyDateTimes(size: 7, startDate: DateTime(2024, 1, 1));
+      final next7Weeks = generateWeeklyDateTimes(size: 7, startDate: DateTime(2024, 1, 1));
 
       final initialRoutineLogs = List.generate(next7Weeks.length, (index) {
 
@@ -448,7 +450,7 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-      final next8Weeks = _generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 7));
+      final next8Weeks = generateWeeklyDateTimes(size: 8, startDate: DateTime(2024, 1, 7));
 
       final recentRoutineLogs = List.generate(next8Weeks.length, (index) => RoutineLogDto(
           id: "routineLogId1",
@@ -471,7 +473,7 @@ void main() {
   test("AchievementType.sweatMarathon", () {
     final achievementRepository = AchievementRepository();
 
-    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+    final nextWeeks = generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
 
     final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
 
@@ -489,7 +491,7 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final subsequentWeeks = _generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
+    final subsequentWeeks = generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
 
     final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
         id: "routineLogId1",
@@ -511,7 +513,7 @@ void main() {
   test("AchievementType.bodyweightChampion", () {
     final achievementRepository = AchievementRepository();
 
-    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+    final nextWeeks = generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
 
     final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
 
@@ -529,7 +531,7 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final subsequentWeeks = _generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
+    final subsequentWeeks = generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
 
     final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
         id: "routineLogId1",
@@ -551,7 +553,7 @@ void main() {
   test("AchievementType.strongerThanEver", () {
     final achievementRepository = AchievementRepository();
 
-    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+    final nextWeeks = generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
 
     final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
 
@@ -569,7 +571,7 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final subsequentWeeks = _generateDailyDateTimes(size: 220, startDate: DateTime(2024, 1, 7));
+    final subsequentWeeks = generateDailyDateTimes(size: 220, startDate: DateTime(2024, 1, 7));
 
     final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
         id: "routineLogId1",
@@ -591,7 +593,7 @@ void main() {
   test("AchievementType.timeUnderTension", () {
     final achievementRepository = AchievementRepository();
 
-    final nextWeeks = _generateDailyDateTimes(size: 30, startDate: DateTime(2024, 1, 1));
+    final nextWeeks = generateDailyDateTimes(size: 30, startDate: DateTime(2024, 1, 1));
 
     final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
 
@@ -609,7 +611,7 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final subsequentWeeks = _generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
+    final subsequentWeeks = generateDailyDateTimes(size: 100, startDate: DateTime(2024, 1, 7));
 
     final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
         id: "routineLogId1",
@@ -631,7 +633,7 @@ void main() {
   test("AchievementType.oneMoreRep", () {
     final achievementRepository = AchievementRepository();
 
-    final nextWeeks = _generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
+    final nextWeeks = generateDailyDateTimes(size: 90, startDate: DateTime(2024, 1, 1));
 
     final initialRoutineLogs = List.generate(nextWeeks.length, (index) {
 
@@ -649,7 +651,7 @@ void main() {
 
     achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-    final subsequentWeeks = _generateDailyDateTimes(size: 120, startDate: DateTime(2024, 1, 7));
+    final subsequentWeeks = generateDailyDateTimes(size: 120, startDate: DateTime(2024, 1, 7));
 
     final recentRoutineLogs = List.generate(subsequentWeeks.length, (index) => RoutineLogDto(
         id: "routineLogId1",
@@ -667,28 +669,4 @@ void main() {
     expect(achievements.firstWhere((achievement) => achievement.type == AchievementType.oneMoreRep).progress.remainder, 0);
 
   });
-}
-
-List<DateTime> _generateWeeklyDateTimes({required int size, required DateTime startDate}) {
-  List<DateTime> dateTimes = [];
-
-  for (int i = 0; i < size; i++) {
-    // Add 7 days for each week
-    DateTime nextDate = startDate.add(Duration(days: 7 * i));
-    dateTimes.add(nextDate);
-  }
-
-  return dateTimes;
-}
-
-List<DateTime> _generateDailyDateTimes({required int size, required DateTime startDate}) {
-  List<DateTime> dateTimes = [];
-
-  for (int i = 0; i < size; i++) {
-    // Add 7 days for each week
-    DateTime nextDate = startDate.add(Duration(days: 1 * i));
-    dateTimes.add(nextDate);
-  }
-
-  return dateTimes;
 }
