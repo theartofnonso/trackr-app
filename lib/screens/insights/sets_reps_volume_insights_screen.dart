@@ -31,6 +31,8 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
 
+  late DateTimeRange _dateTimeRange;
+
   ChartPeriod _period = ChartPeriod.month;
   SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
@@ -152,7 +154,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   }
                 },
               ),
-              CalendarNavigator(),
+              CalendarNavigator(currentDate: _dateTimeRange.start, onChangedDateTimeRange: _onChangedDateTimeRange, chartPeriod: _period),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -296,6 +298,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     );
   }
 
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if(range == null) return;
+    setState(() {
+      _dateTimeRange = range;
+      print(_dateTimeRange);
+    });
+  }
+
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
@@ -359,5 +369,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   void initState() {
     super.initState();
     _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
+    _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
   }
 }

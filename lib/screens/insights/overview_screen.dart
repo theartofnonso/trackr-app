@@ -29,7 +29,8 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  DateTimeRange _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+
+  late DateTimeRange _dateTimeRange;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
@@ -95,7 +96,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                     ]),
                   ),
-                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, currentDate: _dateTimeRange.start),
                   IconButton(
                       onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
@@ -125,7 +126,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  void _onChangedDateTimeRange(DateTimeRange range) {
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if(range == null) return;
     setState(() {
       _dateTimeRange = range;
     });

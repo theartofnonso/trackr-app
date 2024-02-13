@@ -3,43 +3,37 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
-class CalendarNavigator extends StatefulWidget {
-  final void Function(DateTimeRange range)? onChangedDateTimeRange;
+import '../../enums/chart_period_enum.dart';
+
+class CalendarNavigator extends StatelessWidget {
+  final DateTime currentDate;
+  final void Function(DateTimeRange? range)? onChangedDateTimeRange;
   final void Function(DateTime)? onSelectedDate;
+  final ChartPeriod chartPeriod;
 
-  const CalendarNavigator({super.key, this.onChangedDateTimeRange, this.onSelectedDate});
-
-  @override
-  State<CalendarNavigator> createState() => _CalendarNavigatorState();
-}
-
-class _CalendarNavigatorState extends State<CalendarNavigator> {
-  DateTime _currentDate = DateTime.now();
+  const CalendarNavigator(
+      {super.key,
+      required this.currentDate,
+      this.onChangedDateTimeRange,
+      this.onSelectedDate,
+      this.chartPeriod = ChartPeriod.month});
 
   bool _hasLaterDate() {
     final laterDate = DateTime.now();
     int laterMonth = laterDate.month;
     int laterYear = laterDate.year;
-    if (laterYear == _currentDate.year) {
-      return laterMonth > _currentDate.month;
-    } else if (laterYear > _currentDate.year) {
+    if (laterYear == currentDate.year) {
+      return laterMonth > currentDate.month;
+    } else if (laterYear > currentDate.year) {
       return true;
     } else {
       return false;
     }
   }
 
-  DateTime _currentMonth(DateTime dateTime) {
-    final now = DateTime.now();
-    if (dateTime.isSameDateAs(DateTime(now.year, now.month))) {
-      return DateTime(dateTime.year, dateTime.month, DateTime.now().day);
-    }
-    return dateTime;
-  }
-
-  void _decrementDate() {
-    int month = _currentDate.month - 1;
-    int year = _currentDate.year;
+  DateTimeRange _decrementMonth() {
+    int month = currentDate.month - 1;
+    int year = currentDate.year;
 
     /// We need to go to previous year
     if (month == 0) {
@@ -49,21 +43,34 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
 
     final currentMonth = DateTime(year, month);
 
-    setState(() {
-      _currentDate = _currentMonth(currentMonth);
-    });
+    return DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
+  }
 
-    final onChangedDateTimeRange = widget.onChangedDateTimeRange;
+  DateTimeRange _decrementWeek() {
+    DateTime previousWeek = currentDate.subtract(const Duration(days: 7));
+    return DateTimeRange(
+        start: previousWeek.dateOnly(), end: DateTime(currentDate.year, currentDate.month, currentDate.day));
+  }
 
-    if (onChangedDateTimeRange != null) {
-      onChangedDateTimeRange(DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0)));
+  void previousDate() {
+    final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
+    if (onChangedDateTimeRangeFunc == null) return;
+
+    if (chartPeriod == ChartPeriod.month) {
+      final range = _decrementMonth();
+      onChangedDateTimeRangeFunc(range);
+    } else if (chartPeriod == ChartPeriod.week) {
+      final range = _decrementWeek();
+      onChangedDateTimeRangeFunc(range);
     }
   }
 
-  void _incrementDate() {
+  DateTimeRange? _incrementMonth() {
+    DateTimeRange? dateTimeRange;
+
     if (_hasLaterDate()) {
-      int month = _currentDate.month + 1;
-      int year = _currentDate.year;
+      int month = currentDate.month + 1;
+      int year = currentDate.year;
 
       /// We need to go to next year
       if (month == 12) {
@@ -73,14 +80,35 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
 
       final currentMonth = DateTime(year, month);
 
-      setState(() {
-        _currentDate = _currentMonth(currentMonth);
-      });
+      dateTimeRange = DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
+    }
 
-      final onChangedDateTimeRange = widget.onChangedDateTimeRange;
-      if (onChangedDateTimeRange != null) {
-        onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
-      }
+    return dateTimeRange;
+  }
+
+  DateTimeRange? _incrementWeek() {
+    DateTimeRange? dateTimeRange;
+
+    if (_hasLaterDate()) {
+      DateTime nextWeek = currentDate.add(const Duration(days: 7));
+
+      dateTimeRange = DateTimeRange(
+          start: DateTime(currentDate.year, currentDate.month, currentDate.day), end: nextWeek.dateOnly());
+    }
+
+    return dateTimeRange;
+  }
+
+  void nextDate() {
+    final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
+    if (onChangedDateTimeRangeFunc == null) return;
+
+    if (chartPeriod == ChartPeriod.month) {
+      final range = _incrementMonth();
+      onChangedDateTimeRangeFunc(range);
+    } else if (chartPeriod == ChartPeriod.week) {
+      final range = _incrementWeek();
+      onChangedDateTimeRangeFunc(range);
     }
   }
 
@@ -90,11 +118,10 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-            onPressed: _decrementDate,
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
+            onPressed: previousDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
         SizedBox(
           width: 125,
-          child: Text(_currentDate.formattedMonthAndYear(),
+          child: Text(currentDate.formattedMonthAndYear(),
               textAlign: TextAlign.center,
               style: GoogleFonts.montserrat(
                 fontSize: 12,
@@ -102,7 +129,7 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
               )),
         ),
         IconButton(
-            onPressed: _hasLaterDate() ? _incrementDate : null,
+            onPressed: _hasLaterDate() ? nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
                 color: _hasLaterDate() ? Colors.white : Colors.white60, size: 16)),
       ],
