@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/chart/line_chart_widget.dart';
@@ -18,6 +19,7 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
@@ -28,6 +30,8 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
+
+  ChartPeriod _period = ChartPeriod.month;
   SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
   late MuscleGroupFamily _selectedMuscleGroupFamily;
@@ -88,7 +92,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         child: SafeArea(
           minimum: const EdgeInsets.all(10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 width: double.infinity,
@@ -123,9 +127,36 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              CupertinoSlidingSegmentedControl<ChartPeriod>(
+                backgroundColor: sapphireDark,
+                thumbColor: sapphireLight,
+                groupValue: _period,
+                children: {
+                  ChartPeriod.week: SizedBox(
+                      width: 30,
+                      child: Text(ChartPeriod.week.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
+                  ChartPeriod.month: SizedBox(
+                      width: 30,
+                      child: Text(ChartPeriod.month.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
+                  ChartPeriod.threeMonths: SizedBox(
+                      width: 30,
+                      child:
+                      Text(ChartPeriod.threeMonths.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
+                },
+                onValueChanged: (ChartPeriod? value) {
+                  if (value != null) {
+                    setState(() {
+                      _period = value;
+                    });
+                  }
+                },
+              ),
+              CalendarNavigator(),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,14 +192,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     children: {
                       SetRepsVolumeReps.sets: SizedBox(
                           width: 40,
-                          child: Text(SetRepsVolumeReps.sets.shortName, style: textStyle, textAlign: TextAlign.center)),
+                          child: Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
                       SetRepsVolumeReps.reps: SizedBox(
                           width: 40,
-                          child: Text(SetRepsVolumeReps.reps.shortName, style: textStyle, textAlign: TextAlign.center)),
+                          child: Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
                       SetRepsVolumeReps.volume: SizedBox(
                           width: 40,
                           child:
-                              Text(SetRepsVolumeReps.volume.shortName, style: textStyle, textAlign: TextAlign.center)),
+                          Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
                     },
                     onValueChanged: (SetRepsVolumeReps? value) {
                       if (value != null) {
@@ -288,7 +319,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   String _metricLabel() {
     final unit = _chartUnit();
     return switch (unit) {
-      ChartUnit.number => _metric.shortName,
+      ChartUnit.number => _metric.name,
       ChartUnit.weight => weightLabel(),
       ChartUnit.duration => "",
     };
