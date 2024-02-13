@@ -1,8 +1,8 @@
-enum SetAndVolumeReps {
+enum SetRepsVolumeReps {
 
   sets("Sets"), reps("Reps"), volume("Vol");
 
-  const SetAndVolumeReps(this.shortName);
+  const SetRepsVolumeReps(this.shortName);
 
   final String shortName;
 

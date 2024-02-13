@@ -28,7 +28,7 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-  SetAndVolumeReps _metric = SetAndVolumeReps.sets;
+  SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
   late MuscleGroupFamily _selectedMuscleGroupFamily;
 
@@ -141,7 +141,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                                   color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
                             TextSpan(
-                              text: _metricLabel(),
+                              text: _metricLabel().toUpperCase(),
                               style: GoogleFonts.montserrat(
                                   color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
@@ -154,23 +154,23 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       ),
                     ],
                   ),
-                  CupertinoSlidingSegmentedControl<SetAndVolumeReps>(
+                  CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
                     backgroundColor: sapphireDark,
                     thumbColor: sapphireLight,
                     groupValue: _metric,
                     children: {
-                      SetAndVolumeReps.sets: SizedBox(
+                      SetRepsVolumeReps.sets: SizedBox(
                           width: 40,
-                          child: Text(SetAndVolumeReps.sets.shortName, style: textStyle, textAlign: TextAlign.center)),
-                      SetAndVolumeReps.reps: SizedBox(
+                          child: Text(SetRepsVolumeReps.sets.shortName, style: textStyle, textAlign: TextAlign.center)),
+                      SetRepsVolumeReps.reps: SizedBox(
                           width: 40,
-                          child: Text(SetAndVolumeReps.reps.shortName, style: textStyle, textAlign: TextAlign.center)),
-                      SetAndVolumeReps.volume: SizedBox(
+                          child: Text(SetRepsVolumeReps.reps.shortName, style: textStyle, textAlign: TextAlign.center)),
+                      SetRepsVolumeReps.volume: SizedBox(
                           width: 40,
                           child:
-                              Text(SetAndVolumeReps.volume.shortName, style: textStyle, textAlign: TextAlign.center)),
+                              Text(SetRepsVolumeReps.volume.shortName, style: textStyle, textAlign: TextAlign.center)),
                     },
-                    onValueChanged: (SetAndVolumeReps? value) {
+                    onValueChanged: (SetRepsVolumeReps? value) {
                       if (value != null) {
                         setState(() {
                           _metric = value;
@@ -267,21 +267,21 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
-      SetAndVolumeReps.sets => sets.length,
-      SetAndVolumeReps.reps => sets.map((set) => set.repsValue()).sum,
-      SetAndVolumeReps.volume => sets.map((set) => set.volume()).sum,
+      SetRepsVolumeReps.sets => sets.length,
+      SetRepsVolumeReps.reps => sets.map((set) => set.repsValue()).sum,
+      SetRepsVolumeReps.volume => sets.map((set) => set.volume()).sum,
     };
   }
 
   bool _isRepsOrSetsMetric() {
-    return _metric == SetAndVolumeReps.sets || _metric == SetAndVolumeReps.reps;
+    return _metric == SetRepsVolumeReps.sets || _metric == SetRepsVolumeReps.reps;
   }
 
   ChartUnit _chartUnit() {
     return switch (_metric) {
-      SetAndVolumeReps.sets => ChartUnit.number,
-      SetAndVolumeReps.reps => ChartUnit.number,
-      SetAndVolumeReps.volume => ChartUnit.weight,
+      SetRepsVolumeReps.sets => ChartUnit.number,
+      SetRepsVolumeReps.reps => ChartUnit.number,
+      SetRepsVolumeReps.volume => ChartUnit.weight,
     };
   }
 
@@ -295,7 +295,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   double _averageMinimumWeeklyValue() {
-    if (_metric == SetAndVolumeReps.sets) {
+    if (_metric == SetRepsVolumeReps.sets) {
       return averageMinimumWeeklySets.toDouble();
     } else {
       return averageMinimumWeeklyReps.toDouble();
@@ -303,7 +303,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   double _averageMaximumWeeklyValue() {
-    if (_metric == SetAndVolumeReps.sets) {
+    if (_metric == SetRepsVolumeReps.sets) {
       return averageMaximumWeeklySets.toDouble();
     } else {
       return averageMaximumWeeklyReps.toDouble();
@@ -311,7 +311,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   double _averageMedianWeeklyValue() {
-    if (_metric == SetAndVolumeReps.sets) {
+    if (_metric == SetRepsVolumeReps.sets) {
       return averageMedianWeeklySets.toDouble();
     } else {
       return averageMedianWeeklyReps.toDouble();

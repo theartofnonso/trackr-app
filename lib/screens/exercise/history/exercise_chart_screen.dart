@@ -65,7 +65,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestWeightPerLog() {
     final sets = _exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index.toDouble(), set.weightValue())).toList();
+      _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, set.weightValue())).toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
     });
@@ -74,7 +74,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _heaviestSetVolumePerLog() {
     final values = _exerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
       _summaryType = SummaryType.setVolume;
       _chartUnit = ChartUnit.weight;
     });
@@ -83,7 +83,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _totalRepsForLog() {
     final values = _exerciseLogs.map((log) => totalRepsForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
       _summaryType = SummaryType.sessionReps;
       _chartUnit = ChartUnit.weight;
     });
@@ -92,7 +92,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _highestRepsForLog() {
     final values = _exerciseLogs.map((log) => highestRepsForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
       _summaryType = SummaryType.mostReps;
       _chartUnit = ChartUnit.weight;
     });
@@ -101,8 +101,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _longestDurationPerLog() {
     final values = _exerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints =
-          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMilliseconds.toDouble())).toList();
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value.inMilliseconds)).toList();
       _summaryType = SummaryType.bestTime;
       _chartUnit = ChartUnit.duration;
     });
@@ -111,8 +110,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   void _totalTimePerLog() {
     final values = _exerciseLogs.map((log) => totalDurationExerciseLog(exerciseLog: log)).toList();
     setState(() {
-      _chartPoints =
-          values.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.inMilliseconds.toDouble())).toList();
+      _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value.inMilliseconds)).toList();
       _summaryType = SummaryType.sessionTimes;
       _chartUnit = ChartUnit.duration;
     });
@@ -372,7 +370,7 @@ class _MetricListTile extends StatelessWidget {
         onTap: enabled ? onTap : () {},
         tileColor: Colors.pinkAccent,
         title:
-        Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
+            Text(title, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
         subtitle: Text(subtitle, style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white.withOpacity(0.7))),
         trailing: Text(trailing,
             style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),

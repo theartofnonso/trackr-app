@@ -125,7 +125,7 @@ class LineChartWidget extends StatelessWidget {
       if (unit == ChartUnit.weight) {
         return volumeInKOrM(value);
       } else if (unit == ChartUnit.duration) {
-        return Duration(milliseconds: value.toInt()).hmDigital();
+        return Duration(milliseconds: value.toInt()).msDigital();
       }
 
     return "${value.toInt()}";
