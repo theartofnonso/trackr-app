@@ -56,7 +56,7 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
     final onChangedDateTimeRange = widget.onChangedDateTimeRange;
 
     if (onChangedDateTimeRange != null) {
-      onChangedDateTimeRange(DateTimeRange(start: DateTime(year, month, 1), end: DateTime(year, month + 1, 0)));
+      onChangedDateTimeRange(DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0)));
     }
   }
 
