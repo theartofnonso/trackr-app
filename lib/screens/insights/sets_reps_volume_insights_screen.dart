@@ -30,7 +30,6 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
-
   late DateTimeRange _dateTimeRange;
 
   ChartPeriod _period = ChartPeriod.month;
@@ -115,7 +114,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   ),
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                   onChanged: (MuscleGroupFamily? value) {
-                    if (value != null) _updateChart(value);
+                    if (value != null) {
+                      setState(() {
+                        _selectedMuscleGroupFamily = value;
+                      });
+                    }
                   },
                   items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
                     return DropdownMenuItem<MuscleGroupFamily>(
@@ -143,18 +146,23 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       child: Text(ChartPeriod.month.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
                   ChartPeriod.threeMonths: SizedBox(
                       width: 30,
-                      child:
-                      Text(ChartPeriod.threeMonths.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
+                      child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
+                          style: textStyle, textAlign: TextAlign.center)),
                 },
                 onValueChanged: (ChartPeriod? value) {
                   if (value != null) {
                     setState(() {
                       _period = value;
+                      _dateTimeRange = _periodDateTimeRange();
                     });
                   }
                 },
               ),
-              CalendarNavigator(currentDate: _dateTimeRange.start, onChangedDateTimeRange: _onChangedDateTimeRange, chartPeriod: _period),
+              CalendarNavigator(
+                onChangedDateTimeRange: _onChangedDateTimeRange,
+                chartPeriod: _period,
+                dateTimeRange: _dateTimeRange,
+              ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,8 +208,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           child: Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
                       SetRepsVolumeReps.volume: SizedBox(
                           width: 40,
-                          child:
-                          Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                          child: Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
                     },
                     onValueChanged: (SetRepsVolumeReps? value) {
                       if (value != null) {
@@ -299,7 +306,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
-    if(range == null) return;
+    if (range == null) return;
     setState(() {
       _dateTimeRange = range;
       print(_dateTimeRange);
@@ -359,16 +366,18 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     }
   }
 
-  void _updateChart(MuscleGroupFamily muscleGroupFamily) {
-    setState(() {
-      _selectedMuscleGroupFamily = muscleGroupFamily;
-    });
+  DateTimeRange _periodDateTimeRange() {
+    return switch (_period) {
+      ChartPeriod.week => DateTimeRange(start: _dateTimeRange.end.previous7Days(), end: _dateTimeRange.end),
+      ChartPeriod.month => DateTimeRange(start: _dateTimeRange.end.previous30Days(), end: _dateTimeRange.end),
+      ChartPeriod.threeMonths => DateTimeRange(start: _dateTimeRange.end.previous30Days(), end: _dateTimeRange.end),
+    };
   }
 
   @override
   void initState() {
     super.initState();
     _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
-    _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+    _dateTimeRange = DateTimeRange(start: DateTime.now().previous30Days(), end: DateTime.now().dateOnly());
   }
 }

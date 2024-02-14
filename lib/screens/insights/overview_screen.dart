@@ -96,7 +96,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                     ]),
                   ),
-                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, currentDate: _dateTimeRange.start),
+                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, dateTimeRange: _dateTimeRange),
                   IconButton(
                       onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),

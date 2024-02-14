@@ -6,17 +6,12 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import '../../enums/chart_period_enum.dart';
 
 class CalendarNavigator extends StatelessWidget {
-  final DateTime currentDate;
+  final DateTimeRange dateTimeRange;
   final void Function(DateTimeRange? range)? onChangedDateTimeRange;
-  final void Function(DateTime)? onSelectedDate;
   final ChartPeriod chartPeriod;
 
   const CalendarNavigator(
-      {super.key,
-      required this.currentDate,
-      this.onChangedDateTimeRange,
-      this.onSelectedDate,
-      this.chartPeriod = ChartPeriod.month});
+      {super.key, required this.dateTimeRange, this.onChangedDateTimeRange, this.chartPeriod = ChartPeriod.month});
 
   bool _hasLaterDate() {
     final laterDate = DateTime.now();
@@ -112,6 +107,18 @@ class CalendarNavigator extends StatelessWidget {
     }
   }
 
+  String _formattedDate() {
+    if (chartPeriod == ChartPeriod.month) {
+      return currentDate.formattedMonthAndYear();
+    } else {
+      String formattedStartDate = dateTimeRange.start.shortDayAndMonthAndYear();
+      String formattedEndDate = dateTimeRange.end.shortDayAndMonthAndYear();
+      return "$formattedStartDate - $formattedEndDate";
+    }
+  }
+
+  DateTime get currentDate => dateTimeRange.end;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -119,15 +126,12 @@ class CalendarNavigator extends StatelessWidget {
       children: [
         IconButton(
             onPressed: previousDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
-        SizedBox(
-          width: 125,
-          child: Text(currentDate.formattedMonthAndYear(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.montserrat(
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-              )),
-        ),
+        Text(_formattedDate(),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.montserrat(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            )),
         IconButton(
             onPressed: _hasLaterDate() ? nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
