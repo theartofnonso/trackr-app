@@ -64,19 +64,19 @@ enum AchievementType {
       "Obsessed",
       "Log at least one session for 16 consecutive weeks.",
       16,
-      "Obsessed focuses on adhering to a four-month workout regimen, a significant duration to notice fitness outcomes. Additionally, it serves as an effective method for establishing a consistent exercise routine.",
+      "Obsessed focuses on adhering to a 4-month workout regimen, a significant duration to notice fitness outcomes. Additionally, it serves as an effective method for establishing a consistent exercise routine.",
       "Congratulations on your unwavering commitment! You've successfully logged sessions for 16 consecutive weeks, showcasing remarkable dedication and discipline."),
   neverSkipAMonday(
       "Never Skip a Monday",
       "Log a session for 16 consecutive mondays.",
       16,
-      "Never Skip a Monday focuses on adhering to a four-month workout regimen, a significant duration to notice fitness outcomes. Additionally, it serves as an effective method for establishing a consistent exercise routine.",
+      "Never Skip a Monday focuses on adhering to a 4-month workout regimen, a significant duration to notice fitness outcomes. Additionally, it serves as an effective method for establishing a consistent exercise routine.",
       "Congratulations, for 16 consecutive Mondays, you've shown remarkable dedication and discipline. Your commitment to starting each week strong is truly inspiring."),
   neverSkipALegDay(
       "Never Skip a Leg Day",
       "Log at least one leg exercise in a session for 16 consecutive weeks",
       16,
-      "Never Skip a Leg Day focuses on adhering to a four-month workout regimen that encourages you to train legs. Additionally, it serves as an effective method for establishing a consistent leg exercise routine.",
+      "Never Skip a Leg Day focuses on adhering to a 4-month workout regimen that encourages you to train legs. Additionally, it serves as an effective method for establishing a consistent leg exercise routine.",
       "Congratulations on conquering the 'Never Skip a Leg Day' challenge! Your commitment over the past 16 weeks has significantly strengthened your leg muscles and overall endurance."),
   sweatMarathon(
       "Sweat-A-Thon",
