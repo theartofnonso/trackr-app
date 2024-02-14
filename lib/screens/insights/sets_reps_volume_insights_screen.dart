@@ -232,6 +232,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     periods: periods,
                     unit: _chartUnit(),
                     minify: _period == ChartPeriod.threeMonths,
+                    showTopTitles: _period == ChartPeriod.month,
+                    showLeftTitles: _period == ChartPeriod.threeMonths,
                     extraLinesData: _isRepsOrSetsMetric()
                         ? ExtraLinesData(
                             horizontalLines: [
