@@ -20,6 +20,9 @@ import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../exercise/exercise_library_screen.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
+
+  static const routeName = '/routine-template-editor';
+
   final RoutineTemplateDto? template;
 
   const RoutineTemplateEditorScreen({super.key, this.template});

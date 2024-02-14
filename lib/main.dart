@@ -22,16 +22,19 @@ import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
+import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
+import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'amplifyconfiguration.dart';
+import 'dtos/viewmodels/routine_log_arguments.dart';
+import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefs().init();
@@ -179,6 +182,28 @@ class _MyAppState extends State<MyApp> {
               builder: Authenticator.builder(),
               theme: _themeData,
               home: const HomeScreen(),
+              onGenerateRoute: (settings) {
+                if (settings.name == RoutineLogEditorScreen.routeName) {
+                  final args = settings.arguments as RoutineLogArguments;
+                  return MaterialPageRoute(
+                    builder: (context) => RoutineLogEditorScreen(
+                      log: args.log,
+                      mode: args.editorMode,
+                    ),
+                  );
+                }
+
+                if (settings.name == RoutineTemplateEditorScreen.routeName) {
+                  final args = settings.arguments as RoutineTemplateArguments;
+                  return MaterialPageRoute(
+                    builder: (context) => RoutineTemplateEditorScreen(
+                      template: args.template,
+                    ),
+                  );
+                }
+
+                return null;
+              },
             ),
           );
   }
