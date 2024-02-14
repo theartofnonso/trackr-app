@@ -197,23 +197,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         "WEEKLY AVERAGE",
                         style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
                       ),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: sapphireDark,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              "past week",
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10),
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
                   CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
@@ -254,10 +237,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             horizontalLines: [
                               HorizontalLine(
                                 y: _averageMaximumWeeklyValue(),
-                                color: vibrantGreen,
-                                strokeWidth: 1.5,
+                                color: vibrantGreen.withOpacity(0.5),
+                                strokeWidth: 2,
                                 strokeCap: StrokeCap.round,
-                                dashArray: [10],
+                                dashArray: [8],
                                 label: HorizontalLineLabel(
                                   show: true,
                                   alignment: Alignment.topRight,
@@ -267,11 +250,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               ),
                               HorizontalLine(
                                 y: _averageMedianWeeklyValue(),
-                                color: vibrantBlue,
-                                strokeWidth: 1.5,
-                                dashArray: [10],
+                                color: vibrantBlue.withOpacity(0.5),
+                                strokeWidth: 2,
+                                dashArray: [8],
                                 strokeCap: StrokeCap.round,
-                                // dashArray: [1],
                                 label: HorizontalLineLabel(
                                   show: true,
                                   alignment: Alignment.topRight,
@@ -281,10 +263,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               ),
                               HorizontalLine(
                                 y: _averageMinimumWeeklyValue(),
-                                color: Colors.red,
-                                strokeWidth: 1.5,
+                                color: Colors.red.withOpacity(0.5),
+                                strokeWidth: 2,
                                 strokeCap: StrokeCap.round,
-                                dashArray: [10],
+                                dashArray: [8],
                                 label: HorizontalLineLabel(
                                   show: true,
                                   alignment: Alignment.topRight,
