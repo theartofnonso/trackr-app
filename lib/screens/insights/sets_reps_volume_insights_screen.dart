@@ -45,11 +45,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final periodicalLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = routineLogController.weeklyLogs.entries.where((weekEntry) {
+      final week = weekEntry.key;
+      return week.start.isAfterOrEqual(_dateTimeRange.start) && week.end.isBeforeOrEqual(_dateTimeRange.end);
+    });
 
     List<num> periodicalValues = [];
 
-    for (var periodAndLogs in periodicalLogs.entries) {
+    for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
@@ -62,12 +65,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       periodicalValues.add(valuesForPeriod);
     }
 
-    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.average.round() : 0;
+    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.where((value) => value > 0).average.round() : 0;
 
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
+    final dateTimes = periodicalLogs.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -138,9 +141,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 thumbColor: sapphireLight,
                 groupValue: _period,
                 children: {
-                  ChartPeriod.week: SizedBox(
-                      width: 30,
-                      child: Text(ChartPeriod.week.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
                   ChartPeriod.month: SizedBox(
                       width: 30,
                       child: Text(ChartPeriod.month.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
@@ -309,7 +309,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     if (range == null) return;
     setState(() {
       _dateTimeRange = range;
-      print(_dateTimeRange);
     });
   }
 
@@ -368,8 +367,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   DateTimeRange _periodDateTimeRange() {
     return switch (_period) {
-      ChartPeriod.week => DateTimeRange(start: _dateTimeRange.end.previous7Days(), end: _dateTimeRange.end),
-      ChartPeriod.month => DateTimeRange(start: _dateTimeRange.end.previous30Days(), end: _dateTimeRange.end),
+      ChartPeriod.month => thisMonthDateRange(),
       ChartPeriod.threeMonths => DateTimeRange(start: _dateTimeRange.end.previous30Days(), end: _dateTimeRange.end),
     };
   }
@@ -378,6 +376,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   void initState() {
     super.initState();
     _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
-    _dateTimeRange = DateTimeRange(start: DateTime.now().previous30Days(), end: DateTime.now().dateOnly());
+    _dateTimeRange = thisMonthDateRange();
   }
 }

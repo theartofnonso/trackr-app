@@ -41,12 +41,6 @@ class CalendarNavigator extends StatelessWidget {
     return DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
   }
 
-  DateTimeRange _decrementWeek() {
-    DateTime previousWeek = currentDate.subtract(const Duration(days: 7));
-    return DateTimeRange(
-        start: previousWeek.dateOnly(), end: DateTime(currentDate.year, currentDate.month, currentDate.day));
-  }
-
   void previousDate() {
     final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
     if (onChangedDateTimeRangeFunc == null) return;
@@ -54,10 +48,12 @@ class CalendarNavigator extends StatelessWidget {
     if (chartPeriod == ChartPeriod.month) {
       final range = _decrementMonth();
       onChangedDateTimeRangeFunc(range);
-    } else if (chartPeriod == ChartPeriod.week) {
-      final range = _decrementWeek();
-      onChangedDateTimeRangeFunc(range);
     }
+
+    // else if (chartPeriod == ChartPeriod.week) {
+    //   final range = _decrementWeek();
+    //   onChangedDateTimeRangeFunc(range);
+    // }
   }
 
   DateTimeRange? _incrementMonth() {
@@ -81,19 +77,6 @@ class CalendarNavigator extends StatelessWidget {
     return dateTimeRange;
   }
 
-  DateTimeRange? _incrementWeek() {
-    DateTimeRange? dateTimeRange;
-
-    if (_hasLaterDate()) {
-      DateTime nextWeek = currentDate.add(const Duration(days: 7));
-
-      dateTimeRange = DateTimeRange(
-          start: DateTime(currentDate.year, currentDate.month, currentDate.day), end: nextWeek.dateOnly());
-    }
-
-    return dateTimeRange;
-  }
-
   void nextDate() {
     final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
     if (onChangedDateTimeRangeFunc == null) return;
@@ -101,10 +84,12 @@ class CalendarNavigator extends StatelessWidget {
     if (chartPeriod == ChartPeriod.month) {
       final range = _incrementMonth();
       onChangedDateTimeRangeFunc(range);
-    } else if (chartPeriod == ChartPeriod.week) {
-      final range = _incrementWeek();
-      onChangedDateTimeRangeFunc(range);
     }
+
+    // else if (chartPeriod == ChartPeriod.week) {
+    //   final range = _incrementWeek();
+    //   onChangedDateTimeRangeFunc(range);
+    // }
   }
 
   String _formattedDate() {
@@ -126,12 +111,15 @@ class CalendarNavigator extends StatelessWidget {
       children: [
         IconButton(
             onPressed: previousDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
-        Text(_formattedDate(),
-            textAlign: TextAlign.center,
-            style: GoogleFonts.montserrat(
-              fontSize: 12,
-              fontWeight: FontWeight.w900,
-            )),
+        SizedBox(
+          width: 120,
+          child: Text(_formattedDate(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.montserrat(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+              )),
+        ),
         IconButton(
             onPressed: _hasLaterDate() ? nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,

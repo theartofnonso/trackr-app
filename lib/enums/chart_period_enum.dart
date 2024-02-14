@@ -1,5 +1,4 @@
 enum ChartPeriod {
-  week("w"),
   month("m"),
   threeMonths("3m"),;
 
