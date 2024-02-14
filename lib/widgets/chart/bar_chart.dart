@@ -47,7 +47,7 @@ class CustomBarChart extends StatelessWidget {
             return BarTooltipItem(
               rod.toY.round().toString(),
               const TextStyle(
-                color: Colors.green,
+                color: Colors.white70,
                 fontWeight: FontWeight.bold,
               ),
             );
@@ -81,8 +81,8 @@ class CustomBarChart extends StatelessWidget {
 
   LinearGradient get _barsGradient => const LinearGradient(
         colors: [
-          vibrantBlue,
-          vibrantGreen,
+          Colors.white54,
+          Colors.white,
         ],
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
@@ -107,6 +107,7 @@ class CustomBarChart extends StatelessWidget {
     final style = GoogleFonts.montserrat(
       fontWeight: FontWeight.w600,
       fontSize: 10,
+      color: Colors.white70,
     );
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta),

@@ -248,7 +248,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                             horizontalLines: [
                               HorizontalLine(
                                 y: _averageMaximumWeeklyValue(),
-                                color: Colors.white.withOpacity(0.4),
+                                color: vibrantGreen,
                                 strokeWidth: 1.5,
                                 strokeCap: StrokeCap.round,
                                 dashArray: [10],
@@ -261,7 +261,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               ),
                               HorizontalLine(
                                 y: _averageMedianWeeklyValue(),
-                                color: Colors.white.withOpacity(0.4),
+                                color: vibrantBlue,
                                 strokeWidth: 1.5,
                                 dashArray: [10],
                                 strokeCap: StrokeCap.round,
@@ -275,7 +275,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               ),
                               HorizontalLine(
                                 y: _averageMinimumWeeklyValue(),
-                                color: Colors.white.withOpacity(0.4),
+                                color: Colors.red,
                                 strokeWidth: 1.5,
                                 strokeCap: StrokeCap.round,
                                 dashArray: [10],
