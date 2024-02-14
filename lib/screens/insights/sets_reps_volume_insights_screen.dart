@@ -45,8 +45,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final periodicalLogs = routineLogController.weeklyLogs.entries
-        .where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month);
+    final periodicalLogs = _period == ChartPeriod.month
+        ? routineLogController.weeklyLogs.entries
+            .where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month)
+        : routineLogController.weeklyLogs.entries.where((weekEntry) =>
+            weekEntry.key.start.isAfterOrEqual(_dateTimeRange.start) &&
+            weekEntry.key.end.isBeforeOrEqual(_dateTimeRange.end));
 
     List<num> periodicalValues = [];
 
@@ -243,6 +247,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   child: CustomBarChart(
                     chartPoints: chartPoints,
                     periods: periods,
+                    unit: _chartUnit(),
+                    minify: _period == ChartPeriod.threeMonths,
                     extraLinesData: _isRepsOrSetsMetric()
                         ? ExtraLinesData(
                             horizontalLines: [
@@ -389,7 +395,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final now = DateTime.now();
     return switch (_period) {
       ChartPeriod.month => thisMonthDateRange(),
-      ChartPeriod.threeMonths => DateTimeRange(start: now.previous90Days(), end: now.dateOnly()),
+      ChartPeriod.threeMonths => DateTimeRange(start: now.previous90Days(), end: now.lastWeekDay().dateOnly()),
     };
   }
 

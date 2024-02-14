@@ -5,13 +5,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../dtos/graph/chart_point_dto.dart';
+import '../../enums/chart_unit_enum.dart';
+import '../../utils/string_utils.dart';
 
 class CustomBarChart extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> periods;
   final ExtraLinesData? extraLinesData;
+  final ChartUnit unit;
+  final bool minify;
 
-  const CustomBarChart({super.key, required this.chartPoints, required this.periods, this.extraLinesData});
+  const CustomBarChart({super.key, required this.chartPoints, required this.periods, this.extraLinesData, required this.unit, required this.minify});
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +65,16 @@ class CustomBarChart extends StatelessWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
+            interval: minify ? 2 : 1,
             getTitlesWidget: _bottomTitleWidgets,
           ),
         ),
-        leftTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: minify,
+            reservedSize: 40,
+            getTitlesWidget: _leftTitleWidgets,
+          ),
         ),
         topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
@@ -93,14 +102,35 @@ class CustomBarChart extends StatelessWidget {
           x: point.x.toInt(),
           barRods: [
             BarChartRodData(
+              borderRadius: BorderRadius.circular(2),
               width: 16,
               toY: point.y.toDouble(),
               gradient: _barsGradient,
             )
           ],
-          showingTooltipIndicators: [0],
+          showingTooltipIndicators: minify ? null : [0],
         );
       }).toList();
+
+  Widget _leftTitleWidgets(double value, TitleMeta meta) {
+    final style = GoogleFonts.montserrat(
+      fontWeight: FontWeight.w600,
+      fontSize: 9,
+    );
+
+    return SideTitleWidget(
+      fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
+      axisSide: meta.axisSide,
+      child: Text(_weightTitle(value: value), style: style),
+    );
+  }
+
+  String _weightTitle({required double value}) {
+    if (unit == ChartUnit.weight) {
+      return volumeInKOrM(value);
+    }
+    return "${value.toInt()}";
+  }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
@@ -110,9 +140,9 @@ class CustomBarChart extends StatelessWidget {
       color: Colors.white70,
     );
     return SideTitleWidget(
-      fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
+      fitInside: SideTitleFitInsideData.disable(),
       axisSide: meta.axisSide,
-      child: Text(modifiedDateTimes[value.toInt()], style: style),
+      child: value % meta.appliedInterval == 0 ? Text(modifiedDateTimes[value.toInt()], style: style) : const SizedBox.shrink(),
     );
   }
 }
