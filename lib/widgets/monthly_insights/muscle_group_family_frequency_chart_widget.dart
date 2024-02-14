@@ -14,7 +14,6 @@ import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../chart/bar_chart.dart';
 import '../chart/legend.dart';
-import '../chart/line_chart_widget.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
   const MuscleGroupFamilyFrequencyChartWidget({super.key});
@@ -56,12 +55,12 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           SizedBox(
-              height: 200,
+              height: 250,
               child: CustomBarChart(
                 chartPoints: chartPoints,
                 periods: dateTimes,
                 unit: ChartUnit.number,
-                minify: false,
+                bottomTitlesInterval: 1,
                 showLeftTitles: true,
                 maxY: 100,
                 extraLinesData: ExtraLinesData(

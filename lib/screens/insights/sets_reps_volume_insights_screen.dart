@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -99,212 +100,233 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ),
         child: SafeArea(
           minimum: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                decoration: BoxDecoration(
-                  color: sapphireDark.withOpacity(0.6), // Background color
-                  borderRadius: BorderRadius.circular(5), // Border radius
-                ),
-                child: DropdownButton<MuscleGroupFamily>(
-                  menuMaxHeight: 400,
-                  isExpanded: true,
-                  isDense: true,
-                  value: _selectedMuscleGroupFamily,
-                  hint: Text("Muscle group",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
-                  underline: Container(
-                    color: Colors.transparent,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: sapphireDark.withOpacity(0.6), // Background color
+                    borderRadius: BorderRadius.circular(5), // Border radius
                   ),
-                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                  onChanged: (MuscleGroupFamily? value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedMuscleGroupFamily = value;
-                      });
-                    }
-                  },
-                  items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
-                    return DropdownMenuItem<MuscleGroupFamily>(
-                      value: muscleGroup,
-                      child: Text(muscleGroup.name,
-                          style: GoogleFonts.montserrat(
-                              color: _selectedMuscleGroupFamily == muscleGroup ? Colors.white : Colors.white70,
-                              fontWeight: _selectedMuscleGroupFamily == muscleGroup ? FontWeight.bold : FontWeight.w500,
-                              fontSize: 14)),
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: 20),
-              CupertinoSlidingSegmentedControl<ChartPeriod>(
-                backgroundColor: sapphireDark,
-                thumbColor: sapphireLight,
-                groupValue: _period,
-                children: {
-                  ChartPeriod.month: SizedBox(
-                      width: 30,
-                      child: Text(ChartPeriod.month.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
-                  ChartPeriod.threeMonths: SizedBox(
-                      width: 30,
-                      child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
-                          style: textStyle, textAlign: TextAlign.center)),
-                },
-                onValueChanged: (ChartPeriod? value) {
-                  if (value != null) {
-                    setState(() {
-                      _period = value;
-                      _dateTimeRange = _periodDateTimeRange();
-                    });
-                  }
-                },
-              ),
-              CalendarNavigator(
-                onChangedDateTimeRange: _onChangedDateTimeRange,
-                chartPeriod: _period,
-                dateTimeRange: _dateTimeRange,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: "$avgValue",
-                          style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
-                          children: [
-                            TextSpan(
-                              text: " ",
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                            ),
-                            TextSpan(
-                              text: _metricLabel().toUpperCase(),
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        "WEEKLY AVERAGE",
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
-                      ),
-                    ],
-                  ),
-                  CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
-                    backgroundColor: sapphireDark,
-                    thumbColor: sapphireLight,
-                    groupValue: _metric,
-                    children: {
-                      SetRepsVolumeReps.sets: SizedBox(
-                          width: 40,
-                          child: Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
-                      SetRepsVolumeReps.reps: SizedBox(
-                          width: 40,
-                          child: Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
-                      SetRepsVolumeReps.volume: SizedBox(
-                          width: 40,
-                          child: Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
-                    },
-                    onValueChanged: (SetRepsVolumeReps? value) {
+                  child: DropdownButton<MuscleGroupFamily>(
+                    menuMaxHeight: 400,
+                    isExpanded: true,
+                    isDense: true,
+                    value: _selectedMuscleGroupFamily,
+                    hint: Text("Muscle group",
+                        style:
+                            GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                    underline: Container(
+                      color: Colors.transparent,
+                    ),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                    onChanged: (MuscleGroupFamily? value) {
                       if (value != null) {
                         setState(() {
-                          _metric = value;
+                          _selectedMuscleGroupFamily = value;
                         });
                       }
                     },
+                    items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
+                      return DropdownMenuItem<MuscleGroupFamily>(
+                        value: muscleGroup,
+                        child: Text(muscleGroup.name,
+                            style: GoogleFonts.montserrat(
+                                color: _selectedMuscleGroupFamily == muscleGroup ? Colors.white : Colors.white70,
+                                fontWeight:
+                                    _selectedMuscleGroupFamily == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                                fontSize: 14)),
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
-              const SizedBox(height: 60),
-              SizedBox(
-                  height: 200,
-                  child: CustomBarChart(
-                    chartPoints: chartPoints,
-                    periods: periods,
-                    unit: _chartUnit(),
-                    minify: _period == ChartPeriod.threeMonths,
-                    showTopTitles: _period == ChartPeriod.month,
-                    showLeftTitles: _period == ChartPeriod.threeMonths,
-                    extraLinesData: _isRepsOrSetsMetric()
-                        ? ExtraLinesData(
-                            horizontalLines: [
-                              HorizontalLine(
-                                y: _averageMaximumWeeklyValue(),
-                                color: vibrantGreen.withOpacity(0.5),
-                                strokeWidth: 2,
-                                strokeCap: StrokeCap.round,
-                                dashArray: [8],
-                                label: HorizontalLineLabel(
-                                  show: true,
-                                  alignment: Alignment.topRight,
-                                  style: GoogleFonts.montserrat(
-                                      color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
-                                ),
+                ),
+                const SizedBox(height: 10),
+                CalendarNavigator(
+                  onChangedDateTimeRange: _onChangedDateTimeRange,
+                  chartPeriod: _period,
+                  dateTimeRange: _dateTimeRange,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text:
+                                "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble()) : avgValue}",
+                            style:
+                                GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
+                            children: [
+                              TextSpan(
+                                text: " ",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
-                              HorizontalLine(
-                                y: _averageMedianWeeklyValue(),
-                                color: vibrantBlue.withOpacity(0.5),
-                                strokeWidth: 2,
-                                dashArray: [8],
-                                strokeCap: StrokeCap.round,
-                                label: HorizontalLineLabel(
-                                  show: true,
-                                  alignment: Alignment.topRight,
-                                  style: GoogleFonts.montserrat(
-                                      color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              HorizontalLine(
-                                y: _averageMinimumWeeklyValue(),
-                                color: Colors.red.withOpacity(0.5),
-                                strokeWidth: 2,
-                                strokeCap: StrokeCap.round,
-                                dashArray: [8],
-                                label: HorizontalLineLabel(
-                                  show: true,
-                                  alignment: Alignment.topRight,
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
-                                ),
+                              TextSpan(
+                                text: _metricLabel().toUpperCase(),
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                             ],
-                          )
-                        : null,
-                  )),
-              const SizedBox(height: 20),
-              if (_isRepsOrSetsMetric())
-                Column(children: [
-                  Legend(
-                    title: "${_averageMinimumWeeklyValue().toInt()}", //
-                    suffix: "x",
-                    subTitle: 'Minimum',
-                    color: Colors.red,
-                  ),
-                  const SizedBox(height: 6),
-                  Legend(
-                    title: "${_averageMedianWeeklyValue().toInt()}",
-                    suffix: "x",
-                    subTitle: 'Sufficient',
-                    color: vibrantBlue,
-                  ),
-                  const SizedBox(height: 6),
-                  Legend(
-                    title: "${_averageMaximumWeeklyValue().toInt()}",
-                    suffix: "x",
-                    subTitle: 'Optimal',
-                    color: vibrantGreen,
-                  ),
-                ])
-            ],
+                          ),
+                        ),
+                        Text(
+                          "WEEKLY AVERAGE",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CupertinoSlidingSegmentedControl<ChartPeriod>(
+                          backgroundColor: sapphireDark,
+                          thumbColor: sapphireLight,
+                          groupValue: _period,
+                          children: {
+                            ChartPeriod.month: SizedBox(
+                                width: 30,
+                                child: Text(ChartPeriod.month.name.toUpperCase(),
+                                    style: textStyle, textAlign: TextAlign.center)),
+                            ChartPeriod.threeMonths: SizedBox(
+                                width: 30,
+                                child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
+                                    style: textStyle, textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (ChartPeriod? value) {
+                            if (value != null) {
+                              setState(() {
+                                _period = value;
+                                _dateTimeRange = _periodDateTimeRange();
+                              });
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
+                          backgroundColor: sapphireDark,
+                          thumbColor: sapphireLight,
+                          groupValue: _metric,
+                          children: {
+                            SetRepsVolumeReps.sets: SizedBox(
+                                width: 40,
+                                child:
+                                    Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
+                            SetRepsVolumeReps.reps: SizedBox(
+                                width: 40,
+                                child:
+                                    Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
+                            SetRepsVolumeReps.volume: SizedBox(
+                                width: 40,
+                                child:
+                                    Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
+                          },
+                          onValueChanged: (SetRepsVolumeReps? value) {
+                            if (value != null) {
+                              setState(() {
+                                _metric = value;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 60),
+                SizedBox(
+                    height: 250,
+                    child: CustomBarChart(
+                      chartPoints: chartPoints,
+                      periods: periods,
+                      unit: _chartUnit(),
+                      bottomTitlesInterval: _period == ChartPeriod.month
+                          ? 1
+                          : periods.length > 7
+                              ? 4
+                              : 2,
+                      showTopTitles: _period == ChartPeriod.month ? true : false,
+                      showLeftTitles: _period == ChartPeriod.month ? false : true,
+                      extraLinesData: _isRepsOrSetsMetric()
+                          ? ExtraLinesData(
+                              horizontalLines: [
+                                HorizontalLine(
+                                  y: _averageMaximumWeeklyValue(),
+                                  color: vibrantGreen.withOpacity(0.5),
+                                  strokeWidth: 2,
+                                  strokeCap: StrokeCap.round,
+                                  dashArray: [8],
+                                  label: HorizontalLineLabel(
+                                    show: true,
+                                    alignment: Alignment.topRight,
+                                    style: GoogleFonts.montserrat(
+                                        color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                HorizontalLine(
+                                  y: _averageMedianWeeklyValue(),
+                                  color: vibrantBlue.withOpacity(0.5),
+                                  strokeWidth: 2,
+                                  dashArray: [8],
+                                  strokeCap: StrokeCap.round,
+                                  label: HorizontalLineLabel(
+                                    show: true,
+                                    alignment: Alignment.topRight,
+                                    style: GoogleFonts.montserrat(
+                                        color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                HorizontalLine(
+                                  y: _averageMinimumWeeklyValue(),
+                                  color: Colors.red.withOpacity(0.5),
+                                  strokeWidth: 2,
+                                  strokeCap: StrokeCap.round,
+                                  dashArray: [8],
+                                  label: HorizontalLineLabel(
+                                    show: true,
+                                    alignment: Alignment.topRight,
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : null,
+                    )),
+                const SizedBox(height: 20),
+                if (_isRepsOrSetsMetric())
+                  Column(children: [
+                    Legend(
+                      title: "${_averageMinimumWeeklyValue().toInt()}", //
+                      suffix: "x",
+                      subTitle: 'Minimum',
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 6),
+                    Legend(
+                      title: "${_averageMedianWeeklyValue().toInt()}",
+                      suffix: "x",
+                      subTitle: 'Sufficient',
+                      color: vibrantBlue,
+                    ),
+                    const SizedBox(height: 6),
+                    Legend(
+                      title: "${_averageMaximumWeeklyValue().toInt()}",
+                      suffix: "x",
+                      subTitle: 'Optimal',
+                      color: vibrantGreen,
+                    ),
+                  ])
+              ],
+            ),
           ),
         ),
       ),
