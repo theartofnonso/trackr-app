@@ -23,6 +23,9 @@ import '../../widgets/information_container_lite.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
+
+  static const routeName = '/overview_screen';
+
   const OverviewScreen({super.key});
 
   @override

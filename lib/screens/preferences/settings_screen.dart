@@ -31,6 +31,9 @@ enum WeightUnit {
 }
 
 class SettingsScreen extends StatefulWidget {
+
+  static const routeName = '/settings-screen';
+
   const SettingsScreen({super.key});
 
   @override

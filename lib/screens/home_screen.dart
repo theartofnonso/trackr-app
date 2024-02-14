@@ -25,6 +25,9 @@ import '../enums/routine_editor_type_enums.dart';
 import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+
+  static const routeName = '/home_screen';
+
   const HomeScreen({super.key});
 
   @override

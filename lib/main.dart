@@ -22,10 +22,14 @@ import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
+import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
+import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
+import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -203,6 +207,13 @@ class _MyAppState extends State<MyApp> {
                 }
 
                 return null;
+              },
+              routes: {
+                OverviewScreen.routeName: (context) => const OverviewScreen(),
+                RoutineTemplatesHome.routeName: (context) => const RoutineTemplatesHome(),
+                AchievementsScreen.routeName: (context) => const AchievementsScreen(),
+                SettingsScreen.routeName: (context) => const SettingsScreen(),
+                HomeScreen.routeName: (context) => const HomeScreen(),
               },
             ),
           );

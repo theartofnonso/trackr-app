@@ -9,6 +9,9 @@ import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 
 class RoutineTemplatesHome extends StatefulWidget {
+
+  static const routeName = '/routine-templates-screen';
+
   const RoutineTemplatesHome({super.key});
 
   @override
