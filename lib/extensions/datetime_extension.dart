@@ -8,6 +8,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String abbreviatedMonthAndYear() {
+    return DateFormat("LLL, yy", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);
   }
@@ -25,6 +30,11 @@ extension DateTimeExtension on DateTime {
   /// Get datetime format
   String formattedDayAndMonthAndYear() {
     return DateFormat("EE dd MMM, yyyy", "en").format(this);
+  }
+
+  /// Get datetime format
+  String shortDayAndMonthAndYear() {
+    return DateFormat("dd MMM, yy", "en").format(this);
   }
 
   /// Get datetime format
@@ -130,16 +140,6 @@ extension DateTimeExtension on DateTime {
     return DateTime(year, month, day, 0, 0, 0);
   }
 
-  Duration nextMorning() {
-    DateTime now = DateTime.now();
-
-    DateTime dayAfterNextMorning = DateTime(now.year, now.month, now.day + 2, 1, 0);
-
-    Duration duration = dayAfterNextMorning.difference(now);
-
-    return duration;
-  }
-
   bool withinCurrentYear() {
     final datetime = DateTime(year, month, day);
     final now = DateTime.now();
@@ -153,4 +153,9 @@ extension DateTimeExtension on DateTime {
   DateTime dateOnly() {
     return DateTime(year, month, day);
   }
+
+  DateTime previous90Days() {
+    return subtract(const Duration(days: 90)).dateOnly();
+  }
+
 }

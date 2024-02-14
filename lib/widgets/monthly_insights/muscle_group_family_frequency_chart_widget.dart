@@ -12,6 +12,7 @@ import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../chart/bar_chart.dart';
 import '../chart/legend.dart';
 import '../chart/line_chart_widget.dart';
 
@@ -54,43 +55,44 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
           Text("Muscle frequency Trend",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: LineChartWidget(
-              chartPoints: chartPoints,
-              dateTimes: dateTimes,
-              unit: ChartUnit.number,
-              maxY: 100,
-              extraLinesData: ExtraLinesData(
-                horizontalLines: [
-                  HorizontalLine(
-                    y: 80,
-                    color: vibrantGreen,
-                    strokeWidth: 1.5,
-                    strokeCap: StrokeCap.round,
-                    dashArray: [10],
-                    label: HorizontalLineLabel(
-                      show: true,
-                      alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+          SizedBox(
+              height: 200,
+              child: CustomBarChart(
+                chartPoints: chartPoints,
+                periods: dateTimes,
+                unit: ChartUnit.number,
+                minify: false,
+                showLeftTitles: true,
+                maxY: 100,
+                extraLinesData: ExtraLinesData(
+                  horizontalLines: [
+                    HorizontalLine(
+                      y: 80,
+                      color: vibrantGreen,
+                      strokeWidth: 1.5,
+                      strokeCap: StrokeCap.round,
+                      dashArray: [10],
+                      label: HorizontalLineLabel(
+                        show: true,
+                        alignment: Alignment.topRight,
+                        style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  HorizontalLine(
-                    y: 50,
-                    color: vibrantBlue,
-                    strokeWidth: 1.5,
-                    strokeCap: StrokeCap.round,
-                    dashArray: [10],
-                    label: HorizontalLineLabel(
-                      show: true,
-                      alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                    HorizontalLine(
+                      y: 50,
+                      color: vibrantBlue,
+                      strokeWidth: 1.5,
+                      strokeCap: StrokeCap.round,
+                      dashArray: [10],
+                      label: HorizontalLineLabel(
+                        show: true,
+                        alignment: Alignment.topRight,
+                        style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                  ],
+                ),
+              )),
           const SizedBox(height: 10),
           const Column(children: [
             Legend(

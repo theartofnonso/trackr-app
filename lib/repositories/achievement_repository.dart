@@ -66,7 +66,7 @@ class AchievementRepository {
     final routineLogsForCurrentYear = routineLogs.where((log) => log.createdAt.withinCurrentYear()).toList();
 
     /// Group ExerciseLogs by ExerciseType from the current year logs
-    final exerciseLogsByType = groupRoutineLogsByExerciseType(routineLogs: routineLogsForCurrentYear);
+    final exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: routineLogsForCurrentYear);
 
     /// Group RoutineLogs by week from the current year logs
     final weeklyRoutineLogs = groupRoutineLogsByWeek(routineLogs: routineLogsForCurrentYear);

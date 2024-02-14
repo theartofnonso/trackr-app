@@ -14,16 +14,17 @@ import '../../utils/string_utils.dart';
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final ExtraLinesData? extraLinesData;
-  final List<String> dateTimes;
+  final List<String> periods;
   final ChartUnit unit;
   final double? maxY;
+  final double interval;
 
   const LineChartWidget(
       {super.key,
       required this.chartPoints,
-      required this.dateTimes,
+      required this.periods,
       required this.unit,
-      this.extraLinesData, this.maxY});
+      this.extraLinesData, this.maxY, this.interval = 10});
 
   static const List<Color> gradientColors = [
     Colors.white,
@@ -58,8 +59,8 @@ class LineChartWidget extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: 10,
-                        getTitlesWidget: _bottomTitleWidgets,
+                        interval: interval,
+                        getTitlesWidget:  _bottomTitleWidgets,
                       ),
                     ),
                   ),
@@ -132,7 +133,7 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
-    final modifiedDateTimes = dateTimes.length == 1 ? [...dateTimes, ...dateTimes] : dateTimes;
+    final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
     final style = GoogleFonts.montserrat(
       fontWeight: FontWeight.w600,
       fontSize: 10,

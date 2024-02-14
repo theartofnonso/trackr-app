@@ -57,11 +57,11 @@ DateTimeRange thisWeekDateRange() {
   return DateTimeRange(start: startOfWeek, end: endOfWeek);
 }
 
-DateTimeRange thisMonthDateRange() {
+DateTimeRange thisMonthDateRange({DateTime? endDate}) {
   final now = DateTime.now();
   final currentWeekDate = DateTime(now.year, now.month, now.day);
   final startOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month, 1);
-  final endOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
+  final endOfMonth = endDate ?? DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
   return DateTimeRange(start: startOfMonth, end: endOfMonth);
 }
 

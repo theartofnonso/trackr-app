@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/chart/line_chart_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -18,6 +18,8 @@ import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../widgets/calendar/calendar_navigator.dart';
+import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
@@ -28,6 +30,9 @@ class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
 }
 
 class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsightsScreen> {
+  late DateTimeRange _dateTimeRange;
+
+  ChartPeriod _period = ChartPeriod.month;
   SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
   late MuscleGroupFamily _selectedMuscleGroupFamily;
@@ -40,11 +45,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final periodicalLogs = routineLogController.weeklyLogs;
+    final periodicalLogs = _period == ChartPeriod.month
+        ? routineLogController.weeklyLogs.entries
+            .where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month)
+        : routineLogController.weeklyLogs.entries.where((weekEntry) =>
+            weekEntry.key.start.isAfterOrEqual(_dateTimeRange.start) &&
+            weekEntry.key.end.isBeforeOrEqual(_dateTimeRange.end));
 
     List<num> periodicalValues = [];
 
-    for (var periodAndLogs in periodicalLogs.entries) {
+    for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
@@ -57,12 +67,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       periodicalValues.add(valuesForPeriod);
     }
 
-    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.average.round() : 0;
+    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.where((value) => value > 0).average.round() : 0;
 
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
+    final periods = periodicalValues.mapIndexed((index, monthEntry) {
+      return "WK ${index + 1}";
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -88,7 +100,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         child: SafeArea(
           minimum: const EdgeInsets.all(10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 width: double.infinity,
@@ -109,7 +121,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   ),
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                   onChanged: (MuscleGroupFamily? value) {
-                    if (value != null) _updateChart(value);
+                    if (value != null) {
+                      setState(() {
+                        _selectedMuscleGroupFamily = value;
+                      });
+                    }
                   },
                   items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
                     return DropdownMenuItem<MuscleGroupFamily>(
@@ -123,9 +139,38 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              CupertinoSlidingSegmentedControl<ChartPeriod>(
+                backgroundColor: sapphireDark,
+                thumbColor: sapphireLight,
+                groupValue: _period,
+                children: {
+                  ChartPeriod.month: SizedBox(
+                      width: 30,
+                      child: Text(ChartPeriod.month.name.toUpperCase(), style: textStyle, textAlign: TextAlign.center)),
+                  ChartPeriod.threeMonths: SizedBox(
+                      width: 30,
+                      child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
+                          style: textStyle, textAlign: TextAlign.center)),
+                },
+                onValueChanged: (ChartPeriod? value) {
+                  if (value != null) {
+                    setState(() {
+                      _period = value;
+                      _dateTimeRange = _periodDateTimeRange();
+                    });
+                  }
+                },
+              ),
+              CalendarNavigator(
+                onChangedDateTimeRange: _onChangedDateTimeRange,
+                chartPeriod: _period,
+                dateTimeRange: _dateTimeRange,
+              ),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,14 +206,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     children: {
                       SetRepsVolumeReps.sets: SizedBox(
                           width: 40,
-                          child: Text(SetRepsVolumeReps.sets.shortName, style: textStyle, textAlign: TextAlign.center)),
+                          child: Text(SetRepsVolumeReps.sets.name, style: textStyle, textAlign: TextAlign.center)),
                       SetRepsVolumeReps.reps: SizedBox(
                           width: 40,
-                          child: Text(SetRepsVolumeReps.reps.shortName, style: textStyle, textAlign: TextAlign.center)),
+                          child: Text(SetRepsVolumeReps.reps.name, style: textStyle, textAlign: TextAlign.center)),
                       SetRepsVolumeReps.volume: SizedBox(
                           width: 40,
-                          child:
-                              Text(SetRepsVolumeReps.volume.shortName, style: textStyle, textAlign: TextAlign.center)),
+                          child: Text(SetRepsVolumeReps.volume.name, style: textStyle, textAlign: TextAlign.center)),
                     },
                     onValueChanged: (SetRepsVolumeReps? value) {
                       if (value != null) {
@@ -180,60 +224,60 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: LineChartWidget(
-                  chartPoints: chartPoints,
-                  dateTimes: dateTimes,
-                  unit: _chartUnit(),
-                  extraLinesData: _isRepsOrSetsMetric()
-                      ? ExtraLinesData(
-                          horizontalLines: [
-                            HorizontalLine(
-                              y: _averageMaximumWeeklyValue(),
-                              color: vibrantGreen,
-                              strokeWidth: 1.5,
-                              strokeCap: StrokeCap.round,
-                              dashArray: [10],
-                              label: HorizontalLineLabel(
-                                show: true,
-                                alignment: Alignment.topRight,
-                                style: GoogleFonts.montserrat(
-                                    color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+              const SizedBox(height: 60),
+              SizedBox(
+                  height: 200,
+                  child: CustomBarChart(
+                    chartPoints: chartPoints,
+                    periods: periods,
+                    unit: _chartUnit(),
+                    minify: _period == ChartPeriod.threeMonths,
+                    extraLinesData: _isRepsOrSetsMetric()
+                        ? ExtraLinesData(
+                            horizontalLines: [
+                              HorizontalLine(
+                                y: _averageMaximumWeeklyValue(),
+                                color: vibrantGreen.withOpacity(0.5),
+                                strokeWidth: 2,
+                                strokeCap: StrokeCap.round,
+                                dashArray: [8],
+                                label: HorizontalLineLabel(
+                                  show: true,
+                                  alignment: Alignment.topRight,
+                                  style: GoogleFonts.montserrat(
+                                      color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            HorizontalLine(
-                              y: _averageMedianWeeklyValue(),
-                              color: vibrantBlue,
-                              strokeWidth: 1.5,
-                              strokeCap: StrokeCap.round,
-                              dashArray: [10],
-                              label: HorizontalLineLabel(
-                                show: true,
-                                alignment: Alignment.topRight,
-                                style: GoogleFonts.montserrat(
-                                    color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                              HorizontalLine(
+                                y: _averageMedianWeeklyValue(),
+                                color: vibrantBlue.withOpacity(0.5),
+                                strokeWidth: 2,
+                                dashArray: [8],
+                                strokeCap: StrokeCap.round,
+                                label: HorizontalLineLabel(
+                                  show: true,
+                                  alignment: Alignment.topRight,
+                                  style: GoogleFonts.montserrat(
+                                      color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            HorizontalLine(
-                              y: _averageMinimumWeeklyValue(),
-                              color: Colors.red,
-                              strokeWidth: 1.5,
-                              strokeCap: StrokeCap.round,
-                              dashArray: [10],
-                              label: HorizontalLineLabel(
-                                show: true,
-                                alignment: Alignment.topRight,
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                              HorizontalLine(
+                                y: _averageMinimumWeeklyValue(),
+                                color: Colors.red.withOpacity(0.5),
+                                strokeWidth: 2,
+                                strokeCap: StrokeCap.round,
+                                dashArray: [8],
+                                label: HorizontalLineLabel(
+                                  show: true,
+                                  alignment: Alignment.topRight,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : null,
-                ),
-              ),
+                            ],
+                          )
+                        : null,
+                  )),
               const SizedBox(height: 20),
               if (_isRepsOrSetsMetric())
                 Column(children: [
@@ -265,6 +309,17 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     );
   }
 
+  DateTime toFirstDayOfWeek(DateTime date) {
+    return date.subtract(Duration(days: date.weekday - 1));
+  }
+
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if (range == null) return;
+    setState(() {
+      _dateTimeRange = range;
+    });
+  }
+
   num _calculateMetric({required List<SetDto> sets}) {
     return switch (_metric) {
       SetRepsVolumeReps.sets => sets.length,
@@ -288,7 +343,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   String _metricLabel() {
     final unit = _chartUnit();
     return switch (unit) {
-      ChartUnit.number => _metric.shortName,
+      ChartUnit.number => _metric.name,
       ChartUnit.weight => weightLabel(),
       ChartUnit.duration => "",
     };
@@ -318,15 +373,18 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     }
   }
 
-  void _updateChart(MuscleGroupFamily muscleGroupFamily) {
-    setState(() {
-      _selectedMuscleGroupFamily = muscleGroupFamily;
-    });
+  DateTimeRange _periodDateTimeRange() {
+    final now = DateTime.now();
+    return switch (_period) {
+      ChartPeriod.month => thisMonthDateRange(),
+      ChartPeriod.threeMonths => DateTimeRange(start: now.previous90Days(), end: now.lastWeekDay().dateOnly()),
+    };
   }
 
   @override
   void initState() {
     super.initState();
     _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
+    _dateTimeRange = thisMonthDateRange();
   }
 }
