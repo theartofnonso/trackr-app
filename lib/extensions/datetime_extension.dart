@@ -8,6 +8,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String abbreviatedMonthAndYear() {
+    return DateFormat("LLL, yy", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);
   }
@@ -149,20 +154,8 @@ extension DateTimeExtension on DateTime {
     return DateTime(year, month, day);
   }
 
-  DateTime previous30Days() {
-    return subtract(const Duration(days: 30)).dateOnly();
-  }
-
-  DateTime next30Days() {
-    return DateTime.now().subtract(const Duration(days: 30)).dateOnly();
-  }
-
-  DateTime previous7Days() {
-    return subtract(const Duration(days: 7)).dateOnly();
-  }
-
-  DateTime next7Days() {
-    return DateTime.now().subtract(const Duration(days: 7)).dateOnly();
+  DateTime previous90Days() {
+    return subtract(const Duration(days: 90)).dateOnly();
   }
 
 }

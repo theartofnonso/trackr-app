@@ -19,10 +19,8 @@ class CalendarNavigator extends StatelessWidget {
     int laterYear = laterDate.year;
     if (laterYear == currentDate.year) {
       return laterMonth > currentDate.month;
-    } else if (laterYear > currentDate.year) {
-      return true;
     } else {
-      return false;
+      return laterYear > currentDate.year;
     }
   }
 
@@ -49,11 +47,6 @@ class CalendarNavigator extends StatelessWidget {
       final range = _decrementMonth();
       onChangedDateTimeRangeFunc(range);
     }
-
-    // else if (chartPeriod == ChartPeriod.week) {
-    //   final range = _decrementWeek();
-    //   onChangedDateTimeRangeFunc(range);
-    // }
   }
 
   DateTimeRange? _incrementMonth() {
@@ -85,19 +78,14 @@ class CalendarNavigator extends StatelessWidget {
       final range = _incrementMonth();
       onChangedDateTimeRangeFunc(range);
     }
-
-    // else if (chartPeriod == ChartPeriod.week) {
-    //   final range = _incrementWeek();
-    //   onChangedDateTimeRangeFunc(range);
-    // }
   }
 
   String _formattedDate() {
     if (chartPeriod == ChartPeriod.month) {
       return currentDate.formattedMonthAndYear();
     } else {
-      String formattedStartDate = dateTimeRange.start.shortDayAndMonthAndYear();
-      String formattedEndDate = dateTimeRange.end.shortDayAndMonthAndYear();
+      String formattedStartDate = dateTimeRange.start.abbreviatedMonthAndYear();
+      String formattedEndDate = dateTimeRange.end.abbreviatedMonthAndYear();
       return "$formattedStartDate - $formattedEndDate";
     }
   }
@@ -110,7 +98,9 @@ class CalendarNavigator extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-            onPressed: previousDate, icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
+            onPressed: chartPeriod == ChartPeriod.month ? previousDate : null,
+            icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
+                color: chartPeriod == ChartPeriod.month ? Colors.white : Colors.white60, size: 16)),
         SizedBox(
           width: 120,
           child: Text(_formattedDate(),
@@ -121,7 +111,7 @@ class CalendarNavigator extends StatelessWidget {
               )),
         ),
         IconButton(
-            onPressed: _hasLaterDate() ? nextDate : null,
+            onPressed: chartPeriod == ChartPeriod.month && _hasLaterDate() ? nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
                 color: _hasLaterDate() ? Colors.white : Colors.white60, size: 16)),
       ],
