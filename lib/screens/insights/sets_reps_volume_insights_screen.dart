@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/chart/line_chart_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -20,6 +19,7 @@ import '../../enums/sets_reps_volume_enum.dart';
 import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/calendar/calendar_navigator.dart';
+import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
@@ -45,7 +45,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final periodicalLogs = routineLogController.weeklyLogs.entries.where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month);
+    final periodicalLogs = routineLogController.weeklyLogs.entries
+        .where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month);
 
     List<num> periodicalValues = [];
 
@@ -236,61 +237,59 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: LineChartWidget(
-                  chartPoints: chartPoints,
-                  dateTimes: periods,
-                  unit: _chartUnit(),
-                  interval: 1,
-                  extraLinesData: _isRepsOrSetsMetric()
-                      ? ExtraLinesData(
-                          horizontalLines: [
-                            HorizontalLine(
-                              y: _averageMaximumWeeklyValue(),
-                              color: vibrantGreen,
-                              strokeWidth: 1.5,
-                              strokeCap: StrokeCap.round,
-                              dashArray: [10],
-                              label: HorizontalLineLabel(
-                                show: true,
-                                alignment: Alignment.topRight,
-                                style: GoogleFonts.montserrat(
-                                    color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+              const SizedBox(height: 60),
+              SizedBox(
+                  height: 200,
+                  child: CustomBarChart(
+                    chartPoints: chartPoints,
+                    periods: periods,
+                    extraLinesData: _isRepsOrSetsMetric()
+                        ? ExtraLinesData(
+                            horizontalLines: [
+                              HorizontalLine(
+                                y: _averageMaximumWeeklyValue(),
+                                color: Colors.white.withOpacity(0.4),
+                                strokeWidth: 1.5,
+                                strokeCap: StrokeCap.round,
+                                dashArray: [10],
+                                label: HorizontalLineLabel(
+                                  show: true,
+                                  alignment: Alignment.topRight,
+                                  style: GoogleFonts.montserrat(
+                                      color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            HorizontalLine(
-                              y: _averageMedianWeeklyValue(),
-                              color: vibrantBlue,
-                              strokeWidth: 1.5,
-                              strokeCap: StrokeCap.round,
-                              dashArray: [10],
-                              label: HorizontalLineLabel(
-                                show: true,
-                                alignment: Alignment.topRight,
-                                style: GoogleFonts.montserrat(
-                                    color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                              HorizontalLine(
+                                y: _averageMedianWeeklyValue(),
+                                color: Colors.white.withOpacity(0.4),
+                                strokeWidth: 1.5,
+                                dashArray: [10],
+                                strokeCap: StrokeCap.round,
+                                // dashArray: [1],
+                                label: HorizontalLineLabel(
+                                  show: true,
+                                  alignment: Alignment.topRight,
+                                  style: GoogleFonts.montserrat(
+                                      color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            HorizontalLine(
-                              y: _averageMinimumWeeklyValue(),
-                              color: Colors.red,
-                              strokeWidth: 1.5,
-                              strokeCap: StrokeCap.round,
-                              dashArray: [10],
-                              label: HorizontalLineLabel(
-                                show: true,
-                                alignment: Alignment.topRight,
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                              HorizontalLine(
+                                y: _averageMinimumWeeklyValue(),
+                                color: Colors.white.withOpacity(0.4),
+                                strokeWidth: 1.5,
+                                strokeCap: StrokeCap.round,
+                                dashArray: [10],
+                                label: HorizontalLineLabel(
+                                  show: true,
+                                  alignment: Alignment.topRight,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : null,
-                ),
-              ),
+                            ],
+                          )
+                        : null,
+                  )),
               const SizedBox(height: 20),
               if (_isRepsOrSetsMetric())
                 Column(children: [

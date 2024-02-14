@@ -58,7 +58,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
             padding: const EdgeInsets.only(right: 12),
             child: LineChartWidget(
               chartPoints: chartPoints,
-              dateTimes: dateTimes,
+              periods: dateTimes,
               unit: ChartUnit.number,
               maxY: 100,
               extraLinesData: ExtraLinesData(

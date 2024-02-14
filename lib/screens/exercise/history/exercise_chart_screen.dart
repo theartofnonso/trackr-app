@@ -205,7 +205,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 const SizedBox(height: 16),
                 LineChartWidget(
                   chartPoints: _chartPoints,
-                  dateTimes: _dateTimes,
+                  periods: _dateTimes,
                   unit: _chartUnit,
                 ),
               ],
