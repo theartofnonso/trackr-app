@@ -24,6 +24,9 @@ import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
+
+  static const routeName = '/routine-log-editor';
+
   final RoutineLogDto log;
   final RoutineEditorMode mode;
 

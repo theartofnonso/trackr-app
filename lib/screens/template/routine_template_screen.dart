@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +8,8 @@ import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
+import '../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_template_type_enum.dart';
 import '../../utils/dialog_utils.dart';
@@ -22,7 +23,8 @@ class RoutineTemplateScreen extends StatefulWidget {
   final RoutineTemplateTypeEnum templateType;
   final RoutineTemplateDto template;
 
-  const RoutineTemplateScreen({super.key, this.templateType = RoutineTemplateTypeEnum.customTemplate, required this.template});
+  const RoutineTemplateScreen(
+      {super.key, this.templateType = RoutineTemplateTypeEnum.customTemplate, required this.template});
 
   @override
   State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
@@ -54,7 +56,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final routineTemplateController = Provider.of<RoutineTemplateController>(context, listen: true);
 
     RoutineTemplateDto? template = routineTemplateController.templateWhere(id: widget.template.id);
@@ -66,7 +67,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final menuActions = [
       MenuItemButton(
           onPressed: () {
-            navigateToRoutineEditor(context: context, template: template);
+            final arguments = RoutineTemplateArguments(template: template);
+            navigateToRoutineTemplateEditor(context: context, arguments: arguments);
           },
           child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(
@@ -91,7 +93,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
-            onPressed: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
+            onPressed: () {
+              final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+              navigateToRoutineLogEditor(context: context, arguments: arguments);
+            },
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const Icon(Icons.play_arrow)),
@@ -151,13 +156,16 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   children: [
                     template.notes.isNotEmpty
                         ? Text(template.notes,
-                        style: GoogleFonts.montserrat(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ))
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ))
                         : const SizedBox.shrink(),
                     const SizedBox(height: 5),
-                    ExerciseLogListView(exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises), previewType: RoutinePreviewType.template,),
+                    ExerciseLogListView(
+                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises),
+                      previewType: RoutinePreviewType.template,
+                    ),
                   ],
                 ),
               ),
