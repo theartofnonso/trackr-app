@@ -14,8 +14,11 @@ class CustomBarChart extends StatelessWidget {
   final ExtraLinesData? extraLinesData;
   final ChartUnit unit;
   final bool minify;
+  final bool showLeftTitles;
+  final bool showTopTitles;
+  final double? maxY;
 
-  const CustomBarChart({super.key, required this.chartPoints, required this.periods, this.extraLinesData, required this.unit, required this.minify});
+  const CustomBarChart({super.key, required this.chartPoints, required this.periods, this.extraLinesData, required this.unit, required this.minify, this.maxY, this.showLeftTitles = false, this.showTopTitles = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +26,7 @@ class CustomBarChart extends StatelessWidget {
         ? BarChart(
             BarChartData(
               minY: 0,
+              maxY: maxY,
               barTouchData: barTouchData,
               titlesData: titlesData,
               borderData: borderData,
@@ -71,7 +75,7 @@ class CustomBarChart extends StatelessWidget {
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: minify,
+            showTitles: showLeftTitles,
             reservedSize: 40,
             getTitlesWidget: _leftTitleWidgets,
           ),
@@ -108,7 +112,7 @@ class CustomBarChart extends StatelessWidget {
               gradient: _barsGradient,
             )
           ],
-          showingTooltipIndicators: minify ? null : [0],
+          showingTooltipIndicators: showTopTitles ? [0] : null,
         );
       }).toList();
 
