@@ -45,10 +45,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final periodicalLogs = routineLogController.weeklyLogs.entries.where((weekEntry) {
-      final week = weekEntry.key;
-      return week.start.isAfterOrEqual(_dateTimeRange.start) && week.end.isBeforeOrEqual(_dateTimeRange.end);
-    });
+    final periodicalLogs = routineLogController.weeklyLogs.entries.where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month);
 
     List<num> periodicalValues = [];
 
@@ -70,7 +67,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final dateTimes = periodicalLogs.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
+    final periods = periodicalValues.mapIndexed((index, monthEntry) {
+      return "WK ${index + 1}";
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -193,6 +192,23 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         "WEEKLY AVERAGE",
                         style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
                       ),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: sapphireDark,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "past week",
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   CupertinoSlidingSegmentedControl<SetRepsVolumeReps>(
@@ -225,8 +241,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 padding: const EdgeInsets.only(right: 12.0),
                 child: LineChartWidget(
                   chartPoints: chartPoints,
-                  dateTimes: dateTimes,
+                  dateTimes: periods,
                   unit: _chartUnit(),
+                  interval: 1,
                   extraLinesData: _isRepsOrSetsMetric()
                       ? ExtraLinesData(
                           horizontalLines: [
@@ -303,6 +320,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ),
       ),
     );
+  }
+
+  DateTime toFirstDayOfWeek(DateTime date) {
+    return date.subtract(Duration(days: date.weekday - 1));
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {

@@ -57,8 +57,8 @@ class AmplifyLogRepository {
     if (routineLogs.isEmpty) {
       return;
     }
-    _exerciseLogsById = groupRoutineLogsByExerciseLogId(routineLogs: _routineLogs);
-    _exerciseLogsByType = groupRoutineLogsByExerciseType(routineLogs: _routineLogs);
+    _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _routineLogs);
+    _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _routineLogs);
   }
 
   Future<void> fetchLogs({required void Function() onSyncCompleted}) async {

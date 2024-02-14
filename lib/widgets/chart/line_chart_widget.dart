@@ -17,13 +17,14 @@ class LineChartWidget extends StatelessWidget {
   final List<String> dateTimes;
   final ChartUnit unit;
   final double? maxY;
+  final double interval;
 
   const LineChartWidget(
       {super.key,
       required this.chartPoints,
       required this.dateTimes,
       required this.unit,
-      this.extraLinesData, this.maxY});
+      this.extraLinesData, this.maxY, this.interval = 10});
 
   static const List<Color> gradientColors = [
     Colors.white,
@@ -58,7 +59,7 @@ class LineChartWidget extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: 10,
+                        interval: interval,
                         getTitlesWidget: _bottomTitleWidgets,
                       ),
                     ),
