@@ -7,13 +7,8 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
-import '../enums/chart_unit_enum.dart';
 import '../enums/muscle_group_enums.dart';
 import '../shared_prefs.dart';
-
-ChartUnit chartWeightUnitLabel() {
-  return SharedPrefs().weightUnit == WeightUnit.kg.name ? ChartUnit.kg : ChartUnit.lbs;
-}
 
 bool _isDefaultWeightUnit() {
   final weightString = SharedPrefs().weightUnit;
@@ -62,11 +57,11 @@ DateTimeRange thisWeekDateRange() {
   return DateTimeRange(start: startOfWeek, end: endOfWeek);
 }
 
-DateTimeRange thisMonthDateRange() {
+DateTimeRange thisMonthDateRange({DateTime? endDate}) {
   final now = DateTime.now();
   final currentWeekDate = DateTime(now.year, now.month, now.day);
   final startOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month, 1);
-  final endOfMonth = DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
+  final endOfMonth = endDate ?? DateTime(currentWeekDate.year, currentWeekDate.month + 1, 0);
   return DateTimeRange(start: startOfMonth, end: endOfMonth);
 }
 

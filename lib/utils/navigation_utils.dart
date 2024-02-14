@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
-import '../enums/routine_editor_type_enums.dart';
+import '../dtos/viewmodels/routine_log_arguments.dart';
+import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
 import '../screens/template/routine_template_screen.dart';
 
-void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateDto? template}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateEditorScreen(template: template), settings: const RouteSettings(name: "RoutineTemplateEditorScreen")));
+void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) {
+  Navigator.of(context).pushNamed(RoutineTemplateEditorScreen.routeName, arguments: arguments);
 }
 
-void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogDto log, required RoutineEditorMode editorMode}) async {
-  final createdLog = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogEditorScreen(log: log, mode: editorMode), settings: const RouteSettings(name: "RoutineLogEditorScreen"))) as RoutineLogDto?;
+void navigateToRoutineLogEditor({required BuildContext context, required RoutineLogArguments arguments}) async {
+  final createdLog = await Navigator.of(context).pushNamed(RoutineLogEditorScreen.routeName, arguments: arguments) as RoutineLogDto?;
   if(createdLog != null) {
     if(context.mounted) {
       navigateToRoutineLogPreview(context: context, log: createdLog, finishedLogging: true);

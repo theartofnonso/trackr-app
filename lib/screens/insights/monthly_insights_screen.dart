@@ -7,8 +7,6 @@ import '../../dtos/routine_log_dto.dart';
 import '../../widgets/monthly_insights/log_duration_widget.dart';
 import '../../widgets/monthly_insights/muscle_group_family_frequency_chart_widget.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
-import '../../widgets/monthly_insights/reps_chart_widget.dart';
-import '../../widgets/monthly_insights/volume_chart_widget.dart';
 
 class MonthlyInsightsScreen extends StatelessWidget {
   final List<RoutineLogDto> monthAndLogs;
@@ -33,10 +31,6 @@ class MonthlyInsightsScreen extends StatelessWidget {
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         const MuscleGroupFamilyFrequencyChartWidget(),
-        const SizedBox(height: 20),
-        const RepsChartWidget(),
-        const SizedBox(height: 20),
-        const VolumeChartWidget(),
       ],
     );
   }

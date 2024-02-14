@@ -12,6 +12,9 @@ import '../../widgets/information_container_lite.dart';
 import 'achievement_screen.dart';
 
 class AchievementsScreen extends StatelessWidget {
+
+  static const routeName = '/achievements_screen';
+
   const AchievementsScreen({super.key});
 
   @override

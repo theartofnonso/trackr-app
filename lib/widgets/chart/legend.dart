@@ -46,7 +46,7 @@ class Legend extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 6),
             Text(subTitle.toUpperCase(),
                 style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white70)),
           ],

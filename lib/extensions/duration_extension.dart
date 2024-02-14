@@ -34,4 +34,11 @@ extension DurationExtension on Duration {
     return "$hours:$minutes";
   }
 
+  String msDigital() {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String minutes = twoDigits(inMinutes.remainder(60));
+    String seconds = twoDigits(inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+
 }

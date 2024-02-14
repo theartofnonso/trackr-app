@@ -159,13 +159,13 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<R
   return map;
 }
 
-Map<String, List<ExerciseLogDto>> groupRoutineLogsByExerciseLogId({required List<RoutineLogDto> routineLogs}) {
-  List<ExerciseLogDto> exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
+Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
+  final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
 }
 
-Map<ExerciseType, List<ExerciseLogDto>> groupRoutineLogsByExerciseType({required List<RoutineLogDto> routineLogs}) {
-  List<ExerciseLogDto> exerciseLogs = routineLogs.expand((log) => log.exerciseLogs).toList();
+Map<ExerciseType, List<ExerciseLogDto>> groupExerciseLogsByExerciseType({required List<RoutineLogDto> routineLogs}) {
+  final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.type);
 }
 

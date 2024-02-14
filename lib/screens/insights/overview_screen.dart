@@ -10,6 +10,7 @@ import 'package:tracker_app/widgets/monitors/overview_monitor.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../strings.dart';
 import '../../utils/general_utils.dart';
@@ -22,6 +23,9 @@ import '../../widgets/information_container_lite.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
+
+  static const routeName = '/overview_screen';
+
   const OverviewScreen({super.key});
 
   @override
@@ -29,7 +33,7 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  DateTimeRange _dateTimeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+  late DateTimeRange _dateTimeRange;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
@@ -48,7 +52,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
           endTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+      navigateToRoutineLogEditor(context: context, arguments: arguments);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
     }
@@ -95,7 +100,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                     ]),
                   ),
-                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, dateTimeRange: _dateTimeRange),
                   IconButton(
                       onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
@@ -125,7 +130,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  void _onChangedDateTimeRange(DateTimeRange range) {
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if (range == null) return;
     setState(() {
       _dateTimeRange = range;
     });

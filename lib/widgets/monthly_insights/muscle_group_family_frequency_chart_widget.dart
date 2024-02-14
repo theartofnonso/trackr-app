@@ -10,10 +10,10 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../screens/insights/sets_and_reps_insights_screen.dart';
+import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../chart/bar_chart.dart';
 import '../chart/legend.dart';
-import '../chart/line_chart_widget.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
   const MuscleGroupFamilyFrequencyChartWidget({super.key});
@@ -54,43 +54,44 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
           Text("Muscle Frequency Trend",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: LineChartWidget(
-              chartPoints: chartPoints,
-              dateTimes: dateTimes,
-              unit: ChartUnit.percentage,
-              maxY: 100,
-              extraLinesData: ExtraLinesData(
-                horizontalLines: [
-                  HorizontalLine(
-                    y: 80,
-                    color: vibrantGreen,
-                    strokeWidth: 1.5,
-                    strokeCap: StrokeCap.round,
-                    dashArray: [10],
-                    label: HorizontalLineLabel(
-                      show: true,
-                      alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+          SizedBox(
+              height: 250,
+              child: CustomBarChart(
+                chartPoints: chartPoints,
+                periods: dateTimes,
+                unit: ChartUnit.number,
+                bottomTitlesInterval: 1,
+                showLeftTitles: true,
+                maxY: 100,
+                extraLinesData: ExtraLinesData(
+                  horizontalLines: [
+                    HorizontalLine(
+                      y: 80,
+                      color: vibrantGreen,
+                      strokeWidth: 1.5,
+                      strokeCap: StrokeCap.round,
+                      dashArray: [10],
+                      label: HorizontalLineLabel(
+                        show: true,
+                        alignment: Alignment.topRight,
+                        style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  HorizontalLine(
-                    y: 50,
-                    color: vibrantBlue,
-                    strokeWidth: 1.5,
-                    strokeCap: StrokeCap.round,
-                    dashArray: [10],
-                    label: HorizontalLineLabel(
-                      show: true,
-                      alignment: Alignment.topRight,
-                      style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                    HorizontalLine(
+                      y: 50,
+                      color: vibrantBlue,
+                      strokeWidth: 1.5,
+                      strokeCap: StrokeCap.round,
+                      dashArray: [10],
+                      label: HorizontalLineLabel(
+                        show: true,
+                        alignment: Alignment.topRight,
+                        style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                  ],
+                ),
+              )),
           const SizedBox(height: 10),
           const Column(children: [
             Legend(
@@ -114,7 +115,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
           const SizedBox(height: 12),
           CTextButton(
               onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsInsightsScreen())),
+                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsVolumeInsightsScreen())),
               buttonColor: sapphireDark80,
               label: "See more insights",
               padding: EdgeInsets.zero,

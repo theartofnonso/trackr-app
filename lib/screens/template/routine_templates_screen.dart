@@ -6,6 +6,8 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
+import '../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../dtos/routine_template_dto.dart';
@@ -56,7 +58,8 @@ class _RoutineWidget extends StatelessWidget {
     final menuActions = [
       MenuItemButton(
         onPressed: () {
-          navigateToRoutineTemplateEditor(context: context, template: template);
+          final arguments = RoutineTemplateArguments(template: template);
+          navigateToRoutineTemplateEditor(context: context, arguments: arguments);
         },
         child: Text("Edit", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -86,7 +89,10 @@ class _RoutineWidget extends StatelessWidget {
           dense: true,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           leading: GestureDetector(
-              onTap: () => navigateToRoutineLogEditor(context: context, log: template.log(), editorMode: RoutineEditorMode.log),
+              onTap: () {
+                final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                navigateToRoutineLogEditor(context: context, arguments: arguments);
+              },
               child: const Icon(
                 Icons.play_arrow_rounded,
                 color: Colors.white,

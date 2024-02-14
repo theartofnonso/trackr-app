@@ -19,6 +19,7 @@ import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../controllers/routine_template_controller.dart';
+import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -280,7 +281,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _editLog({required RoutineLogDto log}) {
-    navigateToRoutineLogEditor(context: context, log: log, editorMode: RoutineEditorMode.edit);
+    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.edit);
+    navigateToRoutineLogEditor(context: context, arguments: arguments);
   }
 
   void _createTemplate() async {

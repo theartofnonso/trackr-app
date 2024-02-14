@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
@@ -13,16 +14,17 @@ import '../../utils/string_utils.dart';
 class LineChartWidget extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final ExtraLinesData? extraLinesData;
-  final List<String> dateTimes;
+  final List<String> periods;
   final ChartUnit unit;
   final double? maxY;
+  final double interval;
 
   const LineChartWidget(
       {super.key,
       required this.chartPoints,
-      required this.dateTimes,
+      required this.periods,
       required this.unit,
-      this.extraLinesData, this.maxY});
+      this.extraLinesData, this.maxY, this.interval = 10});
 
   static const List<Color> gradientColors = [
     Colors.white,
@@ -31,8 +33,6 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final isWeight = unit == ChartUnit.kg || unit == ChartUnit.lbs;
 
     return chartPoints.isNotEmpty
         ? Center(
@@ -59,8 +59,8 @@ class LineChartWidget extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: 10,
-                        getTitlesWidget: _bottomTitleWidgets,
+                        interval: interval,
+                        getTitlesWidget:  _bottomTitleWidgets,
                       ),
                     ),
                   ),
@@ -72,7 +72,7 @@ class LineChartWidget extends StatelessWidget {
                     LineChartBarData(
                         isStepLineChart: true,
                         spots: chartPoints.map((point) {
-                          return FlSpot(point.x, isWeight ? weightWithConversion(value: point.y) : point.y);
+                          return FlSpot(point.x.toDouble(), unit == ChartUnit.weight ? weightWithConversion(value: point.y) : point.y.toDouble());
                         }).toList(),
                         gradient: const LinearGradient(
                           colors: gradientColors,
@@ -92,8 +92,8 @@ class LineChartWidget extends StatelessWidget {
 
   double _interval() {
     final points = chartPoints.map((point) => point.y).toList();
-    final min = points.min;
-    final max = points.max;
+    final min = points.min.toDouble();
+    final max = points.max.toDouble();
     double interval = max - min;
     if (interval >= 1000) {
       interval = 1000;
@@ -118,20 +118,22 @@ class LineChartWidget extends StatelessWidget {
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
       axisSide: meta.axisSide,
-      child: Text(_weightTitle(chartUnit: unit, value: value), style: style),
+      child: Text(_weightTitle(value: value), style: style),
     );
   }
 
-  String _weightTitle({required ChartUnit chartUnit, required double value}) {
-      if (chartUnit == ChartUnit.kg || chartUnit == ChartUnit.lbs) {
+  String _weightTitle({required double value}) {
+      if (unit == ChartUnit.weight) {
         return volumeInKOrM(value);
+      } else if (unit == ChartUnit.duration) {
+        return Duration(milliseconds: value.toInt()).msDigital();
       }
 
-    return "${value.toInt()} ${unit.label}";
+    return "${value.toInt()}";
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
-    final modifiedDateTimes = dateTimes.length == 1 ? [...dateTimes, ...dateTimes] : dateTimes;
+    final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
     final style = GoogleFonts.montserrat(
       fontWeight: FontWeight.w600,
       fontSize: 10,
