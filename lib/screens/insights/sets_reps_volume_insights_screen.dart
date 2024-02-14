@@ -47,8 +47,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final periodicalLogs = _period == ChartPeriod.month
-        ? routineLogController.weeklyLogs.entries
-            .where((weekEntry) => weekEntry.key.start.month == _dateTimeRange.start.month)
+        ? routineLogController.weeklyLogs.entries.where((weekEntry) =>
+            weekEntry.key.start.month == _dateTimeRange.start.month ||
+            weekEntry.key.end.month == _dateTimeRange.start.month)
         : routineLogController.weeklyLogs.entries.where((weekEntry) =>
             weekEntry.key.start.isAfterOrEqual(_dateTimeRange.start) &&
             weekEntry.key.end.isBeforeOrEqual(_dateTimeRange.end));
@@ -68,7 +69,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       periodicalValues.add(valuesForPeriod);
     }
 
-    final avgValue = periodicalValues.isNotEmpty ? periodicalValues.where((value) => value > 0).average.round() : 0;
+    final nonZeroValues = periodicalValues.where((value) => value > 0).toList();
+
+    final avgValue = nonZeroValues.isNotEmpty ? nonZeroValues.average.round() : 0;
 
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
