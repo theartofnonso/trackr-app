@@ -14,7 +14,7 @@ void showSuperSetExercisePicker(
 
   displayBottomSheet(
     context: context,
-    color: sapphireDark,
+    color: sapphireDark80,
     child: SuperSetExerciseLogPicker(
       title: "Superset ${firstExerciseLog.exercise.name} with",
       exercises: exerciseLogs,

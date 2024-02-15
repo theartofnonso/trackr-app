@@ -13,7 +13,7 @@ class ListTileEmptyState extends StatelessWidget {
           width: 30,
           height: 30,
            decoration: BoxDecoration(
-             color: sapphireLighter, // Container color
+             color: sapphireDark, // Container color
              borderRadius: BorderRadius.circular(5), // Border radius
            ),
         ),
@@ -25,7 +25,7 @@ class ListTileEmptyState extends StatelessWidget {
                 width: 160,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: sapphireLighter,
+                  color: sapphireDark,
                   borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
                 )),
             const SizedBox(height: 5),
@@ -33,19 +33,11 @@ class ListTileEmptyState extends StatelessWidget {
                 width: 100,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: sapphireLighter,
+                  color: sapphireDark,
                   borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
                 ))
           ],
         ),
-        const Spacer(),
-        Container(
-            width: 30,
-            height: 10,
-            decoration: BoxDecoration(
-              color: sapphireLighter,
-              borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
-            ))
       ],
     );
   }
