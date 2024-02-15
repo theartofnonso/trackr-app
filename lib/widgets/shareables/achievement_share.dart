@@ -16,12 +16,6 @@ class AchievementShare extends StatelessWidget {
   Widget build(BuildContext context) {
     final completed = achievementDto.progress.remainder == 0;
 
-    final monthsHeatMaps = achievementDto.progress.dates.isNotEmpty
-        ? achievementDto.progress.dates.values.map((dates) {
-            return CalendarHeatMap(dates: dates, initialDate: dates.first, spacing: 4, minifyLabels: true,);
-          }).toList()
-        : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
-
     return RepaintBoundary(
         key: globalKey,
         child: Container(
@@ -31,29 +25,28 @@ class AchievementShare extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("From:",
+                        style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 4),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Image.asset(
+                        'images/trackr.png',
+                        fit: BoxFit.contain,
+                        height: 8, // Adjust the height as needed
+                      ),
+                    )
+                  ],
+                ),
+                const Divider(color: sapphireLighter, thickness: 2),
                 Text(achievementDto.type.title.toUpperCase(),
                     style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 2),
                 Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
                     style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-                const SizedBox(height: 10),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: monthsHeatMaps.length > 2 ? 2 : monthsHeatMaps.length,
-                  childAspectRatio: 1,
-                  mainAxisSpacing: 12.0,
-                  crossAxisSpacing: 12.0,
-                  children: List.generate(monthsHeatMaps.length, (index) => monthsHeatMaps[index]),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Image.asset(
-                    'images/trackr.png',
-                    fit: BoxFit.contain,
-                    height: 8, // Adjust the height as needed
-                  ),
-                ),
               ],
             )));
   }
