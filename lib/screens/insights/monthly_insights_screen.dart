@@ -27,9 +27,6 @@ class MonthlyInsightsScreen extends StatelessWidget {
         const SizedBox(height: 28),
         MuscleGroupFamilyFrequencyWidget(monthAndLogs: monthAndLogs),
         const SizedBox(height: 16),
-        Text("Training Trends".toUpperCase(),
-            style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 16),
         const MuscleGroupFamilyFrequencyChartWidget(),
       ],
     );

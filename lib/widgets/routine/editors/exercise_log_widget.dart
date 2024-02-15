@@ -217,7 +217,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(sapphireLighter),
+                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
+                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
