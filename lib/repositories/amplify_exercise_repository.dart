@@ -38,7 +38,7 @@ class AmplifyExerciseRepository {
   Future<void> fetchExercises({required void Function() onDone}) async {
     final exercises = await Amplify.DataStore.query(Exercise.classType);
     if (exercises.isNotEmpty) {
-     _loadExercises(exercises: exercises);
+     _loadUserExercises(exercises: exercises);
     } else {
       _observeExerciseQuery(onSyncCompleted: onDone);
     }
@@ -82,8 +82,10 @@ class AmplifyExerciseRepository {
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 
-  void _loadExercises({required List<Exercise> exercises}) {
-    _exercises = exercises.map((exercise) => exercise.dto()).sorted((a, b) => a.name.compareTo(b.name));
+  void _loadUserExercises({required List<Exercise> exercises}) {
+    final userExercises = exercises.map((exercise) => exercise.dto()).sorted((a, b) => a.name.compareTo(b.name));
+    _exercises.addAll(userExercises);
+    _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
@@ -128,7 +130,7 @@ class AmplifyExerciseRepository {
   void _observeExerciseQuery({required void Function() onSyncCompleted}) {
     _exerciseStream = Amplify.DataStore.observeQuery(Exercise.classType).listen((QuerySnapshot<Exercise> snapshot) {
       if (snapshot.items.isNotEmpty) {
-        _loadExercises(exercises: snapshot.items);
+        _loadUserExercises(exercises: snapshot.items);
         _exerciseStream?.cancel();
         onSyncCompleted();
       }
