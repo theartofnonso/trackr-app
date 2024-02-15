@@ -450,7 +450,7 @@ void main() {
 
       achievementRepository.loadAchievements(routineLogs: initialRoutineLogs);
 
-      final next8Weeks = generateWeeklyDateTimes(size: 8, startDate: DateTime(2024, 1, 7));
+      final next8Weeks = generateWeeklyDateTimes(size: 16, startDate: DateTime(2024, 1, 7));
 
       final recentRoutineLogs = List.generate(next8Weeks.length, (index) => RoutineLogDto(
           id: "routineLogId1",
