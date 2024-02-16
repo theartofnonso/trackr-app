@@ -176,11 +176,11 @@ class AmplifyLogRepository {
   }
 
   List<RoutineLogDto> logsWhereDate({required DateTime dateTime}) {
-    return _routineLogs.where((log) => log.createdAt.isSameDateAs(dateTime)).toList();
+    return _routineLogs.where((log) => log.createdAt.isSameDayMonthYear(dateTime)).toList();
   }
 
   RoutineLogDto? logWhereDate({required DateTime dateTime}) {
-    return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameDateAs(dateTime));
+    return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
   }
 
   List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {

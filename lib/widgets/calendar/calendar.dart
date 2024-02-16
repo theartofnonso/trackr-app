@@ -191,7 +191,7 @@ class _Month extends StatelessWidget {
         return _Day(
           dateTime: date.dateTime,
           onTap: onTap,
-          selected: date.dateTime.isSameDateAs(selectedDateTime),
+          selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
           showSelector: !readOnly,
           hasLog: date.hasLog,
         );
