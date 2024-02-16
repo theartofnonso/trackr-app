@@ -24,6 +24,9 @@ import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
+
+  static const routeName = '/sets_and_reps_volume_insights_screen';
+
   const SetsAndRepsVolumeInsightsScreen({super.key});
 
   @override
@@ -91,6 +94,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
       ),
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

@@ -233,6 +233,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                   child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
                 ),
           body: Container(
+            width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,

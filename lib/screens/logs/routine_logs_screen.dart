@@ -22,6 +22,7 @@ class RoutineLogsScreen extends StatelessWidget {
             onPressed: Navigator.of(context).pop),
       ),
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

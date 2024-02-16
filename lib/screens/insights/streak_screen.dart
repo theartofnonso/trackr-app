@@ -45,6 +45,7 @@ class StreakScreen extends StatelessWidget {
           ),
         ),
         body: Container(
+          width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,

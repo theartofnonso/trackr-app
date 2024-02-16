@@ -208,6 +208,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           return false;
         },
         child: Container(
+          width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,

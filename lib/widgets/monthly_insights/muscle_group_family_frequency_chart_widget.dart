@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -42,20 +42,35 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
     final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: sapphireDark80,
-        border: Border.all(color: sapphireDark80.withOpacity(0.8), width: 2),
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [sapphireDark80, sapphireDark],
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Muscle Frequency Trend",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName),
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Muscle Trend".toUpperCase(),
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold)),
+                  const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 20),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
           SizedBox(
-              height: 250,
+              height: 200,
               child: CustomBarChart(
                 chartPoints: chartPoints,
                 periods: dateTimes,
@@ -108,18 +123,10 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               color: vibrantGreen,
             ),
           ]),
-          const SizedBox(height: 12),
-          Text(
-              "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",
-              style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
-          const SizedBox(height: 12),
-          CTextButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const SetsAndRepsVolumeInsightsScreen())),
-              buttonColor: sapphireDark80,
-              label: "See more insights",
-              padding: EdgeInsets.zero,
-              textStyle: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+          //const SizedBox(height: 12),
+          // Text(
+          //     "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",
+          //     style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );

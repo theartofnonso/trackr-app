@@ -37,25 +37,46 @@ class AchievementTile extends StatelessWidget {
                                 GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                       ],
                     ),
-                    Text(achievement.progress.remainder == 0 ? achievement.type.completionMessage: achievement.type.description,
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
+                    Text(
+                        achievement.progress.remainder == 0
+                            ? achievement.type.completionMessage
+                            : achievement.type.description,
+                        style:
+                            GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 10),
-                    LinearProgressIndicator(
-                      minHeight: 18,
-                      color: achievement.progress.remainder == 0 ? vibrantGreen : color ?? Colors.white,
-                      value: achievement.progress.value,
-                      borderRadius: const BorderRadius.all(Radius.circular(3)),
-                      backgroundColor: sapphireDark80,
+                    Stack(
+                      alignment: Alignment.centerRight,
+                      children: [
+                        LinearProgressIndicator(
+                          minHeight: 25,
+                          color: achievement.progress.remainder == 0 ? vibrantGreen : color ?? Colors.white,
+                          value: achievement.progress.value,
+                          borderRadius: const BorderRadius.all(Radius.circular(3)),
+                          backgroundColor: sapphireDark80,
+                        ),
+                        if (achievement.progress.remainder > 0)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            margin: const EdgeInsets.only(right: 6),
+                            decoration: BoxDecoration(
+                              color: sapphireDark.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(3.0),
+                            ),
+                            child: Text("${achievement.progress.remainder} left",
+                                style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700, color: Colors.white, fontSize: 11)),
+                          ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              if (achievement.progress.remainder > 0)
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text("${achievement.progress.remainder} left",
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-                ),
+              // if (achievement.progress.remainder > 0)
+              //   Padding(
+              //     padding: const EdgeInsets.only(left: 10.0),
+              //     child: Text("${achievement.progress.remainder} left",
+              //         style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+              //   ),
             ],
           )),
     );

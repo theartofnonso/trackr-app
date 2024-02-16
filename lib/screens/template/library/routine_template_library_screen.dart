@@ -31,6 +31,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
           child: const FaIcon(FontAwesomeIcons.download, size: 20)),
       backgroundColor: sapphireDark,
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -52,6 +53,7 @@ class RoutineTemplateLibraryScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               )),
               Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,

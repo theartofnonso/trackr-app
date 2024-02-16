@@ -137,6 +137,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ],
         ),
         body: Container(
+          width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
