@@ -24,9 +24,11 @@ import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
 
+  final ScrollController? scrollController;
+
   static const routeName = '/overview_screen';
 
-  const OverviewScreen({super.key});
+  const OverviewScreen({super.key, this.scrollController});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();
@@ -108,6 +110,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 ]),
                 Expanded(
                   child: SingleChildScrollView(
+                    controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 10),

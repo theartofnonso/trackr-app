@@ -35,12 +35,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final ScrollController _scrollController = ScrollController();
+
   int _currentScreenIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const OverviewScreen(),
+      OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesHome(),
       const AchievementsScreen(),
       const SettingsScreen(),
@@ -82,10 +85,22 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _currentScreenIndex = index;
           });
+          _scrollToTop(index);
         },
         selectedIndex: _currentScreenIndex,
       ),
     );
+  }
+
+  void _scrollToTop(int index) {
+
+    if (index == 0) { // Assuming the first tab requires scrolling to top
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 1500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _loadAppData() {
