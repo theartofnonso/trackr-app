@@ -52,7 +52,7 @@ class AchievementTile extends StatelessWidget {
                           color: achievement.progress.remainder == 0 ? vibrantGreen : color ?? Colors.white,
                           value: achievement.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(3)),
-                          backgroundColor: sapphireDark80,
+                          backgroundColor: sapphireDark,
                         ),
                         if (achievement.progress.remainder > 0)
                           Container(

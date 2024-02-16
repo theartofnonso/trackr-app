@@ -18,6 +18,8 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
     final numberOfTrainingDays = monthAndLogs.length;
     final numberOfRestDays = daysInMonth - numberOfTrainingDays;
 
+    final averageRestDays = numberOfRestDays ~/ (numberOfTrainingDays > 0 ? numberOfTrainingDays : 1);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -57,7 +59,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                         child: Center(
                           child: SleepTimeColumn(
                               title: 'AVG REST',
-                              subTitle: "${numberOfRestDays ~/ 4}",
+                              subTitle: "$averageRestDays",
                               titleColor: Colors.white70,
                               subTitleColor: Colors.white70),
                         ),

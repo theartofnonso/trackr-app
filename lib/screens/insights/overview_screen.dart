@@ -6,7 +6,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
-import 'package:tracker_app/widgets/monitors/overview_monitor.dart';
+import 'package:tracker_app/widgets/monitors/streak_health_monitor.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -20,6 +20,7 @@ import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/information_container_lite.dart';
+import '../../widgets/monitors/muscle_group_family_frequency_monitor.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -114,8 +115,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 10),
-                        OverviewMonitor(routineLogs: logsForTheMonth),
+                        StreakHealthMonitor(routineLogs: logsForTheMonth),
                         const SizedBox(height: 10),
+                        MuscleGroupFamilyFrequencyMonitor(routineLogs: logsForTheMonth),
                         const InformationContainerLite(
                             content: overviewMonitor,
                             color: Colors.transparent,

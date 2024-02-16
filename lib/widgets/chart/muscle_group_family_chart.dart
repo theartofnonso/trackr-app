@@ -59,7 +59,7 @@ class _LinearBar extends StatelessWidget {
                   children: [
                     LinearProgressIndicator(
                       value: frequency,
-                      backgroundColor: Colors.white60.withOpacity(0.1),
+                      backgroundColor: sapphireDark,
                       color: Colors.white,
                       minHeight: 25,
                       borderRadius: BorderRadius.circular(3.0), // Border r
@@ -75,7 +75,7 @@ class _LinearBar extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               SizedBox(
-                  width: 35,
+                  width: 32,
                   child: Text("${(frequency * 100).round()}%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),),
             ],
           ),
