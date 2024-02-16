@@ -26,8 +26,7 @@ class DurationSetRow extends StatelessWidget {
     required this.startTime,
   });
 
-  void _stopTimer() {
-    if (setDto.checked) return;
+  void _toggleTimer() {
     onChangedDuration(DateTime.now().difference(startTime), true);
   }
 
@@ -68,7 +67,7 @@ class DurationSetRow extends StatelessWidget {
           if (editorType == RoutineEditorMode.log)
             TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(setDto: setDto, onCheck: _stopTimer))
+                child: SetCheckButton(setDto: setDto, onCheck: _toggleTimer))
         ])
       ],
     );
