@@ -24,7 +24,6 @@ import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
-
   static const routeName = '/routine-log-editor';
 
   final RoutineLogDto log;
@@ -298,35 +297,42 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                               }),
                               const SizedBox(height: 20),
                             ]),
-                          exerciseLogs.isNotEmpty
-                              ? Expanded(
-                                  child: ListView.separated(
-                                      padding: const EdgeInsets.only(bottom: 250),
-                                      itemBuilder: (BuildContext context, int index) {
-                                        final log = exerciseLogs[index];
-                                        final exerciseId = log.id;
-                                        return ExerciseLogWidget(
-                                            key: ValueKey(exerciseId),
-                                            exerciseLogDto: log,
-                                            editorType: RoutineEditorMode.log,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: log, exercises: exerciseLogs),
-                                            onRemoveSuperSet: (String superSetId) {
-                                              exerciseLogController.removeSuperSet(superSetId: log.superSetId);
-                                              _cacheLog();
-                                            },
-                                            onRemoveLog: () {
-                                              exerciseLogController.removeExerciseLog(logId: exerciseId);
-                                              _cacheLog();
-                                            },
-                                            onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
-                                            onCache: _cacheLog);
-                                      },
-                                      separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                      itemCount: exerciseLogs.length))
-                              : const ExerciseLogEmptyState(
-                                  mode: RoutineEditorMode.log,
-                                  message: "Tap the + button to start adding exercises to your log"),
+                          if (exerciseLogs.isNotEmpty)
+                            Expanded(
+                              child: SingleChildScrollView(
+                                padding: const EdgeInsets.only(bottom: 250),
+                                child: Column(children: [
+                                  ...exerciseLogs.map((exerciseLog) {
+                                    final log = exerciseLog;
+                                    final exerciseId = log.id;
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 10),
+                                      child: ExerciseLogWidget(
+                                          key: ValueKey(exerciseId),
+                                          exerciseLogDto: log,
+                                          editorType: RoutineEditorMode.log,
+                                          superSet:
+                                              whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                          onRemoveSuperSet: (String superSetId) {
+                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                            _cacheLog();
+                                          },
+                                          onRemoveLog: () {
+                                            exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                            _cacheLog();
+                                          },
+                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                          onCache: _cacheLog),
+                                    );
+                                  })
+                                ]),
+                              ),
+                            ),
+                          if (exerciseLogs.isEmpty)
+                            const ExerciseLogEmptyState(
+                                mode: RoutineEditorMode.log,
+                                message: "Tap the + button to start adding exercises to your log"),
                         ],
                       ),
                     ),
