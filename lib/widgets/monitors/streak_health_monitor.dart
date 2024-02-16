@@ -18,7 +18,7 @@ class StreakHealthMonitor extends StatelessWidget {
         width: 120,
         height: 120,
         decoration: BoxDecoration(
-          color: sapphireDark.withOpacity(0.3),
+          color: sapphireDark.withOpacity(0.35),
           borderRadius: BorderRadius.circular(5),
         ),
         child: CircularProgressIndicator(
