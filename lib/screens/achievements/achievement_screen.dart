@@ -30,13 +30,13 @@ class AchievementScreen extends StatelessWidget {
         : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: completed ? FloatingActionButton(
         onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
         heroTag: "fab_achievement_screen",
         backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
-      ),
+      ) : null,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -90,6 +90,16 @@ class AchievementScreen extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 10),
+              InformationContainer(
+                  icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                  title: 'Tip',
+                  description: achievementDto.type.tip,
+                  color: sapphireDark),
+              const SizedBox(height: 10),
+              const InformationContainerLite(
+                  content: 'Brightly-coloured squares represent days you logged a session for this achievement',
+                  color: sapphireDark80),
+              const SizedBox(height: 10),
               GridView.count(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -98,15 +108,6 @@ class AchievementScreen extends StatelessWidget {
                   mainAxisSpacing: 4.0,
                   crossAxisSpacing: 4.0,
                   children: monthsHeatMaps),
-              const InformationContainerLite(
-                  content: 'Brightly-coloured squares represent days you logged a session for this achievement',
-                  color: sapphireDark80),
-              const SizedBox(height: 10),
-              InformationContainer(
-                  icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
-                  title: 'Tip',
-                  description: achievementDto.type.tip,
-                  color: sapphireDark),
             ]),
           ),
         ),
