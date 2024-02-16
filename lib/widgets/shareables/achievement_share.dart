@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../../dtos/achievement_dto.dart';
-import '../calender_heatmaps/calendar_heatmap.dart';
 
 class AchievementShare extends StatelessWidget {
   final GlobalKey globalKey;
