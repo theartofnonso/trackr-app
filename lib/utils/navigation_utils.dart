@@ -33,5 +33,5 @@ void navigateToRoutineLogPreview({required BuildContext context, required Routin
 
 void navigateToRoutineLogs({required BuildContext context, required List<RoutineLogDto> logs}) {
   final descendingLogs = logs.reversed.toList();
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineLogsScreen(logs: descendingLogs)));
+  Navigator.of(context).pushNamed(RoutineLogsScreen.routeName, arguments: descendingLogs);
 }

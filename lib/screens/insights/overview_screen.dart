@@ -4,11 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
-import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
-import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
-import 'package:tracker_app/widgets/monitors/streak_health_monitor.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -22,7 +19,7 @@ import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/information_container_lite.dart';
-import '../../widgets/monitors/muscle_group_family_frequency_monitor.dart';
+import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -116,13 +113,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 10),
-                        GestureDetector(
-                            onTap: () => Navigator.of(context).pushNamed(RoutineLogsScreen.routeName, arguments: logsForTheMonth),
-                            child: StreakHealthMonitor(routineLogs: logsForTheMonth)),
+                        OverviewMonitor(routineLogs: logsForTheMonth),
                         const SizedBox(height: 10),
-                        GestureDetector(
-                            onTap: () => Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName),
-                            child: MuscleGroupFamilyFrequencyMonitor(routineLogs: logsForTheMonth)),
                         const InformationContainerLite(
                             content: overviewMonitor,
                             color: Colors.transparent,
