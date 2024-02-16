@@ -35,12 +35,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final ScrollController _scrollController = ScrollController();
+
   int _currentScreenIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const OverviewScreen(),
+      OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesHome(),
       const AchievementsScreen(),
       const SettingsScreen(),
@@ -82,10 +85,22 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _currentScreenIndex = index;
           });
+          _scrollToTop(index);
         },
         selectedIndex: _currentScreenIndex,
       ),
     );
+  }
+
+  void _scrollToTop(int index) {
+
+    if (index == 0) { // Assuming the first tab requires scrolling to top
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 1500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _loadAppData() {
@@ -145,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text("Remind me to train weekly",
                   style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
                   textAlign: TextAlign.start),
-              Text("Training regularly can be hard. Trackr can help you stay on track.",
+              Text("Training regularly can be hard. TRKR can help you stay on track.",
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
                   textAlign: TextAlign.start),
               const SizedBox(height: 16),

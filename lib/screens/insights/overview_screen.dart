@@ -6,7 +6,6 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
-import 'package:tracker_app/widgets/monitors/overview_monitor.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -20,13 +19,15 @@ import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/information_container_lite.dart';
+import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
+  final ScrollController? scrollController;
 
   static const routeName = '/overview_screen';
 
-  const OverviewScreen({super.key});
+  const OverviewScreen({super.key, this.scrollController});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();
@@ -108,6 +109,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 ]),
                 Expanded(
                   child: SingleChildScrollView(
+                      controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 10),
@@ -121,7 +123,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           range: _dateTimeRange,
                         ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
+                        MonthlyInsightsScreen(
+                            monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.datesToNow.length),
                       ])),
                 )
                 // Add more widgets here for exercise insights

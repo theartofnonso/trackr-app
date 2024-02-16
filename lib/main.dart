@@ -17,6 +17,7 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
@@ -29,6 +30,7 @@ import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -203,6 +205,15 @@ class _MyAppState extends State<MyApp> {
                   return MaterialPageRoute(
                     builder: (context) => RoutineTemplateEditorScreen(
                       template: args.template,
+                    ),
+                  );
+                }
+
+                if (settings.name == RoutineLogsScreen.routeName) {
+                  final args = settings.arguments as List<RoutineLogDto>;
+                  return MaterialPageRoute(
+                    builder: (context) => RoutineLogsScreen(
+                      logs: args,
                     ),
                   );
                 }

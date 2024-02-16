@@ -53,11 +53,11 @@ extension DateTimeExtension on DateTime {
   }
 
   bool isAfterOrEqual(DateTime other) {
-    return isSameDateAs(other) || isAfter(other);
+    return isSameDayMonthYear(other) || isAfter(other);
   }
 
   bool isBeforeOrEqual(DateTime other) {
-    return isSameDateAs(other) || isBefore(other);
+    return isSameDayMonthYear(other) || isBefore(other);
   }
 
   bool isBetween({required DateTime from, required DateTime to}) {
@@ -72,15 +72,14 @@ extension DateTimeExtension on DateTime {
     return isAfter(from) && isBefore(to);
   }
 
-  bool isNow() {
-    final date = this;
-    final now = DateTime.now();
-    return date.day == now.day && date.month == now.month && date.year == now.year;
-  }
-
-  bool isSameDateAs(DateTime other) {
+  bool isSameDayMonthYear(DateTime other) {
     final date = this;
     return date.day == other.day && date.month == other.month && date.year == other.year;
+  }
+
+  bool isSameMonthYear(DateTime other) {
+    final date = this;
+    return date.month == other.month && date.year == other.year;
   }
 
   String durationSinceOrDate() {

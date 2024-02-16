@@ -20,7 +20,8 @@ class OverviewMonitor extends StatelessWidget {
 
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
-    final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
+    final muscleGroupsSplitFrequencyScore =
+        cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
@@ -33,7 +34,7 @@ class OverviewMonitor extends StatelessWidget {
               color: Colors.transparent,
               width: 85,
               child: _MonitorScore(
-                value: "${routineLogs.length}",
+                value: "${routineLogs.length} days",
                 title: "Streak",
                 color: consistencyHealthColor(value: monthlyProgress),
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -46,7 +47,9 @@ class OverviewMonitor extends StatelessWidget {
         ]),
         const SizedBox(width: 20),
         GestureDetector(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SetsAndRepsVolumeInsightsScreen())),
+          onTap: () => Navigator.of(context).pushNamed(
+            SetsAndRepsVolumeInsightsScreen.routeName,
+          ),
           child: Container(
             color: Colors.transparent,
             width: 85,

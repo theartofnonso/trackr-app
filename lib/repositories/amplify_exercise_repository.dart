@@ -12,7 +12,7 @@ import '../enums/muscle_group_enums.dart';
 import '../models/Exercise.dart';
 
 class AmplifyExerciseRepository {
-  List<ExerciseDto> _exercises = [];
+  final List<ExerciseDto> _exercises = [];
 
   UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
 

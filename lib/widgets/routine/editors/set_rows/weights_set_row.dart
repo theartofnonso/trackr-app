@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 

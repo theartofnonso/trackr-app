@@ -120,7 +120,8 @@ class _NotificationSwitch extends StatelessWidget {
       decoration: BoxDecoration(
           color: sapphireDark.withOpacity(0.3),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: sapphireLight)),
+          //border: Border.all(color: sapphireLight)
+      ),
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

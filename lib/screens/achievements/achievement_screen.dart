@@ -30,13 +30,15 @@ class AchievementScreen extends StatelessWidget {
         : [CalendarHeatMap(dates: const [], initialDate: DateTime.now(), spacing: 4)];
 
     return Scaffold(
-      floatingActionButton: completed ? FloatingActionButton(
-        onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
-        heroTag: "fab_achievement_screen",
-        backgroundColor: sapphireDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
-      ) : null,
+      floatingActionButton: completed
+          ? FloatingActionButton(
+              onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
+              heroTag: "fab_achievement_screen",
+              backgroundColor: sapphireDark,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 18),
+            )
+          : null,
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -71,12 +73,14 @@ class AchievementScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+                      color: sapphireDark.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
                           child: LinearProgressIndicator(
-                            minHeight: 18,
+                            minHeight: 25,
                             color: completed ? Colors.green : Colors.white,
                             value: achievementDto.progress.value,
                             borderRadius: const BorderRadius.all(Radius.circular(2)),

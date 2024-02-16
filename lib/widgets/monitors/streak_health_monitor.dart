@@ -15,13 +15,16 @@ class StreakHealthMonitor extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipOval(
       child: Container(
-        color: sapphireDark.withOpacity(0.7),
         width: 120,
         height: 120,
+        decoration: BoxDecoration(
+          color: sapphireDark.withOpacity(0.35),
+          borderRadius: BorderRadius.circular(5),
+        ),
         child: CircularProgressIndicator(
           value: value,
           strokeWidth: 14,
-          backgroundColor: sapphireLight,
+          backgroundColor: sapphireDark80,
           strokeCap: StrokeCap.round,
           valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: value)),
         ),

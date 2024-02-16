@@ -50,7 +50,9 @@ class _LinearBar extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+            color: sapphireDark.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(5),
+          ),
           child: Row(
             children: [
               Expanded(
@@ -59,7 +61,7 @@ class _LinearBar extends StatelessWidget {
                   children: [
                     LinearProgressIndicator(
                       value: frequency,
-                      backgroundColor: Colors.white60.withOpacity(0.1),
+                      backgroundColor: sapphireDark,
                       color: Colors.white,
                       minHeight: 25,
                       borderRadius: BorderRadius.circular(3.0), // Border r
@@ -68,15 +70,17 @@ class _LinearBar extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(muscleGroupFamily.name.toUpperCase(),
                           style:
-                          GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                              GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
                     )
                   ],
                 ),
               ),
               const SizedBox(width: 10),
               SizedBox(
-                  width: 35,
-                  child: Text("${(frequency * 100).round()}%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),),
+                width: 32,
+                child: Text("${(frequency * 100).round()}%",
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
+              ),
             ],
           ),
         ),

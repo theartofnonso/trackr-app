@@ -17,7 +17,7 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: 8,
-        backgroundColor: sapphireLight,
+        backgroundColor: sapphireDark80,
         strokeCap: StrokeCap.round,
         valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
       ),

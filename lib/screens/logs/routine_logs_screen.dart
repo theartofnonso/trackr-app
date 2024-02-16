@@ -8,12 +8,18 @@ import '../../dtos/routine_log_dto.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
 class RoutineLogsScreen extends StatelessWidget {
-  final List<RoutineLogDto> logs;
 
-  const RoutineLogsScreen({super.key, required this.logs});
+  static const routeName = '/routine_logs_screen';
+
+  final List<RoutineLogDto>? logs;
+
+  const RoutineLogsScreen({super.key, this.logs});
 
   @override
   Widget build(BuildContext context) {
+
+    final routineLogs = logs ?? [];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sapphireDark80,
@@ -37,14 +43,14 @@ class RoutineLogsScreen extends StatelessWidget {
           minimum: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              logs.isNotEmpty
+              routineLogs.isNotEmpty
                   ? Expanded(
                       child: ListView.separated(
                           padding: const EdgeInsets.only(bottom: 150),
-                          itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: logs[index], trailing: logs[index].createdAt.durationSinceOrDate()),
+                          itemBuilder: (BuildContext context, int index) => RoutineLogWidget(log: routineLogs[index], trailing: routineLogs[index].createdAt.durationSinceOrDate()),
                           separatorBuilder: (BuildContext context, int index) =>
                               Divider(color: Colors.white70.withOpacity(0.1)),
-                          itemCount: logs.length),
+                          itemCount: routineLogs.length),
                     )
                   : const RoutineLogEmptyState(),
             ],
