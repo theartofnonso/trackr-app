@@ -124,7 +124,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           range: _dateTimeRange,
                         ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.dates.length),
+                        MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.datesToNow.length),
                       ])),
                 )
                 // Add more widgets here for exercise insights

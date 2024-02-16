@@ -14,6 +14,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final numberOfTrainingDays = monthAndLogs.length;
     final numberOfRestDays = daysInMonth - numberOfTrainingDays;
 
