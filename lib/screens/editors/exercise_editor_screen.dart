@@ -69,6 +69,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ],
           ),
           body: Container(
+            width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -110,7 +111,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                         title: 'Tip',
                         description: "Tap text in white to edit.\nExercise type is not editable once created.",
-                        color: sapphireDark),
+                        color: Colors.transparent),
                     SizedBox(height: 20),
                   ]),
                 if (!_isInputFieldVisible && _exerciseName != null && exercise == null)
@@ -177,7 +178,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     });
     await displayBottomSheet(
         context: context,
-        color: Colors.transparent,
+        color: sapphireDark80,
         padding: const EdgeInsets.all(20),
         child: TextField(
           controller: TextEditingController(text: _exerciseName),

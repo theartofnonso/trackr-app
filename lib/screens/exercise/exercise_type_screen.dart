@@ -31,6 +31,7 @@ class _ExerciseTypeScreenState extends State<ExerciseTypeScreen> {
         ),
       ),
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

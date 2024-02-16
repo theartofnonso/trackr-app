@@ -80,6 +80,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.circle)),
         body: Container(
+          width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,

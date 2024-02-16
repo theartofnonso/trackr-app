@@ -107,6 +107,7 @@ class _WorkoutCard extends StatelessWidget {
             ),
           )),
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,

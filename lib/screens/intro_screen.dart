@@ -16,6 +16,7 @@ class IntroScreen extends StatelessWidget {
       theme: themeData,
       home: Scaffold(
         body: Container(
+          width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,

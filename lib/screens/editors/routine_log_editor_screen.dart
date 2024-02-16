@@ -262,6 +262,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                     child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
                   ),
             body: Container(
+              width: double.infinity,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,

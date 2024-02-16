@@ -70,6 +70,7 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         ],
       ),
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

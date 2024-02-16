@@ -27,6 +27,7 @@ import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
+import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
@@ -214,6 +215,7 @@ class _MyAppState extends State<MyApp> {
                 AchievementsScreen.routeName: (context) => const AchievementsScreen(),
                 SettingsScreen.routeName: (context) => const SettingsScreen(),
                 HomeScreen.routeName: (context) => const HomeScreen(),
+                SetsAndRepsVolumeInsightsScreen.routeName: (context) => const SetsAndRepsVolumeInsightsScreen(),
               },
             ),
           );

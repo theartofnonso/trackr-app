@@ -74,6 +74,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         child: const Icon(Icons.play_arrow_rounded, size: 32),
       ),
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

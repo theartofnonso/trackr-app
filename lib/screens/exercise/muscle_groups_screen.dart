@@ -78,6 +78,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
         ),
       ),
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
