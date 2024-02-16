@@ -17,11 +17,12 @@ class AchievementTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           margin: margin,
           decoration: BoxDecoration(
+              color: sapphireDark.withOpacity(0.3),
               borderRadius: BorderRadius.circular(5.0), //
-              border: Border.all(color: sapphireLight, width: 2) // Set the border radius here
+              //border: Border.all(color: sapphireLight, width: 2) // Set the border radius here
               ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -54,29 +55,11 @@ class AchievementTile extends StatelessWidget {
                           borderRadius: const BorderRadius.all(Radius.circular(3)),
                           backgroundColor: sapphireDark,
                         ),
-                        if (achievement.progress.remainder > 0)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            margin: const EdgeInsets.only(right: 6),
-                            decoration: BoxDecoration(
-                              color: sapphireDark.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(3.0),
-                            ),
-                            child: Text("${achievement.progress.remainder} left",
-                                style: GoogleFonts.montserrat(
-                                    fontWeight: FontWeight.w700, color: Colors.white, fontSize: 11)),
-                          ),
                       ],
                     ),
                   ],
                 ),
               ),
-              // if (achievement.progress.remainder > 0)
-              //   Padding(
-              //     padding: const EdgeInsets.only(left: 10.0),
-              //     child: Text("${achievement.progress.remainder} left",
-              //         style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)),
-              //   ),
             ],
           )),
     );

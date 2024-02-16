@@ -19,8 +19,10 @@ class StreakHealthMonitor extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+      decoration: BoxDecoration(
+        color: sapphireDark.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(5),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -45,7 +47,9 @@ class StreakHealthMonitor extends StatelessWidget {
           const SizedBox(width: 10),
           SizedBox(
               width: 32,
-              child: Text("${routineLogs.length}D", style: GoogleFonts.montserrat(color: consistencyHealthColor(value: monthlyProgress).withOpacity(0.7), fontSize: 12))),
+              child: Text("${routineLogs.length}D",
+                  style: GoogleFonts.montserrat(
+                      color: consistencyHealthColor(value: monthlyProgress).withOpacity(0.7), fontSize: 12))),
         ],
       ),
     );

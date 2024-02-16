@@ -54,7 +54,9 @@ class _LinearBar extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+            color: sapphireDark.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(5),
+          ),
           child: Row(
             children: [
               Expanded(
@@ -77,11 +79,16 @@ class _LinearBar extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              if(remainder > 0)
-                SizedBox(
-                  width: 32,
-                  child: Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
+              if (remainder > 0)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 10),
+                    SizedBox(
+                        width: 32,
+                        child: Text("$remainder left", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
+                  ],
+                ),
             ],
           ),
         ),

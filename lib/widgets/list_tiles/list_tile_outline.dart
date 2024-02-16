@@ -17,11 +17,8 @@ class OutlineListTile extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: sapphireLight, // Background color
-          width: 2, // Border width
-        ),
-        borderRadius: BorderRadius.circular(5), // Border radius
+        color: sapphireDark.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),

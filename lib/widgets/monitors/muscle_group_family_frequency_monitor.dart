@@ -15,17 +15,19 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseLogsForTheMonth = routineLogs.expand((log) => log.exerciseLogs).toList();
 
-    final muscleGroupsSplitFrequencyScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
+    final muscleGroupsSplitFrequencyScore =
+        cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth);
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5), border: Border.all(color: sapphireLighter, width: 2.0)),
+        color: sapphireDark.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(5),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -42,16 +44,15 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text("MUSCLE".toUpperCase(),
-                      style:
-                      GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w700, color: sapphireDark, fontSize: 12)),
                 )
               ],
             ),
           ),
           const SizedBox(width: 10),
-            SizedBox(
-                width: 32,
-                child: Text("$splitPercentage%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
+          SizedBox(
+              width: 32,
+              child: Text("$splitPercentage%", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12))),
         ],
       ),
     );

@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
+import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
+import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
 import 'package:tracker_app/widgets/monitors/streak_health_monitor.dart';
 
@@ -24,7 +26,6 @@ import '../../widgets/monitors/muscle_group_family_frequency_monitor.dart';
 import 'monthly_insights_screen.dart';
 
 class OverviewScreen extends StatefulWidget {
-
   final ScrollController? scrollController;
 
   static const routeName = '/overview_screen';
@@ -111,13 +112,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 ]),
                 Expanded(
                   child: SingleChildScrollView(
-                    controller: widget.scrollController,
+                      controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
                         const SizedBox(height: 10),
-                        StreakHealthMonitor(routineLogs: logsForTheMonth),
+                        GestureDetector(
+                            onTap: () => Navigator.of(context).pushNamed(RoutineLogsScreen.routeName, arguments: logsForTheMonth),
+                            child: StreakHealthMonitor(routineLogs: logsForTheMonth)),
                         const SizedBox(height: 10),
-                        MuscleGroupFamilyFrequencyMonitor(routineLogs: logsForTheMonth),
+                        GestureDetector(
+                            onTap: () => Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName),
+                            child: MuscleGroupFamilyFrequencyMonitor(routineLogs: logsForTheMonth)),
                         const InformationContainerLite(
                             content: overviewMonitor,
                             color: Colors.transparent,
@@ -126,7 +131,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           range: _dateTimeRange,
                         ),
                         const SizedBox(height: 12),
-                        MonthlyInsightsScreen(monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.datesToNow.length),
+                        MonthlyInsightsScreen(
+                            monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.datesToNow.length),
                       ])),
                 )
                 // Add more widgets here for exercise insights
