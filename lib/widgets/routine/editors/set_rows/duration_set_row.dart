@@ -16,7 +16,7 @@ class DurationSetRow extends StatelessWidget {
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final DateTime startTime;
-  final void Function(Duration duration, bool notify) onChangedDuration;
+  final void Function(Duration duration, bool checked) onChangedDuration;
 
   const DurationSetRow({
     super.key,
@@ -35,7 +35,7 @@ class DurationSetRow extends StatelessWidget {
   void _selectTime({required BuildContext context}) {
     displayTimePicker(
         context: context,
-        initialDuration: Duration.zero,
+        initialDuration: Duration(milliseconds: setDto.durationValue()),
         mode: CupertinoTimerPickerMode.hms,
         onChangedDuration: (Duration duration) {
           Navigator.of(context).pop();
@@ -70,7 +70,7 @@ class DurationSetRow extends StatelessWidget {
                 height: 50,
                 child: Center(
                   child: setDto.checked
-                      ? Text(Duration(milliseconds: setDto.durationValue().toInt()).hmsDigital(),
+                      ? Text(Duration(milliseconds: setDto.durationValue()).hmsDigital(),
                           style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
                       : RoutineTimer(
                           startTime: startTime,

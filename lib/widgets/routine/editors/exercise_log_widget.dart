@@ -121,16 +121,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto, required bool notify}) {
+  void _updateDuration(
+      {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
     if (setDto.checked) {
       final duration = setDto.durationValue();
       final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
       _durationControllers[index] = startTime;
       _updateSetCheck(index: index, setDto: setDto);
     } else {
-      final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: notify);
+      final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: checked);
       Provider.of<ExerciseLogController>(context, listen: false)
-          .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: notify);
+          .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
       _cacheLog();
     }
   }
@@ -331,7 +332,7 @@ class _SetListView extends StatelessWidget {
   final void Function({required int index}) removeSet;
   final void Function({required int index, required num value, required SetDto setDto}) updateReps;
   final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
-  final void Function({required int index, required Duration duration, required SetDto setDto, required bool notify})
+  final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
       updateDuration;
 
   const _SetListView(
@@ -372,8 +373,8 @@ class _SetListView extends StatelessWidget {
             editorType: editorType,
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
             onRemoved: () => removeSet(index: index),
-            onChangedDuration: (Duration duration, bool notify) =>
-                updateDuration(index: index, duration: duration, setDto: setDto, notify: notify),
+            onChangedDuration: (Duration duration, bool checked) =>
+                updateDuration(index: index, duration: duration, setDto: setDto, checked: checked),
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
           ),
       };

@@ -155,7 +155,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
   Duration longestDuration = Duration.zero;
   String? logId;
   if (exerciseLogs.isNotEmpty) {
-    longestDuration = Duration(milliseconds: exerciseLogs.first.sets.first.durationValue().toInt());
+    longestDuration = Duration(milliseconds: exerciseLogs.first.sets.first.durationValue());
     logId = exerciseLogs.first.routineLogId;
     for (var log in exerciseLogs) {
       final duration = longestDurationForExerciseLog(exerciseLog: log);
