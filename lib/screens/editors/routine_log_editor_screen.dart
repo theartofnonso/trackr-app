@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
 }
 
-class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
+class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with WidgetsBindingObserver {
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
@@ -346,6 +347,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
+
     _initializeProcedureData();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
@@ -362,8 +365,28 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      FlutterLocalNotificationsPlugin().cancel(999);
+    }
+
+    if (state == AppLifecycleState.paused) {
+      FlutterLocalNotificationsPlugin()
+          .periodicallyShow(999, "${widget.log.name} is still running", "Tap to continue training", RepeatInterval.hourly, const NotificationDetails(
+        iOS: DarwinNotificationDetails(
+          presentAlert: false,
+          presentBadge: false,
+          presentSound: false,
+          presentBanner: false,
+        ),
+      ));
+    }
   }
 }
 
