@@ -79,13 +79,28 @@ void main() {
     expect(exerciseLogRepository.exerciseLogs.length, 3);
   });
 
-  test("Do not load sets for [Exercise.Duration] in [RoutineEditorMode.log]", () {
+  test("Check sets for [Exercise.Duration] in [RoutineEditorMode.log]", () {
     final exerciseLogRepository = ExerciseLogRepository();
 
-    exerciseLogRepository.loadExercises(
-        logs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+    final plankExerciseLog = ExerciseLogDto(
+        plankExercise.id,
+        "routineLogId1",
+        "superSetId",
+        plankExercise,
+        "notes",
+        [
+          const SetDto(120000, 0, false),
+          const SetDto(180000, 0, false),
+          const SetDto(150000, 0, false),
+        ],
+        DateTime.now());
 
-    expect(exerciseLogRepository.sets[plankExerciseLog1.id]?.length, 0);
+    exerciseLogRepository.loadExercises(
+        logs: [lyingLegCurlExerciseLog1, plankExerciseLog, benchPressExerciseLog1], mode: RoutineEditorMode.log);
+
+    final checkedSets = exerciseLogRepository.sets[plankExerciseLog.id]!.where((set) => set.checked == true);
+
+    expect(checkedSets.length, 3);
   });
 
   test("Remove Exercise Log", () {
@@ -230,7 +245,7 @@ void main() {
 
     final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
 
-    expect(mergedLogs.expand((element) => element.sets).length, 6);
+    expect(mergedLogs.expand((element) => element.sets).length, 9);
   });
 
   test("All [ExerciseType.duration] sets must be checked when merging", () {
@@ -249,7 +264,11 @@ void main() {
 
     final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
 
+    print(mergedLogs);
+
     final plankLog = mergedLogs.firstWhereOrNull((log) => log.id == plankExerciseLog1.id);
+
+    print(plankLog?.sets);
 
     final allChecked = plankLog?.sets.where((set) => set.checked == true);
 
