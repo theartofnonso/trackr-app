@@ -16,7 +16,8 @@ class DurationSetRow extends StatelessWidget {
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final DateTime startTime;
-  final void Function(Duration duration, bool checked) onChangedDuration;
+  final void Function(Duration duration, {bool checked}) onCheckAndUpdateDuration;
+  final void Function(Duration duration) onupdateDuration;
 
   const DurationSetRow({
     super.key,
@@ -24,12 +25,13 @@ class DurationSetRow extends StatelessWidget {
     required this.editorType,
     required this.onRemoved,
     required this.onCheck,
-    required this.onChangedDuration,
+    required this.onCheckAndUpdateDuration,
+    required this.onupdateDuration,
     required this.startTime,
   });
 
   void _toggleTimer() {
-    onChangedDuration(DateTime.now().difference(startTime), true);
+    onCheckAndUpdateDuration(DateTime.now().difference(startTime), checked: true);
   }
 
   void _selectTime({required BuildContext context}) {
@@ -39,7 +41,7 @@ class DurationSetRow extends StatelessWidget {
         mode: CupertinoTimerPickerMode.hms,
         onChangedDuration: (Duration duration) {
           Navigator.of(context).pop();
-          onChangedDuration(duration, true);
+          onupdateDuration(duration);
         });
   }
 
@@ -75,7 +77,7 @@ class DurationSetRow extends StatelessWidget {
                       : RoutineTimer(
                           startTime: startTime,
                           digital: true,
-                          onChangedDuration: (Duration duration) => onChangedDuration(duration, false)),
+                          onChangedDuration: (Duration duration) => onCheckAndUpdateDuration(duration)),
                 ),
               ),
             ),
