@@ -208,6 +208,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _navigateBack({RoutineLogDto? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
+    FlutterLocalNotificationsPlugin().cancel(999);
     Navigator.of(context).pop(log);
   }
 
