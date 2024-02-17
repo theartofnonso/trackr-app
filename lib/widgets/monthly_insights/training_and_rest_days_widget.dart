@@ -7,18 +7,19 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../dtos/routine_log_dto.dart';
 
 class TrainingAndRestDaysWidget extends StatelessWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final DateTimeRange dateTimeRange;
+  final List<RoutineLogDto> logs;
   final int daysInMonth;
 
-  const TrainingAndRestDaysWidget({super.key, required this.monthAndLogs, required this.daysInMonth});
+  const TrainingAndRestDaysWidget(
+      {super.key, required this.dateTimeRange, required this.logs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
-
-    final numberOfTrainingDays = monthAndLogs.length;
+    final numberOfTrainingDays = logs.length;
     final numberOfRestDays = daysInMonth - numberOfTrainingDays;
 
-    final averageRestDays = numberOfRestDays ~/ (numberOfTrainingDays > 0 ? numberOfTrainingDays : 1);
+    final averageRestDays = averageDaysBetween(logs.map((log) => log.createdAt).toList());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,12 +80,31 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 26),
                 Text(numberOfTrainingDays < 12 ? lowStreak : highStreak,
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
-
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center),
               ],
             )),
       ],
     );
+  }
+
+  int averageDaysBetween(List<DateTime> dates) {
+    if (dates.length <= 1) {
+      return 0; // If there's only one date or none, the average is 0.
+    }
+
+    // Sort the dates in ascending order
+    dates.sort((a, b) => a.compareTo(b));
+
+    int totalDays = 0;
+
+    // Iterate through the list of dates and calculate the total difference
+    for (int i = 1; i < dates.length; i++) {
+      totalDays += dates[i].difference(dates[i - 1]).inDays;
+    }
+
+    // Calculate the average by dividing the total difference by the number of intervals
+    return (totalDays / (dates.length - 1)).round();
   }
 }
 

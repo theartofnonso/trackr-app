@@ -8,23 +8,24 @@ import '../../widgets/monthly_insights/muscle_group_family_frequency_chart_widge
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 
 class MonthlyInsightsScreen extends StatelessWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final DateTimeRange dateTimeRange;
+  final List<RoutineLogDto> logs;
   final int daysInMonth;
 
-  const MonthlyInsightsScreen({super.key, required this.monthAndLogs, required this.daysInMonth});
+  const MonthlyInsightsScreen({super.key, required this.dateTimeRange, required this.logs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        LogDurationWidget(monthAndLogs: monthAndLogs),
+        LogDurationWidget(logs: logs),
         const SizedBox(height: 28),
-        TrainingAndRestDaysWidget(monthAndLogs: monthAndLogs, daysInMonth: daysInMonth),
+        TrainingAndRestDaysWidget(logs: logs, daysInMonth: daysInMonth, dateTimeRange: dateTimeRange,),
         const SizedBox(height: 28),
-        ExercisesSetsHoursVolumeWidget(monthAndLogs: monthAndLogs),
+        ExercisesSetsHoursVolumeWidget(logs: logs),
         const SizedBox(height: 28),
-        MuscleGroupFamilyFrequencyWidget(monthAndLogs: monthAndLogs),
+        MuscleGroupFamilyFrequencyWidget(logs: logs),
         const SizedBox(height: 16),
         const MuscleGroupFamilyFrequencyChartWidget(),
       ],

@@ -12,21 +12,21 @@ import '../../utils/exercise_logs_utils.dart';
 import '../../utils/string_utils.dart';
 
 class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final List<RoutineLogDto> logs;
 
-  const ExercisesSetsHoursVolumeWidget({super.key, required this.monthAndLogs,});
+  const ExercisesSetsHoursVolumeWidget({super.key, required this.logs,});
 
   @override
   Widget build(BuildContext context) {
 
-    final exerciseLogs = monthAndLogs
+    final exerciseLogs = logs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
 
     final sets = exerciseLogs.expand((exercise) => exercise.sets);
     final numberOfExercises = exerciseLogs.length;
     final numberOfSets = sets.length;
-    final totalHoursInMilliSeconds = monthAndLogs.map((log) => log.duration().inMilliseconds).sum;
+    final totalHoursInMilliSeconds = logs.map((log) => log.duration().inMilliseconds).sum;
     final totalHours = Duration(milliseconds: totalHoursInMilliSeconds);
 
     final tonnage = exerciseLogs.map((log) {
