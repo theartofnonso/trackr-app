@@ -23,7 +23,6 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: sapphireDark,
       padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,6 +34,7 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
                 // Minutes Picker
                 Expanded(
                   child: CupertinoPicker(
+                    backgroundColor: sapphireDark,
                     scrollController: _hoursScrollController,
                     looping: true,
                     itemExtent: 38.0,
@@ -50,15 +50,15 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
             ),
           ),
           const SizedBox(height: 10),
-          Center(
-              child: CTextButton(
-                  onPressed: () {
-                    widget.onSelect(Duration(hours: _hours));
-                  },
-                  label: "Remind me at this hour",
-                  buttonColor: vibrantGreen,
-                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
-                  padding: const EdgeInsets.all(10.0)))
+          CTextButton(
+              onPressed: () {
+                widget.onSelect(Duration(hours: _hours));
+              },
+              label: "Remind me at this hour",
+              buttonColor: Colors.transparent,
+              buttonBorderColor: Colors.transparent,
+              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+              padding: const EdgeInsets.all(10.0))
         ],
       ),
     );

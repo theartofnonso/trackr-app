@@ -34,7 +34,7 @@ class OverviewMonitor extends StatelessWidget {
               color: Colors.transparent,
               width: 85,
               child: _MonitorScore(
-                value: "${routineLogs.length} days",
+                value: "${routineLogs.length}D",
                 title: "Streak",
                 color: consistencyHealthColor(value: monthlyProgress),
                 crossAxisAlignment: CrossAxisAlignment.end,

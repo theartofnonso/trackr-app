@@ -8,14 +8,14 @@ import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 
 class LogDurationWidget extends StatelessWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final List<RoutineLogDto> logs;
 
-  const LogDurationWidget({super.key, required this.monthAndLogs});
+  const LogDurationWidget({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
 
-    final logHours = monthAndLogs.map((log) => log.duration().inMilliseconds);
+    final logHours = logs.map((log) => log.duration().inMilliseconds);
 
     final minHours = Duration(milliseconds: logHours.isNotEmpty ? logHours.min : 0);
     final maxHours = Duration(milliseconds:  logHours.isNotEmpty ? logHours.max : 0);

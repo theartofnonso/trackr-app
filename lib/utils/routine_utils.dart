@@ -120,7 +120,7 @@ List<Widget> setsToWidgets(
         if (routinePreviewType == RoutinePreviewType.template) {
           return durationTemplate;
         }
-        final label = Duration(milliseconds: setDto.durationValue().toInt()).hmsAnalog();
+        final label = Duration(milliseconds: setDto.durationValue()).hmsAnalog();
         return SingleSetRow(label: label, margin: margin, pbs: pbsForSet);
     }
   })).toList();

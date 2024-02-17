@@ -24,7 +24,7 @@ class ExerciseLogRepository {
     for (var exerciseLog in _exerciseLogs) {
       if (withDurationOnly(type: exerciseLog.exercise.type)) {
         if (mode == RoutineEditorMode.log) {
-          _sets[exerciseLog.id] = [];
+          _sets[exerciseLog.id] = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
           continue;
         }
       }

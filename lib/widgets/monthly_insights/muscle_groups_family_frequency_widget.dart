@@ -9,9 +9,9 @@ import '../../utils/general_utils.dart';
 import '../chart/muscle_group_family_frequency_chart.dart';
 
 class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final List<RoutineLogDto> logs;
 
-  const MuscleGroupFamilyFrequencyWidget({super.key, required this.monthAndLogs});
+  const MuscleGroupFamilyFrequencyWidget({super.key, required this.logs});
 
   @override
   State<MuscleGroupFamilyFrequencyWidget> createState() => _MuscleGroupFamilyFrequencyWidgetState();
@@ -22,7 +22,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
   @override
   Widget build(BuildContext context) {
-    final exerciseLogs = widget.monthAndLogs
+    final exerciseLogs = widget.logs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .toList();

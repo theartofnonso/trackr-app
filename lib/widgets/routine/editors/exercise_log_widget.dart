@@ -121,18 +121,32 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _updateDuration({required int index, required Duration duration, required SetDto setDto, required bool notify}) {
+  void _checkAndUpdateDuration(
+      {required int index, required Duration duration, required SetDto setDto, required bool checked}) {
     if (setDto.checked) {
       final duration = setDto.durationValue();
       final startTime = DateTime.now().subtract(Duration(milliseconds: duration));
       _durationControllers[index] = startTime;
       _updateSetCheck(index: index, setDto: setDto);
     } else {
-      final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: notify);
+      final updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: checked);
       Provider.of<ExerciseLogController>(context, listen: false)
-          .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: notify);
+          .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: checked);
       _cacheLog();
     }
+  }
+
+  void _updateDuration({required int index, required Duration duration, required SetDto setDto}) {
+    SetDto updatedSet = setDto;
+    if (setDto.checked) {
+      updatedSet = setDto.copyWith(value1: duration.inMilliseconds);
+    } else {
+      updatedSet = setDto.copyWith(value1: duration.inMilliseconds, checked: true);
+    }
+
+    Provider.of<ExerciseLogController>(context, listen: false)
+        .updateDuration(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet, notify: true);
+    _cacheLog();
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
@@ -290,9 +304,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               removeSet: _removeSet,
               updateReps: _updateReps,
               updateWeight: _updateWeight,
-              updateDuration: _updateDuration,
+              checkAndUpdateDuration: _checkAndUpdateDuration,
               controllers: _controllers,
               durationControllers: _durationControllers,
+              updateDuration: _updateDuration,
             ),
           const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
@@ -331,8 +346,9 @@ class _SetListView extends StatelessWidget {
   final void Function({required int index}) removeSet;
   final void Function({required int index, required num value, required SetDto setDto}) updateReps;
   final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
-  final void Function({required int index, required Duration duration, required SetDto setDto, required bool notify})
-      updateDuration;
+  final void Function({required int index, required Duration duration, required SetDto setDto, required bool checked})
+      checkAndUpdateDuration;
+  final void Function({required int index, required Duration duration, required SetDto setDto}) updateDuration;
 
   const _SetListView(
       {required this.exerciseType,
@@ -344,6 +360,7 @@ class _SetListView extends StatelessWidget {
       required this.removeSet,
       required this.updateReps,
       required this.updateWeight,
+      required this.checkAndUpdateDuration,
       required this.updateDuration});
 
   @override
@@ -372,9 +389,10 @@ class _SetListView extends StatelessWidget {
             editorType: editorType,
             onCheck: () => updateSetCheck(index: index, setDto: setDto),
             onRemoved: () => removeSet(index: index),
-            onChangedDuration: (Duration duration, bool notify) =>
-                updateDuration(index: index, duration: duration, setDto: setDto, notify: notify),
+            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
             startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
+            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
           ),
       };
 

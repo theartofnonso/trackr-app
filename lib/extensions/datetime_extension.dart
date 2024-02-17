@@ -149,12 +149,12 @@ extension DateTimeExtension on DateTime {
     return datetime.isBetweenRange(range: currentYearRange);
   }
 
-  DateTime dateOnly() {
+  DateTime withoutTimeStamp() {
     return DateTime(year, month, day);
   }
 
   DateTime previous90Days() {
-    return subtract(const Duration(days: 90)).dateOnly();
+    return subtract(const Duration(days: 90)).withoutTimeStamp();
   }
 
 }
