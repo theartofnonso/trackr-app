@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 import '../buttons/text_button_widget.dart';
@@ -9,7 +10,11 @@ class TimePicker extends StatefulWidget {
   final void Function(Duration duration) onDurationChanged;
   final CupertinoTimerPickerMode mode;
 
-  const TimePicker({super.key, required this.onDurationChanged, required this.initialDuration, this.mode = CupertinoTimerPickerMode.ms});
+  const TimePicker(
+      {super.key,
+      required this.onDurationChanged,
+      required this.initialDuration,
+      this.mode = CupertinoTimerPickerMode.ms});
 
   @override
   State<TimePicker> createState() => _TimerPickerState();
@@ -21,9 +26,9 @@ class _TimerPickerState extends State<TimePicker> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CTextButton(onPressed: () => widget.onDurationChanged(_duration), label: "Select"),
+        const SizedBox(height: 10),
         Flexible(
           child: Theme(
             data: ThemeData(
@@ -31,7 +36,7 @@ class _TimerPickerState extends State<TimePicker> {
             ),
             child: CupertinoTimerPicker(
               initialTimerDuration: _duration,
-              backgroundColor: sapphireLight,
+              backgroundColor: sapphireDark,
               mode: widget.mode,
               // This is called when the user changes the timer's
               // duration.
@@ -41,6 +46,14 @@ class _TimerPickerState extends State<TimePicker> {
             ),
           ),
         ),
+        const SizedBox(height: 10),
+        CTextButton(
+            onPressed: () => widget.onDurationChanged(_duration),
+            label: "Select time",
+            buttonColor: Colors.transparent,
+            buttonBorderColor: Colors.transparent,
+            textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+            padding: const EdgeInsets.all(10.0))
       ],
     );
   }

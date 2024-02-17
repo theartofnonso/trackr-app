@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
+import '../../../../utils/dialog_utils.dart';
 import '../../../timers/routine_timer.dart';
 import '../set_check_button.dart';
 import '../set_delete_button.dart';
@@ -30,6 +32,17 @@ class DurationSetRow extends StatelessWidget {
     onChangedDuration(DateTime.now().difference(startTime), true);
   }
 
+  void _selectTime({required BuildContext context}) {
+    displayTimePicker(
+        context: context,
+        initialDuration: Duration(milliseconds: setDto.durationValue()),
+        mode: CupertinoTimerPickerMode.hms,
+        onChangedDuration: (Duration duration) {
+          Navigator.of(context).pop();
+          onChangedDuration(duration, true);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Table(
@@ -51,16 +64,19 @@ class DurationSetRow extends StatelessWidget {
               child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SizedBox(
-              height: 50,
-              child: Center(
-                child: setDto.checked
-                    ? Text(Duration(milliseconds: setDto.durationValue().toInt()).hmsDigital(),
-                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
-                    : RoutineTimer(
-                        startTime: startTime,
-                        digital: true,
-                        onChangedDuration: (Duration duration) => onChangedDuration(duration, false)),
+            child: GestureDetector(
+              onTap: () => _selectTime(context: context),
+              child: SizedBox(
+                height: 50,
+                child: Center(
+                  child: setDto.checked
+                      ? Text(Duration(milliseconds: setDto.durationValue().toInt()).hmsDigital(),
+                          style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600))
+                      : RoutineTimer(
+                          startTime: startTime,
+                          digital: true,
+                          onChangedDuration: (Duration duration) => onChangedDuration(duration, false)),
+                ),
               ),
             ),
           ),

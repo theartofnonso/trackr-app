@@ -69,8 +69,9 @@ void displayTimePicker(
     required void Function(Duration duration) onChangedDuration}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
-      height: 216,
+      height: 240,
       context: context,
+      color: sapphireDark,
       child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
