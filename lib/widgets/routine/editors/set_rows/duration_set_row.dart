@@ -35,7 +35,7 @@ class DurationSetRow extends StatelessWidget {
   void _selectTime({required BuildContext context}) {
     displayTimePicker(
         context: context,
-        initialDuration: Duration(milliseconds: setDto.durationValue()),
+        initialDuration: Duration.zero,
         mode: CupertinoTimerPickerMode.hms,
         onChangedDuration: (Duration duration) {
           Navigator.of(context).pop();
