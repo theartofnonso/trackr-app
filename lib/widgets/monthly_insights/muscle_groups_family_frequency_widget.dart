@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/empty_states/muscle_group_split_frequency_empty_state.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -64,12 +63,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
             "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         const SizedBox(height: 10),
-        exerciseLogs.isNotEmpty
-            ? MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized)
-            : const Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-                child: MuscleGroupSplitFrequencyEmptyState(),
-              ),
+        MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
         if (untrainedMuscleGroups.isNotEmpty)
           RichText(
               text: TextSpan(

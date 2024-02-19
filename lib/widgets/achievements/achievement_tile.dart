@@ -6,11 +6,11 @@ import '../../dtos/achievement_dto.dart';
 
 class AchievementTile extends StatelessWidget {
   final AchievementDto achievement;
-  final EdgeInsets margin;
+  final EdgeInsets? margin;
   final void Function()? onTap;
   final Color? color;
 
-  const AchievementTile({super.key, required this.achievement, required this.margin, this.onTap, this.color});
+  const AchievementTile({super.key, required this.achievement, this.margin, this.onTap, this.color});
 
   @override
   Widget build(BuildContext context) {

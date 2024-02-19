@@ -123,10 +123,6 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               color: vibrantGreen,
             ),
           ]),
-          //const SizedBox(height: 12),
-          // Text(
-          //     "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",
-          //     style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );

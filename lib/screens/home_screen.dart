@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAppData();
+      //_loadAppData();
       _loadCachedLog();
       _checkAndRequestNotificationPermission();
     });
