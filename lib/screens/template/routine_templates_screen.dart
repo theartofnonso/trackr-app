@@ -57,40 +57,45 @@ class RoutineTemplatesScreen extends StatelessWidget {
           body: SafeArea(
               minimum: const EdgeInsets.all(10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                provider.templates.isNotEmpty
+                routineTemplates.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(
                             padding: const EdgeInsets.only(bottom: 150),
                             itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                  template: provider.templates[index],
+                                  template: routineTemplates[index],
                                 ),
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                            itemCount: provider.templates.length),
+                            itemCount: routineTemplates.length),
                       )
                     : const Expanded(child: RoutineEmptyState()),
                 if (untrainedMuscleGroups.isNotEmpty)
-                  RichText(
-                      text: TextSpan(
-                          text:
-                              "For a balanced workout routine, consider including a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by modifying your workout to include",
-                          style: GoogleFonts.montserrat(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              wordSpacing: 1,
-                              height: 1.5),
-                          children: [
-                        const TextSpan(text: " "),
-                        TextSpan(
-                            text: untrainedMuscleGroupsNames,
+                  Container(
+                    width: double.infinity,
+                    color: sapphireDark,
+                    padding: const EdgeInsets.all(10),
+                    child: RichText(
+                        text: TextSpan(
+                            text:
+                                  "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
                             style: GoogleFonts.montserrat(
-                                color: Colors.white,
+                                color: Colors.white70,
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                                 wordSpacing: 1,
-                                height: 1.5)),
-                        const TextSpan(text: "."),
-                      ])),
+                                height: 1.5),
+                            children: [
+                          const TextSpan(text: " "),
+                          TextSpan(
+                              text: untrainedMuscleGroupsNames,
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  wordSpacing: 1,
+                                  height: 1.5)),
+                          const TextSpan(text: "."),
+                        ])),
+                  ),
               ])));
     });
   }
