@@ -41,8 +41,15 @@ import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'models/ModelProvider.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   await SharedPrefs().init();
 
