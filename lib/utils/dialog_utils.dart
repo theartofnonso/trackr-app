@@ -35,11 +35,11 @@ Future<void> displayBottomSheet(
     required Widget child,
     double? height,
     EdgeInsets? padding,
-    Color? color,
-      enabledDrag = true,
-    bool isDismissible = true, bool isScrollControlled = false}) {
+    enabledDrag = true,
+    bool isDismissible = true,
+    bool isScrollControlled = false}) {
   return showModalBottomSheet(
-    isScrollControlled: isScrollControlled,
+      isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
       enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,
@@ -53,7 +53,16 @@ Future<void> displayBottomSheet(
                 margin: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
-                color: color ?? sapphireLight,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark80,
+                      sapphireDark,
+                    ],
+                  ),
+                ),
                 child: SafeArea(
                   child: child,
                 ),
@@ -71,7 +80,6 @@ void displayTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
-      color: sapphireDark,
       child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
@@ -83,7 +91,6 @@ void displayNotificationTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
-      color: sapphireDark,
       child: HourTimerPicker(
           initialDuration: initialDuration,
           onSelect: (Duration duration) {
@@ -99,7 +106,8 @@ void showAlertDialogWithMultiActions(
     required String leftActionLabel,
     required String rightActionLabel,
     bool isLeftActionDestructive = false,
-    bool isRightActionDestructive = false, Color? rightActionColor}) {
+    bool isRightActionDestructive = false,
+    Color? rightActionColor}) {
   final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
@@ -110,7 +118,8 @@ void showAlertDialogWithMultiActions(
       onPressed: rightAction,
       child: Text(rightActionLabel,
           style: GoogleFonts.montserrat(
-              color: isRightActionDestructive ? Colors.red : rightActionColor ?? Colors.white, fontWeight: FontWeight.w600)),
+              color: isRightActionDestructive ? Colors.red : rightActionColor ?? Colors.white,
+              fontWeight: FontWeight.w600)),
     ),
   ];
 

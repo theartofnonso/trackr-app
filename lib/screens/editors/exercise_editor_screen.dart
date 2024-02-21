@@ -178,7 +178,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     });
     await displayBottomSheet(
         context: context,
-        color: sapphireDark80,
         padding: const EdgeInsets.all(20),
         child: TextField(
           controller: TextEditingController(text: _exerciseName),

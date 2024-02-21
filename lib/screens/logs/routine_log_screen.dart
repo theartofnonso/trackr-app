@@ -214,7 +214,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _showBottomSheet() {
     displayBottomSheet(
-      color: sapphireDark,
         context: context, child: Column(
       children: [
         const SizedBox(height: 10),
@@ -251,7 +250,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
     displayBottomSheet(
-        color: sapphireDark,
         padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
         context: context,
         isScrollControlled: true,

@@ -18,7 +18,16 @@ class AchievementShare extends StatelessWidget {
     return RepaintBoundary(
         key: globalKey,
         child: Container(
-            color: sapphireDark,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  sapphireDark80,
+                  sapphireDark,
+                ],
+              ),
+            ),
             padding: const EdgeInsets.all(8),
             width: width,
             child: Column(

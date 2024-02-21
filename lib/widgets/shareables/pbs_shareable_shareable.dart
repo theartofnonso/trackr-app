@@ -39,7 +39,16 @@ class PBsShareable extends StatelessWidget {
       key: globalKey,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-        color: sapphireDark,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [

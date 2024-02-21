@@ -143,7 +143,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
-        color: sapphireDark,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
@@ -151,7 +150,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
           RepaintBoundary(
               key: calendarKey,
               child: Container(
-                  color: sapphireDark,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark80,
+                        sapphireDark,
+                      ],
+                    ),
+                  ),
                   padding: const EdgeInsets.all(8),
                   child: Calendar(readOnly: true, range: _dateTimeRange))),
           const SizedBox(height: 10),

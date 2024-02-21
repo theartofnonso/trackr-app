@@ -23,7 +23,16 @@ class RoutineLogShareableLite extends StatelessWidget {
       key: routineLogShareableLiteKey,
       child: Container(
         padding: const EdgeInsets.all(16),
-        color: sapphireDark,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
+        ),
         width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(
