@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/widgets/shareables/achievement_share.dart';
@@ -13,21 +16,28 @@ import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../buttons/text_button_widget.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ShareableContainer extends StatefulWidget {
+class ShareableScreen extends StatefulWidget {
   final RoutineLogDto log;
   final Map<MuscleGroupFamily, double> frequencyData;
 
-  const ShareableContainer({super.key, required this.log, required this.frequencyData});
+  const ShareableScreen({super.key, required this.log, required this.frequencyData});
 
   @override
-  State<ShareableContainer> createState() => _ShareableContainerState();
+  State<ShareableScreen> createState() => _ShareableScreenState();
 }
 
-class _ShareableContainerState extends State<ShareableContainer> {
+class _ShareableScreenState extends State<ShareableScreen> {
+
+  bool _hasImage = false;
+
+  Image? _image;
+
   final _controller = PageController(viewportFraction: 1);
 
   bool isMultipleOfFive(int number) {
@@ -66,7 +76,7 @@ class _ShareableContainerState extends State<ShareableContainer> {
         final pbs = setAndPB.value;
         for (final pb in pbs) {
           final key = GlobalKey();
-          final shareable = PBsShareable(set: setAndPB.key, pbDto: pb, globalKey: key);
+          final shareable = PBsShareable(set: setAndPB.key, pbDto: pb, globalKey: key, image: _image);
           pbShareAssets.add(shareable);
           pbShareAssetsKeys.add(key);
         }
@@ -75,10 +85,9 @@ class _ShareableContainerState extends State<ShareableContainer> {
 
     final pages = [
       ...achievementsShareAssets,
-      if (isMultipleOfFive(allLogs.length)) LogMilestoneShareable(label: "${allLogs.length}th"),
+      if (isMultipleOfFive(allLogs.length)) LogMilestoneShareable(label: "${allLogs.length}th", image: _image),
       ...pbShareAssets,
-      RoutineLogShareable(log: widget.log, frequencyData: widget.frequencyData),
-      RoutineLogShareableLite(log: widget.log, frequencyData: widget.frequencyData),
+      RoutineLogShareableLite(log: widget.log, frequencyData: widget.frequencyData, image: _image),
     ];
 
     final pagesKeys = [
@@ -94,8 +103,16 @@ class _ShareableContainerState extends State<ShareableContainer> {
           backgroundColor: sapphireDark80,
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
-          )),
+            onPressed: Navigator.of(context).pop,
+          ),
+        actions: [
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.solidImage, color: Colors.white, size: 24),
+            onPressed: _showBottomSheet,
+          )
+        ],
+
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -117,27 +134,12 @@ class _ShareableContainerState extends State<ShareableContainer> {
                   scrollDirection: Axis.horizontal,
                   controller: _controller,
                   itemCount: pages.length,
-
                   itemBuilder: (_, index) {
                     return pages[index % pages.length];
                   },
                 ),
               ),
-              // Expanded(
-              //   child: ListView.separated(
-              //       shrinkWrap: true,
-              //       scrollDirection: Axis.horizontal,
-              //       physics: const PageScrollPhysics(),
-              //       itemBuilder: (context, index) => pages[index],
-              //       separatorBuilder: (context, index) => const SizedBox(width: 10),
-              //       itemCount: pages.length),
-              // ),
-              // SingleChildScrollView(
-              //     controller: _controller,
-              //     scrollDirection: Axis.horizontal,
-              //     physics: const PageScrollPhysics(),
-              //     child: Row(children: pages)),
-              const Spacer(),
+             const Spacer(),
               SmoothPageIndicator(
                 controller: _controller,
                 count: pages.length,
@@ -161,5 +163,61 @@ class _ShareableContainerState extends State<ShareableContainer> {
         ),
       ),
     );
+  }
+
+  void _showBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Camera",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () => _pickFromLibrary(camera: true),
+            ),
+            const Divider(color: sapphireLighter, thickness: 0.6,),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Library",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
+              onTap: () => _pickFromLibrary(camera: false),
+            ),
+            if(_hasImage)
+              Column(children: [
+              const Divider(color: sapphireLighter, thickness: 0.6,),
+              ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                title: Text("Remove Image",
+                    style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                onTap: _removeImage,
+              ),
+            ])
+          ]),
+        ));
+  }
+
+  void _pickFromLibrary({required bool camera}) async {
+    Navigator.of(context).pop();
+    final ImagePicker picker = ImagePicker();
+    final XFile? xFile = await picker.pickImage(source: camera ? ImageSource.camera : ImageSource.gallery);
+    if(xFile != null) {
+      final Uint8List bytes = await xFile.readAsBytes();
+      setState(() {
+        _image = Image.memory(bytes);
+        _hasImage = true;
+      });
+    }
+  }
+
+  void _removeImage() {
+    Navigator.of(context).pop();
+    setState(() {
+      _image = null;
+      _hasImage = false;
+    });
   }
 }

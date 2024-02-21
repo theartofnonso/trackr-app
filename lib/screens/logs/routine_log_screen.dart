@@ -28,7 +28,7 @@ import '../../dtos/routine_log_dto.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../../widgets/shareables/shareable_container.dart';
+import '../../widgets/shareables/shareable_screen.dart';
 
 class RoutineLogPreviewScreen extends StatefulWidget {
   final RoutineLogDto log;
@@ -215,36 +215,40 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _showBottomSheet() {
     displayBottomSheet(
         context: context,
-        child: Column(children: [
-          const SizedBox(height: 10),
-          ListTile(
-            dense: true,
-            title: Text("Edit Log",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-            onTap: () {
-              Navigator.of(context).pop();
-              _editLog(log: widget.log);
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: Text("Save as template",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-            onTap: () {
-              Navigator.of(context).pop();
-              _createTemplate();
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: Text("Delete log",
-                style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
-            onTap: () {
-              Navigator.of(context).pop();
-              _deleteLog();
-            },
-          ),
-        ]));
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Edit Log",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _editLog(log: widget.log);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Save as template",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _createTemplate();
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("Delete log",
+                  style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _deleteLog();
+              },
+            ),
+          ]),
+        ));
   }
 
   void _onShareLog({required RoutineLogDto log}) {
@@ -253,7 +257,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
     navigateWithSlideTransition(
         context: context,
-        child: ShareableContainer(
+        child: ShareableScreen(
             log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
   }
 

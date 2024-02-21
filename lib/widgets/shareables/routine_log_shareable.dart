@@ -41,6 +41,7 @@ class RoutineLogShareable extends StatelessWidget {
     return RepaintBoundary(
       key: routineLogShareableKey,
       child: Container(
+        height: exerciseLogs.length > 2 ? 800 : null,
         padding: const EdgeInsets.all(16),
         margin: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(

@@ -108,7 +108,8 @@ class _CalendarState extends State<Calendar> {
               )
             : const SizedBox(height: 8),
         _Month(dates: dates, selectedDateTime: _currentDate.withoutTimeStamp(), onTap: _selectDate, readOnly: widget.readOnly),
-        const SizedBox(height: 10),
+        if(!widget.readOnly)
+          const SizedBox(height: 10),
         if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
         if (logsForCurrentDate.isEmpty && !widget.readOnly)
           Column(

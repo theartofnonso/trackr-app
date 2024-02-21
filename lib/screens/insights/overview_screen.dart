@@ -144,8 +144,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
         context: context,
-        isScrollControlled: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        isScrollControlled: false,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, children: [
           RepaintBoundary(
               key: calendarKey,
               child: Container(
@@ -158,10 +160,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         sapphireDark,
                       ],
                     ),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
                   padding: const EdgeInsets.all(8),
                   child: Calendar(readOnly: true, range: _dateTimeRange))),
-          const SizedBox(height: 10),
           CTextButton(
               onPressed: () {
                 captureImage(key: calendarKey, pixelRatio: 5);
