@@ -52,14 +52,15 @@ class RoutineLogShareableLite extends StatelessWidget {
             Positioned.fill(
                 child: Container(
               decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
                   gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark.withOpacity(0.4),
-                  sapphireDark,
-                ],
-              )),
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark.withOpacity(0.4),
+                      sapphireDark,
+                    ],
+                  )),
             )),
           Padding(
             padding: const EdgeInsets.all(16.0),

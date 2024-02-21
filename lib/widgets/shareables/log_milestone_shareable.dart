@@ -45,6 +45,7 @@ class LogMilestoneShareable extends StatelessWidget {
             Positioned.fill(
                 child: Container(
               decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
                   gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
