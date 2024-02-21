@@ -34,7 +34,6 @@ Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
     double? height,
-    EdgeInsets? padding,
     enabledDrag = true,
     bool isDismissible = true,
     bool isScrollControlled = false}) {
@@ -49,10 +48,7 @@ Future<void> displayBottomSheet(
             children: [
               Container(
                 height: height,
-                padding: padding,
-                margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -63,9 +59,7 @@ Future<void> displayBottomSheet(
                     ],
                   ),
                 ),
-                child: SafeArea(
-                  child: child,
-                ),
+                child: child,
               ),
             ],
           ));
@@ -83,7 +77,7 @@ void displayTimePicker(
       child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
-void displayNotificationTimePicker(
+void showHourTimerPicker(
     {required BuildContext context,
     required Duration initialDuration,
     required void Function(Duration duration) onChangedDuration}) {

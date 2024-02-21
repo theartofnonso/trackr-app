@@ -22,7 +22,7 @@ class RoutineLogShareable extends StatelessWidget {
   Widget build(BuildContext context) {
     final exerciseLogs = log.exerciseLogs
         .mapIndexed(((index, exerciseLog) => Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: RichText(
                   text: TextSpan(
                       text: exerciseLog.exercise.name,
@@ -42,8 +42,10 @@ class RoutineLogShareable extends StatelessWidget {
       key: routineLogShareableKey,
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
@@ -52,8 +54,9 @@ class RoutineLogShareable extends StatelessWidget {
             ],
           ),
         ),
-        width: MediaQuery.of(context).size.width - 20,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(log.name,
@@ -83,7 +86,6 @@ class RoutineLogShareable extends StatelessWidget {
             ),
           ),
           MuscleGroupFamilyChart(frequencyData: frequencyData),
-          const SizedBox(height: 8),
           ...exerciseLogs,
           Align(
               alignment: Alignment.centerRight,

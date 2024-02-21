@@ -35,3 +35,24 @@ void navigateToRoutineLogs({required BuildContext context, required List<Routine
   final descendingLogs = logs.reversed.toList();
   Navigator.of(context).pushNamed(RoutineLogsScreen.routeName, arguments: descendingLogs);
 }
+
+/// Create a screen on demand
+void navigateWithSlideTransition({required BuildContext context, required Widget child}) {
+  final route = PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+      final tween =
+      Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      final offsetAnimation = animation.drive(tween);
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
+
+  Navigator.of(context).push(route);
+}

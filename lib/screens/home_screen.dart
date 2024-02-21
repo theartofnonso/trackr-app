@@ -150,7 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         displayBottomSheet(
             context: context,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",
                   style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),

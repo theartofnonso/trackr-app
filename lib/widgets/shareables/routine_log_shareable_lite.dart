@@ -23,8 +23,10 @@ class RoutineLogShareableLite extends StatelessWidget {
       key: routineLogShareableLiteKey,
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
@@ -33,8 +35,9 @@ class RoutineLogShareableLite extends StatelessWidget {
             ],
           ),
         ),
-        width: MediaQuery.of(context).size.width - 20,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(log.name,

@@ -17,8 +17,11 @@ class LogMilestoneShareable extends StatelessWidget {
     return RepaintBoundary(
       key: logMilestoneShareableKey,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 16),
         decoration: const BoxDecoration(
+          color: sapphireDark,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -28,7 +31,6 @@ class LogMilestoneShareable extends StatelessWidget {
             ],
           ),
         ),
-        width: MediaQuery.of(context).size.width - 20,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
           const SizedBox(height: 10),

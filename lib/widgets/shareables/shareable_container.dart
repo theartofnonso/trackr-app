@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/widgets/shareables/achievement_share.dart';
@@ -27,7 +28,7 @@ class ShareableContainer extends StatefulWidget {
 }
 
 class _ShareableContainerState extends State<ShareableContainer> {
-  final _controller = PageController();
+  final _controller = PageController(viewportFraction: 1);
 
   bool isMultipleOfFive(int number) {
     return number % 5 == 0;
@@ -88,27 +89,77 @@ class _ShareableContainerState extends State<ShareableContainer> {
       routineLogShareableLiteKey,
     ];
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SingleChildScrollView(controller: _controller, scrollDirection: Axis.horizontal, child: Row(children: pages)),
-        const SizedBox(height: 20),
-        SmoothPageIndicator(
-          controller: _controller,
-          count: pages.length,
-          effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: sapphireDark80,
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+            onPressed: () => Navigator.of(context).pop(),
+          )),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              sapphireDark80,
+              sapphireDark,
+            ],
+          ),
         ),
-        const SizedBox(height: 30),
-        CTextButton(
-            onPressed: () {
-              captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5);
-              Navigator.of(context).pop();
-            },
-            label: "Share",
-            buttonColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            buttonBorderColor: Colors.transparent)
-      ],
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 30),
+              Expanded(
+                child: PageView.builder(
+                  scrollDirection: Axis.horizontal,
+                  controller: _controller,
+                  itemCount: pages.length,
+
+                  itemBuilder: (_, index) {
+                    return pages[index % pages.length];
+                  },
+                ),
+              ),
+              // Expanded(
+              //   child: ListView.separated(
+              //       shrinkWrap: true,
+              //       scrollDirection: Axis.horizontal,
+              //       physics: const PageScrollPhysics(),
+              //       itemBuilder: (context, index) => pages[index],
+              //       separatorBuilder: (context, index) => const SizedBox(width: 10),
+              //       itemCount: pages.length),
+              // ),
+              // SingleChildScrollView(
+              //     controller: _controller,
+              //     scrollDirection: Axis.horizontal,
+              //     physics: const PageScrollPhysics(),
+              //     child: Row(children: pages)),
+              const Spacer(),
+              SmoothPageIndicator(
+                controller: _controller,
+                count: pages.length,
+                effect: const ExpandingDotsEffect(activeDotColor: vibrantGreen),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: CTextButton(
+                    onPressed: () {
+                      captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5);
+                      Navigator.of(context).pop();
+                    },
+                    label: "Share",
+                    buttonColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    buttonBorderColor: Colors.transparent),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

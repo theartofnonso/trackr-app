@@ -50,7 +50,7 @@ void _displayTimePicker(
     {required BuildContext context,
     required PendingNotificationRequest? schedule,
     required void Function(Duration) onDurationChanged}) {
-  displayNotificationTimePicker(
+  showHourTimerPicker(
       context: context,
       initialDuration: _timeForSchedule(schedule: schedule),
       onChangedDuration: (duration) {

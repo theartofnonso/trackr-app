@@ -19,6 +19,7 @@ class AchievementShare extends StatelessWidget {
         key: globalKey,
         child: Container(
             decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -28,16 +29,15 @@ class AchievementShare extends StatelessWidget {
                 ],
               ),
             ),
-            padding: const EdgeInsets.all(8),
-            width: width,
+            padding: const EdgeInsets.all(16),
+            //width: width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("From:",
-                        style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
+                    Text("From:", style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
                     const SizedBox(width: 4),
                     Padding(
                       padding: const EdgeInsets.only(top: 2),

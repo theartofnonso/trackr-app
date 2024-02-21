@@ -1,4 +1,3 @@
-
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
@@ -61,7 +60,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     return Scaffold(
         backgroundColor: sapphireDark,
         appBar: AppBar(
-          backgroundColor: sapphireDark80,
+            backgroundColor: sapphireDark80,
             leading: IconButton(
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
               onPressed: () => Navigator.of(context).pop(),
@@ -177,7 +176,8 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    MuscleGroupFamilyChart(frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
+                    MuscleGroupFamilyChart(
+                        frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)),
                     ExerciseLogListView(
                         exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogsAndSets),
                         previewType: RoutinePreviewType.log),
@@ -214,46 +214,47 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
   void _showBottomSheet() {
     displayBottomSheet(
-        context: context, child: Column(
-      children: [
-        const SizedBox(height: 10),
-        ListTile(
-          dense: true,
-          title: Text("Edit Log", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-          onTap: () {
-            Navigator.of(context).pop();
-            _editLog(log: widget.log);
-          },
-        ),
-        ListTile(
-          dense: true,
-          title: Text("Save as template", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
-          onTap: () {
-            Navigator.of(context).pop();
-            _createTemplate();
-          },
-        ),
-        ListTile(
-          dense: true,
-          title: Text("Delete log", style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
-          onTap: () {
-            Navigator.of(context).pop();
-            _deleteLog();
-          },
-        ),
-      ]
-    ));
+        context: context,
+        child: Column(children: [
+          const SizedBox(height: 10),
+          ListTile(
+            dense: true,
+            title: Text("Edit Log",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+            onTap: () {
+              Navigator.of(context).pop();
+              _editLog(log: widget.log);
+            },
+          ),
+          ListTile(
+            dense: true,
+            title: Text("Save as template",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+            onTap: () {
+              Navigator.of(context).pop();
+              _createTemplate();
+            },
+          ),
+          ListTile(
+            dense: true,
+            title: Text("Delete log",
+                style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 14)),
+            onTap: () {
+              Navigator.of(context).pop();
+              _deleteLog();
+            },
+          ),
+        ]));
   }
 
   void _onShareLog({required RoutineLogDto log}) {
     final completedExerciseLogsAndSets = exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs);
     final updatedLog = log.copyWith(exerciseLogs: completedExerciseLogsAndSets);
 
-    displayBottomSheet(
-        padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
+    navigateWithSlideTransition(
         context: context,
-        isScrollControlled: true,
-        child: ShareableContainer(log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
+        child: ShareableContainer(
+            log: updatedLog, frequencyData: _muscleGroupFamilyFrequencies(exerciseLogs: completedExerciseLogsAndSets)));
   }
 
   void _toggleLoadingState({String message = ""}) {
@@ -292,6 +293,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     try {
       final exercises = log.exerciseLogs.map((exerciseLog) {
         final uncheckedSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
+
         /// [Exercise.duration] exercises do not have sets in templates
         /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
         final sets = withDurationOnly(type: exerciseLog.exercise.type) ? <SetDto>[] : uncheckedSets;
@@ -399,7 +401,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         displayBottomSheet(
             isDismissible: false,
             enabledDrag: false,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             context: context,
             child: _TemplateChangesDialog(
                 templateName: routineTemplate.name,
