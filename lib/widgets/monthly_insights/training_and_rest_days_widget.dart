@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -93,15 +92,14 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
   }
 
   int _averageDaysBetween({required List<RoutineLogDto> logs, required List<DateTime> datesInMonth}) {
-
     List<int> daysInBetween = [];
 
     for (int i = 0; i < logs.length; i++) {
       final currentLog = logs[i].createdAt.withoutTimeStamp();
-      if(i == logs.length - 1) break; // Break if we are at the last log (no more intervals to calculate)
+      if (i == logs.length - 1) break; // Break if we are at the last log (no more intervals to calculate)
       final nextLog = logs[i + 1].createdAt.withoutTimeStamp();
       final daysBetween = nextLog.difference(currentLog).inDays - 1;
-      if(daysBetween > 0) {
+      if (daysBetween > 0) {
         daysInBetween.add(daysBetween);
       }
     }
