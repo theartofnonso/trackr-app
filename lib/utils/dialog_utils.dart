@@ -59,7 +59,7 @@ Future<void> displayBottomSheet(
                     ],
                   ),
                 ),
-                child: child,
+                child: SafeArea(child: child),
               ),
             ],
           ));

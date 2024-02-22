@@ -162,8 +162,19 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
-                  padding: const EdgeInsets.all(8),
-                  child: Calendar(readOnly: true, range: _dateTimeRange))),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Calendar(readOnly: true, range: _dateTimeRange),
+                      const SizedBox(height: 12),
+                      Image.asset(
+                        'images/trackr.png',
+                        fit: BoxFit.contain,
+                        height: 8, // Adjust the height as needed
+                      ),
+                    ],
+                  ))),
           CTextButton(
               onPressed: () {
                 captureImage(key: calendarKey, pixelRatio: 5);
