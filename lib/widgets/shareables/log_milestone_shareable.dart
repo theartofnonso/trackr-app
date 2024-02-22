@@ -19,7 +19,7 @@ class LogMilestoneShareable extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
           key: logMilestoneShareableKey,
           child: Container(
@@ -31,7 +31,6 @@ class LogMilestoneShareable extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : null,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,
@@ -48,15 +47,14 @@ class LogMilestoneShareable extends StatelessWidget {
                 Positioned.fill(
                     child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
                       gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          sapphireDark.withOpacity(0.4),
-                          sapphireDark,
-                        ],
-                      )),
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark.withOpacity(0.4),
+                      sapphireDark,
+                    ],
+                  )),
                 )),
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),

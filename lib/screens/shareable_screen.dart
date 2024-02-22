@@ -6,19 +6,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/widgets/shareables/achievement_share.dart';
 import 'package:tracker_app/widgets/shareables/log_milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 
-import '../../colors.dart';
-import '../../controllers/routine_log_controller.dart';
-import '../../dtos/routine_log_dto.dart';
-import '../../enums/muscle_group_enums.dart';
-import '../../utils/dialog_utils.dart';
-import '../../utils/exercise_logs_utils.dart';
-import '../../utils/shareables_utils.dart';
-import '../buttons/text_button_widget.dart';
+import '../colors.dart';
+import '../controllers/routine_log_controller.dart';
+import '../dtos/routine_log_dto.dart';
+import '../enums/muscle_group_enums.dart';
+import '../utils/dialog_utils.dart';
+import '../utils/exercise_logs_utils.dart';
+import '../utils/google_analytics.dart';
+import '../utils/shareables_utils.dart';
+import '../widgets/buttons/text_button_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ShareableScreen extends StatefulWidget {
@@ -49,6 +51,10 @@ class _ShareableScreenState extends State<ShareableScreen> {
     final allLogs = routineLogController.routineLogs;
 
     final achievements = routineLogController.calculateNewLogAchievements();
+
+    if(achievements.isNotEmpty) {
+      recordMilestoneAchievementEvent();
+    }
 
     List<Widget> achievementsShareAssets = [];
     final achievementsShareAssetsKeys = [];
@@ -143,7 +149,12 @@ class _ShareableScreenState extends State<ShareableScreen> {
               ),
               const SizedBox(height: 30),
               CTextButton(
-                  onPressed: () => captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5),
+                  onPressed: () {
+                    final index = _controller.page!.toInt();
+                    captureImage(key: pagesKeys[index], pixelRatio: 3.5);
+                    final contentType = _shareContentType(index: index);
+                    recordShareEvent(contentType: contentType);
+                  },
                   label: "Share",
                   buttonColor: Colors.transparent,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -153,6 +164,19 @@ class _ShareableScreenState extends State<ShareableScreen> {
         ),
       ),
     );
+  }
+
+  ShareContentType _shareContentType({required int index}) {
+
+    if(index == 0) {
+      return ShareContentType.milestoneAchievement;
+    } else if(index == 1) {
+      return ShareContentType.logMilestone;
+    } else if(index == 2) {
+      return ShareContentType.pbs;
+    } else {
+      return ShareContentType.sessionSummary;
+    }
   }
 
   void _showBottomSheet() {

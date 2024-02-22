@@ -39,7 +39,7 @@ class PBsShareable extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
           key: globalKey,
           child: Container(
@@ -51,7 +51,6 @@ class PBsShareable extends StatelessWidget {
                       alignment: Alignment.topCenter,
                     )
                   : null,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,
@@ -71,15 +70,14 @@ class PBsShareable extends StatelessWidget {
                   Positioned.fill(
                       child: Container(
                     decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(8)),
                         gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            sapphireDark.withOpacity(0.4),
-                            sapphireDark,
-                          ],
-                        )),
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        sapphireDark.withOpacity(0.4),
+                        sapphireDark,
+                      ],
+                    )),
                   )),
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.center,

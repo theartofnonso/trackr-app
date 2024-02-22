@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
@@ -13,6 +14,7 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../strings.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/google_analytics.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/shareables_utils.dart';
@@ -53,7 +55,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           endTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log, emptySession: true);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
@@ -155,7 +157,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               RepaintBoundary(
                   key: calendarKey,
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    borderRadius: BorderRadius.circular(20),
                     child: Container(
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
@@ -166,7 +168,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               sapphireDark,
                             ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -185,6 +186,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               CTextButton(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
+                    recordShareEvent(contentType: ShareContentType.calender);
                     Navigator.of(context).pop();
                   },
                   label: "Share",

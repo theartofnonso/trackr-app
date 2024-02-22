@@ -13,11 +13,15 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
+import '../../utils/google_analytics.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
+
+  static const routeName = '/exercise-editor';
+
   final ExerciseDto? exercise;
 
   const ExerciseEditorScreen({super.key, this.exercise});
@@ -206,6 +210,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
     } else {
+
       final exercise = ExerciseDto(
           id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 

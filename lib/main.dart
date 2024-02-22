@@ -1,3 +1,4 @@
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -18,12 +19,15 @@ import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
+import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
+import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
@@ -35,6 +39,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:tracker_app/utils/google_analytics.dart';
 
 import 'amplifyconfiguration.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
@@ -117,6 +122,7 @@ class _MyAppState extends State<MyApp> {
     DateTime date12MonthsAgo = DateTime(currentDate.year - 1, currentDate.month, currentDate.day);
     TemporalDateTime temporalDate12MonthsAgo = TemporalDateTime(date12MonthsAgo);
     try {
+      await Amplify.addPlugin(AmplifyAnalyticsPinpoint());
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
@@ -199,6 +205,11 @@ class _MyAppState extends State<MyApp> {
               onGenerateRoute: (settings) {
                 if (settings.name == RoutineLogEditorScreen.routeName) {
                   final args = settings.arguments as RoutineLogArguments;
+                  if(args.editorMode == RoutineEditorMode.log && args.emptySession) {
+                    recordEmptySessionEvent();
+                  } else {
+                    recordTemplateSessionEvent();
+                  }
                   return MaterialPageRoute(
                     builder: (context) => RoutineLogEditorScreen(
                       log: args.log,
@@ -209,6 +220,7 @@ class _MyAppState extends State<MyApp> {
 
                 if (settings.name == RoutineTemplateEditorScreen.routeName) {
                   final args = settings.arguments as RoutineTemplateArguments?;
+                  recordVisitTemplateEditorEvent();
                   return MaterialPageRoute(
                     builder: (context) => RoutineTemplateEditorScreen(
                       template: args?.template,
@@ -221,6 +233,16 @@ class _MyAppState extends State<MyApp> {
                   return MaterialPageRoute(
                     builder: (context) => RoutineLogsScreen(
                       logs: args,
+                    ),
+                  );
+                }
+
+                if (settings.name == ExerciseEditorScreen.routeName) {
+                  final args = settings.arguments as ExerciseEditorArguments?;
+                  recordCreateExerciseEvent();
+                  return MaterialPageRoute(
+                    builder: (context) => ExerciseEditorScreen(
+                      exercise: args?.exercise,
                     ),
                   );
                 }

@@ -43,6 +43,9 @@
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
           "s3Key": "amplify-builds/deleteUserRoutineTemplateData-46587073444b626a6c65-build.zip"
         }
+      },
+      "analytics": {
+        "trackerapp": {}
       }
     }
   },
@@ -87,6 +90,9 @@
         }
       },
       "api": {
+        "trackerapp": {}
+      },
+      "analytics": {
         "trackerapp": {}
       }
     }

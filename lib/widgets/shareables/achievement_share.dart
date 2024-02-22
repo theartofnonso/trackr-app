@@ -18,10 +18,9 @@ class AchievementShare extends StatelessWidget {
     return RepaintBoundary(
         key: globalKey,
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderRadius: BorderRadius.circular(20),
           child: Container(
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

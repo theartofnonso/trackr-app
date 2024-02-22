@@ -24,10 +24,10 @@ class RoutineLogShareableLite extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: RepaintBoundary(
-        key: routineLogShareableLiteKey,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: RepaintBoundary(
+          key: routineLogShareableLiteKey,
           child: Container(
             decoration: BoxDecoration(
               image: imageFile != null
@@ -38,7 +38,6 @@ class RoutineLogShareableLite extends StatelessWidget {
                     )
                   : null,
               color: sapphireDark,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
               gradient: imageFile == null
                   ? const LinearGradient(
                       begin: Alignment.topCenter,
@@ -50,20 +49,19 @@ class RoutineLogShareableLite extends StatelessWidget {
                     )
                   : null,
             ),
-            child: Stack(alignment: Alignment.center, fit: StackFit.expand, children: [
+            child: Stack(alignment: Alignment.center, children: [
               if (imageFile != null)
                 Positioned.fill(
                     child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
                       gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          sapphireDark.withOpacity(0.4),
-                          sapphireDark,
-                        ],
-                      )),
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark.withOpacity(0.4),
+                      sapphireDark,
+                    ],
+                  )),
                 )),
               Padding(
                 padding: const EdgeInsets.all(16.0),

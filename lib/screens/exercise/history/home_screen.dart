@@ -5,13 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/dialog_utils.dart';
+import '../../../utils/navigation_utils.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
@@ -58,7 +59,11 @@ class HomeScreen extends StatelessWidget {
     final menuActions = [
       MenuItemButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExerciseEditorScreen(exercise: exercise)));
+          navigateToExerciseEditor(
+              context: context,
+              arguments: ExerciseEditorArguments(
+                exercise: foundExercise,
+              ));
         },
         child: const Text("Edit"),
       ),
@@ -91,8 +96,12 @@ class HomeScreen extends StatelessWidget {
             bottom: TabBar(
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(child: Text("Summary", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                Tab(child: Text("History", style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(
+                    child: Text("Summary",
+                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                Tab(
+                    child: Text("History",
+                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
             actions: foundExercise.owner
