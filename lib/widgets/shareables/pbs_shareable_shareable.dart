@@ -45,7 +45,7 @@ class PBsShareable extends StatelessWidget {
               ? DecorationImage(
                   image: imageFile.image,
                   fit: BoxFit.cover,
-                  alignment: Alignment.bottomRight,
+                  alignment: Alignment.topCenter,
                 )
               : null,
           borderRadius: const BorderRadius.all(Radius.circular(8)),

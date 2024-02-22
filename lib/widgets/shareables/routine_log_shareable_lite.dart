@@ -31,7 +31,7 @@ class RoutineLogShareableLite extends StatelessWidget {
               ? DecorationImage(
                   image: imageFile.image,
                   fit: BoxFit.cover,
-                  alignment: Alignment.bottomRight,
+                  alignment: Alignment.topCenter,
                 )
               : null,
           color: sapphireDark,
