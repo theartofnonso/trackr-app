@@ -208,16 +208,16 @@ class _MyAppState extends State<MyApp> {
                 }
 
                 if (settings.name == RoutineTemplateEditorScreen.routeName) {
-                  final args = settings.arguments as RoutineTemplateArguments;
+                  final args = settings.arguments as RoutineTemplateArguments?;
                   return MaterialPageRoute(
                     builder: (context) => RoutineTemplateEditorScreen(
-                      template: args.template,
+                      template: args?.template,
                     ),
                   );
                 }
 
                 if (settings.name == RoutineLogsScreen.routeName) {
-                  final args = settings.arguments as List<RoutineLogDto>;
+                  final args = settings.arguments as List<RoutineLogDto>?;
                   return MaterialPageRoute(
                     builder: (context) => RoutineLogsScreen(
                       logs: args,
