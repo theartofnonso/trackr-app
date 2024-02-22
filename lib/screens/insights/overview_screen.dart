@@ -124,7 +124,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         ),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(
-                            logs: logsForTheMonth, daysInMonth: _dateTimeRange.datesToNow.length, dateTimeRange: _dateTimeRange,),
+                          logs: logsForTheMonth,
+                          daysInMonth: _dateTimeRange.datesToNow.length,
+                          dateTimeRange: _dateTimeRange,
+                        ),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -147,44 +150,48 @@ class _OverviewScreenState extends State<OverviewScreen> {
         isScrollControlled: false,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center, children: [
-          RepaintBoundary(
-              key: calendarKey,
-              child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Calendar(readOnly: true, range: _dateTimeRange),
-                      const SizedBox(height: 12),
-                      Image.asset(
-                        'images/trackr.png',
-                        fit: BoxFit.contain,
-                        height: 8, // Adjust the height as needed
-                      ),
-                    ],
-                  ))),
-          CTextButton(
-              onPressed: () {
-                captureImage(key: calendarKey, pixelRatio: 5);
-                Navigator.of(context).pop();
-              },
-              label: "Share",
-              buttonColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              buttonBorderColor: Colors.transparent)
-        ]));
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RepaintBoundary(
+                  key: calendarKey,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              sapphireDark80,
+                              sapphireDark,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Calendar(readOnly: true, range: _dateTimeRange),
+                            const SizedBox(height: 12),
+                            Image.asset(
+                              'images/trackr.png',
+                              fit: BoxFit.contain,
+                              height: 8, // Adjust the height as needed
+                            ),
+                          ],
+                        )),
+                  )),
+              CTextButton(
+                  onPressed: () {
+                    captureImage(key: calendarKey, pixelRatio: 5);
+                    Navigator.of(context).pop();
+                  },
+                  label: "Share",
+                  buttonColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  buttonBorderColor: Colors.transparent)
+            ]));
   }
 
   @override

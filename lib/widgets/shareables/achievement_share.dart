@@ -17,44 +17,47 @@ class AchievementShare extends StatelessWidget {
 
     return RepaintBoundary(
         key: globalKey,
-        child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark80,
-                  sapphireDark,
-                ],
-              ),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("From:", style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
-                    const SizedBox(width: 4),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Image.asset(
-                        'images/trackr.png',
-                        fit: BoxFit.contain,
-                        height: 8, // Adjust the height as needed
-                      ),
-                    )
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    sapphireDark80,
+                    sapphireDark,
                   ],
                 ),
-                const Divider(color: sapphireLighter, thickness: 2),
-                Text(achievementDto.type.title.toUpperCase(),
-                    style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 2),
-                Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
-                    style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
-              ],
-            )));
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("From:", style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
+                      const SizedBox(width: 4),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Image.asset(
+                          'images/trackr.png',
+                          fit: BoxFit.contain,
+                          height: 8, // Adjust the height as needed
+                        ),
+                      )
+                    ],
+                  ),
+                  const Divider(color: sapphireLighter, thickness: 2),
+                  Text(achievementDto.type.title.toUpperCase(),
+                      style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 2),
+                  Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
+                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+                ],
+              )),
+        ));
   }
 }
