@@ -92,6 +92,9 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
   }
 
   int _averageDaysBetween({required List<RoutineLogDto> logs, required List<DateTime> datesInMonth}) {
+
+    if(logs.isEmpty) return 0;
+
     List<int> daysInBetween = [];
 
     for (int i = 0; i < logs.length; i++) {
@@ -104,7 +107,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
       }
     }
     // Calculate the average by dividing the total difference by the number of intervals
-    return (daysInBetween.sum / daysInBetween.length).floor();
+    return (daysInBetween.sum / daysInBetween.length).round();
   }
 }
 

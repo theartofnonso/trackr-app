@@ -33,7 +33,6 @@ class ShareableScreen extends StatefulWidget {
 }
 
 class _ShareableScreenState extends State<ShareableScreen> {
-
   bool _hasImage = false;
 
   Image? _image;
@@ -100,18 +99,17 @@ class _ShareableScreenState extends State<ShareableScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: sapphireDark80,
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
-            onPressed: Navigator.of(context).pop,
-          ),
+        backgroundColor: sapphireDark80,
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white, size: 28),
+          onPressed: Navigator.of(context).pop,
+        ),
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.solidImage, color: Colors.white, size: 24),
             onPressed: _showBottomSheet,
           )
         ],
-
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -139,7 +137,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
                   },
                 ),
               ),
-             const Spacer(),
+              const Spacer(),
               SmoothPageIndicator(
                 controller: _controller,
                 count: pages.length,
@@ -149,10 +147,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
               SizedBox(
                 width: double.infinity,
                 child: CTextButton(
-                    onPressed: () {
-                      captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5);
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: () => captureImage(key: pagesKeys[_controller.page!.toInt()], pixelRatio: 3.5),
                     label: "Share",
                     buttonColor: Colors.transparent,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -177,7 +172,10 @@ class _ShareableScreenState extends State<ShareableScreen> {
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: true),
             ),
-            const Divider(color: sapphireLighter, thickness: 0.6,),
+            const Divider(
+              color: sapphireLighter,
+              thickness: 0.6,
+            ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
@@ -185,17 +183,20 @@ class _ShareableScreenState extends State<ShareableScreen> {
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: false),
             ),
-            if(_hasImage)
+            if (_hasImage)
               Column(children: [
-              const Divider(color: sapphireLighter, thickness: 0.6,),
-              ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                title: Text("Remove Image",
-                    style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-                onTap: _removeImage,
-              ),
-            ])
+                const Divider(
+                  color: sapphireLighter,
+                  thickness: 0.6,
+                ),
+                ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text("Remove Image",
+                      style: GoogleFonts.montserrat(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                  onTap: _removeImage,
+                ),
+              ])
           ]),
         ));
   }
@@ -204,7 +205,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
     Navigator.of(context).pop();
     final ImagePicker picker = ImagePicker();
     final XFile? xFile = await picker.pickImage(source: camera ? ImageSource.camera : ImageSource.gallery);
-    if(xFile != null) {
+    if (xFile != null) {
       final Uint8List bytes = await xFile.readAsBytes();
       setState(() {
         _image = Image.memory(bytes);
