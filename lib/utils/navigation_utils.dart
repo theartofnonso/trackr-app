@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 
 import '../dtos/routine_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
@@ -9,6 +11,10 @@ import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
 import '../screens/template/routine_template_screen.dart';
+
+Future<Future<Object?>> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
+  return Navigator.of(context).pushNamed(ExerciseEditorScreen.routeName, arguments: arguments);
+}
 
 void navigateToRoutineTemplateEditor({required BuildContext context, RoutineTemplateArguments? arguments}) {
   Navigator.of(context).pushNamed(RoutineTemplateEditorScreen.routeName, arguments: arguments);
