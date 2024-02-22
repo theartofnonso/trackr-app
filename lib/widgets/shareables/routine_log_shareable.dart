@@ -43,7 +43,6 @@ class RoutineLogShareable extends StatelessWidget {
       child: Container(
         height: exerciseLogs.length > 2 ? 800 : null,
         padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           gradient: const LinearGradient(
@@ -57,45 +56,46 @@ class RoutineLogShareable extends StatelessWidget {
         ),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(log.name,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
-            subtitle: Row(
-              children: [
-                const Icon(
-                  Icons.date_range_rounded,
-                  color: Colors.white,
-                  size: 12,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(log.name,
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)),
+                subtitle: Row(
+                  children: [
+                    const Icon(
+                      Icons.date_range_rounded,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                    const SizedBox(width: 1),
+                    Text(log.createdAt.formattedDayAndMonth(),
+                        style: GoogleFonts.montserrat(
+                            color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                    const SizedBox(width: 10),
+                    const Icon(
+                      Icons.access_time_rounded,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                    const SizedBox(width: 1),
+                    Text(log.duration().hmsAnalog(),
+                        style: GoogleFonts.montserrat(
+                            color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
+                  ],
                 ),
-                const SizedBox(width: 1),
-                Text(log.createdAt.formattedDayAndMonth(),
-                    style: GoogleFonts.montserrat(
-                        color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-                const SizedBox(width: 10),
-                const Icon(
-                  Icons.access_time_rounded,
-                  color: Colors.white,
-                  size: 12,
-                ),
-                const SizedBox(width: 1),
-                Text(log.duration().hmsAnalog(),
-                    style: GoogleFonts.montserrat(
-                        color: Colors.white.withOpacity(0.95), fontWeight: FontWeight.w500, fontSize: 12)),
-              ],
-            ),
-          ),
-          MuscleGroupFamilyChart(frequencyData: frequencyData),
-          ...exerciseLogs,
-          Align(
-              alignment: Alignment.centerRight,
-              child: Image.asset(
-                'images/trackr.png',
-                fit: BoxFit.contain,
-                height: 8, // Adjust the height as needed
-              )),
-        ]),
+              ),
+              MuscleGroupFamilyChart(frequencyData: frequencyData),
+              ...exerciseLogs,
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Image.asset(
+                    'images/trackr.png',
+                    fit: BoxFit.contain,
+                    height: 8, // Adjust the height as needed
+                  )),
+            ]),
       ),
     );
   }

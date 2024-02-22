@@ -30,7 +30,6 @@ class AchievementShare extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.all(16),
-            //width: width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
