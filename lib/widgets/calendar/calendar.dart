@@ -117,7 +117,7 @@ class _CalendarState extends State<Calendar> {
             children: [
               RichText(
                   text: TextSpan(
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
                       children: const [
                     TextSpan(text: 'Tap'),
                     WidgetSpan(
