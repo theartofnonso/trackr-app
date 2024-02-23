@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -35,7 +36,7 @@ class OverviewMonitor extends StatelessWidget {
               color: Colors.transparent,
               width: 85,
               child: _MonitorScore(
-                value: "${routineLogs.length} days",
+                value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
                 title: "Streak",
                 color: consistencyHealthColor(value: monthlyProgress),
                 crossAxisAlignment: CrossAxisAlignment.end,
