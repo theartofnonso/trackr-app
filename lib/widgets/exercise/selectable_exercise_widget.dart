@@ -35,9 +35,27 @@ class SelectableExerciseWidget extends StatelessWidget {
         dense: true,
         title: Text(exerciseInLibraryDto.exercise.name,
             style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        subtitle: Text(
-          "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
-          style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
+              style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500),
+            ),
+            if (exerciseInLibraryDto.exercise.owner)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                margin: const EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                  color: sapphireLighter,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Text(
+                  "owner",
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 10),
+                ),
+              ),
+          ],
         ),
         leading: IconButton(
           iconSize: 24,
@@ -48,27 +66,9 @@ class SelectableExerciseWidget extends StatelessWidget {
           ),
         ),
         horizontalTitleGap: 10,
-        trailing: SizedBox(
-          width: 100,
-          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            if (exerciseInLibraryDto.exercise.owner)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: sapphireLighter,
-                  borderRadius: BorderRadius.circular(3),
-                ),
-                child: Text(
-                  "owner",
-                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-              ),
-            const SizedBox(width: 8),
-            exerciseInLibraryDto.selected
-                ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
-                : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireDark)
-          ]),
-        ),
+        trailing: exerciseInLibraryDto.selected
+            ? const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen)
+            : const FaIcon(FontAwesomeIcons.solidSquareCheck, color: sapphireDark),
       ),
     );
   }

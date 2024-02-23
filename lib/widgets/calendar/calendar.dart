@@ -108,7 +108,8 @@ class _CalendarState extends State<Calendar> {
               )
             : const SizedBox(height: 8),
         _Month(dates: dates, selectedDateTime: _currentDate.withoutTimeStamp(), onTap: _selectDate, readOnly: widget.readOnly),
-        const SizedBox(height: 10),
+        if(!widget.readOnly)
+          const SizedBox(height: 10),
         if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
         if (logsForCurrentDate.isEmpty && !widget.readOnly)
           Column(
@@ -185,6 +186,52 @@ class _Month extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final datesWidgets = dates.map((date) {
+      if (date == null) {
+        return const SizedBox();
+      } else {
+        return _Day(
+          dateTime: date.dateTime,
+          onTap: onTap,
+          selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
+          showSelector: !readOnly,
+          hasLog: date.hasLog,
+        );
+      }
+    }).toList();
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      // to disable GridView's scrolling
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        childAspectRatio: 1, // for square shape
+        crossAxisSpacing: 4.0,
+        mainAxisSpacing: 4.0,
+      ),
+      itemCount: datesWidgets.length,
+      // Just an example to vary the number of squares
+      itemBuilder: (context, index) {
+        return datesWidgets[index];
+      },
+    );
+  }
+}
+
+class _Week extends StatelessWidget {
+  final List<_DateViewModel?> dates;
+  final DateTime selectedDateTime;
+  final bool readOnly;
+  final void Function(DateTime dateTime) onTap;
+
+  const _Week({required this.dates, required this.selectedDateTime, required this.onTap, required this.readOnly});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final datesForCurrentWeek = DateTime(2024, 2, 2).datesForWeek();
+
+    final datesWidgets = dates.where((date) => datesForCurrentWeek.contains(date?.dateTime)).map((date) {
       if (date == null) {
         return const SizedBox();
       } else {

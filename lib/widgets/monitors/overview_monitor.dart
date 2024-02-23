@@ -6,6 +6,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/google_analytics.dart';
 import 'streak_health_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
@@ -47,9 +48,10 @@ class OverviewMonitor extends StatelessWidget {
         ]),
         const SizedBox(width: 20),
         GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed(
-            SetsAndRepsVolumeInsightsScreen.routeName,
-          ),
+          onTap: () {
+            recordViewMuscleTrendEvent();
+            Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+          },
           child: Container(
             color: Colors.transparent,
             width: 85,

@@ -10,6 +10,7 @@ import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
+import '../../utils/google_analytics.dart';
 import '../../utils/timezone_utils.dart';
 import '../../utils/dialog_utils.dart';
 
@@ -50,7 +51,7 @@ void _displayTimePicker(
     {required BuildContext context,
     required PendingNotificationRequest? schedule,
     required void Function(Duration) onDurationChanged}) {
-  displayNotificationTimePicker(
+  showHourTimerPicker(
       context: context,
       initialDuration: _timeForSchedule(schedule: schedule),
       onChangedDuration: (duration) {
@@ -118,9 +119,9 @@ class _NotificationSwitch extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-          color: sapphireDark.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(8),
-          //border: Border.all(color: sapphireLight)
+        color: sapphireDark.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(8),
+        //border: Border.all(color: sapphireLight)
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -170,6 +171,7 @@ class _WeekDayNotificationListTile extends StatelessWidget {
           } else {
             _cancelWeekDayNotification();
           }
+          recordToggleNotificationsEvent();
         });
   }
 
@@ -211,6 +213,7 @@ class _DailyNotificationListTile extends StatelessWidget {
           } else {
             _cancelDailyNotification();
           }
+          recordToggleNotificationsEvent();
         });
   }
 

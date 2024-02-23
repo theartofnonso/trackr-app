@@ -290,7 +290,7 @@ class AchievementRepository {
       {required Map<ExerciseType, List<ExerciseLogDto>> logs, required AchievementType type}) {
     final durationLogs = logs[ExerciseType.duration] ?? [];
     List<ExerciseLogDto> achievedLogs = durationLogs.where((log) {
-      return log.sets.any((set) => Duration(milliseconds: set.durationValue()) == Duration(minutes: type.target));
+      return log.sets.any((set) => Duration(milliseconds: set.durationValue()).inMinutes == Duration(minutes: type.target).inMinutes);
     }).toList();
 
     final progress = achievedLogs.length / type.target;

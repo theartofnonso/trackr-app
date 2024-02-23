@@ -12,6 +12,7 @@ import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/google_analytics.dart';
 import '../chart/bar_chart.dart';
 import '../chart/legend.dart';
 
@@ -55,7 +56,10 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName),
+            onTap: () {
+              recordViewMuscleTrendEvent();
+              Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+            },
             child: Container(
               color: Colors.transparent,
               child: Row(

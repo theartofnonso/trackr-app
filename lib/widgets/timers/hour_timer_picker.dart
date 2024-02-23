@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../colors.dart';
 import '../buttons/text_button_widget.dart';
 
 class HourTimerPicker extends StatefulWidget {
@@ -22,45 +21,33 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // Minutes Picker
-                Expanded(
-                  child: CupertinoPicker(
-                    backgroundColor: sapphireDark,
-                    scrollController: _hoursScrollController,
-                    looping: true,
-                    itemExtent: 38.0,
-                    onSelectedItemChanged: (int index) {
-                      _hours = index;
-                    },
-                    children: List<Widget>.generate(23, (int index) {
-                      return Center(child: Text(index.toString().padLeft(2, "0")));
-                    }),
-                  ),
-                ),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: CupertinoPicker(
+            scrollController: _hoursScrollController,
+            looping: true,
+            itemExtent: 38.0,
+            onSelectedItemChanged: (int index) {
+              _hours = index;
+            },
+            children: List<Widget>.generate(23, (int index) {
+              return Center(child: Text(index.toString().padLeft(2, "0")));
+            }),
           ),
-          const SizedBox(height: 10),
-          CTextButton(
-              onPressed: () {
-                widget.onSelect(Duration(hours: _hours));
-              },
-              label: "Remind me at this hour",
-              buttonColor: Colors.transparent,
-              buttonBorderColor: Colors.transparent,
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
-              padding: const EdgeInsets.all(10.0))
-        ],
-      ),
+        ),
+        const SizedBox(height: 10),
+        CTextButton(
+            onPressed: () {
+              widget.onSelect(Duration(hours: _hours));
+            },
+            label: "Remind me at this hour",
+            buttonColor: Colors.transparent,
+            buttonBorderColor: Colors.transparent,
+            textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+            padding: const EdgeInsets.all(10.0))
+      ],
     );
   }
 

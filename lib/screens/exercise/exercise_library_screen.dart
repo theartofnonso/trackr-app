@@ -4,13 +4,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/muscle_group_enums.dart';
+import '../../utils/google_analytics.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
@@ -129,7 +130,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseEditor() async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ExerciseEditorScreen()));
+    await navigateToExerciseEditor(context: context);
     if (mounted) {
       setState(() {
         _exercisesInLibrary = _updateSelections();
@@ -139,6 +140,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseHistory(ExerciseInLibraryDto exerciseInLibraryDto) async {
+    recordViewExerciseMetricsEvent();
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseInLibraryDto.exercise)));
     if (mounted) {
@@ -183,14 +185,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if(_selectedExercises.isNotEmpty)
+          if (_selectedExercises.isNotEmpty)
             CTextButton(
-                  key: const Key("add_exercises_button"),
-                  onPressed: _navigateBackWithSelectedExercises,
-                  label: "Add (${_selectedExercises.length})",
-                  buttonColor: Colors.transparent,
-                  buttonBorderColor: Colors.transparent,
-                )
+              key: const Key("add_exercises_button"),
+              onPressed: _navigateBackWithSelectedExercises,
+              label: "Add (${_selectedExercises.length})",
+              buttonColor: Colors.transparent,
+              buttonBorderColor: Colors.transparent,
+            )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -243,7 +245,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     isDense: true,
                     value: _selectedMuscleGroup,
                     hint: Text("Filter by muscle group",
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
+                        style:
+                            GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
                     icon: GestureDetector(
                       onTap: () {
                         _selectedMuscleGroup = null;
