@@ -41,41 +41,51 @@ class OverviewMonitor extends StatelessWidget {
         ),
       ),
       Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          GestureDetector(
-              onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
-              child: Container(
-                color: Colors.transparent,
-                width: 85,
-                child: _MonitorScore(
-                  value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
-                  title: "Streak",
-                  color: consistencyHealthColor(value: monthlyProgress),
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                ),
-              )),
           const SizedBox(width: 20),
           Stack(alignment: Alignment.center, children: [
             StreakHealthMonitor(value: monthlyProgress),
-            MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
+            MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
+            Image.asset(
+              'images/trackr.png',
+              fit: BoxFit.contain,
+              color: Colors.white54,
+              height: 8, // Adjust the height as needed
+            )
           ]),
           const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () {
-              recordViewMuscleTrendEvent();
-              Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
-            },
-            child: Container(
-              color: Colors.transparent,
-              width: 85,
-              child: _MonitorScore(
-                value: "$splitPercentage%",
-                color: Colors.white,
-                title: "Muscle",
-                crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                  onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
+                  child: Container(
+                    color: Colors.transparent,
+                    child: _MonitorScore(
+                      value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
+                      title: "Streak",
+                      color: consistencyHealthColor(value: monthlyProgress),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                  )),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  recordViewMuscleTrendEvent();
+                  Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  child: _MonitorScore(
+                    value: "$splitPercentage%",
+                    color: Colors.white,
+                    title: "Muscle",
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -98,22 +108,24 @@ class _MonitorScore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: crossAxisAlignment,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+
       children: [
         Text(
           value,
           style: GoogleFonts.montserrat(
             color: color,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w800,
           ),
         ),
+        const SizedBox(width: 4),
         Text(
           title.toUpperCase(),
           textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
-            color: color.withOpacity(0.9),
+            color: color.withOpacity(0.5),
             fontSize: 12,
             fontWeight: FontWeight.w800,
           ),
