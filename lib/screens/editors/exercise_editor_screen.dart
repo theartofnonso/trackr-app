@@ -13,7 +13,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
-import '../../utils/google_analytics.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
