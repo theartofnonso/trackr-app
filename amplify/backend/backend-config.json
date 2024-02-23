@@ -1,4 +1,10 @@
 {
+  "analytics": {
+    "trackerapp": {
+      "providerPlugin": "awscloudformation",
+      "service": "Pinpoint"
+    }
+  },
   "api": {
     "trackerapp": {
       "dependsOn": [

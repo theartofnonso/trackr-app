@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/empty_states/muscle_group_split_frequency_empty_state.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/google_analytics.dart';
 import '../chart/muscle_group_family_frequency_chart.dart';
 
 class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final List<RoutineLogDto> logs;
 
-  const MuscleGroupFamilyFrequencyWidget({super.key, required this.monthAndLogs});
+  const MuscleGroupFamilyFrequencyWidget({super.key, required this.logs});
 
   @override
   State<MuscleGroupFamilyFrequencyWidget> createState() => _MuscleGroupFamilyFrequencyWidgetState();
@@ -22,7 +22,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
   @override
   Widget build(BuildContext context) {
-    final exerciseLogs = widget.monthAndLogs
+    final exerciseLogs = widget.logs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs)
         .toList();
@@ -64,12 +64,7 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
             "Train a variety of muscle groups to avoid muscle imbalances and prevent injury. On average each muscle group should be trained at least 2 times a week.",
             style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         const SizedBox(height: 10),
-        exerciseLogs.isNotEmpty
-            ? MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized)
-            : const Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-                child: MuscleGroupSplitFrequencyEmptyState(),
-              ),
+        MuscleGroupFamilyFrequencyChart(frequencyData: muscleGroupFamilyFrequencies, minimized: _minimized),
         if (untrainedMuscleGroups.isNotEmpty)
           RichText(
               text: TextSpan(
@@ -89,5 +84,8 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
     setState(() {
       _minimized = !_minimized;
     });
+    if(!_minimized) {
+      recordViewMuscleFrequencyChartEvent();
+    }
   }
 }

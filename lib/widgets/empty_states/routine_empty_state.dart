@@ -13,11 +13,11 @@ class RoutineEmptyState extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GradientWidget(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GradientWidget(
+              child: ListTile(
                 tileColor: sapphireDark80,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -31,8 +31,10 @@ class RoutineEmptyState extends StatelessWidget {
                     style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
                 trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
               ),
-              const SizedBox(height: 8),
-              ListTile(
+            ),
+            const SizedBox(height: 8),
+            GradientWidget(
+              child: ListTile(
                 tileColor: sapphireDark80,
                 dense: true,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
@@ -46,8 +48,8 @@ class RoutineEmptyState extends StatelessWidget {
                     style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
                 trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 10),
         const TextEmptyState(message: "Tap the + button to create workout templates"),

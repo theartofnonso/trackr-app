@@ -34,12 +34,11 @@ Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
     double? height,
-    EdgeInsets? padding,
-    Color? color,
-      enabledDrag = true,
-    bool isDismissible = true, bool isScrollControlled = false}) {
+    enabledDrag = true,
+    bool isDismissible = true,
+    bool isScrollControlled = false}) {
   return showModalBottomSheet(
-    isScrollControlled: isScrollControlled,
+      isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
       enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,
@@ -49,14 +48,18 @@ Future<void> displayBottomSheet(
             children: [
               Container(
                 height: height,
-                padding: padding,
-                margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      sapphireDark80,
+                      sapphireDark,
+                    ],
+                  ),
                 ),
-                color: color ?? sapphireLight,
-                child: SafeArea(
-                  child: child,
-                ),
+                child: SafeArea(child: child),
               ),
             ],
           ));
@@ -69,12 +72,12 @@ void displayTimePicker(
     required void Function(Duration duration) onChangedDuration}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
-      height: 216,
+      height: 240,
       context: context,
       child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
 }
 
-void displayNotificationTimePicker(
+void showHourTimerPicker(
     {required BuildContext context,
     required Duration initialDuration,
     required void Function(Duration duration) onChangedDuration}) {
@@ -82,7 +85,6 @@ void displayNotificationTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
-      color: sapphireDark,
       child: HourTimerPicker(
           initialDuration: initialDuration,
           onSelect: (Duration duration) {
@@ -98,7 +100,8 @@ void showAlertDialogWithMultiActions(
     required String leftActionLabel,
     required String rightActionLabel,
     bool isLeftActionDestructive = false,
-    bool isRightActionDestructive = false, Color? rightActionColor}) {
+    bool isRightActionDestructive = false,
+    Color? rightActionColor}) {
   final alertActions = <Widget>[
     TextButton(
       onPressed: leftAction,
@@ -109,7 +112,8 @@ void showAlertDialogWithMultiActions(
       onPressed: rightAction,
       child: Text(rightActionLabel,
           style: GoogleFonts.montserrat(
-              color: isRightActionDestructive ? Colors.red : rightActionColor ?? Colors.white, fontWeight: FontWeight.w600)),
+              color: isRightActionDestructive ? Colors.red : rightActionColor ?? Colors.white,
+              fontWeight: FontWeight.w600)),
     ),
   ];
 

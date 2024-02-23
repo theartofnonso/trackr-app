@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,7 @@ import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../dtos/routine_template_dto.dart';
+import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 
 class RoutineTemplatesScreen extends StatelessWidget {
@@ -19,29 +21,81 @@ class RoutineTemplatesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
+      final routineTemplates = provider.templates;
+
+      final exercise = routineTemplates.map((template) => template.exercises).expand((exercises) => exercises).toList();
+
+      final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
+
+      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys;
+
+      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies();
+
+      final untrainedMuscleGroups =
+          listOfPopularMuscleGroupFamilies.whereNot((family) => muscleGroupFamilies.contains(family)).toList();
+
+      String untrainedMuscleGroupsNames = "";
+
+      if (untrainedMuscleGroups.isNotEmpty) {
+        if (untrainedMuscleGroups.length > 1) {
+          untrainedMuscleGroupsNames =
+              "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
+        } else {
+          untrainedMuscleGroupsNames = untrainedMuscleGroups.first.name;
+        }
+      }
+
       return Scaffold(
-        backgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
             heroTag: "fab_routines_screen",
             onPressed: () => navigateToRoutineTemplateEditor(context: context),
-            backgroundColor: sapphireDark,
+            backgroundColor: sapphireDark.withOpacity(untrainedMuscleGroups.isNotEmpty ? 0.6 : 1),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 28),
           ),
           body: SafeArea(
               minimum: const EdgeInsets.all(10.0),
-              child: Column(children: [
-                provider.templates.isNotEmpty
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                routineTemplates.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(
                             padding: const EdgeInsets.only(bottom: 150),
                             itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                  template: provider.templates[index],
+                                  template: routineTemplates[index],
                                 ),
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                            itemCount: provider.templates.length),
+                            itemCount: routineTemplates.length),
                       )
                     : const Expanded(child: RoutineEmptyState()),
+                if (untrainedMuscleGroups.isNotEmpty)
+                  Container(
+                    width: double.infinity,
+                    color: sapphireDark,
+                    padding: const EdgeInsets.all(10),
+                    child: RichText(
+                        text: TextSpan(
+                            text:
+                                  "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                wordSpacing: 1,
+                                height: 1.5),
+                            children: [
+                          const TextSpan(text: " "),
+                          TextSpan(
+                              text: untrainedMuscleGroupsNames,
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  wordSpacing: 1,
+                                  height: 1.5)),
+                          const TextSpan(text: "."),
+                        ])),
+                  ),
               ])));
     });
   }
@@ -54,7 +108,6 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final menuActions = [
       MenuItemButton(
         onPressed: () {

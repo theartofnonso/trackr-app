@@ -123,8 +123,6 @@ class AchievementScreen extends StatelessWidget {
   void _onShareCalendar(
       {required BuildContext context, required List<CalendarHeatMap> monthsHeatMaps, required bool completed}) {
     displayBottomSheet(
-        color: sapphireDark,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
         isScrollControlled: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [

@@ -13,33 +13,30 @@ class RoutineLogEmptyState extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GradientWidget(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                tileColor: sapphireLight,
-                dense: true,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                title: Text("Legs Day 1", style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 14, fontWeight: FontWeight.w500)),
-                subtitle: Text("3 exercises",
-                    style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
-                trailing: Text("59m 39s",
-                    style: GoogleFonts.montserrat(
-                        color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 14)),
-              ),
-              const SizedBox(height: 8),
-              ListTile(
-                tileColor: sapphireLight,
-                dense: true,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                title: Text("Push Day", style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 14, fontWeight: FontWeight.w500)),
-                subtitle: Text("5 exercises",
-                    style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
-                trailing: Text("47m 39s",
-                    style: GoogleFonts.montserrat(
-                        color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 14)),
-              ),
-            ],
+          child: ListTile(
+            tileColor: sapphireLight,
+            dense: true,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            title: Text("Legs Day 1",
+                style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 14, fontWeight: FontWeight.w500)),
+            subtitle:
+                Text("3 exercises", style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
+            trailing: Text("59m 39s",
+                style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 14)),
+          ),
+        ),
+        const SizedBox(height: 8),
+        GradientWidget(
+          child: ListTile(
+            tileColor: sapphireLight,
+            dense: true,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+            title: Text("Push Day",
+                style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 14, fontWeight: FontWeight.w500)),
+            subtitle:
+                Text("5 exercises", style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
+            trailing: Text("47m 39s",
+                style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 14)),
           ),
         ),
       ],

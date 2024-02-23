@@ -13,9 +13,11 @@ import 'achievement_screen.dart';
 
 class AchievementsScreen extends StatelessWidget {
 
+  final ScrollController? scrollController;
+
   static const routeName = '/achievements_screen';
 
-  const AchievementsScreen({super.key});
+  const AchievementsScreen({super.key, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class AchievementsScreen extends StatelessWidget {
           child: SafeArea(
               minimum: const EdgeInsets.all(10.0),
               child: SingleChildScrollView(
+                controller: scrollController,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const SizedBox(height: 10),
                   Text("Milestones ${DateTime.now().year}",

@@ -1,5 +1,5 @@
 [
-  {"id": "LAT1", "name": "Straight Arm Lat Pulldown", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "LAT1", "name": "Straight Arm Lat Pulldown With Bar", "primaryMuscleGroup": "Lats", "type": "WR"},
   {"id": "LAT2", "name": "Pull Up (Assisted)", "primaryMuscleGroup": "Lats", "type": "WR"},
   {"id": "LAT3", "name": "Pull Up (Band)", "primaryMuscleGroup": "Lats", "type": "BW"},
   {"id": "LAT4", "name": "Chin Up", "primaryMuscleGroup": "Lats", "type": "BW"},
@@ -10,7 +10,7 @@
   {"id": "LAT9", "name": "Pendlay Row", "primaryMuscleGroup": "Lats", "type": "WR"},
   {"id": "LAT10", "name": "Pull Up", "primaryMuscleGroup": "Lats", "type": "BW"},
   {"id": "LAT11", "name": "Rack Pull", "primaryMuscleGroup": "Lats", "type": "WR"},
-  {"id": "LAT12", "name": "Straight Arm Lat Pulldown", "primaryMuscleGroup": "Lats", "type": "WR"},
+  {"id": "LAT12", "name": "Straight Arm Lat Pulldown With Rope", "primaryMuscleGroup": "Lats", "type": "WR"},
   {"id": "LAT13", "name": "Chin-Up (Weighted)", "primaryMuscleGroup": "Lats", "type": "WR"},
   {"id": "LAT14", "name": "Iso-Lateral High Row", "primaryMuscleGroup": "Lats", "type": "WR"},
   {"id": "LAT15", "name": "Iso-Lateral Low Row", "primaryMuscleGroup": "Lats", "type": "WR"},

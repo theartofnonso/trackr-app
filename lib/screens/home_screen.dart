@@ -13,6 +13,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routine_templates_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/utils/google_analytics.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -25,7 +26,6 @@ import '../enums/routine_editor_type_enums.dart';
 import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
   static const routeName = '/home_screen';
 
   const HomeScreen({super.key});
@@ -35,7 +35,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final ScrollController _scrollController = ScrollController();
 
   int _currentScreenIndex = 0;
@@ -45,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
       const RoutineTemplatesHome(),
-      const AchievementsScreen(),
+      AchievementsScreen(scrollController: _scrollController),
       const SettingsScreen(),
     ];
 
@@ -74,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
             label: 'Achievements',
           ),
+
           /// Uncomment this to enable Monthly Reports
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
@@ -82,9 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
         onDestinationSelected: (int index) {
+          final destination = screens[index];
           setState(() {
             _currentScreenIndex = index;
           });
+          if(destination is AchievementsScreen) recordViewMilestonesEvent();
           _scrollToTop(index);
         },
         selectedIndex: _currentScreenIndex,
@@ -93,14 +95,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _scrollToTop(int index) {
-
-    if (index == 0) { // Assuming the first tab requires scrolling to top
-      _scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 1500),
-        curve: Curves.easeInOut,
-      );
-    }
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 1500),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _loadAppData() {
@@ -154,8 +153,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         displayBottomSheet(
             context: context,
-            color: sapphireDark,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Remind me to train weekly",
                   style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),

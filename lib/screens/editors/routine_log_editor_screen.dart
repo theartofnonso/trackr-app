@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,6 @@ import '../../widgets/timers/routine_timer.dart';
 import '../exercise/exercise_library_screen.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
-
   static const routeName = '/routine-log-editor';
 
   final RoutineLogDto log;
@@ -36,7 +36,7 @@ class RoutineLogEditorScreen extends StatefulWidget {
   State<RoutineLogEditorScreen> createState() => _RoutineLogEditorScreenState();
 }
 
-class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
+class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with WidgetsBindingObserver {
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
@@ -208,6 +208,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   void _navigateBack({RoutineLogDto? log}) {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
+    FlutterLocalNotificationsPlugin().cancel(999);
     Navigator.of(context).pop(log);
   }
 
@@ -298,35 +299,42 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
                               }),
                               const SizedBox(height: 20),
                             ]),
-                          exerciseLogs.isNotEmpty
-                              ? Expanded(
-                                  child: ListView.separated(
-                                      padding: const EdgeInsets.only(bottom: 250),
-                                      itemBuilder: (BuildContext context, int index) {
-                                        final log = exerciseLogs[index];
-                                        final exerciseId = log.id;
-                                        return ExerciseLogWidget(
-                                            key: ValueKey(exerciseId),
-                                            exerciseLogDto: log,
-                                            editorType: RoutineEditorMode.log,
-                                            superSet: whereOtherExerciseInSuperSet(
-                                                firstExercise: log, exercises: exerciseLogs),
-                                            onRemoveSuperSet: (String superSetId) {
-                                              exerciseLogController.removeSuperSet(superSetId: log.superSetId);
-                                              _cacheLog();
-                                            },
-                                            onRemoveLog: () {
-                                              exerciseLogController.removeExerciseLog(logId: exerciseId);
-                                              _cacheLog();
-                                            },
-                                            onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
-                                            onCache: _cacheLog);
-                                      },
-                                      separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                      itemCount: exerciseLogs.length))
-                              : const ExerciseLogEmptyState(
-                                  mode: RoutineEditorMode.log,
-                                  message: "Tap the + button to start adding exercises to your log"),
+                          if (exerciseLogs.isNotEmpty)
+                            Expanded(
+                              child: SingleChildScrollView(
+                                padding: const EdgeInsets.only(bottom: 250),
+                                child: Column(children: [
+                                  ...exerciseLogs.map((exerciseLog) {
+                                    final log = exerciseLog;
+                                    final exerciseId = log.id;
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 10),
+                                      child: ExerciseLogWidget(
+                                          key: ValueKey(exerciseId),
+                                          exerciseLogDto: log,
+                                          editorType: RoutineEditorMode.log,
+                                          superSet:
+                                              whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                          onRemoveSuperSet: (String superSetId) {
+                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                            _cacheLog();
+                                          },
+                                          onRemoveLog: () {
+                                            exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                            _cacheLog();
+                                          },
+                                          onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                          onCache: _cacheLog),
+                                    );
+                                  })
+                                ]),
+                              ),
+                            ),
+                          if (exerciseLogs.isEmpty)
+                            const ExerciseLogEmptyState(
+                                mode: RoutineEditorMode.log,
+                                message: "Tap the + button to start adding exercises to your log"),
                         ],
                       ),
                     ),
@@ -339,6 +347,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     _initializeProcedureData();
 
@@ -356,8 +366,28 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _onDisposeCallback();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      FlutterLocalNotificationsPlugin().cancel(999);
+    }
+
+    if (state == AppLifecycleState.paused) {
+      FlutterLocalNotificationsPlugin()
+          .periodicallyShow(999, "${widget.log.name} is still running", "Tap to continue training", RepeatInterval.hourly, const NotificationDetails(
+        iOS: DarwinNotificationDetails(
+          presentAlert: false,
+          presentBadge: false,
+          presentSound: false,
+          presentBanner: false,
+        ),
+      ));
+    }
   }
 }
 

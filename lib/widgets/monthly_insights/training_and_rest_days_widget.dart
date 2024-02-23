@@ -1,24 +1,28 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/strings.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../dtos/routine_log_dto.dart';
 
 class TrainingAndRestDaysWidget extends StatelessWidget {
-  final List<RoutineLogDto> monthAndLogs;
+  final DateTimeRange dateTimeRange;
+  final List<RoutineLogDto> logs;
   final int daysInMonth;
 
-  const TrainingAndRestDaysWidget({super.key, required this.monthAndLogs, required this.daysInMonth});
+  const TrainingAndRestDaysWidget(
+      {super.key, required this.dateTimeRange, required this.logs, required this.daysInMonth});
 
   @override
   Widget build(BuildContext context) {
+    final totalTrainingDays = logs.length;
+    final totalRestDays = daysInMonth - totalTrainingDays;
 
-    final numberOfTrainingDays = monthAndLogs.length;
-    final numberOfRestDays = daysInMonth - numberOfTrainingDays;
-
-    final averageRestDays = numberOfRestDays ~/ (numberOfTrainingDays > 0 ? numberOfTrainingDays : 1);
+    final averageRestDays = _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,9 +53,9 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                         child: Center(
                           child: SleepTimeColumn(
                               title: 'TRAINING',
-                              subTitle: "$numberOfTrainingDays",
-                              titleColor: consistencyHealthColor(value: numberOfTrainingDays / 12),
-                              subTitleColor: consistencyHealthColor(value: numberOfTrainingDays / 12)),
+                              subTitle: "$totalTrainingDays",
+                              titleColor: consistencyHealthColor(value: totalTrainingDays / 12),
+                              subTitleColor: consistencyHealthColor(value: totalTrainingDays / 12)),
                         ),
                       ),
                       TableCell(
@@ -69,7 +73,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                         child: Center(
                           child: SleepTimeColumn(
                               title: 'TOTAL REST',
-                              subTitle: "$numberOfRestDays",
+                              subTitle: "$totalRestDays",
                               titleColor: Colors.white,
                               subTitleColor: Colors.white),
                         ),
@@ -78,13 +82,32 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 26),
-                Text(numberOfTrainingDays < 12 ? lowStreak : highStreak,
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
-
+                Text(totalTrainingDays < 12 ? lowStreak : highStreak,
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center),
               ],
             )),
       ],
     );
+  }
+
+  int _averageDaysBetween({required List<RoutineLogDto> logs, required List<DateTime> datesInMonth}) {
+
+    if(logs.isEmpty) return 0;
+
+    List<int> daysInBetween = [];
+
+    for (int i = 0; i < logs.length; i++) {
+      final currentLog = logs[i].createdAt.withoutTimeStamp();
+      if (i == logs.length - 1) break; // Break if we are at the last log (no more intervals to calculate)
+      final nextLog = logs[i + 1].createdAt.withoutTimeStamp();
+      final daysBetween = nextLog.difference(currentLog).inDays - 1;
+      if (daysBetween > 0) {
+        daysInBetween.add(daysBetween);
+      }
+    }
+    // Calculate the average by dividing the total difference by the number of intervals
+    return (daysInBetween.sum / daysInBetween.length).round();
   }
 }
 

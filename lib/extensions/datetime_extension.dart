@@ -149,12 +149,28 @@ extension DateTimeExtension on DateTime {
     return datetime.isBetweenRange(range: currentYearRange);
   }
 
-  DateTime dateOnly() {
+  DateTime withoutTimeStamp() {
     return DateTime(year, month, day);
   }
 
   DateTime previous90Days() {
-    return subtract(const Duration(days: 90)).dateOnly();
+    return subtract(const Duration(days: 90)).withoutTimeStamp();
   }
+
+  List<DateTime> datesForWeek() {
+    List<DateTime> weekDates = [];
+    // Subtract the weekday number from the current date to get to the first day of the week
+    // Dart's DateTime.weekday returns 1 for Monday and 7 for Sunday
+    DateTime firstDayOfWeek = subtract(Duration(days: weekday - 1));
+
+    // Iterate from the first day of the week to the next 7 days
+    for (int i = 0; i < 7; i++) {
+      // Add each day to the list
+      weekDates.add(firstDayOfWeek.add(Duration(days: i)).withoutTimeStamp());
+    }
+
+    return weekDates;
+  }
+
 
 }

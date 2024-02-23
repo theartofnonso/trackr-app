@@ -18,6 +18,9 @@ import '../../widgets/information_container.dart';
 import '../exercise/exercise_type_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
+
+  static const routeName = '/exercise-editor';
+
   final ExerciseDto? exercise;
 
   const ExerciseEditorScreen({super.key, this.exercise});
@@ -178,8 +181,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     });
     await displayBottomSheet(
         context: context,
-        color: sapphireDark80,
-        padding: const EdgeInsets.all(20),
         child: TextField(
           controller: TextEditingController(text: _exerciseName),
           decoration: InputDecoration(
@@ -208,6 +209,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     if (exerciseName.isEmpty) {
       _showSnackbar("Please provide a name for this exercise");
     } else {
+
       final exercise = ExerciseDto(
           id: "", name: exerciseName, primaryMuscleGroup: _primaryMuscleGroup, type: _exerciseType, owner: true);
 

@@ -48,6 +48,10 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Allow trkr to save your photos</string>
+    <string>Allow TRKR to save your photos</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allow TRKR to access your photos</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Allow TRKR to access your camera</string>
 </dict>
 </plist>

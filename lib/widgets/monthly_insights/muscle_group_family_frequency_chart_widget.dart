@@ -12,6 +12,7 @@ import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/google_analytics.dart';
 import '../chart/bar_chart.dart';
 import '../chart/legend.dart';
 
@@ -55,7 +56,10 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName),
+            onTap: () {
+              recordViewMuscleTrendEvent();
+              Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+            },
             child: Container(
               color: Colors.transparent,
               child: Row(
@@ -123,10 +127,6 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               color: vibrantGreen,
             ),
           ]),
-          //const SizedBox(height: 12),
-          // Text(
-          //     "The average frequency of muscle groups trained in a week is 2 times. Trackr calculates this by tracking the number of times a muscle group is trained.",
-          //     style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );

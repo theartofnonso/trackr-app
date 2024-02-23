@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
@@ -13,6 +14,7 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../strings.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/google_analytics.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/shareables_utils.dart';
@@ -53,7 +55,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           endTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log, emptySession: true);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     } else {
       showSnackbar(context: context, icon: const Icon(Icons.info_outline_rounded), message: "${log.name} is running");
@@ -124,7 +126,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         ),
                         const SizedBox(height: 12),
                         MonthlyInsightsScreen(
-                            monthAndLogs: logsForTheMonth, daysInMonth: _dateTimeRange.datesToNow.length),
+                          logs: logsForTheMonth,
+                          daysInMonth: _dateTimeRange.datesToNow.length,
+                          dateTimeRange: _dateTimeRange,
+                        ),
                       ])),
                 )
                 // Add more widgets here for exercise insights
@@ -143,28 +148,52 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onShareCalendar({required BuildContext context}) {
     displayBottomSheet(
-        color: sapphireDark,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         context: context,
-        isScrollControlled: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          RepaintBoundary(
-              key: calendarKey,
-              child: Container(
-                  color: sapphireDark,
-                  padding: const EdgeInsets.all(8),
-                  child: Calendar(readOnly: true, range: _dateTimeRange))),
-          const SizedBox(height: 10),
-          CTextButton(
-              onPressed: () {
-                captureImage(key: calendarKey, pixelRatio: 5);
-                Navigator.of(context).pop();
-              },
-              label: "Share",
-              buttonColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              buttonBorderColor: Colors.transparent)
-        ]));
+        isScrollControlled: false,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RepaintBoundary(
+                  key: calendarKey,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              sapphireDark80,
+                              sapphireDark,
+                            ],
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Calendar(readOnly: true, range: _dateTimeRange),
+                            const SizedBox(height: 12),
+                            Image.asset(
+                              'images/trackr.png',
+                              fit: BoxFit.contain,
+                              height: 8, // Adjust the height as needed
+                            ),
+                          ],
+                        )),
+                  )),
+              CTextButton(
+                  onPressed: () {
+                    captureImage(key: calendarKey, pixelRatio: 5);
+                    recordShareEvent(contentType: ShareContentType.calender);
+                    Navigator.of(context).pop();
+                  },
+                  label: "Share",
+                  buttonColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  buttonBorderColor: Colors.transparent)
+            ]));
   }
 
   @override
