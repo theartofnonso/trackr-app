@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
@@ -15,6 +14,7 @@ import '../../utils/google_analytics.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/exercise/exercise_widget.dart';
 import '../../widgets/exercise/selectable_exercise_widget.dart';
+import '../editors/exercise_editor_screen.dart';
 import 'history/home_screen.dart';
 
 class ExerciseInLibraryDto {
@@ -130,7 +130,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseEditor() async {
-    await navigateToExerciseEditor(context: context);
+    await Navigator.of(context).pushNamed(ExerciseEditorScreen.routeName);
     if (mounted) {
       setState(() {
         _exercisesInLibrary = _updateSelections();
