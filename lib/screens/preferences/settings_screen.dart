@@ -197,9 +197,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       });
       if (!isEnabled) {
         if (mounted) {
-          showAlertDialogWithMultiActions(
+          showBottomSheetWithMultiActions(
               context: context,
-              message: "Enable notifications?",
+              title: "Enable notifications?",
+              description: "You need to enable notifications to receive reminders.",
               leftAction: Navigator.of(context).pop,
               rightAction: () {},
               leftActionLabel: "Cancel",
@@ -223,9 +224,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _logout() async {
-    showAlertDialogWithMultiActions(
+    showBottomSheetWithMultiActions(
         context: context,
-        message: "Log out?",
+        title: "Log out?",
+        description: "Are you sure you want to log out?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           _toggleLoadingState(message: "Logging out...");
@@ -249,9 +251,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _delete() async {
-    showAlertDialogWithMultiActions(
+    showBottomSheetWithMultiActions(
         context: context,
-        message: "Delete account?",
+        title: "Delete account?",
+        description: "Are you sure you want to delete your account? This action cannot be undone.",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();

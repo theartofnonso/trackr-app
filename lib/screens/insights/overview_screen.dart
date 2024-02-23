@@ -39,7 +39,6 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-
   bool _showNotificationBanner = false;
 
   String? _trainedMuscleGroupsNames;
@@ -126,61 +125,57 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 10),
                         OverviewMonitor(routineLogs: logsForTheMonth),
-                        if(_showNotificationBanner)
+                        if (_showNotificationBanner)
                           Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 20),
-                            InformationContainer(
-                                leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, color: Colors.white, size: 16),
-                                trailingIcon:
-                                    GestureDetector(
-                                        onTap: _hideNotificationBanner,
-                                        child: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen, size: 22)),
-                                title: "This week's goal",
-                                richDescription: RichText(
-                                    text: TextSpan(
-                                        text: "You trained only",
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.white70,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.5),
-                                        children: [
-                                      const TextSpan(text: " "),
-                                      TextSpan(
-                                          text: _trainedMuscleGroupsNames,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
+                              InformationContainer(
+                                  leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, color: Colors.white, size: 16),
+                                  trailingIcon: GestureDetector(
+                                      onTap: _hideNotificationBanner,
+                                      child: const FaIcon(FontAwesomeIcons.solidSquareCheck,
+                                          color: vibrantGreen, size: 22)),
+                                  title: "This week's goal",
+                                  richDescription: RichText(
+                                      text: TextSpan(
+                                          text: "You trained only",
                                           style: GoogleFonts.montserrat(
-                                              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                                      const TextSpan(text: " "),
-                                          TextSpan(
-                                              text: "last week.",
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
-                                          const TextSpan(text: " "),
-                                      TextSpan(
-                                          text: "Try to include",
-                                          style: GoogleFonts.montserrat(
-                                              color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
-                                      const TextSpan(text: " "),
-                                      TextSpan(
-                                          text: _untrainedMuscleGroupsNames,
-                                          style: GoogleFonts.montserrat(
-                                              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                                      const TextSpan(text: " "),
-                                      TextSpan(
-                                          text: "in your training this week.",
-                                          style: GoogleFonts.montserrat(
-                                              color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
-                                    ])),
-                                color: sapphireDark60),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const InformationContainerLite(
-                            content: overviewMonitor,
-                            color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
+                                              color: Colors.white70,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              height: 1.5),
+                                          children: [
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                            text: _trainedMuscleGroupsNames,
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                            text: "last week.",
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                            text: "Try to include",
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                            text: _untrainedMuscleGroupsNames,
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                            text: "in your training this week.",
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
+                                      ])),
+                                  color: sapphireDark60),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
                         Calendar(
                           range: _dateTimeRange,
                         ),
@@ -200,7 +195,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _checkForUntrainedMuscles() {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     final lastWeekRange = DateTime.now().lastWeekRange();
@@ -222,7 +216,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     _untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
     _showNotificationBanner = untrainedMuscleGroups.isNotEmpty;
-
   }
 
   void _hideNotificationBanner() {

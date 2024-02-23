@@ -69,9 +69,10 @@ class HomeScreen extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          showAlertDialogWithMultiActions(
+          showBottomSheetWithMultiActions(
               context: context,
-              message: "Delete exercise?",
+              title: "Delete exercise?",
+              description: "Are you sure you want to delete this exercise?",
               leftAction: Navigator.of(context).pop,
               rightAction: () => _deleteExercise(context),
               leftActionLabel: 'Cancel',

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../dtos/routine_log_dto.dart';
+import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/google_analytics.dart';
@@ -27,45 +30,60 @@ class OverviewMonitor extends StatelessWidget {
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-            onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
+    return Stack(children: [
+      Positioned.fill(
+        right: 14,
+        child: GestureDetector(
+          onTap: () => _showMonitorInfo(context: context),
+          child: const Align(
+              alignment: Alignment.bottomRight,
+              child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+              onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
+              child: Container(
+                color: Colors.transparent,
+                width: 85,
+                child: _MonitorScore(
+                  value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
+                  title: "Streak",
+                  color: consistencyHealthColor(value: monthlyProgress),
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                ),
+              )),
+          const SizedBox(width: 20),
+          Stack(alignment: Alignment.center, children: [
+            StreakHealthMonitor(value: monthlyProgress),
+            MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
+          ]),
+          const SizedBox(width: 20),
+          GestureDetector(
+            onTap: () {
+              recordViewMuscleTrendEvent();
+              Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+            },
             child: Container(
               color: Colors.transparent,
               width: 85,
               child: _MonitorScore(
-                value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
-                title: "Streak",
-                color: consistencyHealthColor(value: monthlyProgress),
-                crossAxisAlignment: CrossAxisAlignment.end,
+                value: "$splitPercentage%",
+                color: Colors.white,
+                title: "Muscle",
+                crossAxisAlignment: CrossAxisAlignment.start,
               ),
-            )),
-        const SizedBox(width: 20),
-        Stack(alignment: Alignment.center, children: [
-          StreakHealthMonitor(value: monthlyProgress),
-          MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore)
-        ]),
-        const SizedBox(width: 20),
-        GestureDetector(
-          onTap: () {
-            recordViewMuscleTrendEvent();
-            Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
-          },
-          child: Container(
-            color: Colors.transparent,
-            width: 85,
-            child: _MonitorScore(
-              value: "$splitPercentage%",
-              color: Colors.white,
-              title: "Muscle",
-              crossAxisAlignment: CrossAxisAlignment.start,
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      ),
+    ]);
+  }
+
+  void _showMonitorInfo({required BuildContext context}) {
+    showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
   }
 }
 

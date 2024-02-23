@@ -11,7 +11,6 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
@@ -370,9 +369,10 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   }
 
   void _deleteLog() {
-    showAlertDialogWithMultiActions(
+    showBottomSheetWithMultiActions(
         context: context,
-        message: "Delete log?",
+        title: "Delete log?",
+        description: "Are you sure you want to delete this log?",
         leftAction: Navigator.of(context).pop,
         rightAction: () {
           Navigator.of(context).pop();
@@ -406,22 +406,23 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (templateChanges.isNotEmpty) {
-        displayBottomSheet(
-            isDismissible: false,
-            enabledDrag: false,
+        showBottomSheetWithMultiActions(
             context: context,
-            child: _TemplateChangesDialog(
-                templateName: routineTemplate.name,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _doUpdateTemplate();
-                  _onShareLog(log: widget.log);
-                },
-                onDismissed: () {
-                  Navigator.of(context).pop();
-                  _doUpdateTemplateSetsOnly();
-                  _onShareLog(log: widget.log);
-                }));
+            title: "Update ${routineTemplate.name}?",
+            description: "You have made changes to this template. Do you want to update it",
+            leftAction: () {
+              Navigator.of(context).pop();
+              _doUpdateTemplateSetsOnly();
+              _onShareLog(log: widget.log);
+            },
+            rightAction: () {
+              Navigator.of(context).pop();
+              _doUpdateTemplate();
+              _onShareLog(log: widget.log);
+            },
+            leftActionLabel: 'Cancel',
+            rightActionLabel: 'Update Template',
+            isLeftActionDestructive: false);
       } else {
         _doUpdateTemplate();
         _onShareLog(log: widget.log);
@@ -436,47 +437,5 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
     if (widget.finishedLogging) {
       _checkForTemplateUpdates();
     }
-  }
-}
-
-class _TemplateChangesDialog extends StatelessWidget {
-  final String templateName;
-  final void Function() onPressed;
-  final void Function() onDismissed;
-
-  const _TemplateChangesDialog({required this.templateName, required this.onPressed, required this.onDismissed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text("Update $templateName?",
-            style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
-            textAlign: TextAlign.start),
-        Text("You have made changes to this template. Do you want to update it",
-            style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-            textAlign: TextAlign.start),
-        const SizedBox(height: 16),
-        Row(children: [
-          const SizedBox(width: 15),
-          CTextButton(
-              onPressed: onDismissed,
-              label: "Cancel",
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),
-              buttonColor: Colors.transparent,
-              buttonBorderColor: Colors.transparent),
-          const SizedBox(width: 10),
-          CTextButton(
-              onPressed: onPressed,
-              label: "Update Template",
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
-              buttonColor: vibrantGreen)
-        ])
-      ],
-    );
   }
 }
