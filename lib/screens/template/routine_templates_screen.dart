@@ -27,12 +27,11 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
       final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
 
-      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys;
+      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
 
-      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies();
+      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
-      final untrainedMuscleGroups =
-          listOfPopularMuscleGroupFamilies.whereNot((family) => muscleGroupFamilies.contains(family)).toList();
+      final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 
       String untrainedMuscleGroupsNames = "";
 

@@ -96,7 +96,7 @@ class AchievementScreen extends StatelessWidget {
                 ),
               const SizedBox(height: 10),
               InformationContainer(
-                  icon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                  leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                   title: 'Tip',
                   description: achievementDto.type.tip,
                   color: sapphireDark),

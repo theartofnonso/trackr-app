@@ -172,5 +172,12 @@ extension DateTimeExtension on DateTime {
     return weekDates;
   }
 
+  DateTimeRange lastWeekRange() {
+    DateTime today = DateTime(year, month, day);
+    DateTime endOfLastWeek = today.subtract(Duration(days: today.weekday)); // Assuming week starts on Sunday
+    DateTime startOfLastWeek = endOfLastWeek.subtract(const Duration(days: 6));
+    return DateTimeRange(start: startOfLastWeek, end: endOfLastWeek);
+  }
+
 
 }

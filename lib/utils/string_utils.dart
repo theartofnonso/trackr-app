@@ -28,3 +28,21 @@ String volumeInKOrM(double number) {
     return '${(number / 1000000).toStringAsFixed(1)}M';
   }
 }
+
+String joinWithAnd({required List<String> items}) {
+  // Check if the list is empty
+  if (items.isEmpty) {
+    return "";
+  }
+
+  // Check if the list has only one item
+  if (items.length == 1) {
+    return items.first;
+  }
+
+  // Join all elements except the last one with ', '
+  String allButLast = items.sublist(0, items.length - 1).join(', ');
+
+  // Return the string with the last item appended with 'and'
+  return '$allButLast and ${items.last}';
+}
