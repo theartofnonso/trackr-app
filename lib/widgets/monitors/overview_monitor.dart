@@ -30,66 +30,64 @@ class OverviewMonitor extends StatelessWidget {
 
     final splitPercentage = (muscleGroupsSplitFrequencyScore * 100).round();
 
-    return Stack(children: [
-      Positioned.fill(
-        right: 14,
-        child: GestureDetector(
-          onTap: () => _showMonitorInfo(context: context),
-          child: const Align(
-              alignment: Alignment.bottomRight,
-              child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
+    return Center(
+      child: Stack(children: [
+        Positioned.fill(
+          right: 14,
+          child: GestureDetector(
+            onTap: () => _showMonitorInfo(context: context),
+            child: const Align(
+                alignment: Alignment.bottomRight,
+                child: FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white38, size: 18)),
+          ),
         ),
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(width: 20),
-          Stack(alignment: Alignment.center, children: [
-            StreakHealthMonitor(value: monthlyProgress),
-            MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
-            Image.asset(
-              'images/trackr.png',
-              fit: BoxFit.contain,
-              color: Colors.white54,
-              height: 8, // Adjust the height as needed
-            )
-          ]),
-          const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                  onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
-                  child: Container(
-                    color: Colors.transparent,
-                    child: _MonitorScore(
-                      value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
-                      title: "Log Streak",
-                      color: consistencyHealthColor(value: monthlyProgress),
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    ),
-                  )),
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  recordViewMuscleTrendEvent();
-                  Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
-                },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+                onTap: () => navigateToRoutineLogs(context: context, logs: routineLogs),
                 child: Container(
                   color: Colors.transparent,
+                  width: 100,
                   child: _MonitorScore(
-                    value: "$splitPercentage%",
-                    color: Colors.white,
-                    title: "Muscle trained",
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
+                    title: "Log Streak",
+                    color: consistencyHealthColor(value: monthlyProgress),
+                    crossAxisAlignment: CrossAxisAlignment.end,
                   ),
+                )),
+            const SizedBox(width: 20),
+            Stack(alignment: Alignment.center, children: [
+              StreakHealthMonitor(value: monthlyProgress),
+              MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
+              Image.asset(
+                'images/trackr.png',
+                fit: BoxFit.contain,
+                color: Colors.white54,
+                height: 8, // Adjust the height as needed
+              )
+            ]),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                recordViewMuscleTrendEvent();
+                Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+              },
+              child: Container(
+                color: Colors.transparent,
+                width: 100,
+                child: _MonitorScore(
+                  value: "$splitPercentage%",
+                  color: Colors.white,
+                  title: "Muscle",
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
-    ]);
+            ),
+          ],
+        ),
+      ]),
+    );
   }
 
   void _showMonitorInfo({required BuildContext context}) {
@@ -108,9 +106,8 @@ class _MonitorScore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-
+    return Column(
+      crossAxisAlignment: crossAxisAlignment,
       children: [
         Text(
           value,
@@ -120,7 +117,7 @@ class _MonitorScore extends StatelessWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(height: 4),
         Text(
           title.toUpperCase(),
           textAlign: TextAlign.center,

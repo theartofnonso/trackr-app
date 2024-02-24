@@ -13,7 +13,6 @@ import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/google_analytics.dart';
 import '../../utils/navigation_utils.dart';
@@ -23,7 +22,6 @@ import '../../utils/string_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/information_container.dart';
-import '../../widgets/information_container_lite.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
 
@@ -123,7 +121,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
-                        const SizedBox(height: 10),
                         OverviewMonitor(routineLogs: logsForTheMonth),
                         if (_showNotificationBanner)
                           Column(
