@@ -80,7 +80,7 @@ class OverviewMonitor extends StatelessWidget {
                   child: _MonitorScore(
                     value: "$splitPercentage%",
                     color: Colors.white,
-                    title: "Muscle",
+                    title: "Muscle trained",
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
@@ -125,8 +125,8 @@ class _MonitorScore extends StatelessWidget {
           title.toUpperCase(),
           textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
-            color: color.withOpacity(0.5),
-            fontSize: 12,
+            color: color.withOpacity(0.7),
+            fontSize: 10,
             fontWeight: FontWeight.w800,
           ),
         )
