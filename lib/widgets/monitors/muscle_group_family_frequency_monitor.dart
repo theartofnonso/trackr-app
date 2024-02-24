@@ -18,7 +18,7 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
         value: value,
         strokeWidth: 8,
         backgroundColor: sapphireDark80,
-        strokeCap: StrokeCap.round,
+        strokeCap: StrokeCap.butt,
         valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
       ),
     );

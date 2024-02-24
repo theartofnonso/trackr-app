@@ -29,7 +29,7 @@ class _StreakHealthMonitorState extends State<StreakHealthMonitor> {
         value: widget.value,
         strokeWidth: 8,
         backgroundColor: sapphireDark80,
-        strokeCap: StrokeCap.round,
+        strokeCap: StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: widget.value)),
       ),
     );
