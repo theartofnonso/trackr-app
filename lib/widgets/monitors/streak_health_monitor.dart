@@ -3,7 +3,7 @@ import 'package:tracker_app/colors.dart';
 
 import '../../utils/general_utils.dart';
 
-class StreakHealthMonitor extends StatefulWidget {
+class StreakHealthMonitor extends StatelessWidget {
   final double value;
 
   const StreakHealthMonitor({
@@ -11,11 +11,6 @@ class StreakHealthMonitor extends StatefulWidget {
     required this.value,
   }) : super(key: key);
 
-  @override
-  State<StreakHealthMonitor> createState() => _StreakHealthMonitorState();
-}
-
-class _StreakHealthMonitorState extends State<StreakHealthMonitor> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,11 +21,11 @@ class _StreakHealthMonitorState extends State<StreakHealthMonitor> {
         borderRadius: BorderRadius.circular(100),
       ),
       child: CircularProgressIndicator(
-        value: widget.value,
+        value: value,
         strokeWidth: 8,
         backgroundColor: sapphireDark80,
         strokeCap: StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: widget.value)),
+        valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: value)),
       ),
     );
   }
