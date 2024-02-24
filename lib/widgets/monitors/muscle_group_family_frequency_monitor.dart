@@ -12,8 +12,8 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 80,
-      height: 80,
+      width: 70,
+      height: 70,
       child: CircularProgressIndicator(
         value: value,
         strokeWidth: 8,

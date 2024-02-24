@@ -121,12 +121,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
+                        const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
                         if (_showNotificationBanner)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 16),
                               InformationContainer(
                                   leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, color: Colors.white, size: 16),
                                   trailingIcon: GestureDetector(
