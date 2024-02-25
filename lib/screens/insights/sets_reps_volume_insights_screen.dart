@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,14 +16,12 @@ import '../../dtos/set_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
-import '../../health_and_fitness_stats.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
-
   static const routeName = '/sets_and_reps_volume_insights_screen';
 
   const SetsAndRepsVolumeInsightsScreen({super.key});
@@ -82,6 +79,26 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final periods = periodicalValues.mapIndexed((index, monthEntry) {
       return "WK ${index + 1}";
     }).toList();
+
+    final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
+    final totalSufficient = _weightWhere(
+        values: nonZeroValues,
+        condition: (value) => value >= _sufficientSetsOrRepsValue() && value < _optimalSetsOrRepsValue());
+    final totalMinimum = _weightWhere(
+        values: nonZeroValues,
+        condition: (value) => value >= _minimumSetsOrRepsValue() && value < _sufficientSetsOrRepsValue());
+
+    final weights = [totalOptimal, totalSufficient, totalMinimum];
+
+    final weightColors = [vibrantGreen, vibrantBlue, Colors.orange];
+
+    print(periodicalValues);
+
+    final barColors = periodicalValues
+        .map((value) => _metric == SetRepsVolumeReps.sets
+            ? setsTrendColor(sets: value.toInt())
+            : repsTrendColor(reps: value.toInt()))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -167,7 +184,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                         RichText(
                           text: TextSpan(
                             text:
-                                "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble()) : avgValue}",
+                                "${_metric == SetRepsVolumeReps.volume ? volumeInKOrM(avgValue.toDouble(), showLessThan1k: false) : avgValue}",
                             style:
                                 GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 28),
                             children: [
@@ -254,6 +271,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     child: CustomBarChart(
                       chartPoints: chartPoints,
                       periods: periods,
+                      barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
                       unit: _chartUnit(),
                       bottomTitlesInterval: _period == ChartPeriod.month
                           ? 1
@@ -261,75 +279,38 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                               ? 4
                               : 2,
                       showTopTitles: _period == ChartPeriod.month ? true : false,
-                      showLeftTitles: _period == ChartPeriod.month ? false : true,
-                      extraLinesData: _isRepsOrSetsMetric()
-                          ? ExtraLinesData(
-                              horizontalLines: [
-                                HorizontalLine(
-                                  y: _averageMaximumWeeklyValue(),
-                                  color: vibrantGreen.withOpacity(0.5),
-                                  strokeWidth: 2,
-                                  strokeCap: StrokeCap.round,
-                                  dashArray: [8],
-                                  label: HorizontalLineLabel(
-                                    show: true,
-                                    alignment: Alignment.topRight,
-                                    style: GoogleFonts.montserrat(
-                                        color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                HorizontalLine(
-                                  y: _averageMedianWeeklyValue(),
-                                  color: vibrantBlue.withOpacity(0.5),
-                                  strokeWidth: 2,
-                                  dashArray: [8],
-                                  strokeCap: StrokeCap.round,
-                                  label: HorizontalLineLabel(
-                                    show: true,
-                                    alignment: Alignment.topRight,
-                                    style: GoogleFonts.montserrat(
-                                        color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                HorizontalLine(
-                                  y: _averageMinimumWeeklyValue(),
-                                  color: Colors.red.withOpacity(0.5),
-                                  strokeWidth: 2,
-                                  strokeCap: StrokeCap.round,
-                                  dashArray: [8],
-                                  label: HorizontalLineLabel(
-                                    show: true,
-                                    alignment: Alignment.topRight,
-                                    style: GoogleFonts.montserrat(
-                                        color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : null,
+                      showLeftTitles: true,
+                      reservedSize: _reservedSize(),
                     )),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 if (_isRepsOrSetsMetric())
-                  Column(children: [
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      "${_metric.name} Breakdown".toUpperCase(),
+                      style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                    ),
+                    const SizedBox(height: 14),
+                    HorizontalStackedBars(weights: weights, colors: weightColors),
+                    const SizedBox(height: 10),
                     Legend(
-                      title: "${_averageMinimumWeeklyValue().toInt()}", //
+                      title: "$totalOptimal",
                       suffix: "x",
-                      subTitle: 'Minimum',
-                      color: Colors.red,
+                      subTitle: 'Optimal (>12 ${_metric.name})',
+                      color: vibrantGreen,
                     ),
                     const SizedBox(height: 6),
                     Legend(
-                      title: "${_averageMedianWeeklyValue().toInt()}",
+                      title: "$totalSufficient",
                       suffix: "x",
-                      subTitle: 'Sufficient',
+                      subTitle: 'Sufficient (6-12 ${_metric.name})',
                       color: vibrantBlue,
                     ),
                     const SizedBox(height: 6),
                     Legend(
-                      title: "${_averageMaximumWeeklyValue().toInt()}",
+                      title: "$totalMinimum", //
                       suffix: "x",
-                      subTitle: 'Optimal',
-                      color: vibrantGreen,
+                      subTitle: 'Minimum (<6 ${_metric.name})',
+                      color: Colors.orange,
                     ),
                   ])
               ],
@@ -338,6 +319,10 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         ),
       ),
     );
+  }
+
+  int _weightWhere({required List<num> values, required bool Function(num) condition}) {
+    return values.where(condition).length;
   }
 
   DateTime toFirstDayOfWeek(DateTime date) {
@@ -359,8 +344,28 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
+  double _reservedSize() {
+    return switch (_metric) {
+      SetRepsVolumeReps.sets => 20,
+      SetRepsVolumeReps.reps => 35,
+      SetRepsVolumeReps.volume => 40,
+    };
+  }
+
   bool _isRepsOrSetsMetric() {
     return _metric == SetRepsVolumeReps.sets || _metric == SetRepsVolumeReps.reps;
+  }
+
+  int _minimumSetsOrRepsValue() {
+    return _metric == SetRepsVolumeReps.sets ? 3 : 30;
+  }
+
+  int _sufficientSetsOrRepsValue() {
+    return _metric == SetRepsVolumeReps.sets ? 6 : 60;
+  }
+
+  int _optimalSetsOrRepsValue() {
+    return _metric == SetRepsVolumeReps.sets ? 12 : 120;
   }
 
   ChartUnit _chartUnit() {
@@ -380,30 +385,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
-  double _averageMinimumWeeklyValue() {
-    if (_metric == SetRepsVolumeReps.sets) {
-      return averageMinimumWeeklySets.toDouble();
-    } else {
-      return averageMinimumWeeklyReps.toDouble();
-    }
-  }
-
-  double _averageMaximumWeeklyValue() {
-    if (_metric == SetRepsVolumeReps.sets) {
-      return averageMaximumWeeklySets.toDouble();
-    } else {
-      return averageMaximumWeeklyReps.toDouble();
-    }
-  }
-
-  double _averageMedianWeeklyValue() {
-    if (_metric == SetRepsVolumeReps.sets) {
-      return averageMedianWeeklySets.toDouble();
-    } else {
-      return averageMedianWeeklyReps.toDouble();
-    }
-  }
-
   DateTimeRange _periodDateTimeRange() {
     final now = DateTime.now();
     return switch (_period) {
@@ -418,4 +399,43 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
     _dateTimeRange = thisMonthDateRange();
   }
+}
+
+class HorizontalStackedBars extends StatelessWidget {
+  final List<int> weights;
+  final List<Color> colors;
+
+  const HorizontalStackedBars({super.key, required this.weights, required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    // Define the weights and colors for the bars
+    final List<Bar> bars = weights.mapIndexed((index, value) => Bar(weight: value, color: colors[index])).toList();
+
+    // Calculate the total weight
+    final int totalWeight = bars.fold(0, (previousValue, bar) => previousValue + bar.weight);
+
+    // Create a list of Expanded widgets based on the weights
+    final List<Widget> weightedBars = bars.map((bar) {
+      return Expanded(
+        flex: (bar.weight * 10 ~/ totalWeight), // Calculate the flex factor based on the weight
+        child: Container(
+          height: 10, // Fixed height for all bars
+          color: bar.color,
+        ),
+      );
+    }).toList();
+
+    return Row(
+      children: weightedBars,
+    );
+  }
+}
+
+// A simple class to hold the weight and color for a bar
+class Bar {
+  final int weight;
+  final Color color;
+
+  Bar({required this.weight, required this.color});
 }

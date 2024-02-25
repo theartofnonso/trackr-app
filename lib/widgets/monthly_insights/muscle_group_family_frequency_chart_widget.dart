@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -14,7 +14,6 @@ import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/google_analytics.dart';
 import '../chart/bar_chart.dart';
-import '../chart/legend.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
   const MuscleGroupFamilyFrequencyChartWidget({super.key});
@@ -25,7 +24,7 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
 
     final periodicalLogs = routineLogController.monthlyLogs;
 
-    final muscleGroupsSplitFrequencyScores = [];
+    List<int> muscleGroupsSplitFrequencyScores = [];
 
     for (var periodAndLogs in periodicalLogs.entries) {
       final exerciseLogsForTheMonth = periodAndLogs.value.expand((log) => log.exerciseLogs).toList();
@@ -39,6 +38,9 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
     final chartPoints = muscleGroupsSplitFrequencyScores
         .mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
         .toList();
+
+    final scoreColors =
+        muscleGroupsSplitFrequencyScores.map((score) => muscleFamilyFrequencyColor(value: score / 100)).toList();
 
     final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
@@ -78,55 +80,13 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
               child: CustomBarChart(
                 chartPoints: chartPoints,
                 periods: dateTimes,
+                barColors: scoreColors,
                 unit: ChartUnit.number,
                 bottomTitlesInterval: 1,
                 showLeftTitles: true,
                 maxY: 100,
-                extraLinesData: ExtraLinesData(
-                  horizontalLines: [
-                    HorizontalLine(
-                      y: 80,
-                      color: vibrantGreen,
-                      strokeWidth: 1.5,
-                      strokeCap: StrokeCap.round,
-                      dashArray: [10],
-                      label: HorizontalLineLabel(
-                        show: true,
-                        alignment: Alignment.topRight,
-                        style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    HorizontalLine(
-                      y: 50,
-                      color: vibrantBlue,
-                      strokeWidth: 1.5,
-                      strokeCap: StrokeCap.round,
-                      dashArray: [10],
-                      label: HorizontalLineLabel(
-                        show: true,
-                        alignment: Alignment.topRight,
-                        style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-          const SizedBox(height: 10),
-          const Column(children: [
-            Legend(
-              title: "50", //
-              suffix: "%",
-              subTitle: 'Sufficient',
-              color: vibrantBlue,
-            ),
-            SizedBox(height: 6),
-            Legend(
-              title: "80",
-              suffix: "%",
-              subTitle: 'Optimal',
-              color: vibrantGreen,
-            ),
-          ]),
+                reservedSize: 25,
+              ))
         ],
       ),
     );

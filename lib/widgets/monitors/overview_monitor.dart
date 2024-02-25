@@ -11,7 +11,7 @@ import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/google_analytics.dart';
-import 'streak_health_monitor.dart';
+import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
 class OverviewMonitor extends StatelessWidget {
@@ -52,13 +52,13 @@ class OverviewMonitor extends StatelessWidget {
                   child: _MonitorScore(
                     value: "${routineLogs.length} ${pluralize(word: "day", count: routineLogs.length)}",
                     title: "Log Streak",
-                    color: consistencyHealthColor(value: monthlyProgress),
+                    color: logStreakColor(value: monthlyProgress),
                     crossAxisAlignment: CrossAxisAlignment.end,
                   ),
                 )),
             const SizedBox(width: 20),
             Stack(alignment: Alignment.center, children: [
-              StreakHealthMonitor(value: monthlyProgress),
+              LogStreakMonitor(value: monthlyProgress),
               MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
               Image.asset(
                 'images/trackr.png',

@@ -19,9 +19,9 @@ String pluralize({required String word, required int count}) {
   return count == 1 ? word : '${word}s';
 }
 
-String volumeInKOrM(double number) {
+String volumeInKOrM(double number, {bool showLessThan1k = true}) {
   if (number < 1000) {
-    return "$number";
+    return showLessThan1k ? "< 1K" : "$number";
   } else if (number < 1000000) {
     return '${(number / 1000).toStringAsFixed(1)}K';
   } else {

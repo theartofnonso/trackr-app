@@ -54,8 +54,8 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                           child: SleepTimeColumn(
                               title: 'TRAINING',
                               subTitle: "$totalTrainingDays",
-                              titleColor: consistencyHealthColor(value: totalTrainingDays / 12),
-                              subTitleColor: consistencyHealthColor(value: totalTrainingDays / 12)),
+                              titleColor: logStreakColor(value: totalTrainingDays / 12),
+                              subTitleColor: logStreakColor(value: totalTrainingDays / 12)),
                         ),
                       ),
                       TableCell(

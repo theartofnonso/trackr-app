@@ -3,10 +3,10 @@ import 'package:tracker_app/colors.dart';
 
 import '../../utils/general_utils.dart';
 
-class StreakHealthMonitor extends StatelessWidget {
+class LogStreakMonitor extends StatelessWidget {
   final double value;
 
-  const StreakHealthMonitor({
+  const LogStreakMonitor({
     Key? key,
     required this.value,
   }) : super(key: key);
@@ -22,10 +22,10 @@ class StreakHealthMonitor extends StatelessWidget {
       ),
       child: CircularProgressIndicator(
         value: value,
-        strokeWidth: 8,
+        strokeWidth: 6,
         backgroundColor: sapphireDark80,
         strokeCap: StrokeCap.butt,
-        valueColor: AlwaysStoppedAnimation<Color>(consistencyHealthColor(value: value)),
+        valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
       ),
     );
   }

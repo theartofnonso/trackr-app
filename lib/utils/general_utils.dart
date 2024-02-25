@@ -180,7 +180,7 @@ int levelFromXp({required int daysLogged}) {
   return daysLogged > 50 ? 50 : daysLogged;
 }
 
-Color consistencyHealthColor({required double value}) {
+Color logStreakColor({required double value}) {
   if (value < 0.3) {
     return Colors.red;
   } else if (value < 0.5) {
@@ -190,6 +190,30 @@ Color consistencyHealthColor({required double value}) {
   } else {
     return vibrantGreen;
   }
+}
+
+Color setsTrendColor({required int sets}) {
+  if (sets >= 12) {
+    return vibrantGreen;
+  } else if (sets >= 6) {
+    return vibrantBlue;
+  } else {
+    return Colors.orange;
+  }
+}
+
+Color repsTrendColor({required int reps}) {
+  if (reps >= 120) {
+    return vibrantGreen;
+  } else if (reps >= 60) {
+    return vibrantBlue;
+  } else {
+    return Colors.orange;
+  }
+}
+
+Color muscleFamilyFrequencyColor({required double value}) {
+  return Colors.white.withOpacity(value);
 }
 
 List<MuscleGroupFamily> popularMuscleGroupFamilies() {

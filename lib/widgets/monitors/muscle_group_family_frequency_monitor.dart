@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 
+import '../../utils/general_utils.dart';
+
 class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
   final double value;
 
@@ -16,10 +18,10 @@ class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
       height: 70,
       child: CircularProgressIndicator(
         value: value,
-        strokeWidth: 8,
+        strokeWidth: 6,
         backgroundColor: sapphireDark80,
         strokeCap: StrokeCap.butt,
-        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+        valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value)),
       ),
     );
   }
