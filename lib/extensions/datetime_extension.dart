@@ -149,12 +149,16 @@ extension DateTimeExtension on DateTime {
     return datetime.isBetweenRange(range: currentYearRange);
   }
 
-  DateTime withoutTimeStamp() {
+  DateTime withoutTime() {
     return DateTime(year, month, day);
   }
 
+  DateTime withHourOnly() {
+    return DateTime(year, month, day, hour);
+  }
+
   DateTime previous90Days() {
-    return subtract(const Duration(days: 90)).withoutTimeStamp();
+    return subtract(const Duration(days: 90)).withoutTime();
   }
 
   List<DateTime> datesForWeek() {
@@ -166,7 +170,7 @@ extension DateTimeExtension on DateTime {
     // Iterate from the first day of the week to the next 7 days
     for (int i = 0; i < 7; i++) {
       // Add each day to the list
-      weekDates.add(firstDayOfWeek.add(Duration(days: i)).withoutTimeStamp());
+      weekDates.add(firstDayOfWeek.add(Duration(days: i)).withoutTime());
     }
 
     return weekDates;
@@ -179,5 +183,11 @@ extension DateTimeExtension on DateTime {
     return DateTimeRange(start: startOfLastWeek, end: endOfLastWeek);
   }
 
+  DateTimeRange currentWeekRange() {
+    DateTime today = DateTime(year, month, day); // Use DateTime.now() to get the current date and time
+    DateTime startOfCurrentWeek = today.subtract(const Duration(days: 6));
+    DateTime endOfCurrentWeek = startOfCurrentWeek.add(const Duration(days: 6));
+    return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
+  }
 
 }

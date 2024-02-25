@@ -98,9 +98,9 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
     List<int> daysInBetween = [];
 
     for (int i = 0; i < logs.length; i++) {
-      final currentLog = logs[i].createdAt.withoutTimeStamp();
+      final currentLog = logs[i].createdAt.withoutTime();
       if (i == logs.length - 1) break; // Break if we are at the last log (no more intervals to calculate)
-      final nextLog = logs[i + 1].createdAt.withoutTimeStamp();
+      final nextLog = logs[i + 1].createdAt.withoutTime();
       final daysBetween = nextLog.difference(currentLog).inDays - 1;
       if (daysBetween > 0) {
         daysInBetween.add(daysBetween);

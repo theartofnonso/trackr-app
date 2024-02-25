@@ -4,24 +4,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
+import 'package:tracker_app/widgets/notification_banners/stacked_banners.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/google_analytics.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/shareables_utils.dart';
-import '../../utils/string_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/information_container.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
 
@@ -37,12 +36,6 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  bool _showNotificationBanner = false;
-
-  String? _trainedMuscleGroupsNames;
-
-  String? _untrainedMuscleGroupsNames;
-
   late DateTimeRange _dateTimeRange;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
@@ -123,57 +116,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
-                        if (_showNotificationBanner)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 16),
-                              InformationContainer(
-                                  leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, color: Colors.white, size: 16),
-                                  trailingIcon: GestureDetector(
-                                      onTap: _hideNotificationBanner,
-                                      child: const FaIcon(FontAwesomeIcons.solidSquareCheck,
-                                          color: vibrantGreen, size: 22)),
-                                  title: "This week's goal",
-                                  richDescription: RichText(
-                                      text: TextSpan(
-                                          text: "You trained only",
-                                          style: GoogleFonts.montserrat(
-                                              color: Colors.white70,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              height: 1.5),
-                                          children: [
-                                        const TextSpan(text: " "),
-                                        TextSpan(
-                                            text: _trainedMuscleGroupsNames,
-                                            style: GoogleFonts.montserrat(
-                                                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                                        const TextSpan(text: " "),
-                                        TextSpan(
-                                            text: "last week.",
-                                            style: GoogleFonts.montserrat(
-                                                color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
-                                        const TextSpan(text: " "),
-                                        TextSpan(
-                                            text: "Try to include",
-                                            style: GoogleFonts.montserrat(
-                                                color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
-                                        const TextSpan(text: " "),
-                                        TextSpan(
-                                            text: _untrainedMuscleGroupsNames,
-                                            style: GoogleFonts.montserrat(
-                                                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                                        const TextSpan(text: " "),
-                                        TextSpan(
-                                            text: "in your training this week.",
-                                            style: GoogleFonts.montserrat(
-                                                color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
-                                      ])),
-                                  color: sapphireDark60),
-                              const SizedBox(height: 8),
-                            ],
-                          ),
+                        const StackedNotificationBanners(),
+                        const SizedBox(height: 10),
                         Calendar(
                           range: _dateTimeRange,
                         ),
@@ -190,36 +134,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
             )),
       ),
     );
-  }
-
-  void _checkForUntrainedMuscles() {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-
-    final lastWeekRange = DateTime.now().lastWeekRange();
-
-    final lastWeeksLogs = routineLogController.weeklyLogs[lastWeekRange] ?? [];
-
-    final lastWeeksMuscleGroupFamilies = lastWeeksLogs
-        .map((log) => log.exerciseLogs)
-        .expand((exerciseLogs) => exerciseLogs)
-        .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family)
-        .toSet();
-
-    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
-
-    final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(lastWeeksMuscleGroupFamilies);
-
-    _trainedMuscleGroupsNames = joinWithAnd(items: lastWeeksMuscleGroupFamilies.map((muscle) => muscle.name).toList());
-
-    _untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
-
-    _showNotificationBanner = untrainedMuscleGroups.isNotEmpty;
-  }
-
-  void _hideNotificationBanner() {
-    setState(() {
-      _showNotificationBanner = false;
-    });
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
@@ -283,6 +197,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _dateTimeRange = thisMonthDateRange();
-    _checkForUntrainedMuscles();
+    //SharedPrefs().remove(key: SharedPrefs().cachedUntrainedMGFNotificationKey);
   }
 }

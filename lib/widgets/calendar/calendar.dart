@@ -76,7 +76,7 @@ class _CalendarState extends State<Calendar> {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final hasLog = logsForCurrentDate.contains(date);
-      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate.withoutTimeStamp(), hasLog: hasLog));
+      datesInMonths.add(_DateViewModel(dateTime: date, selectedDateTime: _currentDate.withoutTime(), hasLog: hasLog));
     }
 
     // Add padding to end of month
@@ -107,7 +107,7 @@ class _CalendarState extends State<Calendar> {
                 child: _CalendarHeader(),
               )
             : const SizedBox(height: 8),
-        _Month(dates: dates, selectedDateTime: _currentDate.withoutTimeStamp(), onTap: _selectDate, readOnly: widget.readOnly),
+        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, readOnly: widget.readOnly),
         if(!widget.readOnly)
           const SizedBox(height: 10),
         if (logsForCurrentDate.isNotEmpty && !widget.readOnly) _RoutineLogListView(logs: logsForCurrentDate),
