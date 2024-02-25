@@ -92,8 +92,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final weightColors = [vibrantGreen, vibrantBlue, Colors.orange];
 
-    print(periodicalValues);
-
     final barColors = periodicalValues
         .map((value) => _metric == SetRepsVolumeReps.sets
             ? setsTrendColor(sets: value.toInt())
@@ -295,21 +293,22 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     Legend(
                       title: "$totalOptimal",
                       suffix: "x",
-                      subTitle: 'Optimal (>12 ${_metric.name})',
+                      subTitle: 'Optimal (>${_optimalSetsOrRepsValue()} ${_metric.name})',
                       color: vibrantGreen,
                     ),
                     const SizedBox(height: 6),
                     Legend(
                       title: "$totalSufficient",
                       suffix: "x",
-                      subTitle: 'Sufficient (6-12 ${_metric.name})',
+                      subTitle:
+                          'Sufficient (${_sufficientSetsOrRepsValue()}-${_optimalSetsOrRepsValue()} ${_metric.name})',
                       color: vibrantBlue,
                     ),
                     const SizedBox(height: 6),
                     Legend(
                       title: "$totalMinimum", //
                       suffix: "x",
-                      subTitle: 'Minimum (<6 ${_metric.name})',
+                      subTitle: 'Minimum (<${_sufficientSetsOrRepsValue()} ${_metric.name})',
                       color: Colors.orange,
                     ),
                   ])
