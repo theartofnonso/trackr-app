@@ -11,13 +11,15 @@ class StackedNotificationBanners extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final untrainedMGFNotification = routineLogController.cachedUntrainedMGFNotification();
 
+    final untrainedMuscleGroups = routineLogController.untrainedMuscleGroupFamilies;
+
     return Stack(alignment: Alignment.center, children: [
-      if (untrainedMGFNotification.dateTime.difference(DateTime.now()).inDays > 1 || untrainedMGFNotification.show)
+      if ((untrainedMGFNotification.dateTime.difference(DateTime.now()).inDays > 1 || untrainedMGFNotification.show) &&
+          untrainedMuscleGroups.isNotEmpty)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: WeeklyUntrainedMuscleGroupFamiliesBanner(onDismiss: () => _hideNotificationBanner(context: context)),

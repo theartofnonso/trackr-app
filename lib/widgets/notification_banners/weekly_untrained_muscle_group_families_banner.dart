@@ -25,10 +25,10 @@ class WeeklyUntrainedMuscleGroupFamiliesBanner extends StatelessWidget {
         leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, color: Colors.white, size: 16),
         trailingIcon: GestureDetector(
             onTap: onDismiss, child: const FaIcon(FontAwesomeIcons.solidSquareCheck, color: vibrantGreen, size: 22)),
-        title: "This week's goal",
+        title: "This week's recommendation",
         richDescription: RichText(
             text: TextSpan(
-                text: "You didn't train",
+                text: "You didn't train your",
                 style: GoogleFonts.montserrat(
                     color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500, height: 1.5),
                 children: [

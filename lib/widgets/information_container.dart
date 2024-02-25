@@ -23,7 +23,7 @@ class InformationContainer extends StatelessWidget {
           Row(children: [
             leadingIcon,
             const SizedBox(width: 6),
-            Text(title, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
+            Text(title, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600)),
             const Spacer(),
             trailingIcon ?? const SizedBox(),
           ]),
