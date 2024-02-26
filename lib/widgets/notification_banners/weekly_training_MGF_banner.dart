@@ -79,7 +79,7 @@ class _PendingMGFRichText extends StatelessWidget {
 
     return RichText(
         text: TextSpan(
-            text: "Set your focus on training",
+            text: "Set your focus on training your",
             style:
                 GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500, height: 1.5),
             children: [
