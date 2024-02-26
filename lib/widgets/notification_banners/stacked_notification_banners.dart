@@ -21,7 +21,7 @@ class StackedNotificationBanners extends StatelessWidget {
     }
 
     return Stack(alignment: Alignment.center, children: [
-      if ((untrainedMGFNotification.dateTime.difference(DateTime.now()).inHours > 1 || untrainedMGFNotification.show))
+      if ((DateTime.now().difference(untrainedMGFNotification.dateTime).inHours > 1 || untrainedMGFNotification.show))
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: WeeklyTrainingMGFBanner(onDismiss: () => _hideNotificationBanner(context: context)),
