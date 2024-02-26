@@ -24,7 +24,7 @@ class StackedNotificationBanners extends StatelessWidget {
     }
 
     return Stack(alignment: Alignment.center, children: [
-      if ((DateTime.now().withHourOnly().isAtSameMomentAs(untrainedMGFNotification.dateTime)))
+      if ((DateTime.now().withHourOnly().isSameDayMonthYear(untrainedMGFNotification.dateTime)))
         Animate(
           effects: const [FadeEffect(), ScaleEffect()],
           child: const Padding(
