@@ -60,8 +60,6 @@ class WeeklyTrainingMGFBanner extends StatelessWidget {
       nextSchedule = DateTime.now().withHourOnly().nextWeek();
     }
 
-    print(nextSchedule);
-
     Provider.of<NotificationController>(context, listen: false).cacheNotification(
         key: SharedPrefs().cachedUntrainedMGFNotification, dto: NotificationDto(dateTime: nextSchedule));
   }

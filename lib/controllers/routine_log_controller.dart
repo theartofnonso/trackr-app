@@ -45,17 +45,12 @@ class RoutineLogController extends ChangeNotifier {
 
   List<MuscleGroupFamily> get pendingMGF => _pendingMGF;
 
-  bool _hasLogs = false;
-
-  bool get hasLogs => _hasLogs;
-
   void fetchLogs() async {
     try {
       await _amplifyLogRepository.fetchLogs(onSyncCompleted: _onSyncCompleted);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
       _accruedMGF = _fetchAccruedMGF();
       _pendingMGF = _fetchPendingMGF();
-      _hasLogs = routineLogs.isNotEmpty;
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
