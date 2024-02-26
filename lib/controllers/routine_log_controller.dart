@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -10,10 +9,8 @@ import '../dtos/achievement_dto.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
-import '../dtos/untrained_muscle_group_families_notification_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../repositories/achievement_repository.dart';
-import '../shared_prefs.dart';
 import '../utils/general_utils.dart';
 
 class RoutineLogController extends ChangeNotifier {
@@ -40,15 +37,10 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
-  List<MuscleGroupFamily> _untrainedMuscleGroupFamilies = [];
-
-  List<MuscleGroupFamily> get untrainedMuscleGroupFamilies => _untrainedMuscleGroupFamilies;
-
   void fetchLogs() async {
     try {
       await _amplifyLogRepository.fetchLogs(onSyncCompleted: _onSyncCompleted);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
-      _weeklyUntrainedMuscleGroupFamilies();
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -109,22 +101,12 @@ class RoutineLogController extends ChangeNotifier {
     return _achievementRepository.calculateNewLogAchievements(routineLogs: routineLogs);
   }
 
-  void _weeklyUntrainedMuscleGroupFamilies() {
+  List<MuscleGroupFamily> accruedMGF() {
     final lastWeeksRange = DateTime.now().lastWeekRange();
-
-    final thisWeeksRange = DateTime.now().currentWeekRange();
 
     final lastWeeksLogs = _amplifyLogRepository.weeklyLogs[lastWeeksRange] ?? [];
 
-    final thisWeeksLogs = _amplifyLogRepository.weeklyLogs[thisWeeksRange] ?? [];
-
     final lastWeeksMuscleGroupFamilies = lastWeeksLogs
-        .map((log) => log.exerciseLogs)
-        .expand((exerciseLogs) => exerciseLogs)
-        .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family)
-        .toSet();
-
-    final thisWeeksMuscleGroupFamilies = thisWeeksLogs
         .map((log) => log.exerciseLogs)
         .expand((exerciseLogs) => exerciseLogs)
         .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family)
@@ -134,22 +116,26 @@ class RoutineLogController extends ChangeNotifier {
 
     final lastWeeksUntrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(lastWeeksMuscleGroupFamilies);
 
-    final thisWeeksUntrainedMuscleGroups = lastWeeksUntrainedMuscleGroups.difference(thisWeeksMuscleGroupFamilies);
-
-    _untrainedMuscleGroupFamilies = thisWeeksUntrainedMuscleGroups.toList();
+    return lastWeeksUntrainedMuscleGroups.toList();
   }
 
-  void cacheUntrainedMGFNotification({required UntrainedMGFNotificationDto dto}) {
-    SharedPrefs().cachedUntrainedMGFNotification = jsonEncode(dto);
-    notifyListeners();
-  }
+  List<MuscleGroupFamily> pendingMGF() {
 
-  UntrainedMGFNotificationDto cachedUntrainedMGFNotification() {
-    UntrainedMGFNotificationDto dto;
-    final cache = SharedPrefs().cachedUntrainedMGFNotification;
-    final json = jsonDecode(cache);
-    dto = UntrainedMGFNotificationDto.fromJson(json);
-    return dto;
+    final thisWeeksRange = DateTime.now().currentWeekRange();
+
+    final thisWeeksLogs = _amplifyLogRepository.weeklyLogs[thisWeeksRange] ?? [];
+
+    final thisWeeksMuscleGroupFamilies = thisWeeksLogs
+        .map((log) => log.exerciseLogs)
+        .expand((exerciseLogs) => exerciseLogs)
+        .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family)
+        .toSet();
+
+    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
+
+    final thisWeeksUntrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(thisWeeksMuscleGroupFamilies);
+
+    return thisWeeksUntrainedMuscleGroups.toList();
   }
 
   /// Helper methods

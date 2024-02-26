@@ -16,6 +16,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
+import 'package:tracker_app/controllers/notification_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
@@ -85,6 +86,9 @@ void main() async {
     appRunner: () => runApp(MultiProvider(providers: [
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
+      ),
+      ChangeNotifierProvider<NotificationController>(
+        create: (BuildContext context) => NotificationController(),
       ),
       ChangeNotifierProvider<ExerciseController>(
         create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
@@ -206,7 +210,7 @@ class _MyAppState extends State<MyApp> {
               onGenerateRoute: (settings) {
                 if (settings.name == RoutineLogEditorScreen.routeName) {
                   final args = settings.arguments as RoutineLogArguments;
-                  if(args.editorMode == RoutineEditorMode.log && args.emptySession) {
+                  if (args.editorMode == RoutineEditorMode.log && args.emptySession) {
                     recordEmptySessionEvent();
                   } else {
                     recordTemplateSessionEvent();

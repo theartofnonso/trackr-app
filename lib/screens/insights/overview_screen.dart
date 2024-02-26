@@ -6,8 +6,9 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
-import 'package:tracker_app/widgets/notification_banners/stacked_banners.dart';
+import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -196,5 +197,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _dateTimeRange = thisMonthDateRange();
+    SharedPrefs().remove(key: SharedPrefs().cachedUntrainedMGFNotificationKey);
   }
 }
