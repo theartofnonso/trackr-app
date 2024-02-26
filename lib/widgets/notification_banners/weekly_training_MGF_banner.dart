@@ -19,9 +19,20 @@ class WeeklyTrainingMGFBanner extends StatelessWidget {
 
     final accruedMGF = controller.accruedMGF();
 
-    final title = accruedMGF.isNotEmpty ? "This week's recommendation" : "This week's focus";
+    String title = accruedMGF.isNotEmpty ? "This week's recommendation" : "This week's focus";
 
-    final richText = accruedMGF.isNotEmpty ? const _AccruedMGFRichText() : const _PendingMGFRichText();
+    Widget richText = accruedMGF.isNotEmpty ? const _AccruedMGFRichText() : const _PendingMGFRichText();
+
+    if (accruedMGF.isNotEmpty) {
+      title = "This week's recommendation";
+      richText = const _AccruedMGFRichText();
+    } else if (controller.pendingMGF().isNotEmpty) {
+      title = "This week's focus";
+      richText = const _PendingMGFRichText();
+    } else {
+      title = "Congratulations";
+      richText = const _NoMGFRichText();
+    }
 
     return InformationContainer(
         leadingIcon: const FaIcon(FontAwesomeIcons.lightbulb, color: Colors.white, size: 16),
@@ -92,5 +103,15 @@ class _PendingMGFRichText extends StatelessWidget {
               text: "this week.",
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)),
         ]));
+  }
+}
+
+class _NoMGFRichText extends StatelessWidget {
+  const _NoMGFRichText();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("You have all muscle groups included in your training for the week. Ensure to hit optimal sets and reps as well.",
+        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500, height: 1.5));
   }
 }

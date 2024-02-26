@@ -13,14 +13,15 @@ class StackedNotificationBanners extends StatelessWidget {
   Widget build(BuildContext context) {
     final notificationController = Provider.of<NotificationController>(context, listen: true);
 
-    final untrainedMGFNotification = notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
+    final untrainedMGFNotification =
+        notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
-    if(untrainedMGFNotification == null) {
+    if (untrainedMGFNotification == null) {
       return const SizedBox.shrink();
     }
 
     return Stack(alignment: Alignment.center, children: [
-      if ((untrainedMGFNotification.dateTime.difference(DateTime.now()).inDays > 1 || untrainedMGFNotification.show))
+      if ((untrainedMGFNotification.dateTime.difference(DateTime.now()).inHours > 1 || untrainedMGFNotification.show))
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: WeeklyTrainingMGFBanner(onDismiss: () => _hideNotificationBanner(context: context)),
@@ -29,7 +30,8 @@ class StackedNotificationBanners extends StatelessWidget {
   }
 
   void _hideNotificationBanner({required BuildContext context}) {
-    Provider.of<NotificationController>(context, listen: false).cacheNotification(key: SharedPrefs().cachedUntrainedMGFNotification,
+    Provider.of<NotificationController>(context, listen: false).cacheNotification(
+        key: SharedPrefs().cachedUntrainedMGFNotification,
         dto: NotificationDto(show: false, dateTime: DateTime.now().withHourOnly()));
   }
 }

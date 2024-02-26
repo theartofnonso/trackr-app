@@ -190,4 +190,9 @@ extension DateTimeExtension on DateTime {
     return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
   }
 
+  DateTime oneWeekFromToday() {
+    DateTime today = DateTime(year, month, day);
+    final numberOfDaysUntilNextWeek = 7 - today.weekday;
+    return today.add(Duration(days: numberOfDaysUntilNextWeek + 1));
+  }
 }
