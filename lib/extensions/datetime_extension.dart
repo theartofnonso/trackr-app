@@ -191,12 +191,12 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTime nextHour() {
-    DateTime today = DateTime(year, month, day);
+    DateTime today = DateTime(year, month, day, hour);
     return today.add(const Duration(hours: 1));
   }
 
   DateTime nextDay() {
-    DateTime today = DateTime(year, month, day);
+    DateTime today = DateTime(year, month, day, hour);
     return today.add(const Duration(hours: 24));
   }
 

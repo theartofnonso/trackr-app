@@ -17,23 +17,22 @@ class WeeklyTrainingMGFBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<RoutineLogController>(context, listen: true);
+    final controller = Provider.of<RoutineLogController>(context, listen: false);
 
-    final accruedMGF = controller.accruedMGF();
+    final accruedMGF = controller.accruedMGF;
 
-    final pendingMGF = controller.pendingMGF();
+    final pendingMGF = controller.pendingMGF;
 
     String title = "";
 
     Widget richText = const SizedBox.shrink();
-
     if (accruedMGF.isNotEmpty) {
       title = "This week's recommendation";
       richText = const _AccruedMGFRichText();
     } else if (pendingMGF.isNotEmpty) {
       title = "This week's focus";
       richText = const _PendingMGFRichText();
-    } else {
+    } else if (accruedMGF.isEmpty && pendingMGF.isEmpty) {
       title = "Congratulations";
       richText = const _NoMGFRichText();
     }
@@ -49,18 +48,19 @@ class WeeklyTrainingMGFBanner extends StatelessWidget {
   }
 
   void _postponeNotificationBanner({required BuildContext context}) {
-
     final controller = Provider.of<RoutineLogController>(context, listen: false);
 
-    final accruedMGF = controller.accruedMGF();
+    final accruedMGF = controller.accruedMGF;
 
-    final pendingMGF = controller.pendingMGF();
+    final pendingMGF = controller.pendingMGF;
 
     DateTime nextSchedule = DateTime.now().nextHour();
 
     if (accruedMGF.isEmpty && pendingMGF.isEmpty) {
       nextSchedule = DateTime.now().withHourOnly().nextWeek();
     }
+
+    print(nextSchedule);
 
     Provider.of<NotificationController>(context, listen: false).cacheNotification(
         key: SharedPrefs().cachedUntrainedMGFNotification, dto: NotificationDto(dateTime: nextSchedule));
@@ -74,7 +74,7 @@ class _AccruedMGFRichText extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Provider.of<RoutineLogController>(context, listen: false);
 
-    final accruedMGF = controller.accruedMGF();
+    final accruedMGF = controller.accruedMGF;
 
     final accruedMGFNames = joinWithAnd(items: accruedMGF.map((muscle) => muscle.name).toList());
 
@@ -107,7 +107,7 @@ class _PendingMGFRichText extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Provider.of<RoutineLogController>(context, listen: false);
 
-    final pendingMGF = controller.pendingMGF();
+    final pendingMGF = controller.pendingMGF;
 
     final pendingMGFNames = joinWithAnd(items: pendingMGF.map((muscle) => muscle.name).toList());
 
