@@ -178,19 +178,29 @@ extension DateTimeExtension on DateTime {
 
   DateTimeRange lastWeekRange() {
     DateTime today = DateTime(year, month, day);
-    DateTime endOfLastWeek = today.subtract(Duration(days: today.weekday)); // Assuming week starts on Sunday
+    DateTime endOfLastWeek = today.subtract(Duration(days: today.weekday));
     DateTime startOfLastWeek = endOfLastWeek.subtract(const Duration(days: 6));
     return DateTimeRange(start: startOfLastWeek, end: endOfLastWeek);
   }
 
   DateTimeRange currentWeekRange() {
-    DateTime today = DateTime(year, month, day); // Use DateTime.now() to get the current date and time
+    DateTime today = DateTime(year, month, day);
     DateTime startOfCurrentWeek = today.subtract(const Duration(days: 6));
     DateTime endOfCurrentWeek = startOfCurrentWeek.add(const Duration(days: 6));
     return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
   }
 
-  DateTime oneWeekFromToday() {
+  DateTime nextHour() {
+    DateTime today = DateTime(year, month, day);
+    return today.add(const Duration(hours: 1));
+  }
+
+  DateTime nextDay() {
+    DateTime today = DateTime(year, month, day);
+    return today.add(const Duration(hours: 24));
+  }
+
+  DateTime nextWeek() {
     DateTime today = DateTime(year, month, day);
     final numberOfDaysUntilNextWeek = 7 - today.weekday;
     return today.add(Duration(days: numberOfDaysUntilNextWeek + 1));

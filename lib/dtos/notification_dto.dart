@@ -1,27 +1,25 @@
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 class NotificationDto {
-  final bool show;
   final DateTime dateTime;
 
-  NotificationDto({required this.show, required this.dateTime});
+  NotificationDto({required this.dateTime});
 
   Map<String, dynamic> toJson() {
     return {
-      'show': show,
       'dateTime': dateTime.toIso8601String(),
     };
   }
 
   factory NotificationDto.fromJson(Map<String, dynamic> json) {
-    final show = json["show"] ?? true;
     final dateTimeString = json["dateTime"];
-    final dateTime = dateTimeString != null ? DateTime.parse(dateTimeString).withHourOnly() : DateTime.now().withHourOnly();
-    return NotificationDto(show: show, dateTime: dateTime);
+    final historicDateTime = DateTime.now().withHourOnly();
+    final dateTime = dateTimeString != null ? DateTime.parse(dateTimeString).withHourOnly() : historicDateTime;
+    return NotificationDto(dateTime: dateTime);
   }
 
   @override
   String toString() {
-    return 'NotificationDto{id: $show, dateTime: $dateTime}';
+    return 'NotificationDto{dateTime: $dateTime}';
   }
 }

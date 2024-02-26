@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/notification_controller.dart';
-import 'package:tracker_app/dtos/notification_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/notification_banners/weekly_training_MGF_banner.dart';
@@ -21,17 +20,11 @@ class StackedNotificationBanners extends StatelessWidget {
     }
 
     return Stack(alignment: Alignment.center, children: [
-      if ((DateTime.now().difference(untrainedMGFNotification.dateTime).inHours > 1 || untrainedMGFNotification.show))
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: WeeklyTrainingMGFBanner(onDismiss: () => _hideNotificationBanner(context: context)),
+      if ((DateTime.now().withHourOnly().isAtSameMomentAs(untrainedMGFNotification.dateTime)))
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.0),
+          child: WeeklyTrainingMGFBanner(),
         ),
     ]);
-  }
-
-  void _hideNotificationBanner({required BuildContext context}) {
-    Provider.of<NotificationController>(context, listen: false).cacheNotification(
-        key: SharedPrefs().cachedUntrainedMGFNotification,
-        dto: NotificationDto(show: false, dateTime: DateTime.now().withHourOnly()));
   }
 }
