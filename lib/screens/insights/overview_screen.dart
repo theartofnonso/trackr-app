@@ -117,7 +117,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
                         const StackedNotificationBanners(),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 12),
                         Calendar(
                           range: _dateTimeRange,
                         ),
