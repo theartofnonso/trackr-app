@@ -19,12 +19,14 @@ class StackedNotificationBanners extends StatelessWidget {
     final untrainedMGFNotification =
         notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
+    print(untrainedMGFNotification);
+
     if (untrainedMGFNotification == null || !routineLogController.routineLogs.isNotEmpty) {
       return const SizedBox.shrink();
     }
 
     return Stack(alignment: Alignment.center, children: [
-      if ((DateTime.now().withHourOnly().isSameDayMonthYear(untrainedMGFNotification.dateTime)))
+      if ((DateTime.now().withoutTime().isSameDayMonthYear(untrainedMGFNotification.dateTime)))
         Animate(
           effects: const [FadeEffect(), ScaleEffect()],
           child: const Padding(
