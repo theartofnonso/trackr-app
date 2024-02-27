@@ -13,16 +13,12 @@ class NotificationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  NotificationDto? cachedNotification({required String key}) {
+  NotificationDto cachedNotification({required String key}) {
     NotificationDto? dto;
     String cache = "";
-    if (key == SharedPrefs().cachedUntrainedMGFNotification) {
-      cache = SharedPrefs().cachedUntrainedMGFNotification;
-    }
-    if (cache.isNotEmpty) {
-      final json = jsonDecode(cache);
-      dto = NotificationDto.fromJson(json);
-    }
+    cache = SharedPrefs().cachedUntrainedMGFNotification;
+    final json = jsonDecode(cache);
+    dto = NotificationDto.fromJson(json);
     return dto;
   }
 }

@@ -198,6 +198,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _dateTimeRange = thisMonthDateRange();
-    SharedPrefs().remove(key: SharedPrefs().cachedUntrainedMGFNotificationKey);
+    //SharedPrefs().remove(key: SharedPrefs().cachedUntrainedMGFNotificationKey);
   }
 }

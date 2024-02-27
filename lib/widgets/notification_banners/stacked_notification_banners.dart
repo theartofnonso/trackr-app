@@ -21,9 +21,7 @@ class _StackedNotificationBannersState extends State<StackedNotificationBanners>
         notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
     return Stack(alignment: Alignment.center, children: [
-      if (DateTime.now()
-          .withoutTime()
-          .isSameDayMonthYear(untrainedMGFNotification?.dateTime ?? DateTime.now().subtract(const Duration(days: 1))))
+      if (DateTime.now().withoutTime().isSameDayMonthYear(untrainedMGFNotification.dateTime))
         const Padding(
           padding: EdgeInsets.only(top: 16.0, bottom: 4),
           child: WeeklyTrainingMGFBanner(),

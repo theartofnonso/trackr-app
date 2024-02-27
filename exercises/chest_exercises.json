@@ -28,7 +28,7 @@
   {"id": "CHT27", "name": "Standing Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CHT28", "name": "Bar Dip (Weighted)", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CHT29", "name": "Around The World", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT30", "name": "Bar Dip (Weighted)", "primaryMuscleGroup": "Chest", "type": "WR"},
+  {"id": "CHT30", "name": "Bar Dip (Assisted)", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CHT31", "name": "Seated Chest Flys (Cable)", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CHT32", "name": "Low Cable Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
   {"id": "CHT33", "name": "Iso-Lateral Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},

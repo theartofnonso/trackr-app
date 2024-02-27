@@ -33,7 +33,7 @@ class WeeklyTrainingMGFBanner extends StatelessWidget {
       title = "This week's focus";
       richText = const _PendingMGFRichText();
     } else if (accruedMGF.isEmpty && pendingMGF.isEmpty) {
-      title = "Congratulations";
+      title = "Hurray!";
       richText = const _NoMGFRichText();
     }
 
