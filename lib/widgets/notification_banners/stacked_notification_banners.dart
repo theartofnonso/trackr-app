@@ -21,12 +21,11 @@ class _StackedNotificationBannersState extends State<StackedNotificationBanners>
   @override
   Widget build(BuildContext context) {
     final notificationController = Provider.of<NotificationController>(context, listen: true);
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final untrainedMGFNotification =
         notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
-    if (untrainedMGFNotification == null || routineLogController.routineLogs.isEmpty) {
+    if (untrainedMGFNotification == null) {
       return const SizedBox.shrink();
     }
 

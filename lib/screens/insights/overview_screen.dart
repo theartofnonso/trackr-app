@@ -13,6 +13,7 @@ import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
+import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/google_analytics.dart';
 import '../../utils/navigation_utils.dart';
@@ -115,7 +116,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
-                        const StackedNotificationBanners(),
+                        if(logsForTheMonth.isNotEmpty)
+                          const StackedNotificationBanners(),
                         const SizedBox(height: 12),
                         Calendar(
                           range: _dateTimeRange,
@@ -196,6 +198,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     _dateTimeRange = thisMonthDateRange();
-    //SharedPrefs().remove(key: SharedPrefs().cachedUntrainedMGFNotificationKey);
+    SharedPrefs().remove(key: SharedPrefs().cachedUntrainedMGFNotificationKey);
   }
 }
