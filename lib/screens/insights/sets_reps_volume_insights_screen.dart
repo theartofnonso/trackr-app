@@ -55,6 +55,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
             weekEntry.key.end.isBeforeOrEqual(_dateTimeRange.end));
 
     List<num> periodicalValues = [];
+    List<DateTime> periodicalDates = [];
 
     for (final periodAndLogs in periodicalLogs) {
       final valuesForPeriod = periodAndLogs.value
@@ -67,6 +68,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       }).sum;
 
       periodicalValues.add(valuesForPeriod);
+      periodicalDates.add(periodAndLogs.key.end);
     }
 
     final nonZeroValues = periodicalValues.where((value) => value > 0).toList();
@@ -76,9 +78,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     final chartPoints =
         periodicalValues.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
 
-    final periods = periodicalValues.mapIndexed((index, monthEntry) {
+    final weeks = periodicalValues.mapIndexed((index, _) {
       return "WK ${index + 1}";
     }).toList();
+
+    final months = periodicalDates.map((date) => date.formattedMonth()).toList();
 
     final totalOptimal = _weightWhere(values: nonZeroValues, condition: (value) => value >= _optimalSetsOrRepsValue());
     final totalSufficient = _weightWhere(
@@ -268,12 +272,12 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     height: 250,
                     child: CustomBarChart(
                       chartPoints: chartPoints,
-                      periods: periods,
+                      periods: _period == ChartPeriod.month ? weeks : months,
                       barColors: _metric != SetRepsVolumeReps.volume ? barColors : null,
                       unit: _chartUnit(),
                       bottomTitlesInterval: _period == ChartPeriod.month
                           ? 1
-                          : periods.length > 7
+                          : weeks.length > 7
                               ? 4
                               : 2,
                       showTopTitles: _period == ChartPeriod.month ? true : false,
