@@ -316,20 +316,29 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
-
-          /// Do not remove this condition
-          if (_canAddSets(type: exerciseType))
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
+            Row(children: [
+              GestureDetector(
+                onTap: (){},
+                child: Row(
+                  children: [
+                    const FaIcon(FontAwesomeIcons.circleInfo, color: Colors.white70, size: 18),
+                    const SizedBox(width: 4),
+                    Text("Recommendations", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              /// Do not remove this condition
+              if (_canAddSets(type: exerciseType))
+                IconButton(
                   onPressed: _addSet,
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
                       shape:
-                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-            )
+                      MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+            ])
         ],
       ),
     );
