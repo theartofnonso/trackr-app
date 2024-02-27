@@ -14,8 +14,6 @@ class StackedNotificationBanners extends StatefulWidget {
 }
 
 class _StackedNotificationBannersState extends State<StackedNotificationBanners> with WidgetsBindingObserver {
-  bool _showBanner = false;
-
   @override
   Widget build(BuildContext context) {
     final notificationController = Provider.of<NotificationController>(context, listen: true);
@@ -23,12 +21,11 @@ class _StackedNotificationBannersState extends State<StackedNotificationBanners>
     final untrainedMGFNotification =
         notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
-    if (untrainedMGFNotification == null) {
-      return const SizedBox.shrink();
-    }
 
     return Stack(alignment: Alignment.center, children: [
-      if (_showBanner)
+      if (DateTime.now()
+          .withoutTime()
+          .isSameDayMonthYear(untrainedMGFNotification?.dateTime ?? DateTime.now().subtract(const Duration(days: 1))))
         Animate(
           effects: const [FadeEffect(), ScaleEffect()],
           child: const Padding(
@@ -39,21 +36,10 @@ class _StackedNotificationBannersState extends State<StackedNotificationBanners>
     ]);
   }
 
-  void _checkForNotificationBanner() {
-    final notificationController = Provider.of<NotificationController>(context, listen: false);
-    final untrainedMGFNotification =
-        notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
-    setState(() {
-      _showBanner =
-          DateTime.now().withoutTime().isSameDayMonthYear(untrainedMGFNotification?.dateTime ?? DateTime.now());
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkForNotificationBanner();
   }
 
   @override
@@ -66,7 +52,7 @@ class _StackedNotificationBannersState extends State<StackedNotificationBanners>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      _checkForNotificationBanner();
+      setState(() {});
     }
   }
 }
