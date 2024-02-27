@@ -6,7 +6,6 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
 import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
 
@@ -39,7 +38,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   late DateTimeRange _dateTimeRange;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
+    Navigator.of(context).pushNamed(StreakScreen.routeName);
   }
 
   void _logEmptyRoutine(BuildContext context) async {

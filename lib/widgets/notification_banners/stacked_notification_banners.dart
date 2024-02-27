@@ -19,8 +19,6 @@ class StackedNotificationBanners extends StatelessWidget {
     final untrainedMGFNotification =
         notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
-    print(untrainedMGFNotification);
-
     if (untrainedMGFNotification == null || !routineLogController.routineLogs.isNotEmpty) {
       return const SizedBox.shrink();
     }

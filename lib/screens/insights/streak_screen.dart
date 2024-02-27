@@ -10,6 +10,9 @@ import '../../utils/general_utils.dart';
 import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class StreakScreen extends StatelessWidget {
+
+  static const routeName = '/streak_screen';
+
   const StreakScreen({super.key});
 
   @override
