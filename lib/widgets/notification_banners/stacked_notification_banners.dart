@@ -8,8 +8,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../controllers/routine_log_controller.dart';
 
-class StackedNotificationBanners extends StatelessWidget {
+class StackedNotificationBanners extends StatefulWidget {
   const StackedNotificationBanners({super.key});
+
+  @override
+  State<StackedNotificationBanners> createState() => _StackedNotificationBannersState();
+}
+
+class _StackedNotificationBannersState extends State<StackedNotificationBanners> with WidgetsBindingObserver {
+  bool _showBanner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +26,12 @@ class StackedNotificationBanners extends StatelessWidget {
     final untrainedMGFNotification =
         notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
 
-    if (untrainedMGFNotification == null || !routineLogController.routineLogs.isNotEmpty) {
+    if (untrainedMGFNotification == null || routineLogController.routineLogs.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Stack(alignment: Alignment.center, children: [
-      if ((DateTime.now().withoutTime().isSameDayMonthYear(untrainedMGFNotification.dateTime)))
+      if (_showBanner)
         Animate(
           effects: const [FadeEffect(), ScaleEffect()],
           child: const Padding(
@@ -33,5 +40,36 @@ class StackedNotificationBanners extends StatelessWidget {
           ),
         ),
     ]);
+  }
+
+  void _checkForNotificationBanner() {
+    final notificationController = Provider.of<NotificationController>(context, listen: false);
+    final untrainedMGFNotification =
+        notificationController.cachedNotification(key: SharedPrefs().cachedUntrainedMGFNotification);
+    setState(() {
+      _showBanner =
+          DateTime.now().withoutTime().isSameDayMonthYear(untrainedMGFNotification?.dateTime ?? DateTime.now());
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkForNotificationBanner();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _checkForNotificationBanner();
+    }
   }
 }
