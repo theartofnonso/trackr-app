@@ -6,8 +6,6 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/widgets/notification_banners/weekly_training_MGF_banner.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../controllers/routine_log_controller.dart';
-
 class StackedNotificationBanners extends StatefulWidget {
   const StackedNotificationBanners({super.key});
 
