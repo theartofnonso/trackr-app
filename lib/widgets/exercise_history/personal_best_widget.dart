@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/exercise_history/set_record_widget.dart';
 
 import '../../dtos/exercise_dto.dart';
@@ -17,7 +18,9 @@ class PersonalBestWidget extends StatelessWidget {
     List<ExerciseLogDto> pastLogs =
         Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
 
-    final sets = pastLogs.expand((log) => log.sets).where((set) => set.isNotEmpty()).toList();
+    final completedLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastLogs);
+
+    final sets = completedLogs.expand((log) => log.sets).where((set) => set.isNotEmpty()).toList();
 
     return Padding(
       padding: const EdgeInsets.all(10.0),

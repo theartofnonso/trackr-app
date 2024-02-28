@@ -7,12 +7,12 @@ import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
+import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../strings.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/google_analytics.dart';
 import '../../utils/navigation_utils.dart';
@@ -20,7 +20,6 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
-import '../../widgets/information_container_lite.dart';
 import '../../widgets/monitors/overview_monitor.dart';
 import 'monthly_insights_screen.dart';
 
@@ -39,7 +38,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   late DateTimeRange _dateTimeRange;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StreakScreen()));
+    Navigator.of(context).pushNamed(StreakScreen.routeName);
   }
 
   void _logEmptyRoutine(BuildContext context) async {
@@ -114,13 +113,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       controller: widget.scrollController,
                       padding: const EdgeInsets.only(bottom: 150),
                       child: Column(children: [
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
-                        const SizedBox(height: 10),
-                        const InformationContainerLite(
-                            content: overviewMonitor,
-                            color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12)),
+                        if(logsForTheMonth.isNotEmpty)
+                          const StackedNotificationBanners(),
+                        const SizedBox(height: 12),
                         Calendar(
                           range: _dateTimeRange,
                         ),

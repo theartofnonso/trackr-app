@@ -46,15 +46,17 @@ class HomeScreen extends StatelessWidget {
     final exerciseLogs =
         Provider.of<RoutineLogController>(context, listen: true).exerciseLogsForExercise(exercise: foundExercise);
 
-    final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: exerciseLogs);
+    final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
 
-    final heaviestWeightRecord = heaviestWeight(exerciseLogs: exerciseLogs);
+    final heaviestSetVolumeRecord = heaviestSetVolume(exerciseLogs: completedExerciseLogs);
 
-    final longestDurationRecord = longestDuration(exerciseLogs: exerciseLogs);
+    final heaviestWeightRecord = heaviestWeight(exerciseLogs: completedExerciseLogs);
 
-    final mostRepsSetRecord = mostRepsInSet(exerciseLogs: exerciseLogs);
+    final longestDurationRecord = longestDuration(exerciseLogs: completedExerciseLogs);
 
-    final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: exerciseLogs);
+    final mostRepsSetRecord = mostRepsInSet(exerciseLogs: completedExerciseLogs);
+
+    final mostRepsSessionRecord = mostRepsInSession(exerciseLogs: completedExerciseLogs);
 
     final menuActions = [
       MenuItemButton(
@@ -69,9 +71,10 @@ class HomeScreen extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          showAlertDialogWithMultiActions(
+          showBottomSheetWithMultiActions(
               context: context,
-              message: "Delete exercise?",
+              title: "Delete exercise?",
+              description: "Are you sure you want to delete this exercise?",
               leftAction: Navigator.of(context).pop,
               rightAction: () => _deleteExercise(context),
               leftActionLabel: 'Cancel',

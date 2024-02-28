@@ -112,9 +112,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (!_validateRoutineTemplateInputs()) return;
     final template = widget.template;
     if (template != null) {
-      showAlertDialogWithMultiActions(
+      showBottomSheetWithMultiActions(
           context: context,
-          message: "Update workout?",
+          description: "Update workout?",
           leftAction: _closeDialog,
           rightAction: () {
             _closeDialog();
@@ -123,7 +123,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update',
-          isRightActionDestructive: true);
+          isRightActionDestructive: true, title: "Update workout");
     }
   }
 
@@ -148,9 +148,9 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
-      showAlertDialogWithMultiActions(
+      showBottomSheetWithMultiActions(
           context: context,
-          message: "You have unsaved changes",
+          description: "You have unsaved changes",
           leftAction: _closeDialog,
           leftActionLabel: 'Cancel',
           rightAction: () {
@@ -158,7 +158,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
             _navigateBack();
           },
           rightActionLabel: 'Discard',
-          isRightActionDestructive: true);
+          isRightActionDestructive: true, title: "Discard changes");
     } else {
       _navigateBack();
     }

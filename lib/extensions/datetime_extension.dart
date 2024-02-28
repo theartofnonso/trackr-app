@@ -149,12 +149,16 @@ extension DateTimeExtension on DateTime {
     return datetime.isBetweenRange(range: currentYearRange);
   }
 
-  DateTime withoutTimeStamp() {
+  DateTime withoutTime() {
     return DateTime(year, month, day);
   }
 
+  DateTime withHourOnly() {
+    return DateTime(year, month, day, hour);
+  }
+
   DateTime previous90Days() {
-    return subtract(const Duration(days: 90)).withoutTimeStamp();
+    return subtract(const Duration(days: 90)).withoutTime();
   }
 
   List<DateTime> datesForWeek() {
@@ -166,11 +170,39 @@ extension DateTimeExtension on DateTime {
     // Iterate from the first day of the week to the next 7 days
     for (int i = 0; i < 7; i++) {
       // Add each day to the list
-      weekDates.add(firstDayOfWeek.add(Duration(days: i)).withoutTimeStamp());
+      weekDates.add(firstDayOfWeek.add(Duration(days: i)).withoutTime());
     }
 
     return weekDates;
   }
 
+  DateTimeRange lastWeekRange() {
+    DateTime today = DateTime(year, month, day);
+    DateTime endOfLastWeek = today.subtract(Duration(days: today.weekday));
+    DateTime startOfLastWeek = endOfLastWeek.subtract(const Duration(days: 6));
+    return DateTimeRange(start: startOfLastWeek, end: endOfLastWeek);
+  }
 
+  DateTimeRange currentWeekRange() {
+    DateTime today = DateTime(year, month, day);
+    DateTime startOfCurrentWeek = today.subtract(const Duration(days: 6));
+    DateTime endOfCurrentWeek = startOfCurrentWeek.add(const Duration(days: 6));
+    return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
+  }
+
+  DateTime nextHour() {
+    DateTime today = DateTime(year, month, day, hour);
+    return today.add(const Duration(hours: 1));
+  }
+
+  DateTime nextDay() {
+    DateTime today = DateTime(year, month, day, hour);
+    return today.add(const Duration(hours: 24));
+  }
+
+  DateTime nextWeek() {
+    DateTime today = DateTime(year, month, day);
+    final numberOfDaysUntilNextWeek = 7 - today.weekday;
+    return today.add(Duration(days: numberOfDaysUntilNextWeek + 1));
+  }
 }

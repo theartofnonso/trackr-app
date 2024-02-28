@@ -108,9 +108,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _discardLog() {
-    showAlertDialogWithMultiActions(
+    showBottomSheetWithMultiActions(
         context: context,
-        message: "Discard workout?",
+        title: "Discard workout?",
+        description: "You have unsaved changes",
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
@@ -124,9 +125,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _saveLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      showAlertDialogWithMultiActions(
+      showBottomSheetWithMultiActions(
           context: context,
-          message: "Do you want to end workout?",
+          title: 'Running Session',
+          description: "Do you want to end workout?",
           leftAction: Navigator.of(context).pop,
           rightAction: () {
             _closeDialog();
@@ -136,8 +138,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           rightActionLabel: 'End',
           rightActionColor: vibrantGreen);
     } else {
-      showAlertDialogWithSingleAction(
-          context: context, message: "Complete some sets!", actionLabel: 'Ok', action: _closeDialog);
+      showBottomSheetWithNoAction(context: context, description: "Complete some sets!", title: 'Running Session');
     }
   }
 
@@ -146,8 +147,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (isRoutinePartiallyComplete) {
       _doUpdateRoutineLog();
     } else {
-      showAlertDialogWithSingleAction(
-          context: context, message: "Completed some sets!", actionLabel: 'Ok', action: _closeDialog);
+      showBottomSheetWithNoAction(context: context, description: "Complete some sets!", title: 'Update Workout');
     }
   }
 
@@ -171,9 +171,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       unsavedChangesMessage.add(completedSetsChanged);
     }
     if (unsavedChangesMessage.isNotEmpty) {
-      showAlertDialogWithMultiActions(
+      showBottomSheetWithMultiActions(
           context: context,
-          message: "You have unsaved changes",
+          title: 'Unsaved Changes',
+          description: "You have unsaved changes",
           leftAction: _closeDialog,
           leftActionLabel: 'Cancel',
           rightAction: () {
@@ -378,15 +379,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
 
     if (state == AppLifecycleState.paused) {
-      FlutterLocalNotificationsPlugin()
-          .periodicallyShow(999, "${widget.log.name} is still running", "Tap to continue training", RepeatInterval.hourly, const NotificationDetails(
-        iOS: DarwinNotificationDetails(
-          presentAlert: false,
-          presentBadge: false,
-          presentSound: false,
-          presentBanner: false,
-        ),
-      ));
+      FlutterLocalNotificationsPlugin().periodicallyShow(
+          999,
+          "${widget.log.name} is still running",
+          "Tap to continue training",
+          RepeatInterval.hourly,
+          const NotificationDetails(
+            iOS: DarwinNotificationDetails(
+              presentAlert: false,
+              presentBadge: false,
+              presentSound: false,
+              presentBanner: false,
+            ),
+          ));
     }
   }
 }

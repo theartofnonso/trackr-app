@@ -20,8 +20,8 @@ class Legend extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: 15,
+          height: 15,
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(2),
@@ -32,7 +32,7 @@ class Legend extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 35,
+              width: 40,
               child: RichText(
                 text: TextSpan(
                   text: title,
@@ -48,7 +48,7 @@ class Legend extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(subTitle.toUpperCase(),
-                style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white70)),
+                style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white60)),
           ],
         ),
       ],

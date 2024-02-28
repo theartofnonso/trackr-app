@@ -73,9 +73,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(
         onPressed: () {
-          showAlertDialogWithMultiActions(
+          showBottomSheetWithMultiActions(
               context: context,
-              message: "Delete workout?",
+              title: "Delete workout?",
+              description: "Are you sure you want to delete this workout?",
               leftAction: Navigator.of(context).pop,
               rightAction: () {
                 Navigator.of(context).pop();

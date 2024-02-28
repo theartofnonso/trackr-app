@@ -14,11 +14,13 @@ import '../../utils/string_utils.dart';
 class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
   final List<RoutineLogDto> logs;
 
-  const ExercisesSetsHoursVolumeWidget({super.key, required this.logs,});
+  const ExercisesSetsHoursVolumeWidget({
+    super.key,
+    required this.logs,
+  });
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseLogs = logs
         .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
         .expand((exerciseLogs) => exerciseLogs);
@@ -46,7 +48,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
 
     final numberOfPbs = exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
-      routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+          routineLogController.whereExerciseLogsBefore(exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
 
       return calculatePBs(
           pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseLog.exercise.type, exerciseLog: exerciseLog);
@@ -77,31 +79,34 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
-                      child: SleepTimeColumn(
+                      child: _TableItem(
                           title: 'EXERCISES',
                           subTitle: "$numberOfExercises",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white,
+                          padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
-                      child: SleepTimeColumn(
+                      child: _TableItem(
                           title: 'SETS',
                           subTitle: "$numberOfSets",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white,
+                          padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
-                      child: SleepTimeColumn(
+                      child: _TableItem(
                           title: 'REPS',
                           subTitle: "$totalReps",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white, padding: const EdgeInsets.only(bottom: 20)),
+                          subTitleColor: Colors.white,
+                          padding: const EdgeInsets.only(bottom: 20)),
                     ),
                   ),
                 ]),
@@ -109,30 +114,34 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
-                      child: SleepTimeColumn(
+                      child: _TableItem(
                           title: 'VOLUME',
                           subTitle: totalVolume,
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
-                    ),
-                  ),TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(
-                      child: SleepTimeColumn(
-                          title: 'HOURS',
-                          subTitle: totalHours.hmDigital(),
-                          titleColor: Colors.white,
-                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white,
+                          padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
-                      child: SleepTimeColumn(
+                      child: _TableItem(
+                          title: 'HOURS',
+                          subTitle: totalHours.hmDigital(),
+                          titleColor: Colors.white,
+                          subTitleColor: Colors.white,
+                          padding: const EdgeInsets.only(top: 20)),
+                    ),
+                  ),
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(
+                      child: _TableItem(
                           title: 'Personal Bests',
                           subTitle: "${numberOfPbs.length}",
                           titleColor: Colors.white,
-                          subTitleColor: Colors.white, padding: const EdgeInsets.only(top: 20)),
+                          subTitleColor: Colors.white,
+                          padding: const EdgeInsets.only(top: 20)),
                     ),
                   ),
                 ]),
@@ -143,19 +152,19 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
   }
 }
 
-class SleepTimeColumn extends StatelessWidget {
+class _TableItem extends StatelessWidget {
   final String title;
   final String subTitle;
   final Color titleColor;
   final Color subTitleColor;
   final EdgeInsets? padding;
 
-  const SleepTimeColumn({
-    super.key,
+  const _TableItem({
     required this.title,
     required this.subTitle,
     required this.titleColor,
-    required this.subTitleColor, this.padding,
+    required this.subTitleColor,
+    this.padding,
   });
 
   @override

@@ -3,12 +3,15 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import '../dtos/achievement_dto.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/routine_log_dto.dart';
 import '../dtos/set_dto.dart';
+import '../enums/muscle_group_enums.dart';
 import '../repositories/achievement_repository.dart';
+import '../utils/general_utils.dart';
 
 class RoutineLogController extends ChangeNotifier {
   String errorMessage = '';
@@ -34,10 +37,20 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
+  List<MuscleGroupFamily> _accruedMGF = [];
+
+  List<MuscleGroupFamily> _pendingMGF = [];
+
+  List<MuscleGroupFamily> get accruedMGF => _accruedMGF;
+
+  List<MuscleGroupFamily> get pendingMGF => _pendingMGF;
+
   void fetchLogs() async {
     try {
       await _amplifyLogRepository.fetchLogs(onSyncCompleted: _onSyncCompleted);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
+      _accruedMGF = _fetchAccruedMGF();
+      _pendingMGF = _fetchPendingMGF();
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -96,6 +109,43 @@ class RoutineLogController extends ChangeNotifier {
 
   List<AchievementDto> calculateNewLogAchievements() {
     return _achievementRepository.calculateNewLogAchievements(routineLogs: routineLogs);
+  }
+
+  List<MuscleGroupFamily> _fetchAccruedMGF() {
+    final lastWeeksRange = DateTime.now().lastWeekRange();
+
+    final lastWeeksLogs = _amplifyLogRepository.weeklyLogs[lastWeeksRange] ?? [];
+
+    final lastWeeksMuscleGroupFamilies = lastWeeksLogs
+        .map((log) => log.exerciseLogs)
+        .expand((exerciseLogs) => exerciseLogs)
+        .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family)
+        .toSet();
+
+    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
+
+    final lastWeeksUntrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(lastWeeksMuscleGroupFamilies);
+
+    return lastWeeksUntrainedMuscleGroups.toList();
+  }
+
+  List<MuscleGroupFamily> _fetchPendingMGF() {
+
+    final thisWeeksRange = DateTime.now().currentWeekRange();
+
+    final thisWeeksLogs = _amplifyLogRepository.weeklyLogs[thisWeeksRange] ?? [];
+
+    final thisWeeksMuscleGroupFamilies = thisWeeksLogs
+        .map((log) => log.exerciseLogs)
+        .expand((exerciseLogs) => exerciseLogs)
+        .map((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family)
+        .toSet();
+
+    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
+
+    final thisWeeksUntrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(thisWeeksMuscleGroupFamilies);
+
+    return thisWeeksUntrainedMuscleGroups.toList();
   }
 
   /// Helper methods

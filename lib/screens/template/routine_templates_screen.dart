@@ -27,12 +27,11 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
       final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
 
-      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys;
+      final muscleGroupFamilies = exercisesByMuscleGroupFamily.keys.toSet();
 
-      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies();
+      final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
-      final untrainedMuscleGroups =
-          listOfPopularMuscleGroupFamilies.whereNot((family) => muscleGroupFamilies.contains(family)).toList();
+      final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 
       String untrainedMuscleGroupsNames = "";
 
@@ -118,9 +117,10 @@ class _RoutineWidget extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          showAlertDialogWithMultiActions(
+          showBottomSheetWithMultiActions(
               context: context,
-              message: 'Delete workout?',
+              title: 'Delete workout?',
+              description: 'Are you sure you want to delete this workout?',
               leftAction: Navigator.of(context).pop,
               rightAction: () {
                 Navigator.of(context).pop();

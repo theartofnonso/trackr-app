@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 
 import '../../colors.dart';
@@ -73,7 +74,7 @@ class _LinearBar extends StatelessWidget {
                 LinearProgressIndicator(
                   value: frequency,
                   backgroundColor: sapphireDark,
-                  color: Colors.white,
+                  color: muscleFamilyFrequencyColor(value: frequency),
                   minHeight: 25,
                   borderRadius: BorderRadius.circular(3.0), // Border r
                 ),

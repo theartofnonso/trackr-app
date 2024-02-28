@@ -26,7 +26,7 @@ class SetRecordWidget extends StatelessWidget {
           color: sapphireBlue);
     }
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         DoubleSetHeader(firstLabel: "Reps", secondLabel: 'Personal Best (${weightLabel().toUpperCase()})'),
         const SizedBox(height: 8),

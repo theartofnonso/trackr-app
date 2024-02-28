@@ -111,7 +111,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                 if (!_isInputFieldVisible)
                   const Column(children: [
                     InformationContainer(
-                        icon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
+                        leadingIcon: FaIcon(FontAwesomeIcons.lightbulb, size: 16),
                         title: 'Tip',
                         description: "Tap text in white to edit.\nExercise type is not editable once created.",
                         color: Colors.transparent),
