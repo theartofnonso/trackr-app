@@ -9,7 +9,7 @@ import '../widgets/timers/time_picker.dart';
 
 void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: sapphireDark80,
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
