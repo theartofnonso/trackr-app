@@ -87,7 +87,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
       final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
-      displayBottomSheet(context: context, child: _OneRepMaxSlider(oneRepMax: oneRepMax));
+      displayBottomSheet(
+          context: context,
+          child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
     }
   }
 
@@ -432,9 +434,10 @@ class _SetListView extends StatelessWidget {
 }
 
 class _OneRepMaxSlider extends StatefulWidget {
+  final String exercise;
   final double oneRepMax;
 
-  const _OneRepMaxSlider({required this.oneRepMax});
+  const _OneRepMaxSlider({required this.exercise, required this.oneRepMax});
 
   @override
   State<_OneRepMaxSlider> createState() => _OneRepMaxSliderState();
@@ -449,11 +452,14 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(widget.exercise,
+            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w800, fontSize: 18)),
+        const SizedBox(height: 2),
         RichText(
           text: TextSpan(
-            text: "Based on your recent progress, consisder",
+            text: "Based on your recent progress, consider",
             style:
-                GoogleFonts.montserrat(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 14),
+                GoogleFonts.montserrat(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
             children: [
               TextSpan(
                 text: "\n",
@@ -461,7 +467,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
               ),
               TextSpan(
                 text: "$_weight${weightLabel()}",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
               ),
               TextSpan(
                 text: " ",
@@ -469,7 +475,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
               ),
               TextSpan(
                 text: "for",
-                style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 18),
+                style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 18),
               ),
               TextSpan(
                 text: " ",
@@ -477,7 +483,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
               ),
               TextSpan(
                 text: "${_reps.toInt()} ${pluralize(word: "rep", count: _reps.toInt())}",
-                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
               )
             ],
           ),
