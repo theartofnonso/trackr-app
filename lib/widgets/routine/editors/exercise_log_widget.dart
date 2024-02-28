@@ -75,18 +75,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           "Remove",
           style: GoogleFonts.montserrat(color: Colors.red),
         ),
-      ),
-      MenuItemButton(
-        onPressed: _show1RMRecommendation,
-        child: Text(
-          "Info",
-          style: GoogleFonts.montserrat(color: Colors.white),
-        ),
       )
     ];
   }
 
-  void _show1RMRecommendation() {
+  void _show1RMRecommendations() {
     final pastExerciseLogs =
         Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
     final completedPastExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastExerciseLogs);
@@ -242,7 +235,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -338,14 +331,29 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
-          if (_canAddSets(type: exerciseType))
-            IconButton(
-                onPressed: _addSet,
-                icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
-                style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            if (withWeightsOnly(type: exerciseType))
+              IconButton(
+                  onPressed: _show1RMRecommendations,
+                  icon: Row(
+                    children: [
+                      const FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 16),
+                      const SizedBox(width: 4),
+                      Text("WEIGHTS",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 12)),
+                    ],
+                  )),
+            const Spacer(),
+            if (_canAddSets(type: exerciseType))
+              IconButton(
+                  onPressed: _addSet,
+                  icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
+                  style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+          ])
         ],
       ),
     );
@@ -439,7 +447,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
       children: [
         RichText(
           text: TextSpan(
-            text: "Your suggested weight is",
+            text: "Based on your recent progress, consisder",
             style:
                 GoogleFonts.montserrat(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 14),
             children: [
