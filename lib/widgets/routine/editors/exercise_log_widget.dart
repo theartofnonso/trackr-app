@@ -9,6 +9,7 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -463,13 +464,13 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               TextSpan(
-                text: "${_reps.toInt()} reps",
+                text: "${_reps.toInt()} ${pluralize(word: "rep", count: _reps.toInt())}",
                 style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
               )
             ],
           ),
         ),
-        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20),
+        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20, thumbColor: vibrantGreen),
       ],
     );
   }
