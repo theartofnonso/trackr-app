@@ -49,6 +49,7 @@ Future<void> displayBottomSheet(
             children: [
               Container(
                 height: height,
+                width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(

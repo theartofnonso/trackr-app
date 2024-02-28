@@ -90,6 +90,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       displayBottomSheet(
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
+    } else {
+      showBottomSheetWithNoAction(context: context, title: widget.exerciseLogDto.exercise.name, description: "Keep logging to see recommendations.");
     }
   }
 
