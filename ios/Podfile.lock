@@ -39,11 +39,11 @@ PODS:
     - FirebaseAnalytics (~> 10.20.0)
   - Firebase/CoreOnly (10.20.0):
     - FirebaseCore (= 10.20.0)
-  - firebase_analytics (10.8.7):
+  - firebase_analytics (10.8.6):
     - Firebase/Analytics (= 10.20.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.25.5):
+  - firebase_core (2.25.4):
     - Firebase/CoreOnly (= 10.20.0)
     - Flutter
   - FirebaseAnalytics (10.20.0):
@@ -131,13 +131,13 @@ PODS:
     - FlutterMacOS
   - PromisesObjC (2.4.0)
   - ReachabilitySwift (5.0.0)
-  - Sentry/HybridSDK (8.20.0):
-    - SentryPrivate (= 8.20.0)
+  - Sentry/HybridSDK (8.19.0):
+    - SentryPrivate (= 8.19.0)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.20.0)
-  - SentryPrivate (8.20.0)
+    - Sentry/HybridSDK (= 8.19.0)
+  - SentryPrivate (8.19.0)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -236,8 +236,8 @@ SPEC CHECKSUMS:
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   Firebase: 10c8cb12fb7ad2ae0c09ffc86cd9c1ab392a0031
-  firebase_analytics: 2c1c3057d5da3bd3aab819f7e6ee153a4e46c59e
-  firebase_core: c8628c7ce80f79439149549052bff22f6784fbf5
+  firebase_analytics: 9c600045bfb4d16dd78593d18f32c99bb77e5001
+  firebase_core: a46c312d8bae4defa3d009b2aa7b5b413aeb394e
   FirebaseAnalytics: a2731bf3670747ce8f65368b118d18aa8e368246
   FirebaseCore: 28045c1560a2600d284b9c45a904fe322dc890b6
   FirebaseCoreInternal: 43c1788eaeee9d1b97caaa751af567ce11010d00
@@ -252,9 +252,9 @@ SPEC CHECKSUMS:
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Sentry: a8d7b373b9f9868442b02a0c425192f693103cbf
-  sentry_flutter: 03e7660857a8cdb236e71456a7e8447b65c8a788
-  SentryPrivate: 006b24af16828441f70e2ab6adf241bd0a8ad130
+  Sentry: 1ebcaef678a27c8ac515f974cb5425dd1bbdec2f
+  sentry_flutter: ecdfbedee55337205561cfa782ee02d31ec83e1f
+  SentryPrivate: 765c9b4ebe9ac1a5fcdc067c5a1cfbf3f10e1677
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   SQLite.swift: 4fc2be46c36392e3b87afe6fe7f1801c1daa07ef
