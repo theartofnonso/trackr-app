@@ -19,6 +19,7 @@ import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
+import '../../../utils/1rm_calculator.dart';
 import '../../../utils/general_utils.dart';
 
 const _logModeTimerMessage = "Tap + to add a timer";
@@ -72,8 +73,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           "Remove",
           style: GoogleFonts.montserrat(color: Colors.red),
         ),
+      ),
+      MenuItemButton(
+        onPressed: _show1RMRecommendation,
+        child: Text(
+          "Info",
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
       )
     ];
+  }
+
+  void _show1RMRecommendation() {
+    final pastExerciseLogs = Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    if(pastExerciseLogs.isNotEmpty) {
+      final previousLog = pastExerciseLogs.last;
+      previousLog.sets.forEach((element) {
+        print(element);
+      });
+      final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
+      final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
+    }
   }
 
   void _updateProcedureNotes({required String value}) {
