@@ -41,7 +41,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Table(
-                  border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+                  border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
                   columnWidths: const <int, TableColumnWidth>{
                     0: FlexColumnWidth(),
                     1: FlexColumnWidth(),
