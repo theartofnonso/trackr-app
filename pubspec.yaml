@@ -64,6 +64,7 @@ dependencies:
   image_picker: ^1.0.7
   amplify_analytics_pinpoint: ^1.6.3
   flutter_animate: ^4.5.0
+  mailto: ^2.0.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"

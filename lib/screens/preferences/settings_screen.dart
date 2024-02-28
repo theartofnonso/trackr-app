@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -140,6 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       onTap: _navigateToNotificationSettings,
                       title: "Notifications",
                       trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                  OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                   const SizedBox(height: 8),
@@ -223,6 +225,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     }
   }
 
+  void _sendFeedback() async {
+      final mailtoLink = Mailto(
+        to: [email],
+        subject: 'ATTENTION: Feedback for TRKR',
+      );
+      await _launchUrl(url: mailtoLink.toString());
+  }
+
   void _logout() async {
     showBottomSheetWithMultiActions(
         context: context,
@@ -245,7 +255,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Oops! Couldn't open the page!")));
+        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "Oops! Something went wrong.");
       }
     }
   }
