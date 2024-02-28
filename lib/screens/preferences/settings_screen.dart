@@ -32,7 +32,6 @@ enum WeightUnit {
 }
 
 class SettingsScreen extends StatefulWidget {
-
   static const routeName = '/settings-screen';
 
   const SettingsScreen({super.key});
@@ -123,7 +122,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     child: SwitchListTile(
                       activeColor: vibrantGreen,
                       title: Text('Show calendar dates',
-                          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                       value: SharedPrefs().showCalendarDates,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       onChanged: (bool value) {
@@ -143,28 +143,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                   OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
                   const SizedBox(height: 8),
-                  OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                  OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+                  const SizedBox(height: 8),
+                  OutlineListTile(onTap: _logout, title: "Logout"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _delete, title: "Delete Account"),
                   const SizedBox(height: 50),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    GestureDetector(
-                      onTap: () => _launchUrl(url: trackrWebUrl),
-                      child: Image.asset(
-                        'images/trackr.png',
-                        fit: BoxFit.contain,
-                        height: 12, //
-                      ),
-                    ),
-                    const SizedBox(width: 18),
-                    GestureDetector(
-                        onTap: () => _launchUrl(url: instagramUrl),
-                        child: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 24)),
-                  ]),
-                  const SizedBox(height: 50),
                   Center(
                     child: Text(_appVersion,
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                        style:
+                            GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -226,11 +214,40 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void _sendFeedback() async {
-      final mailtoLink = Mailto(
-        to: [email],
-        subject: 'ATTENTION: Feedback for TRKR',
-      );
-      await _launchUrl(url: mailtoLink.toString());
+    final mailtoLink = Mailto(
+      to: [email],
+      subject: 'ATTENTION: Feedback for TRKR',
+    );
+    await _launchUrl(url: mailtoLink.toString());
+  }
+
+  void _visitTRKR() {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("On the web",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _launchUrl(url: trackrWebUrl);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("On Instagram",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _launchUrl(url: instagramUrl);
+              },
+            )
+          ]),
+        ));
   }
 
   void _logout() async {
@@ -255,7 +272,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
-        showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "Oops! Something went wrong.");
+        showSnackbar(
+            context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "Oops! Something went wrong.");
       }
     }
   }
