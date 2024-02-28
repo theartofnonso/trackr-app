@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -85,12 +86,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _show1RMRecommendation() {
-    final pastExerciseLogs = Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    final pastExerciseLogs =
+        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
     final completedPastExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastExerciseLogs);
-    if(completedPastExerciseLogs.isNotEmpty) {
+    if (completedPastExerciseLogs.isNotEmpty) {
       final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
       final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
+      displayBottomSheet(context: context, child: _OneRepMaxSlider(oneRepMax: oneRepMax));
     }
   }
 
@@ -412,5 +415,108 @@ class _SetListView extends StatelessWidget {
     }).toList();
 
     return Column(children: children);
+  }
+}
+
+class _OneRepMaxSlider extends StatefulWidget {
+  final double oneRepMax;
+
+  const _OneRepMaxSlider({required this.oneRepMax});
+
+  @override
+  State<_OneRepMaxSlider> createState() => _OneRepMaxSliderState();
+}
+
+class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
+  double _weight = 0.0;
+  double _reps = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          text: TextSpan(
+            text: "Your suggested weight is",
+            style:
+                GoogleFonts.montserrat(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 14),
+            children: [
+              TextSpan(
+                text: "\n",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+              ),
+              TextSpan(
+                text: "$_weight${weightLabel()}",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              TextSpan(
+                text: " ",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+              ),
+              TextSpan(
+                text: "for",
+                style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 18),
+              ),
+              TextSpan(
+                text: " ",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+              ),
+              TextSpan(
+                text: "${_reps.toInt()} reps",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              )
+            ],
+          ),
+        ),
+        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20),
+      ],
+    );
+  }
+
+  void onChanged(double value) {
+    final weight = _weightForPercentage(reps: value.toInt());
+    setState(() {
+      _weight = weightWithConversion(value: weight).roundToDouble();
+      _reps = value;
+    });
+  }
+
+  int _percentageForReps(int reps) {
+    // Define a map of reps to percentages
+    Map<int, int> repToPercentage = {
+      1: 100,
+      2: 97,
+      3: 94,
+      4: 92,
+      5: 89,
+      6: 86,
+      7: 83,
+      8: 81,
+      9: 78,
+      10: 75,
+      11: 73,
+      12: 71,
+      13: 70,
+      14: 68,
+      15: 67,
+      16: 65,
+      17: 64,
+      18: 62,
+      19: 61,
+      20: 60,
+    };
+
+    return repToPercentage[reps] ?? 1;
+  }
+
+  double _weightForPercentage({required int reps}) {
+    return (widget.oneRepMax * (_percentageForReps(reps) / 100)).roundToDouble();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _weight = _weightForPercentage(reps: 10);
   }
 }
