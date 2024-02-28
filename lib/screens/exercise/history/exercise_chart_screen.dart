@@ -131,11 +131,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
     }
 
-    _exerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
+    final exerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
         .exerciseLogsForExercise(exercise: widget.exercise)
         .toList();
 
-    _exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: _exerciseLogs);
+    _exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
 
     _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 

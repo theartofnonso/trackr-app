@@ -86,11 +86,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   void _show1RMRecommendation() {
     final pastExerciseLogs = Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
-    if(pastExerciseLogs.isNotEmpty) {
-      final previousLog = pastExerciseLogs.last;
-      previousLog.sets.forEach((element) {
-        print(element);
-      });
+    final completedPastExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastExerciseLogs);
+    if(completedPastExerciseLogs.isNotEmpty) {
+      final previousLog = completedPastExerciseLogs.last;
       final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
       final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
     }
