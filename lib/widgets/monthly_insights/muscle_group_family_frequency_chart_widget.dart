@@ -44,50 +44,47 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
 
     final dateTimes = periodicalLogs.entries.map((monthEntry) => monthEntry.key.end.abbreviatedMonth()).toList();
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [sapphireDark80, sapphireDark],
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              recordViewMuscleTrendEvent();
-              Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
-            },
-            child: Container(
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Muscle Trend".toUpperCase(),
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold)),
-                  const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 20),
-                ],
-              ),
-            ),
+    return GestureDetector(
+      onTap: () {
+        recordViewMuscleTrendEvent();
+        Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [sapphireDark80, sapphireDark],
           ),
-          const SizedBox(height: 30),
-          SizedBox(
-              height: 200,
-              child: CustomBarChart(
-                chartPoints: chartPoints,
-                periods: dateTimes,
-                barColors: scoreColors,
-                unit: ChartUnit.number,
-                bottomTitlesInterval: 1,
-                showLeftTitles: true,
-                maxY: 100,
-                reservedSize: 25,
-              ))
-        ],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Muscle Trend".toUpperCase(),
+                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold)),
+                const FaIcon(FontAwesomeIcons.arrowRightLong, color: Colors.white, size: 20),
+              ],
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+                height: 200,
+                child: CustomBarChart(
+                  chartPoints: chartPoints,
+                  periods: dateTimes,
+                  barColors: scoreColors,
+                  unit: ChartUnit.number,
+                  bottomTitlesInterval: 1,
+                  showLeftTitles: true,
+                  maxY: 100,
+                  reservedSize: 25,
+                ))
+          ],
+        ),
       ),
     );
   }
