@@ -343,7 +343,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           style:
                               GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 12)),
                     ],
-                  )),
+                  ),
+                  style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      shape:
+                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             const Spacer(),
             if (_canAddSets(type: exerciseType))
               IconButton(
