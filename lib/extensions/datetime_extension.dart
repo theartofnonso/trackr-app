@@ -161,6 +161,10 @@ extension DateTimeExtension on DateTime {
     return subtract(const Duration(days: 90)).withoutTime();
   }
 
+  DateTime previous180Days() {
+    return subtract(const Duration(days: 180)).withoutTime();
+  }
+
   List<DateTime> datesForWeek() {
     List<DateTime> weekDates = [];
     // Subtract the weekday number from the current date to get to the first day of the week

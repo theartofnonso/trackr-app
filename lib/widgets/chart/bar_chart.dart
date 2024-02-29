@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../colors.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../utils/chart_utils.dart';
 import '../../utils/string_utils.dart';
 
 class CustomBarChart extends StatelessWidget {
@@ -120,7 +121,7 @@ class CustomBarChart extends StatelessWidget {
           barRods: [
             BarChartRodData(
                 borderRadius: BorderRadius.circular(2),
-                width: 16,
+                width: barWidth(length: chartPoints.length),
                 toY: point.y.toDouble(),
                 color: barColors?[index] ?? Colors.white)
           ],

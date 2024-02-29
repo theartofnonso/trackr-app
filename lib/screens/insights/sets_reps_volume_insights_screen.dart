@@ -223,12 +223,16 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                           groupValue: _period,
                           children: {
                             ChartPeriod.month: SizedBox(
-                                width: 30,
+                                width: 40,
                                 child: Text(ChartPeriod.month.name.toUpperCase(),
                                     style: textStyle, textAlign: TextAlign.center)),
                             ChartPeriod.threeMonths: SizedBox(
-                                width: 30,
+                                width: 40,
                                 child: Text(ChartPeriod.threeMonths.name.toUpperCase(),
+                                    style: textStyle, textAlign: TextAlign.center)),
+                            ChartPeriod.sixMonths: SizedBox(
+                                width: 40,
+                                child: Text(ChartPeriod.sixMonths.name.toUpperCase(),
                                     style: textStyle, textAlign: TextAlign.center)),
                           },
                           onValueChanged: (ChartPeriod? value) {
@@ -385,6 +389,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
+
   String _metricLabel() {
     final unit = _chartUnit();
     return switch (unit) {
@@ -399,6 +404,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     return switch (_period) {
       ChartPeriod.month => thisMonthDateRange(),
       ChartPeriod.threeMonths => DateTimeRange(start: now.previous90Days(), end: now.lastWeekDay().withoutTime()),
+      ChartPeriod.sixMonths => DateTimeRange(start: now.previous180Days(), end: now.lastWeekDay().withoutTime()),
     };
   }
 
