@@ -21,7 +21,7 @@ class CTextButton extends StatelessWidget {
       this.loadingLabel = "loading",
       this.loading = false,
       this.buttonColor,
-        this.buttonBorderColor,
+      this.buttonBorderColor,
       this.padding,
       this.visualDensity = VisualDensity.compact,
       this.textStyle});
@@ -32,11 +32,17 @@ class CTextButton extends StatelessWidget {
     final buttonColor = this.buttonColor ?? sapphireLight;
     return TextButton(
         style: ButtonStyle(
-            visualDensity: visualDensity,
-            backgroundColor: MaterialStateProperty.all(buttonColor),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-                side: BorderSide(color: buttonBorderColor ?? buttonColor.withOpacity(0.3), width: 2)))),
+          visualDensity: visualDensity,
+          backgroundColor: MaterialStateProperty.all(buttonColor),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(color: buttonBorderColor ?? buttonColor.withOpacity(0.3), width: 2))),
+          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+              return Colors.black.withOpacity(0.3); // Defer to the widget's default.
+            },
+          ),
+        ),
         onPressed: loading ? null : onPressed,
         child: Container(
           padding: padding,
