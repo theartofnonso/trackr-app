@@ -96,7 +96,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     final weights = [totalOptimal, totalSufficient, totalMinimum];
 
-    final hasWeights = weights.every((weight) => weight > 0);
+    final hasWeights = weights.any((weight) => weight > 0);
 
     final weightColors = [vibrantGreen, vibrantBlue, Colors.orange];
 
