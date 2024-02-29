@@ -33,16 +33,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
 
       final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 
-      String untrainedMuscleGroupsNames = "";
-
-      if (untrainedMuscleGroups.isNotEmpty) {
-        if (untrainedMuscleGroups.length > 1) {
-          untrainedMuscleGroupsNames =
-              "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
-        } else {
-          untrainedMuscleGroupsNames = untrainedMuscleGroups.first.name;
-        }
-      }
+      String untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
       return Scaffold(
           backgroundColor: Colors.transparent,

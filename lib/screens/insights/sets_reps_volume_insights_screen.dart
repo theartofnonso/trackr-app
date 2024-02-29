@@ -8,6 +8,7 @@ import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/empty_states/horizontal_stacked_bars_empty_state.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -19,6 +20,7 @@ import '../../enums/sets_reps_volume_enum.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../widgets/calendar/calendar_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
+import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
 
 class SetsAndRepsVolumeInsightsScreen extends StatefulWidget {
@@ -93,6 +95,8 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         condition: (value) => value >= _minimumSetsOrRepsValue() && value < _sufficientSetsOrRepsValue());
 
     final weights = [totalOptimal, totalSufficient, totalMinimum];
+
+    final hasWeights = weights.every((weight) => weight > 0);
 
     final weightColors = [vibrantGreen, vibrantBlue, Colors.orange];
 
@@ -292,7 +296,9 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
                     ),
                     const SizedBox(height: 14),
-                    HorizontalStackedBars(weights: weights, colors: weightColors),
+                    hasWeights
+                        ? HorizontalStackedBars(weights: weights, colors: weightColors)
+                        : const HorizontalStackedBarsEmptyState(),
                     const SizedBox(height: 10),
                     Legend(
                       title: "$totalOptimal",
@@ -402,43 +408,4 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
     _dateTimeRange = thisMonthDateRange();
   }
-}
-
-class HorizontalStackedBars extends StatelessWidget {
-  final List<int> weights;
-  final List<Color> colors;
-
-  const HorizontalStackedBars({super.key, required this.weights, required this.colors});
-
-  @override
-  Widget build(BuildContext context) {
-    // Define the weights and colors for the bars
-    final List<Bar> bars = weights.mapIndexed((index, value) => Bar(weight: value, color: colors[index])).toList();
-
-    // Calculate the total weight
-    final int totalWeight = bars.fold(0, (previousValue, bar) => previousValue + bar.weight);
-
-    // Create a list of Expanded widgets based on the weights
-    final List<Widget> weightedBars = bars.map((bar) {
-      return Expanded(
-        flex: (bar.weight * 10 ~/ totalWeight), // Calculate the flex factor based on the weight
-        child: Container(
-          height: 10, // Fixed height for all bars
-          color: bar.color,
-        ),
-      );
-    }).toList();
-
-    return Row(
-      children: weightedBars,
-    );
-  }
-}
-
-// A simple class to hold the weight and color for a bar
-class Bar {
-  final int weight;
-  final Color color;
-
-  Bar({required this.weight, required this.color});
 }
