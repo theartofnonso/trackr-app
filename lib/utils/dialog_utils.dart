@@ -60,6 +60,10 @@ Future<void> displayBottomSheet(
                       sapphireDark,
                     ],
                   ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
                 ),
                 child: SafeArea(child: child),
               ),

@@ -173,7 +173,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           children: [
                             Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(_dateTimeRange.start.abbreviatedMonth(),
+                              child: Text(_dateTimeRange.start.formattedMonthAndYear(),
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
