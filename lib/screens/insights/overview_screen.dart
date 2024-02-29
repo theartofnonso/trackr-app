@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
@@ -170,6 +171,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(_dateTimeRange.start.abbreviatedMonth(),
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white, fontWeight: FontWeight.w900, fontSize: 20)),
+                            ),
                             Calendar(readOnly: true, range: _dateTimeRange),
                             const SizedBox(height: 12),
                             Image.asset(
