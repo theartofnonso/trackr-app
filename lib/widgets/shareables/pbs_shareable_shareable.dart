@@ -81,7 +81,7 @@ class PBsShareable extends StatelessWidget {
                   )),
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: imageFile != null ? MainAxisAlignment.end : MainAxisAlignment.center,
                     children: [
                       const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                         FaIcon(FontAwesomeIcons.solidStar, color: Colors.green, size: 14),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
+import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
@@ -34,7 +35,8 @@ class RoutineTemplates extends StatelessWidget {
 
       final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 
-      String untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
+      String untrainedMuscleGroupsNames =
+          joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
       return Scaffold(
           backgroundColor: Colors.transparent,
@@ -67,7 +69,7 @@ class RoutineTemplates extends StatelessWidget {
                     child: RichText(
                         text: TextSpan(
                             text:
-                                  "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
+                                "Consider training a variety of muscle groups to avoid muscle imbalances and prevent injury. Start by including",
                             style: GoogleFonts.montserrat(
                                 color: Colors.white70,
                                 fontSize: 14,
@@ -109,7 +111,8 @@ class _RoutineWidget extends StatelessWidget {
       ),
       MenuItemButton(
         onPressed: () {
-          displayBottomSheet(context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+          displayBottomSheet(
+              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -134,48 +137,93 @@ class _RoutineWidget extends StatelessWidget {
 
     return Theme(
         data: ThemeData(splashColor: sapphireLight),
-        child: ListTile(
-          tileColor: sapphireDark80,
-          onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
-          dense: true,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          leading: GestureDetector(
-              onTap: () {
-                final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
-                navigateToRoutineLogEditor(context: context, arguments: arguments);
-              },
-              child: const Icon(
-                Icons.play_arrow_rounded,
-                color: Colors.white,
-                size: 35,
-              )),
-          title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-          subtitle: Text(
-              "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
-              style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-          trailing: MenuAnchor(
-            style: MenuStyle(
-              backgroundColor: MaterialStateProperty.all(sapphireDark80),
-              surfaceTintColor: MaterialStateProperty.all(sapphireDark),
-            ),
-            builder: (BuildContext context, MenuController controller, Widget? child) {
-              return IconButton(
-                onPressed: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  } else {
-                    controller.open();
-                  }
-                },
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
-                  color: Colors.white,
-                  size: 24,
+        child: Container(
+          decoration: BoxDecoration(
+              color: sapphireDark80,
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                tileColor: Colors.transparent,
+                onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+                dense: true,
+                leading: template.isScheduledToday()
+                    ? GestureDetector(
+                        onTap: () {
+                          final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                          navigateToRoutineLogEditor(context: context, arguments: arguments);
+                        },
+                        child: const Icon(
+                          Icons.play_arrow_rounded,
+                          color: Colors.white,
+                          size: 35,
+                        ))
+                    : null,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
+                subtitle: Text(
+                    "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
+                    style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                trailing: MenuAnchor(
+                  style: MenuStyle(
+                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
+                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+                  ),
+                  builder: (BuildContext context, MenuController controller, Widget? child) {
+                    return IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.more_horiz_rounded,
+                        color: Colors.white70,
+                        size: 24,
+                      ),
+                      tooltip: 'Show menu',
+                    );
+                  },
+                  menuChildren: menuActions,
                 ),
-                tooltip: 'Show menu',
-              );
-            },
-            menuChildren: menuActions,
+              ),
+              if (template.isScheduledToday())
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 14.0, bottom: 14),
+                      child: Row(
+                        children: [
+                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
+                          const SizedBox(width: 4),
+                          Text("in 2 days, wed and thurs",
+                              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12)),
+                          const Spacer(),
+                          GestureDetector(
+                              onTap: () {
+                                final arguments =
+                                    RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                                navigateToRoutineLogEditor(context: context, arguments: arguments);
+                              },
+                              child: const Icon(
+                                Icons.play_arrow_rounded,
+                                color: Colors.white,
+                                size: 35,
+                              )),
+                          const SizedBox(width: 28),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ),
         ));
   }

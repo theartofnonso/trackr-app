@@ -24,5 +24,4 @@ extension RoutineTemplateExtension on RoutineTemplate {
       updatedAt: updatedAt.getDateTimeInUtc(),
     );
   }
-
 }

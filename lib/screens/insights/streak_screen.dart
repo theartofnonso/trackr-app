@@ -27,7 +27,6 @@ class StreakScreen extends StatelessWidget {
         MapEntry(range, logs ?? <RoutineLogDto>[]),
       );
     }
-
     final children = monthsToLogs.map((monthAndLogs) {
       final dates = monthAndLogs.value
           .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
