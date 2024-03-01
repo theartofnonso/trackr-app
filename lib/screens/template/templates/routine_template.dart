@@ -74,7 +74,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
           child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(
         onPressed: () {
-          displayBottomSheet(context: context, child: RoutineSchedulePlanner(template: template.name), isScrollControlled: true);
+          displayBottomSheet(context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),

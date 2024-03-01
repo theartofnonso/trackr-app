@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 class RoutineSchedulePlanner extends StatefulWidget {
   static const routeName = "/routine-schedule-planner";
 
-  final String template;
+  final RoutineTemplateDto template;
 
   const RoutineSchedulePlanner({super.key, required this.template});
 
@@ -44,7 +45,7 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
         selectedDays.isNotEmpty
             ? RichText(
                 text: TextSpan(
-                  text: 'Train ${widget.template} ',
+                  text: 'Train ${widget.template.name} ',
                   style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
                   children: [
                     TextSpan(
