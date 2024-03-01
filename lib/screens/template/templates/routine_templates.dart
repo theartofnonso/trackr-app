@@ -149,7 +149,7 @@ class _RoutineWidget extends StatelessWidget {
                 tileColor: Colors.transparent,
                 onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
                 dense: true,
-                leading: template.isScheduledToday()
+                leading: !template.isScheduledToday()
                     ? GestureDetector(
                         onTap: () {
                           final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
