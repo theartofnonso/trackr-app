@@ -4,33 +4,33 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 
-import '../../../colors.dart';
-import '../../../dtos/exercise_log_dto.dart';
-import '../../controllers/routine_template_controller.dart';
-import '../../dtos/routine_template_dto.dart';
-import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../dtos/viewmodels/routine_template_arguments.dart';
-import '../../enums/routine_editor_type_enums.dart';
-import '../../enums/routine_template_type_enum.dart';
-import '../../utils/dialog_utils.dart';
-import '../../utils/routine_utils.dart';
-import '../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../utils/navigation_utils.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
-import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../../../colors.dart';
+import '../../../../dtos/exercise_log_dto.dart';
+import '../../../controllers/routine_template_controller.dart';
+import '../../../dtos/routine_template_dto.dart';
+import '../../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../../enums/routine_editor_type_enums.dart';
+import '../../../enums/routine_template_type_enum.dart';
+import '../../../utils/dialog_utils.dart';
+import '../../../utils/routine_utils.dart';
+import '../../../dtos/viewmodels/exercise_log_view_model.dart';
+import '../../../utils/navigation_utils.dart';
+import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/routine/preview/exercise_log_listview.dart';
 
-class RoutineTemplateScreen extends StatefulWidget {
+class RoutineTemplate extends StatefulWidget {
   final RoutineTemplateTypeEnum templateType;
   final RoutineTemplateDto template;
 
-  const RoutineTemplateScreen(
+  const RoutineTemplate(
       {super.key, this.templateType = RoutineTemplateTypeEnum.customTemplate, required this.template});
 
   @override
-  State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
+  State<RoutineTemplate> createState() => _RoutineTemplateState();
 }
 
-class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
+class _RoutineTemplateState extends State<RoutineTemplate> {
   bool _loading = false;
 
   void _deleteRoutine() async {

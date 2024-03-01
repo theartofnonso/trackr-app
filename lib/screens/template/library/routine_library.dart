@@ -3,18 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
-import 'package:tracker_app/screens/template/library/routine_template_library_screen.dart';
+import 'package:tracker_app/screens/template/library/routine_library_template.dart';
 import 'package:tracker_app/strings.dart';
 
 import '../../../dtos/routine_template_dto.dart';
 import '../../../enums/routine_template_library_workout_enum.dart';
 import '../../../widgets/information_container_lite.dart';
 
-class RoutineLibraryTemplate {
+class RoutineLibrary {
   final RoutineTemplateDto template;
   final String image;
 
-  const RoutineLibraryTemplate({required this.template, required this.image});
+  const RoutineLibrary({required this.template, required this.image});
 }
 
 class RoutineTemplateLibrary extends StatelessWidget {
@@ -56,7 +56,7 @@ class RoutineTemplateLibrary extends StatelessWidget {
 
 class _WorkoutListView extends StatelessWidget {
   final RoutineTemplateLibraryWorkoutEnum templateName;
-  final List<RoutineLibraryTemplate> templateRoutines;
+  final List<RoutineLibrary> templateRoutines;
 
   const _WorkoutListView({required this.templateName, required this.templateRoutines});
 
@@ -81,7 +81,7 @@ class _WorkoutListView extends StatelessWidget {
 }
 
 class _WorkoutCard extends StatelessWidget {
-  final RoutineLibraryTemplate libraryTemplate;
+  final RoutineLibrary libraryTemplate;
 
   const _WorkoutCard({required this.libraryTemplate});
 
@@ -131,8 +131,8 @@ class _WorkoutCard extends StatelessWidget {
     );
   }
 
-  void _navigateToRoutineTemplatePreview({required BuildContext context, required RoutineLibraryTemplate libraryTemplate}) {
+  void _navigateToRoutineTemplatePreview({required BuildContext context, required RoutineLibrary libraryTemplate}) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(libraryTemplate: libraryTemplate)));
+        .push(MaterialPageRoute(builder: (context) => RoutineLibraryTemplate(libraryTemplate: libraryTemplate)));
   }
 }
