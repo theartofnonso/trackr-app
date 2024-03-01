@@ -57,7 +57,7 @@ class LogMilestoneShareable extends StatelessWidget {
                   )),
                 )),
               Column(
-                  mainAxisAlignment: imageFile != null ? MainAxisAlignment.end : MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center, children: [
                 const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
                 const SizedBox(height: 20),

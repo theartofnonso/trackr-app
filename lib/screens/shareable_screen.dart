@@ -191,10 +191,6 @@ class _ShareableScreenState extends State<ShareableScreen> {
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () => _pickFromLibrary(camera: true),
             ),
-            const Divider(
-              color: sapphireLighter,
-              thickness: 0.6,
-            ),
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
