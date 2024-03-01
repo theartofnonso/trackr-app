@@ -18,6 +18,7 @@ import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../preferences/routine_schedule_planner.dart';
 
 class RoutineTemplate extends StatefulWidget {
   final RoutineTemplateTypeEnum templateType;
@@ -71,6 +72,12 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
             navigateToRoutineTemplateEditor(context: context, arguments: arguments);
           },
           child: Text("Edit", style: GoogleFonts.montserrat())),
+      MenuItemButton(
+        onPressed: () {
+          navigateWithSlideTransition(context: context, child: RoutineSchedulePlanner(template: widget.template.name));
+        },
+        child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
+      ),
       MenuItemButton(
         onPressed: () {
           showBottomSheetWithMultiActions(

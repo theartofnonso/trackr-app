@@ -14,6 +14,7 @@ import '../../../utils/dialog_utils.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../preferences/routine_schedule_planner.dart';
 
 class RoutineTemplates extends StatelessWidget {
   const RoutineTemplates({super.key});
@@ -105,6 +106,12 @@ class _RoutineWidget extends StatelessWidget {
           navigateToRoutineTemplateEditor(context: context, arguments: arguments);
         },
         child: Text("Edit", style: GoogleFonts.montserrat(color: Colors.white)),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          displayBottomSheet(context: context, child: RoutineSchedulePlanner(template: template.name), isScrollControlled: true);
+        },
+        child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
       MenuItemButton(
         onPressed: () {
