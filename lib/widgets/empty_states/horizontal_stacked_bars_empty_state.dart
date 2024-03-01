@@ -9,7 +9,7 @@ class HorizontalStackedBarsEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Define the weights and colors for the bars
-    final List<Bar> bars = [3, 2, 1].mapIndexed((index, value) => Bar(weight: value, color: [Colors.white, Colors.white60, Colors.white30][index])).toList();
+    final List<Bar> bars = [3, 2, 1].mapIndexed((index, value) => Bar(weight: value, color: [Colors.white60, Colors.white38, Colors.white24][index])).toList();
 
     // Calculate the total weight
     final int totalWeight = bars.fold(0, (previousValue, bar) => previousValue + bar.weight);
