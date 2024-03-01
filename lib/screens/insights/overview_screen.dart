@@ -116,7 +116,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
-                        if(logsForTheMonth.isNotEmpty)
+                        if(routineLogController.routineLogs.isNotEmpty)
                           const StackedNotificationBanners(),
                         const SizedBox(height: 12),
                         Calendar(
