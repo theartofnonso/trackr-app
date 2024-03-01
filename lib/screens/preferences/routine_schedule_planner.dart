@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
+import 'package:tracker_app/enums/week_days_enum.dart';
+import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 class RoutineSchedulePlanner extends StatefulWidget {
@@ -16,10 +18,9 @@ class RoutineSchedulePlanner extends StatefulWidget {
 }
 
 class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
-  final List<String> daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  final List<String> selectedDays = [];
+  final List<DayOfWeek> selectedDays = [];
 
-  void _toggleDay(String day) {
+  void _toggleDay(DayOfWeek day) {
     setState(() {
       if (selectedDays.contains(day)) {
         selectedDays.remove(day);
@@ -31,7 +32,7 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
 
   @override
   Widget build(BuildContext context) {
-    String days = joinWithAnd(items: selectedDays);
+    String days = joinWithAnd(items: selectedDays.map((day) => day.shortName).toList());
 
     if (selectedDays.length == 7) {
       days = 'everyday';
@@ -55,15 +56,15 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
                   ],
                 ),
               )
-            : Text('Select days to train ${widget.template}',
+            : Text('Select days to train ${widget.template.name}',
                 style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70)),
         const SizedBox(height: 14),
         Wrap(
           spacing: 8.0,
           runSpacing: 4.0,
-          children: daysOfWeek.map((day) {
+          children: DayOfWeek.values.map((day) {
             return ChoiceChip(
-              label: Text(day,
+              label: Text(day.longName,
                   style: GoogleFonts.montserrat(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -73,7 +74,7 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
               visualDensity: VisualDensity.compact,
               checkmarkColor: sapphireDark,
               selected: selectedDays.contains(day),
-              side: const BorderSide(color: Colors.transparent, width: 1.5),
+              side: const BorderSide(color: Colors.transparent),
               onSelected: (_) {
                 _toggleDay(day);
               },
