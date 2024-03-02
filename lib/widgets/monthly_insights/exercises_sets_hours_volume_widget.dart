@@ -137,7 +137,7 @@ class ExercisesSetsHoursVolumeWidget extends StatelessWidget {
                     verticalAlignment: TableCellVerticalAlignment.middle,
                     child: Center(
                       child: _TableItem(
-                          title: 'Personal Bests',
+                          title: 'PBs',
                           subTitle: "${numberOfPbs.length}",
                           titleColor: Colors.white,
                           subTitleColor: Colors.white,

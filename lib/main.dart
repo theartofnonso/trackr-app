@@ -39,7 +39,7 @@ import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routine_templates_home.dart';
+import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/utils/google_analytics.dart';
@@ -257,7 +257,7 @@ class _MyAppState extends State<MyApp> {
               },
               routes: {
                 OverviewScreen.routeName: (context) => const OverviewScreen(),
-                RoutineTemplatesHome.routeName: (context) => const RoutineTemplatesHome(),
+                RoutinesHome.routeName: (context) => const RoutinesHome(),
                 AchievementsScreen.routeName: (context) => const AchievementsScreen(),
                 SettingsScreen.routeName: (context) => const SettingsScreen(),
                 HomeScreen.routeName: (context) => const HomeScreen(),

@@ -10,7 +10,7 @@ import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/logs/routine_logs_screen.dart';
-import '../screens/template/routine_template_screen.dart';
+import '../screens/template/templates/routine_template.dart';
 
 Future<Future<Object?>> navigateToExerciseEditor({required BuildContext context, ExerciseEditorArguments? arguments}) async {
   return Navigator.of(context).pushNamed(ExerciseEditorScreen.routeName, arguments: arguments);
@@ -30,7 +30,7 @@ void navigateToRoutineLogEditor({required BuildContext context, required Routine
 }
 
 void navigateToRoutineTemplatePreview({required BuildContext context, required RoutineTemplateDto template}) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplateScreen(template: template)));
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoutineTemplate(template: template)));
 }
 
 void navigateToRoutineLogPreview({required BuildContext context, required RoutineLogDto log, bool finishedLogging = false}) {

@@ -9,7 +9,7 @@ import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routine_templates_home.dart';
+import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/google_analytics.dart';
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
-      const RoutineTemplatesHome(),
+      const RoutinesHome(),
       AchievementsScreen(scrollController: _scrollController),
       const SettingsScreen(),
     ];

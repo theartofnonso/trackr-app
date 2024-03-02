@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../colors.dart';
-import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class StreakScreen extends StatelessWidget {
-
   static const routeName = '/streak_screen';
 
   const StreakScreen({super.key});
@@ -19,25 +17,14 @@ class StreakScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final monthsToLogs = <MapEntry<DateTimeRange, List<RoutineLogDto>>>[];
-    final ranges = monthRangesForYear(DateTime.now().year);
-    for (var range in ranges) {
-      final logs = routineLogController.monthlyLogs[range];
-      monthsToLogs.add(
-        MapEntry(range, logs ?? <RoutineLogDto>[]),
-      );
-    }
-
-    final children = monthsToLogs.map((monthAndLogs) {
-      final dates = monthAndLogs.value
-          .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
-          .toList();
-      // Generate 12 containers for each month.
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: CalendarHeatMap(initialDate: monthAndLogs.key.start, dates: dates, spacing: 4, dynamicColor: true),
-      );
-    });
+    final monthsAndLogs = routineLogController.monthlyLogs.isNotEmpty
+        ? routineLogController.monthlyLogs.values.map((logs) {
+            final dates = logs.map((log) => log.createdAt.withoutTime()).toList();
+            return CalendarHeatMap(dates: dates, spacing: 4);
+          }).toList()
+        : [
+            CalendarHeatMap(dates: [DateTime.now()], spacing: 4)
+          ];
 
     return Scaffold(
         appBar: AppBar(
@@ -66,7 +53,14 @@ class StreakScreen extends StatelessWidget {
                 Text("Streak ${DateTime.now().year}",
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 20),
-                ...children
+                GridView.count(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 1,
+                    childAspectRatio: 1.2,
+                    mainAxisSpacing: 4.0,
+                    crossAxisSpacing: 4.0,
+                    children: monthsAndLogs)
               ]),
             ),
           ),

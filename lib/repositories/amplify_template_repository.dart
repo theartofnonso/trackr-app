@@ -11,16 +11,16 @@ import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
 import '../enums/routine_template_library_workout_enum.dart';
-import '../screens/template/library/routine_template_library.dart';
+import '../screens/template/library/routine_library.dart';
 
 class AmplifyTemplateRepository {
-  final List<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibraryTemplate>>> _defaultTemplates = [];
+  final List<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibrary>>> _defaultTemplates = [];
 
   List<RoutineTemplateDto> _templates = [];
 
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
-  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibraryTemplate>>> get defaultTemplates =>
+  UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibrary>>> get defaultTemplates =>
       UnmodifiableListView(_defaultTemplates);
 
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
@@ -55,9 +55,9 @@ class AmplifyTemplateRepository {
 
     _defaultTemplates.add({
       RoutineTemplateLibraryWorkoutEnum.ppl: [
-        RoutineLibraryTemplate(template: pushTemplate, image: "bench_press.jpg"),
-        RoutineLibraryTemplate(template: pullTemplate, image: "pull_up.jpg"),
-        RoutineLibraryTemplate(template: legsTemplate, image: "squat.jpg")
+        RoutineLibrary(template: pushTemplate, image: "bench_press.jpg"),
+        RoutineLibrary(template: pullTemplate, image: "pull_up.jpg"),
+        RoutineLibrary(template: legsTemplate, image: "squat.jpg")
       ]
     });
 
@@ -67,10 +67,10 @@ class AmplifyTemplateRepository {
     final lowerTwoTemplate = await _loadTemplatesFromAssets(file: "lower_two_workout.json", exercises: exercises);
     _defaultTemplates.add({
       RoutineTemplateLibraryWorkoutEnum.upperLower: [
-        RoutineLibraryTemplate(template: upperOneTemplate, image: "bicep_curl.jpg"),
-        RoutineLibraryTemplate(template: lowerOneTemplate, image: "deadlift.jpg"),
-        RoutineLibraryTemplate(template: upperTwoTemplate, image: "pull_up.jpg"),
-        RoutineLibraryTemplate(template: lowerTwoTemplate, image: "squat.jpg"),
+        RoutineLibrary(template: upperOneTemplate, image: "bicep_curl.jpg"),
+        RoutineLibrary(template: lowerOneTemplate, image: "deadlift.jpg"),
+        RoutineLibrary(template: upperTwoTemplate, image: "pull_up.jpg"),
+        RoutineLibrary(template: lowerTwoTemplate, image: "squat.jpg"),
       ]
     });
 
@@ -80,8 +80,8 @@ class AmplifyTemplateRepository {
         await _loadTemplatesFromAssets(file: "no_equipment_core_workout.json", exercises: exercises);
     _defaultTemplates.add({
       RoutineTemplateLibraryWorkoutEnum.noEquipment: [
-        RoutineLibraryTemplate(template: noEquipmentFullBodyTemplate, image: "plank.jpg"),
-        RoutineLibraryTemplate(template: noEquipmentCoreTemplate, image: "sit_ups.jpg")
+        RoutineLibrary(template: noEquipmentFullBodyTemplate, image: "plank.jpg"),
+        RoutineLibrary(template: noEquipmentCoreTemplate, image: "sit_ups.jpg")
       ]
     });
   }
