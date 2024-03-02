@@ -176,7 +176,6 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
                       Column(
                         children: [
                           Text(template.notes,
-                              textAlign: TextAlign.justify,
                               style: GoogleFonts.montserrat(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -191,7 +190,6 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
                           const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
                           const SizedBox(width: 4),
                           Text("Scheduled on $otherScheduledDays",
-                              textAlign: TextAlign.justify,
                               style: GoogleFonts.montserrat(
                                 color: Colors.white70,
                                 fontSize: 14,

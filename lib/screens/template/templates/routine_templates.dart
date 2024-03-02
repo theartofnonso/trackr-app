@@ -37,7 +37,6 @@ class RoutineTemplates extends StatelessWidget {
         } else {
           return 0;
         }
-        
       });
 
       final exercise = routineTemplates.map((template) => template.exercises).expand((exercises) => exercises).toList();
@@ -165,6 +164,16 @@ class _RoutineWidget extends StatelessWidget {
             decoration: BoxDecoration(
                 color: sapphireDark80,
                 borderRadius: BorderRadius.circular(5),
+                gradient: template.isScheduledToday()
+                    ? const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          sapphireDark80,
+                          sapphireDark,
+                        ],
+                      )
+                    : null,
                 boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,20 +201,21 @@ class _RoutineWidget extends StatelessWidget {
                     children: [
                       Text(
                           "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
-                          style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                      if(scheduledDays.isNotEmpty && !template.isScheduledToday())
+                          style: GoogleFonts.montserrat(
+                              color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                      if (scheduledDays.isNotEmpty && !template.isScheduledToday())
                         Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          children: [
-                            const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
-                            const SizedBox(width: 4),
-                            Text(otherScheduledDays,
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                      )
+                          padding: const EdgeInsets.only(top: 8, bottom: 6.0),
+                          child: Row(
+                            children: [
+                              const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
+                              const SizedBox(width: 4),
+                              Text(otherScheduledDays,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        )
                     ],
                   ),
                   trailing: MenuAnchor(
@@ -240,7 +250,7 @@ class _RoutineWidget extends StatelessWidget {
                     children: [
                       const SizedBox(height: 12),
                       Padding(
-                        padding: const EdgeInsets.only(left: 14.0, bottom: 14),
+                        padding: const EdgeInsets.only(left: 14.0, bottom: 12),
                         child: Row(
                           children: [
                             const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
