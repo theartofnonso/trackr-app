@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/routine_template_dto.dart';
 import 'package:tracker_app/enums/week_days_enum.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
+
+import '../../controllers/routine_template_controller.dart';
 
 class RoutineSchedulePlanner extends StatefulWidget {
   static const routeName = "/routine-schedule-planner";
@@ -81,7 +85,33 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
             );
           }).toList(),
         ),
+        const SizedBox(height: 14),
+        Center(
+          child: CTextButton(
+              onPressed: _updateRoutineTemplateDays,
+              label: "Save Days",
+              textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+              padding: const EdgeInsets.all(10.0),
+              buttonColor: Colors.transparent,
+              buttonBorderColor: Colors.transparent),
+        )
       ],
     );
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDays.addAll(widget.template.days);
+  }
+
+  void _updateRoutineTemplateDays() async {
+    selectedDays.sort((a, b) => a.index.compareTo(b.index));
+    final template = widget.template.copyWith(days: selectedDays);
+    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }

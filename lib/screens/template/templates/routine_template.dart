@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
+import 'package:tracker_app/extensions/week_days_extension.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/exercise_log_dto.dart';
@@ -16,6 +17,7 @@ import '../../../utils/dialog_utils.dart';
 import '../../../utils/routine_utils.dart';
 import '../../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
 import '../../preferences/routine_schedule_planner.dart';
@@ -74,7 +76,8 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
           child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(
         onPressed: () {
-          displayBottomSheet(context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+          displayBottomSheet(
+              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -97,6 +100,12 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
         child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
+
+    final scheduledDays = template.days;
+
+    final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
+
+    final otherScheduledDays = joinWithAnd(items: otherScheduledDayNames);
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -161,16 +170,35 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
               minimum: const EdgeInsets.all(10.0),
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    template.notes.isNotEmpty
-                        ? Text(template.notes,
-                            style: GoogleFonts.montserrat(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ))
-                        : const SizedBox.shrink(),
-                    const SizedBox(height: 5),
+                    if (template.notes.isNotEmpty)
+                      Column(
+                        children: [
+                          Text(template.notes,
+                              textAlign: TextAlign.justify,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.white,
+                                fontSize: 14,
+                              )),
+                          const SizedBox(height: 5),
+                        ],
+                      ),
+                    if (scheduledDays.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
+                          const SizedBox(width: 4),
+                          Text("Scheduled on $otherScheduledDays",
+                              textAlign: TextAlign.justify,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              )),
+                        ],
+                      ),
                     ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises),
                       previewType: RoutinePreviewType.template,

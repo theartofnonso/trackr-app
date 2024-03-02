@@ -27,7 +27,7 @@ class RoutineTemplateDto {
       'name': name,
       'notes': notes,
       'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
-      'days': days.map((day) => day.day).toList(),
+      'days': days.map((dayOfWeek) => dayOfWeek.day).toList(),
     };
   }
 

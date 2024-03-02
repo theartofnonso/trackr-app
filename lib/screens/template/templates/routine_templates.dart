@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
+import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/routine_empty_state.dart';
 import '../../../dtos/viewmodels/routine_log_arguments.dart';
@@ -101,6 +102,12 @@ class _RoutineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheduledDays = template.days;
+
+    final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
+
+    final otherScheduledDays = joinWithAnd(items: otherScheduledDayNames);
+
     final menuActions = [
       MenuItemButton(
         onPressed: () {
@@ -137,93 +144,116 @@ class _RoutineWidget extends StatelessWidget {
 
     return Theme(
         data: ThemeData(splashColor: sapphireLight),
-        child: Container(
-          decoration: BoxDecoration(
-              color: sapphireDark80,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                tileColor: Colors.transparent,
-                onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
-                dense: true,
-                leading: !template.isScheduledToday()
-                    ? GestureDetector(
-                        onTap: () {
-                          final arguments = RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
-                          navigateToRoutineLogEditor(context: context, arguments: arguments);
-                        },
-                        child: const Icon(
-                          Icons.play_arrow_rounded,
-                          color: Colors.white,
-                          size: 35,
-                        ))
-                    : null,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-                subtitle: Text(
-                    "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
-                    style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                trailing: MenuAnchor(
-                  style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
-                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+        child: GestureDetector(
+          onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+          child: Container(
+            margin: template.isScheduledToday() ? const EdgeInsets.symmetric(vertical: 10) : null,
+            decoration: BoxDecoration(
+                color: sapphireDark80,
+                borderRadius: BorderRadius.circular(5),
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  tileColor: Colors.transparent,
+                  dense: true,
+                  leading: !template.isScheduledToday()
+                      ? GestureDetector(
+                          onTap: () {
+                            final arguments =
+                                RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                            navigateToRoutineLogEditor(context: context, arguments: arguments);
+                          },
+                          child: const Icon(
+                            Icons.play_arrow_rounded,
+                            color: Colors.white,
+                            size: 35,
+                          ))
+                      : null,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
+                          style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
+                      if(scheduledDays.isNotEmpty && !template.isScheduledToday())
+                        Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
+                            const SizedBox(width: 4),
+                            Text(otherScheduledDays,
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  builder: (BuildContext context, MenuController controller, Widget? child) {
-                    return IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        if (controller.isOpen) {
-                          controller.close();
-                        } else {
-                          controller.open();
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.more_horiz_rounded,
-                        color: Colors.white70,
-                        size: 24,
-                      ),
-                      tooltip: 'Show menu',
-                    );
-                  },
-                  menuChildren: menuActions,
-                ),
-              ),
-              if (template.isScheduledToday())
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 14.0, bottom: 14),
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
-                          const SizedBox(width: 4),
-                          Text("in 2 days, wed and thurs",
-                              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12)),
-                          const Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                final arguments =
-                                    RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
-                                navigateToRoutineLogEditor(context: context, arguments: arguments);
-                              },
-                              child: const Icon(
-                                Icons.play_arrow_rounded,
-                                color: Colors.white,
-                                size: 35,
-                              )),
-                          const SizedBox(width: 28),
-                        ],
-                      ),
+                  trailing: MenuAnchor(
+                    style: MenuStyle(
+                      backgroundColor: MaterialStateProperty.all(sapphireDark80),
+                      surfaceTintColor: MaterialStateProperty.all(sapphireDark),
                     ),
-                  ],
+                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                      return IconButton(
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () {
+                          if (controller.isOpen) {
+                            controller.close();
+                          } else {
+                            controller.open();
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.more_horiz_rounded,
+                          color: Colors.white70,
+                          size: 24,
+                        ),
+                        tooltip: 'Show menu',
+                      );
+                    },
+                    menuChildren: menuActions,
+                  ),
                 ),
-            ],
+                if (template.isScheduledToday())
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 14.0, bottom: 14),
+                        child: Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
+                            const SizedBox(width: 4),
+                            Text(otherScheduledDays,
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                            const Spacer(),
+                            GestureDetector(
+                                onTap: () {
+                                  final arguments =
+                                      RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                                  navigateToRoutineLogEditor(context: context, arguments: arguments);
+                                },
+                                child: const Icon(
+                                  Icons.play_circle_fill_rounded,
+                                  color: vibrantGreen,
+                                  size: 35,
+                                )),
+                            const SizedBox(width: 26),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ),
         ));
   }
