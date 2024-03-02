@@ -24,7 +24,21 @@ class RoutineTemplates extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
-      final routineTemplates = provider.templates;
+      final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
+
+      routineTemplates.sort((a, b) {
+        final aScheduled = a.isScheduledToday();
+        final bScheduled = b.isScheduledToday();
+
+        if (aScheduled && !bScheduled) {
+          return -1;
+        } else if (!aScheduled && bScheduled) {
+          return 1;
+        } else {
+          return 0;
+        }
+        
+      });
 
       final exercise = routineTemplates.map((template) => template.exercises).expand((exercises) => exercises).toList();
 
