@@ -45,7 +45,10 @@
     "id": "QUD8",
     "name": "Bulgarian Split Squat",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=TEXl2b3__S4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "QUD9",

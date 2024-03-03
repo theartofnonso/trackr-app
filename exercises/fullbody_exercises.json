@@ -117,7 +117,10 @@
     "id": "FLB19",
     "name": "Burpee",
     "primaryMuscleGroup": "Full Body",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=1yPltRIm59E",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "FLB20",

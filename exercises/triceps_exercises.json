@@ -18,7 +18,10 @@
     "id": "TRI3",
     "name": "Bench Dip",
     "primaryMuscleGroup": "Triceps",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=qrS6aa0aQ9I",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "TRI4",

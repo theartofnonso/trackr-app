@@ -117,7 +117,10 @@
     "id": "CHT18",
     "name": "Machine Chest Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=CIykDiF4sfg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT19",

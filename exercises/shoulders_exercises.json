@@ -21,7 +21,10 @@
     "id": "SHD4",
     "name": "Barbell Front Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=_od0CCC6DEM",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD5",
@@ -99,7 +102,10 @@
     "id": "SHD16",
     "name": "Face Pull",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=0Po47vvj9g4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHd17",
@@ -261,7 +267,10 @@
     "id": "SHD41",
     "name": "Cable Front Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vtH93qBItdk",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD42",
