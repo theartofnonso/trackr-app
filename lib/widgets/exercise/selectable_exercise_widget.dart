@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 
-import '../../screens/exercise/exercise_library_screen.dart';
+import '../../screens/exercise/library/exercise_library_screen.dart';
 
 class SelectableExerciseWidget extends StatelessWidget {
   final ExerciseInLibraryDto exerciseInLibraryDto;

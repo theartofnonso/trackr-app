@@ -1,38 +1,227 @@
 [
-  {"id": "CHT1", "name": "Bar Dip", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT2", "name": "Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT3", "name": "Cable Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT4", "name": "Decline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT5", "name": "Dumbbell Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT6", "name": "Dumbbell Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT7", "name": "Dumbbell Decline Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT8", "name": "Dumbbell Floor Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT9", "name": "Dumbbell Pullover", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT10", "name": "Feet-Up Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT11", "name": "Floor Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT12", "name": "Incline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT13", "name": "Incline Dumbbell Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT14", "name": "Incline Push-Up", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT15", "name": "Kneeling Incline Push-Up", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT16", "name": "Kneeling Push-Up", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT17", "name": "Machine Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT18", "name": "Machine Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT19", "name": "Pec Deck", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT20", "name": "Push-Up", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT21", "name": "Push-Up Against Wall", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT22", "name": "Push-Ups With Feet in Rings", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT23", "name": "Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT24", "name": "Smith Machine Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT25", "name": "Smith Machine Incline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT26", "name": "Standing Cable Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT27", "name": "Standing Resistance Band Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT28", "name": "Bar Dip (Weighted)", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT29", "name": "Around The World", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT30", "name": "Bar Dip (Assisted)", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT31", "name": "Seated Chest Flys (Cable)", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT32", "name": "Low Cable Chest Fly", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT33", "name": "Iso-Lateral Chest Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT34", "name": "Smith Machine Decline Bench Press", "primaryMuscleGroup": "Chest", "type": "WR"},
-  {"id": "CHT35", "name": "Decline Push-Up", "primaryMuscleGroup": "Chest", "type": "BW"},
-  {"id": "CHT36", "name": "Hex Press", "primaryMuscleGroup": "Chest", "type": "WR"}
+  {
+    "id": "CHT1",
+    "name": "Bar Dip",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=yN6Q1UI_xkE",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CHT2",
+    "name": "Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vcBig73ojpE&t=27s",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CHT3",
+    "name": "Cable Chest Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT4",
+    "name": "Decline Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT5",
+    "name": "Dumbbell Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT6",
+    "name": "Dumbbell Chest Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT7",
+    "name": "Dumbbell Decline Chest Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT8",
+    "name": "Dumbbell Floor Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT9",
+    "name": "Dumbbell Pullover",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT10",
+    "name": "Feet-Up Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT11",
+    "name": "Floor Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT12",
+    "name": "Incline Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT13",
+    "name": "Incline Dumbbell Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT14",
+    "name": "Incline Push-Up",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT15",
+    "name": "Kneeling Incline Push-Up",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT16",
+    "name": "Kneeling Push-Up",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT17",
+    "name": "Machine Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT18",
+    "name": "Machine Chest Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT19",
+    "name": "Pec Deck",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT20",
+    "name": "Push-Up",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT21",
+    "name": "Push-Up Against Wall",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT22",
+    "name": "Push-Ups With Feet in Rings",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT23",
+    "name": "Resistance Band Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT24",
+    "name": "Smith Machine Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vcBig73ojpE&t=27s",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CHT25",
+    "name": "Smith Machine Incline Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT26",
+    "name": "Standing Cable Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT27",
+    "name": "Standing Resistance Band Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT28",
+    "name": "Bar Dip (Weighted)",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT29",
+    "name": "Around The World",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT30",
+    "name": "Bar Dip (Assisted)",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT31",
+    "name": "Seated Chest Flys (Cable)",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT32",
+    "name": "Low Cable Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT33",
+    "name": "Iso-Lateral Chest Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT34",
+    "name": "Smith Machine Decline Bench Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  },
+  {
+    "id": "CHT35",
+    "name": "Decline Push-Up",
+    "primaryMuscleGroup": "Chest",
+    "type": "BW"
+  },
+  {
+    "id": "CHT36",
+    "name": "Hex Press",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR"
+  }
 ]

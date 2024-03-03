@@ -7,15 +7,15 @@ import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/widgets/empty_states/exercise_empty_state.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
-import '../../colors.dart';
-import '../../dtos/exercise_dto.dart';
-import '../../enums/muscle_group_enums.dart';
-import '../../utils/google_analytics.dart';
-import '../../widgets/buttons/text_button_widget.dart';
-import '../../widgets/exercise/exercise_widget.dart';
-import '../../widgets/exercise/selectable_exercise_widget.dart';
-import '../editors/exercise_editor_screen.dart';
-import 'history/home_screen.dart';
+import '../../../colors.dart';
+import '../../../dtos/exercise_dto.dart';
+import '../../../enums/muscle_group_enums.dart';
+import '../../../utils/google_analytics.dart';
+import '../../../widgets/buttons/text_button_widget.dart';
+import '../../../widgets/exercise/exercise_widget.dart';
+import '../../../widgets/exercise/selectable_exercise_widget.dart';
+import '../../editors/exercise_editor_screen.dart';
+import '../history/home_screen.dart';
 
 class ExerciseInLibraryDto {
   final bool selected;

@@ -1,7 +1,47 @@
 [
-  {"id": "TRP1", "name": "Shrug (Barbell)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "TRP2", "name": "Shrug (Dumbbell)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "TRP3", "name": "Shrug (Cable)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "TRP4", "name": "Shrug (Machine)", "primaryMuscleGroup": "Traps", "type": "WR"},
-  {"id": "TRP5", "name": "Shrug (Smith Machine)", "primaryMuscleGroup": "Traps", "type": "WR"}
+  {
+    "id": "TRP1",
+    "name": "Shrug (Barbell)",
+    "primaryMuscleGroup": "Traps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "TRP2",
+    "name": "Shrug (Dumbbell)",
+    "primaryMuscleGroup": "Traps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "TRP3",
+    "name": "Shrug (Cable)",
+    "primaryMuscleGroup": "Traps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "TRP4",
+    "name": "Shrug (Machine)",
+    "primaryMuscleGroup": "Traps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "TRP5",
+    "name": "Shrug (Smith Machine)",
+    "primaryMuscleGroup": "Traps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  }
 ]
