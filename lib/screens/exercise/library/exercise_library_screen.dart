@@ -62,23 +62,21 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   /// Search through the list of exercises
   void _runSearch(String? text) {
-    setState(() {
-      final searchTerm = text ?? _searchController.text;
-      final query = searchTerm.toLowerCase().trim();
-      List<ExerciseInLibraryDto> searchResults = query.isNotEmpty
-          ? _exercisesInLibrary
-              .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
-                  exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
-                  exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
-                  exerciseItem.exercise.name.toLowerCase() == query))
-              .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
-          : _exercisesInLibrary;
+    final searchTerm = text ?? _searchController.text;
+    final query = searchTerm.toLowerCase().trim();
+    List<ExerciseInLibraryDto> searchResults = query.isNotEmpty
+        ? _exercisesInLibrary
+        .where((exerciseItem) => (exerciseItem.exercise.name.toLowerCase().contains(query) ||
+        exerciseItem.exercise.name.toLowerCase().startsWith(query) ||
+        exerciseItem.exercise.name.toLowerCase().endsWith(query) ||
+        exerciseItem.exercise.name.toLowerCase() == query))
+        .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
+        : _exercisesInLibrary;
 
+    setState(() {
       searchResults = _selectedMuscleGroup != null
           ? searchResults
-              .where((exerciseItem) =>
-                  exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup ||
-                  exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup)
+              .where((exerciseItem) => exerciseItem.exercise.primaryMuscleGroup == _selectedMuscleGroup)
               .sorted((a, b) => a.exercise.name.compareTo(b.exercise.name))
           : searchResults;
 
