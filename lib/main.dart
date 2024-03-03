@@ -42,7 +42,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:tracker_app/utils/google_analytics.dart';
+import 'package:tracker_app/utils/app_analytics.dart';
 
 import 'amplifyconfiguration.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';

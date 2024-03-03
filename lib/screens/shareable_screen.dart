@@ -18,7 +18,7 @@ import '../dtos/routine_log_dto.dart';
 import '../enums/muscle_group_enums.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/exercise_logs_utils.dart';
-import '../utils/google_analytics.dart';
+import '../utils/app_analytics.dart';
 import '../utils/shareables_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 import 'package:image_picker/image_picker.dart';

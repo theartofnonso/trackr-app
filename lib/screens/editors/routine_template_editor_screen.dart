@@ -13,14 +13,12 @@ import '../../colors.dart';
 import '../../controllers/routine_template_controller.dart';
 import '../../dtos/routine_template_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../utils/widget_utils.dart';
+import '../../utils/routine_editors_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
-import '../exercise/library/exercise_library_screen.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
-
   static const routeName = '/routine-template-editor';
 
   final RoutineTemplateDto? template;
@@ -38,21 +36,19 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
-    final exercises = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises)))
-        as List<ExerciseDto>?;
-
-    if (exercises != null && exercises.isNotEmpty) {
-      if (context.mounted) {
-        provider.addExerciseLogs(exercises: exercises);
-      }
-    }
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        multiSelect: true,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+          controller.addExerciseLogs(exercises: selectedExercises);
+        });
   }
 
-  void _showExercisePicker({required ExerciseLogDto firstExerciseLog}) {
+  void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final exercises = whereOtherExerciseLogsExcept(exerciseLog: firstExerciseLog, others: controller.exerciseLogs);
     showSuperSetExercisePicker(
@@ -68,6 +64,20 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         selectExercisesInLibrary: () {
           _closeDialog();
           _selectExercisesInLibrary();
+        });
+  }
+
+  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
+
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        multiSelect: false,
+        filter: oldExerciseLog.exercise.type,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
         });
   }
 
@@ -123,7 +133,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update',
-          isRightActionDestructive: true, title: "Update workout");
+          isRightActionDestructive: true,
+          title: "Update workout");
     }
   }
 
@@ -158,7 +169,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
             _navigateBack();
           },
           rightActionLabel: 'Discard',
-          isRightActionDestructive: true, title: "Discard changes");
+          isRightActionDestructive: true,
+          title: "Discard changes");
     } else {
       _navigateBack();
     }
@@ -215,12 +227,11 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                 onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(
-                  onPressed: _selectExercisesInLibrary,
-                  icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
-              if(exerciseLogs.length > 1)
+                  onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white)),
+              if (exerciseLogs.length > 1)
                 IconButton(
-                  onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
-                  icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
+                    onPressed: () => _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
+                    icon: const FaIcon(FontAwesomeIcons.barsStaggered, color: Colors.white)),
             ],
           ),
           floatingActionButton: isKeyboardOpen
@@ -314,7 +325,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                         onRemoveSuperSet: (String superSetId) =>
                                             exerciseLogController.removeSuperSet(superSetId: log.superSetId),
                                         onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                        onSuperSet: () => _showExercisePicker(firstExerciseLog: log));
+                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log));
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                                   itemCount: exerciseLogs.length))

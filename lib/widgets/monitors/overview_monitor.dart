@@ -10,7 +10,7 @@ import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/google_analytics.dart';
+import '../../utils/app_analytics.dart';
 import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 

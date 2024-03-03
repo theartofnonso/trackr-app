@@ -4,7 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'dialog_utils.dart';
 
-/// Launch the tickers url
 Future<void> openUrl({required String url, required BuildContext context}) async {
   final Uri uri = Uri.parse(url);
   final isSuccessful = await launchUrl(uri, mode: LaunchMode.externalApplication);
