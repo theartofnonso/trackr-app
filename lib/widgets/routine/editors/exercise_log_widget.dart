@@ -72,10 +72,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
-          "Remove",
-          style: GoogleFonts.montserrat(color: Colors.red),
+          "Replace",
+          style: GoogleFonts.montserrat(color: Colors.white),
         ),
-      )
+      ),
+      MenuItemButton(
+        onPressed: widget.onRemoveLog,
+        child: Text(
+          "Remove",
+          style: GoogleFonts.montserrat(),
+        ),
+      ),
     ];
   }
 
