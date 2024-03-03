@@ -91,7 +91,10 @@
     "id": "CHT12",
     "name": "Incline Bench Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=2jFFCy8JBU8",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT13",
@@ -106,7 +109,11 @@
     "id": "CHT14",
     "name": "Incline Push-Up",
     "primaryMuscleGroup": "Chest",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=yAbg3_pJKvw",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "CHT15",
@@ -118,7 +125,10 @@
     "id": "CHT16",
     "name": "Kneeling Push-Up",
     "primaryMuscleGroup": "Chest",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=X9sGmsGYYE0",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT17",

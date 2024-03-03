@@ -265,7 +265,10 @@
     "id": "ABS41",
     "name": "L-Sit Hold",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=LNYjR0XD1Fg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "ABS42",
