@@ -29,7 +29,7 @@ class ExerciseVideoScreen extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
           child: YoutubePlayer(
@@ -45,7 +45,7 @@ class ExerciseVideoScreen extends StatelessWidget {
             style: GoogleFonts.montserrat(
               color: Colors.white70,
               fontWeight: FontWeight.w600,
-              fontSize: 16,
+              fontSize: 14,
             ),
             children: <TextSpan>[
               const TextSpan(text: " "),
@@ -61,7 +61,7 @@ class ExerciseVideoScreen extends StatelessWidget {
                   color: Colors.white,
                   decoration: TextDecoration.underline,
                   fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
             ],

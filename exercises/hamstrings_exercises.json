@@ -3,7 +3,10 @@
     "id": "HAM1",
     "name": "Good Morning",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=f23vXjoG2e8",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "HAM2",
@@ -90,7 +93,10 @@
     "id": "HAM14",
     "name": "Sumo Deadlift",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=XsrD5y8EIKU",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "HAM15",

@@ -33,7 +33,10 @@
     "id": "SHD6",
     "name": "Barbell Upright Row",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=nwkLwMRHMQo",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "SHD7",
@@ -75,7 +78,10 @@
     "id": "SHD13",
     "name": "Dumbbell Lateral Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=v_ZkxWzYnMc",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "SHD14",
@@ -213,13 +219,19 @@
     "id": "SHD36",
     "name": "Upright Row (Cable)",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=nwkLwMRHMQo",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "SHD37",
     "name": "Upright Row (Dumbbell)",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=nwkLwMRHMQo",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "SHD38",

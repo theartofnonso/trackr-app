@@ -57,13 +57,19 @@
     "id": "TRI9",
     "name": "Triceps Pushdown With Bar",
     "primaryMuscleGroup": "Triceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=94DXwlcX8Po",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "TRI10",
     "name": "Triceps Pushdown With Rope",
     "primaryMuscleGroup": "Triceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=94DXwlcX8Po",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
   },
   {
     "id": "TRI11",
