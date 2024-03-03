@@ -15,7 +15,7 @@ import '../../controllers/routine_log_controller.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/google_analytics.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../utils/shareables_utils.dart';
@@ -64,6 +64,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];

@@ -200,7 +200,7 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTime nextDay() {
-    DateTime today = DateTime(year, month, day, hour);
+    DateTime today = DateTime(year, month, day);
     return today.add(const Duration(hours: 24));
   }
 

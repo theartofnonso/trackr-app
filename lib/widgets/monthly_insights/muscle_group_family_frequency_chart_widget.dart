@@ -12,7 +12,7 @@ import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../utils/google_analytics.dart';
+import '../../utils/app_analytics.dart';
 import '../chart/bar_chart.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {

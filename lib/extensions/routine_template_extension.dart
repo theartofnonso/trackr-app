@@ -16,8 +16,7 @@ extension RoutineTemplateExtension on RoutineTemplate {
     final exerciseLogJsons = dataJson["exercises"] as List<dynamic>;
     final exercises = exerciseLogJsons.map((json) => ExerciseLogDto.fromJson(json: jsonDecode(json))).toList();
     final days = dataJson["days"] as List<dynamic>? ?? [];
-    final daysOfWeek = days.map((day) => DayOfWeek.fromDateTime(day)).toList();
-
+    final daysOfWeek = days.map((day) => DayOfWeek.fromWeekDay(day)).toList();
     return RoutineTemplateDto(
       id: id,
       name: name,

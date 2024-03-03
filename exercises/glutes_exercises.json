@@ -1,25 +1,152 @@
 [
-  {"id": "GLT1", "name": "Banded Side Kicks", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT2", "name": "Cable Pull Through", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT3", "name": "Clamshells", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT4", "name": "Dumbbell Frog Pumps", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT5", "name": "Fire Hydrants", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT6", "name": "Frog Pumps", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT7", "name": "Glute Bridge", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT10", "name": "Hip Thrust", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT11", "name": "Hip Thrust Machine", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT12", "name": "Lateral Walk With Band", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT13", "name": "Machine Glute Kickbacks", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT14", "name": "One-Legged Glute Bridge", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT15", "name": "One-Legged Hip Thrust", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT16", "name": "Standing Glute Kickback in Machine", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT17", "name": "Step Up", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT18", "name": "Bird Dog", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT19", "name": "Step Up", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT20", "name": "Hip Thrust (Barbell)", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT21", "name": "Reverse Hyperextension", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT22", "name": "Single Leg Hip Thrust", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT23", "name": "Single Leg Hip Thrust (Dumbbell)", "primaryMuscleGroup": "Glutes", "type": "WR"},
-  {"id": "GLT24", "name": "Lateral Band Walks", "primaryMuscleGroup": "Glutes", "type": "BW"},
-  {"id": "GLT25", "name": "Glute Kickback on Floor", "primaryMuscleGroup": "Glutes", "type": "BW"}
+  {
+    "id": "GLT1",
+    "name": "Banded Side Kicks",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT2",
+    "name": "Cable Pull Through",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR"
+  },
+  {
+    "id": "GLT3",
+    "name": "Clamshells",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT4",
+    "name": "Dumbbell Frog Pumps",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR"
+  },
+  {
+    "id": "GLT5",
+    "name": "Fire Hydrants",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT6",
+    "name": "Frog Pumps",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT7",
+    "name": "Glute Bridge",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT10",
+    "name": "Hip Thrust",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT11",
+    "name": "Hip Thrust Machine",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR"
+  },
+  {
+    "id": "GLT12",
+    "name": "Lateral Walk With Band",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT13",
+    "name": "Machine Glute Kickbacks",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR"
+  },
+  {
+    "id": "GLT14",
+    "name": "One-Legged Glute Bridge",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT15",
+    "name": "One-Legged Hip Thrust",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT16",
+    "name": "Standing Glute Kickback in Machine",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR"
+  },
+  {
+    "id": "GLT17",
+    "name": "Step Up",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT18",
+    "name": "Bird Dog",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT19",
+    "name": "Step Up",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT20",
+    "name": "Hip Thrust (Barbell)",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=xDmFkJxPzeM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "GLT21",
+    "name": "Reverse Hyperextension",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT22",
+    "name": "Single Leg Hip Thrust",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT23",
+    "name": "Single Leg Hip Thrust (Dumbbell)",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR"
+  },
+  {
+    "id": "GLT24",
+    "name": "Lateral Band Walks",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT25",
+    "name": "Glute Kickback on Floor",
+    "primaryMuscleGroup": "Glutes",
+    "type": "BW"
+  },
+  {
+    "id": "GLT26",
+    "name": "Glute Kickbacks (Cable)",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=dJa_Nf4zdik",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  }
 ]

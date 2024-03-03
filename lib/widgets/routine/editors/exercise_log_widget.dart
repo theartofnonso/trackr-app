@@ -35,6 +35,7 @@ class ExerciseLogWidget extends StatefulWidget {
 
   /// ExerciseLogDto callbacks
   final VoidCallback onRemoveLog;
+  final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
@@ -47,7 +48,7 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache});
+      this.onCache, required this.onReplaceLog});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -70,12 +71,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Super-set", style: GoogleFonts.montserrat()),
             ),
       MenuItemButton(
+        onPressed: widget.onReplaceLog,
+        child: Text(
+          "Replace",
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
+      ),
+      MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
           "Remove",
           style: GoogleFonts.montserrat(color: Colors.red),
         ),
-      )
+      ),
     ];
   }
 

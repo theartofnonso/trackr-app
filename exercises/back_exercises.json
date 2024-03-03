@@ -1,31 +1,182 @@
 [
-  {"id": "BAC1", "name": "Back Extension", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC2", "name": "Cable Close Grip Seated Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC3", "name": "Cable Wide Grip Seated Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC4", "name": "Dumbbell Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC5", "name": "Floor Back Extension", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC6", "name": "Inverted Row", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC7", "name": "Inverted Row with Underhand Grip", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC8", "name": "Jefferson Curl", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC9", "name": "One-Handed Cable Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC10", "name": "Pendlay Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC11", "name": "Rack Pull", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC12", "name": "Seal Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC13", "name": "Seated Machine Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC14", "name": "T-Bar Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC15", "name": "Superman", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC16", "name": "Back Extension (Machine)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC17", "name": "Back Extension (Hyperextension)", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC18", "name": "Back Extension (Weighted Hyperextension)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC19", "name": "Bent Over Row (Band)", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC20", "name": "Bent Over Row (Barbell)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC21", "name": "Bent Over Row (Dumbbell)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC22", "name": "Chest Supported Incline Row (Dumbbell)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC23", "name": "Chest Supported Reverse Fly (Dumbbell)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC24", "name": "Dead Hang", "primaryMuscleGroup": "Back", "type": "BW"},
-  {"id": "BAC25", "name": "Gorilla Row", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC26", "name": "Rear Delt Reverse Fly (Cable)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC27", "name": "Rear Delt Reverse Fly (Dumbbell)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC28", "name": "Rear Delt Reverse Fly (Machine)", "primaryMuscleGroup": "Back", "type": "WR"},
-  {"id": "BAC29", "name": "Renegade Row", "primaryMuscleGroup": "Back", "type": "WR"}
+  {
+    "id": "BAC1",
+    "name": "Back Extension",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC2",
+    "name": "Cable Close Grip Seated Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC3",
+    "name": "Cable Wide Grip Seated Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC4",
+    "name": "Dumbbell Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=djKXLt7kv7Q",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "BAC5",
+    "name": "Floor Back Extension",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC6",
+    "name": "Inverted Row",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC7",
+    "name": "Inverted Row with Underhand Grip",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC8",
+    "name": "Jefferson Curl",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC9",
+    "name": "One-Handed Cable Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC10",
+    "name": "Pendlay Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=axoeDmW0oAY&t=8s",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "BAC11",
+    "name": "Rack Pull",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC12",
+    "name": "Seal Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC13",
+    "name": "Seated Machine Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC14",
+    "name": "T-Bar Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC15",
+    "name": "Superman",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC16",
+    "name": "Back Extension (Machine)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC17",
+    "name": "Back Extension (Hyperextension)",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC18",
+    "name": "Back Extension (Weighted Hyperextension)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC19",
+    "name": "Bent Over Row (Band)",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC20",
+    "name": "Bent Over Row (Barbell)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC21",
+    "name": "Bent Over Row (Dumbbell)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC22",
+    "name": "Chest Supported Incline Row (Dumbbell)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC23",
+    "name": "Chest Supported Reverse Fly (Dumbbell)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC24",
+    "name": "Dead Hang",
+    "primaryMuscleGroup": "Back",
+    "type": "BW"
+  },
+  {
+    "id": "BAC25",
+    "name": "Gorilla Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC26",
+    "name": "Rear Delt Reverse Fly (Cable)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC27",
+    "name": "Rear Delt Reverse Fly (Dumbbell)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC28",
+    "name": "Rear Delt Reverse Fly (Machine)",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  },
+  {
+    "id": "BAC29",
+    "name": "Renegade Row",
+    "primaryMuscleGroup": "Back",
+    "type": "WR"
+  }
 ]

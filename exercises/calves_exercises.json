@@ -1,13 +1,86 @@
 [
-  {"id": "CAL1", "name": "Eccentric Heel Drop", "primaryMuscleGroup": "Calves", "type": "BW"},
-  {"id": "CAL2", "name": "Heel Raise", "primaryMuscleGroup": "Calves", "type": "BW"},
-  {"id": "CAL3", "name": "Seated Calf Raise", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL4", "name": "Standing Calf Raise", "primaryMuscleGroup": "Calves", "type": "BW"},
-  {"id": "CAL5", "name": "Standing Calf Raise (Machine)", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL6", "name": "Standing Calf Raise (Dumbbell)", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL7", "name": "Standing Calf Raise (Smith Machine)", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL8", "name": "Standing Calf Raise (Barbell)", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL9", "name": "Calf Extension (Machine)", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL10", "name": "Calf Press (Machine)", "primaryMuscleGroup": "Calves", "type": "WR"},
-  {"id": "CAL11", "name": "Single Standing Calf Raise (Machine)", "primaryMuscleGroup": "Calves", "type": "WR"}
+  {
+    "id": "CAL1",
+    "name": "Eccentric Heel Drop",
+    "primaryMuscleGroup": "Calves",
+    "type": "BW"
+  },
+  {
+    "id": "CAL2",
+    "name": "Heel Raise",
+    "primaryMuscleGroup": "Calves",
+    "type": "BW"
+  },
+  {
+    "id": "CAL3",
+    "name": "Seated Calf Raise",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CAL4",
+    "name": "Standing Calf Raise",
+    "primaryMuscleGroup": "Calves",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CAL5",
+    "name": "Standing Calf Raise (Machine)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CAL6",
+    "name": "Standing Calf Raise (Dumbbell)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CAL7",
+    "name": "Standing Calf Raise (Smith Machine)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CAL8",
+    "name": "Standing Calf Raise (Barbell)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
+    "creditSource": "https://www.youtube.com/@JeffNippard",
+    "credit": "Jeff Nippard"
+  },
+  {
+    "id": "CAL9",
+    "name": "Calf Extension (Machine)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR"
+  },
+  {
+    "id": "CAL10",
+    "name": "Calf Press (Machine)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR"
+  },
+  {
+    "id": "CAL11",
+    "name": "Single Standing Calf Raise (Machine)",
+    "primaryMuscleGroup": "Calves",
+    "type": "WR"
+  }
 ]

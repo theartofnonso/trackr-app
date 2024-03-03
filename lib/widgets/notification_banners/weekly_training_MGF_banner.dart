@@ -57,7 +57,7 @@ class WeeklyTrainingMGFBanner extends StatelessWidget {
     DateTime nextSchedule = DateTime.now().nextDay();
 
     if (accruedMGF.isEmpty && pendingMGF.isEmpty) {
-      nextSchedule = DateTime.now().withHourOnly().nextWeek();
+      nextSchedule = DateTime.now().nextWeek();
     }
 
     Provider.of<NotificationController>(context, listen: false).cacheNotification(

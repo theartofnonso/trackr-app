@@ -6,6 +6,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 
@@ -85,8 +86,10 @@ class HomeScreen extends StatelessWidget {
       )
     ];
 
+    final hasVideo = foundExercise.video != null;
+
     return DefaultTabController(
-        length: 2,
+        length: hasVideo ? 3 : 2,
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: sapphireDark80,
@@ -104,6 +107,10 @@ class HomeScreen extends StatelessWidget {
                         style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
                 Tab(
                     child: Text("History",
+                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                if(hasVideo)
+                  Tab(
+                    child: Text("Video",
                         style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
@@ -160,6 +167,8 @@ class HomeScreen extends StatelessWidget {
                     exercise: foundExercise,
                   ),
                   HistoryScreen(exercise: foundExercise),
+                  if(hasVideo)
+                    ExerciseVideoScreen(exercise: foundExercise)
                 ],
               ),
             ),

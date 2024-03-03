@@ -35,8 +35,7 @@ class AmplifyTemplateRepository {
     final exerciseLogs = templateJson["exercises"] as List<dynamic>;
     final exerciseLogDtos = exerciseLogs.map((exerciseLog) {
       final foundExercise = exercises.firstWhere((exercise) => exercise.id == exerciseLog["exercise"]);
-      return ExerciseLogDto(
-          foundExercise.id, id, "", foundExercise, "", [], DateTime.now());
+      return ExerciseLogDto(foundExercise.id, id, "", foundExercise, "", [], DateTime.now());
     }).toList();
 
     return RoutineTemplateDto(
@@ -96,7 +95,7 @@ class AmplifyTemplateRepository {
   }
 
   void _loadTemplates({required List<RoutineTemplate> templates}) {
-    _templates = templates.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    _templates = templates.map((log) => log.dto()).toList();
     _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 

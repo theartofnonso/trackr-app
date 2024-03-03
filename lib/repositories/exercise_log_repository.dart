@@ -72,6 +72,21 @@ class ExerciseLogRepository {
     _removeAllSetsForExerciseLog(exerciseLogId: logId);
   }
 
+  void replaceExercise({required String oldExerciseId, required ExerciseDto newExercise}) {
+    final oldExerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: oldExerciseId);
+    final oldExerciseLog = _whereExerciseLog(exerciseLogId: oldExerciseId);
+    if (oldExerciseLogIndex == -1 || oldExerciseLog == null) {
+      return;
+    }
+
+    List<ExerciseLogDto> exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
+
+    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(exercise: newExercise);
+
+    _exerciseLogs = [...exerciseLogs];
+
+  }
+
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
     // Check if the key exists in the map
     if (!_sets.containsKey(exerciseLogId)) {
@@ -262,6 +277,10 @@ class ExerciseLogRepository {
 
   int _indexWhereExerciseLog({required String exerciseLogId}) {
     return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
+  }
+
+  ExerciseLogDto? _whereExerciseLog({required String exerciseLogId}) {
+    return _exerciseLogs.firstWhereOrNull((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
   void clear() {

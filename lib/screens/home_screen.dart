@@ -12,7 +12,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/utils/google_analytics.dart';
+import 'package:tracker_app/utils/app_analytics.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 

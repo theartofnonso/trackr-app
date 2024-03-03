@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/google_analytics.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/string_utils.dart';
 import '../chart/muscle_group_family_frequency_chart.dart';
 
