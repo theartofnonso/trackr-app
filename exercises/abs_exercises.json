@@ -144,7 +144,11 @@
     "id": "ABS24",
     "name": "Bicycle Crunch",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=wnuLak2onoA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "ABS25",

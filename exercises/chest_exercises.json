@@ -183,7 +183,10 @@
     "id": "CHT28",
     "name": "Bar Dip (Weighted)",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=IUpu0oK_lxI",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT29",

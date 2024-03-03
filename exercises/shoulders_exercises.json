@@ -216,7 +216,11 @@
     "id": "SHD34",
     "name": "Arnold Press",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=jeJttN2EWCo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "SHD35",
