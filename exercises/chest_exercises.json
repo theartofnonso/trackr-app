@@ -36,25 +36,38 @@
     "id": "CHT5",
     "name": "Dumbbell Chest Fly",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Nhvz9EzdJ4U",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT6",
     "name": "Dumbbell Chest Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=-zbFMDBzQEE",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "CHT7",
     "name": "Dumbbell Decline Chest Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=4R_GwRhG0rY",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT8",
     "name": "Dumbbell Floor Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=T0Y3OBF1bNI",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT9",
@@ -84,7 +97,10 @@
     "id": "CHT13",
     "name": "Incline Dumbbell Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=oZVCBM9f8Eo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT14",
@@ -228,7 +244,10 @@
     "id": "CHT35",
     "name": "Decline Push-Up",
     "primaryMuscleGroup": "Chest",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=QBlYp-EwHlo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT36",

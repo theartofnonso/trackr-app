@@ -75,7 +75,10 @@
     "id": "CAL10",
     "name": "Calf Press (Machine)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=dhRz1Ns60Zg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CAL11",

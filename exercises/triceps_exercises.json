@@ -132,7 +132,10 @@
     "id": "TRI20",
     "name": "Close-Grip Bench Press",
     "primaryMuscleGroup": "Triceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=DzA2xZhDGeo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "TRI21",

@@ -51,7 +51,10 @@
     "id": "SHD8",
     "name": "Cable Lateral Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD9",
@@ -63,7 +66,11 @@
     "id": "SHD10",
     "name": "Dumbbell Front Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=zkP0MsTcIVU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "SHD11",
@@ -280,7 +287,10 @@
     "id": "SHD42",
     "name": "Chest Supported Y Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=gDHQX1iend4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD43",
