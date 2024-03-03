@@ -64,6 +64,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
