@@ -26,6 +26,9 @@ class ExerciseLogRepository {
         if (mode == RoutineEditorMode.log) {
           _sets[exerciseLog.id] = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
           continue;
+        } else {
+          _sets[exerciseLog.id] = [];
+          continue;
         }
       }
       _sets[exerciseLog.id] = exerciseLog.sets;

@@ -210,7 +210,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    _loadDurationControllers();
+    if(widget.editorType == RoutineEditorMode.log) {
+      _loadDurationControllers();
+    }
   }
 
   void _cacheLog() {
