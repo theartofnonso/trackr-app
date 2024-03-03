@@ -200,6 +200,10 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
 
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp, // Lock orientation to portrait up
+    ]);
+
     return _isFirstLaunch
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(

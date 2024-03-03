@@ -66,7 +66,10 @@
     "id": "ABS10",
     "name": "Kneeling Plank",
     "primaryMuscleGroup": "Abs",
-    "type": "DR"
+    "type": "DR",
+    "video": "https://www.youtube.com/watch?v=iDSHokfXqyA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "ABS11",
@@ -120,13 +123,19 @@
     "id": "ABS19",
     "name": "Plank",
     "primaryMuscleGroup": "Abs",
-    "type": "DR"
+    "type": "DR",
+    "video": "https://www.youtube.com/watch?v=q4rDeHYMcIg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "ABS20",
     "name": "Side Plank",
     "primaryMuscleGroup": "Abs",
-    "type": "DR"
+    "type": "DR",
+    "video": "https://www.youtube.com/watch?v=Oe9Tp9SvTCE",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "ABS21",
@@ -310,6 +319,9 @@
     "id": "ABS51",
     "name": "V Up",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=cSCyyfBti7U",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   }
 ]

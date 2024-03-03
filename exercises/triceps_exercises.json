@@ -102,7 +102,10 @@
     "id": "TRI15",
     "name": "Triceps Kickback (Dumbbell)",
     "primaryMuscleGroup": "Triceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=JPmbMOu4IYw",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "TRI16",

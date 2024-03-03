@@ -29,45 +29,47 @@ class ExerciseVideoScreen extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: YoutubePlayer(
-            controller: controller,
-          ),
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        RichText(
-          text: TextSpan(
-            text: "Video by",
-            style: GoogleFonts.montserrat(
-              color: Colors.white70,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
+      child: SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: YoutubePlayer(
+              controller: controller,
             ),
-            children: <TextSpan>[
-              const TextSpan(text: " "),
-              TextSpan(
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    if (creditSource != null) {
-                      openUrl(url: creditSource.toString(), context: context);
-                    }
-                  },
-                text: exercise.credit ?? "",
-                style: GoogleFonts.montserrat(
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-            ],
           ),
-        ),
-      ]),
+          const SizedBox(
+            height: 12,
+          ),
+          RichText(
+            text: TextSpan(
+              text: "Video by",
+              style: GoogleFonts.montserrat(
+                color: Colors.white70,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+              children: <TextSpan>[
+                const TextSpan(text: " "),
+                TextSpan(
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      if (creditSource != null) {
+                        openUrl(url: creditSource.toString(), context: context);
+                      }
+                    },
+                  text: exercise.credit ?? "",
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }
