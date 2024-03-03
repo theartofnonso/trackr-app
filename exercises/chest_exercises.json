@@ -21,7 +21,10 @@
     "id": "CHT3",
     "name": "Cable Chest Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=sh92B-_2O48",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT4",
@@ -105,7 +108,10 @@
     "id": "CHT17",
     "name": "Machine Chest Fly",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=eGjt4lk6g34",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT18",

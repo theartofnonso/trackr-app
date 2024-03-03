@@ -118,7 +118,10 @@
     "id": "QUD20",
     "name": "Leg Press",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=qCR9bN3G1t4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "QUD21",

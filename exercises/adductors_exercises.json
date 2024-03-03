@@ -1,3 +1,11 @@
 [
-  {"id": "ADD1", "name": "Hip Adduction Machine", "primaryMuscleGroup": "Adductors", "type": "WR"}
+  {
+    "id": "ADD1",
+    "name": "Hip Adduction Machine",
+    "primaryMuscleGroup": "Adductors",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=CjAVezAggkI",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  }
 ]

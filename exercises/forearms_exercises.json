@@ -39,7 +39,10 @@
     "id": "FOR6",
     "name": "Plate Pinch",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=jFTV3DQf3HE",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "FOR7",

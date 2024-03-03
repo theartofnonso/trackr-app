@@ -3,7 +3,10 @@
     "id": "LAT1",
     "name": "Straight Arm Lat Pulldown With Bar",
     "primaryMuscleGroup": "Lats",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ey9Fv3FGrRg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "LAT2",
@@ -43,13 +46,13 @@
   },
   {
     "id": "LAT7",
-    "name": "One-Handed Cable Row",
+    "name": "Single Arm Cable Row",
     "primaryMuscleGroup": "Lats",
     "type": "WR"
   },
   {
     "id": "LAT8",
-    "name": "One-Handed Lat Pulldown",
+    "name": "Single Arm Lat Pulldown (Band)",
     "primaryMuscleGroup": "Lats",
     "type": "WR"
   },
@@ -57,7 +60,10 @@
     "id": "LAT9",
     "name": "Single Arm Lat Pulldown",
     "primaryMuscleGroup": "Lats",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=LPahgWM7eUU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "LAT10",

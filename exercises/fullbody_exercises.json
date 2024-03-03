@@ -1,27 +1,158 @@
 [
-  {"id": "FLB1", "name": "Block Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB2", "name": "Clean", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB3", "name": "Clean and Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB4", "name": "Hang Clean", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB5", "name": "Hang Power Clean", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB6", "name": "Hang Power Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB7", "name": "Hang Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB8", "name": "Kettlebell Swing", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB9", "name": "Power Clean", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB10", "name": "Power Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB11", "name": "Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB12", "name": "Snatch Grip Deadlift", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB13", "name": "Wall Ball", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB14", "name": "Thruster", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB15", "name": "Jumping Jack", "primaryMuscleGroup": "Full Body", "type": "BW"},
-  {"id": "FLB16", "name": "Dumbbell Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB17", "name": "Kettlebell Clean", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB18", "name": "Kettlebell Snatch", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB19", "name": "Burpee", "primaryMuscleGroup": "Full Body", "type": "BW"},
-  {"id": "FLB20", "name": "Ball Slams", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB21", "name": "Clean and Press", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB22", "name": "Landmine Squat and Press", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB23", "name": "Sled Push", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB24", "name": "Squat Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"},
-  {"id": "FLB25", "name": "Split Jerk", "primaryMuscleGroup": "Full Body", "type": "WR"}
+  {
+    "id": "FLB1",
+    "name": "Block Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB2",
+    "name": "Clean",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB3",
+    "name": "Clean and Jerk",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=57K1b_PcHKw",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "FLB4",
+    "name": "Hang Clean",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB5",
+    "name": "Hang Power Clean",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB6",
+    "name": "Hang Power Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB7",
+    "name": "Hang Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB8",
+    "name": "Kettlebell Swing",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB9",
+    "name": "Power Clean",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB10",
+    "name": "Power Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB11",
+    "name": "Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=V9dJTdolGw8",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "FLB12",
+    "name": "Snatch Grip Deadlift",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB13",
+    "name": "Wall Ball",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB14",
+    "name": "Thruster",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB15",
+    "name": "Jumping Jack",
+    "primaryMuscleGroup": "Full Body",
+    "type": "BW"
+  },
+  {
+    "id": "FLB16",
+    "name": "Dumbbell Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB17",
+    "name": "Kettlebell Clean",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB18",
+    "name": "Kettlebell Snatch",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB19",
+    "name": "Burpee",
+    "primaryMuscleGroup": "Full Body",
+    "type": "BW"
+  },
+  {
+    "id": "FLB20",
+    "name": "Ball Slams",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB21",
+    "name": "Clean and Press",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB22",
+    "name": "Landmine Squat and Press",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB23",
+    "name": "Sled Push",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB24",
+    "name": "Squat Jerk",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  },
+  {
+    "id": "FLB25",
+    "name": "Split Jerk",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR"
+  }
 ]

@@ -36,13 +36,19 @@
     "id": "BAC6",
     "name": "Inverted Row",
     "primaryMuscleGroup": "Back",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BAC7",
     "name": "Inverted Row with Underhand Grip",
     "primaryMuscleGroup": "Back",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=0AsxBmXeOIo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BAC8",
@@ -87,13 +93,19 @@
     "id": "BAC14",
     "name": "T-Bar Row",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=hYo72r8Ivso",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BAC15",
     "name": "Superman",
     "primaryMuscleGroup": "Back",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=kTMBsUwEGPM",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BAC16",
