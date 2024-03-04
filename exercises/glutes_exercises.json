@@ -39,13 +39,19 @@
     "id": "GLT7",
     "name": "Glute Bridge",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=tqp5XQPpTxY",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "GLT10",
     "name": "Hip Thrust",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=7XuNzi5rcj4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "GLT11",
@@ -126,7 +132,10 @@
     "id": "GLT23",
     "name": "Single Leg Hip Thrust (Dumbbell)",
     "primaryMuscleGroup": "Glutes",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ETnhBWeWK74",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "GLT24",
@@ -148,5 +157,33 @@
     "video": "https://www.youtube.com/watch?v=dJa_Nf4zdik",
     "creditSource": "https://www.youtube.com/@JeffNippard",
     "credit": "Jeff Nippard"
+  },
+  {
+    "id": "GLT27",
+    "name": "Hip Thrust (Dumbbell)",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=1u-b25VJVFU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "GLT28",
+    "name": "Glute Bridge (Barbell)",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=DQv1IMQDbE4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "GLT29",
+    "name": "Glute Bridge (Dumbbell)",
+    "primaryMuscleGroup": "Glutes",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=cruqsnAyU6A",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   }
 ]
