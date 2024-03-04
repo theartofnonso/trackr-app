@@ -22,7 +22,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
     final totalTrainingDays = logs.length;
     final totalRestDays = daysInMonth - totalTrainingDays;
 
-    final averageRestDays = _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates);
+    final averageRestDays = totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
