@@ -8,7 +8,6 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
-import '../../utils/routine_utils.dart';
 import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class StreakScreen extends StatelessWidget {
@@ -20,10 +19,10 @@ class StreakScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logsByYear = groupBy(routineLogController.routineLogs, (log) => log.createdAt.year);
+    final yearlyLogs = groupBy(routineLogController.routineLogs, (log) => log.createdAt.year);
 
-    final yearsAndMonths = logsByYear.entries.map((yearAndLogs) {
-      final monthlyLogs = groupRoutineLogsByMonth(routineLogs: yearAndLogs.value);
+    final yearsAndMonths = yearlyLogs.entries.map((yearAndLogs) {
+      final monthlyLogs = groupBy(yearAndLogs.value, (log) => log.createdAt.month);
       return _YearAndMonths(year: yearAndLogs.key, monthlyLogs: monthlyLogs);
     }).toList();
 
@@ -65,7 +64,7 @@ class StreakScreen extends StatelessWidget {
 
 class _YearAndMonths extends StatelessWidget {
   final int year;
-  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
+  final Map<int, List<RoutineLogDto>> monthlyLogs;
 
   const _YearAndMonths({required this.year, required this.monthlyLogs});
 
