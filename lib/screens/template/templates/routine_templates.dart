@@ -27,16 +27,13 @@ class RoutineTemplates extends StatelessWidget {
       final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
       routineTemplates.sort((a, b) {
-        final aScheduled = a.isScheduledToday();
-        final bScheduled = b.isScheduledToday();
+        final aDayOfWeek = a.days.firstOrNull;
+        final bDayOfWeek = b.days.firstOrNull;
 
-        if (aScheduled && !bScheduled) {
-          return -1;
-        } else if (!aScheduled && bScheduled) {
-          return 1;
-        } else {
-          return 0;
+        if(aDayOfWeek != null && bDayOfWeek != null) {
+          return aDayOfWeek.day.compareTo(bDayOfWeek.day);
         }
+        return 1;
       });
 
       final exercise = routineTemplates.map((template) => template.exercises).expand((exercises) => exercises).toList();
