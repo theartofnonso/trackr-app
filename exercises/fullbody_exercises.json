@@ -147,7 +147,10 @@
     "id": "FLB23",
     "name": "Sled Push",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=E6mhG8zzYEY",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "FLB24",
