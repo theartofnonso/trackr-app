@@ -13,8 +13,11 @@ class NotificationDto {
 
   factory NotificationDto.fromJson(Map<String, dynamic> json) {
     final dateTimeString = json["dateTime"];
-    final historicDateTime = DateTime.now().withHourOnly();
-    final dateTime = dateTimeString != null ? DateTime.parse(dateTimeString).withHourOnly() : historicDateTime;
+    final now = DateTime.now().withoutTime();
+    DateTime dateTime = dateTimeString != null ? DateTime.parse(dateTimeString).withoutTime() : now;
+    if (dateTime.isBefore(now)) {
+      dateTime = now;
+    }
     return NotificationDto(dateTime: dateTime);
   }
 
