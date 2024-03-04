@@ -103,7 +103,10 @@
     "id": "SHD15",
     "name": "Dumbbell Shoulder Press",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=aI2hGzsAMXs",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD16",
@@ -161,7 +164,7 @@
   },
   {
     "id": "SHD24",
-    "name": "Plate Front Raise",
+    "name": "Kettlebell Front Raise",
     "primaryMuscleGroup": "Shoulders",
     "type": "WR"
   },
@@ -175,7 +178,10 @@
     "id": "SHD26",
     "name": "Push Press",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=HKx22sWywxc",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD27",
@@ -199,7 +205,10 @@
     "id": "SHD30",
     "name": "Seated Dumbbell Shoulder Press",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=TsduLWuhlFM",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "SHD31",
@@ -257,7 +266,11 @@
     "id": "SHD38",
     "name": "Single Arm Lateral Raise (Cable)",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "SHD39",
@@ -302,6 +315,9 @@
     "id": "SHD44",
     "name": "Plate Front Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=HN8HYJTOl8c",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   }
 ]
