@@ -27,7 +27,10 @@
     "id": "TRI4",
     "name": "Close-Grip Push-Up",
     "primaryMuscleGroup": "Triceps",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=faSq4ZzBndU",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "TRI5",
@@ -42,7 +45,10 @@
     "id": "TRI6",
     "name": "Overhead Triceps Extension (Dumbbell)",
     "primaryMuscleGroup": "Triceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=9wxRhONFsRA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "TRI7",

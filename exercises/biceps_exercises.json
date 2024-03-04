@@ -172,7 +172,10 @@
     "id": "BIC23",
     "name": "Reverse Curl (Dumbbell)",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=MjYAGQgoKyo",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "BIC24",
