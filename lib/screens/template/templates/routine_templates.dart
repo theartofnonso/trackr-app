@@ -26,15 +26,15 @@ class RoutineTemplates extends StatelessWidget {
     return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
       final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
-      routineTemplates.sort((a, b) {
-        final aDayOfWeek = a.days.firstOrNull;
-        final bDayOfWeek = b.days.firstOrNull;
-
-        if(aDayOfWeek != null && bDayOfWeek != null) {
-          return aDayOfWeek.day.compareTo(bDayOfWeek.day);
-        }
-        return 1;
+      final sortedScheduledTemplates = routineTemplates.where((template) => template.days.isNotEmpty).sorted((a, b) {
+        final aDayOfWeek = a.days.first;
+        final bDayOfWeek = b.days.first;
+        return aDayOfWeek.day.compareTo(bDayOfWeek.day);
       });
+
+      final unscheduledTemplates = routineTemplates.where((template) => template.days.isEmpty).toList();
+
+      final templates = [...sortedScheduledTemplates, ...unscheduledTemplates];
 
       final exercise = routineTemplates.map((template) => template.exercises).expand((exercises) => exercises).toList();
 
@@ -61,15 +61,15 @@ class RoutineTemplates extends StatelessWidget {
           body: SafeArea(
               minimum: const EdgeInsets.all(10.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                routineTemplates.isNotEmpty
+                templates.isNotEmpty
                     ? Expanded(
                         child: ListView.separated(
                             padding: const EdgeInsets.only(bottom: 150),
                             itemBuilder: (BuildContext context, int index) => _RoutineWidget(
-                                  template: routineTemplates[index],
+                                  template: templates[index],
                                 ),
                             separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                            itemCount: routineTemplates.length),
+                            itemCount: templates.length),
                       )
                     : const Expanded(child: RoutineEmptyState()),
                 if (untrainedMuscleGroups.isNotEmpty)
@@ -247,7 +247,7 @@ class _RoutineWidget extends StatelessWidget {
                     children: [
                       const SizedBox(height: 12),
                       Padding(
-                        padding: const EdgeInsets.only(left: 14.0, bottom: 12),
+                        padding: const EdgeInsets.only(left: 16.0, bottom: 12),
                         child: Row(
                           children: [
                             const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),

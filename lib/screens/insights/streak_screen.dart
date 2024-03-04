@@ -1,11 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../utils/routine_utils.dart';
 import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
 
 class StreakScreen extends StatelessWidget {
@@ -17,14 +20,12 @@ class StreakScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final monthsAndLogs = routineLogController.monthlyLogs.isNotEmpty
-        ? routineLogController.monthlyLogs.values.map((logs) {
-            final dates = logs.map((log) => log.createdAt.withoutTime()).toList();
-            return CalendarHeatMap(dates: dates, spacing: 4);
-          }).toList()
-        : [
-            CalendarHeatMap(dates: [DateTime.now()], spacing: 4)
-          ];
+    final logsByYear = groupBy(routineLogController.routineLogs, (log) => log.createdAt.year);
+
+    final yearsAndMonths = logsByYear.entries.map((yearAndLogs) {
+      final monthlyLogs = groupRoutineLogsByMonth(routineLogs: yearAndLogs.value);
+      return _YearAndMonths(year: yearAndLogs.key, monthlyLogs: monthlyLogs);
+    }).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -48,22 +49,45 @@ class StreakScreen extends StatelessWidget {
           ),
           child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text("Streak ${DateTime.now().year}",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 20),
-                GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 1,
-                    childAspectRatio: 1.2,
-                    mainAxisSpacing: 4.0,
-                    crossAxisSpacing: 4.0,
-                    children: monthsAndLogs)
-              ]),
-            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(
+                child: ListView.separated(
+                  itemCount: yearsAndMonths.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 20),
+                  itemBuilder: (context, index) => yearsAndMonths[index],
+                ),
+              )
+            ]),
           ),
         ));
+  }
+}
+
+class _YearAndMonths extends StatelessWidget {
+  final int year;
+  final Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs;
+
+  const _YearAndMonths({required this.year, required this.monthlyLogs});
+
+  @override
+  Widget build(BuildContext context) {
+    final monthsAndLogs = monthlyLogs.values.map((logs) {
+      final dates = logs.map((log) => log.createdAt.withoutTime()).toList();
+      return CalendarHeatMap(dates: dates, spacing: 4);
+    }).toList();
+
+    return Column(children: [
+      Text("Streak $year",
+          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+      const SizedBox(height: 20),
+      GridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          crossAxisCount: 1,
+          childAspectRatio: 1.2,
+          mainAxisSpacing: 4.0,
+          crossAxisSpacing: 4.0,
+          children: monthsAndLogs)
+    ]);
   }
 }
