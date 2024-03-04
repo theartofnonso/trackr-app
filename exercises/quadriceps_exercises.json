@@ -81,7 +81,10 @@
     "id": "QUD13",
     "name": "Goblet Squat",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=zBV3ceGyAxw",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "QUD14",
@@ -105,7 +108,10 @@
     "id": "QUD18",
     "name": "Landmine Squat",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=YxaXaZxVcDU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "QUD19",
