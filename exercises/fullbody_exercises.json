@@ -87,19 +87,28 @@
     "id": "FLB14",
     "name": "Thruster",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=L219ltL15zk",
+    "creditSource": "https://www.youtube.com/@crossfit",
+    "credit": "CrossFit"
   },
   {
     "id": "FLB15",
     "name": "Jumping Jack",
     "primaryMuscleGroup": "Full Body",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=PBHUfBzxczU",
+    "creditSource": "https://www.youtube.com/@crossfit",
+    "credit": "CrossFit"
   },
   {
     "id": "FLB16",
     "name": "Dumbbell Snatch",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=R0mhHuVrLHA",
+    "creditSource": "https://www.youtube.com/@crossfit",
+    "credit": "CrossFit"
   },
   {
     "id": "FLB17",
@@ -111,7 +120,10 @@
     "id": "FLB18",
     "name": "Kettlebell Snatch",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Pm-b2XFeABA",
+    "creditSource": "https://www.youtube.com/@crossfit",
+    "credit": "CrossFit"
   },
   {
     "id": "FLB19",
@@ -126,7 +138,10 @@
     "id": "FLB20",
     "name": "Ball Slams",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=k9W6g9LvXDI",
+    "creditSource": "https://www.youtube.com/@crossfit",
+    "credit": "CrossFit"
   },
   {
     "id": "FLB21",
@@ -162,6 +177,9 @@
     "id": "FLB25",
     "name": "Split Jerk",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=GUDkOtraHHY",
+    "creditSource": "https://www.youtube.com/@crossfit",
+    "credit": "CrossFit"
   }
 ]

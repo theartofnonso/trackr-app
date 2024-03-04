@@ -44,12 +44,12 @@ class AmplifyExerciseRepository {
   }
 
   Future<void> fetchExercises({required void Function() onDone}) async {
-    final exercises = await Amplify.DataStore.query(Exercise.classType);
-    if (exercises.isNotEmpty) {
-      _loadUserExercises(exercises: exercises);
-    } else {
-      _observeExerciseQuery(onSyncCompleted: onDone);
-    }
+    // final exercises = await Amplify.DataStore.query(Exercise.classType);
+    // if (exercises.isNotEmpty) {
+    //   _loadUserExercises(exercises: exercises);
+    // } else {
+    //   _observeExerciseQuery(onSyncCompleted: onDone);
+    // }
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await loadExercisesFromAssets(file: 'shoulders_exercises.json');
@@ -86,6 +86,11 @@ class AmplifyExerciseRepository {
     _exercises.addAll(forearmsExercises);
     _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
+
+    final temp = _exercises.whereNot((element) => element.video != null).toList();
+    temp.forEach((element) {
+      print(element.name);
+    });
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
