@@ -84,7 +84,10 @@
     "id": "HAM13",
     "name": "Deadlift (Dumbbell)",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ev5Bx5a_mss",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "HAM14",

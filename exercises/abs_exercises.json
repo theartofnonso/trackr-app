@@ -286,7 +286,10 @@
     "id": "ABS44",
     "name": "Reverse Crunch",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=XY8KzdDcMFg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "ABS45",

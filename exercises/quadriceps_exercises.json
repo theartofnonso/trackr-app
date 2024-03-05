@@ -205,7 +205,10 @@
     "id": "QUD32",
     "name": "Sumo Squat (Barbell)",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=qiQAsB0x-7k",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "QUD33",
