@@ -301,7 +301,10 @@
     "id": "ABS47",
     "name": "Russian Twist",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=OiimI-uYPcE",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
   },
   {
     "id": "ABS48",
