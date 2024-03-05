@@ -37,20 +37,10 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
-  List<MuscleGroupFamily> _accruedMGF = [];
-
-  List<MuscleGroupFamily> _pendingMGF = [];
-
-  List<MuscleGroupFamily> get accruedMGF => _accruedMGF;
-
-  List<MuscleGroupFamily> get pendingMGF => _pendingMGF;
-
   void fetchLogs() async {
     try {
       await _amplifyLogRepository.fetchLogs(onSyncCompleted: _onSyncCompleted);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
-      _accruedMGF = _fetchAccruedMGF();
-      _pendingMGF = _fetchPendingMGF();
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
@@ -111,7 +101,13 @@ class RoutineLogController extends ChangeNotifier {
     return _achievementRepository.calculateNewLogAchievements(routineLogs: routineLogs);
   }
 
-  List<MuscleGroupFamily> _fetchAccruedMGF() {
+  List<MuscleGroupFamily> untrainedMuscleGroupFamily() {
+    final lastWeeksUntrainedMGF = _lastWeeksUntrainedMGF();
+    final thisWeeksUntrainedMGF = _thisWeeksUntrainedMGF();
+    return lastWeeksUntrainedMGF.toSet().difference(thisWeeksUntrainedMGF.toSet()).toList();
+  }
+
+  List<MuscleGroupFamily> _lastWeeksUntrainedMGF() {
     final lastWeeksRange = DateTime.now().lastWeekRange();
 
     final lastWeeksLogs = _amplifyLogRepository.weeklyLogs[lastWeeksRange] ?? [];
@@ -129,7 +125,7 @@ class RoutineLogController extends ChangeNotifier {
     return lastWeeksUntrainedMuscleGroups.toList();
   }
 
-  List<MuscleGroupFamily> _fetchPendingMGF() {
+  List<MuscleGroupFamily> _thisWeeksUntrainedMGF() {
 
     final thisWeeksRange = DateTime.now().currentWeekRange();
 
