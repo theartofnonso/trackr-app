@@ -45,7 +45,10 @@
     "id": "SHD7",
     "name": "Behind the Neck Press",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ADWlvYopJuY",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "SHD8",
@@ -187,7 +190,10 @@
     "id": "SHD27",
     "name": "Reverse Cable Flyes",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=LuiunkyM4go",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "SHD28",

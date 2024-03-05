@@ -227,5 +227,32 @@
     "name": "Squat (Smith Machine)",
     "primaryMuscleGroup": "Quadriceps",
     "type": "WR"
+  },
+  {
+    "id": "QUD36",
+    "name": "Step Up (Dumbbell)",
+    "primaryMuscleGroup": "Quadriceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=DxUNi119Qzs",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "QUD37",
+    "name": "Step Up (Barbell)",
+    "primaryMuscleGroup": "Quadriceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=hbIMKzHuglA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "QUD38",
+    "name": "Side Step Up",
+    "primaryMuscleGroup": "Quadriceps",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=baKJg6iQ_Ww",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   }
 ]

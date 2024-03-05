@@ -73,13 +73,16 @@
   },
   {
     "id": "GLT14",
-    "name": "One-Legged Glute Bridge",
+    "name": "Single Leg Glute Bridge",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=sVfp4LN9niA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "GLT15",
-    "name": "One-Legged Hip Thrust",
+    "name": "Single Leg Hip Thrust",
     "primaryMuscleGroup": "Glutes",
     "type": "BW"
   },
@@ -90,20 +93,8 @@
     "type": "WR"
   },
   {
-    "id": "GLT17",
-    "name": "Step Up",
-    "primaryMuscleGroup": "Glutes",
-    "type": "BW"
-  },
-  {
     "id": "GLT18",
     "name": "Bird Dog",
-    "primaryMuscleGroup": "Glutes",
-    "type": "BW"
-  },
-  {
-    "id": "GLT19",
-    "name": "Step Up",
     "primaryMuscleGroup": "Glutes",
     "type": "BW"
   },

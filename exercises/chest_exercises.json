@@ -73,7 +73,10 @@
     "id": "CHT9",
     "name": "Dumbbell Pullover",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=MJ8aKjmMZ0c",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
   },
   {
     "id": "CHT10",
@@ -83,9 +86,12 @@
   },
   {
     "id": "CHT11",
-    "name": "Floor Press",
+    "name": "Barbell Floor Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=NamiVqVgPTU",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "CHT12",
@@ -173,11 +179,14 @@
     "id": "CHT22",
     "name": "Push-Ups With Feet in Rings",
     "primaryMuscleGroup": "Chest",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=3JtmuKA1Tgg",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "CHT23",
-    "name": "Resistance Band Chest Fly",
+    "name": "Seated Resistance Band Chest Fly",
     "primaryMuscleGroup": "Chest",
     "type": "WR"
   },
@@ -209,7 +218,10 @@
     "id": "CHT27",
     "name": "Standing Resistance Band Chest Fly",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=sVMWoS0OhsI",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "CHT28",

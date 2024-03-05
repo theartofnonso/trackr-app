@@ -66,12 +66,6 @@
     "type": "WR"
   },
   {
-    "id": "HAM10",
-    "name": "Step Up",
-    "primaryMuscleGroup": "Hamstrings",
-    "type": "BW"
-  },
-  {
     "id": "HAM11",
     "name": "Deadlift (Barbell)",
     "primaryMuscleGroup": "Hamstrings",
