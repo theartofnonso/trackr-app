@@ -87,7 +87,7 @@ class AmplifyExerciseRepository {
     _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
 
-    final temp = _exercises.whereNot((element) => element.video != null).toList();
+    final temp = _exercises.where((element) => element.credit == "Jeff Nippard").toList();
     temp.forEach((element) {
       print(element.name);
     });
