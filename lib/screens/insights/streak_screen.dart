@@ -77,7 +77,7 @@ class _YearAndMonths extends StatelessWidget {
 
     return Column(children: [
       Text("Streak $year",
-          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)),
       const SizedBox(height: 20),
       GridView.count(
           physics: const NeverScrollableScrollPhysics(),
