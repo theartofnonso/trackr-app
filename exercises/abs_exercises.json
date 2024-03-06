@@ -156,7 +156,10 @@
     "id": "ABS22",
     "name": "Russian Twist (Weighted)",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Tau0hsW8iR0",
+    "creditSource": "https://www.youtube.com/@marcusfilly",
+    "credit": "Marcus Filly"
   },
   {
     "id": "ABS23",
@@ -253,7 +256,10 @@
     "id": "ABS36",
     "name": "Heel Taps",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=w2Um9ULrcBI",
+    "creditSource": "https://www.youtube.com/@CSIROTotalWellbeingDiet",
+    "credit": "CSIRO Total Wellbeing Diet"
   },
   {
     "id": "ABS37",

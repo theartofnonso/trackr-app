@@ -173,7 +173,10 @@
     "id": "CHT21",
     "name": "Push-Up Against Wall",
     "primaryMuscleGroup": "Chest",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=-KVhapnEtuk",
+    "creditSource": "https://www.youtube.com/@CSIROTotalWellbeingDiet",
+    "credit": "CSIRO Total Wellbeing Diet"
   },
   {
     "id": "CHT22",
