@@ -92,6 +92,8 @@ class AmplifyExerciseRepository {
       print(element.name);
     });
 
+    print(temp.length);
+
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 

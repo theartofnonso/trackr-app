@@ -340,7 +340,10 @@
     "id": "ABS50",
     "name": "Toes to Bar",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=HHjvtdJKMhg",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "ABS51",

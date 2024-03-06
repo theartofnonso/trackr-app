@@ -24,19 +24,28 @@
     "id": "FLB4",
     "name": "Hang Clean",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=hFXPxXkYr_o",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB5",
     "name": "Hang Power Clean",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=GvfFf4xDNqM",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB6",
     "name": "Hang Power Snatch",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=TP0fh70I0Jo",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB7",
@@ -48,19 +57,28 @@
     "id": "FLB8",
     "name": "Kettlebell Swing",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=0WtJaq2qwqU",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB9",
     "name": "Power Clean",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vy-4yChc7-k",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB10",
     "name": "Power Snatch",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=zMjYXpn7trA",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB11",
@@ -75,7 +93,10 @@
     "id": "FLB12",
     "name": "Snatch Grip Deadlift",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=NMDPXmGJI88",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB13",
