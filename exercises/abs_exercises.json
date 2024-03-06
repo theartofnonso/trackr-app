@@ -190,13 +190,19 @@
     "id": "ABS27",
     "name": "Cable Twist (Down to up)",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=zQJKfN7BU-c",
+    "creditSource": "https://www.youtube.com/@TYTAX-Invincible",
+    "credit": "TYTAX"
   },
   {
     "id": "ABS28",
     "name": "Cable Twist (Up to down)",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=tQznClkP0GE",
+    "creditSource": "https://www.youtube.com/@TYTAX-Invincible",
+    "credit": "TYTAX"
   },
   {
     "id": "ABS29",
