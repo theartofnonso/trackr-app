@@ -105,7 +105,8 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
 
     final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
 
-    final otherScheduledDays = joinWithAnd(items: otherScheduledDayNames);
+    final otherScheduledDays =
+        scheduledDays.length == 7 ? "Scheduled everyday" : "Scheduled on ${joinWithAnd(items: otherScheduledDayNames)}";
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -189,7 +190,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
                         children: [
                           const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 12),
                           const SizedBox(width: 4),
-                          Text("Scheduled on $otherScheduledDays",
+                          Text(otherScheduledDays,
                               style: GoogleFonts.montserrat(
                                 color: Colors.white70,
                                 fontSize: 12,
