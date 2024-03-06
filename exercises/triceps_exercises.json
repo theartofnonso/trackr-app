@@ -40,9 +40,9 @@
     "name": "Skull Crusher (Dumbbell)",
     "primaryMuscleGroup": "Triceps",
     "type": "WR",
-    "video": "https://www.youtube.com/watch?v=popGXI-qs98",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
   },
   {
     "id": "TRI6",
@@ -78,10 +78,7 @@
     "id": "TRI10",
     "name": "Triceps Pushdown With Rope",
     "primaryMuscleGroup": "Triceps",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=94DXwlcX8Po",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "TRI11",

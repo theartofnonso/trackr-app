@@ -33,19 +33,13 @@
     "id": "CAL5",
     "name": "Standing Calf Raise (Machine)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "CAL6",
     "name": "Standing Calf Raise (Dumbbell)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "CAL7",
@@ -60,10 +54,7 @@
     "id": "CAL8",
     "name": "Standing Calf Raise (Barbell)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "CAL9",

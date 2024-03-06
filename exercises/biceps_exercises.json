@@ -124,10 +124,7 @@
     "id": "BIC16",
     "name": "EZ Bar Curl",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=i1YgFZB6alI",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "BIC17",

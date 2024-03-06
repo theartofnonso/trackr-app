@@ -3,10 +3,7 @@
     "id": "FOR1",
     "name": "Barbell Wrist Curl",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=MfMxT_jXcPE",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "FOR2",

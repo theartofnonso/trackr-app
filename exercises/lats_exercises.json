@@ -45,10 +45,7 @@
     "id": "LAT6",
     "name": "Lat Pulldown With Supinated Grip",
     "primaryMuscleGroup": "Lats",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=O94yEoGXtBY",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "LAT7",
@@ -117,10 +114,7 @@
     "id": "LAT17",
     "name": "Pull Up (Weighted)",
     "primaryMuscleGroup": "Lats",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=Hdc7Mw6BIEE",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "LAT18",

@@ -194,10 +194,7 @@
     "id": "CHT24",
     "name": "Smith Machine Bench Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=vcBig73ojpE&t=27s",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "CHT25",

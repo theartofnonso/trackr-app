@@ -30,18 +30,12 @@
     "id": "TRP4",
     "name": "Shrug (Machine)",
     "primaryMuscleGroup": "Traps",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   },
   {
     "id": "TRP5",
     "name": "Shrug (Smith Machine)",
     "primaryMuscleGroup": "Traps",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=C6sYjDFuq9I",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   }
 ]

@@ -126,9 +126,6 @@
     "id": "HAM19",
     "name": "Romanian Deadlift (Smith Machine)",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=_oyxCn2iSjU",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "type": "WR"
   }
 ]
