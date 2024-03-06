@@ -102,7 +102,10 @@
     "id": "FLB13",
     "name": "Wall Ball",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=9Xwivh-28dc",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB14",
@@ -133,9 +136,12 @@
   },
   {
     "id": "FLB17",
-    "name": "Kettlebell Clean",
+    "name": "Kettlebell Clean (Single)",
     "primaryMuscleGroup": "Full Body",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ZuTKcP6vtfI",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "FLB18",
@@ -202,5 +208,14 @@
     "video": "https://www.youtube.com/watch?v=GUDkOtraHHY",
     "creditSource": "https://www.youtube.com/@crossfit",
     "credit": "CrossFit"
+  },
+  {
+    "id": "FLB26",
+    "name": "Kettlebell Clean (Dual)",
+    "primaryMuscleGroup": "Full Body",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=o4max7K84vw",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   }
 ]

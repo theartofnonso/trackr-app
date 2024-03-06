@@ -259,7 +259,10 @@
     "id": "ABS37",
     "name": "Hollow Rock",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=HtaO2Rd81Qs",
+    "creditSource": "https://www.youtube.com/@WodstarFitness",
+    "credit": "Wodstar"
   },
   {
     "id": "ABS38",
