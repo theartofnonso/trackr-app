@@ -246,36 +246,34 @@ class _RoutineBigWidget extends StatelessWidget {
                     menuChildren: menuActions,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0, bottom: 12),
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
-                          const SizedBox(width: 4),
-                          Text(otherScheduledDays,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
-                          const Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                final arguments =
-                                    RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
-                                navigateToRoutineLogEditor(context: context, arguments: arguments);
-                              },
-                              child: const Icon(
-                                Icons.play_circle_fill_rounded,
-                                color: vibrantGreen,
-                                size: 35,
-                              )),
-                          const SizedBox(width: 26),
-                        ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, left: 18.0, bottom: 12),
+                  child: Row(
+                    children: [
+                      const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
+                      const SizedBox(width: 4),
+                      SizedBox(
+                        width: 150,
+                        child: Text(otherScheduledDays,
+                            overflow: TextOverflow.ellipsis,
+                            style:
+                                GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      GestureDetector(
+                          onTap: () {
+                            final arguments =
+                                RoutineLogArguments(log: template.log(), editorMode: RoutineEditorMode.log);
+                            navigateToRoutineLogEditor(context: context, arguments: arguments);
+                          },
+                          child: const Icon(
+                            Icons.play_circle_fill_rounded,
+                            color: vibrantGreen,
+                            size: 35,
+                          )),
+                      const SizedBox(width: 26),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -353,24 +351,19 @@ class _RoutineSmallWidget extends StatelessWidget {
                   )),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              subtitle: Row(
                 children: [
                   Text("${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
                       style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                  if (scheduledDays.isNotEmpty && !template.isScheduledToday())
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 6.0),
-                      child: Row(
-                        children: [
-                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
-                          const SizedBox(width: 4),
-                          Text(otherScheduledDays,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    )
+                  const SizedBox(width: 8),
+                  const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
+                  const SizedBox(width: 4),
+                  SizedBox(
+                    width: 120,
+                    child: Text(otherScheduledDays,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+                  )
                 ],
               ),
               trailing: MenuAnchor(
