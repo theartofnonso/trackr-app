@@ -84,7 +84,10 @@
     "id": "GLT15",
     "name": "Single Leg Hip Thrust",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=xRoPfiYGo00",
+    "creditSource": "https://www.youtube.com/@OnnitAcademy",
+    "credit": "Onnit Academy"
   },
   {
     "id": "GLT16",
@@ -110,12 +113,6 @@
   {
     "id": "GLT21",
     "name": "Reverse Hyperextension",
-    "primaryMuscleGroup": "Glutes",
-    "type": "BW"
-  },
-  {
-    "id": "GLT22",
-    "name": "Single Leg Hip Thrust",
     "primaryMuscleGroup": "Glutes",
     "type": "BW"
   },
