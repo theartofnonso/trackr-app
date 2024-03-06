@@ -57,7 +57,10 @@
     "id": "BAC8",
     "name": "Jefferson Curl",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=NFXqqvZGAHY",
+    "creditSource": "https://www.youtube.com/@marcusfilly",
+    "credit": "Marcus Filly"
   },
   {
     "id": "BAC9",
@@ -78,7 +81,10 @@
     "id": "BAC11",
     "name": "Rack Pull",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=9vYBWV5OeKg",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BAC12",

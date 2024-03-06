@@ -81,15 +81,6 @@
     "credit": "TheGymGroup"
   },
   {
-    "id": "LAT11",
-    "name": "Rack Pull",
-    "primaryMuscleGroup": "Lats",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=9vYBWV5OeKg",
-    "creditSource": "https://www.youtube.com/@PureGymVideo",
-    "credit": "PureGym"
-  },
-  {
     "id": "LAT12",
     "name": "Straight Arm Lat Pulldown With Rope",
     "primaryMuscleGroup": "Lats",
