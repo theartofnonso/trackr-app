@@ -52,9 +52,9 @@
     "name": "Standing Calf Raise (Smith Machine)",
     "primaryMuscleGroup": "Calves",
     "type": "WR",
-    "video": "https://www.youtube.com/watch?v=-qsRtp_PbVM",
-    "creditSource": "https://www.youtube.com/@JeffNippard",
-    "credit": "Jeff Nippard"
+    "video": "https://www.youtube.com/watch?v=Zep-wKHWkNM",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CAL8",
@@ -69,7 +69,10 @@
     "id": "CAL9",
     "name": "Calf Extension (Machine)",
     "primaryMuscleGroup": "Calves",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=rpGCS8AEsAM",
+    "creditSource": "https://www.youtube.com/@MatrixFitnessUS",
+    "credit": "Matrix Fitness"
   },
   {
     "id": "CAL10",

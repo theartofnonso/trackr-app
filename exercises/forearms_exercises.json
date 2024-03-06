@@ -12,7 +12,10 @@
     "id": "FOR2",
     "name": "Barbell Wrist Curl Behind the Back",
     "primaryMuscleGroup": "Forearms",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=LjerEt3Gnyw",
+    "creditSource": "https://www.youtube.com/@TheActiveLife",
+    "credit": "The Active Life"
   },
   {
     "id": "FOR3",
