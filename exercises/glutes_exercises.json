@@ -144,7 +144,10 @@
     "id": "GLT25",
     "name": "Glute Kickback on Floor",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=BNDw4ciQoQI",
+    "creditSource": "https://www.youtube.com/@nuffieldhealth",
+    "credit": "Nuffield Health"
   },
   {
     "id": "GLT26",

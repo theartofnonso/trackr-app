@@ -181,7 +181,10 @@
     "id": "BAC25",
     "name": "Gorilla Row",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=eYYwfpcEn0I",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "BAC26",
