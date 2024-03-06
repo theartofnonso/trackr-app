@@ -32,6 +32,13 @@ class RoutineTemplates extends StatelessWidget {
         return aDayOfWeek.day.compareTo(bDayOfWeek.day);
       });
 
+      for (final template in sortedScheduledTemplates) {
+        if(template.isScheduledToday()) {
+          sortedScheduledTemplates.remove(template);
+          sortedScheduledTemplates.insert(0, template);
+        }
+      }
+
       final unscheduledTemplates = routineTemplates.where((template) => template.days.isEmpty).toList();
 
       final templates = [...sortedScheduledTemplates, ...unscheduledTemplates];
