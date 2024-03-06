@@ -232,7 +232,10 @@
     "id": "ABS33",
     "name": "Flutter Kicks",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=cZhLXKHuS74",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
   },
   {
     "id": "ABS34",

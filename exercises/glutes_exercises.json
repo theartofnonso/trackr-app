@@ -21,7 +21,10 @@
     "id": "GLT4",
     "name": "Dumbbell Frog Pumps",
     "primaryMuscleGroup": "Glutes",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=N6t2Fv0SKGc",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "GLT5",
@@ -33,7 +36,10 @@
     "id": "GLT6",
     "name": "Frog Pumps",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=wklI-e2WpFQ",
+    "creditSource": "https://www.youtube.com/@OnnitAcademy",
+    "credit": "Onnit Academy"
   },
   {
     "id": "GLT7",
@@ -99,7 +105,10 @@
     "id": "GLT18",
     "name": "Bird Dog",
     "primaryMuscleGroup": "Glutes",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=vzU5xrs1gMQ",
+    "creditSource": "https://www.youtube.com/@marcusfilly",
+    "credit": "Marcus Filly"
   },
   {
     "id": "GLT20",
