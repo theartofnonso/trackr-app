@@ -1408,10 +1408,10 @@ packages:
     dependency: "direct main"
     description:
       name: testsweets
-      sha256: a9ac1f82c3685cca261de70ec2bf6b1c252d6dd180227a3a34dcd99f796da3ed
+      sha256: "293efded56a8dc012bd0e9b3b7a79c4282e1858f0a955fee9d9f2b6d4f30ffba"
       url: "https://pub.dev"
     source: hosted
-    version: "1.13.0"
+    version: "1.16.1"
   timezone:
     dependency: "direct main"
     description:
