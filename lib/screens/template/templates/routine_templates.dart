@@ -250,15 +250,20 @@ class _RoutineBigWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 12, left: 18.0, bottom: 12),
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
-                      const SizedBox(width: 4),
-                      SizedBox(
-                        width: 150,
-                        child: Text(otherScheduledDays,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
-                      ),
+                      if (scheduledDays.isNotEmpty)
+                        Row(
+                          children: [
+                            const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
+                            const SizedBox(width: 4),
+                            SizedBox(
+                              width: 150,
+                              child: Text(otherScheduledDays,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                            ),
+                          ],
+                        ),
                       const Spacer(),
                       GestureDetector(
                           onTap: () {
@@ -355,15 +360,21 @@ class _RoutineSmallWidget extends StatelessWidget {
                 children: [
                   Text("${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
                       style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                  const SizedBox(width: 8),
-                  const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
-                  const SizedBox(width: 4),
-                  SizedBox(
-                    width: 120,
-                    child: Text(otherScheduledDays,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
-                  )
+                  if (scheduledDays.isNotEmpty)
+                    Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
+                        const SizedBox(width: 4),
+                        SizedBox(
+                          width: 120,
+                          child: Text(otherScheduledDays,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    )
                 ],
               ),
               trailing: MenuAnchor(
