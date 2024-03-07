@@ -63,7 +63,10 @@
     "id": "GLT11",
     "name": "Hip Thrust Machine",
     "primaryMuscleGroup": "Glutes",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ZSPmIyX9RZs",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
   },
   {
     "id": "GLT12",

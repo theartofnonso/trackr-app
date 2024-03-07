@@ -163,13 +163,19 @@
     "id": "BAC22",
     "name": "Chest Supported Incline Row (Dumbbell)",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Nx0TzjgsI-0",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BAC23",
     "name": "Chest Supported Reverse Fly (Dumbbell)",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Z__dp9rhlcw",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "BAC24",

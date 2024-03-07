@@ -197,13 +197,19 @@
     "id": "CHT24",
     "name": "Smith Machine Bench Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=O5viuEPDXKY",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
   },
   {
     "id": "CHT25",
     "name": "Smith Machine Incline Bench Press",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=8urE8Z8AMQ4",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
   },
   {
     "id": "CHT26",
@@ -248,7 +254,10 @@
     "id": "CHT31",
     "name": "Seated Chest Flys (Cable)",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=VgKCIZgca58&pp=ygUZU2VhdGVkIENoZXN0IEZseXMgKENhYmxlKQ%3D%3D",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "CHT32",

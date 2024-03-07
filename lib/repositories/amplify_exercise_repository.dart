@@ -86,7 +86,7 @@ class AmplifyExerciseRepository {
     _exercises.addAll(forearmsExercises);
     _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
-
+    
     // final temp = _exercises.where((element) => element.video == null).toList();
     // temp.forEach((element) {
     //   print(element.name);

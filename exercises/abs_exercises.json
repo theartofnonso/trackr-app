@@ -36,7 +36,10 @@
     "id": "ABS5",
     "name": "Hanging Knee Raise",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=KNzJ3GuIpB8",
+    "creditSource": "https://www.youtube.com/@dalmvicky",
+    "credit": "Đạt Đào Vũ"
   },
   {
     "id": "ABS6",
@@ -48,7 +51,10 @@
     "id": "ABS7",
     "name": "High to Low Wood Chop with Band",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=ivziZev2BzA",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "ABS8",
@@ -87,7 +93,10 @@
     "id": "ABS13",
     "name": "Lying Windshield Wiper",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=M8csHpQrq5o",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "ABS14",
@@ -187,7 +196,11 @@
     "id": "ABS26",
     "name": "Cable Core Pallof Press",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=HXrLaqNIkTs",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
   },
   {
     "id": "ABS27",
@@ -301,7 +314,10 @@
     "id": "ABS42",
     "name": "Landmine 180",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=4dGj7rES9pY&pp=ygUMTGFuZG1pbmUgMTgw",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "ABS43",
@@ -343,7 +359,10 @@
     "id": "ABS49",
     "name": "Side Bend (Dumbbell)",
     "primaryMuscleGroup": "Abs",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=M0KGYdsKVPM",
+    "creditSource": "https://www.youtube.com/@tnation",
+    "credit": "Testosterone Nation"
   },
   {
     "id": "ABS50",

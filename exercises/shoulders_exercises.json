@@ -15,7 +15,10 @@
     "id": "SHD3",
     "name": "Band Pull-Apart",
     "primaryMuscleGroup": "Shoulders",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=MnDpmNYUjbc",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "SHD4",
