@@ -1,4 +1,6 @@
 
+import 'package:collection/collection.dart';
+
 enum MuscleGroupFamily {
   legs("Legs"),
   back("Back"),
@@ -44,5 +46,10 @@ enum MuscleGroup {
 
   static MuscleGroup fromString(String string) {
     return MuscleGroup.values.firstWhere((value) => value.name == string);
+  }
+  static List<MuscleGroup> muscles() {
+    return MuscleGroup.values
+        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
+        .sorted((a, b) => a.name.compareTo(b.name));
   }
 }

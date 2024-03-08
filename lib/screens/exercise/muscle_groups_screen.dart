@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/colors.dart';
@@ -121,10 +120,7 @@ class _MuscleGroupsScreenState extends State<MuscleGroupsScreen> {
 
     _searchController = TextEditingController();
 
-    _muscleGroups = MuscleGroup.values
-        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
-        .sorted((a, b) => a.name.compareTo(b.name))
-        .map((muscleGroup) {
+    _muscleGroups = MuscleGroup.muscles().map((muscleGroup) {
       return MuscleGroupDto(muscleGroup: muscleGroup, selected: widget.previousMuscleGroup == muscleGroup);
     }).toList();
 

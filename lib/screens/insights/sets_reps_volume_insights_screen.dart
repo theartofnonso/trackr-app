@@ -44,9 +44,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   Widget build(BuildContext context) {
     final textStyle = GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
-    final muscleGroups = MuscleGroup.values
-        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
-        .sorted((a, b) => a.name.compareTo(b.name));
+    final muscleGroups = MuscleGroup.muscles();
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
@@ -420,7 +418,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
         .firstOrNull
         ?.exercise
         .primaryMuscleGroup;
-    _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
+    _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.muscles().first;
     _dateTimeRange = thisMonthDateRange();
   }
 }
