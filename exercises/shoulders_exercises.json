@@ -175,7 +175,10 @@
     "id": "SHD24",
     "name": "Kettlebell Front Raise",
     "primaryMuscleGroup": "Shoulders",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=HHEmtCuuPss",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "SHD25",

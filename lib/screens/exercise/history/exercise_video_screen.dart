@@ -23,7 +23,7 @@ class ExerciseVideoScreen extends StatelessWidget {
       initialVideoId: videoId,
       flags: const YoutubePlayerFlags(
         autoPlay: false,
-        mute: false,
+        mute: true,
       ),
     );
 
