@@ -257,7 +257,10 @@
     "id": "SHD35",
     "name": "Shoulder Taps",
     "primaryMuscleGroup": "Shoulders",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=C6At19Q9i2Q",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "SHD36",
