@@ -1,46 +1,344 @@
 [
-  {"id": "SHD1", "name": "Band External Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "BW"},
-  {"id": "SHD2", "name": "Band Internal Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "BW"},
-  {"id": "SHD3", "name": "Band Pull-Apart", "primaryMuscleGroup": "Shoulders", "type": "BW"},
-  {"id": "SHD4", "name": "Barbell Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD5", "name": "Barbell Rear Delt Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD6", "name": "Barbell Upright Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD7", "name": "Behind the Neck Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD8", "name": "Cable Lateral Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD9", "name": "Cable Rear Delt Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD10", "name": "Dumbbell Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD11", "name": "Dumbbell Horizontal Internal Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD12", "name": "Dumbbell Horizontal External Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD13", "name": "Dumbbell Lateral Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD14", "name": "Dumbbell Rear Delt Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD15", "name": "Dumbbell Shoulder Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD16", "name": "Face Pull", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHd17", "name": "Front Hold", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD18", "name": "Lying Dumbbell External Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD19", "name": "Lying Dumbbell Internal Shoulder Rotation", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD20", "name": "Machine Lateral Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD21", "name": "Machine Shoulder Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD22", "name": "Monkey Row", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD23", "name": "Overhead Press (Dumbbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD24", "name": "Plate Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD25", "name": "Power Jerk", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD26", "name": "Push Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD27", "name": "Reverse Cable Flyes", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD28", "name": "Reverse Dumbbell Flyes", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD29", "name": "Reverse Machine Fly", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD30", "name": "Seated Dumbbell Shoulder Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD31", "name": "Seated Barbell Overhead Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD32", "name": "Seated Smith Machine Shoulder Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD33", "name": "Snatch Grip Behind the Neck Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD34", "name": "Arnold Press", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD35", "name": "Shoulder Taps", "primaryMuscleGroup": "Shoulders", "type": "BW"},
-  {"id": "SHD36", "name": "Upright Row (Cable)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD37", "name": "Upright Row (Dumbbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD38", "name": "Single Arm Lateral Raise (Cable)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD39", "name": "Overhead Press (Barbell)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD40", "name": "Overhead Press (Smith Machine)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD41", "name": "Cable Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD42", "name": "Chest Supported Y Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD43", "name": "Front Raise (Band)", "primaryMuscleGroup": "Shoulders", "type": "WR"},
-  {"id": "SHD44", "name": "Plate Front Raise", "primaryMuscleGroup": "Shoulders", "type": "WR"}
+  {
+    "id": "SHD1",
+    "name": "Band External Shoulder Rotation",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "BW"
+  },
+  {
+    "id": "SHD2",
+    "name": "Band Internal Shoulder Rotation",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "BW"
+  },
+  {
+    "id": "SHD3",
+    "name": "Band Pull-Apart",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=MnDpmNYUjbc",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
+  },
+  {
+    "id": "SHD4",
+    "name": "Barbell Front Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=_od0CCC6DEM",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD5",
+    "name": "Barbell Rear Delt Row",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD6",
+    "name": "Barbell Upright Row",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=8UvsRWUb0YU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD7",
+    "name": "Behind the Neck Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ADWlvYopJuY",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
+  },
+  {
+    "id": "SHD8",
+    "name": "Cable Lateral Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD9",
+    "name": "Cable Rear Delt Row",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD10",
+    "name": "Dumbbell Front Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=zkP0MsTcIVU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
+  },
+  {
+    "id": "SHD11",
+    "name": "Dumbbell Horizontal Internal Shoulder Rotation",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD12",
+    "name": "Dumbbell Horizontal External Shoulder Rotation",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD13",
+    "name": "Dumbbell Lateral Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=gN1Sc6KkK7Q",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
+  },
+  {
+    "id": "SHD14",
+    "name": "Dumbbell Rear Delt Row",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD15",
+    "name": "Dumbbell Shoulder Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=aI2hGzsAMXs",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD16",
+    "name": "Face Pull",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=0Po47vvj9g4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHd17",
+    "name": "Front Hold",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD18",
+    "name": "Lying Dumbbell External Shoulder Rotation",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD19",
+    "name": "Lying Dumbbell Internal Shoulder Rotation",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD20",
+    "name": "Machine Lateral Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD21",
+    "name": "Machine Shoulder Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=GcY6TZxfS0k",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD22",
+    "name": "Monkey Row",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Xlpn6ylPiW8",
+    "creditSource": "https://www.youtube.com/@judithramosvaldes9695",
+    "credit": "Judith Ramos Valdes"
+  },
+  {
+    "id": "SHD23",
+    "name": "Overhead Press (Dumbbell)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD24",
+    "name": "Kettlebell Front Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD25",
+    "name": "Power Jerk",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD26",
+    "name": "Push Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=HKx22sWywxc",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD27",
+    "name": "Reverse Cable Flyes",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=LuiunkyM4go",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
+  },
+  {
+    "id": "SHD28",
+    "name": "Reverse Dumbbell Flyes",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD29",
+    "name": "Reverse Machine Fly",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD30",
+    "name": "Seated Dumbbell Shoulder Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=TsduLWuhlFM",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD31",
+    "name": "Seated Barbell Overhead Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD32",
+    "name": "Seated Smith Machine Shoulder Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD33",
+    "name": "Snatch Grip Behind the Neck Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD34",
+    "name": "Arnold Press",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=jeJttN2EWCo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
+  },
+  {
+    "id": "SHD35",
+    "name": "Shoulder Taps",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "BW"
+  },
+  {
+    "id": "SHD36",
+    "name": "Upright Row (Cable)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=WNz7O59GORA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD37",
+    "name": "Upright Row (Dumbbell)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Rd5AsxOGqss",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD38",
+    "name": "Single Arm Lateral Raise (Cable)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Z5FA9aq3L6A",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+
+  },
+  {
+    "id": "SHD39",
+    "name": "Overhead Press (Barbell)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Y0Bxr57uPbk",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD40",
+    "name": "Overhead Press (Smith Machine)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD41",
+    "name": "Cable Front Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=vtH93qBItdk",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD42",
+    "name": "Chest Supported Y Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=gDHQX1iend4",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD43",
+    "name": "Front Raise (Band)",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR"
+  },
+  {
+    "id": "SHD44",
+    "name": "Plate Front Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=HN8HYJTOl8c",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "SHD44",
+    "name": "Seated Dumbbell Lateral Raise",
+    "primaryMuscleGroup": "Shoulders",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=xDrYB81QXmY",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  }
 ]

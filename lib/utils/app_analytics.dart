@@ -7,7 +7,7 @@ void logEvent({required String name, required Map<String, Object> parameters}) a
   await FirebaseAnalytics.instance.logEvent(
     name: name,
     parameters: <String, dynamic>{
-      'screen': 'routine_templates_screen.dart',
+      'screen': 'routine_templates.dart',
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     },
   );

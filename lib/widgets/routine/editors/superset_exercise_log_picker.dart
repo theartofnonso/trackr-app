@@ -26,6 +26,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
                 onSelect(exercise);
               },
               dense: true,
+      contentPadding: EdgeInsets.zero,
               title: Text(exercise.exercise.name,
                   style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15)),
             ))
@@ -38,7 +39,7 @@ class SuperSetExerciseLogPicker extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 20.0, bottom: 10),
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10),
                   child: Text(title,
                       style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 15)),
                 ),

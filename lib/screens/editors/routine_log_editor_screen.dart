@@ -12,7 +12,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/utils/widget_utils.dart';
+import 'package:tracker_app/utils/routine_editors_utils.dart';
 import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -22,7 +22,6 @@ import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
 import '../../widgets/timers/routine_timer.dart';
-import '../exercise/exercise_library_screen.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -40,19 +39,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   late Function _onDisposeCallback;
 
   void _selectExercisesInLibrary() async {
-    final provider = Provider.of<ExerciseLogController>(context, listen: false);
-    final preSelectedExercises = provider.exerciseLogs.map((procedure) => procedure.exercise).toList();
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
 
-    final exercises = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ExerciseLibraryScreen(preSelectedExercises: preSelectedExercises),
-        settings: const RouteSettings(name: 'ExerciseLibraryScreen'))) as List<ExerciseDto>?;
-
-    if (exercises != null && exercises.isNotEmpty) {
-      if (context.mounted) {
-        provider.addExerciseLogs(exercises: exercises);
-        _cacheLog();
-      }
-    }
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+            controller.addExerciseLogs(exercises: selectedExercises);
+            _cacheLog();
+        }, multiSelect: true);
   }
 
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
@@ -72,6 +68,21 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         selectExercisesInLibrary: () {
           _closeDialog();
           _selectExercisesInLibrary();
+        });
+  }
+
+  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
+    final controller = Provider.of<ExerciseLogController>(context, listen: false);
+    final preSelectedExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
+
+    showExercisesInLibrary(
+        context: context,
+        exclude: preSelectedExercises,
+        multiSelect: false,
+        filter: oldExerciseLog.exercise.type,
+        onSelected: (List<ExerciseDto> selectedExercises) {
+            controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
+            _cacheLog();
         });
   }
 
@@ -108,9 +119,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _discardLog() {
-    showAlertDialogWithMultiActions(
+    showBottomSheetWithMultiActions(
         context: context,
-        message: "Discard workout?",
+        title: "Discard workout?",
+        description: "You have unsaved changes",
         leftAction: _closeDialog,
         rightAction: () {
           _closeDialog();
@@ -124,9 +136,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _saveLog() {
     final isRoutinePartiallyComplete = _isRoutinePartiallyComplete();
     if (isRoutinePartiallyComplete) {
-      showAlertDialogWithMultiActions(
+      showBottomSheetWithMultiActions(
           context: context,
-          message: "Do you want to end workout?",
+          title: 'Running Session',
+          description: "Do you want to end workout?",
           leftAction: Navigator.of(context).pop,
           rightAction: () {
             _closeDialog();
@@ -136,8 +149,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           rightActionLabel: 'End',
           rightActionColor: vibrantGreen);
     } else {
-      showAlertDialogWithSingleAction(
-          context: context, message: "Complete some sets!", actionLabel: 'Ok', action: _closeDialog);
+      showBottomSheetWithNoAction(context: context, description: "Complete some sets!", title: 'Running Session');
     }
   }
 
@@ -146,8 +158,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (isRoutinePartiallyComplete) {
       _doUpdateRoutineLog();
     } else {
-      showAlertDialogWithSingleAction(
-          context: context, message: "Completed some sets!", actionLabel: 'Ok', action: _closeDialog);
+      showBottomSheetWithNoAction(context: context, description: "Complete some sets!", title: 'Update Workout');
     }
   }
 
@@ -171,9 +182,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       unsavedChangesMessage.add(completedSetsChanged);
     }
     if (unsavedChangesMessage.isNotEmpty) {
-      showAlertDialogWithMultiActions(
+      showBottomSheetWithMultiActions(
           context: context,
-          message: "You have unsaved changes",
+          title: 'Unsaved Changes',
+          description: "You have unsaved changes",
           leftAction: _closeDialog,
           leftActionLabel: 'Cancel',
           rightAction: () {
@@ -309,8 +321,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                     final exerciseId = log.id;
 
                                     return Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: ExerciseLogWidget(
+                                        padding: const EdgeInsets.only(bottom: 10),
+                                        child: ExerciseLogWidget(
                                           key: ValueKey(exerciseId),
                                           exerciseLogDto: log,
                                           editorType: RoutineEditorMode.log,
@@ -325,8 +337,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                             _cacheLog();
                                           },
                                           onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
-                                          onCache: _cacheLog),
-                                    );
+                                          onCache: _cacheLog,
+                                          onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                        ));
                                   })
                                 ]),
                               ),
@@ -378,15 +391,19 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
 
     if (state == AppLifecycleState.paused) {
-      FlutterLocalNotificationsPlugin()
-          .periodicallyShow(999, "${widget.log.name} is still running", "Tap to continue training", RepeatInterval.hourly, const NotificationDetails(
-        iOS: DarwinNotificationDetails(
-          presentAlert: false,
-          presentBadge: false,
-          presentSound: false,
-          presentBanner: false,
-        ),
-      ));
+      FlutterLocalNotificationsPlugin().periodicallyShow(
+          999,
+          "${widget.log.name} is still running",
+          "Tap to continue training",
+          RepeatInterval.hourly,
+          const NotificationDetails(
+            iOS: DarwinNotificationDetails(
+              presentAlert: false,
+              presentBadge: false,
+              presentSound: false,
+              presentBanner: false,
+            ),
+          ));
     }
   }
 }

@@ -56,7 +56,7 @@ class ExerciseLogWidget extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: Text("with ${otherSuperSet.exercise.name}",
-                          style: GoogleFonts.montserrat(color: vibrantBlue, fontSize: 12, fontWeight: FontWeight.w600),
+                          style: GoogleFonts.montserrat(color: vibrantGreen, fontSize: 12, fontWeight: FontWeight.w600),
                           textAlign: TextAlign.center),
                     )
                   : null,

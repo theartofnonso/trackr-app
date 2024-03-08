@@ -1,23 +1,155 @@
 [
-  {"id": "TRI1", "name": "Overhead Triceps Extension (Barbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI2", "name": "Skull Crusher (Barbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI3", "name": "Bench Dip", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI4", "name": "Close-Grip Push-Up", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI5", "name": "Skull Crusher (Dumbbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI6", "name": "Overhead Triceps Extension (Dumbbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI7", "name": "Overhead Triceps Extension (Cable)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI8", "name": "Triceps Bodyweight Extension", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI9", "name": "Triceps Pushdown With Bar", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI10", "name": "Triceps Pushdown With Rope", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI11", "name": "Triceps Dip", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI12", "name": "Triceps Dip (Weighted)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI13", "name": "Seated Dip Machine", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI14", "name": "Triceps Extension (Machine)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI15", "name": "Triceps Kickback (Dumbbell)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI16", "name": "Triceps Kickback (Cable)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI17", "name": "Triceps Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI18", "name": "Floor Triceps Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI19", "name": "Ring Dip (Assisted)", "primaryMuscleGroup": "Triceps", "type": "BW"},
-  {"id": "TRI20", "name": "Close-Grip Bench Press", "primaryMuscleGroup": "Triceps", "type": "WR"},
-  {"id": "TRI21", "name": "Close-Grip Feet-Up Bench Press", "primaryMuscleGroup": "Triceps", "type": "WR"}
+  {
+    "id": "TRI1",
+    "name": "Overhead Triceps Extension (Barbell)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=q5X9thiKofE",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
+  },
+  {
+    "id": "TRI2",
+    "name": "Skull Crusher (Barbell)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
+  },
+  {
+    "id": "TRI3",
+    "name": "Bench Dip",
+    "primaryMuscleGroup": "Triceps",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=qrS6aa0aQ9I",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "TRI4",
+    "name": "Close-Grip Push-Up",
+    "primaryMuscleGroup": "Triceps",
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=faSq4ZzBndU",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
+  },
+  {
+    "id": "TRI5",
+    "name": "Skull Crusher (Dumbbell)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=UzjDwLeTfmM",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
+  },
+  {
+    "id": "TRI6",
+    "name": "Overhead Triceps Extension (Dumbbell)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=9wxRhONFsRA",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "TRI7",
+    "name": "Overhead Triceps Extension (Cable)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI8",
+    "name": "Triceps Bodyweight Extension",
+    "primaryMuscleGroup": "Triceps",
+    "type": "BW"
+  },
+  {
+    "id": "TRI9",
+    "name": "Triceps Pushdown With Bar",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=LXkCrxn3caQ",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "TRI10",
+    "name": "Triceps Pushdown With Rope",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI11",
+    "name": "Triceps Dip",
+    "primaryMuscleGroup": "Triceps",
+    "type": "BW"
+  },
+  {
+    "id": "TRI12",
+    "name": "Triceps Dip (Weighted)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI13",
+    "name": "Seated Dip Machine",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI14",
+    "name": "Triceps Extension (Machine)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI15",
+    "name": "Triceps Kickback (Dumbbell)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=JPmbMOu4IYw",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "TRI16",
+    "name": "Triceps Kickback (Cable)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI17",
+    "name": "Triceps Dip (Assisted)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  },
+  {
+    "id": "TRI18",
+    "name": "Floor Triceps Dip (Assisted)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "BW"
+  },
+  {
+    "id": "TRI19",
+    "name": "Ring Dip (Assisted)",
+    "primaryMuscleGroup": "Triceps",
+    "type": "BW"
+  },
+  {
+    "id": "TRI20",
+    "name": "Close-Grip Bench Press",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=DzA2xZhDGeo",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "TRI21",
+    "name": "Close-Grip Feet-Up Bench Press",
+    "primaryMuscleGroup": "Triceps",
+    "type": "WR"
+  }
 ]

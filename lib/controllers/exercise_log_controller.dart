@@ -41,6 +41,11 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void replaceExerciseLog({required String oldExerciseId, required ExerciseDto newExercise}) {
+    _exerciseLogRepository.replaceExercise(oldExerciseId: oldExerciseId, newExercise: newExercise);
+    notifyListeners();
+  }
+
   void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
     _exerciseLogRepository.updateExerciseLogNotes(exerciseLogId: exerciseLogId, value: value);
   }

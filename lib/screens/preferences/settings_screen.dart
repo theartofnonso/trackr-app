@@ -1,8 +1,8 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -11,7 +11,6 @@ import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 import 'package:tracker_app/widgets/list_tiles/list_tile_outline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -19,7 +18,8 @@ import '../../controllers/routine_template_controller.dart';
 import '../../controllers/settings_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/dialog_utils.dart';
-import '../exercise/exercise_library_screen.dart';
+import '../../utils/uri_utils.dart';
+import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
   kg,
@@ -31,7 +31,6 @@ enum WeightUnit {
 }
 
 class SettingsScreen extends StatefulWidget {
-
   static const routeName = '/settings-screen';
 
   const SettingsScreen({super.key});
@@ -122,7 +121,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     child: SwitchListTile(
                       activeColor: vibrantGreen,
                       title: Text('Show calendar dates',
-                          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
                       value: SharedPrefs().showCalendarDates,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       onChanged: (bool value) {
@@ -141,28 +141,18 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       title: "Notifications",
                       trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                   const SizedBox(height: 8),
-                  OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
+                  OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
+                  const SizedBox(height: 8),
+                  OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
+                  const SizedBox(height: 8),
+                  OutlineListTile(onTap: _logout, title: "Logout"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _delete, title: "Delete Account"),
-                  const SizedBox(height: 50),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    GestureDetector(
-                      onTap: () => _launchUrl(url: trackrWebUrl),
-                      child: Image.asset(
-                        'images/trackr.png',
-                        fit: BoxFit.contain,
-                        height: 12, //
-                      ),
-                    ),
-                    const SizedBox(width: 18),
-                    GestureDetector(
-                        onTap: () => _launchUrl(url: instagramUrl),
-                        child: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 24)),
-                  ]),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 10),
                   Center(
                     child: Text(_appVersion,
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                        style:
+                            GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -197,9 +187,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       });
       if (!isEnabled) {
         if (mounted) {
-          showAlertDialogWithMultiActions(
+          showBottomSheetWithMultiActions(
               context: context,
-              message: "Enable notifications?",
+              title: "Enable notifications?",
+              description: "You need to enable notifications to receive reminders.",
               leftAction: Navigator.of(context).pop,
               rightAction: () {},
               leftActionLabel: "Cancel",
@@ -222,10 +213,48 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     }
   }
 
-  void _logout() async {
-    showAlertDialogWithMultiActions(
+  void _sendFeedback() async {
+    final mailtoLink = Mailto(
+      to: [email],
+      subject: 'ATTENTION: Feedback for TRKR',
+    );
+    await openUrl(url: mailtoLink.toString(), context: context);
+  }
+
+  void _visitTRKR() {
+    displayBottomSheet(
         context: context,
-        message: "Log out?",
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("On the web",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                openUrl(url: trackrWebUrl, context: context);
+              },
+            ),
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text("On Instagram",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
+              onTap: () {
+                Navigator.of(context).pop();
+                openUrl(url: instagramUrl, context: context);
+              },
+            )
+          ]),
+        ));
+  }
+
+  void _logout() async {
+    showBottomSheetWithMultiActions(
+        context: context,
+        title: "Log out?",
+        description: "Are you sure you want to log out?",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           _toggleLoadingState(message: "Logging out...");
@@ -238,20 +267,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         isRightActionDestructive: true);
   }
 
-  /// Launch the tickers url
-  Future<void> _launchUrl({required String url}) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Oops! Couldn't open the page!")));
-      }
-    }
-  }
-
   void _delete() async {
-    showAlertDialogWithMultiActions(
+    showBottomSheetWithMultiActions(
         context: context,
-        message: "Delete account?",
+        title: "Delete account?",
+        description: "Are you sure you want to delete your account? This action cannot be undone.",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();

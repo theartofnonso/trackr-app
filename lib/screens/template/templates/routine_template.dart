@@ -3,34 +3,37 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
+import 'package:tracker_app/extensions/week_days_extension.dart';
 
-import '../../../colors.dart';
-import '../../../dtos/exercise_log_dto.dart';
-import '../../controllers/routine_template_controller.dart';
-import '../../dtos/routine_template_dto.dart';
-import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../dtos/viewmodels/routine_template_arguments.dart';
-import '../../enums/routine_editor_type_enums.dart';
-import '../../enums/routine_template_type_enum.dart';
-import '../../utils/dialog_utils.dart';
-import '../../utils/routine_utils.dart';
-import '../../dtos/viewmodels/exercise_log_view_model.dart';
-import '../../utils/navigation_utils.dart';
-import '../../widgets/backgrounds/overlay_background.dart';
-import '../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../../../colors.dart';
+import '../../../../dtos/exercise_log_dto.dart';
+import '../../../controllers/routine_template_controller.dart';
+import '../../../dtos/routine_template_dto.dart';
+import '../../../dtos/viewmodels/routine_log_arguments.dart';
+import '../../../dtos/viewmodels/routine_template_arguments.dart';
+import '../../../enums/routine_editor_type_enums.dart';
+import '../../../enums/routine_template_type_enum.dart';
+import '../../../utils/dialog_utils.dart';
+import '../../../utils/routine_utils.dart';
+import '../../../dtos/viewmodels/exercise_log_view_model.dart';
+import '../../../utils/navigation_utils.dart';
+import '../../../utils/string_utils.dart';
+import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/routine/preview/exercise_log_listview.dart';
+import '../../preferences/routine_schedule_planner.dart';
 
-class RoutineTemplateScreen extends StatefulWidget {
+class RoutineTemplate extends StatefulWidget {
   final RoutineTemplateTypeEnum templateType;
   final RoutineTemplateDto template;
 
-  const RoutineTemplateScreen(
+  const RoutineTemplate(
       {super.key, this.templateType = RoutineTemplateTypeEnum.customTemplate, required this.template});
 
   @override
-  State<RoutineTemplateScreen> createState() => _RoutineTemplateScreenState();
+  State<RoutineTemplate> createState() => _RoutineTemplateState();
 }
 
-class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
+class _RoutineTemplateState extends State<RoutineTemplate> {
   bool _loading = false;
 
   void _deleteRoutine() async {
@@ -73,9 +76,17 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           child: Text("Edit", style: GoogleFonts.montserrat())),
       MenuItemButton(
         onPressed: () {
-          showAlertDialogWithMultiActions(
+          displayBottomSheet(
+              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+        },
+        child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          showBottomSheetWithMultiActions(
               context: context,
-              message: "Delete workout?",
+              title: "Delete workout?",
+              description: "Are you sure you want to delete this workout?",
               leftAction: Navigator.of(context).pop,
               rightAction: () {
                 Navigator.of(context).pop();
@@ -89,6 +100,13 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         child: Text("Delete", style: GoogleFonts.montserrat(color: Colors.red)),
       )
     ];
+
+    final scheduledDays = template.days;
+
+    final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
+
+    final otherScheduledDays =
+        scheduledDays.length == 7 ? "Scheduled everyday" : "Scheduled on ${joinWithAnd(items: otherScheduledDayNames)}";
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -153,16 +171,33 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               minimum: const EdgeInsets.all(10.0),
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    template.notes.isNotEmpty
-                        ? Text(template.notes,
-                            style: GoogleFonts.montserrat(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ))
-                        : const SizedBox.shrink(),
-                    const SizedBox(height: 5),
+                    if (template.notes.isNotEmpty)
+                      Column(
+                        children: [
+                          Text(template.notes,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.white,
+                                fontSize: 14,
+                              )),
+                          const SizedBox(height: 5),
+                        ],
+                      ),
+                    if (scheduledDays.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 12),
+                          const SizedBox(width: 4),
+                          Text(otherScheduledDays,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.white70,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              )),
+                        ],
+                      ),
                     ExerciseLogListView(
                       exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises),
                       previewType: RoutinePreviewType.template,

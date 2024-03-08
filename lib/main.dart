@@ -6,6 +6,7 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
+import 'package:tracker_app/controllers/notification_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
@@ -33,13 +35,14 @@ import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart'
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
+import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/screens/intro_screen.dart';
 import 'package:tracker_app/screens/logs/routine_logs_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routine_templates_home.dart';
+import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:tracker_app/utils/google_analytics.dart';
+import 'package:tracker_app/utils/app_analytics.dart';
 
 import 'amplifyconfiguration.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
@@ -84,6 +87,9 @@ void main() async {
     appRunner: () => runApp(MultiProvider(providers: [
       ChangeNotifierProvider<SettingsController>(
         create: (BuildContext context) => SettingsController(),
+      ),
+      ChangeNotifierProvider<NotificationController>(
+        create: (BuildContext context) => NotificationController(),
       ),
       ChangeNotifierProvider<ExerciseController>(
         create: (BuildContext context) => ExerciseController(AmplifyExerciseRepository()),
@@ -194,6 +200,10 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
 
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp, // Lock orientation to portrait up
+    ]);
+
     return _isFirstLaunch
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
@@ -205,7 +215,7 @@ class _MyAppState extends State<MyApp> {
               onGenerateRoute: (settings) {
                 if (settings.name == RoutineLogEditorScreen.routeName) {
                   final args = settings.arguments as RoutineLogArguments;
-                  if(args.editorMode == RoutineEditorMode.log && args.emptySession) {
+                  if (args.editorMode == RoutineEditorMode.log && args.emptySession) {
                     recordEmptySessionEvent();
                   } else {
                     recordTemplateSessionEvent();
@@ -251,11 +261,12 @@ class _MyAppState extends State<MyApp> {
               },
               routes: {
                 OverviewScreen.routeName: (context) => const OverviewScreen(),
-                RoutineTemplatesHome.routeName: (context) => const RoutineTemplatesHome(),
+                RoutinesHome.routeName: (context) => const RoutinesHome(),
                 AchievementsScreen.routeName: (context) => const AchievementsScreen(),
                 SettingsScreen.routeName: (context) => const SettingsScreen(),
                 HomeScreen.routeName: (context) => const HomeScreen(),
                 SetsAndRepsVolumeInsightsScreen.routeName: (context) => const SetsAndRepsVolumeInsightsScreen(),
+                StreakScreen.routeName: (context) => const StreakScreen(),
               },
             ),
           );

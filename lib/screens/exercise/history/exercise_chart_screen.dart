@@ -22,12 +22,16 @@ import '../../logs/routine_log_screen.dart';
 import 'home_screen.dart';
 
 enum SummaryType {
-  weight,
-  setVolume,
-  bestTime,
-  mostReps,
-  sessionReps,
-  sessionTimes,
+  weight("Heaviest Weight"),
+  setVolume("Heaviest Volume (Set)"),
+  bestTime("Best Time"),
+  mostReps("Most Reps (Set)"),
+  sessionReps("Most Reps (Session)"),
+  sessionTimes("Total Time");
+
+  const SummaryType(this.label);
+
+  final String label;
 }
 
 class ExerciseChartScreen extends StatefulWidget {
@@ -131,11 +135,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
     }
 
-    _exerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
+    final exerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
         .exerciseLogsForExercise(exercise: widget.exercise)
         .toList();
 
-    _exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: _exerciseLogs);
+    _exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
 
     _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 
@@ -162,7 +166,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   Color? _buttonColor({required SummaryType type}) {
-    return _summaryType == type ? vibrantBlue : sapphireDark.withOpacity(0.6);
+    return _summaryType == type ? vibrantGreen : sapphireDark.withOpacity(0.6);
+  }
+
+  Color? _textColor({required SummaryType type}) {
+    return _summaryType == type ? Colors.black : Colors.white;
   }
 
   void _navigateTo({required String? routineLogId}) {
@@ -177,8 +185,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 14);
-
     final weightUnitLabel = weightLabel();
 
     return SingleChildScrollView(
@@ -222,8 +228,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: CTextButton(
                             onPressed: _heaviestWeightPerLog,
-                            label: "Heaviest Weight",
-                            textStyle: buttonStyle,
+                            label: SummaryType.weight.label,
+                            textStyle: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w600, fontSize: 14, color: _textColor(type: SummaryType.weight)),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.weight)),
                       ),
@@ -232,8 +239,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: CTextButton(
                             onPressed: _heaviestSetVolumePerLog,
-                            label: "Heaviest Volume (Set)",
-                            textStyle: buttonStyle,
+                            label: SummaryType.setVolume.label,
+                            textStyle: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: _textColor(type: SummaryType.setVolume)),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.setVolume)),
                       ),
@@ -242,8 +252,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: CTextButton(
                             onPressed: _highestRepsForLog,
-                            label: "Most Reps (Set)",
-                            textStyle: buttonStyle,
+                            label: SummaryType.mostReps.label,
+                            textStyle: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: _textColor(type: SummaryType.mostReps)),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.mostReps)),
                       ),
@@ -252,8 +265,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: CTextButton(
                             onPressed: _totalRepsForLog,
-                            label: "Most Reps (Session)",
-                            textStyle: buttonStyle,
+                            label: SummaryType.sessionReps.label,
+                            textStyle: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: _textColor(type: SummaryType.sessionReps)),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionReps)),
                       ),
@@ -262,8 +278,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: CTextButton(
                             onPressed: _longestDurationPerLog,
-                            label: "Best Time",
-                            textStyle: buttonStyle,
+                            label: SummaryType.bestTime.label,
+                            textStyle: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: _textColor(type: SummaryType.bestTime)),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.bestTime)),
                       ),
@@ -272,8 +291,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: CTextButton(
                             onPressed: _totalTimePerLog,
-                            label: "Total Time",
-                            textStyle: buttonStyle,
+                            label: SummaryType.sessionTimes.label,
+                            textStyle: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: _textColor(type: SummaryType.sessionTimes)),
                             padding: const EdgeInsets.only(right: 5.0),
                             buttonColor: _buttonColor(type: SummaryType.sessionTimes)),
                       ),

@@ -20,7 +20,6 @@ class _DateViewModel {
 
 class CalendarHeatMap extends StatelessWidget {
   final List<DateTime> dates;
-  final DateTime initialDate;
   final double spacing;
   final bool dynamicColor;
   final bool showMonth;
@@ -28,15 +27,15 @@ class CalendarHeatMap extends StatelessWidget {
 
   const CalendarHeatMap(
       {super.key,
-      required this.initialDate,
       required this.dates,
       this.spacing = 16,
       this.dynamicColor = false,
-      this.showMonth = true, this.minifyLabels = false});
+      this.showMonth = true,
+      this.minifyLabels = false});
 
   List<_DateViewModel?> _generateDates() {
-    int year = initialDate.year;
-    int month = initialDate.month;
+    int year = dates.first.year;
+    int month = dates.first.month;
     int daysInMonth = DateTime(year, month + 1, 0).day;
 
     DateTime firstDayOfMonth = DateTime(year, month, 1);
@@ -56,7 +55,7 @@ class CalendarHeatMap extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       final date = DateTime(year, month, day);
       final active = dates.contains(date);
-      final color = dates.isNotEmpty ? consistencyHealthColor(value: dates.length / 12) : sapphireDark;
+      final color = dates.isNotEmpty ? logStreakColor(value: dates.length / 12) : sapphireDark;
       datesInMonths.add(_DateViewModel(dateTime: date, active: active, color: dynamicColor ? color : vibrantGreen));
     }
 
@@ -79,9 +78,13 @@ class CalendarHeatMap extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showMonth)
-          Text(initialDate.abbreviatedMonth().toUpperCase(),
+          Text(dates.first.abbreviatedMonth().toUpperCase(),
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-        _Month(days: datesForMonth, spacing: spacing, minifyLabels: minifyLabels,),
+        _Month(
+          days: datesForMonth,
+          spacing: spacing,
+          minifyLabels: minifyLabels,
+        ),
       ],
     );
   }
@@ -142,7 +145,8 @@ class _Day extends StatelessWidget {
       ),
       child: Center(
         child: Text("${date.dateTime.day}",
-            style: GoogleFonts.montserrat(fontSize: minifyLabels ? 12 : 16, fontWeight: FontWeight.bold, color: _getTextColor())),
+            style: GoogleFonts.montserrat(
+                fontSize: minifyLabels ? 12 : 16, fontWeight: FontWeight.bold, color: _getTextColor())),
       ),
     );
   }

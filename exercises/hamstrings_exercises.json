@@ -1,21 +1,131 @@
 [
-    {"id": "HAM1", "name": "Good Morning", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM2", "name": "Romanian Deadlift (Barbell)", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM3", "name": "Lying Leg Curl", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM4", "name": "Glute Ham Raise", "primaryMuscleGroup": "Hamstrings", "type": "BW"},
-    {"id": "HAM5", "name": "Nordic Hamstring Curls", "primaryMuscleGroup": "Hamstrings", "type": "BW"},
-    {"id": "HAM6", "name": "Deadlift (Band)", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM7", "name": "Deadlift (Smith Machine)", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM8", "name": "Romanian Deadlift (Dumbbell)", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM9", "name": "Seated Leg Curl", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM10", "name": "Step Up", "primaryMuscleGroup": "Hamstrings", "type": "BW"},
-    {"id": "HAM11", "name": "Deadlift (Barbell)", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM12", "name": "Deficit Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM13", "name": "Deadlift (Dumbbell)", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM14", "name": "Sumo Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM15", "name": "Stiff-Legged Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM16", "name": "Trap Bar Deadlift With High Handles", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM17", "name": "Trap Bar Deadlift With Low Handles", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM18", "name": "Pause Deadlift", "primaryMuscleGroup": "Hamstrings", "type": "WR"},
-    {"id": "HAM19", "name": "Romanian Deadlift (Smith Machine)", "primaryMuscleGroup": "Hamstrings", "type": "WR"}
+  {
+    "id": "HAM1",
+    "name": "Good Morning",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=nWyx81AfTos",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "HAM2",
+    "name": "Romanian Deadlift (Barbell)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=nF_LPuuftfQ",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
+  },
+  {
+    "id": "HAM3",
+    "name": "Lying Leg Curl",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=SbSNUXPRkc8",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "HAM4",
+    "name": "Glute Ham Raise",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "BW"
+  },
+  {
+    "id": "HAM5",
+    "name": "Nordic Hamstring Curls",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "BW"
+  },
+  {
+    "id": "HAM6",
+    "name": "Deadlift (Band)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM7",
+    "name": "Deadlift (Smith Machine)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM8",
+    "name": "Romanian Deadlift (Dumbbell)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=plb5jEO4Unw",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "HAM9",
+    "name": "Seated Leg Curl",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM11",
+    "name": "Deadlift (Barbell)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=0GCPn0VvXLc",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
+  },
+  {
+    "id": "HAM12",
+    "name": "Deficit Deadlift",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM13",
+    "name": "Deadlift (Dumbbell)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=ev5Bx5a_mss",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
+  },
+  {
+    "id": "HAM14",
+    "name": "Sumo Deadlift",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=IGmNuGEpHc0",
+    "creditSource": "https://www.youtube.com/@TheGymGroupUK",
+    "credit": "TheGymGroup"
+  },
+  {
+    "id": "HAM15",
+    "name": "Stiff-Legged Deadlift",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM16",
+    "name": "Trap Bar Deadlift With High Handles",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM17",
+    "name": "Trap Bar Deadlift With Low Handles",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM18",
+    "name": "Pause Deadlift",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  },
+  {
+    "id": "HAM19",
+    "name": "Romanian Deadlift (Smith Machine)",
+    "primaryMuscleGroup": "Hamstrings",
+    "type": "WR"
+  }
 ]

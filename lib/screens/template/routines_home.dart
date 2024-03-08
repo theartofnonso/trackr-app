@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/screens/template/library/routine_template_library.dart';
-import 'package:tracker_app/screens/template/routine_templates_screen.dart';
+import 'package:tracker_app/screens/template/library/routine_library.dart';
+import 'package:tracker_app/screens/template/templates/routine_templates.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_controller.dart';
 import '../../controllers/routine_template_controller.dart';
 
-class RoutineTemplatesHome extends StatefulWidget {
+class RoutinesHome extends StatefulWidget {
 
   static const routeName = '/routine-templates-screen';
 
-  const RoutineTemplatesHome({super.key});
+  const RoutinesHome({super.key});
 
   @override
-  State<RoutineTemplatesHome> createState() => _RoutineTemplatesHomeState();
+  State<RoutinesHome> createState() => _RoutinesHomeState();
 }
 
-class _RoutineTemplatesHomeState extends State<RoutineTemplatesHome> {
+class _RoutinesHomeState extends State<RoutinesHome> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -50,7 +50,7 @@ class _RoutineTemplatesHomeState extends State<RoutineTemplatesHome> {
             child: const SafeArea(
               child: TabBarView(
                 children: [
-                  RoutineTemplatesScreen(),
+                  RoutineTemplates(),
                   RoutineTemplateLibrary(),
                 ],
               ),

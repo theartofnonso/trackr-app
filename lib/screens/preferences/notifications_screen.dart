@@ -10,7 +10,7 @@ import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../../utils/google_analytics.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/timezone_utils.dart';
 import '../../utils/dialog_utils.dart';
 

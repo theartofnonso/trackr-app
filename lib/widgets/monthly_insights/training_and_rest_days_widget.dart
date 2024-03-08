@@ -22,7 +22,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
     final totalTrainingDays = logs.length;
     final totalRestDays = daysInMonth - totalTrainingDays;
 
-    final averageRestDays = _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates);
+    final averageRestDays = totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Table(
-                  border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+                  border: TableBorder.symmetric(inside: BorderSide(color: sapphireLighter.withOpacity(0.4), width: 2)),
                   columnWidths: const <int, TableColumnWidth>{
                     0: FlexColumnWidth(),
                     1: FlexColumnWidth(),
@@ -54,8 +54,8 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
                           child: SleepTimeColumn(
                               title: 'TRAINING',
                               subTitle: "$totalTrainingDays",
-                              titleColor: consistencyHealthColor(value: totalTrainingDays / 12),
-                              subTitleColor: consistencyHealthColor(value: totalTrainingDays / 12)),
+                              titleColor: logStreakColor(value: totalTrainingDays / 12),
+                              subTitleColor: logStreakColor(value: totalTrainingDays / 12)),
                         ),
                       ),
                       TableCell(
@@ -92,22 +92,23 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
   }
 
   int _averageDaysBetween({required List<RoutineLogDto> logs, required List<DateTime> datesInMonth}) {
+    if (logs.isEmpty) return 0;
 
-    if(logs.isEmpty) return 0;
-
-    List<int> daysInBetween = [];
+    List<int> intervals = [];
 
     for (int i = 0; i < logs.length; i++) {
-      final currentLog = logs[i].createdAt.withoutTimeStamp();
+      final currentLog = logs[i].createdAt.withoutTime();
       if (i == logs.length - 1) break; // Break if we are at the last log (no more intervals to calculate)
-      final nextLog = logs[i + 1].createdAt.withoutTimeStamp();
+      final nextLog = logs[i + 1].createdAt.withoutTime();
       final daysBetween = nextLog.difference(currentLog).inDays - 1;
       if (daysBetween > 0) {
-        daysInBetween.add(daysBetween);
+        intervals.add(daysBetween);
       }
     }
     // Calculate the average by dividing the total difference by the number of intervals
-    return (daysInBetween.sum / daysInBetween.length).round();
+    final totalIntervals = intervals.isNotEmpty ? intervals.sum : 1;
+    final intervalsLength = intervals.isNotEmpty ? intervals.length : 1;
+    return (totalIntervals / intervalsLength).round();
   }
 }
 

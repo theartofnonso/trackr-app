@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/google_analytics.dart';
+import '../../utils/app_analytics.dart';
+import '../../utils/string_utils.dart';
 import '../chart/muscle_group_family_frequency_chart.dart';
 
 class MuscleGroupFamilyFrequencyWidget extends StatefulWidget {
@@ -29,24 +30,16 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
 
     final muscleGroupFamilyFrequencies = weeklyScaledMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
 
-    final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys;
+    final muscleGroupFamilies = muscleGroupFamilyFrequencies.keys.toSet();
 
-    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies();
+    final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
-    final untrainedMuscleGroups =
-        listOfPopularMuscleGroupFamilies.where((family) => !muscleGroupFamilies.contains(family)).toList();
+    final untrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(muscleGroupFamilies);
 
-    String untrainedMuscleGroupsNames = "";
+    String untrainedMuscleGroupsNames = joinWithAnd(items: untrainedMuscleGroups.map((muscle) => muscle.name).toList());
 
-    if (untrainedMuscleGroups.isNotEmpty) {
-      if (untrainedMuscleGroups.length == listOfPopularMuscleGroupFamilies.length) {
-        untrainedMuscleGroupsNames = "any muscle groups";
-      } else if (untrainedMuscleGroups.length > 1) {
-        untrainedMuscleGroupsNames =
-            "${untrainedMuscleGroups.take(untrainedMuscleGroups.length - 1).map((muscle) => muscle.name).join(", ")} and ${untrainedMuscleGroups.last.name}";
-      } else {
-        untrainedMuscleGroupsNames = untrainedMuscleGroups.first.name;
-      }
+    if(untrainedMuscleGroups.length == popularMuscleGroupFamilies().length) {
+      untrainedMuscleGroupsNames = "any muscle groups";
     }
 
     return GestureDetector(
@@ -75,6 +68,8 @@ class _MuscleGroupFamilyFrequencyWidgetState extends State<MuscleGroupFamilyFreq
                 TextSpan(
                     text: untrainedMuscleGroupsNames,
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                    const TextSpan(text: " "),
+                const TextSpan(text: "this month", style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500)),
               ])),
       ]),
     );

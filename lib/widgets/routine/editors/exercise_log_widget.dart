@@ -7,7 +7,9 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
@@ -19,6 +21,7 @@ import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
+import '../../../utils/1rm_calculator.dart';
 import '../../../utils/general_utils.dart';
 
 const _logModeTimerMessage = "Tap + to add a timer";
@@ -32,6 +35,7 @@ class ExerciseLogWidget extends StatefulWidget {
 
   /// ExerciseLogDto callbacks
   final VoidCallback onRemoveLog;
+  final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
@@ -44,7 +48,7 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache});
+      this.onCache, required this.onReplaceLog});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -67,13 +71,36 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               child: Text("Super-set", style: GoogleFonts.montserrat()),
             ),
       MenuItemButton(
+        onPressed: widget.onReplaceLog,
+        child: Text(
+          "Replace",
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
+      ),
+      MenuItemButton(
         onPressed: widget.onRemoveLog,
         child: Text(
           "Remove",
           style: GoogleFonts.montserrat(color: Colors.red),
         ),
-      )
+      ),
     ];
+  }
+
+  void _show1RMRecommendations() {
+    final pastExerciseLogs =
+        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    final completedPastExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastExerciseLogs);
+    if (completedPastExerciseLogs.isNotEmpty) {
+      final previousLog = completedPastExerciseLogs.last;
+      final heaviestSetWeight = heaviestSetWeightForExerciseLog(exerciseLog: previousLog);
+      final oneRepMax = average1RM(weight: heaviestSetWeight.weightValue(), reps: heaviestSetWeight.repsValue());
+      displayBottomSheet(
+          context: context,
+          child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
+    } else {
+      showBottomSheetWithNoAction(context: context, title: widget.exerciseLogDto.exercise.name, description: "Keep logging to see recommendations.");
+    }
   }
 
   void _updateProcedureNotes({required String value}) {
@@ -183,7 +210,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    _loadDurationControllers();
+    if(widget.editorType == RoutineEditorMode.log) {
+      _loadDurationControllers();
+    }
   }
 
   void _cacheLog() {
@@ -261,7 +290,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             Column(
               children: [
                 Text("with ${superSetExerciseDto.exercise.name}",
-                    style: GoogleFonts.montserrat(color: vibrantBlue, fontWeight: FontWeight.bold, fontSize: 12)),
+                    style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
                 const SizedBox(height: 10),
               ],
             ),
@@ -316,20 +345,33 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
             ),
           const SizedBox(height: 8),
-
-          /// Do not remove this condition
-          if (_canAddSets(type: exerciseType))
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            if (withWeightsOnly(type: exerciseType))
+              IconButton(
+                  onPressed: _show1RMRecommendations,
+                  icon: Row(
+                    children: [
+                      const FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 16),
+                      const SizedBox(width: 4),
+                      Text("WEIGHTS",
+                          style:
+                              GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 12)),
+                    ],
+                  ),
+                  style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      shape:
+                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+            const Spacer(),
+            if (_canAddSets(type: exerciseType))
+              IconButton(
                   onPressed: _addSet,
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
-                      shape:
-                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
-            )
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+          ])
         ],
       ),
     );
@@ -400,5 +442,112 @@ class _SetListView extends StatelessWidget {
     }).toList();
 
     return Column(children: children);
+  }
+}
+
+class _OneRepMaxSlider extends StatefulWidget {
+  final String exercise;
+  final double oneRepMax;
+
+  const _OneRepMaxSlider({required this.exercise, required this.oneRepMax});
+
+  @override
+  State<_OneRepMaxSlider> createState() => _OneRepMaxSliderState();
+}
+
+class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
+  double _weight = 0.0;
+  double _reps = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.exercise,
+            style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w800, fontSize: 18)),
+        const SizedBox(height: 2),
+        RichText(
+          text: TextSpan(
+            text: "Based on your recent progress, consider",
+            style:
+                GoogleFonts.montserrat(height: 1.5, color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 14),
+            children: [
+              TextSpan(
+                text: "\n",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+              ),
+              TextSpan(
+                text: "$_weight${weightLabel()}",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+              ),
+              TextSpan(
+                text: " ",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+              ),
+              TextSpan(
+                text: "for",
+                style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w600, fontSize: 18),
+              ),
+              TextSpan(
+                text: " ",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+              ),
+              TextSpan(
+                text: "${_reps.toInt()} ${pluralize(word: "rep", count: _reps.toInt())}",
+                style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+              )
+            ],
+          ),
+        ),
+        Slider(value: _reps, onChanged: onChanged, min: 1, max: 20, divisions: 20, thumbColor: vibrantGreen),
+      ],
+    );
+  }
+
+  void onChanged(double value) {
+    final weight = _weightForPercentage(reps: value.toInt());
+    setState(() {
+      _weight = weightWithConversion(value: weight).roundToDouble();
+      _reps = value;
+    });
+  }
+
+  int _percentageForReps(int reps) {
+    // Define a map of reps to percentages
+    Map<int, int> repToPercentage = {
+      1: 100,
+      2: 97,
+      3: 94,
+      4: 92,
+      5: 89,
+      6: 86,
+      7: 83,
+      8: 81,
+      9: 78,
+      10: 75,
+      11: 73,
+      12: 71,
+      13: 70,
+      14: 68,
+      15: 67,
+      16: 65,
+      17: 64,
+      18: 62,
+      19: 61,
+      20: 60,
+    };
+
+    return repToPercentage[reps] ?? 1;
+  }
+
+  double _weightForPercentage({required int reps}) {
+    return (widget.oneRepMax * (_percentageForReps(reps) / 100)).roundToDouble();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _weight = _weightForPercentage(reps: 10);
   }
 }

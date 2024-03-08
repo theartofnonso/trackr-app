@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,19 +7,33 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../colors.dart';
 import '../../dtos/graph/chart_point_dto.dart';
 import '../../enums/chart_unit_enum.dart';
+import '../../utils/chart_utils.dart';
 import '../../utils/string_utils.dart';
 
 class CustomBarChart extends StatelessWidget {
   final List<ChartPointDto> chartPoints;
   final List<String> periods;
+  final List<Color>? barColors;
   final ExtraLinesData? extraLinesData;
   final ChartUnit unit;
   final bool showLeftTitles;
   final bool showTopTitles;
   final double? maxY;
   final double bottomTitlesInterval;
+  final double reservedSize;
 
-  const CustomBarChart({super.key, required this.chartPoints, required this.periods, this.extraLinesData, required this.unit, this.maxY, this.showLeftTitles = false, this.showTopTitles = false, required this.bottomTitlesInterval});
+  const CustomBarChart(
+      {super.key,
+      required this.chartPoints,
+      required this.periods,
+      this.extraLinesData,
+      required this.unit,
+      this.maxY,
+      this.showLeftTitles = true,
+      this.showTopTitles = false,
+      required this.bottomTitlesInterval,
+      this.barColors,
+      required this.reservedSize});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +46,15 @@ class CustomBarChart extends StatelessWidget {
               titlesData: titlesData,
               borderData: borderData,
               barGroups: barGroups,
-              gridData: const FlGridData(show: false),
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: false,
+                checkToShowHorizontalLine: (value) => true,
+                getDrawingHorizontalLine: (value) => FlLine(
+                  color: Colors.white.withOpacity(0.1),
+                  strokeWidth: 0.5,
+                ),
+              ),
               alignment: BarChartAlignment.spaceEvenly,
               extraLinesData: extraLinesData,
             ),
@@ -76,7 +99,7 @@ class CustomBarChart extends StatelessWidget {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: showLeftTitles,
-            reservedSize: 40,
+            reservedSize: reservedSize,
             getTitlesWidget: _leftTitleWidgets,
           ),
         ),
@@ -92,25 +115,15 @@ class CustomBarChart extends StatelessWidget {
         show: false,
       );
 
-  LinearGradient get _barsGradient => const LinearGradient(
-        colors: [
-          Colors.white54,
-          Colors.white,
-        ],
-        begin: Alignment.bottomCenter,
-        end: Alignment.topCenter,
-      );
-
-  List<BarChartGroupData> get barGroups => chartPoints.map((point) {
+  List<BarChartGroupData> get barGroups => chartPoints.mapIndexed((index, point) {
         return BarChartGroupData(
           x: point.x.toInt(),
           barRods: [
             BarChartRodData(
-              borderRadius: BorderRadius.circular(2),
-              width: 16,
-              toY: point.y.toDouble(),
-              gradient: _barsGradient,
-            )
+                borderRadius: BorderRadius.circular(2),
+                width: barWidth(length: chartPoints.length),
+                toY: point.y.toDouble(),
+                color: barColors?[index] ?? Colors.white)
           ],
           showingTooltipIndicators: showTopTitles ? [0] : null,
         );
@@ -146,7 +159,9 @@ class CustomBarChart extends StatelessWidget {
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.disable(),
       axisSide: meta.axisSide,
-      child: value % meta.appliedInterval == 0 ? Text(modifiedDateTimes[value.toInt()], style: style) : const SizedBox.shrink(),
+      child: value % meta.appliedInterval == 0
+          ? Text(modifiedDateTimes[value.toInt()], style: style)
+          : const SizedBox.shrink(),
     );
   }
 }

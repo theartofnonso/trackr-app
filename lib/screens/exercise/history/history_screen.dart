@@ -16,17 +16,17 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ExerciseLogDto> pastLogs = Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
-    pastLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastLogs.reversed.toList());
+    final completedPastLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastLogs.reversed.toList());
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
-          pastLogs.isNotEmpty
+          completedPastLogs.isNotEmpty
               ? Expanded(
             child: ListView.separated(
-                itemBuilder: (BuildContext context, int index) => RoutineLogWidget(exerciseLog: pastLogs[index]),
+                itemBuilder: (BuildContext context, int index) => RoutineLogWidget(exerciseLog: completedPastLogs[index]),
                 separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
-                itemCount: pastLogs.length),
+                itemCount: completedPastLogs.length),
           )
               : const ListViewEmptyState(),
         ],

@@ -3,19 +3,17 @@ import 'dart:async';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/template/routine_templates_home.dart';
+import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/utils/google_analytics.dart';
+import 'package:tracker_app/utils/app_analytics.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../controllers/routine_template_controller.dart';
@@ -43,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
-      const RoutineTemplatesHome(),
+      const RoutinesHome(),
       AchievementsScreen(scrollController: _scrollController),
       const SettingsScreen(),
     ];
@@ -86,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _currentScreenIndex = index;
           });
-          if(destination is AchievementsScreen) recordViewMilestonesEvent();
+          if (destination is AchievementsScreen) recordViewMilestonesEvent();
           _scrollToTop(index);
         },
         selectedIndex: _currentScreenIndex,
@@ -151,26 +149,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final result = await checkIosNotificationPermission();
     if (!result.isEnabled) {
       if (mounted) {
-        displayBottomSheet(
+        showBottomSheetWithMultiActions(
             context: context,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("Remind me to train weekly",
-                  style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
-                  textAlign: TextAlign.start),
-              Text("Training regularly can be hard. TRKR can help you stay on track.",
-                  style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white70),
-                  textAlign: TextAlign.start),
-              const SizedBox(height: 16),
-              CTextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _requestIosNotificationPermission();
-                  },
-                  label: "Always remind me",
-                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  buttonColor: vibrantGreen),
-            ]));
+            title: "Remind me to train weekly",
+            description: "Training regularly can be hard. TRKR can help you stay on track.",
+            leftAction: Navigator.of(context).pop,
+            rightAction: () {
+              Navigator.of(context).pop();
+              _requestIosNotificationPermission();
+            },
+            leftActionLabel: 'Cancel',
+            rightActionLabel: 'Always remind me',
+            isLeftActionDestructive: false);
       }
     }
   }

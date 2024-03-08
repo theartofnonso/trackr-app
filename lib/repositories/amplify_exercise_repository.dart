@@ -26,11 +26,19 @@ class AmplifyExerciseRepository {
       final name = exerciseJson["name"];
       final primaryMuscleGroupString = exerciseJson["primaryMuscleGroup"];
       final typeString = exerciseJson["type"];
+      final video = exerciseJson["video"];
+      final videoUri = video != null ? Uri.parse(video) : null;
+      final creditSource = exerciseJson["creditSource"];
+      final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
+      final credit = exerciseJson["credit"];
       return ExerciseDto(
           id: id,
           name: name,
           primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroupString),
           type: ExerciseType.fromString(typeString),
+          video: videoUri,
+          creditSource: creditSourceUri,
+          credit: credit,
           owner: false);
     }).toList();
   }
@@ -38,7 +46,7 @@ class AmplifyExerciseRepository {
   Future<void> fetchExercises({required void Function() onDone}) async {
     final exercises = await Amplify.DataStore.query(Exercise.classType);
     if (exercises.isNotEmpty) {
-     _loadUserExercises(exercises: exercises);
+      _loadUserExercises(exercises: exercises);
     } else {
       _observeExerciseQuery(onSyncCompleted: onDone);
     }
@@ -78,6 +86,13 @@ class AmplifyExerciseRepository {
     _exercises.addAll(forearmsExercises);
     _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
+
+    // final temp = _exercises.where((element) => element.video == null).toList();
+    // temp.forEach((element) {
+    //   print(element.name);
+    // });
+    //
+    // print(temp.length);
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
