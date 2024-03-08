@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/exercise/muscle_groups_screen.dart';
 
@@ -18,7 +19,8 @@ class MuscleGroupWidget extends StatelessWidget {
         onTap: onTap,
         dense: true,
         title: Text(muscleGroupDto.muscleGroup.name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+            style: GoogleFonts.montserrat(
+                color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14)),
         trailing: muscleGroupDto.selected
             ? const Icon(Icons.check_box_rounded, color: vibrantGreen)
             : const Icon(Icons.check_box_rounded, color: sapphireDark),
