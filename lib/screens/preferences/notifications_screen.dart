@@ -88,10 +88,10 @@ class NotificationsScreen extends StatelessWidget {
           child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Text("Notifications",
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 const _NotificationListView()
               ]),
             ),
