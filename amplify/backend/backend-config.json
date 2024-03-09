@@ -18,7 +18,11 @@
       ],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
@@ -108,6 +112,20 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "getAllRoutineLogs": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "postAuthentication": {
       "build": true,
       "dependsOn": [],
@@ -177,6 +195,22 @@
         {
           "category": "function",
           "resourceName": "deleteUserRoutineTemplateData"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAllRoutineLogs_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAllRoutineLogs_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
         }
       ]
     },

@@ -49,13 +49,15 @@ class StreakScreen extends StatelessWidget {
           child: SafeArea(
             minimum: const EdgeInsets.all(10.0),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Expanded(
-                child: ListView.separated(
-                  itemCount: yearsAndMonths.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 20),
-                  itemBuilder: (context, index) => yearsAndMonths[index],
-                ),
-              )
+              yearsAndMonths.isEmpty
+                  ? const _YearAndMonthsEmptyState()
+                  : Expanded(
+                      child: ListView.separated(
+                        itemCount: yearsAndMonths.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 20),
+                        itemBuilder: (context, index) => yearsAndMonths[index],
+                      ),
+                    )
             ]),
           ),
         ));
@@ -87,6 +89,29 @@ class _YearAndMonths extends StatelessWidget {
           mainAxisSpacing: 4.0,
           crossAxisSpacing: 4.0,
           children: monthsAndLogs)
+    ]);
+  }
+}
+
+class _YearAndMonthsEmptyState extends StatelessWidget {
+  const _YearAndMonthsEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Text("Streak ${DateTime.now().year}",
+          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)),
+      const SizedBox(height: 20),
+      GridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          crossAxisCount: 1,
+          childAspectRatio: 1.2,
+          mainAxisSpacing: 4.0,
+          crossAxisSpacing: 4.0,
+          children: [
+            CalendarHeatMap(dates: [DateTime.now()], spacing: 4)
+          ])
     ]);
   }
 }

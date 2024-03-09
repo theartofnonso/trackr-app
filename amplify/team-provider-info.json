@@ -42,6 +42,10 @@
         "deleteUserRoutineTemplateData": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
           "s3Key": "amplify-builds/deleteUserRoutineTemplateData-46587073444b626a6c65-build.zip"
+        },
+        "getAllRoutineLogs": {
+          "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
+          "s3Key": "amplify-builds/getAllRoutineLogs-6c2b663751416e6d6637-build.zip"
         }
       },
       "analytics": {
