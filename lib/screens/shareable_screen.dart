@@ -9,7 +9,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/widgets/shareables/achievement_share.dart';
 import 'package:tracker_app/widgets/shareables/log_milestone_shareable.dart';
-import 'package:tracker_app/widgets/shareables/pbs_shareable_shareable.dart';
+import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 
 import '../colors.dart';
@@ -62,7 +62,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
     for (final achievement in achievements) {
       final key = GlobalKey();
       final shareable =
-          AchievementShare(globalKey: key, achievementDto: achievement, width: MediaQuery.of(context).size.width - 20);
+          AchievementShare(globalKey: key, achievementDto: achievement);
       achievementsShareAssets.add(shareable);
       achievementsShareAssetsKeys.add(key);
     }

@@ -7,18 +7,19 @@ import '../../dtos/achievement_dto.dart';
 class AchievementShare extends StatelessWidget {
   final GlobalKey globalKey;
   final AchievementDto achievementDto;
-  final double? width;
 
-  const AchievementShare({super.key, required this.globalKey, required this.achievementDto, this.width});
+  const AchievementShare({super.key, required this.globalKey, required this.achievementDto});
 
   @override
   Widget build(BuildContext context) {
     final completed = achievementDto.progress.remainder == 0;
 
-    return RepaintBoundary(
-        key: globalKey,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: RepaintBoundary(
+          key: globalKey,
           child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -32,31 +33,20 @@ class AchievementShare extends StatelessWidget {
               ),
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("From:", style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w700)),
-                      const SizedBox(width: 4),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Image.asset(
-                          'images/trackr.png',
-                          fit: BoxFit.contain,
-                          height: 8, // Adjust the height as needed
-                        ),
-                      )
-                    ],
-                  ),
-                  const Divider(color: sapphireLighter, thickness: 2),
                   Text(achievementDto.type.title.toUpperCase(),
-                      style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
-                  const SizedBox(height: 2),
+                      style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900),
+                      textAlign: TextAlign.center),
+                  const SizedBox(height: 6),
                   Text(completed ? achievementDto.type.completionMessage : achievementDto.type.description,
-                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500)),
+                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.center),
                 ],
               )),
-        ));
+        ),
+      ),
+    );
   }
 }
