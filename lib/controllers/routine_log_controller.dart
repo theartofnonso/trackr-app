@@ -39,18 +39,13 @@ class RoutineLogController extends ChangeNotifier {
 
   void fetchLogs() async {
     try {
-      await _amplifyLogRepository.fetchLogs(onSyncCompleted: _onSyncCompleted);
+      await _amplifyLogRepository.fetchLogs();
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
       notifyListeners();
     }
-  }
-
-  void _onSyncCompleted() {
-    _achievementRepository.loadAchievements(routineLogs: routineLogs);
-    notifyListeners();
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto}) async {

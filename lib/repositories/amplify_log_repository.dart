@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -28,13 +29,12 @@ class AmplifyLogRepository {
 
   Map<ExerciseType, List<ExerciseLogDto>> _exerciseLogsByType = {};
 
-  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
-
   UnmodifiableListView<RoutineLogDto> get routineLogs => UnmodifiableListView(_routineLogs);
 
   UnmodifiableMapView<String, List<ExerciseLogDto>> get exerciseLogsById => UnmodifiableMapView(_exerciseLogsById);
 
-  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType => UnmodifiableMapView(_exerciseLogsByType);
+  UnmodifiableMapView<ExerciseType, List<ExerciseLogDto>> get exerciseLogsByType =>
+      UnmodifiableMapView(_exerciseLogsByType);
 
   UnmodifiableMapView<DateTimeRange, List<RoutineLogDto>> get weeklyLogs => UnmodifiableMapView(_weeklyLogs);
 
@@ -61,16 +61,30 @@ class AmplifyLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _routineLogs);
   }
 
-  Future<void> fetchLogs({required void Function() onSyncCompleted}) async {
+  Future<void> fetchLogs() async {
     List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
     if (logs.isNotEmpty) {
-      _loadLogs(logs: logs);
+      _mapAndNormaliseLogs(logs: logs);
     } else {
-      _observeRoutineLogQuery(onSyncCompleted: onSyncCompleted);
+      _apiFetchTemplates();
     }
   }
 
-  void _loadLogs({required List<RoutineLog> logs}) {
+  Future<void> _apiFetchTemplates() async {
+    try {
+      final request = ModelQueries.list(RoutineLog.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final logs = response.data?.items.whereType<RoutineLog>().toList();
+      if (logs != null) {
+        _mapAndNormaliseLogs(logs: logs);
+      }
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+    }
+  }
+
+  void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {
     _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
     _normaliseLogs();
   }
@@ -104,8 +118,8 @@ class AmplifyLogRepository {
       await Amplify.DataStore.save(newLog);
       final index = _indexWhereRoutineLog(id: log.id);
       _routineLogs[index] = log;
+      _normaliseLogs();
     }
-    _normaliseLogs();
   }
 
   Future<void> removeLog({required RoutineLogDto log}) async {
@@ -119,8 +133,8 @@ class AmplifyLogRepository {
       await Amplify.DataStore.delete(oldTemplate);
       final index = _indexWhereRoutineLog(id: log.id);
       _routineLogs.removeAt(index);
+      _normaliseLogs();
     }
-    _normaliseLogs();
   }
 
   void cacheLog({required RoutineLogDto logDto}) {
@@ -135,20 +149,6 @@ class AmplifyLogRepository {
       routineLog = RoutineLogDto.fromJson(json);
     }
     return routineLog;
-  }
-
-  void _observeRoutineLogQuery({required void Function() onSyncCompleted}) {
-    _routineLogStream =
-        Amplify.DataStore.observeQuery(RoutineLog.classType).listen((QuerySnapshot<RoutineLog> snapshot) {
-      if (snapshot.items.isNotEmpty) {
-        _loadLogs(logs: snapshot.items);
-        _routineLogStream?.cancel();
-        onSyncCompleted();
-      }
-    })
-          ..onDone(() {
-            _routineLogStream?.cancel();
-          });
   }
 
   /// Helper methods

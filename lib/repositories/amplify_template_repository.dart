@@ -19,8 +19,6 @@ class AmplifyTemplateRepository {
 
   List<RoutineTemplateDto> _templates = [];
 
-  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
-
   UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibrary>>> get defaultTemplates =>
       UnmodifiableListView(_defaultTemplates);
 

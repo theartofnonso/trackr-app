@@ -17,8 +17,6 @@ class AmplifyExerciseRepository {
 
   UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
 
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
-
   Future<List<ExerciseDto>> loadExercisesFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
     final exerciseJsons = json.decode(jsonString) as List<dynamic>;
