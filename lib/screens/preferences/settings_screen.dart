@@ -147,7 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _logout, title: "Logout", trailing: SharedPrefs().userEmail),
                   const SizedBox(height: 8),
-                  OutlineListTile(onTap: _delete, title: "Delete Account"),
+                  OutlineListTile(onTap: _delete, title: "Delete Account", trailing: SharedPrefs().userEmail),
                   const SizedBox(height: 10),
                   Center(
                     child: Text(_appVersion,
