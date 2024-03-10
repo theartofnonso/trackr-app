@@ -18,7 +18,8 @@
         "trackerapp648183fb": {}
       },
       "api": {
-        "trackerapp": {}
+        "trackerapp": {},
+        "api71b45aa3": {}
       },
       "function": {
         "postAuthentication": {

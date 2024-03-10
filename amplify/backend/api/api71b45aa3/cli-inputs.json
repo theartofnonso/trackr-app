@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/routine-logs": {
+      "name": "/routine-logs",
+      "lambdaFunction": "getAllRoutineLogs",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

@@ -6,6 +6,20 @@
     }
   },
   "api": {
+    "api71b45aa3": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "trackerapp": {
       "dependsOn": [
         {
