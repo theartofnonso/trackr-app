@@ -104,7 +104,9 @@ class RoutineLogController extends ChangeNotifier {
   List<MuscleGroupFamily> untrainedMuscleGroupFamily() {
     final lastWeeksUntrainedMGF = _lastWeeksUntrainedMGF();
     final thisWeeksUntrainedMGF = _thisWeeksUntrainedMGF();
-    return lastWeeksUntrainedMGF.toSet().difference(thisWeeksUntrainedMGF.toSet()).toList();
+    return thisWeeksUntrainedMGF.isNotEmpty
+        ? lastWeeksUntrainedMGF.toSet().difference(thisWeeksUntrainedMGF.toSet()).toList()
+        : [];
   }
 
   List<MuscleGroupFamily> _lastWeeksUntrainedMGF() {
@@ -126,7 +128,6 @@ class RoutineLogController extends ChangeNotifier {
   }
 
   List<MuscleGroupFamily> _thisWeeksUntrainedMGF() {
-
     final thisWeeksRange = DateTime.now().currentWeekRange();
 
     final thisWeeksLogs = _amplifyLogRepository.weeklyLogs[thisWeeksRange] ?? [];
