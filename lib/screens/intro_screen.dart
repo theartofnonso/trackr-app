@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../colors.dart';
+import '../urls.dart';
+import '../utils/uri_utils.dart';
 import '../widgets/buttons/text_button_widget.dart';
 
 class IntroScreen extends StatelessWidget {
@@ -63,6 +66,48 @@ class IntroScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                   buttonColor: vibrantGreen,
                   textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                ),
+              ),
+              const SizedBox(height: 10),
+              RichText(
+                text: TextSpan(
+                  text: "Photo by".toUpperCase(),
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                  ),
+                  children: <TextSpan>[
+                    const TextSpan(text: " "),
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          openUrl(url: stevenErixonUrl, context: context);
+                        },
+                      text: "Steven Erixon".toUpperCase(),
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 10,
+                      ),
+                    ),
+                    const TextSpan(text: " "),
+                    TextSpan(text: "on".toUpperCase()),
+                    const TextSpan(text: " "),
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          openUrl(url: unsplashImageUrl, context: context);
+                        },
+                      text: "Unsplash".toUpperCase(),
+                      style: GoogleFonts.montserrat(
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 10),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 10),
