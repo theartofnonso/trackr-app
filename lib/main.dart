@@ -204,7 +204,7 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitUp, // Lock orientation to portrait up
     ]);
 
-    return !_isFirstLaunch
+    return _isFirstLaunch
         ? IntroScreen(themeData: _themeData, onComplete: _completeIntro)
         : Authenticator(
             child: MaterialApp(
