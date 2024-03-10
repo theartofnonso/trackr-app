@@ -104,9 +104,15 @@ class RoutineLogController extends ChangeNotifier {
   List<MuscleGroupFamily> untrainedMuscleGroupFamily() {
     final lastWeeksUntrainedMGF = _lastWeeksUntrainedMGF();
     final thisWeeksUntrainedMGF = _thisWeeksUntrainedMGF();
-    return thisWeeksUntrainedMGF.isNotEmpty
-        ? lastWeeksUntrainedMGF.toSet().difference(thisWeeksUntrainedMGF.toSet()).toList()
-        : [];
+
+    List<MuscleGroupFamily> toBeTrained = lastWeeksUntrainedMGF;
+    if(thisWeeksUntrainedMGF.isNotEmpty) {
+      toBeTrained = toBeTrained.where((mgf) => thisWeeksUntrainedMGF.contains(mgf)).toList();
+    } else {
+      toBeTrained = [];
+    }
+
+    return toBeTrained;
   }
 
   List<MuscleGroupFamily> _lastWeeksUntrainedMGF() {
