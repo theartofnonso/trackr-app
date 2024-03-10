@@ -33,9 +33,7 @@ class RoutineTemplateController extends ChangeNotifier {
   void fetchTemplates({List<RoutineTemplate>? templates}) async {
     isLoading = true;
     try {
-      await _amplifyTemplateRepository.fetchTemplates(onSyncCompleted: () {
-        notifyListeners();
-      });
+      await _amplifyTemplateRepository.fetchTemplates();
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

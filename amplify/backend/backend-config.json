@@ -212,6 +212,22 @@
         }
       ]
     },
+    "AMPLIFY_function_getAllRoutineLogs_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAllRoutineLogs_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
+        }
+      ]
+    },
     "AMPLIFY_function_postAuthentication_deploymentBucketName": {
       "usedBy": [
         {
