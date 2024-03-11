@@ -1,4 +1,6 @@
 
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +8,8 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/graphQL/queries.dart';
+import 'package:tracker_app/models/ModelProvider.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
 import '../dtos/exercise_log_dto.dart';
@@ -173,4 +177,31 @@ Map<ExerciseType, List<ExerciseLogDto>> groupExerciseLogsByExerciseType({require
 
 String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
   return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
+}
+
+Future<List<RoutineLog>> getAllRoutineLogs() async {
+  // final Map<String, dynamic> filter = {
+  //   "filter": {
+  //     "city": {"eq": city},
+  //     "status": {"eq": EventStatus.LIVE.name},
+  //     "endDateTime": {"gt": DateTime.now().toIso8601String()}
+  //   }
+  // };
+
+  List<RoutineLog> logs = [];
+
+  final request = GraphQLRequest<PaginatedResult<RoutineLog>>(
+      document: listRoutineLogs,
+      decodePath: listRoutineLogsPath,
+      modelType: const PaginatedModelType(RoutineLog.classType),
+      authorizationMode: APIAuthorizationType.apiKey);
+
+  final response = await Amplify.API.query(request: request).response;
+  print(response);
+  final results = response.data;
+  if (results != null) {
+    logs = results.items.whereType<RoutineLog>().toList();
+  }
+
+  return logs;
 }

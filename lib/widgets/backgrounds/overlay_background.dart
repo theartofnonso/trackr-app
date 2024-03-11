@@ -17,6 +17,6 @@ class OverlayBackground extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
             color: sapphireDark.withOpacity(opacity),
-            child: loadingMessage != null ? Center(child: Text("$loadingMessage", style: GoogleFonts.montserrat(fontSize: 14))) : null));
+            child: loadingMessage != null ? Center(child: Text("$loadingMessage", style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600))) : null));
   }
 }
