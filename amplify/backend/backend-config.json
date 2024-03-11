@@ -80,7 +80,15 @@
   "function": {
     "deleteUserData": {
       "build": true,
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
@@ -131,7 +139,8 @@
       "dependsOn": [
         {
           "attributes": [
-            "GraphQLAPIIdOutput"
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
           ],
           "category": "api",
           "resourceName": "trackerapp"

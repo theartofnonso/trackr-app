@@ -246,7 +246,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
     _primaryMuscleGroup = previousExercise != null
         ? previousExercise.primaryMuscleGroup
-        : MuscleGroup.muscles().first;
+        : MuscleGroup.values.first;
 
     _exerciseType = previousExercise != null ? previousExercise.type : ExerciseType.weights;
 

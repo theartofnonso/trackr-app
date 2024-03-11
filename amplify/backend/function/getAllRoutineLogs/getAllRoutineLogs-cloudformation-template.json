@@ -19,6 +19,10 @@
     "apitrackerappGraphQLAPIIdOutput": {
       "Type": "String",
       "Default": "apitrackerappGraphQLAPIIdOutput"
+    },
+    "apitrackerappGraphQLAPIEndpointOutput": {
+      "Type": "String",
+      "Default": "apitrackerappGraphQLAPIEndpointOutput"
     }
   },
   "Conditions": {
@@ -74,34 +78,11 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_TRACKERAPP_ROUTINELOGTABLE_NAME": {
-              "Fn::ImportValue": {
-                "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
-              }
-            },
-            "API_TRACKERAPP_ROUTINELOGTABLE_ARN": {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:aws:dynamodb:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":table/",
-                  {
-                    "Fn::ImportValue": {
-                      "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
-                    }
-                  }
-                ]
-              ]
-            },
             "API_TRACKERAPP_GRAPHQLAPIIDOUTPUT": {
               "Ref": "apitrackerappGraphQLAPIIdOutput"
+            },
+            "API_TRACKERAPP_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apitrackerappGraphQLAPIEndpointOutput"
             }
           }
         },
@@ -216,20 +197,14 @@
             {
               "Effect": "Allow",
               "Action": [
-                "dynamodb:Get*",
-                "dynamodb:BatchGetItem",
-                "dynamodb:List*",
-                "dynamodb:Describe*",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:PartiQLSelect"
+                "appsync:GraphQL"
               ],
               "Resource": [
                 {
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:dynamodb:",
+                      "arn:aws:appsync:",
                       {
                         "Ref": "AWS::Region"
                       },
@@ -237,34 +212,11 @@
                       {
                         "Ref": "AWS::AccountId"
                       },
-                      ":table/",
+                      ":apis/",
                       {
-                        "Fn::ImportValue": {
-                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
-                        }
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region"
+                        "Ref": "apitrackerappGraphQLAPIIdOutput"
                       },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":table/",
-                      {
-                        "Fn::ImportValue": {
-                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
-                        }
-                      },
-                      "/index/*"
+                      "/types/Query/*"
                     ]
                   ]
                 }

@@ -1,7 +1,6 @@
 /* Amplify Params - DO NOT EDIT
+	API_TRACKERAPP_GRAPHQLAPIENDPOINTOUTPUT
 	API_TRACKERAPP_GRAPHQLAPIIDOUTPUT
-	API_TRACKERAPP_ROUTINELOGTABLE_ARN
-	API_TRACKERAPP_ROUTINELOGTABLE_NAME
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
@@ -36,6 +35,8 @@ const query = /* GraphQL */ `
 
  export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
+
+  console.log(GRAPHQL_ENDPOINT);
 
   const endpoint = new URL(GRAPHQL_ENDPOINT);
 

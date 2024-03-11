@@ -1,8 +1,8 @@
 {
   "permissions": {
-    "storage": {
-      "RoutineLog:@model(appsync)": [
-        "read"
+    "api": {
+      "trackerapp": [
+        "Query"
       ]
     }
   },

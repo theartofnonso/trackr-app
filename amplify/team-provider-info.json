@@ -38,7 +38,7 @@
         },
         "deleteUserData": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/deleteUserData-42594e4e5648316e6b5a-build.zip"
+          "s3Key": "amplify-builds/deleteUserData-334f616a504e49644e6e-build.zip"
         },
         "deleteUserRoutineTemplateData": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
@@ -46,7 +46,7 @@
         },
         "getAllRoutineLogs": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/getAllRoutineLogs-6c2b663751416e6d6637-build.zip"
+          "s3Key": "amplify-builds/getAllRoutineLogs-586767566f5355695036-build.zip"
         }
       },
       "analytics": {
