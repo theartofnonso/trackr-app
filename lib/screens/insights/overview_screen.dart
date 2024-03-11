@@ -70,8 +70,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
 
-    print(logsForTheMonth.length);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",

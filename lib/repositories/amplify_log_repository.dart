@@ -46,17 +46,11 @@ class AmplifyLogRepository {
   }
 
   void _groupRoutineLogs() {
-    if (routineLogs.isEmpty) {
-      return;
-    }
     _weeklyLogs = groupRoutineLogsByWeek(routineLogs: _routineLogs);
     _monthlyLogs = groupRoutineLogsByMonth(routineLogs: _routineLogs);
   }
 
   void _groupExerciseLogs() {
-    if (routineLogs.isEmpty) {
-      return;
-    }
     _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: _routineLogs);
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _routineLogs);
   }
