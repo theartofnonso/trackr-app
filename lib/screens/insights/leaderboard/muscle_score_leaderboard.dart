@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/widgets/monitors/muscle_group_family_frequency_monitor.dart';
 
@@ -22,22 +23,26 @@ class MuscleScoreLeaderBoard extends StatelessWidget {
 
     return Column(
       children: [
+        const SizedBox(height: 20),
         Expanded(
           child: ListView.builder(
               itemBuilder: (BuildContext context, int index) => ListTile(
-                  leading: MuscleGroupFamilyFrequencyMonitor(
-                      value: sorted[index].value,
-                      width: 25,
-                      height: 25,
-                      strokeWidth: 2.5,
-                      strokeCap: StrokeCap.round,
-                      decoration: BoxDecoration(
-                        color: sapphireDark.withOpacity(0.35),
-                        borderRadius: BorderRadius.circular(100),
-                      )),
+                  leading: Stack(alignment: Alignment.center, children: [
+                    const FaIcon(FontAwesomeIcons.person, color: Colors.white, size: 25),
+                    MuscleGroupFamilyFrequencyMonitor(
+                        value: sorted[index].value,
+                        width: 50,
+                        height: 50,
+                        strokeWidth: 4,
+                        strokeCap: StrokeCap.round,
+                        decoration: BoxDecoration(
+                          color: sapphireDark.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(100),
+                        ))
+                  ]),
                   title: Text("Anon-${sorted[index].key.split("-").first}",
-                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600)),
-                  trailing: Text("${(sorted[index].value * 100).round()}%",
+                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w700)),
+                  subtitle: Text("${(sorted[index].value * 100).round()}%",
                       style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400))),
               itemCount: sorted.length),
         )
