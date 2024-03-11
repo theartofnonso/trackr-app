@@ -6,6 +6,7 @@ import 'package:tracker_app/widgets/monitors/muscle_group_family_frequency_monit
 
 import '../../../colors.dart';
 import '../../../dtos/routine_log_dto.dart';
+import '../../../shared_prefs.dart';
 import '../../../utils/exercise_logs_utils.dart';
 
 class MuscleScoreLeaderBoard extends StatelessWidget {
@@ -15,37 +16,52 @@ class MuscleScoreLeaderBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final you = routineLogs.remove(SharedPrefs().userId);
+
     final sorted = routineLogs.entries.map((entry) {
       final owner = entry.key;
       final exerciseLogsForTheMonth = entry.value.expand((log) => log.exerciseLogs).toList();
-      return MapEntry(owner, cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth));
+      return MapEntry("Anon-${owner.split("-").first}", cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth));
     }).sorted((a, b) => b.value.compareTo(a.value));
 
     return Column(
       children: [
         Expanded(
           child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) => ListTile(
-                  leading: Stack(alignment: Alignment.center, children: [
-                    const FaIcon(FontAwesomeIcons.person, color: Colors.white, size: 25),
-                    MuscleGroupFamilyFrequencyMonitor(
-                        value: sorted[index].value,
-                        width: 50,
-                        height: 50,
-                        strokeWidth: 4,
-                        strokeCap: StrokeCap.round,
-                        decoration: BoxDecoration(
-                          color: sapphireDark.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(100),
-                        ))
-                  ]),
-                  title: Text("Anon-${sorted[index].key.split("-").first}",
-                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w700)),
-                  subtitle: Text("${(sorted[index].value * 100).round()}% trained",
-                      style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400))),
+              itemBuilder: (BuildContext context, int index) => _ListTile(score: sorted[index]),
               itemCount: sorted.length),
-        )
+        ),
+        _ListTile(score: MapEntry("You", 3))
       ],
     );
+  }
+}
+
+class _ListTile extends StatelessWidget {
+  final MapEntry<String, double> score;
+
+  const _ListTile({required this.score});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        leading: Stack(alignment: Alignment.center, children: [
+          const FaIcon(FontAwesomeIcons.person, color: Colors.white, size: 25),
+          MuscleGroupFamilyFrequencyMonitor(
+              value: score.value,
+              width: 50,
+              height: 50,
+              strokeWidth: 4,
+              strokeCap: StrokeCap.round,
+              decoration: BoxDecoration(
+                color: sapphireDark.withOpacity(0.35),
+                borderRadius: BorderRadius.circular(100),
+              ))
+        ]),
+        title: Text(score.key,
+            style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w700)),
+        subtitle: Text("${(score.value * 100).round()}% trained",
+            style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400)));
   }
 }
