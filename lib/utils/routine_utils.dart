@@ -1,3 +1,4 @@
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,7 +61,7 @@ List<TemplateChange> checkForChanges(
   unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
 
   /// Check if set values have been changed
-  if(isEditor) {
+  if (isEditor) {
     final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
     unsavedChangesMessage.add(updatedSetValuesChangeMessage);
   }
@@ -128,7 +129,8 @@ List<Widget> setsToWidgets(
   return widgets.isNotEmpty ? widgets : [emptyState];
 }
 
-Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek({required List<RoutineLogDto> routineLogs, DateTime? endDate}) {
+Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
+    {required List<RoutineLogDto> routineLogs, DateTime? endDate}) {
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
   DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();

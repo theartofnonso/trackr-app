@@ -6,7 +6,7 @@ Future<String> getAPI({required String endpoint}) async {
   try {
     await restOperation.response;
   } on ApiException catch (e) {
-    print('Failed to get data from API: $e');
+    safePrint('Failed to get data from API: $e');
   }
   final restResponse = await restOperation.response;
   return restResponse.decodeBody();

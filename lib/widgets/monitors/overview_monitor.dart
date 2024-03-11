@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/screens/insights/leader_board_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -57,16 +58,19 @@ class OverviewMonitor extends StatelessWidget {
                   ),
                 )),
             const SizedBox(width: 20),
-            Stack(alignment: Alignment.center, children: [
-              LogStreakMonitor(value: monthlyProgress),
-              MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
-              Image.asset(
-                'images/trackr.png',
-                fit: BoxFit.contain,
-                color: Colors.white54,
-                height: 8, // Adjust the height as needed
-              )
-            ]),
+            GestureDetector(
+              onTap: () => _navigateToLeaderBoard(context: context),
+              child: Stack(alignment: Alignment.center, children: [
+                LogStreakMonitor(value: monthlyProgress),
+                MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
+                Image.asset(
+                  'images/trackr.png',
+                  fit: BoxFit.contain,
+                  color: Colors.white54,
+                  height: 8, // Adjust the height as needed
+                )
+              ]),
+            ),
             const SizedBox(width: 20),
             GestureDetector(
               onTap: () {
@@ -92,6 +96,10 @@ class OverviewMonitor extends StatelessWidget {
 
   void _showMonitorInfo({required BuildContext context}) {
     showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
+  }
+
+  void _navigateToLeaderBoard({required BuildContext context}) {
+    Navigator.of(context).pushNamed(LeaderBoardScreen.routeName);
   }
 }
 

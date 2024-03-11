@@ -33,6 +33,7 @@ import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/home_screen.dart';
+import 'package:tracker_app/screens/insights/leader_board_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
@@ -267,6 +268,7 @@ class _MyAppState extends State<MyApp> {
                 HomeScreen.routeName: (context) => const HomeScreen(),
                 SetsAndRepsVolumeInsightsScreen.routeName: (context) => const SetsAndRepsVolumeInsightsScreen(),
                 StreakScreen.routeName: (context) => const StreakScreen(),
+                LeaderBoardScreen.routeName: (context) => const LeaderBoardScreen(),
               },
             ),
           );
