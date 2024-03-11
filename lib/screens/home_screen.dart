@@ -129,12 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
       SharedPrefs().firstLaunch = false;
       _cacheUser();
       _loadAppData(firstLaunch: true);
+      _checkAndRequestNotificationPermission();
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadAppData(firstLaunch: false);
       _loadCachedLog();
-      _checkAndRequestNotificationPermission();
       getAPI(endpoint: '/routine-logs');
     });
   }
