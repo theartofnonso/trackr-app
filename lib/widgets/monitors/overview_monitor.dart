@@ -62,11 +62,17 @@ class OverviewMonitor extends StatelessWidget {
             GestureDetector(
               onTap: () => _navigateToLeaderBoard(context: context),
               child: Stack(alignment: Alignment.center, children: [
-                LogStreakMonitor(value: monthlyProgress, width: 100, height: 100, strokeWidth: 6, decoration: BoxDecoration(
-                  color: sapphireDark.withOpacity(0.35),
-                  borderRadius: BorderRadius.circular(100),
-                )),
-                MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
+                LogStreakMonitor(
+                    value: monthlyProgress,
+                    width: 100,
+                    height: 100,
+                    strokeWidth: 6,
+                    decoration: BoxDecoration(
+                      color: sapphireDark.withOpacity(0.35),
+                      borderRadius: BorderRadius.circular(100),
+                    )),
+                MuscleGroupFamilyFrequencyMonitor(
+                    value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
                 Image.asset(
                   'images/trackr.png',
                   fit: BoxFit.contain,
@@ -103,7 +109,7 @@ class OverviewMonitor extends StatelessWidget {
   }
 
   void _navigateToLeaderBoard({required BuildContext context}) {
-    Navigator.of(context).pushNamed(LeaderBoardScreen.routeName);
+    navigateWithSlideTransition(context: context, child: const LeaderBoardScreen());
   }
 }
 

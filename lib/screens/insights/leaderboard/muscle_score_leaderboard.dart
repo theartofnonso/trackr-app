@@ -23,7 +23,6 @@ class MuscleScoreLeaderBoard extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20),
         Expanded(
           child: ListView.builder(
               itemBuilder: (BuildContext context, int index) => ListTile(
@@ -42,7 +41,7 @@ class MuscleScoreLeaderBoard extends StatelessWidget {
                   ]),
                   title: Text("Anon-${sorted[index].key.split("-").first}",
                       style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w700)),
-                  subtitle: Text("${(sorted[index].value * 100).round()}%",
+                  subtitle: Text("${(sorted[index].value * 100).round()}% trained",
                       style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w400))),
               itemCount: sorted.length),
         )

@@ -19,7 +19,6 @@ class LogStreakLeaderBoard extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20),
         Expanded(
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int index) => ListTile(

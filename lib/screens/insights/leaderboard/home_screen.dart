@@ -4,14 +4,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/screens/insights/leaderboard/log_streak_leaderboard.dart';
 import 'package:tracker_app/screens/insights/leaderboard/muscle_score_leaderboard.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/routine_log_dto.dart';
+import '../../../utils/general_utils.dart';
 import '../../../utils/https_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/calendar/calendar_navigator.dart';
 
 class LeaderBoardScreen extends StatefulWidget {
   static const routeName = '/leader-board';
@@ -23,6 +26,9 @@ class LeaderBoardScreen extends StatefulWidget {
 }
 
 class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
+
+  late DateTimeRange _dateTimeRange;
+
   Map<String, List<RoutineLogDto>> _routineLogs = {};
 
   @override
@@ -63,8 +69,19 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
                 ),
               ),
               child: SafeArea(
-                child: TabBarView(
-                  children: [LogStreakLeaderBoard(routineLogs: _routineLogs), MuscleScoreLeaderBoard(routineLogs: _routineLogs)],
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    CalendarNavigator(
+                      onChangedDateTimeRange: _onChangedDateTimeRange,
+                      chartPeriod: ChartPeriod.month,
+                      dateTimeRange: _dateTimeRange),
+                    Expanded(
+                      child: TabBarView(
+                        children: [LogStreakLeaderBoard(routineLogs: _routineLogs), MuscleScoreLeaderBoard(routineLogs: _routineLogs)],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -74,9 +91,19 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
         ));
   }
 
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if (range == null) return;
+    setState(() {
+      _dateTimeRange = range;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _dateTimeRange = thisMonthDateRange();
+
     // getAllRoutineLogs().then((value) {
     //   print(value);
     // });
