@@ -37,9 +37,9 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
-  void fetchLogs() async {
+  void fetchLogs({bool firstLaunch = false}) async {
     try {
-      await _amplifyLogRepository.fetchLogs();
+      await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";

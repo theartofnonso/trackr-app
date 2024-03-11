@@ -61,9 +61,9 @@ class AmplifyLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _routineLogs);
   }
 
-  Future<void> fetchLogs() async {
-    List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
-    if (logs.isNotEmpty) {
+  Future<void> fetchLogs({bool firstLaunch = false}) async {
+    if (!firstLaunch) {
+      List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
       _mapAndNormaliseLogs(logs: logs);
     } else {
       _apiFetchTemplates();

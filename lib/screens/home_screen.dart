@@ -100,10 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData() {
-    Provider.of<RoutineLogController>(context, listen: false).fetchLogs();
-    Provider.of<ExerciseController>(context, listen: false).fetchExercises();
-    Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates();
+  void _loadAppData({required bool firstLaunch}) {
+    Provider.of<RoutineLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
+    Provider.of<ExerciseController>(context, listen: false).fetchExercises(firstLaunch: firstLaunch);
+    Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates(firstLaunch: firstLaunch);
   }
 
   void _loadCachedLog() {
@@ -127,10 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (SharedPrefs().firstLaunch) {
       SharedPrefs().firstLaunch = false;
       _cacheUser();
+      _loadAppData(firstLaunch: true);
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAppData();
+      _loadAppData(firstLaunch: false);
       _loadCachedLog();
       _checkAndRequestNotificationPermission();
     });

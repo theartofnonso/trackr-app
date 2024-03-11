@@ -84,9 +84,9 @@ class AmplifyTemplateRepository {
     });
   }
 
-  Future<void> fetchTemplates() async {
-    List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
-    if (templates.isNotEmpty) {
+  Future<void> fetchTemplates({bool firstLaunch = false}) async {
+    if (!firstLaunch) {
+      List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
       _mapAndSortTemplates(templates: templates);
     } else {
       await _apiFetchTemplates();

@@ -42,9 +42,9 @@ class AmplifyExerciseRepository {
     }).toList();
   }
 
-  Future<void> fetchExercises() async {
-    final exercises = await Amplify.DataStore.query(Exercise.classType);
-    if (exercises.isNotEmpty) {
+  Future<void> fetchExercises({bool firstLaunch = false}) async {
+    if (!firstLaunch) {
+      final exercises = await Amplify.DataStore.query(Exercise.classType);
       _mapAndSortExercises(exercises: exercises);
     } else {
       await _apiFetchExercises();
