@@ -78,7 +78,10 @@
     "id": "HAM12",
     "name": "Deficit Deadlift",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=PzoxegwRlOw",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "HAM13",

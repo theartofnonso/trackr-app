@@ -34,9 +34,6 @@ const query = /* GraphQL */ `
  */
 
  export const handler = async (event) => {
-  console.log(`EVENT: ${JSON.stringify(event)}`);
-
-  console.log(GRAPHQL_ENDPOINT);
 
   const endpoint = new URL(GRAPHQL_ENDPOINT);
 
