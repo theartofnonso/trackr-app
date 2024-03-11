@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 import 'package:tracker_app/widgets/empty_states/text_empty_state.dart';
 
 import '../../colors.dart';
@@ -16,38 +15,34 @@ class RoutineEmptyState extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GradientWidget(
-              child: ListTile(
-                tileColor: sapphireDark80,
-                dense: true,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                leading: const Icon(
-                  Icons.play_arrow_rounded,
-                  color: Colors.white,
-                  size: 35,
-                ),
-                title: Text("Legs Day 1", style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 14)),
-                subtitle: Text("3 exercises",
-                    style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
-                trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+            ListTile(
+              tileColor: sapphireDark80,
+              dense: true,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              leading: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white70,
+                size: 35,
               ),
+              title: Text("Legs Day 1", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+              subtitle: Text("3 exercises",
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500)),
+              trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white70),
             ),
             const SizedBox(height: 8),
-            GradientWidget(
-              child: ListTile(
-                tileColor: sapphireDark80,
-                dense: true,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                leading: const Icon(
-                  Icons.play_arrow_rounded,
-                  color: Colors.white,
-                  size: 35,
-                ),
-                title: Text("Push Day", style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 14)),
-                subtitle: Text("5 exercises",
-                    style: GoogleFonts.montserrat(color: Colors.white54, fontWeight: FontWeight.w500)),
-                trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+            ListTile(
+              tileColor: sapphireDark80,
+              dense: true,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+              leading: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white70,
+                size: 35,
               ),
+              title: Text("Push Day", style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)),
+              subtitle: Text("5 exercises",
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500)),
+              trailing: const Icon(Icons.more_horiz_rounded, color: Colors.white70),
             ),
           ],
         ),

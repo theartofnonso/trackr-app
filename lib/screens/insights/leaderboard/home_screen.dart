@@ -13,8 +13,8 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/routine_log_dto.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/https_utils.dart';
-import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/calendar/calendar_navigator.dart';
+import '../../../widgets/empty_states/leader_board_empty_state.dart';
 
 class LeaderBoardScreen extends StatefulWidget {
   static const routeName = '/leader-board';
@@ -26,7 +26,6 @@ class LeaderBoardScreen extends StatefulWidget {
 }
 
 class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
-
   late DateTimeRange _dateTimeRange;
 
   Map<String, List<RoutineLogDto>> _routineLogs = {};
@@ -73,20 +72,23 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
                   children: [
                     const SizedBox(height: 20),
                     CalendarNavigator(
-                      onChangedDateTimeRange: _onChangedDateTimeRange,
-                      chartPeriod: ChartPeriod.month,
-                      dateTimeRange: _dateTimeRange),
-                    Expanded(
-                      child: TabBarView(
-                        children: [LogStreakLeaderBoard(routineLogs: _routineLogs), MuscleScoreLeaderBoard(routineLogs: _routineLogs)],
-                      ),
-                    ),
+                        onChangedDateTimeRange: _onChangedDateTimeRange,
+                        chartPeriod: ChartPeriod.month,
+                        dateTimeRange: _dateTimeRange),
+                    _routineLogs.isNotEmpty
+                        ? Expanded(
+                            child: TabBarView(
+                              children: [
+                                LogStreakLeaderBoard(routineLogs: _routineLogs),
+                                MuscleScoreLeaderBoard(routineLogs: _routineLogs)
+                              ],
+                            ),
+                          )
+                        : const LeaderBoardEmptyState(),
                   ],
                 ),
               ),
             ),
-            if(_routineLogs.isEmpty)
-              const OverlayBackground(loadingMessage: "Loading Leaderboard", opacity: 0.7)
           ]),
         ));
   }
