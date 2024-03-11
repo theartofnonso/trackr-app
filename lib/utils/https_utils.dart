@@ -9,6 +9,5 @@ Future<String> getAPI({required String endpoint}) async {
     print('Failed to get data from API: $e');
   }
   final restResponse = await restOperation.response;
-  print(restResponse.decodeBody());
   return restResponse.decodeBody();
 }
