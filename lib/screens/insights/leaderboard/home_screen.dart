@@ -106,9 +106,6 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
 
     _dateTimeRange = thisMonthDateRange();
 
-    // getAllRoutineLogs().then((value) {
-    //   print(value);
-    // });
     getAPI(endpoint: '/routine-logs').then((response) {
       final json = jsonDecode(response);
       final data = json["data"];
@@ -117,7 +114,6 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
       final dtos = items.map((item) => _dto(json: item)).toList();
       setState(() {
         _routineLogs = groupBy(dtos, (log) => log.name);
-        print(_routineLogs);
       });
     });
   }

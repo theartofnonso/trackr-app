@@ -17,9 +17,12 @@ class MuscleScoreLeaderBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final you = routineLogs.remove(SharedPrefs().userId);
+    final routineCopy = Map<String, List<RoutineLogDto>>.from(routineLogs);
+    final yourLogs = routineCopy.remove(SharedPrefs().userId);
+    final yourExerciseLogs = yourLogs?.expand((log) => log.exerciseLogs).toList();
+    final yourMuscleScore = cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: yourExerciseLogs ?? []);
 
-    final sorted = routineLogs.entries.map((entry) {
+    final sorted = routineCopy.entries.map((entry) {
       final owner = entry.key;
       final exerciseLogsForTheMonth = entry.value.expand((log) => log.exerciseLogs).toList();
       return MapEntry("Anon-${owner.split("-").first}", cumulativeMuscleGroupFamilyFrequencies(exerciseLogs: exerciseLogsForTheMonth));
@@ -32,7 +35,7 @@ class MuscleScoreLeaderBoard extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) => _ListTile(score: sorted[index]),
               itemCount: sorted.length),
         ),
-        _ListTile(score: MapEntry("You", 3))
+        _ListTile(score: MapEntry("You", yourMuscleScore))
       ],
     );
   }

@@ -16,9 +16,10 @@ class LogStreakLeaderBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final you = routineLogs.remove(SharedPrefs().userId);
-    print(SharedPrefs().userId);
-    final sortedLogs = routineLogs.entries.map((entry) {
+    final routineCopy = Map<String, List<RoutineLogDto>>.from(routineLogs);
+    final yourLogs = routineCopy.remove(SharedPrefs().userId);
+
+    final sortedLogs = routineCopy.entries.map((entry) {
       final owner = entry.key;
       return MapEntry("Anon-${owner.split("-").first}", entry.value);
     }).sorted((a, b) => b.value.length.compareTo(a.value.length));
@@ -31,7 +32,7 @@ class LogStreakLeaderBoard extends StatelessWidget {
                 itemCount: sortedLogs.length,
                 separatorBuilder: (BuildContext context, int index) =>
                     const SizedBox(height: 20))),
-        // _ListTile(log: MapEntry("You", you ?? []))
+        _ListTile(log: MapEntry("You", yourLogs ?? []))
       ],
     );
   }
