@@ -60,7 +60,7 @@ class AmplifyLogRepository {
       List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
       _mapAndNormaliseLogs(logs: logs);
     } else {
-      _apiFetchTemplates();
+      await _apiFetchTemplates();
     }
   }
 

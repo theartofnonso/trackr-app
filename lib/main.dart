@@ -132,9 +132,10 @@ class _MyAppState extends State<MyApp> {
       await Amplify.addPlugin(AmplifyAnalyticsPinpoint());
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
-        DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.CREATEDAT.gt(temporalDate12MonthsAgo.format())),
-      ]));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
+      // await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
+      //   DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.CREATEDAT.gt(temporalDate12MonthsAgo.format())),
+      // ]));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');

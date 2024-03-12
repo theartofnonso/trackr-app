@@ -9,21 +9,12 @@ class GradientWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.center,
       children: [
         child,
         Positioned.fill(
           child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  sapphireDark.withOpacity(0.4),
-                  Colors.transparent,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(5),
-            ),
+            color: Colors.black.withOpacity(0.6),
           ),
         )
       ],

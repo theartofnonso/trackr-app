@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/screens/insights/leaderboard/log_streak_leaderboard.dart';
 import 'package:tracker_app/screens/insights/leaderboard/muscle_score_leaderboard.dart';
+import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
@@ -36,7 +37,13 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-              backgroundColor: sapphireDark80,
+              flexibleSpace: GradientWidget(
+                child: Image.asset(
+                  'images/people.jpg',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
               leading: IconButton(
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
                 onPressed: () => Navigator.of(context).pop(),
@@ -95,18 +102,19 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
+    _dateTimeRange = range;
     setState(() {
-      _dateTimeRange = range;
+      _makeAPICall();
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _makeAPICall() {
+    final Map<String, String> filter = {
+      "start": _dateTimeRange.start.toIso8601String(),
+      "end": _dateTimeRange.end.toIso8601String(),
+    };
 
-    _dateTimeRange = thisMonthDateRange();
-
-    getAPI(endpoint: '/routine-logs').then((response) {
+    getAPI(endpoint: '/routine-logs', queryParameters: filter).then((response) {
       final json = jsonDecode(response);
       final data = json["data"];
       final logs = data["listRoutineLogs"];
@@ -116,6 +124,15 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
         _routineLogs = groupBy(dtos, (log) => log.name);
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dateTimeRange = thisMonthDateRange();
+
+    _makeAPICall();
   }
 
   RoutineLogDto _dto({required dynamic json}) {

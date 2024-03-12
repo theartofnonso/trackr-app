@@ -20,8 +20,9 @@ type RoutineLog
      @model
      @auth(
         rules: [
+
+          { allow: owner },
           { allow: public, operations: [read], provider: iam },
-          { allow: owner }
         ]
      ) {
   id: ID!
