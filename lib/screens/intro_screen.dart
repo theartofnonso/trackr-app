@@ -95,7 +95,7 @@ class IntroScreen extends StatelessWidget {
                         ..onTap = () {
                           openUrl(url: pexelsImageUrl, context: context);
                         },
-                      text: "Unsplash".toUpperCase(),
+                      text: "Pexels".toUpperCase(),
                       style: GoogleFonts.montserrat(
                           color: Colors.white,
                           decoration: TextDecoration.underline,
