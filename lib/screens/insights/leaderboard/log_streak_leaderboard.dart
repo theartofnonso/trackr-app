@@ -19,6 +19,8 @@ class LogStreakLeaderBoard extends StatelessWidget {
     final routineCopy = Map<String, List<RoutineLogDto>>.from(routineLogs);
     final yourLogs = routineCopy.remove(SharedPrefs().userId);
 
+   yourLogs?.forEach((element) { print(element.name);});
+
     final sortedLogs = routineCopy.entries.map((entry) {
       final owner = entry.key;
       return MapEntry("Anon-${owner.split("-").first}", entry.value);

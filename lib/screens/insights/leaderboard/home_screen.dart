@@ -114,6 +114,8 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
       "end": _dateTimeRange.end.toIso8601String(),
     };
 
+    print(filter);
+
     getAPI(endpoint: '/routine-logs', queryParameters: filter).then((response) {
       final json = jsonDecode(response);
       final data = json["data"];
@@ -121,7 +123,7 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
       final items = logs["items"] as List<dynamic>;
       final dtos = items.map((item) => _dto(json: item)).toList();
       setState(() {
-        _routineLogs = groupBy(dtos, (log) => log.name);
+        _routineLogs = groupBy(dtos, (log) => log.id);
       });
     });
   }
@@ -140,14 +142,15 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
     final owner = json["owner"];
     final data = json["data"];
     final dataJson = jsonDecode(data);
+    final name = dataJson["name"];
     final exerciseLogJsons = dataJson["exercises"] as List<dynamic>;
     final exerciseLogs = exerciseLogJsons
         .map((json) => ExerciseLogDto.fromJson(routineLogId: id, createdAt: DateTime.now(), json: jsonDecode(json)))
         .toList();
     return RoutineLogDto(
-      id: id,
+      id: owner,
       templateId: "",
-      name: owner,
+      name: name,
       exerciseLogs: exerciseLogs,
       notes: "",
       startTime: DateTime.now(),
