@@ -23,8 +23,6 @@ export const handler = async (event) => {
 
     const endpoint = new URL(GRAPHQL_ENDPOINT);
 
-    console.log(event);
-
     const startDate = event.queryStringParameters["start"];
     const endDate = event.queryStringParameters["end"];
 
@@ -69,7 +67,6 @@ export const handler = async (event) => {
     try {
         response = await fetch(request);
         body = await response.json();
-        console.log(body);
         if (body.errors) statusCode = 400;
     } catch (error) {
         statusCode = 500;

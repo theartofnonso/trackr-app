@@ -46,7 +46,7 @@
         },
         "getAllRoutineLogs": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/getAllRoutineLogs-7933334830752f545337-build.zip"
+          "s3Key": "amplify-builds/getAllRoutineLogs-64485649314d38526c4f-build.zip"
         }
       },
       "analytics": {
@@ -79,7 +79,7 @@
         "trackerapp648183fb": {},
         "deleteUserData": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
-          "s3Key": "amplify-builds/deleteUserData-42594e4e5648316e6b5a-build.zip"
+          "s3Key": "amplify-builds/deleteUserData-334f616a504e49644e6e-build.zip"
         },
         "deleteUserExerciseData": {
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
@@ -93,10 +93,14 @@
           "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
           "s3Key": "amplify-builds/deleteUserRoutineTemplateData-46587073444b626a6c65-build.zip"
         },
-        "getAllRoutineLogs": {}
+        "getAllRoutineLogs": {
+          "deploymentBucketName": "amplify-trackerapp-prod-223531-deployment",
+          "s3Key": "amplify-builds/getAllRoutineLogs-64485649314d38526c4f-build.zip"
+        }
       },
       "api": {
-        "trackerapp": {}
+        "trackerapp": {},
+        "api71b45aa3": {}
       },
       "analytics": {
         "trackerapp": {}
