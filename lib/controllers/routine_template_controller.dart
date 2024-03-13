@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
@@ -30,12 +29,10 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  void fetchTemplates({List<RoutineTemplate>? templates}) async {
+  void fetchTemplates({bool firstLaunch = false}) async {
     isLoading = true;
     try {
-      await _amplifyTemplateRepository.fetchTemplates(onSyncCompleted: () {
-        notifyListeners();
-      });
+      await _amplifyTemplateRepository.fetchTemplates();
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

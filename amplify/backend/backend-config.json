@@ -6,6 +6,20 @@
     }
   },
   "api": {
+    "api71b45aa3": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "trackerapp": {
       "dependsOn": [
         {
@@ -18,7 +32,17 @@
       ],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
@@ -62,7 +86,15 @@
   "function": {
     "deleteUserData": {
       "build": true,
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
@@ -100,6 +132,21 @@
         {
           "attributes": [
             "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "trackerapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "getAllRoutineLogs": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
           ],
           "category": "api",
           "resourceName": "trackerapp"
@@ -177,6 +224,22 @@
         {
           "category": "function",
           "resourceName": "deleteUserRoutineTemplateData"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAllRoutineLogs_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
+        }
+      ]
+    },
+    "AMPLIFY_function_getAllRoutineLogs_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getAllRoutineLogs"
         }
       ]
     },

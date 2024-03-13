@@ -86,11 +86,14 @@ class RoutineLibraryTemplate extends StatelessWidget {
                               style:
                                   GoogleFonts.montserrat(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
                           const SizedBox(width: 3),
-                          Image.asset(
-                            'images/trackr.png',
-                            fit: BoxFit.contain,
-                            height: 9, //
-                            color: vibrantGreen, // Adjust the height as needed
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2.0),
+                            child: Image.asset(
+                              'images/trackr.png',
+                              fit: BoxFit.contain,
+                              height: 8, //
+                              color: vibrantGreen, // Adjust the height as needed
+                            ),
                           )
                         ],
                       )

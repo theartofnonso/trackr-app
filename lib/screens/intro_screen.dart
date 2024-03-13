@@ -1,8 +1,11 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
 import '../colors.dart';
+import '../urls.dart';
+import '../utils/uri_utils.dart';
+import '../widgets/buttons/text_button_widget.dart';
 
 class IntroScreen extends StatelessWidget {
   final ThemeData themeData;
@@ -15,47 +18,97 @@ class IntroScreen extends StatelessWidget {
     return MaterialApp(
       theme: themeData,
       home: Scaffold(
-        body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                sapphireDark80,
-                sapphireDark,
-              ],
+        body: Stack(alignment: Alignment.center, children: [
+          Image.asset(
+            height: double.infinity,
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+            'images/man_woman.jpg',
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    sapphireDark.withOpacity(1),
+                    sapphireDark.withOpacity(0.6),
+                  ],
+                ),
+              ),
             ),
           ),
-          child: SafeArea(
-            minimum: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  Image.asset(
-                    'images/trackr.png',
-                    fit: BoxFit.contain,
-                    height: 16, // Adjust the height as needed
+          SafeArea(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              const Spacer(),
+              Image.asset(
+                'images/trackr.png',
+                fit: BoxFit.contain,
+                height: 24, // Adjust the height as needed
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Train better".toUpperCase(),
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: Colors.white70,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: CTextButton(
+                  onPressed: onComplete,
+                  label: "Start training better",
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                  buttonColor: vibrantGreen,
+                  textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                ),
+              ),
+              const SizedBox(height: 10),
+              RichText(
+                text: TextSpan(
+                  text: "Photo by".toUpperCase(),
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
                   ),
-                  const Spacer(),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: CTextButton(
-                      onPressed: onComplete,
-                      label: "Start training better",
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                      buttonColor: Colors.transparent,
-                      buttonBorderColor: Colors.transparent,
-                      textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                  children: <TextSpan>[
+                    const TextSpan(text: " "),
+                    TextSpan(
+                      text: "Mikhail Nilov".toUpperCase(),
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 10,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                ]),
-          ),
-        ),
+                    const TextSpan(text: " "),
+                    TextSpan(text: "on".toUpperCase()),
+                    const TextSpan(text: " "),
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          openUrl(url: pexelsImageUrl, context: context);
+                        },
+                      text: "Pexels".toUpperCase(),
+                      style: GoogleFonts.montserrat(
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ]),
+          )
+        ]),
       ),
     );
   }

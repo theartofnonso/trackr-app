@@ -35,8 +35,8 @@ class SelectableExerciseWidget extends StatelessWidget {
         dense: true,
         title: Text(exerciseInLibraryDto.exercise.name,
             style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        subtitle: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               "Primary: ${exerciseInLibraryDto.exercise.primaryMuscleGroup.name}",
@@ -45,7 +45,7 @@ class SelectableExerciseWidget extends StatelessWidget {
             if (exerciseInLibraryDto.exercise.owner)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                margin: const EdgeInsets.only(top: 4),
+                margin: const EdgeInsets.only(left: 8),
                 decoration: BoxDecoration(
                   color: sapphireLighter,
                   borderRadius: BorderRadius.circular(3),

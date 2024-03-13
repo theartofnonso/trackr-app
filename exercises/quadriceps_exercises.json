@@ -42,7 +42,10 @@
     "id": "QUD7",
     "name": "Box Squat",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=7iw2gLZKZ0w",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "QUD8",
@@ -63,7 +66,10 @@
     "id": "QUD10",
     "name": "Dumbbell Lunge",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=t7DBjlOTwAk",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "QUD11",
@@ -180,7 +186,10 @@
     "id": "QUD27",
     "name": "Step Up",
     "primaryMuscleGroup": "Quadriceps",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=1jzIPebeINM",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "QUD28",

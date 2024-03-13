@@ -49,10 +49,20 @@ class RoutineLogDto {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exercisesJsons = json["exercises"] as List<dynamic>;
-    final exercises = exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
+    final exercises =
+        exercisesJsons.map((json) => ExerciseLogDto.fromJson(routineLogId: id, json: jsonDecode(json))).toList();
     final createdAt = DateTime.now();
     final updatedAt = DateTime.now();
-    return RoutineLogDto(id: id, templateId: templateId, name: name, notes: notes, startTime: startTime, endTime: endTime, exerciseLogs: exercises, createdAt: createdAt, updatedAt: updatedAt);
+    return RoutineLogDto(
+        id: id,
+        templateId: templateId,
+        name: name,
+        notes: notes,
+        startTime: startTime,
+        endTime: endTime,
+        exerciseLogs: exercises,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   RoutineLogDto copyWith({

@@ -5,26 +5,31 @@ import '../../utils/general_utils.dart';
 
 class LogStreakMonitor extends StatelessWidget {
   final double value;
+  final double width;
+  final double height;
+  final double strokeWidth;
+  final StrokeCap? strokeCap;
+  final Decoration? decoration;
 
   const LogStreakMonitor({
     Key? key,
     required this.value,
+    required this.width,
+    required this.height,
+    required this.strokeWidth, this.strokeCap, this.decoration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        color: sapphireDark.withOpacity(0.35),
-        borderRadius: BorderRadius.circular(100),
-      ),
+      width: height,
+      height: width,
+      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
-        strokeWidth: 6,
+        strokeWidth: strokeWidth,
         backgroundColor: sapphireDark80,
-        strokeCap: StrokeCap.butt,
+        strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value: value)),
       ),
     );

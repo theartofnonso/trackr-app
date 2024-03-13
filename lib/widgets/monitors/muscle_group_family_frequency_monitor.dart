@@ -5,22 +5,32 @@ import '../../utils/general_utils.dart';
 
 class MuscleGroupFamilyFrequencyMonitor extends StatelessWidget {
   final double value;
+  final double width;
+  final double height;
+  final double strokeWidth;
+  final StrokeCap? strokeCap;
+  final Decoration? decoration;
 
   const MuscleGroupFamilyFrequencyMonitor({
     Key? key,
     required this.value,
+    required this.width,
+    required this.height,
+    required this.strokeWidth,
+    this.strokeCap, this.decoration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 70,
-      height: 70,
+    return Container(
+      width: width,
+      height: height,
+      decoration: decoration,
       child: CircularProgressIndicator(
         value: value,
-        strokeWidth: 6,
+        strokeWidth: strokeWidth,
         backgroundColor: sapphireDark80,
-        strokeCap: StrokeCap.butt,
+        strokeCap: strokeCap ?? StrokeCap.butt,
         valueColor: AlwaysStoppedAnimation<Color>(muscleFamilyFrequencyColor(value: value)),
       ),
     );

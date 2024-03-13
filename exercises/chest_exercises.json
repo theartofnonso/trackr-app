@@ -242,7 +242,10 @@
     "id": "CHT29",
     "name": "Around The World",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=wcQEiZ02fgk",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "CHT30",

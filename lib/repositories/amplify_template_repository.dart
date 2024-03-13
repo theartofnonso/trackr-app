@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +18,6 @@ class AmplifyTemplateRepository {
   final List<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibrary>>> _defaultTemplates = [];
 
   List<RoutineTemplateDto> _templates = [];
-
-  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
 
   UnmodifiableListView<Map<RoutineTemplateLibraryWorkoutEnum, List<RoutineLibrary>>> get defaultTemplates =>
       UnmodifiableListView(_defaultTemplates);
@@ -85,16 +84,30 @@ class AmplifyTemplateRepository {
     });
   }
 
-  Future<void> fetchTemplates({required void Function() onSyncCompleted}) async {
-    List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
-    if (templates.isNotEmpty) {
-      _loadTemplates(templates: templates);
+  Future<void> fetchTemplates({bool firstLaunch = false}) async {
+    if (!firstLaunch) {
+      List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
+      _mapAndSortTemplates(templates: templates);
     } else {
-      _observeRoutineTemplateQuery(onSyncCompleted: onSyncCompleted);
+      await _apiFetchTemplates();
     }
   }
 
-  void _loadTemplates({required List<RoutineTemplate> templates}) {
+  Future<void> _apiFetchTemplates() async {
+    try {
+      final request = ModelQueries.list(RoutineTemplate.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final templates = response.data?.items.whereType<RoutineTemplate>().toList();
+      if (templates != null) {
+        _mapAndSortTemplates(templates: templates);
+      }
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+    }
+  }
+
+  void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
     _templates = templates.map((log) => log.dto()).toList();
     _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
@@ -176,20 +189,6 @@ class AmplifyTemplateRepository {
       final index = _indexWhereRoutineTemplate(id: template.id);
       _templates.removeAt(index);
     }
-  }
-
-  void _observeRoutineTemplateQuery({required void Function() onSyncCompleted}) {
-    _routineTemplateStream =
-        Amplify.DataStore.observeQuery(RoutineTemplate.classType).listen((QuerySnapshot<RoutineTemplate> snapshot) {
-      if (snapshot.items.isNotEmpty) {
-        _loadTemplates(templates: snapshot.items);
-        _routineTemplateStream?.cancel();
-        onSyncCompleted();
-      }
-    })
-          ..onDone(() {
-            _routineTemplateStream?.cancel();
-          });
   }
 
   /// Helper methods
