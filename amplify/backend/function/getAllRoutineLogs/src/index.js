@@ -6,18 +6,30 @@
 Amplify Params - DO NOT EDIT */
 
 import crypto from '@aws-crypto/sha256-js';
-import { defaultProvider } from '@aws-sdk/credential-provider-node';
-import { SignatureV4 } from '@aws-sdk/signature-v4';
-import { HttpRequest } from '@aws-sdk/protocol-http';
-import { default as fetch, Request } from 'node-fetch';
+import {defaultProvider} from '@aws-sdk/credential-provider-node';
+import {SignatureV4} from '@aws-sdk/signature-v4';
+import {HttpRequest} from '@aws-sdk/protocol-http';
+import {default as fetch, Request} from 'node-fetch';
 
 const GRAPHQL_ENDPOINT = process.env.API_TRACKERAPP_GRAPHQLAPIENDPOINTOUTPUT;
 const AWS_REGION = process.env.AWS_REGION || 'eu-west-2';
-const { Sha256 } = crypto;
+const {Sha256} = crypto;
 
-const query = /* GraphQL */ `
-  query LIST_ROUTINELOGS {
-    listRoutineLogs {
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
+
+export const handler = async (event) => {
+
+    const endpoint = new URL(GRAPHQL_ENDPOINT);
+
+    console.log(event);
+
+    const startDate = event.queryStringParameters["start"];
+    const endDate = event.queryStringParameters["end"];
+
+    const query = `query LIST_ROUTINELOGS {
+    listRoutineLogs(filter: {createdAt: {le: "${endDate}", gt: "${startDate}"}}) {
       items {
         id
         owner
@@ -29,61 +41,54 @@ const query = /* GraphQL */ `
   }
 `;
 
-/**
- * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
- */
+    const signer = new SignatureV4({
+        credentials: defaultProvider(),
+        region: AWS_REGION,
+        service: 'appsync',
+        sha256: Sha256
+    });
 
- export const handler = async (event) => {
+    const requestToBeSigned = new HttpRequest({
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            host: endpoint.host
+        },
+        hostname: endpoint.host,
+        body: JSON.stringify({query}),
+        path: endpoint.pathname
+    });
 
-  const endpoint = new URL(GRAPHQL_ENDPOINT);
+    const signed = await signer.sign(requestToBeSigned);
+    const request = new Request(endpoint, signed);
 
-  const signer = new SignatureV4({
-    credentials: defaultProvider(),
-    region: AWS_REGION,
-    service: 'appsync',
-    sha256: Sha256
-  });
+    let statusCode = 200;
+    let body;
+    let response;
 
-  const requestToBeSigned = new HttpRequest({
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      host: endpoint.host
-    },
-    hostname: endpoint.host,
-    body: JSON.stringify({ query }),
-    path: endpoint.pathname
-  });
+    try {
+        response = await fetch(request);
+        body = await response.json();
+        console.log(body);
+        if (body.errors) statusCode = 400;
+    } catch (error) {
+        statusCode = 500;
+        body = {
+            errors: [
+                {
+                    message: error.message
+                }
+            ]
+        };
+    }
 
-  const signed = await signer.sign(requestToBeSigned);
-  const request = new Request(endpoint, signed);
-
-  let statusCode = 200;
-  let body;
-  let response;
-
-  try {
-    response = await fetch(request);
-    body = await response.json();
-    if (body.errors) statusCode = 400;
-  } catch (error) {
-    statusCode = 500;
-    body = {
-      errors: [
-        {
-          message: error.message
-        }
-      ]
+    return {
+        statusCode,
+        //  Uncomment below to enable CORS requests
+        // headers: {
+        //   "Access-Control-Allow-Origin": "*",
+        //   "Access-Control-Allow-Headers": "*"
+        // },
+        body: JSON.stringify(body)
     };
-  }
-
-  return {
-    statusCode,
-    //  Uncomment below to enable CORS requests
-    // headers: {
-    //   "Access-Control-Allow-Origin": "*",
-    //   "Access-Control-Allow-Headers": "*"
-    // }, 
-    body: JSON.stringify(body)
-  };
 };

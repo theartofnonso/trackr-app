@@ -4,9 +4,8 @@ const trackrWebUrl = 'https://trkr.fit';
 const instagramUrl = 'https://www.instagram.com/trkr.fit';
 const email = 'hello@trkr.fit';
 
-/// Unsplash
-const stevenErixonUrl = 'https://unsplash.com/@stevenerixon';
-const unsplashImageUrl = 'https://unsplash.com/photos/man-running-on-staircase-FxlYmu_To7o';
+/// Pexels
+const pexelsImageUrl = 'https://www.pexels.com/photo/man-and-woman-doing-push-up-face-to-face-6740308/';
 
 
 /// Amplify API Endpoints

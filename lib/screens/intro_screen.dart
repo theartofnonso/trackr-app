@@ -23,7 +23,7 @@ class IntroScreen extends StatelessWidget {
             height: double.infinity,
             fit: BoxFit.cover,
             alignment: Alignment.topCenter,
-            'images/man_in_dark.jpg',
+            'images/man_woman.jpg',
           ),
           Positioned.fill(
             child: Container(
@@ -80,14 +80,9 @@ class IntroScreen extends StatelessWidget {
                   children: <TextSpan>[
                     const TextSpan(text: " "),
                     TextSpan(
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          openUrl(url: stevenErixonUrl, context: context);
-                        },
-                      text: "Steven Erixon".toUpperCase(),
+                      text: "Mikhail Nilov".toUpperCase(),
                       style: GoogleFonts.montserrat(
                         color: Colors.white,
-                        decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w700,
                         fontSize: 10,
                       ),
@@ -98,7 +93,7 @@ class IntroScreen extends StatelessWidget {
                     TextSpan(
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          openUrl(url: unsplashImageUrl, context: context);
+                          openUrl(url: pexelsImageUrl, context: context);
                         },
                       text: "Unsplash".toUpperCase(),
                       style: GoogleFonts.montserrat(

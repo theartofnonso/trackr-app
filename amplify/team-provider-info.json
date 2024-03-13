@@ -46,7 +46,7 @@
         },
         "getAllRoutineLogs": {
           "deploymentBucketName": "amplify-trackerapp-dev-180230-deployment",
-          "s3Key": "amplify-builds/getAllRoutineLogs-757a56762f2b33665438-build.zip"
+          "s3Key": "amplify-builds/getAllRoutineLogs-7933334830752f545337-build.zip"
         }
       },
       "analytics": {

@@ -35,6 +35,12 @@
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AWS_IAM"
             }
           ],
           "defaultAuthentication": {

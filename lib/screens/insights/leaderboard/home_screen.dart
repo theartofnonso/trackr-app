@@ -39,7 +39,7 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
           appBar: AppBar(
               flexibleSpace: GradientWidget(
                 child: Image.asset(
-                  'images/people.jpg',
+                  'images/man_woman.jpg',
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
