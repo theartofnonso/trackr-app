@@ -114,16 +114,14 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
       "end": _dateTimeRange.end.toIso8601String(),
     };
 
-    print(filter);
-
     getAPI(endpoint: '/routine-logs', queryParameters: filter).then((response) {
       final json = jsonDecode(response);
       final data = json["data"];
       final logs = data["listRoutineLogs"];
       final items = logs["items"] as List<dynamic>;
-      final dtos = items.map((item) => _dto(json: item)).toList();
+      final logDTOs = items.map((item) => _dto(json: item)).toList();
       setState(() {
-        _routineLogs = groupBy(dtos, (log) => log.id);
+        _routineLogs = groupBy(logDTOs, (log) => log.id);
       });
     });
   }
