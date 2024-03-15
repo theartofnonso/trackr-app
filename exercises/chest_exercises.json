@@ -297,5 +297,14 @@
     "name": "Hex Press",
     "primaryMuscleGroup": "Chest",
     "type": "WR"
+  },
+  {
+    "id": "CHT37",
+    "name": "High Cable Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=hhruLxo9yZU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   }
 ]
