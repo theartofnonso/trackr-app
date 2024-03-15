@@ -38,13 +38,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   ChartPeriod _period = ChartPeriod.month;
   SetRepsVolumeReps _metric = SetRepsVolumeReps.sets;
 
-  late MuscleGroupFamily _selectedMuscleGroupFamily;
+  late MuscleGroup _selectedMuscleGroup;
 
   @override
   Widget build(BuildContext context) {
     final textStyle = GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
-    final muscleGroups = popularMuscleGroupFamilies();
+    final muscleGroups = MuscleGroup.values;
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
@@ -63,7 +63,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       final valuesForPeriod = periodAndLogs.value
           .map((log) => exerciseLogsWithCheckedSets(exerciseLogs: log.exerciseLogs))
           .expand((exerciseLogs) => exerciseLogs)
-          .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup.family == _selectedMuscleGroupFamily)
+          .where((exerciseLog) => exerciseLog.exercise.primaryMuscleGroup == _selectedMuscleGroup)
           .map((log) {
         final values = _calculateMetric(sets: log.sets);
         return values;
@@ -141,11 +141,13 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                     color: sapphireDark.withOpacity(0.6), // Background color
                     borderRadius: BorderRadius.circular(5), // Border radius
                   ),
-                  child: DropdownButton<MuscleGroupFamily>(
-                    menuMaxHeight: 400,
+                  child: DropdownButton<MuscleGroup>(
+                    menuMaxHeight: 200,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     isExpanded: true,
+                    borderRadius: BorderRadius.circular(8),
                     isDense: true,
-                    value: _selectedMuscleGroupFamily,
+                    value: _selectedMuscleGroup,
                     hint: Text("Muscle group",
                         style:
                             GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14)),
@@ -153,21 +155,20 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                       color: Colors.transparent,
                     ),
                     style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                    onChanged: (MuscleGroupFamily? value) {
+                    onChanged: (MuscleGroup? value) {
                       if (value != null) {
                         setState(() {
-                          _selectedMuscleGroupFamily = value;
+                          _selectedMuscleGroup = value;
                         });
                       }
                     },
-                    items: muscleGroups.map<DropdownMenuItem<MuscleGroupFamily>>((MuscleGroupFamily muscleGroup) {
-                      return DropdownMenuItem<MuscleGroupFamily>(
+                    items: muscleGroups.map<DropdownMenuItem<MuscleGroup>>((MuscleGroup muscleGroup) {
+                      return DropdownMenuItem<MuscleGroup>(
                         value: muscleGroup,
                         child: Text(muscleGroup.name,
                             style: GoogleFonts.montserrat(
-                                color: _selectedMuscleGroupFamily == muscleGroup ? Colors.white : Colors.white70,
-                                fontWeight:
-                                    _selectedMuscleGroupFamily == muscleGroup ? FontWeight.bold : FontWeight.w500,
+                                color: _selectedMuscleGroup == muscleGroup ? Colors.white : Colors.white70,
+                                fontWeight: _selectedMuscleGroup == muscleGroup ? FontWeight.bold : FontWeight.w500,
                                 fontSize: 14)),
                       );
                     }).toList(),
@@ -389,7 +390,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
     };
   }
 
-
   String _metricLabel() {
     final unit = _chartUnit();
     return switch (unit) {
@@ -411,7 +411,14 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   @override
   void initState() {
     super.initState();
-    _selectedMuscleGroupFamily = popularMuscleGroupFamilies().first;
+    final defaultMuscleGroup = Provider.of<RoutineLogController>(context, listen: false)
+        .routineLogs
+        .firstOrNull
+        ?.exerciseLogs
+        .firstOrNull
+        ?.exercise
+        .primaryMuscleGroup;
+    _selectedMuscleGroup = defaultMuscleGroup ?? MuscleGroup.values.first;
     _dateTimeRange = thisMonthDateRange();
   }
 }

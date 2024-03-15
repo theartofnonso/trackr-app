@@ -1,4 +1,10 @@
 {
-  "permissions": {},
+  "permissions": {
+    "storage": {
+      "RoutineLog:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
   "lambdaLayers": []
 }

@@ -37,20 +37,15 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
-  void fetchLogs() async {
+  void fetchLogs({bool firstLaunch = false}) async {
     try {
-      await _amplifyLogRepository.fetchLogs(onSyncCompleted: _onSyncCompleted);
+      await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
       notifyListeners();
     }
-  }
-
-  void _onSyncCompleted() {
-    _achievementRepository.loadAchievements(routineLogs: routineLogs);
-    notifyListeners();
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto}) async {
@@ -104,7 +99,15 @@ class RoutineLogController extends ChangeNotifier {
   List<MuscleGroupFamily> untrainedMuscleGroupFamily() {
     final lastWeeksUntrainedMGF = _lastWeeksUntrainedMGF();
     final thisWeeksUntrainedMGF = _thisWeeksUntrainedMGF();
-    return lastWeeksUntrainedMGF.toSet().difference(thisWeeksUntrainedMGF.toSet()).toList();
+
+    List<MuscleGroupFamily> toBeTrained = lastWeeksUntrainedMGF;
+    if(thisWeeksUntrainedMGF.isNotEmpty) {
+      toBeTrained = toBeTrained.where((mgf) => thisWeeksUntrainedMGF.contains(mgf)).toList();
+    } else {
+      toBeTrained = [];
+    }
+
+    return toBeTrained;
   }
 
   List<MuscleGroupFamily> _lastWeeksUntrainedMGF() {
@@ -126,7 +129,6 @@ class RoutineLogController extends ChangeNotifier {
   }
 
   List<MuscleGroupFamily> _thisWeeksUntrainedMGF() {
-
     final thisWeeksRange = DateTime.now().currentWeekRange();
 
     final thisWeeksLogs = _amplifyLogRepository.weeklyLogs[thisWeeksRange] ?? [];

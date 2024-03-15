@@ -1,4 +1,6 @@
 
+import 'package:collection/collection.dart';
+
 enum MuscleGroupFamily {
   legs("Legs"),
   back("Back"),

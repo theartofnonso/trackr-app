@@ -30,13 +30,19 @@
     "id": "HAM4",
     "name": "Glute Ham Raise",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=dTuPuXQY0-Q",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "HAM5",
     "name": "Nordic Hamstring Curls",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=NfBGKhjedD8",
+    "creditSource": "https://www.youtube.com/@STYRK_DK",
+    "credit": "STYRK"
   },
   {
     "id": "HAM6",
@@ -78,7 +84,10 @@
     "id": "HAM12",
     "name": "Deficit Deadlift",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=PzoxegwRlOw",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "HAM13",
@@ -102,19 +111,28 @@
     "id": "HAM15",
     "name": "Stiff-Legged Deadlift",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=CN_7cz3P-1U",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
   },
   {
     "id": "HAM16",
     "name": "Trap Bar Deadlift With High Handles",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=9tye6frKmg8",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "HAM17",
     "name": "Trap Bar Deadlift With Low Handles",
     "primaryMuscleGroup": "Hamstrings",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=9tye6frKmg8",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "HAM18",

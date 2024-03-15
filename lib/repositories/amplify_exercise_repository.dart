@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +16,6 @@ class AmplifyExerciseRepository {
   final List<ExerciseDto> _exercises = [];
 
   UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
-
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
 
   Future<List<ExerciseDto>> loadExercisesFromAssets({required String file}) async {
     String jsonString = await rootBundle.loadString('exercises/$file');
@@ -43,12 +42,12 @@ class AmplifyExerciseRepository {
     }).toList();
   }
 
-  Future<void> fetchExercises({required void Function() onDone}) async {
-    final exercises = await Amplify.DataStore.query(Exercise.classType);
-    if (exercises.isNotEmpty) {
-      _loadUserExercises(exercises: exercises);
+  Future<void> fetchExercises({bool firstLaunch = false}) async {
+    if (!firstLaunch) {
+      final exercises = await Amplify.DataStore.query(Exercise.classType);
+      _mapAndSortExercises(exercises: exercises);
     } else {
-      _observeExerciseQuery(onSyncCompleted: onDone);
+      await _apiFetchExercises();
     }
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
@@ -87,17 +86,24 @@ class AmplifyExerciseRepository {
     _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
 
-    // final temp = _exercises.where((element) => element.video == null).toList();
-    // temp.forEach((element) {
-    //   print(element.name);
-    // });
-    //
-    // print(temp.length);
-
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }
 
-  void _loadUserExercises({required List<Exercise> exercises}) {
+  Future<void> _apiFetchExercises() async {
+    try {
+      final request = ModelQueries.list(Exercise.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final exercises = response.data?.items.whereType<Exercise>().toList();
+      if (exercises != null) {
+        _mapAndSortExercises(exercises: exercises);
+      }
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+    }
+  }
+
+  void _mapAndSortExercises({required List<Exercise> exercises}) {
     final userExercises = exercises.map((exercise) => exercise.dto()).sorted((a, b) => a.name.compareTo(b.name));
     _exercises.addAll(userExercises);
     _exercises.sort((a, b) => a.name.compareTo(b.name));
@@ -140,19 +146,6 @@ class AmplifyExerciseRepository {
       final index = _indexWhereExercise(id: exercise.id);
       _exercises.removeAt(index);
     }
-  }
-
-  void _observeExerciseQuery({required void Function() onSyncCompleted}) {
-    _exerciseStream = Amplify.DataStore.observeQuery(Exercise.classType).listen((QuerySnapshot<Exercise> snapshot) {
-      if (snapshot.items.isNotEmpty) {
-        _loadUserExercises(exercises: snapshot.items);
-        _exerciseStream?.cancel();
-        onSyncCompleted();
-      }
-    })
-      ..onDone(() {
-        _exerciseStream?.cancel();
-      });
   }
 
   /// Helper methods

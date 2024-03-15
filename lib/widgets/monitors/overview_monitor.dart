@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/screens/insights/leaderboard/home_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
+import '../../colors.dart';
 import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -58,8 +60,17 @@ class OverviewMonitor extends StatelessWidget {
                 )),
             const SizedBox(width: 20),
             Stack(alignment: Alignment.center, children: [
-              LogStreakMonitor(value: monthlyProgress),
-              MuscleGroupFamilyFrequencyMonitor(value: muscleGroupsSplitFrequencyScore),
+              LogStreakMonitor(
+                  value: monthlyProgress,
+                  width: 100,
+                  height: 100,
+                  strokeWidth: 6,
+                  decoration: BoxDecoration(
+                    color: sapphireDark.withOpacity(0.35),
+                    borderRadius: BorderRadius.circular(100),
+                  )),
+              MuscleGroupFamilyFrequencyMonitor(
+                  value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
               Image.asset(
                 'images/trackr.png',
                 fit: BoxFit.contain,
@@ -92,6 +103,10 @@ class OverviewMonitor extends StatelessWidget {
 
   void _showMonitorInfo({required BuildContext context}) {
     showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
+  }
+
+  void _navigateToLeaderBoard({required BuildContext context}) {
+    navigateWithSlideTransition(context: context, child: const LeaderBoardScreen());
   }
 }
 

@@ -97,7 +97,10 @@
     "id": "BIC12",
     "name": "Plate Curl",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=i4qpIy1Zu94",
+    "creditSource": "https://www.youtube.com/@progressivetrainingconcepts",
+    "credit": "Progressive Training Concepts"
   },
   {
     "id": "BIC13",
@@ -133,13 +136,19 @@
     "id": "BIC17",
     "name": "Cross Body Hammer Curl",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Du1iXGkkjuY",
+    "creditSource": "https://www.youtube.com/@gymvisual8018",
+    "credit": "Gym visual"
   },
   {
     "id": "BIC18",
     "name": "Hammer Curl (Band)",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=cSvDe6oMFlU",
+    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
+    "credit": "Functional Bodybuilding"
   },
   {
     "id": "BIC19",
@@ -160,7 +169,10 @@
     "id": "BIC21",
     "name": "Preacher Curl (Dumbbell)",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=fuK3nFvwgXk",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
   },
   {
     "id": "BIC22",
@@ -173,9 +185,9 @@
     "name": "Reverse Curl (Dumbbell)",
     "primaryMuscleGroup": "Biceps",
     "type": "WR",
-    "video": "https://www.youtube.com/watch?v=MjYAGQgoKyo",
-    "creditSource": "https://www.youtube.com/@FunctionalBodybuilding",
-    "credit": "Functional Bodybuilding"
+    "video": "https://www.youtube.com/watch?v=X5df_LHBVKQ",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   },
   {
     "id": "BIC24",
@@ -187,6 +199,9 @@
     "id": "BIC25",
     "name": "Preacher Curl (Machine)",
     "primaryMuscleGroup": "Biceps",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=Ja6ZlIDONac",
+    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
+    "credit": "Renaissance Periodization"
   }
 ]

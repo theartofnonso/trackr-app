@@ -54,7 +54,10 @@
     "id": "LAT7",
     "name": "Single Arm Cable Row",
     "primaryMuscleGroup": "Lats",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=KqKsj7ld-VM",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "LAT8",

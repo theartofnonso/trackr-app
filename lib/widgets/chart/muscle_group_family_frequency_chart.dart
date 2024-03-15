@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 
 import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
@@ -103,7 +102,7 @@ class _LinearBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        frequency > 0 ? bar : GradientWidget(child: bar),
+        bar,
         const SizedBox(height: 8),
       ],
     );

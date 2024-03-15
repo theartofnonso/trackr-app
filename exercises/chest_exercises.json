@@ -242,7 +242,10 @@
     "id": "CHT29",
     "name": "Around The World",
     "primaryMuscleGroup": "Chest",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=wcQEiZ02fgk",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "CHT30",
@@ -255,7 +258,7 @@
     "name": "Seated Chest Flys (Cable)",
     "primaryMuscleGroup": "Chest",
     "type": "WR",
-    "video": "https://www.youtube.com/watch?v=VgKCIZgca58&pp=ygUZU2VhdGVkIENoZXN0IEZseXMgKENhYmxlKQ%3D%3D",
+    "video": "https://www.youtube.com/watch?v=VgKCIZgca58",
     "creditSource": "https://www.youtube.com/@PureGymVideo",
     "credit": "PureGym"
   },
@@ -294,5 +297,14 @@
     "name": "Hex Press",
     "primaryMuscleGroup": "Chest",
     "type": "WR"
+  },
+  {
+    "id": "CHT37",
+    "name": "High Cable Chest Fly",
+    "primaryMuscleGroup": "Chest",
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=hhruLxo9yZU",
+    "creditSource": "https://www.youtube.com/@PureGymVideo",
+    "credit": "PureGym"
   }
 ]

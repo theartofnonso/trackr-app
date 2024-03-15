@@ -35,7 +35,7 @@ class AchievementTile extends StatelessWidget {
                       children: [
                         Text(achievement.type.title.toUpperCase(),
                             style:
-                                GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                                GoogleFonts.montserrat(color: color, fontSize: 14, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     Text(
@@ -50,7 +50,7 @@ class AchievementTile extends StatelessWidget {
                       children: [
                         LinearProgressIndicator(
                           minHeight: 18,
-                          color: achievement.progress.remainder == 0 ? vibrantGreen : color ?? Colors.white,
+                          color: achievement.progress.remainder == 0 ? vibrantGreen : color,
                           value: achievement.progress.value,
                           borderRadius: const BorderRadius.all(Radius.circular(3)),
                           backgroundColor: sapphireDark,

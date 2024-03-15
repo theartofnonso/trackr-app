@@ -37,7 +37,8 @@ class ExerciseDto {
   factory ExerciseDto.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? "";
     final name = json["name"] ?? "";
-    final primaryMuscleGroup = json["primaryMuscleGroup"] ?? "";
+    final primaryMuscleGroupJson = json["primaryMuscleGroup"] ?? "";
+    final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupJson);
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
     final owner = json["owner"] ?? false;
@@ -50,7 +51,7 @@ class ExerciseDto {
     return ExerciseDto(
         id: id,
         name: name,
-        primaryMuscleGroup: MuscleGroup.fromString(primaryMuscleGroup),
+        primaryMuscleGroup: primaryMuscleGroup,
         type: type,
         video: videoUri,
         owner: owner,

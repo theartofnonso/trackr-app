@@ -49,7 +49,7 @@ class AchievementsScreen extends StatelessWidget {
               minimum: const EdgeInsets.all(10.0),
               child: SingleChildScrollView(
                 controller: scrollController,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                   const SizedBox(height: 10),
                   Text("Milestones ${DateTime.now().year}",
                       style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),

@@ -63,12 +63,6 @@
     "credit": "Marcus Filly"
   },
   {
-    "id": "BAC9",
-    "name": "One-Handed Cable Row",
-    "primaryMuscleGroup": "Back",
-    "type": "WR"
-  },
-  {
     "id": "BAC10",
     "name": "Pendlay Row",
     "primaryMuscleGroup": "Back",
@@ -96,7 +90,10 @@
     "id": "BAC13",
     "name": "Seated Machine Row",
     "primaryMuscleGroup": "Back",
-    "type": "WR"
+    "type": "WR",
+    "video": "https://www.youtube.com/watch?v=lFLzkTLt3Ok",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "BAC14",
@@ -181,7 +178,10 @@
     "id": "BAC24",
     "name": "Dead Hang",
     "primaryMuscleGroup": "Back",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=PCepgMpQEgQ",
+    "creditSource": "https://www.youtube.com/@thirdspacelondon8746",
+    "credit": "Third Space London"
   },
   {
     "id": "BAC25",

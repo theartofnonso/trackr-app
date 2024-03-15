@@ -15,12 +15,10 @@ class ExerciseController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
-  Future<void> fetchExercises() async {
+  Future<void> fetchExercises({bool firstLaunch = false}) async {
     isLoading = true;
     try {
-      await _amplifyExerciseRepository.fetchExercises(onDone: () {
-        notifyListeners();
-      });
+      await _amplifyExerciseRepository.fetchExercises();
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

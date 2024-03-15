@@ -15,6 +15,10 @@
     },
     "s3Key": {
       "Type": "String"
+    },
+    "apitrackerappGraphQLAPIIdOutput": {
+      "Type": "String",
+      "Default": "apitrackerappGraphQLAPIIdOutput"
     }
   },
   "Conditions": {
@@ -69,6 +73,35 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
+            },
+            "API_TRACKERAPP_ROUTINELOGTABLE_NAME": {
+              "Fn::ImportValue": {
+                "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
+              }
+            },
+            "API_TRACKERAPP_ROUTINELOGTABLE_ARN": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:aws:dynamodb:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":table/",
+                  {
+                    "Fn::ImportValue": {
+                      "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
+                    }
+                  }
+                ]
+              ]
+            },
+            "API_TRACKERAPP_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apitrackerappGraphQLAPIIdOutput"
             }
           }
         },
@@ -160,6 +193,82 @@
                   }
                 ]
               }
+            }
+          ]
+        }
+      }
+    },
+    "AmplifyResourcesPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:PartiQLSelect"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Fn::ImportValue": {
+                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
+                        }
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Fn::ImportValue": {
+                          "Fn::Sub": "${apitrackerappGraphQLAPIIdOutput}:GetAtt:RoutineLogTable:Name"
+                        }
+                      },
+                      "/index/*"
+                    ]
+                  ]
+                }
+              ]
             }
           ]
         }

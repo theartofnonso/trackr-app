@@ -174,9 +174,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final muscleGroups = MuscleGroup.values
-        .whereNot((muscleGroup) => muscleGroup == MuscleGroup.legs)
-        .sorted((a, b) => a.name.compareTo(b.name));
+    const muscleGroups = MuscleGroup.values;
 
     return Scaffold(
       appBar: AppBar(

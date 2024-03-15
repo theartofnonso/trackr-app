@@ -26,7 +26,7 @@ class OutlineListTile extends StatelessWidget {
           splashColor: sapphireLighter,
           onTap: onTap,
           title: Text(title, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-          trailing: trailing != null ? Text(trailing, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14)) : null),
+          trailing: trailing != null ? Text(trailing, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12)) : null),
     );
   }
 }
