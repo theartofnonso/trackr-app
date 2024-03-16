@@ -224,7 +224,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
     if (log != null) {
-      await syncWorkoutWithAppleHealth(log: log);
+      syncWorkoutWithAppleHealth(log: log);
     }
     if (mounted) {
       Navigator.of(context).pop(log);

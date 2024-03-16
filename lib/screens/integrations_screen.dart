@@ -47,7 +47,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
                   style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
               const SizedBox(height: 24),
               ListTile(
-                onTap: _connectWithAppleHealth,
+                onTap: _hasPermission ? null : _connectWithAppleHealth,
                 leading: const FaIcon(
                   FontAwesomeIcons.link,
                   color: Colors.white,
@@ -77,7 +77,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
   }
 
   void _connectWithAppleHealth() async {
-    final success = await connectWithAppleHealth();
+    final success = await connectAppleHealth();
     setState(() {
       _hasPermission = success;
     });
