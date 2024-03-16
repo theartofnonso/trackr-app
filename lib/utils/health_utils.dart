@@ -11,9 +11,9 @@ Future<bool> connectAppleHealth() async {
 
   const types = [HealthDataType.WORKOUT];
 
-  const permissions = [HealthDataAccess.READ_WRITE];
+  const permissions = [HealthDataAccess.WRITE];
 
-  bool success = await health.hasPermissions(types, permissions: permissions) ?? true;
+  bool success = await health.hasPermissions(types, permissions: permissions) ?? false;
   if (!success) {
     success = await health.requestAuthorization(types, permissions: permissions);
   }
@@ -25,7 +25,7 @@ Future<bool> checkAppleHealthConnectivity() async {
 
   const types = [HealthDataType.WORKOUT];
 
-  const permissions = [HealthDataAccess.READ_WRITE];
+  const permissions = [HealthDataAccess.WRITE];
 
-  return await health.hasPermissions(types, permissions: permissions) ?? true;
+  return await health.hasPermissions(types, permissions: permissions) ?? false;
 }
