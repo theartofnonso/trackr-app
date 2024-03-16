@@ -62,7 +62,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
                   style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12),
                 ),
                 trailing: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                     child: Image.asset(
                       'images/apple_health.png',
                       fit: BoxFit.cover,
@@ -85,7 +85,6 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
 
   void _checkAppleHealthConnectivity() async {
     final success = await checkAppleHealthConnectivity();
-    print(success);
     setState(() {
       _hasPermission = success;
     });
