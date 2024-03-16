@@ -13,11 +13,7 @@ Future<bool> connectAppleHealth() async {
 
   const permissions = [HealthDataAccess.WRITE];
 
-  bool success = await health.hasPermissions(types, permissions: permissions) ?? false;
-  if (!success) {
-    success = await health.requestAuthorization(types, permissions: permissions);
-  }
-  return success;
+  return await health.requestAuthorization(types, permissions: permissions);
 }
 
 Future<bool> checkAppleHealthConnectivity() async {
