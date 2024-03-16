@@ -65,6 +65,7 @@ dependencies:
   amplify_analytics_pinpoint: ^1.6.3
   mailto: ^2.0.0
   youtube_player_flutter: ^9.0.0
+  health: ^9.0.1
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"

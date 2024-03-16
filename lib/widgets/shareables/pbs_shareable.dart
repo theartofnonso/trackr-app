@@ -107,7 +107,7 @@ class PBsShareable extends StatelessWidget {
                               GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 30),
                       Image.asset(
-                        'images/trackr.png',
+                        'images/trkr.png',
                         fit: BoxFit.contain,
                         height: 8, // Adjust the height as needed
                       ),
