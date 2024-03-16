@@ -21,7 +21,6 @@ import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../utils/https_utils.dart';
 import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
