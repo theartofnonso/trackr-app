@@ -64,10 +64,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
+
+    final firstLogDate =
+        routineLogController.routineLogs.isNotEmpty ? routineLogController.routineLogs.first.createdAt : null;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -105,7 +107,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                               GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                     ]),
                   ),
-                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, dateTimeRange: _dateTimeRange),
+                  CalendarNavigator(
+                      onChangedDateTimeRange: _onChangedDateTimeRange,
+                      dateTimeRange: _dateTimeRange,
+                      startDate: firstLogDate),
                   IconButton(
                       onPressed: () => _onShareCalendar(context: context),
                       icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
@@ -117,8 +122,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       child: Column(children: [
                         const SizedBox(height: 4),
                         OverviewMonitor(routineLogs: logsForTheMonth),
-                        if(routineLogController.routineLogs.isNotEmpty)
-                          const StackedNotificationBanners(),
+                        if (routineLogController.routineLogs.isNotEmpty) const StackedNotificationBanners(),
                         const SizedBox(height: 12),
                         Calendar(
                           range: _dateTimeRange,

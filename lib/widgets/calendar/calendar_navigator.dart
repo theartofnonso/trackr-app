@@ -6,12 +6,28 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 import '../../enums/chart_period_enum.dart';
 
 class CalendarNavigator extends StatelessWidget {
+  final DateTime? startDate;
   final DateTimeRange dateTimeRange;
   final void Function(DateTimeRange? range)? onChangedDateTimeRange;
   final ChartPeriod chartPeriod;
 
   const CalendarNavigator(
-      {super.key, required this.dateTimeRange, this.onChangedDateTimeRange, this.chartPeriod = ChartPeriod.month});
+      {super.key,
+      required this.dateTimeRange,
+      this.onChangedDateTimeRange,
+      this.chartPeriod = ChartPeriod.month,
+      this.startDate});
+
+  bool _hasFormerDate() {
+    final formerDate = startDate ?? DateTime.now();
+    int formerMonth = formerDate.month;
+    int formerYear = formerDate.year;
+    if (formerYear == currentDate.year) {
+      return formerMonth < currentDate.month;
+    } else {
+      return formerYear < currentDate.year;
+    }
+  }
 
   bool _hasLaterDate() {
     final laterDate = DateTime.now();
@@ -39,7 +55,7 @@ class CalendarNavigator extends StatelessWidget {
     return DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
   }
 
-  void previousDate() {
+  void _previousDate() {
     final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
     if (onChangedDateTimeRangeFunc == null) return;
 
@@ -50,27 +66,24 @@ class CalendarNavigator extends StatelessWidget {
   }
 
   DateTimeRange? _incrementMonth() {
-    DateTimeRange? dateTimeRange;
+    int month = currentDate.month + 1;
+    int year = currentDate.year;
 
-    if (_hasLaterDate()) {
-      int month = currentDate.month + 1;
-      int year = currentDate.year;
-
-      /// We need to go to next year
-      if (month == 12) {
-        month = 0;
-        year = year + 1;
-      }
-
-      final currentMonth = DateTime(year, month);
-
-      dateTimeRange = DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
+    /// We need to go to next year
+    if (month == 12) {
+      month = 0;
+      year = year + 1;
     }
+
+    final currentMonth = DateTime(year, month);
+
+    DateTimeRange dateTimeRange =
+        DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
 
     return dateTimeRange;
   }
 
-  void nextDate() {
+  void _nextDate() {
     final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
     if (onChangedDateTimeRangeFunc == null) return;
 
@@ -98,9 +111,9 @@ class CalendarNavigator extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-            onPressed: chartPeriod == ChartPeriod.month ? previousDate : null,
+            onPressed: chartPeriod == ChartPeriod.month && _hasFormerDate() ? _previousDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: chartPeriod == ChartPeriod.month ? Colors.white : Colors.white60, size: 16)),
+                color: _hasFormerDate() ? Colors.white : Colors.white60, size: 16)),
         SizedBox(
           width: 120,
           child: Text(_formattedDate(),
@@ -111,7 +124,7 @@ class CalendarNavigator extends StatelessWidget {
               )),
         ),
         IconButton(
-            onPressed: chartPeriod == ChartPeriod.month && _hasLaterDate() ? nextDate : null,
+            onPressed: chartPeriod == ChartPeriod.month && _hasLaterDate() ? _nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
                 color: _hasLaterDate() ? Colors.white : Colors.white60, size: 16)),
       ],
