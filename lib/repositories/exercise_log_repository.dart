@@ -84,7 +84,7 @@ class ExerciseLogRepository {
 
     List<ExerciseLogDto> exerciseLogs = List<ExerciseLogDto>.from(_exerciseLogs);
 
-    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(exercise: newExercise);
+    exerciseLogs[oldExerciseLogIndex] = oldExerciseLog.copyWith(id: newExercise.id, exercise: newExercise);
 
     _exerciseLogs = [...exerciseLogs];
   }
