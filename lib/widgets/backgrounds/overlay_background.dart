@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../colors.dart';
 
 class OverlayBackground extends StatelessWidget {
-  const OverlayBackground({super.key, this.opacity = 0.7});
+  const OverlayBackground({super.key, this.opacity = 0.9});
 
   final double opacity;
 

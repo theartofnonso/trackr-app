@@ -67,7 +67,6 @@ export const handler = async (event) => {
     try {
         response = await fetch(request);
         body = await response.json();
-        console.log(body.data.listRoutineLogs.items);
         if (body.errors) statusCode = 400;
     } catch (error) {
         statusCode = 500;
