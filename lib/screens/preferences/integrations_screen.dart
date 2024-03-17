@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../colors.dart';
-import '../utils/health_utils.dart';
-import '../widgets/backgrounds/overlay_background.dart';
+import '../../colors.dart';
+import '../../utils/health_utils.dart';
+import '../../widgets/backgrounds/overlay_background.dart';
 
 class IntegrationsScreen extends StatefulWidget {
   const IntegrationsScreen({super.key});
@@ -74,7 +74,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
             ),
           ),
         ),
-        if (_requestingPermission) const OverlayBackground(loadingMessage: "Setting up connection", opacity: 0.9)
+        if (_requestingPermission) const OverlayBackground(opacity: 0.9)
       ]),
     );
   }

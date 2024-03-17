@@ -27,7 +27,7 @@ export const handler = async (event) => {
     const endDate = event.queryStringParameters["end"];
 
     const query = `query LIST_ROUTINELOGS {
-    listRoutineLogs(filter: {createdAt: {le: "${endDate}", gt: "${startDate}"}}) {
+    listRoutineLogs(filter: {createdAt: {le: "${endDate}", ge: "${startDate}"}}) {
       items {
         id
         owner
@@ -67,6 +67,7 @@ export const handler = async (event) => {
     try {
         response = await fetch(request);
         body = await response.json();
+        console.log(body.data.listRoutineLogs.items);
         if (body.errors) statusCode = 400;
     } catch (error) {
         statusCode = 500;

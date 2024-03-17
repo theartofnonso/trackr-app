@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
-import 'package:tracker_app/screens/integrations_screen.dart';
+import 'package:tracker_app/screens/preferences/integrations_screen.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';

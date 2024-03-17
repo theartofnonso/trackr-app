@@ -44,7 +44,6 @@ class RoutineLogPreviewScreen extends StatefulWidget {
 
 class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
-  String _loadingMessage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +184,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 ),
               ),
             ),
-            if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
+            if (_loading) OverlayBackground()
           ]),
         ));
   }
@@ -264,7 +263,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _toggleLoadingState({String message = ""}) {
     setState(() {
       _loading = !_loading;
-      _loadingMessage = message;
     });
   }
 

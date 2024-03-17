@@ -64,25 +64,28 @@ class OverviewMonitor extends StatelessWidget {
                   ),
                 )),
             const SizedBox(width: 20),
-            Stack(alignment: Alignment.center, children: [
-              LogStreakMonitor(
-                  value: monthlyProgress,
-                  width: 100,
-                  height: 100,
-                  strokeWidth: 6,
-                  decoration: BoxDecoration(
-                    color: sapphireDark.withOpacity(0.35),
-                    borderRadius: BorderRadius.circular(100),
-                  )),
-              MuscleGroupFamilyFrequencyMonitor(
-                  value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
-              Image.asset(
-                'images/trkr.png',
-                fit: BoxFit.contain,
-                color: Colors.white54,
-                height: 8, // Adjust the height as needed
-              )
-            ]),
+            GestureDetector(
+              onTap: () => _navigateToLeaderBoard(context: context),
+              child: Stack(alignment: Alignment.center, children: [
+                LogStreakMonitor(
+                    value: monthlyProgress,
+                    width: 100,
+                    height: 100,
+                    strokeWidth: 6,
+                    decoration: BoxDecoration(
+                      color: sapphireDark.withOpacity(0.35),
+                      borderRadius: BorderRadius.circular(100),
+                    )),
+                MuscleGroupFamilyFrequencyMonitor(
+                    value: muscleGroupsSplitFrequencyScore, width: 70, height: 70, strokeWidth: 6),
+                Image.asset(
+                  'images/trkr.png',
+                  fit: BoxFit.contain,
+                  color: Colors.white54,
+                  height: 8, // Adjust the height as needed
+                )
+              ]),
+            ),
             const SizedBox(width: 20),
             GestureDetector(
               onTap: () {
