@@ -18,6 +18,7 @@ import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/health_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -46,9 +47,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         exclude: preSelectedExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-            controller.addExerciseLogs(exercises: selectedExercises);
-            _cacheLog();
-        }, multiSelect: true);
+          controller.addExerciseLogs(exercises: selectedExercises);
+          _cacheLog();
+        },
+        multiSelect: true);
   }
 
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
@@ -81,8 +83,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: false,
         filter: oldExerciseLog.exercise.type,
         onSelected: (List<ExerciseDto> selectedExercises) {
-            controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
-            _cacheLog();
+          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
+          _cacheLog();
         });
   }
 
@@ -218,10 +220,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _navigateBack({RoutineLogDto? log}) {
+  void _navigateBack({RoutineLogDto? log}) async {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
-    Navigator.of(context).pop(log);
+    if (log != null) {
+      syncWorkoutWithAppleHealth(log: log);
+    }
+    if (mounted) {
+      Navigator.of(context).pop(log);
+    }
   }
 
   @override

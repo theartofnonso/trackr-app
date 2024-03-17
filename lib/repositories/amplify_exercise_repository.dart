@@ -43,11 +43,11 @@ class AmplifyExerciseRepository {
   }
 
   Future<void> fetchExercises({bool firstLaunch = false}) async {
-    if (!firstLaunch) {
+    if (firstLaunch) {
+      await _apiFetchExercises();
+    } else {
       final exercises = await Amplify.DataStore.query(Exercise.classType);
       _mapAndSortExercises(exercises: exercises);
-    } else {
-      await _apiFetchExercises();
     }
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');

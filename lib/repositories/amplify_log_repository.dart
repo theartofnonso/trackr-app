@@ -56,11 +56,11 @@ class AmplifyLogRepository {
   }
 
   Future<void> fetchLogs({bool firstLaunch = false}) async {
-    if (!firstLaunch) {
+    if (firstLaunch) {
+      await _apiFetchTemplates();
+    } else {
       List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
       _mapAndNormaliseLogs(logs: logs);
-    } else {
-      await _apiFetchTemplates();
     }
   }
 
@@ -68,7 +68,6 @@ class AmplifyLogRepository {
     try {
       final request = ModelQueries.list(RoutineLog.classType);
       final response = await Amplify.API.query(request: request).response;
-
       final logs = response.data?.items.whereType<RoutineLog>().toList();
       if (logs != null) {
         _mapAndNormaliseLogs(logs: logs);

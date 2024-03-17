@@ -679,6 +679,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  health:
+    dependency: "direct main"
+    description:
+      name: health
+      sha256: "885104e4cdd1b6db5a04f85304cfb16d50bd1729124c0da11464f1d4c85b9d1c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.1"
   hive:
     dependency: transitive
     description:

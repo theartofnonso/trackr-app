@@ -19,7 +19,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalTrainingDays = groupBy(logs, (log) => log.createdAt).length;
+    final totalTrainingDays = groupBy(logs, (log) => log.createdAt.withoutTime()).length;
     final totalRestDays = daysInMonth - totalTrainingDays;
 
     final averageRestDays = totalTrainingDays > 0 ? _averageDaysBetween(logs: logs, datesInMonth: dateTimeRange.dates) : totalRestDays;

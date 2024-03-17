@@ -85,11 +85,11 @@ class AmplifyTemplateRepository {
   }
 
   Future<void> fetchTemplates({bool firstLaunch = false}) async {
-    if (!firstLaunch) {
+    if (firstLaunch) {
+      await _apiFetchTemplates();
+    } else {
       List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
       _mapAndSortTemplates(templates: templates);
-    } else {
-      await _apiFetchTemplates();
     }
   }
 

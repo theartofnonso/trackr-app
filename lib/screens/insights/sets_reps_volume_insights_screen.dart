@@ -44,7 +44,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
   Widget build(BuildContext context) {
     final textStyle = GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white70);
 
-    final muscleGroups = MuscleGroup.values;
+    const muscleGroups = MuscleGroup.values;
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 

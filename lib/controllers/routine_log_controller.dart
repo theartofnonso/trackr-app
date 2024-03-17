@@ -37,7 +37,7 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
-  void fetchLogs({bool firstLaunch = false}) async {
+  void fetchLogs({required bool firstLaunch}) async {
     try {
       await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);

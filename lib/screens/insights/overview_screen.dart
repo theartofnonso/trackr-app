@@ -182,7 +182,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             Calendar(readOnly: true, range: _dateTimeRange),
                             const SizedBox(height: 12),
                             Image.asset(
-                              'images/trackr.png',
+                              'images/trkr.png',
                               fit: BoxFit.contain,
                               height: 8, // Adjust the height as needed
                             ),

@@ -120,7 +120,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 6.0),
                             child: Image.asset(
-                              'images/trackr.png',
+                              'images/trkr.png',
                               fit: BoxFit.contain,
                               height: 8, // Adjust the height as needed
                             ),

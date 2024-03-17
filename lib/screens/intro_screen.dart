@@ -43,7 +43,7 @@ class IntroScreen extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
               const Spacer(),
               Image.asset(
-                'images/trackr.png',
+                'images/trkr.png',
                 fit: BoxFit.contain,
                 height: 24, // Adjust the height as needed
               ),

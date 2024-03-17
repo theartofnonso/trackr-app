@@ -206,7 +206,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
                 ),
               ),
             ),
-            if (_loading) const OverlayBackground(loadingMessage: "Deleting workout...")
+            if (_loading) const OverlayBackground()
           ]),
         ));
   }

@@ -53,5 +53,9 @@
     <string>Allow TRKR to access your photos</string>
     <key>NSCameraUsageDescription</key>
     <string>Allow TRKR to access your camera</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>Allow TRKR to connect with Apple Health to sync workouts</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>Allow TRKR to connect with Apple Health to sync workouts</string>
 </dict>
 </plist>

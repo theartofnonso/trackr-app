@@ -91,7 +91,7 @@ class RoutineLogShareable extends StatelessWidget {
               Align(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
-                    'images/trackr.png',
+                    'images/trkr.png',
                     fit: BoxFit.contain,
                     height: 8, // Adjust the height as needed
                   )),
