@@ -128,42 +128,12 @@ class _HomeScreenState extends State<HomeScreen> {
       SharedPrefs().firstLaunch = false;
       _cacheUser();
       _loadAppData(firstLaunch: true);
-      _checkAndRequestNotificationPermission();
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadAppData(firstLaunch: false);
       _loadCachedLog();
     });
-  }
-
-  void _requestIosNotificationPermission() async {
-    final isEnabled = await requestIosNotificationPermission();
-    if (isEnabled) {
-      if (mounted) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
-      }
-    }
-  }
-
-  Future<void> _checkAndRequestNotificationPermission() async {
-    final result = await checkIosNotificationPermission();
-    if (!result.isEnabled) {
-      if (mounted) {
-        showBottomSheetWithMultiActions(
-            context: context,
-            title: "Remind me to train weekly",
-            description: "Training regularly can be hard. TRKR can help you stay on track.",
-            leftAction: Navigator.of(context).pop,
-            rightAction: () {
-              Navigator.of(context).pop();
-              _requestIosNotificationPermission();
-            },
-            leftActionLabel: 'Cancel',
-            rightActionLabel: 'Always remind me',
-            isLeftActionDestructive: false);
-      }
-    }
   }
 
   @override
