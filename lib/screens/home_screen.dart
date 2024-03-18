@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +10,14 @@ import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/utils/app_analytics.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
