@@ -189,7 +189,7 @@ extension DateTimeExtension on DateTime {
 
   DateTimeRange currentWeekRange() {
     DateTime today = DateTime(year, month, day);
-    DateTime startOfCurrentWeek = today.subtract(const Duration(days: 6));
+    DateTime startOfCurrentWeek = today.subtract(Duration(days: today.weekday % DateTime.daysPerWeek - 1));
     DateTime endOfCurrentWeek = startOfCurrentWeek.add(const Duration(days: 6));
     return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
   }
