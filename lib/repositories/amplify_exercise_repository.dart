@@ -43,12 +43,12 @@ class AmplifyExerciseRepository {
   }
 
   Future<void> fetchExercises({bool firstLaunch = false}) async {
-    if (firstLaunch) {
-      await _apiFetchExercises();
-    } else {
-      final exercises = await Amplify.DataStore.query(Exercise.classType);
-      _mapAndSortExercises(exercises: exercises);
-    }
+    // if (firstLaunch) {
+    //   await _apiFetchExercises();
+    // } else {
+    //   final exercises = await Amplify.DataStore.query(Exercise.classType);
+    //   _mapAndSortExercises(exercises: exercises);
+    // }
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
     final shouldersExercises = await loadExercisesFromAssets(file: 'shoulders_exercises.json');
@@ -85,6 +85,15 @@ class AmplifyExerciseRepository {
     _exercises.addAll(forearmsExercises);
     _exercises.addAll(neckExercises);
     _exercises.addAll(fullBodyExercises);
+
+    List<String> withNoVideos =
+        _exercises.where((exercise) => exercise.video == null).map((exercise) => exercise.name).toList();
+
+    withNoVideos.forEach((exercise) {
+      print(exercise);
+    });
+
+    print(withNoVideos.length);
 
     _exercises.sort((a, b) => a.name.compareTo(b.name));
   }

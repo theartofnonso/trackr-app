@@ -90,7 +90,10 @@
     "id": "ABS12",
     "name": "Lying Leg Raise",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=Zr-PtqcpeWM",
+    "creditSource": "https://www.youtube.com/@nuffieldhealth",
+    "credit": "Nuffield Health"
   },
   {
     "id": "ABS13",
@@ -251,7 +254,10 @@
     "id": "ABS32",
     "name": "Elbow to Knee",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=YiTevEYYfCA",
+    "creditSource": "https://www.youtube.com/@ensocalisthenics",
+    "credit": "Enso Calisthenics"
   },
   {
     "id": "ABS33",
@@ -266,13 +272,19 @@
     "id": "ABS34",
     "name": "Front Lever Hold",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=U9d5iHfZxOw",
+    "creditSource": "https://www.youtube.com/@ensocalisthenics",
+    "credit": "Enso Calisthenics"
   },
   {
     "id": "ABS35",
     "name": "Front Lever Raise",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=YC-2D2JbyyE",
+    "creditSource": "https://www.youtube.com/@ensocalisthenics",
+    "credit": "Enso Calisthenics"
   },
   {
     "id": "ABS36",
@@ -308,7 +320,10 @@
     "id": "ABS40",
     "name": "Knee Raise Parallel Bars",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=S7wAEgrUn6s",
+    "creditSource": "https://www.youtube.com/@ensocalisthenics",
+    "credit": "Enso Calisthenics"
   },
   {
     "id": "ABS41",
@@ -332,7 +347,10 @@
     "id": "ABS43",
     "name": "Leg Raise Parallel Bars",
     "primaryMuscleGroup": "Abs",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=oOTjUcz_S2E",
+    "creditSource": "https://www.youtube.com/@ensocalisthenics",
+    "credit": "Enso Calisthenics"
   },
   {
     "id": "ABS44",

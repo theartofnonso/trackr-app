@@ -21,7 +21,10 @@
     "id": "LAT3",
     "name": "Pull Up (Band)",
     "primaryMuscleGroup": "Lats",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=6yKq9sw1UA0",
+    "creditSource": "https://www.youtube.com/@ensocalisthenics",
+    "credit": "Enso Calisthenics"
   },
   {
     "id": "LAT4",
