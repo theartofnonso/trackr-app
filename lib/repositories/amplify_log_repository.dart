@@ -56,7 +56,7 @@ class AmplifyLogRepository {
   }
 
   Future<void> fetchLogs({bool firstLaunch = false}) async {
-    if (firstLaunch) {
+    if (!firstLaunch) {
       await _apiFetchTemplates();
     } else {
       List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);

@@ -135,7 +135,10 @@
     "id": "BAC19",
     "name": "Bent Over Row (Band)",
     "primaryMuscleGroup": "Back",
-    "type": "BW"
+    "type": "BW",
+    "video": "https://www.youtube.com/watch?v=lH2gdwzI2dU",
+    "creditSource": "https://www.youtube.com/@OnnitAcademy",
+    "credit": "Onnit Academy"
   },
   {
     "id": "BAC20",
