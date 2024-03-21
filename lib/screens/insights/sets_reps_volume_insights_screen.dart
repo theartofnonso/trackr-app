@@ -178,7 +178,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                 CalendarNavigator(
                   onChangedDateTimeRange: _onChangedDateTimeRange,
                   chartPeriod: _period,
-                  dateTimeRange: _dateTimeRange,
                 ),
                 const SizedBox(height: 10),
                 Row(

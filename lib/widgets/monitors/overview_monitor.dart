@@ -26,7 +26,7 @@ class OverviewMonitor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime());
+    final routineLogDays = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
     final monthlyProgress = routineLogDays.length / 12;
 

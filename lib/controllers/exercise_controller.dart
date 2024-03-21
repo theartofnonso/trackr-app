@@ -15,7 +15,7 @@ class ExerciseController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseDto> get exercises => _amplifyExerciseRepository.exercises;
 
-  Future<void> fetchExercises({required bool firstLaunch}) async {
+  Future<void> fetchExercises({bool firstLaunch = false}) async {
     isLoading = true;
     try {
       await _amplifyExerciseRepository.fetchExercises(firstLaunch: firstLaunch);

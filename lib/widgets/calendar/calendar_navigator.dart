@@ -5,27 +5,29 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../enums/chart_period_enum.dart';
 
-class CalendarNavigator extends StatelessWidget {
-  final DateTime? startDate;
-  final DateTimeRange dateTimeRange;
+class CalendarNavigator extends StatefulWidget {
   final void Function(DateTimeRange? range)? onChangedDateTimeRange;
   final ChartPeriod chartPeriod;
 
-  const CalendarNavigator(
-      {super.key,
-      required this.dateTimeRange,
-      this.onChangedDateTimeRange,
-      this.chartPeriod = ChartPeriod.month,
-      this.startDate});
+  const CalendarNavigator({super.key, this.onChangedDateTimeRange, this.chartPeriod = ChartPeriod.month});
+
+  @override
+  State<CalendarNavigator> createState() => _CalendarNavigatorState();
+}
+
+class _CalendarNavigatorState extends State<CalendarNavigator> {
+
+  late DateTime _currentDate;
+  late DateTimeRange _currentDateTimeRange;
 
   bool _hasFormerDate() {
-    final formerDate = startDate ?? DateTime.now();
+    final formerDate = DateTime.now();
     int formerMonth = formerDate.month;
     int formerYear = formerDate.year;
-    if (formerYear == currentDate.year) {
-      return formerMonth < currentDate.month;
+    if (formerYear == _currentDate.year) {
+      return formerMonth < _currentDate.month;
     } else {
-      return formerYear < currentDate.year;
+      return formerYear < _currentDate.year;
     }
   }
 
@@ -33,16 +35,16 @@ class CalendarNavigator extends StatelessWidget {
     final laterDate = DateTime.now();
     int laterMonth = laterDate.month;
     int laterYear = laterDate.year;
-    if (laterYear == currentDate.year) {
-      return laterMonth > currentDate.month;
+    if (laterYear == _currentDate.year) {
+      return laterMonth > _currentDate.month;
     } else {
-      return laterYear > currentDate.year;
+      return laterYear > _currentDate.year;
     }
   }
 
   DateTimeRange _decrementMonth() {
-    int month = currentDate.month - 1;
-    int year = currentDate.year;
+    int month = _currentDate.month - 1;
+    int year = _currentDate.year;
 
     /// We need to go to previous year
     if (month == 0) {
@@ -56,18 +58,22 @@ class CalendarNavigator extends StatelessWidget {
   }
 
   void _previousDate() {
-    final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
+    final onChangedDateTimeRangeFunc = widget.onChangedDateTimeRange;
     if (onChangedDateTimeRangeFunc == null) return;
 
-    if (chartPeriod == ChartPeriod.month) {
+    if (widget.chartPeriod == ChartPeriod.month) {
       final range = _decrementMonth();
+      setState(() {
+        _currentDateTimeRange = range;
+        _currentDate = _currentDateTimeRange.end;
+      });
       onChangedDateTimeRangeFunc(range);
     }
   }
 
-  DateTimeRange? _incrementMonth() {
-    int month = currentDate.month + 1;
-    int year = currentDate.year;
+  DateTimeRange _incrementMonth() {
+    int month = _currentDate.month + 1;
+    int year = _currentDate.year;
 
     /// We need to go to next year
     if (month == 12) {
@@ -78,32 +84,36 @@ class CalendarNavigator extends StatelessWidget {
     final currentMonth = DateTime(year, month);
 
     DateTimeRange dateTimeRange =
-        DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
+    DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
 
     return dateTimeRange;
   }
 
   void _nextDate() {
-    final onChangedDateTimeRangeFunc = onChangedDateTimeRange;
+    final onChangedDateTimeRangeFunc = widget.onChangedDateTimeRange;
     if (onChangedDateTimeRangeFunc == null) return;
 
-    if (chartPeriod == ChartPeriod.month) {
+    if (widget.chartPeriod == ChartPeriod.month) {
       final range = _incrementMonth();
+      setState(() {
+        _currentDateTimeRange = range;
+        _currentDate = _currentDateTimeRange.end;
+      });
       onChangedDateTimeRangeFunc(range);
     }
   }
 
   String _formattedDate() {
-    if (chartPeriod == ChartPeriod.month) {
-      return currentDate.formattedMonthAndYear();
-    } else {
-      String formattedStartDate = dateTimeRange.start.abbreviatedMonthAndYear();
-      String formattedEndDate = dateTimeRange.end.abbreviatedMonthAndYear();
-      return "$formattedStartDate - $formattedEndDate";
-    }
+    return _currentDate.formattedMonthAndYear();
   }
 
-  DateTime get currentDate => dateTimeRange.end;
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _currentDate = now;
+    _currentDateTimeRange = now.dateTimeRange();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +121,8 @@ class CalendarNavigator extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-            onPressed: chartPeriod == ChartPeriod.month && _hasFormerDate() ? _previousDate : null,
-            icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
-                color: _hasFormerDate() ? Colors.white : Colors.white60, size: 16)),
+            onPressed: widget.chartPeriod == ChartPeriod.month ? _previousDate : null,
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
         SizedBox(
           width: 120,
           child: Text(_formattedDate(),
@@ -124,7 +133,7 @@ class CalendarNavigator extends StatelessWidget {
               )),
         ),
         IconButton(
-            onPressed: chartPeriod == ChartPeriod.month && _hasLaterDate() ? _nextDate : null,
+            onPressed: widget.chartPeriod == ChartPeriod.month && _hasLaterDate() ? _nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
                 color: _hasLaterDate() ? Colors.white : Colors.white60, size: 16)),
       ],

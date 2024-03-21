@@ -1,4 +1,3 @@
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -96,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData({required bool firstLaunch}) {
+  void _loadAppData({bool firstLaunch = false}) async {
     Provider.of<RoutineLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
     Provider.of<ExerciseController>(context, listen: false).fetchExercises(firstLaunch: firstLaunch);
     Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates(firstLaunch: firstLaunch);
@@ -121,13 +120,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
-      SharedPrefs().firstLaunch = false;
+      _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
       _cacheUser();
-      _loadAppData(firstLaunch: true);
+      SharedPrefs().firstLaunch = false;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAppData(firstLaunch: false);
+      _loadAppData();
       _loadCachedLog();
     });
   }

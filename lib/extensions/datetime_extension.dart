@@ -82,6 +82,11 @@ extension DateTimeExtension on DateTime {
     return date.month == other.month && date.year == other.year;
   }
 
+  bool isSameYear(DateTime other) {
+    final date = this;
+    return date.year == other.year;
+  }
+
   String durationSinceOrDate() {
     final now = DateTime.now();
     final duration = now.difference(this);
@@ -208,5 +213,11 @@ extension DateTimeExtension on DateTime {
     DateTime today = DateTime(year, month, day);
     final numberOfDaysUntilNextWeek = 7 - today.weekday;
     return today.add(Duration(days: numberOfDaysUntilNextWeek + 1));
+  }
+
+  DateTimeRange dateTimeRange() {
+    final start = DateTime(year, 1);
+    final end = DateTime(year, 12);
+    return DateTimeRange(start: start, end: end);
   }
 }

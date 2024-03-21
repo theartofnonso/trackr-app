@@ -29,7 +29,7 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  void fetchTemplates({required bool firstLaunch}) async {
+  Future<void> fetchTemplates({bool firstLaunch = false}) async {
     isLoading = true;
     try {
       await _amplifyTemplateRepository.fetchTemplates(firstLaunch: firstLaunch);

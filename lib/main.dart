@@ -23,6 +23,7 @@ import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
@@ -124,18 +125,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configureAmplify() async {
-    /// Only sync data from the last 12 months
-    DateTime currentDate = DateTime.now();
-    DateTime date12MonthsAgo = DateTime(currentDate.year - 1, currentDate.month, currentDate.day);
-    TemporalDateTime temporalDate12MonthsAgo = TemporalDateTime(date12MonthsAgo);
+    /// Only sync data for this year
+    final range = DateTime.now().dateTimeRange();
+    final startOfCurrentYear = range.start.toIso8601String();
+    final endOfCurrentYear = range.end.toIso8601String();
     try {
       await Amplify.addPlugin(AmplifyAnalyticsPinpoint());
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
-      // await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
-      //   DataStoreSyncExpression(RoutineLog.classType, () => RoutineLog.CREATEDAT.gt(temporalDate12MonthsAgo.format())),
-      // ]));
+      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
+        DataStoreSyncExpression(
+            RoutineLog.classType, () => RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
+      ]));
       await Amplify.configure(amplifyconfig);
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');

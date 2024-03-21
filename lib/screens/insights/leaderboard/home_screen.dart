@@ -4,14 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/chart_period_enum.dart';
 import 'package:tracker_app/screens/insights/leaderboard/log_streak_leaderboard.dart';
 import 'package:tracker_app/screens/insights/leaderboard/muscle_score_leaderboard.dart';
 import 'package:tracker_app/widgets/backgrounds/gradient_widget.dart';
 
 import '../../../colors.dart';
-import '../../../controllers/routine_log_controller.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../dtos/routine_log_dto.dart';
 import '../../../utils/general_utils.dart';
@@ -38,11 +36,6 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-
-    final firstLogDate =
-        routineLogController.routineLogs.isNotEmpty ? routineLogController.routineLogs.first.createdAt : null;
-
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -88,11 +81,7 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    CalendarNavigator(
-                        startDate: firstLogDate,
-                        onChangedDateTimeRange: _onChangedDateTimeRange,
-                        chartPeriod: ChartPeriod.month,
-                        dateTimeRange: _dateTimeRange),
+                    CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, chartPeriod: ChartPeriod.month),
                     _routineLogs.isNotEmpty
                         ? Expanded(
                             child: TabBarView(

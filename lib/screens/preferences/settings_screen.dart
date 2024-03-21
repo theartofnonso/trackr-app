@@ -205,7 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void _clearAppData() async {
     await Amplify.DataStore.clear();
     SharedPrefs().clear();
-    FlutterLocalNotificationsPlugin().cancelAll();
+    await FlutterLocalNotificationsPlugin().cancelAll();
     if (context.mounted) {
       Provider.of<RoutineTemplateController>(context, listen: false).clear();
       Provider.of<RoutineLogController>(context, listen: false).clear();
