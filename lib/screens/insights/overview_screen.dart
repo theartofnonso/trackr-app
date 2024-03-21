@@ -146,24 +146,25 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
 
-    final isCurrentYear = range.start.year == DateTime.now().year;
+    final isDifferentYear = !_dateTimeRange.start.isSameYear(range.start);
 
     setState(() {
-      _dateTimeRange = range;
-      _loading = !isCurrentYear;
+      _loading = isDifferentYear;
     });
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    if (isCurrentYear) {
-      routineLogController.fetchLogs();
-    } else {
+    if (isDifferentYear) {
       routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((_) {
         setState(() {
           _loading = false;
         });
       });
     }
+
+    setState(() {
+      _dateTimeRange = range;
+    });
   }
 
   void _onShareCalendar({required BuildContext context}) {
