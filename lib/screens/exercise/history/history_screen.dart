@@ -18,7 +18,7 @@ class HistoryScreen extends StatelessWidget {
     List<ExerciseLogDto> pastLogs = Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[exercise.id] ?? [];
     final completedPastLogs = exerciseLogsWithCheckedSets(exerciseLogs: pastLogs.reversed.toList());
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(top: 2, right: 10.0, bottom: 10, left: 10),
       child: Column(
         children: [
           completedPastLogs.isNotEmpty
