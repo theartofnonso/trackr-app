@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -23,8 +22,6 @@ class StreakScreen extends StatefulWidget {
 
 class _StreakScreenState extends State<StreakScreen> {
   bool _loading = false;
-
-  DateTimeRange? _dateTimeRange;
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +60,8 @@ class _StreakScreenState extends State<StreakScreen> {
                 minimum: const EdgeInsets.all(10.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
-                  const SizedBox(
-                    height: 20,
-                  ),
                   yearsAndMonths.isEmpty
-                      ? _YearAndMonthsEmptyState(dateTime: _dateTimeRange?.start)
+                      ? const _YearAndMonthsEmptyState()
                       : Expanded(
                           child: ListView.separated(
                             itemCount: yearsAndMonths.length,
@@ -84,17 +78,15 @@ class _StreakScreenState extends State<StreakScreen> {
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
-
     if (range == null) return;
 
     setState(() {
       _loading = true;
-      _dateTimeRange = range;
     });
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((_) {
+    routineLogController.fetchLogsCloud(range: range).then((_) {
       setState(() {
         _loading = false;
       });
@@ -116,9 +108,6 @@ class _YearAndMonths extends StatelessWidget {
     }).toList();
 
     return Column(children: [
-      Text("Streak $year",
-          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)),
-      const SizedBox(height: 20),
       GridView.count(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -132,28 +121,17 @@ class _YearAndMonths extends StatelessWidget {
 }
 
 class _YearAndMonthsEmptyState extends StatelessWidget {
-  final DateTime? dateTime;
-  const _YearAndMonthsEmptyState({required this.dateTime});
+  const _YearAndMonthsEmptyState();
 
   @override
   Widget build(BuildContext context) {
-    
-    final now = dateTime ?? DateTime.now();
-    
-    return Column(children: [
-      Text("Streak ${now.year}",
-          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)),
-      const SizedBox(height: 20),
-      GridView.count(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          crossAxisCount: 1,
-          childAspectRatio: 1.2,
-          mainAxisSpacing: 4.0,
-          crossAxisSpacing: 4.0,
-          children: [
-            CalendarHeatMap(dates: [DateTime.now()], spacing: 4)
-          ])
-    ]);
+    return GridView.count(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        crossAxisCount: 1,
+        childAspectRatio: 1.2,
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 4.0,
+        children: [CalendarHeatMap(dates: [DateTime.now()], spacing: 4)]);
   }
 }
