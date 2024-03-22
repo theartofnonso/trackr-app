@@ -24,6 +24,8 @@ class StreakScreen extends StatefulWidget {
 class _StreakScreenState extends State<StreakScreen> {
   bool _loading = false;
 
+  DateTimeRange? _dateTimeRange;
+
   @override
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
@@ -65,7 +67,7 @@ class _StreakScreenState extends State<StreakScreen> {
                     height: 20,
                   ),
                   yearsAndMonths.isEmpty
-                      ? const _YearAndMonthsEmptyState(dateTime: noq,)
+                      ? _YearAndMonthsEmptyState(dateTime: _dateTimeRange?.start)
                       : Expanded(
                           child: ListView.separated(
                             itemCount: yearsAndMonths.length,
@@ -82,10 +84,12 @@ class _StreakScreenState extends State<StreakScreen> {
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
+
     if (range == null) return;
 
     setState(() {
       _loading = true;
+      _dateTimeRange = range;
     });
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
