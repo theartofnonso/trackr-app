@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
@@ -63,7 +64,10 @@ class _StreakScreenState extends State<StreakScreen> {
             children: [
               SafeArea(
                 minimum: const EdgeInsets.all(10.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  Text("STREAK".toUpperCase(),
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 10),
                   CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
                   yearsAndMonths.isEmpty
                       ? const _YearAndMonthsEmptyState()

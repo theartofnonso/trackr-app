@@ -93,8 +93,8 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.cachedRoutineLog();
   }
 
-  List<AchievementDto> fetchAchievements() {
-    return _achievementRepository.fetchAchievements(routineLogs: routineLogs);
+  List<AchievementDto> fetchAchievements({List<RoutineLogDto>? logs}) {
+    return _achievementRepository.fetchAchievements(routineLogs: logs ?? routineLogs);
   }
 
   List<AchievementDto> calculateNewLogAchievements() {
