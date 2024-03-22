@@ -15,7 +15,7 @@ import '../../../dtos/routine_log_dto.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/https_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
-import '../../../widgets/calendar/calendar_navigator.dart';
+import '../../../widgets/calendar/calendar_months_navigator.dart';
 import '../../../widgets/empty_states/leader_board_empty_state.dart';
 
 class LeaderBoardScreen extends StatefulWidget {
@@ -81,7 +81,7 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, chartPeriod: ChartPeriod.month),
+                    CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, chartPeriod: ChartPeriod.month),
                     _routineLogs.isNotEmpty
                         ? Expanded(
                             child: TabBarView(

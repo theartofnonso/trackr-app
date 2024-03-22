@@ -8,16 +8,25 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../widgets/backgrounds/overlay_background.dart';
+import '../../widgets/calendar/calendar_years_navigator.dart';
 import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
 
-class StreakScreen extends StatelessWidget {
+class StreakScreen extends StatefulWidget {
   static const routeName = '/streak_screen';
 
   const StreakScreen({super.key});
 
   @override
+  State<StreakScreen> createState() => _StreakScreenState();
+}
+
+class _StreakScreenState extends State<StreakScreen> {
+  bool _loading = false;
+
+  @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final yearlyLogs = groupBy(routineLogController.routineLogs, (log) => log.createdAt.year);
 
@@ -46,21 +55,46 @@ class StreakScreen extends StatelessWidget {
               ],
             ),
           ),
-          child: SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              yearsAndMonths.isEmpty
-                  ? const _YearAndMonthsEmptyState()
-                  : Expanded(
-                      child: ListView.separated(
-                        itemCount: yearsAndMonths.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 20),
-                        itemBuilder: (context, index) => yearsAndMonths[index],
-                      ),
-                    )
-            ]),
+          child: Stack(
+            children: [
+              SafeArea(
+                minimum: const EdgeInsets.all(10.0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  yearsAndMonths.isEmpty
+                      ? const _YearAndMonthsEmptyState(dateTime: noq,)
+                      : Expanded(
+                          child: ListView.separated(
+                            itemCount: yearsAndMonths.length,
+                            separatorBuilder: (context, index) => const SizedBox(height: 20),
+                            itemBuilder: (context, index) => yearsAndMonths[index],
+                          ),
+                        )
+                ]),
+              ),
+              if (_loading) const OverlayBackground(opacity: 0.9)
+            ],
           ),
         ));
+  }
+
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if (range == null) return;
+
+    setState(() {
+      _loading = true;
+    });
+
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((_) {
+      setState(() {
+        _loading = false;
+      });
+    });
   }
 }
 
@@ -94,12 +128,16 @@ class _YearAndMonths extends StatelessWidget {
 }
 
 class _YearAndMonthsEmptyState extends StatelessWidget {
-  const _YearAndMonthsEmptyState();
+  final DateTime? dateTime;
+  const _YearAndMonthsEmptyState({required this.dateTime});
 
   @override
   Widget build(BuildContext context) {
+    
+    final now = dateTime ?? DateTime.now();
+    
     return Column(children: [
-      Text("Streak ${DateTime.now().year}",
+      Text("Streak ${now.year}",
           style: GoogleFonts.montserrat(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)),
       const SizedBox(height: 20),
       GridView.count(

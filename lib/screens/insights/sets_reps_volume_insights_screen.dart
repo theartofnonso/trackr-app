@@ -18,7 +18,7 @@ import '../../enums/chart_unit_enum.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../enums/sets_reps_volume_enum.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../widgets/calendar/calendar_navigator.dart';
+import '../../widgets/calendar/calendar_months_navigator.dart';
 import '../../widgets/chart/bar_chart.dart';
 import '../../widgets/chart/horizontal_stacked_bars.dart';
 import '../../widgets/chart/legend.dart';
@@ -175,7 +175,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
                   ),
                 ),
                 const SizedBox(height: 10),
-                CalendarNavigator(
+                CalendarMonthsNavigator(
                   onChangedDateTimeRange: _onChangedDateTimeRange,
                   chartPeriod: _period,
                 ),

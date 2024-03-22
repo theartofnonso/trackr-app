@@ -5,17 +5,17 @@ import 'package:tracker_app/extensions/datetime_extension.dart';
 
 import '../../enums/chart_period_enum.dart';
 
-class CalendarNavigator extends StatefulWidget {
+class CalendarMonthsNavigator extends StatefulWidget {
   final void Function(DateTimeRange? range)? onChangedDateTimeRange;
   final ChartPeriod chartPeriod;
 
-  const CalendarNavigator({super.key, this.onChangedDateTimeRange, this.chartPeriod = ChartPeriod.month});
+  const CalendarMonthsNavigator({super.key, this.onChangedDateTimeRange, this.chartPeriod = ChartPeriod.month});
 
   @override
-  State<CalendarNavigator> createState() => _CalendarNavigatorState();
+  State<CalendarMonthsNavigator> createState() => _CalendarMonthsNavigatorState();
 }
 
-class _CalendarNavigatorState extends State<CalendarNavigator> {
+class _CalendarMonthsNavigatorState extends State<CalendarMonthsNavigator> {
   late DateTime _currentDate;
   late DateTimeRange _currentDateTimeRange;
 

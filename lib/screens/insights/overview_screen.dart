@@ -7,7 +7,7 @@ import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
-import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
+import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
 
 import '../../dtos/routine_log_dto.dart';
@@ -108,7 +108,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                                   color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
                       ),
-                      CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                      CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
                       IconButton(
                           onPressed: () => _onShareCalendar(context: context),
                           icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),

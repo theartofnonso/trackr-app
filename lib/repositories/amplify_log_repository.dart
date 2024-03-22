@@ -57,15 +57,20 @@ class AmplifyLogRepository {
 
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
-      List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
+      List<RoutineLog> logs = await queryLogsCloud(range: DateTime.now().dateTimeRange());
       _mapAndNormaliseLogs(logs: logs);
     } else {
-      List<RoutineLog> logs = await fetchLogsCloud(range: DateTime.now().dateTimeRange());
+      List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
       _mapAndNormaliseLogs(logs: logs);
     }
   }
 
-  Future<List<RoutineLog>> fetchLogsCloud({required DateTimeRange range}) async {
+  Future<void> fetchLogsCloud({required DateTimeRange range}) async {
+    List<RoutineLog> logs = await queryLogsCloud(range: range);
+    _mapAndNormaliseLogs(logs: logs);
+  }
+
+  Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
     final startOfCurrentYear = range.start.toIso8601String();
     final endOfCurrentYear = range.end.toIso8601String();
     final whereDate = RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear);
@@ -77,6 +82,7 @@ class AmplifyLogRepository {
 
   void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {
     _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+    // print(_routineLogs);
     _normaliseLogs();
   }
 
