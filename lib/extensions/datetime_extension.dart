@@ -13,6 +13,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String abbreviatedMonthWithYear() {
+    return DateFormat("LLL yyyy", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);
   }

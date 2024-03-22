@@ -105,7 +105,7 @@ class _CalendarMonthsNavigatorState extends State<CalendarMonthsNavigator> {
   String _formattedDate() {
     final now = DateTime.now();
     return switch (widget.chartPeriod) {
-      ChartPeriod.month => _currentDate.formattedMonthAndYear(),
+      ChartPeriod.month => _currentDate.abbreviatedMonthWithYear(),
       ChartPeriod.threeMonths => "${now.past90Days().abbreviatedMonthAndYear()} - today",
       ChartPeriod.sixMonths => "${now.past180Days().abbreviatedMonthAndYear()} - today",
     };

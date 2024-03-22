@@ -195,7 +195,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Align(
-                              alignment: Alignment.centerLeft,
+                              alignment: Alignment.center,
                               child: Text(_dateTimeRange.start.formattedMonthAndYear(),
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.montserrat(
