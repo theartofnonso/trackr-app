@@ -16,7 +16,6 @@ class CalendarNavigator extends StatefulWidget {
 }
 
 class _CalendarNavigatorState extends State<CalendarNavigator> {
-
   late DateTime _currentDate;
   late DateTimeRange _currentDateTimeRange;
 
@@ -84,7 +83,7 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
     final currentMonth = DateTime(year, month);
 
     DateTimeRange dateTimeRange =
-    DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
+        DateTimeRange(start: currentMonth, end: DateTime(currentMonth.year, currentMonth.month + 1, 0));
 
     return dateTimeRange;
   }
@@ -104,7 +103,16 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
   }
 
   String _formattedDate() {
-    return _currentDate.formattedMonthAndYear();
+    final now = DateTime.now();
+    return switch (widget.chartPeriod) {
+      ChartPeriod.month => _currentDate.formattedMonthAndYear(),
+      ChartPeriod.threeMonths => "${now.past90Days().abbreviatedMonthAndYear()} - today",
+      ChartPeriod.sixMonths => "${now.past180Days().abbreviatedMonthAndYear()} - today",
+    };
+  }
+
+  bool _canNavigate() {
+    return widget.chartPeriod == ChartPeriod.month;
   }
 
   @override
@@ -122,20 +130,18 @@ class _CalendarNavigatorState extends State<CalendarNavigator> {
       children: [
         IconButton(
             onPressed: widget.chartPeriod == ChartPeriod.month ? _previousDate : null,
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 16)),
-        SizedBox(
-          width: 120,
-          child: Text(_formattedDate(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.montserrat(
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-              )),
-        ),
+            icon: FaIcon(FontAwesomeIcons.arrowLeftLong,
+                color: _canNavigate() ? Colors.white : Colors.white60, size: 16)),
+        Text(_formattedDate(),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.montserrat(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            )),
         IconButton(
             onPressed: widget.chartPeriod == ChartPeriod.month && _hasLaterDate() ? _nextDate : null,
             icon: FaIcon(FontAwesomeIcons.arrowRightLong,
-                color: _hasLaterDate() ? Colors.white : Colors.white60, size: 16)),
+                color: _hasLaterDate() && _canNavigate() ? Colors.white : Colors.white60, size: 16)),
       ],
     );
   }

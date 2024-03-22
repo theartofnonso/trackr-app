@@ -162,11 +162,11 @@ extension DateTimeExtension on DateTime {
     return DateTime(year, month, day, hour);
   }
 
-  DateTime previous90Days() {
+  DateTime past90Days() {
     return subtract(const Duration(days: 90)).withoutTime();
   }
 
-  DateTime previous180Days() {
+  DateTime past180Days() {
     return subtract(const Duration(days: 180)).withoutTime();
   }
 

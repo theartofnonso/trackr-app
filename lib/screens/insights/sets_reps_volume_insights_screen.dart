@@ -400,10 +400,11 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
   DateTimeRange _periodDateTimeRange() {
     final now = DateTime.now();
+    print(DateTimeRange(start: now.past90Days(), end: now.lastWeekDay().withoutTime()));
     return switch (_period) {
       ChartPeriod.month => thisMonthDateRange(),
-      ChartPeriod.threeMonths => DateTimeRange(start: now.previous90Days(), end: now.lastWeekDay().withoutTime()),
-      ChartPeriod.sixMonths => DateTimeRange(start: now.previous180Days(), end: now.lastWeekDay().withoutTime()),
+      ChartPeriod.threeMonths => DateTimeRange(start: now.past90Days(), end: now.lastWeekDay().withoutTime()),
+      ChartPeriod.sixMonths => DateTimeRange(start: now.past180Days(), end: now.lastWeekDay().withoutTime()),
     };
   }
 
