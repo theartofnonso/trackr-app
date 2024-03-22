@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import '../dtos/achievement_dto.dart';
 import '../dtos/exercise_dto.dart';
@@ -48,14 +49,8 @@ class RoutineLogController extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchLogsCloud({required DateTimeRange range}) async {
-    try {
-      await _amplifyLogRepository.fetchLogsCloud(range: range);
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-    } finally {
-      notifyListeners();
-    }
+  Future<List<RoutineLog>> fetchLogsCloud({required DateTimeRange range}) async {
+    return _amplifyLogRepository.queryLogsCloud(range: range);
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto}) async {
@@ -111,7 +106,7 @@ class RoutineLogController extends ChangeNotifier {
     final thisWeeksUntrainedMGF = _thisWeeksUntrainedMGF();
 
     List<MuscleGroupFamily> toBeTrained = lastWeeksUntrainedMGF;
-    if(thisWeeksUntrainedMGF.isNotEmpty) {
+    if (thisWeeksUntrainedMGF.isNotEmpty) {
       toBeTrained = toBeTrained.where((mgf) => thisWeeksUntrainedMGF.contains(mgf)).toList();
     } else {
       toBeTrained = [];

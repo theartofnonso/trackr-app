@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
@@ -18,6 +20,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/text_button_widget.dart';
@@ -37,6 +40,8 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
+  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyLogs;
+
   late DateTimeRange _dateTimeRange;
   bool _loading = false;
 
@@ -68,7 +73,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
+    final logsForTheMonth = _monthlyLogs?[_dateTimeRange] ?? routineLogController.monthlyLogs[_dateTimeRange] ?? [];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -155,9 +160,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
     if (isDifferentYear) {
-      routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((_) {
+      routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
         setState(() {
           _loading = false;
+          final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+          _monthlyLogs = groupRoutineLogsByMonth(routineLogs: dtos);
         });
       });
     }

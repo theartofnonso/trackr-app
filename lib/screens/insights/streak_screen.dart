@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 
 import '../../colors.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -21,13 +22,17 @@ class StreakScreen extends StatefulWidget {
 }
 
 class _StreakScreenState extends State<StreakScreen> {
+  List<RoutineLogDto>? _routineLogs;
+
   bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final yearlyLogs = groupBy(routineLogController.routineLogs, (log) => log.createdAt.year);
+    final routineLogs = _routineLogs ?? routineLogController.routineLogs;
+
+    final yearlyLogs = groupBy(routineLogs, (log) => log.createdAt.year);
 
     final yearsAndMonths = yearlyLogs.entries.map((yearAndLogs) {
       final monthlyLogs = groupBy(yearAndLogs.value, (log) => log.createdAt.month);
@@ -86,9 +91,10 @@ class _StreakScreenState extends State<StreakScreen> {
 
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    routineLogController.fetchLogsCloud(range: range).then((_) {
+    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
       setState(() {
         _loading = false;
+        _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
       });
     });
   }
@@ -132,6 +138,8 @@ class _YearAndMonthsEmptyState extends StatelessWidget {
         childAspectRatio: 1.2,
         mainAxisSpacing: 4.0,
         crossAxisSpacing: 4.0,
-        children: [CalendarHeatMap(dates: [DateTime.now()], spacing: 4)]);
+        children: [
+          CalendarHeatMap(dates: [DateTime.now()], spacing: 4)
+        ]);
   }
 }

@@ -65,11 +65,6 @@ class AmplifyLogRepository {
     }
   }
 
-  Future<void> fetchLogsCloud({required DateTimeRange range}) async {
-    List<RoutineLog> logs = await queryLogsCloud(range: range);
-    _mapAndNormaliseLogs(logs: logs);
-  }
-
   Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
     final startOfCurrentYear = range.start.toIso8601String();
     final endOfCurrentYear = range.end.toIso8601String();
@@ -82,7 +77,6 @@ class AmplifyLogRepository {
 
   void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {
     _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
-    // print(_routineLogs);
     _normaliseLogs();
   }
 
