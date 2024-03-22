@@ -14,10 +14,11 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
-import '../../../dtos/routine_log_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../utils/routine_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/calendar/calendar_years_navigator.dart';
 
@@ -33,7 +34,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<RoutineLogDto>? _routineLogs;
+  Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
 
   bool _loading = false;
 
@@ -60,8 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
             widget.exercise;
 
-    final exerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: true).exerciseLogsForExercise(exercise: foundExercise);
+    final exerciseLogs = _exerciseLogsById?[foundExercise.id] ??
+        Provider.of<RoutineLogController>(context, listen: true).exerciseLogsById[foundExercise.id] ??
+        [];
 
     final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
 
@@ -188,6 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             mostRepsSet: mostRepsSetRecord,
                             mostRepsSession: mostRepsSessionRecord,
                             exercise: foundExercise,
+                            exerciseLogs: completedExerciseLogs,
                           ),
                           HistoryScreen(exercise: foundExercise),
                           if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
@@ -215,7 +218,8 @@ class _HomeScreenState extends State<HomeScreen> {
     routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
       setState(() {
         _loading = false;
-        _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        final routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: routineLogs);
       });
     });
   }

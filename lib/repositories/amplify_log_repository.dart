@@ -174,10 +174,6 @@ class AmplifyLogRepository {
     return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
   }
 
-  List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
-    return _exerciseLogsById[exercise.id] ?? [];
-  }
-
   void clear() {
     _routineLogs.clear();
     _exerciseLogsById.clear();

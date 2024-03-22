@@ -38,6 +38,7 @@ Map<String, dynamic> _decodeNotificationPayload({required PendingNotificationReq
   final payloadString = schedule?.payload;
   if (payloadString != null) {
     final payload = jsonDecode(payloadString);
+    print(payload);
     final reminderTypeString = payload["type"];
     final type = DailyReminderType.fromString(reminderTypeString);
     final durationString = payload["duration"];
@@ -90,7 +91,7 @@ class NotificationsScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Text("Notifications",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 24),
                 const _NotificationListView()
               ]),

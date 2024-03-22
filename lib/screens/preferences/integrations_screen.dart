@@ -45,7 +45,7 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text("Integrations",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 24),
                 ListTile(
                   onTap: _hasPermission ? null : _connectAppleHealth,

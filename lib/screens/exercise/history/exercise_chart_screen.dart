@@ -41,6 +41,7 @@ class ExerciseChartScreen extends StatefulWidget {
   final (String?, int) mostRepsSet;
   final (String?, int) mostRepsSession;
   final ExerciseDto exercise;
+  final List<ExerciseLogDto> exerciseLogs;
 
   const ExerciseChartScreen(
       {super.key,
@@ -49,15 +50,14 @@ class ExerciseChartScreen extends StatefulWidget {
       required this.longestDuration,
       required this.mostRepsSet,
       required this.mostRepsSession,
-      required this.exercise});
+      required this.exercise,
+      required this.exerciseLogs});
 
   @override
   State<ExerciseChartScreen> createState() => _ExerciseChartScreenState();
 }
 
 class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
-  List<ExerciseLogDto> _exerciseLogs = [];
-
   List<String> _dateTimes = [];
 
   List<ChartPointDto> _chartPoints = [];
@@ -67,7 +67,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   late SummaryType _summaryType;
 
   void _heaviestWeightPerLog() {
-    final sets = _exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
+    final sets = widget.exerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, set.weightValue())).toList();
       _summaryType = SummaryType.weight;
@@ -76,7 +76,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _heaviestSetVolumePerLog() {
-    final values = _exerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).toList();
+    final values = widget.exerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
       _summaryType = SummaryType.setVolume;
@@ -85,7 +85,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalRepsForLog() {
-    final values = _exerciseLogs.map((log) => totalRepsForExerciseLog(exerciseLog: log)).toList();
+    final values = widget.exerciseLogs.map((log) => totalRepsForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
       _summaryType = SummaryType.sessionReps;
@@ -94,7 +94,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _highestRepsForLog() {
-    final values = _exerciseLogs.map((log) => highestRepsForExerciseLog(exerciseLog: log)).toList();
+    final values = widget.exerciseLogs.map((log) => highestRepsForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value)).toList();
       _summaryType = SummaryType.mostReps;
@@ -103,7 +103,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _longestDurationPerLog() {
-    final values = _exerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).toList();
+    final values = widget.exerciseLogs.map((log) => longestDurationForExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value.inMilliseconds)).toList();
       _summaryType = SummaryType.bestTime;
@@ -112,7 +112,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _totalTimePerLog() {
-    final values = _exerciseLogs.map((log) => totalDurationExerciseLog(exerciseLog: log)).toList();
+    final values = widget.exerciseLogs.map((log) => totalDurationExerciseLog(exerciseLog: log)).toList();
     setState(() {
       _chartPoints = values.mapIndexed((index, value) => ChartPointDto(index, value.inMilliseconds)).toList();
       _summaryType = SummaryType.sessionTimes;
@@ -135,13 +135,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         break;
     }
 
-    final exerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
-        .exerciseLogsForExercise(exercise: widget.exercise)
-        .toList();
-
-    _exerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
-
-    _dateTimes = _exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
+    _dateTimes = widget.exerciseLogs.map((log) => log.createdAt.formattedDayAndMonth()).toList();
 
     switch (_summaryType) {
       case SummaryType.weight:
@@ -217,7 +211,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               ],
             ),
           ),
-          if (_exerciseLogs.isNotEmpty)
+          if (widget.exerciseLogs.isNotEmpty)
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -310,7 +304,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                 trailing: "${weightWithConversion(value: widget.heaviestWeight.$2)}$weightUnitLabel",
                 subtitle: 'Heaviest weight in a set',
                 onTap: () => _navigateTo(routineLogId: widget.heaviestWeight.$1),
-                enabled: _exerciseLogs.isNotEmpty,
+                enabled: widget.exerciseLogs.isNotEmpty,
               ),
             ),
           if (withWeightsOnly(type: widget.exercise.type))
@@ -322,7 +316,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                       "${weightWithConversion(value: widget.heaviestSet.$2.weightValue())}$weightUnitLabel x ${widget.heaviestSet.$2.repsValue()}",
                   subtitle: 'Heaviest volume in a set',
                   onTap: () => _navigateTo(routineLogId: widget.heaviestSet.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
+                  enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withDurationOnly(type: widget.exercise.type))
             Padding(
@@ -332,7 +326,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   trailing: widget.longestDuration.$2.hmsAnalog(),
                   subtitle: 'Longest time for this exercise',
                   onTap: () => _navigateTo(routineLogId: widget.longestDuration.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
+                  enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withReps(type: widget.exercise.type))
             Padding(
@@ -342,7 +336,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   trailing: "${widget.mostRepsSet.$2} reps",
                   subtitle: 'Most reps in a set',
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSet.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
+                  enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withReps(type: widget.exercise.type))
             Padding(
@@ -352,7 +346,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   trailing: "${widget.mostRepsSession.$2} reps",
                   subtitle: 'Most reps in a session',
                   onTap: () => _navigateTo(routineLogId: widget.mostRepsSession.$1),
-                  enabled: _exerciseLogs.isNotEmpty),
+                  enabled: widget.exerciseLogs.isNotEmpty),
             ),
           if (withWeightsOnly(type: widget.exercise.type)) PersonalBestWidget(exercise: widget.exercise),
         ],

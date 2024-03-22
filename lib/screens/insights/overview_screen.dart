@@ -74,7 +74,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final logsForTheMonth = _monthlyLogs?[_dateTimeRange] ?? routineLogController.monthlyLogs[_dateTimeRange] ?? [];
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
