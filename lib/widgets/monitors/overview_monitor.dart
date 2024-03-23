@@ -65,7 +65,7 @@ class OverviewMonitor extends StatelessWidget {
                 )),
             const SizedBox(width: 20),
             GestureDetector(
-              onTap: () => _navigateToLeaderBoard(context: context),
+              //onTap: () => _navigateToLeaderBoard(context: context),
               child: Stack(alignment: Alignment.center, children: [
                 LogStreakMonitor(
                     value: monthlyProgress,
