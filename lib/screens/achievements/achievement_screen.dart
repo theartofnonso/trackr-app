@@ -32,6 +32,12 @@ class AchievementScreen extends StatelessWidget {
           ];
 
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: sapphireDark80,
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
+            onPressed: () => Navigator.of(context).pop(),
+          )),
       floatingActionButton: completed
           ? FloatingActionButton(
               onPressed: () => _onShareCalendar(context: context, monthsHeatMaps: monthsHeatMaps, completed: completed),
@@ -57,13 +63,6 @@ class AchievementScreen extends StatelessWidget {
           minimum: const EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
           child: SingleChildScrollView(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, color: Colors.white, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              ]),
-              const SizedBox(height: 10),
               Text(achievementDto.type.title.toUpperCase(),
                   style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w900)),
               const SizedBox(height: 2),

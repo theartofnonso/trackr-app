@@ -57,13 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final foundExercise =
         Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
             widget.exercise;
 
-    final exerciseLogs = _exerciseLogsById?[foundExercise.id] ??
-        Provider.of<RoutineLogController>(context, listen: true).exerciseLogsById[foundExercise.id] ??
-        [];
+    final exerciseLogs = _exerciseLogsById?[foundExercise.id] ?? [];
 
     final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
 
@@ -178,8 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
               SafeArea(
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                    const SizedBox(height: 10),
                     Expanded(
                       child: TabBarView(
                         children: [
@@ -192,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             exercise: foundExercise,
                             exerciseLogs: completedExerciseLogs,
                           ),
-                          HistoryScreen(exercise: foundExercise),
+                          HistoryScreen(exerciseLogs: completedExerciseLogs),
                           if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
                         ],
                       ),
@@ -222,5 +222,12 @@ class _HomeScreenState extends State<HomeScreen> {
         _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: routineLogs);
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    _exerciseLogsById = routineLogController.exerciseLogsById;
   }
 }

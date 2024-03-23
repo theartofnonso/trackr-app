@@ -179,6 +179,9 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _computeChart();
+
     final weightUnitLabel = weightLabel();
 
     return SingleChildScrollView(
@@ -354,11 +357,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     ));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _computeChart();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  // }
 }
 
 class _MetricListTile extends StatelessWidget {
