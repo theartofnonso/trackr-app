@@ -198,10 +198,9 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTimeRange currentWeekRange() {
-    DateTime today = DateTime(year, month, day);
-    DateTime startOfCurrentWeek = today.subtract(Duration(days: today.weekday % DateTime.daysPerWeek - 1));
-    DateTime endOfCurrentWeek = startOfCurrentWeek.add(const Duration(days: 6));
-    return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
+    DateTime today = DateTime.now();
+    DateTime startOfCurrentWeek = today.subtract(Duration(days: today.weekday - 1)).withoutTime();
+    return DateTimeRange(start: startOfCurrentWeek, end: DateTime.now().withoutTime());
   }
 
   DateTime nextHour() {
