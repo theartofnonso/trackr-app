@@ -126,9 +126,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configureAmplify() async {
     /// Only sync data for this year
-    final range = DateTime.now().dateTimeRange();
-    final startOfCurrentYear = range.start.toIso8601String();
-    final endOfCurrentYear = range.end.toIso8601String();
+    final now = DateTime.now().withoutTime();
+    final then = DateTime(now.year - 1);
+    final startOfCurrentYear = then.toIso8601String();
+    final endOfCurrentYear = now.toIso8601String();
     try {
       await Amplify.addPlugin(AmplifyAnalyticsPinpoint());
       await Amplify.addPlugin(AmplifyAuthCognito());

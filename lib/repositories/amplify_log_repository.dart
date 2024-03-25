@@ -66,8 +66,10 @@ class AmplifyLogRepository {
   }
 
   Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
-    final startOfCurrentYear = range.start.toIso8601String();
-    final endOfCurrentYear = range.end.toIso8601String();
+    final now = DateTime.now().withoutTime();
+    final then = DateTime(now.year - 1);
+    final startOfCurrentYear = then.toIso8601String();
+    final endOfCurrentYear = now.toIso8601String();
     final whereDate = RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear);
     final request = ModelQueries.list(RoutineLog.classType, where: whereDate, limit: 999);
     final response = await Amplify.API.query(request: request).response;
