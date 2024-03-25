@@ -66,7 +66,7 @@ class _CalendarYearsNavigatorState extends State<CalendarYearsNavigator> {
   @override
   void initState() {
     super.initState();
-    _currentDate = DateTime.now();;
+    _currentDate = DateTime.now();
   }
 
   @override

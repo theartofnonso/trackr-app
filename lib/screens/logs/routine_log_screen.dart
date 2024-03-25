@@ -10,7 +10,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
@@ -184,7 +183,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 ),
               ),
             ),
-            if (_loading) OverlayBackground()
           ]),
         ));
   }

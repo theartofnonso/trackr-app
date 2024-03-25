@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracker_app/colors.dart';
 
 class GradientWidget extends StatelessWidget {
   final Widget child;

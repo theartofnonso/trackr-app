@@ -21,7 +21,7 @@ import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
-import '../../../utils/1rm_calculator.dart';
+import '../../../utils/one_rep_max_calculator.dart';
 import '../../../utils/general_utils.dart';
 
 const _logModeTimerMessage = "Tap + to add a timer";

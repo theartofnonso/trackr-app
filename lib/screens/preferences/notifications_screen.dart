@@ -38,7 +38,6 @@ Map<String, dynamic> _decodeNotificationPayload({required PendingNotificationReq
   final payloadString = schedule?.payload;
   if (payloadString != null) {
     final payload = jsonDecode(payloadString);
-    print(payload);
     final reminderTypeString = payload["type"];
     final type = DailyReminderType.fromString(reminderTypeString);
     final durationString = payload["duration"];
