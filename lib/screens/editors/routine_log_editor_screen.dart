@@ -247,8 +247,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    print("Parent");
-
     return PopScope(
         canPop: false,
         child: Scaffold(
