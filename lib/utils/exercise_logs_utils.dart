@@ -10,7 +10,6 @@ import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
-import '../enums/routine_editor_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDto]
@@ -356,27 +355,4 @@ bool withRepsOnly({required ExerciseType type}) {
 
 bool withDurationOnly({required ExerciseType type}) {
   return type == ExerciseType.duration;
-}
-
-// List<ExerciseLogDto> loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-//   _exerciseLogs = exerciseLogs;
-//   _loadSets(mode: mode);
-// }
-
-Map<String, List<SetDto>> loadExerciseLogsAndSets(
-    {required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
-  Map<String, List<SetDto>> exerciseLogsAndSets = {};
-  for (var exerciseLog in exerciseLogs) {
-    if (withDurationOnly(type: exerciseLog.exercise.type)) {
-      if (mode == RoutineEditorMode.log) {
-        exerciseLogsAndSets[exerciseLog.id] = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
-        continue;
-      } else {
-        exerciseLogsAndSets[exerciseLog.id] = [];
-        continue;
-      }
-    }
-    exerciseLogsAndSets[exerciseLog.id] = exerciseLog.sets;
-  }
-  return exerciseLogsAndSets;
 }

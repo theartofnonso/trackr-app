@@ -16,8 +16,8 @@ class ExerciseLogController extends ChangeNotifier {
 
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => _exerciseLogRepository.exerciseLogs;
 
-  void loadExercises({required List<ExerciseLogDto> logs, required RoutineEditorMode mode}) {
-    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: logs, mode: mode);
+  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
+    _exerciseLogRepository.loadExerciseLogs(exerciseLogs: exerciseLogs, mode: mode);
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {

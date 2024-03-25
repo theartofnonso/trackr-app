@@ -99,11 +99,6 @@ class ExerciseLogRepository {
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
     newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: []);
 
-    // // Update the exerciseLog
-    // final updatedList = newList.map((exerciseLog) {
-    //   return exerciseLog.id == exerciseLogId ? exerciseLog.copyWith(sets: []) : exerciseLog;
-    // }).toList();
-
     // Assign the new list to maintain immutability
     _exerciseLogs = newExerciseLogs;
   }
