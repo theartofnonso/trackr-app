@@ -10,6 +10,7 @@ import '../dtos/set_dto.dart';
 import '../enums/exercise_type_enums.dart';
 import '../enums/muscle_group_enums.dart';
 import '../enums/pb_enums.dart';
+import '../enums/routine_editor_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 
 /// Highest value per [ExerciseLogDto]
@@ -46,9 +47,7 @@ int highestRepsForExerciseLog({required ExerciseLogDto exerciseLog}) {
 }
 
 double heaviestVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
-  return exerciseLog.sets
-      .map((set) => set.volume())
-      .fold(0.0, (prev, element) => element > prev ? element : prev);
+  return exerciseLog.sets.map((set) => set.volume()).fold(0.0, (prev, element) => element > prev ? element : prev);
 }
 
 SetDto heaviestSetVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
@@ -176,22 +175,23 @@ List<PBDto> calculatePBs(
 
   if (pastExerciseLogs.isNotEmpty && exerciseLog.sets.isNotEmpty) {
     if (withWeightsOnly(type: exerciseType)) {
-      final pastHeaviestWeight =
-          pastExerciseLogs.map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log)).map((set) => set.weightValue()).max;
+      final pastHeaviestWeight = pastExerciseLogs
+          .map((log) => heaviestSetWeightForExerciseLog(exerciseLog: log))
+          .map((set) => set.weightValue())
+          .max;
       final pastHeaviestSetVolume = pastExerciseLogs.map((log) => heaviestVolumeForExerciseLog(exerciseLog: log)).max;
 
       final currentHeaviestWeightSets = exerciseLog.sets.where((set) => set.weightValue() > pastHeaviestWeight);
       if (currentHeaviestWeightSets.isNotEmpty) {
-        final heaviestWeightSet = currentHeaviestWeightSets
-            .reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
+        final heaviestWeightSet =
+            currentHeaviestWeightSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
         pbs.add(PBDto(set: heaviestWeightSet, exercise: exerciseLog.exercise, pb: PBType.weight));
       }
 
-      final currentHeaviestVolumeSets =
-          exerciseLog.sets.where((set) => (set.volume()) > pastHeaviestSetVolume);
+      final currentHeaviestVolumeSets = exerciseLog.sets.where((set) => (set.volume()) > pastHeaviestSetVolume);
       if (currentHeaviestVolumeSets.isNotEmpty) {
-        final heaviestVolumeSet = currentHeaviestVolumeSets
-            .reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
+        final heaviestVolumeSet =
+            currentHeaviestVolumeSets.reduce((curr, next) => (curr.volume()) > (next.volume()) ? curr : next);
         pbs.add(PBDto(set: heaviestVolumeSet, exercise: exerciseLog.exercise, pb: PBType.volume));
       }
     }
@@ -278,12 +278,10 @@ TemplateChange? hasSetValueChanged({
   required List<ExerciseLogDto> exerciseLogs1,
   required List<ExerciseLogDto> exerciseLogs2,
 }) {
-  final exerciseLog1Volume = exerciseLogs1
-      .expand((logs) => logs.sets)
-      .fold(0.0, (previousValue, set) => previousValue + (set.volume()));
-  final exerciseLog2Volume = exerciseLogs2
-      .expand((logs) => logs.sets)
-      .fold(0.0, (previousValue, set) => previousValue + (set.volume()));
+  final exerciseLog1Volume =
+      exerciseLogs1.expand((logs) => logs.sets).fold(0.0, (previousValue, set) => previousValue + (set.volume()));
+  final exerciseLog2Volume =
+      exerciseLogs2.expand((logs) => logs.sets).fold(0.0, (previousValue, set) => previousValue + (set.volume()));
 
   return exerciseLog1Volume != exerciseLog2Volume ? TemplateChange.setValue : null;
 }
@@ -299,7 +297,6 @@ List<ExerciseLogDto> exerciseLogsWithCheckedSets({required List<ExerciseLogDto> 
 }
 
 Map<MuscleGroupFamily, int> _muscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-
   final frequencyMap = <MuscleGroupFamily, int>{};
 
   final exerciseLogsByDay = groupBy(exerciseLogs, (log) => log.createdAt.day);
@@ -316,7 +313,6 @@ Map<MuscleGroupFamily, int> _muscleGroupFamilyFrequencies({required List<Exercis
 }
 
 Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-
   final frequencyMap = _muscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs);
 
   final scaledFrequencyMap = <MuscleGroupFamily, double>{};
@@ -335,14 +331,15 @@ Map<MuscleGroupFamily, double> weeklyScaledMuscleGroupFamilyFrequencies({require
 }
 
 double cumulativeMuscleGroupFamilyFrequencies({required List<ExerciseLogDto> exerciseLogs}) {
-  final frequencyEntries = _muscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs).entries.where((entry) => popularMuscleGroupFamilies().contains(entry.key));
+  final frequencyEntries = _muscleGroupFamilyFrequencies(exerciseLogs: exerciseLogs)
+      .entries
+      .where((entry) => popularMuscleGroupFamilies().contains(entry.key));
 
   final frequencyMap = Map.fromEntries(frequencyEntries);
 
   final cumulativeFrequency = frequencyMap.entries.map((entry) => entry.value).sum;
 
   return cumulativeFrequency / 48;
-
 }
 
 bool withWeightsOnly({required ExerciseType type}) {
@@ -359,4 +356,27 @@ bool withRepsOnly({required ExerciseType type}) {
 
 bool withDurationOnly({required ExerciseType type}) {
   return type == ExerciseType.duration;
+}
+
+// List<ExerciseLogDto> loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
+//   _exerciseLogs = exerciseLogs;
+//   _loadSets(mode: mode);
+// }
+
+Map<String, List<SetDto>> loadExerciseLogsAndSets(
+    {required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
+  Map<String, List<SetDto>> exerciseLogsAndSets = {};
+  for (var exerciseLog in exerciseLogs) {
+    if (withDurationOnly(type: exerciseLog.exercise.type)) {
+      if (mode == RoutineEditorMode.log) {
+        exerciseLogsAndSets[exerciseLog.id] = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
+        continue;
+      } else {
+        exerciseLogsAndSets[exerciseLog.id] = [];
+        continue;
+      }
+    }
+    exerciseLogsAndSets[exerciseLog.id] = exerciseLog.sets;
+  }
+  return exerciseLogsAndSets;
 }

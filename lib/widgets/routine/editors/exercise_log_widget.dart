@@ -185,7 +185,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _loadTextEditingControllers() {
-    final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    final sets = widget.exerciseLogDto.sets;
     List<(TextEditingController, TextEditingController)> controllers = [];
     for (var set in sets) {
       final value1Controller = TextEditingController(text: set.weightValue().toString());
@@ -196,7 +196,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _loadDurationControllers() {
-    final sets = Provider.of<ExerciseLogController>(context, listen: false).sets[widget.exerciseLogDto.id] ?? [];
+    final sets = widget.exerciseLogDto.sets;
     List<DateTime> controllers = [];
     for (var set in sets) {
       final duration = set.durationValue();
@@ -236,7 +236,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final sets = context.select((ExerciseLogController controller) => controller.sets)[widget.exerciseLogDto.id] ?? [];
+
+    final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
 
