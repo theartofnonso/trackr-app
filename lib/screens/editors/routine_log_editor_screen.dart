@@ -381,7 +381,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
+    final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
+      final sets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
+      return exerciseLog.copyWith(sets: sets);
+    }).toList();
+    Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
   }
 
   @override

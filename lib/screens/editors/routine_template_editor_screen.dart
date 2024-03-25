@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
@@ -355,8 +356,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   void _initializeProcedureData() {
     final exercises = widget.template?.exercises;
     if (exercises != null && exercises.isNotEmpty) {
+      final updatedExerciseLogs = exercises.map((exerciseLog) {
+        final sets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
+        return exerciseLog.copyWith(sets: sets);
+      }).toList();
       Provider.of<ExerciseLogController>(context, listen: false)
-          .loadExercises(logs: exercises, mode: RoutineEditorMode.edit);
+          .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: RoutineEditorMode.edit);
     }
   }
 

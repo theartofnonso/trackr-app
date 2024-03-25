@@ -9,35 +9,31 @@ import '../enums/routine_editor_type_enums.dart';
 class ExerciseLogRepository {
   List<ExerciseLogDto> _exerciseLogs = [];
 
-  Map<String, List<SetDto>> _sets = <String, List<SetDto>>{};
-
   UnmodifiableListView<ExerciseLogDto> get exerciseLogs => UnmodifiableListView(_exerciseLogs);
 
-  UnmodifiableMapView<String, List<SetDto>> get sets => UnmodifiableMapView(_sets);
-
-  void loadExercises({required List<ExerciseLogDto> logs, required RoutineEditorMode mode}) {
-    _exerciseLogs = logs;
-    _loadSets(mode: mode);
-  }
-
-  void _loadSets({required RoutineEditorMode mode}) {
-    for (var exerciseLog in _exerciseLogs) {
+  void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
+    List<ExerciseLogDto> logs = [];
+    for (var exerciseLog in exerciseLogs) {
       if (withDurationOnly(type: exerciseLog.exercise.type)) {
         if (mode == RoutineEditorMode.log) {
-          _sets[exerciseLog.id] = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
+          final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
+          final updatedExerciseLog = exerciseLog.copyWith(sets: checkedSets);
+          logs.add(updatedExerciseLog);
           continue;
         } else {
-          _sets[exerciseLog.id] = [];
+          final updatedExerciseLog = exerciseLog.copyWith(sets: []);
+          logs.add(updatedExerciseLog);
           continue;
         }
       }
-      _sets[exerciseLog.id] = exerciseLog.sets;
+      logs.add(exerciseLog);
     }
+    _exerciseLogs = logs;
   }
 
   List<ExerciseLogDto> mergeExerciseLogsAndSets() {
     return _exerciseLogs.map((exerciseLog) {
-      final sets = _sets[exerciseLog.id] ?? [];
+      final sets = exerciseLog.sets;
       return exerciseLog.copyWith(sets: withDurationOnly(type: exerciseLog.exercise.type) ? _checkSets(sets) : sets);
     }).toList();
   }
@@ -56,11 +52,11 @@ class ExerciseLogRepository {
   }
 
   void removeExerciseLog({required String logId}) {
-    final logIndex = _indexWhereExerciseLog(exerciseLogId: logId);
-    if (logIndex == -1) {
+    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: logId);
+    if (exerciseLogIndex == -1) {
       return;
     }
-    final logToBeRemoved = _exerciseLogs[logIndex];
+    final logToBeRemoved = _exerciseLogs[exerciseLogIndex];
 
     if (logToBeRemoved.superSetId.isNotEmpty) {
       _removeSuperSet(superSetId: logToBeRemoved.superSetId);
@@ -68,7 +64,7 @@ class ExerciseLogRepository {
 
     final exerciseLogs = List.from(_exerciseLogs);
 
-    exerciseLogs.removeAt(logIndex);
+    exerciseLogs.removeAt(exerciseLogIndex);
 
     _exerciseLogs = [...exerciseLogs];
 
@@ -90,21 +86,21 @@ class ExerciseLogRepository {
   }
 
   void _removeAllSetsForExerciseLog({required String exerciseLogId}) {
-    // Check if the key exists in the map
-    if (!_sets.containsKey(exerciseLogId)) {
-      // Handle the case where the key does not exist
-      // e.g., log an error or throw an exception
+    // Check if exercise exists
+    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+
+    if (exerciseLogIndex == -1) {
       return;
     }
 
-    // Creating a new map by copying the original map
-    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+    // Creating a new list by copying the original list
+    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
 
-    // Remove the key-value pair from the new map
-    newMap.remove(exerciseLogId);
+    final exerciseLog = newExerciseLogs[exerciseLogIndex];
+    newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: []);
 
-    // Assign the new map to _sets to maintain immutability
-    _sets = newMap;
+    // Assign the new list to maintain immutability
+    _exerciseLogs = newExerciseLogs;
   }
 
   void updateExerciseLogNotes({required String exerciseLogId, required String value}) {
@@ -144,110 +140,96 @@ class ExerciseLogRepository {
   void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
     int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
 
-    if (exerciseLogIndex != -1) {
-      final currentSets = _sets[exerciseLogId] ?? [];
-
-      int newIndex = currentSets.length;
-
-      SetDto newSet = const SetDto(0, 0, false);
-
-      SetDto? nextSet = currentSets.lastOrNull;
-      if (nextSet != null) {
-        newSet = nextSet.copyWith(checked: false);
-      }
-
-      SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
-
-      if (pastSet != null) {
-        newSet = pastSet.copyWith(checked: false);
-      }
-
-      // Clone the old sets for the exerciseId, or create a new list if none exist
-      List<SetDto> updatedSets = _sets[exerciseLogId] != null ? List<SetDto>.from(_sets[exerciseLogId]!) : [];
-
-      // Add the new set to the cloned list
-      updatedSets.add(newSet);
-
-      // Create a new map by copying all key-value pairs from the original map
-      Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
-
-      // Update the new map with the modified list of sets
-      newMap[exerciseLogId] = updatedSets;
-
-      // Assign the new map to _sets to maintain immutability
-      _sets = newMap;
+    if (exerciseLogIndex == -1) {
+      return;
     }
+
+    final sets = _setsForExerciseLog(exerciseLogId: exerciseLogId);
+
+    int newIndex = sets.length;
+
+    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : const SetDto(0, 0, false);
+
+    SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
+
+    if (pastSet != null) {
+      newSet = pastSet.copyWith(checked: false);
+    }
+
+    sets.add(newSet);
+
+    // Creating a new list by copying the original list
+    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
+
+    // Updating the exerciseLog
+    final exerciseLog = newExerciseLogs[exerciseLogIndex];
+    newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
+
+    // Assign the new list to maintain immutability
+    _exerciseLogs = newExerciseLogs;
   }
 
   void removeSet({required String exerciseLogId, required int index}) {
-    // Check if the exercise ID exists in the map
-    if (!_sets.containsKey(exerciseLogId)) {
-      // Handle the case where the exercise ID does not exist
-      // e.g., log an error or throw an exception
+    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+
+    if (exerciseLogIndex == -1) {
       return;
     }
 
-    // Clone the old sets for the exercise ID
-    List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseLogId]!);
+    // Creating a new list by copying the original list
+    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
 
-    // Check if the index is valid
-    if (index < 0 || index >= updatedSets.length) {
-      // Handle the invalid index
-      // e.g., log an error or throw an exception
-      return;
+    // Updating the exerciseLog
+    final exerciseLog = newExerciseLogs[exerciseLogIndex];
+    final sets =  exerciseLog.sets;
+    if (index >= 0 || index < sets.length) {
+      sets.removeAt(index);
+
+      newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
+
+      // Assign the new list to maintain immutability
+      _exerciseLogs = newExerciseLogs;
     }
 
-    // Remove the set at the specified index
-    updatedSets.removeAt(index);
-
-    // Create a new map by copying all key-value pairs from the original map
-    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
-
-    // Update the new map with the modified list of sets
-    newMap[exerciseLogId] = updatedSets;
-
-    // Assign the new map to _sets to maintain immutability
-    _sets = newMap;
   }
 
-  void _updateSet({required String exerciseLogId, required int index, required SetDto updatedSet}) {
-    // Check if the exercise ID exists in the map and if the index is valid
-    if (!_sets.containsKey(exerciseLogId) || index < 0 || index >= (_sets[exerciseLogId]?.length ?? 0)) {
-      // Handle the case where the exercise ID does not exist or index is invalid
-      // e.g., log an error or throw an exception
+  void _updateSet({required String exerciseLogId, required int index, required SetDto set}) {
+    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+
+    if (exerciseLogIndex == -1) {
       return;
     }
 
-    // Clone the old sets for the exercise ID
-    List<SetDto> updatedSets = List<SetDto>.from(_sets[exerciseLogId]!);
+    // Creating a new list by copying the original list
+    List<ExerciseLogDto> newExerciseLogs = _copyExerciseLogs();
 
-    // Replace the set at the specified index with the updated set
-    updatedSets[index] = updatedSet;
+    // Updating the exerciseLog
+    final exerciseLog = newExerciseLogs[exerciseLogIndex];
+    final sets =  exerciseLog.sets;
+    if (index >= 0 || index < sets.length) {
+      sets[index] = set;
 
-    // Create a new map by copying all key-value pairs from the original map
-    Map<String, List<SetDto>> newMap = Map<String, List<SetDto>>.from(_sets);
+      newExerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(sets: sets);
 
-    // Update the new map with the modified list of sets
-
-    newMap[exerciseLogId] = updatedSets;
-
-    _sets = newMap;
+      // Assign the new list to maintain immutability
+      _exerciseLogs = newExerciseLogs;
+    }
   }
 
   void updateWeight({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
   }
 
   void updateReps({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
   }
 
   void updateDuration({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
   }
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
-    _updateSet(exerciseLogId: exerciseLogId, index: index, updatedSet: setDto);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
   }
 
   /// Helper functions
@@ -257,7 +239,7 @@ class ExerciseLogRepository {
   }
 
   List<SetDto> completedSets() {
-    return _sets.values.expand((set) => set).where((set) => set.checked).toList();
+    return _exerciseLogs.expand((exerciseLog) => exerciseLog.sets).where((set) => set.checked).toList();
   }
 
   void _removeSuperSet({required String superSetId}) {
@@ -297,12 +279,24 @@ class ExerciseLogRepository {
     return _exerciseLogs.indexWhere((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
+  List<SetDto> _setsForExerciseLog({required String exerciseLogId}) {
+    final exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+    if (exerciseLogIndex == -1) {
+      return [];
+    }
+    final exerciseLog = _exerciseLogs[exerciseLogIndex];
+    return exerciseLog.sets;
+  }
+
   ExerciseLogDto? _whereExerciseLog({required String exerciseLogId}) {
     return _exerciseLogs.firstWhereOrNull((exerciseLog) => exerciseLog.id == exerciseLogId);
   }
 
+  List<ExerciseLogDto> _copyExerciseLogs() {
+    return List<ExerciseLogDto>.from(_exerciseLogs);
+  }
+
   void clear() {
     _exerciseLogs = [];
-    _sets = <String, List<SetDto>>{};
   }
 }
