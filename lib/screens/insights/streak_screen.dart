@@ -12,6 +12,7 @@ import '../../controllers/routine_log_controller.dart';
 import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/calendar/calendar_years_navigator.dart';
 import '../../widgets/calender_heatmaps/calendar_heatmap.dart';
+import '../../widgets/empty_states/calendar_heatmap_empty_state.dart';
 
 class StreakScreen extends StatefulWidget {
   static const routeName = '/streak_screen';
@@ -23,6 +24,8 @@ class StreakScreen extends StatefulWidget {
 }
 
 class _StreakScreenState extends State<StreakScreen> {
+
+  late DateTime _currentYear;
   List<RoutineLogDto>? _routineLogs;
 
   bool _loading = false;
@@ -34,8 +37,6 @@ class _StreakScreenState extends State<StreakScreen> {
     final routineLogs = _routineLogs ?? routineLogController.routineLogs;
 
     final yearlyLogs = groupBy(routineLogs, (log) => log.createdAt.year);
-
-    print(yearlyLogs);
 
     final yearsAndMonths = yearlyLogs.entries.map((yearAndLogs) {
       final monthlyLogs = groupBy(yearAndLogs.value, (log) => log.createdAt.month);
@@ -72,7 +73,7 @@ class _StreakScreenState extends State<StreakScreen> {
                   const SizedBox(height: 10),
                   CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
                   yearsAndMonths.isEmpty
-                      ? const _YearAndMonthsEmptyState()
+                      ? CalendarHeatMapEmptyState(dates: [_currentYear])
                       : Expanded(
                           child: ListView.separated(
                             itemCount: yearsAndMonths.length,
@@ -101,8 +102,15 @@ class _StreakScreenState extends State<StreakScreen> {
       setState(() {
         _loading = false;
         _routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        _currentYear = range.start;
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _currentYear = DateTime.now();
   }
 }
 
@@ -129,23 +137,5 @@ class _YearAndMonths extends StatelessWidget {
           crossAxisSpacing: 4.0,
           children: monthsAndLogs)
     ]);
-  }
-}
-
-class _YearAndMonthsEmptyState extends StatelessWidget {
-  const _YearAndMonthsEmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        crossAxisCount: 1,
-        childAspectRatio: 1.2,
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 4.0,
-        children: [
-          CalendarHeatMap(dates: [DateTime.now()], spacing: 4)
-        ]);
   }
 }
