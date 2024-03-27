@@ -35,6 +35,8 @@ class _StreakScreenState extends State<StreakScreen> {
 
     final yearlyLogs = groupBy(routineLogs, (log) => log.createdAt.year);
 
+    print(yearlyLogs);
+
     final yearsAndMonths = yearlyLogs.entries.map((yearAndLogs) {
       final monthlyLogs = groupBy(yearAndLogs.value, (log) => log.createdAt.month);
       return _YearAndMonths(year: yearAndLogs.key, monthlyLogs: monthlyLogs);

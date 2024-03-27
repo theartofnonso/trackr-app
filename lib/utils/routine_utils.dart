@@ -150,11 +150,14 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
 }
 
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
+
+  if(routineLogs.isEmpty) return {};
+
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
+  DateTime startDate = routineLogs.first.createdAt;
 
-  DateTime lastDate = routineLogs.lastOrNull?.createdAt ?? DateTime.now();
+  DateTime lastDate = routineLogs.last.createdAt;
 
   List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
 

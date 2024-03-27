@@ -74,6 +74,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
     final logsForTheMonth = _monthlyLogs?[_dateTimeRange] ?? routineLogController.monthlyLogs[_dateTimeRange] ?? [];
+
+    Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs = _monthlyLogs ?? routineLogController.monthlyLogs;
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
@@ -131,9 +134,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             ),
                             const SizedBox(height: 12),
                             MonthlyInsightsScreen(
-                              logs: logsForTheMonth,
+                              logsForTheMonth: logsForTheMonth,
                               daysInMonth: _dateTimeRange.datesToNow.length,
                               dateTimeRange: _dateTimeRange,
+                              monthlyLogs: monthlyLogs,
                             ),
                           ])),
                     )

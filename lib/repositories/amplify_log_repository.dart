@@ -57,7 +57,10 @@ class AmplifyLogRepository {
 
   Future<void> fetchLogs({required bool firstLaunch}) async {
     if (firstLaunch) {
-      List<RoutineLog> logs = await queryLogsCloud(range: DateTime.now().dateTimeRange());
+      final now = DateTime.now().withoutTime();
+      final then = DateTime(now.year - 1);
+      final range = DateTimeRange(start: then, end: now);
+      List<RoutineLog> logs = await queryLogsCloud(range: range);
       _mapAndNormaliseLogs(logs: logs);
     } else {
       List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
@@ -66,10 +69,8 @@ class AmplifyLogRepository {
   }
 
   Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
-    final now = DateTime.now().withoutTime();
-    final then = DateTime(now.year - 1);
-    final startOfCurrentYear = then.toIso8601String();
-    final endOfCurrentYear = now.toIso8601String();
+    final startOfCurrentYear = range.start.toIso8601String();
+    final endOfCurrentYear = range.end.toIso8601String();
     final whereDate = RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear);
     final request = ModelQueries.list(RoutineLog.classType, where: whereDate, limit: 999);
     final response = await Amplify.API.query(request: request).response;
