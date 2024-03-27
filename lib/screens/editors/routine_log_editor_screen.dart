@@ -383,7 +383,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final exerciseLogs = widget.log.exerciseLogs;
     final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
       final sets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
-      return exerciseLog.copyWith(sets: sets);
+      final unCheckedSets = sets.map((set) => set.copyWith(checked: false)).toList();
+      return exerciseLog.copyWith(sets: unCheckedSets);
     }).toList();
     Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
   }

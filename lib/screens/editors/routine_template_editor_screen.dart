@@ -358,7 +358,8 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final sets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
-        return exerciseLog.copyWith(sets: sets);
+        final unCheckedSets = sets.map((set) => set.copyWith(checked: false)).toList();
+        return exerciseLog.copyWith(sets: unCheckedSets);
       }).toList();
       Provider.of<ExerciseLogController>(context, listen: false)
           .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: RoutineEditorMode.edit);
