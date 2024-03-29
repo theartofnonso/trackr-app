@@ -18,6 +18,7 @@ import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/health_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
@@ -103,6 +104,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final routineLog = _routineLog(endTime: DateTime.now());
 
     final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
+
+    workoutSessionLogged();
 
     _navigateBack(log: createdLog);
   }

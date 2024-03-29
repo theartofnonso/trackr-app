@@ -224,7 +224,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               CTextButton(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
-                    recordShareEvent(contentType: ShareContentType.calender);
+                    contentShared(contentType: ShareContentType.calender);
                     Navigator.of(context).pop();
                   },
                   label: "Share",

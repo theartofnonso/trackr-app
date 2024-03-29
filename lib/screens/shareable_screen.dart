@@ -149,7 +149,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
                     final index = _controller.page!.toInt();
                     captureImage(key: pagesKeys[index], pixelRatio: 3.5);
                     final contentType = _shareContentType(index: index);
-                    recordShareEvent(contentType: contentType);
+                    contentShared(contentType: contentType);
                   },
                   label: "Share",
                   buttonColor: Colors.transparent,
