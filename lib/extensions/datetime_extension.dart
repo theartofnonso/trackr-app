@@ -13,6 +13,11 @@ extension DateTimeExtension on DateTime {
   }
 
   /// Get datetime format
+  String abbreviatedMonthWithYear() {
+    return DateFormat("LLL yyyy", "en").format(this);
+  }
+
+  /// Get datetime format
   String formattedDay() {
     return DateFormat("dd", "en").format(this);
   }
@@ -80,6 +85,11 @@ extension DateTimeExtension on DateTime {
   bool isSameMonthYear(DateTime other) {
     final date = this;
     return date.month == other.month && date.year == other.year;
+  }
+
+  bool isSameYear(DateTime other) {
+    final date = this;
+    return date.year == other.year;
   }
 
   String durationSinceOrDate() {
@@ -157,11 +167,11 @@ extension DateTimeExtension on DateTime {
     return DateTime(year, month, day, hour);
   }
 
-  DateTime previous90Days() {
+  DateTime past90Days() {
     return subtract(const Duration(days: 90)).withoutTime();
   }
 
-  DateTime previous180Days() {
+  DateTime past180Days() {
     return subtract(const Duration(days: 180)).withoutTime();
   }
 
@@ -188,10 +198,9 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTimeRange currentWeekRange() {
-    DateTime today = DateTime(year, month, day);
-    DateTime startOfCurrentWeek = today.subtract(const Duration(days: 6));
-    DateTime endOfCurrentWeek = startOfCurrentWeek.add(const Duration(days: 6));
-    return DateTimeRange(start: startOfCurrentWeek, end: endOfCurrentWeek);
+    DateTime today = DateTime.now();
+    DateTime startOfCurrentWeek = today.subtract(Duration(days: today.weekday - 1)).withoutTime();
+    return DateTimeRange(start: startOfCurrentWeek, end: DateTime.now().withoutTime());
   }
 
   DateTime nextHour() {
@@ -208,5 +217,11 @@ extension DateTimeExtension on DateTime {
     DateTime today = DateTime(year, month, day);
     final numberOfDaysUntilNextWeek = 7 - today.weekday;
     return today.add(Duration(days: numberOfDaysUntilNextWeek + 1));
+  }
+
+  DateTimeRange dateTimeRange() {
+    final start = DateTime(year, 1);
+    final end = DateTime(year, 12);
+    return DateTimeRange(start: start, end: end);
   }
 }

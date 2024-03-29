@@ -1,5 +1,4 @@
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -151,11 +150,14 @@ Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByWeek(
 }
 
 Map<DateTimeRange, List<RoutineLogDto>> groupRoutineLogsByMonth({required List<RoutineLogDto> routineLogs}) {
+
+  if(routineLogs.isEmpty) return {};
+
   final map = <DateTimeRange, List<RoutineLogDto>>{};
 
-  DateTime startDate = routineLogs.firstOrNull?.createdAt ?? DateTime.now();
+  DateTime startDate = routineLogs.first.createdAt;
 
-  DateTime lastDate = routineLogs.lastOrNull?.createdAt ?? DateTime.now();
+  DateTime lastDate = routineLogs.last.createdAt;
 
   List<DateTimeRange> monthRanges = generateMonthRangesFrom(startDate: startDate, endDate: lastDate);
 
@@ -180,13 +182,6 @@ String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLo
 }
 
 Future<List<RoutineLog>> getAllRoutineLogs() async {
-  // final Map<String, dynamic> filter = {
-  //   "filter": {
-  //     "city": {"eq": city},
-  //     "status": {"eq": EventStatus.LIVE.name},
-  //     "endDateTime": {"gt": DateTime.now().toIso8601String()}
-  //   }
-  // };
 
   List<RoutineLog> logs = [];
 
@@ -197,7 +192,6 @@ Future<List<RoutineLog>> getAllRoutineLogs() async {
       authorizationMode: APIAuthorizationType.apiKey);
 
   final response = await Amplify.API.query(request: request).response;
-  print(response);
   final results = response.data;
   if (results != null) {
     logs = results.items.whereType<RoutineLog>().toList();

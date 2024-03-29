@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,18 +9,13 @@ import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/utils/app_analytics.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../controllers/routine_template_controller.dart';
 import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../utils/https_utils.dart';
-import 'preferences/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -81,11 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
         onDestinationSelected: (int index) {
-          final destination = screens[index];
           setState(() {
             _currentScreenIndex = index;
           });
-          if (destination is AchievementsScreen) recordViewMilestonesEvent();
           _scrollToTop(index);
         },
         selectedIndex: _currentScreenIndex,
@@ -101,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _loadAppData({required bool firstLaunch}) {
+  void _loadAppData({bool firstLaunch = false}) async {
     Provider.of<RoutineLogController>(context, listen: false).fetchLogs(firstLaunch: firstLaunch);
     Provider.of<ExerciseController>(context, listen: false).fetchExercises(firstLaunch: firstLaunch);
     Provider.of<RoutineTemplateController>(context, listen: false).fetchTemplates(firstLaunch: firstLaunch);
@@ -126,45 +117,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
-      SharedPrefs().firstLaunch = false;
+      _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
       _cacheUser();
-      _loadAppData(firstLaunch: true);
-      _checkAndRequestNotificationPermission();
+      SharedPrefs().firstLaunch = false;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAppData(firstLaunch: false);
+      _loadAppData();
       _loadCachedLog();
     });
-  }
-
-  void _requestIosNotificationPermission() async {
-    final isEnabled = await requestIosNotificationPermission();
-    if (isEnabled) {
-      if (mounted) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen()));
-      }
-    }
-  }
-
-  Future<void> _checkAndRequestNotificationPermission() async {
-    final result = await checkIosNotificationPermission();
-    if (!result.isEnabled) {
-      if (mounted) {
-        showBottomSheetWithMultiActions(
-            context: context,
-            title: "Remind me to train weekly",
-            description: "Training regularly can be hard. TRKR can help you stay on track.",
-            leftAction: Navigator.of(context).pop,
-            rightAction: () {
-              Navigator.of(context).pop();
-              _requestIosNotificationPermission();
-            },
-            leftActionLabel: 'Cancel',
-            rightActionLabel: 'Always remind me',
-            isLeftActionDestructive: false);
-      }
-    }
   }
 
   @override

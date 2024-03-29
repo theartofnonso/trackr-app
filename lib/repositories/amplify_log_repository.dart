@@ -55,27 +55,27 @@ class AmplifyLogRepository {
     _exerciseLogsByType = groupExerciseLogsByExerciseType(routineLogs: _routineLogs);
   }
 
-  Future<void> fetchLogs({bool firstLaunch = false}) async {
-    if (!firstLaunch) {
-      List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
+  Future<void> fetchLogs({required bool firstLaunch}) async {
+    if (firstLaunch) {
+      final now = DateTime.now().withoutTime();
+      final then = DateTime(now.year - 1);
+      final range = DateTimeRange(start: then, end: now);
+      List<RoutineLog> logs = await queryLogsCloud(range: range);
       _mapAndNormaliseLogs(logs: logs);
     } else {
-      await _apiFetchTemplates();
+      List<RoutineLog> logs = await Amplify.DataStore.query(RoutineLog.classType);
+      _mapAndNormaliseLogs(logs: logs);
     }
   }
 
-  Future<void> _apiFetchTemplates() async {
-    try {
-      final request = ModelQueries.list(RoutineLog.classType);
-      final response = await Amplify.API.query(request: request).response;
-
-      final logs = response.data?.items.whereType<RoutineLog>().toList();
-      if (logs != null) {
-        _mapAndNormaliseLogs(logs: logs);
-      }
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
-    }
+  Future<List<RoutineLog>> queryLogsCloud({required DateTimeRange range}) async {
+    final startOfCurrentYear = range.start.toIso8601String();
+    final endOfCurrentYear = range.end.toIso8601String();
+    final whereDate = RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear);
+    final request = ModelQueries.list(RoutineLog.classType, where: whereDate, limit: 999);
+    final response = await Amplify.API.query(request: request).response;
+    final routineLogs = response.data?.items.whereType<RoutineLog>().toList();
+    return routineLogs ?? [];
   }
 
   void _mapAndNormaliseLogs({required List<RoutineLog> logs}) {
@@ -175,10 +175,6 @@ class AmplifyLogRepository {
 
   RoutineLogDto? logWhereDate({required DateTime dateTime}) {
     return _routineLogs.firstWhereOrNull((log) => log.createdAt.isSameDayMonthYear(dateTime));
-  }
-
-  List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
-    return _exerciseLogsById[exercise.id] ?? [];
   }
 
   void clear() {

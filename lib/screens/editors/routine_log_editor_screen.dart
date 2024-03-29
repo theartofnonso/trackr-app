@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -17,7 +18,9 @@ import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../utils/app_analytics.dart';
 import '../../utils/exercise_logs_utils.dart';
+import '../../utils/health_utils.dart';
 import '../../widgets/empty_states/exercise_log_empty_state.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/routine/editors/exercise_log_widget.dart';
@@ -46,9 +49,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         context: context,
         exclude: preSelectedExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
-            controller.addExerciseLogs(exercises: selectedExercises);
-            _cacheLog();
-        }, multiSelect: true);
+          controller.addExerciseLogs(exercises: selectedExercises);
+          _cacheLog();
+        },
+        multiSelect: true);
   }
 
   void _showSuperSetExercisePicker({required ExerciseLogDto firstExerciseLog}) {
@@ -81,8 +85,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
         multiSelect: false,
         filter: oldExerciseLog.exercise.type,
         onSelected: (List<ExerciseDto> selectedExercises) {
-            controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
-            _cacheLog();
+          controller.replaceExerciseLog(oldExerciseId: oldExerciseLog.id, newExercise: selectedExercises.first);
+          _cacheLog();
         });
   }
 
@@ -100,6 +104,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final routineLog = _routineLog(endTime: DateTime.now());
 
     final createdLog = await Provider.of<RoutineLogController>(context, listen: false).saveLog(logDto: routineLog);
+
+    workoutSessionLogged();
 
     _navigateBack(log: createdLog);
   }
@@ -218,10 +224,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
   }
 
-  void _navigateBack({RoutineLogDto? log}) {
+  void _navigateBack({RoutineLogDto? log}) async {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
-    Navigator.of(context).pop(log);
+    if (log != null) {
+      syncWorkoutWithAppleHealth(log: log);
+    }
+    if (mounted) {
+      Navigator.of(context).pop(log);
+    }
   }
 
   @override
@@ -374,7 +385,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   void _initializeProcedureData() {
     final exerciseLogs = widget.log.exerciseLogs;
-    Provider.of<ExerciseLogController>(context, listen: false).loadExercises(logs: exerciseLogs, mode: widget.mode);
+    final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
+      final previousSets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
+      final unCheckedSets = previousSets.mapIndexed((index, set) => set.copyWith(checked: exerciseLog.sets[index].checked)).toList();
+      return exerciseLog.copyWith(sets: unCheckedSets);
+    }).toList();
+    Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
   }
 
   @override

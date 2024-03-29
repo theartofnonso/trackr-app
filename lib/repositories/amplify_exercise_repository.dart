@@ -13,7 +13,7 @@ import '../enums/muscle_group_enums.dart';
 import '../models/Exercise.dart';
 
 class AmplifyExerciseRepository {
-  final List<ExerciseDto> _exercises = [];
+  List<ExerciseDto> _exercises = [];
 
   UnmodifiableListView<ExerciseDto> get exercises => UnmodifiableListView(_exercises);
 
@@ -42,12 +42,15 @@ class AmplifyExerciseRepository {
     }).toList();
   }
 
-  Future<void> fetchExercises({bool firstLaunch = false}) async {
-    if (!firstLaunch) {
-      final exercises = await Amplify.DataStore.query(Exercise.classType);
-      _mapAndSortExercises(exercises: exercises);
+  Future<void> fetchExercises({required bool firstLaunch}) async {
+    List<ExerciseDto> exerciseDtos = [];
+
+    if (firstLaunch) {
+      final exercises = await _fetchExercisesCloud();
+      exerciseDtos = exercises.map((exercise) => exercise.dto()).toList();
     } else {
-      await _apiFetchExercises();
+      final exercises = await Amplify.DataStore.query(Exercise.classType);
+      exerciseDtos = exercises.map((exercise) => exercise.dto()).toList();
     }
 
     final chestExercises = await loadExercisesFromAssets(file: 'chest_exercises.json');
@@ -68,45 +71,40 @@ class AmplifyExerciseRepository {
     final neckExercises = await loadExercisesFromAssets(file: 'neck_exercises.json');
     final fullBodyExercises = await loadExercisesFromAssets(file: 'fullbody_exercises.json');
 
-    _exercises.addAll(chestExercises);
-    _exercises.addAll(shouldersExercises);
-    _exercises.addAll(bicepsExercises);
-    _exercises.addAll(tricepsExercises);
-    _exercises.addAll(quadricepsExercises);
-    _exercises.addAll(hamstringsExercises);
-    _exercises.addAll(backExercises);
-    _exercises.addAll(trapsExercises);
-    _exercises.addAll(latsExercises);
-    _exercises.addAll(glutesExercises);
-    _exercises.addAll(adductorsExercises);
-    _exercises.addAll(abductorsExercises);
-    _exercises.addAll(absExercises);
-    _exercises.addAll(calvesExercises);
-    _exercises.addAll(forearmsExercises);
-    _exercises.addAll(neckExercises);
-    _exercises.addAll(fullBodyExercises);
+    exerciseDtos.addAll(chestExercises);
+    exerciseDtos.addAll(shouldersExercises);
+    exerciseDtos.addAll(bicepsExercises);
+    exerciseDtos.addAll(tricepsExercises);
+    exerciseDtos.addAll(quadricepsExercises);
+    exerciseDtos.addAll(hamstringsExercises);
+    exerciseDtos.addAll(backExercises);
+    exerciseDtos.addAll(trapsExercises);
+    exerciseDtos.addAll(latsExercises);
+    exerciseDtos.addAll(glutesExercises);
+    exerciseDtos.addAll(adductorsExercises);
+    exerciseDtos.addAll(abductorsExercises);
+    exerciseDtos.addAll(absExercises);
+    exerciseDtos.addAll(calvesExercises);
+    exerciseDtos.addAll(forearmsExercises);
+    exerciseDtos.addAll(neckExercises);
+    exerciseDtos.addAll(fullBodyExercises);
 
-    _exercises.sort((a, b) => a.name.compareTo(b.name));
+    // List<String> withNoVideos =
+    //     _exercises.where((exercise) => exercise.video == null).map((exercise) => exercise.name).toList();
+    //
+    // withNoVideos.forEach((exercise) {
+    //   print(exercise);
+    // });
+    //
+    // print(withNoVideos.length);
+
+    _exercises = exerciseDtos.sorted((a, b) => a.name.compareTo(b.name));
   }
 
-  Future<void> _apiFetchExercises() async {
-    try {
-      final request = ModelQueries.list(Exercise.classType);
-      final response = await Amplify.API.query(request: request).response;
-
-      final exercises = response.data?.items.whereType<Exercise>().toList();
-      if (exercises != null) {
-        _mapAndSortExercises(exercises: exercises);
-      }
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
-    }
-  }
-
-  void _mapAndSortExercises({required List<Exercise> exercises}) {
-    final userExercises = exercises.map((exercise) => exercise.dto()).sorted((a, b) => a.name.compareTo(b.name));
-    _exercises.addAll(userExercises);
-    _exercises.sort((a, b) => a.name.compareTo(b.name));
+  Future<List<Exercise>> _fetchExercisesCloud() async {
+    final request = ModelQueries.list(Exercise.classType, limit: 999);
+    final response = await Amplify.API.query(request: request).response;
+    return response.data?.items.whereType<Exercise>().toList() ?? [];
   }
 
   Future<void> saveExercise({required ExerciseDto exerciseDto}) async {

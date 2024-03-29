@@ -7,6 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
+import 'package:tracker_app/screens/preferences/integrations_screen.dart';
 import 'package:tracker_app/screens/preferences/notifications_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
@@ -19,6 +20,7 @@ import '../../controllers/settings_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/uri_utils.dart';
+import '../../widgets/backgrounds/overlay_background.dart';
 import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
@@ -41,7 +43,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   bool _loading = false;
-  String _loadingMessage = "";
 
   late WeightUnit _weightUnitType;
 
@@ -141,6 +142,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       title: "Notifications",
                       trailing: _notificationEnabled ? "Enabled" : "Disabled"),
                   const SizedBox(height: 8),
+                  OutlineListTile(onTap: _navigateToIntegrations, title: "Integrations", trailing: "sync workout data"),
+                  const SizedBox(height: 8),
                   OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _visitTRKR, title: "Visit TRKR"),
@@ -158,14 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ),
             ),
           ),
-          if (_loading)
-            Align(
-                alignment: Alignment.center,
-                child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: sapphireDark.withOpacity(0.7),
-                    child: Center(child: Text(_loadingMessage, style: GoogleFonts.montserrat(fontSize: 14)))))
+          if (_loading) const OverlayBackground(opacity: 0.9)
         ]),
       ),
     );
@@ -177,6 +173,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               multiSelect: false,
               readOnly: true,
             )));
+  }
+
+  void _navigateToIntegrations() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IntegrationsScreen()));
   }
 
   void _navigateToNotificationSettings() async {
@@ -205,7 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void _clearAppData() async {
     await Amplify.DataStore.clear();
     SharedPrefs().clear();
-    FlutterLocalNotificationsPlugin().cancelAll();
+    await FlutterLocalNotificationsPlugin().cancelAll();
     if (context.mounted) {
       Provider.of<RoutineTemplateController>(context, listen: false).clear();
       Provider.of<RoutineLogController>(context, listen: false).clear();
@@ -304,7 +304,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void _toggleLoadingState({String message = ""}) {
     setState(() {
       _loading = !_loading;
-      _loadingMessage = message;
     });
   }
 

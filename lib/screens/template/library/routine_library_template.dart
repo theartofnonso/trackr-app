@@ -89,7 +89,7 @@ class RoutineLibraryTemplate extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 2.0),
                             child: Image.asset(
-                              'images/trackr.png',
+                              'images/trkr.png',
                               fit: BoxFit.contain,
                               height: 8, //
                               color: vibrantGreen, // Adjust the height as needed

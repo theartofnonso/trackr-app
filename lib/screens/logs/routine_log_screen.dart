@@ -10,7 +10,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/backgrounds/overlay_background.dart';
 import 'package:tracker_app/widgets/chart/muscle_group_family_chart.dart';
 
 import '../../../colors.dart';
@@ -21,7 +20,6 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../utils/app_analytics.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -44,7 +42,6 @@ class RoutineLogPreviewScreen extends StatefulWidget {
 
 class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   bool _loading = false;
-  String _loadingMessage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +182,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                 ),
               ),
             ),
-            if (_loading) OverlayBackground(loadingMessage: _loadingMessage)
           ]),
         ));
   }
@@ -264,7 +260,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
   void _toggleLoadingState({String message = ""}) {
     setState(() {
       _loading = !_loading;
-      _loadingMessage = message;
     });
   }
 
@@ -310,8 +305,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-
-      recordCreateTemplateFromLogEvent();
 
       final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
           .saveTemplate(templateDto: templateToCreate);

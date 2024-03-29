@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import '../dtos/achievement_dto.dart';
 import '../dtos/exercise_dto.dart';
@@ -37,7 +38,7 @@ class RoutineLogController extends ChangeNotifier {
 
   UnmodifiableListView<AchievementDto> get achievements => _achievementRepository.achievements;
 
-  void fetchLogs({bool firstLaunch = false}) async {
+  Future<void> fetchLogs({bool firstLaunch = false}) async {
     try {
       await _amplifyLogRepository.fetchLogs(firstLaunch: firstLaunch);
       _achievementRepository.loadAchievements(routineLogs: routineLogs);
@@ -46,6 +47,10 @@ class RoutineLogController extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<List<RoutineLog>> fetchLogsCloud({required DateTimeRange range}) async {
+    return _amplifyLogRepository.queryLogsCloud(range: range);
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto}) async {
@@ -88,8 +93,8 @@ class RoutineLogController extends ChangeNotifier {
     return _amplifyLogRepository.cachedRoutineLog();
   }
 
-  List<AchievementDto> fetchAchievements() {
-    return _achievementRepository.fetchAchievements(routineLogs: routineLogs);
+  List<AchievementDto> fetchAchievements({List<RoutineLogDto>? logs}) {
+    return _achievementRepository.fetchAchievements(routineLogs: logs ?? routineLogs);
   }
 
   List<AchievementDto> calculateNewLogAchievements() {
@@ -101,7 +106,7 @@ class RoutineLogController extends ChangeNotifier {
     final thisWeeksUntrainedMGF = _thisWeeksUntrainedMGF();
 
     List<MuscleGroupFamily> toBeTrained = lastWeeksUntrainedMGF;
-    if(thisWeeksUntrainedMGF.isNotEmpty) {
+    if (thisWeeksUntrainedMGF.isNotEmpty) {
       toBeTrained = toBeTrained.where((mgf) => thisWeeksUntrainedMGF.contains(mgf)).toList();
     } else {
       toBeTrained = [];
@@ -158,10 +163,6 @@ class RoutineLogController extends ChangeNotifier {
 
   List<RoutineLogDto> logsWhereDate({required DateTime dateTime}) {
     return _amplifyLogRepository.logsWhereDate(dateTime: dateTime);
-  }
-
-  List<ExerciseLogDto> exerciseLogsForExercise({required ExerciseDto exercise}) {
-    return _amplifyLogRepository.exerciseLogsForExercise(exercise: exercise);
   }
 
   List<ExerciseLogDto> whereExerciseLogsBefore({required ExerciseDto exercise, required DateTime date}) {

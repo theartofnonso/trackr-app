@@ -18,7 +18,7 @@ class ExerciseController extends ChangeNotifier {
   Future<void> fetchExercises({bool firstLaunch = false}) async {
     isLoading = true;
     try {
-      await _amplifyExerciseRepository.fetchExercises();
+      await _amplifyExerciseRepository.fetchExercises(firstLaunch: firstLaunch);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {

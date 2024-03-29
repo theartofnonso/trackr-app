@@ -27,7 +27,7 @@ export const handler = async (event) => {
     const endDate = event.queryStringParameters["end"];
 
     const query = `query LIST_ROUTINELOGS {
-    listRoutineLogs(filter: {createdAt: {le: "${endDate}", gt: "${startDate}"}}) {
+    listRoutineLogs(filter: {createdAt: {le: "${endDate}", ge: "${startDate}"}}) {
       items {
         id
         owner

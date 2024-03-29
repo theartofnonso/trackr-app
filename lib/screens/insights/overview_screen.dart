@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,8 +7,9 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/datetime_range_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
-import 'package:tracker_app/widgets/calendar/calendar_navigator.dart';
+import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
 import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
 
 import '../../dtos/routine_log_dto.dart';
@@ -18,7 +20,9 @@ import '../../utils/general_utils.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/navigation_utils.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import '../../utils/routine_utils.dart';
 import '../../utils/shareables_utils.dart';
+import '../../widgets/backgrounds/overlay_background.dart';
 import '../../widgets/buttons/text_button_widget.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/monitors/overview_monitor.dart';
@@ -36,7 +40,10 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
+  Map<DateTimeRange, List<RoutineLogDto>>? _monthlyLogs;
+
   late DateTimeRange _dateTimeRange;
+  bool _loading = false;
 
   void _navigateToAllDaysTracked({required BuildContext context}) {
     Navigator.of(context).pushNamed(StreakScreen.routeName);
@@ -64,10 +71,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogController = Provider.of<RoutineLogController>(context, listen: true);
 
-    final logsForTheMonth = routineLogController.monthlyLogs[_dateTimeRange] ?? [];
+    final logsForTheMonth = _monthlyLogs?[_dateTimeRange] ?? routineLogController.monthlyLogs[_dateTimeRange] ?? [];
+
+    Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs = _monthlyLogs ?? routineLogController.monthlyLogs;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -89,57 +97,81 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ],
           ),
         ),
-        child: SafeArea(
-            minimum: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  IconButton(
-                    onPressed: () => _navigateToAllDaysTracked(context: context),
-                    icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
-                      const SizedBox(width: 4),
-                      Text("${routineLogController.routineLogs.length}",
-                          style:
-                              GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+        child: Stack(
+          children: [
+            SafeArea(
+                minimum: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      IconButton(
+                        onPressed: () => _navigateToAllDaysTracked(context: context),
+                        icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                          const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
+                          const SizedBox(width: 4),
+                          Text("${routineLogController.routineLogs.length}",
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                        ]),
+                      ),
+                      CalendarMonthsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                      IconButton(
+                          onPressed: () => _onShareCalendar(context: context),
+                          icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
                     ]),
-                  ),
-                  CalendarNavigator(onChangedDateTimeRange: _onChangedDateTimeRange, dateTimeRange: _dateTimeRange),
-                  IconButton(
-                      onPressed: () => _onShareCalendar(context: context),
-                      icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket, color: Colors.white, size: 20)),
-                ]),
-                Expanded(
-                  child: SingleChildScrollView(
-                      controller: widget.scrollController,
-                      padding: const EdgeInsets.only(bottom: 150),
-                      child: Column(children: [
-                        const SizedBox(height: 4),
-                        OverviewMonitor(routineLogs: logsForTheMonth),
-                        if(routineLogController.routineLogs.isNotEmpty)
-                          const StackedNotificationBanners(),
-                        const SizedBox(height: 12),
-                        Calendar(
-                          range: _dateTimeRange,
-                        ),
-                        const SizedBox(height: 12),
-                        MonthlyInsightsScreen(
-                          logs: logsForTheMonth,
-                          daysInMonth: _dateTimeRange.datesToNow.length,
-                          dateTimeRange: _dateTimeRange,
-                        ),
-                      ])),
-                )
-                // Add more widgets here for exercise insights
-              ],
-            )),
+                    Expanded(
+                      child: SingleChildScrollView(
+                          controller: widget.scrollController,
+                          padding: const EdgeInsets.only(bottom: 150),
+                          child: Column(children: [
+                            const SizedBox(height: 4),
+                            OverviewMonitor(routineLogs: logsForTheMonth),
+                            if (routineLogController.routineLogs.isNotEmpty) const StackedNotificationBanners(),
+                            const SizedBox(height: 12),
+                            Calendar(
+                              range: _dateTimeRange,
+                            ),
+                            const SizedBox(height: 12),
+                            MonthlyInsightsScreen(
+                              logsForTheMonth: logsForTheMonth,
+                              daysInMonth: _dateTimeRange.datesToNow.length,
+                              dateTimeRange: _dateTimeRange,
+                              monthlyLogs: monthlyLogs,
+                            ),
+                          ])),
+                    )
+                    // Add more widgets here for exercise insights
+                  ],
+                )),
+            if (_loading) const OverlayBackground(opacity: 0.9)
+          ],
+        ),
       ),
     );
   }
 
   void _onChangedDateTimeRange(DateTimeRange? range) {
     if (range == null) return;
+
+    final isDifferentYear = !_dateTimeRange.start.isSameYear(range.start);
+
+    setState(() {
+      _loading = isDifferentYear;
+    });
+
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    if (isDifferentYear) {
+      routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
+        setState(() {
+          _loading = false;
+          final dtos = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+          _monthlyLogs = groupRoutineLogsByMonth(routineLogs: dtos);
+        });
+      });
+    }
+
     setState(() {
       _dateTimeRange = range;
     });
@@ -173,7 +205,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Align(
-                              alignment: Alignment.centerLeft,
+                              alignment: Alignment.center,
                               child: Text(_dateTimeRange.start.formattedMonthAndYear(),
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.montserrat(
@@ -182,7 +214,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                             Calendar(readOnly: true, range: _dateTimeRange),
                             const SizedBox(height: 12),
                             Image.asset(
-                              'images/trackr.png',
+                              'images/trkr.png',
                               fit: BoxFit.contain,
                               height: 8, // Adjust the height as needed
                             ),
@@ -192,7 +224,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               CTextButton(
                   onPressed: () {
                     captureImage(key: calendarKey, pixelRatio: 5);
-                    recordShareEvent(contentType: ShareContentType.calender);
+                    contentShared(contentType: ShareContentType.calender);
                     Navigator.of(context).pop();
                   },
                   label: "Share",

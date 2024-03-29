@@ -15,11 +15,11 @@ class LogDurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final logHours = logs.map((log) => log.duration().inMilliseconds);
+    final totalDuration = logs.map((log) => log.duration().inMilliseconds);
 
-    final minHours = Duration(milliseconds: logHours.isNotEmpty ? logHours.min : 0);
-    final maxHours = Duration(milliseconds:  logHours.isNotEmpty ? logHours.max : 0);
-    final avgHours = Duration(milliseconds:  logHours.isNotEmpty ? logHours.average.toInt() : 0);
+    final minHours = Duration(milliseconds: totalDuration.isNotEmpty ? totalDuration.min : 0);
+    final maxHours = Duration(milliseconds:  totalDuration.isNotEmpty ? totalDuration.max : 0);
+    final avgHours = Duration(milliseconds:  totalDuration.isNotEmpty ? totalDuration.average.toInt() : 0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

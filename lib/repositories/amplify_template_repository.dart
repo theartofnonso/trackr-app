@@ -84,32 +84,24 @@ class AmplifyTemplateRepository {
     });
   }
 
-  Future<void> fetchTemplates({bool firstLaunch = false}) async {
-    if (!firstLaunch) {
-      List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
+  Future<void> fetchTemplates({required bool firstLaunch}) async {
+    if (firstLaunch) {
+      List<RoutineTemplate> templates = await _fetchTemplatesCloud();
       _mapAndSortTemplates(templates: templates);
     } else {
-      await _apiFetchTemplates();
+      List<RoutineTemplate> templates = await Amplify.DataStore.query(RoutineTemplate.classType);
+      _mapAndSortTemplates(templates: templates);
     }
   }
 
-  Future<void> _apiFetchTemplates() async {
-    try {
-      final request = ModelQueries.list(RoutineTemplate.classType);
-      final response = await Amplify.API.query(request: request).response;
-
-      final templates = response.data?.items.whereType<RoutineTemplate>().toList();
-      if (templates != null) {
-        _mapAndSortTemplates(templates: templates);
-      }
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
-    }
+  Future<List<RoutineTemplate>> _fetchTemplatesCloud() async {
+    final request = ModelQueries.list(RoutineTemplate.classType, limit: 999);
+    final response = await Amplify.API.query(request: request).response;
+    return response.data?.items.whereType<RoutineTemplate>().toList() ?? [];
   }
 
   void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
-    _templates = templates.map((log) => log.dto()).toList();
-    _templates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _templates = templates.map((log) => log.dto()).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {

@@ -10,7 +10,6 @@ import 'package:tracker_app/enums/daily_notifications_enums.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../../utils/app_analytics.dart';
 import '../../utils/timezone_utils.dart';
 import '../../utils/dialog_utils.dart';
 
@@ -90,7 +89,7 @@ class NotificationsScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Text("Notifications",
-                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                    style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 24),
                 const _NotificationListView()
               ]),
@@ -171,7 +170,6 @@ class _WeekDayNotificationListTile extends StatelessWidget {
           } else {
             _cancelWeekDayNotification();
           }
-          recordToggleNotificationsEvent();
         });
   }
 
@@ -213,7 +211,6 @@ class _DailyNotificationListTile extends StatelessWidget {
           } else {
             _cancelDailyNotification();
           }
-          recordToggleNotificationsEvent();
         });
   }
 

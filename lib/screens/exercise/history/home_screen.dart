@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,26 +7,41 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
 import 'package:tracker_app/controllers/exercise_controller.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_video_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 
 import '../../../dtos/exercise_dto.dart';
+import '../../../dtos/exercise_log_dto.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/navigation_utils.dart';
+import '../../../utils/routine_utils.dart';
+import '../../../widgets/backgrounds/overlay_background.dart';
+import '../../../widgets/calendar/calendar_years_navigator.dart';
 
 const exerciseRouteName = "/exercise-history-screen";
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final ExerciseDto exercise;
 
   const HomeScreen({super.key, required this.exercise});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Map<String, List<ExerciseLogDto>>? _exerciseLogsById;
+
+  bool _loading = false;
+
   void _deleteExercise(BuildContext context) async {
     Navigator.pop(context);
     try {
-      await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: exercise);
+      await Provider.of<ExerciseController>(context, listen: false).removeExercise(exercise: widget.exercise);
       if (context.mounted) {
         Navigator.of(context).pop();
       }
@@ -41,11 +57,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foundExercise =
-        Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: exercise.id) ?? exercise;
 
-    final exerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: true).exerciseLogsForExercise(exercise: foundExercise);
+    final foundExercise =
+        Provider.of<ExerciseController>(context, listen: true).whereExercise(exerciseId: widget.exercise.id) ??
+            widget.exercise;
+
+    final exerciseLogs = _exerciseLogsById?[foundExercise.id] ?? [];
 
     final completedExerciseLogs = exerciseLogsWithCheckedSets(exerciseLogs: exerciseLogs);
 
@@ -108,10 +125,11 @@ class HomeScreen extends StatelessWidget {
                 Tab(
                     child: Text("History",
                         style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
-                if(hasVideo)
+                if (hasVideo)
                   Tab(
-                    child: Text("Video",
-                        style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
+                      child: Text("Video",
+                          style:
+                              GoogleFonts.montserrat(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600))),
               ],
             ),
             actions: foundExercise.owner
@@ -155,24 +173,61 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            child: SafeArea(
-              child: TabBarView(
-                children: [
-                  ExerciseChartScreen(
-                    heaviestWeight: heaviestWeightRecord,
-                    heaviestSet: heaviestSetVolumeRecord,
-                    longestDuration: longestDurationRecord,
-                    mostRepsSet: mostRepsSetRecord,
-                    mostRepsSession: mostRepsSessionRecord,
-                    exercise: foundExercise,
-                  ),
-                  HistoryScreen(exercise: foundExercise),
-                  if(hasVideo)
-                    ExerciseVideoScreen(exercise: foundExercise)
-                ],
+            child: Stack(children: [
+              SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    CalendarYearsNavigator(onChangedDateTimeRange: _onChangedDateTimeRange),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          ExerciseChartScreen(
+                            heaviestWeight: heaviestWeightRecord,
+                            heaviestSet: heaviestSetVolumeRecord,
+                            longestDuration: longestDurationRecord,
+                            mostRepsSet: mostRepsSetRecord,
+                            mostRepsSession: mostRepsSessionRecord,
+                            exercise: foundExercise,
+                            exerciseLogs: completedExerciseLogs,
+                          ),
+                          HistoryScreen(exerciseLogs: completedExerciseLogs),
+                          if (hasVideo) ExerciseVideoScreen(exercise: foundExercise)
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              if (_loading) const OverlayBackground(opacity: 0.9)
+            ]),
           ),
         ));
+  }
+
+  void _onChangedDateTimeRange(DateTimeRange? range) {
+    if (range == null) return;
+
+    setState(() {
+      _loading = true;
+    });
+
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+
+    routineLogController.fetchLogsCloud(range: range.start.dateTimeRange()).then((logs) {
+      setState(() {
+        _loading = false;
+        final routineLogs = logs.map((log) => log.dto()).sorted((a, b) => a.createdAt.compareTo(b.createdAt));
+        _exerciseLogsById = groupExerciseLogsByExerciseId(routineLogs: routineLogs);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
+    _exerciseLogsById = routineLogController.exerciseLogsById;
   }
 }

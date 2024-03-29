@@ -29,10 +29,10 @@ class RoutineTemplateController extends ChangeNotifier {
     }
   }
 
-  void fetchTemplates({bool firstLaunch = false}) async {
+  Future<void> fetchTemplates({bool firstLaunch = false}) async {
     isLoading = true;
     try {
-      await _amplifyTemplateRepository.fetchTemplates();
+      await _amplifyTemplateRepository.fetchTemplates(firstLaunch: firstLaunch);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
     } finally {
