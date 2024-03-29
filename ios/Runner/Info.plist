@@ -57,5 +57,11 @@
     <string>Allow TRKR to connect with Apple Health to sync workouts</string>
     <key>NSHealthUpdateUsageDescription</key>
     <string>Allow TRKR to connect with Apple Health to sync workouts</string>
+    <key>com.posthog.posthog.API_KEY</key>
+    <string>phc_JtCB0wSYMC2dIwyK1fY4VqW5MRelOR0JPv13oSG1uH6</string>
+    <key>com.posthog.posthog.POSTHOG_HOST</key>
+    <string>https://eu.posthog.com</string>
+    <key>com.posthog.posthog.CAPTURE_APPLICATION_LIFECYCLE_EVENTS</key>
+    <true/>
 </dict>
 </plist>

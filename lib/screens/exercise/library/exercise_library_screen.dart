@@ -12,7 +12,6 @@ import 'package:tracker_app/widgets/search_bar.dart';
 import '../../../colors.dart';
 import '../../../dtos/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
-import '../../../utils/app_analytics.dart';
 import '../../../widgets/buttons/text_button_widget.dart';
 import '../../../widgets/exercise/exercise_widget.dart';
 import '../../../widgets/exercise/selectable_exercise_widget.dart';
@@ -141,7 +140,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _navigateToExerciseHistory(ExerciseInLibraryDto exerciseInLibraryDto) async {
-    recordViewExerciseMetricsEvent();
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomeScreen(exercise: exerciseInLibraryDto.exercise)));
     if (mounted) {

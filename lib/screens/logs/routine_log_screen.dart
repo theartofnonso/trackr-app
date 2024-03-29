@@ -20,7 +20,6 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/muscle_group_enums.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../utils/app_analytics.dart';
 import '../../utils/routine_utils.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/routine_log_dto.dart';
@@ -306,8 +305,6 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           exercises: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
-
-      recordCreateTemplateFromLogEvent();
 
       final createdTemplate = await Provider.of<RoutineTemplateController>(context, listen: false)
           .saveTemplate(templateDto: templateToCreate);
