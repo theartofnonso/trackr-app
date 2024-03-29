@@ -52,10 +52,6 @@ class _ShareableScreenState extends State<ShareableScreen> {
 
     final achievements = routineLogController.calculateNewLogAchievements();
 
-    if(achievements.isNotEmpty) {
-      recordMilestoneAchievementEvent();
-    }
-
     List<Widget> achievementsShareAssets = [];
     final achievementsShareAssetsKeys = [];
 

@@ -9,7 +9,6 @@ import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/app_analytics.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/routine_template_controller.dart';
@@ -75,11 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
         onDestinationSelected: (int index) {
-          final destination = screens[index];
           setState(() {
             _currentScreenIndex = index;
           });
-          if (destination is AchievementsScreen) recordViewMilestonesEvent();
           _scrollToTop(index);
         },
         selectedIndex: _currentScreenIndex,

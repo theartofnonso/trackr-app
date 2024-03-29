@@ -1,4 +1,3 @@
-import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -22,7 +21,6 @@ import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
-import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/repositories/achievement_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
@@ -44,7 +42,6 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:tracker_app/utils/app_analytics.dart';
 
 import 'amplifyconfiguration.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
@@ -124,7 +121,6 @@ class _MyAppState extends State<MyApp> {
     final startOfCurrentYear = then.toIso8601String();
     final endOfCurrentYear = now.toIso8601String();
     try {
-      await Amplify.addPlugin(AmplifyAnalyticsPinpoint());
       await Amplify.addPlugin(AmplifyAuthCognito());
       await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
       await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, syncExpressions: [
@@ -212,11 +208,6 @@ class _MyAppState extends State<MyApp> {
               onGenerateRoute: (settings) {
                 if (settings.name == RoutineLogEditorScreen.routeName) {
                   final args = settings.arguments as RoutineLogArguments;
-                  if (args.editorMode == RoutineEditorMode.log && args.emptySession) {
-                    recordEmptySessionEvent();
-                  } else {
-                    recordTemplateSessionEvent();
-                  }
                   return MaterialPageRoute(
                     builder: (context) => RoutineLogEditorScreen(
                       log: args.log,
@@ -227,7 +218,6 @@ class _MyAppState extends State<MyApp> {
 
                 if (settings.name == RoutineTemplateEditorScreen.routeName) {
                   final args = settings.arguments as RoutineTemplateArguments?;
-                  recordVisitTemplateEditorEvent();
                   return MaterialPageRoute(
                     builder: (context) => RoutineTemplateEditorScreen(
                       template: args?.template,
@@ -246,7 +236,6 @@ class _MyAppState extends State<MyApp> {
 
                 if (settings.name == ExerciseEditorScreen.routeName) {
                   final args = settings.arguments as ExerciseEditorArguments?;
-                  recordCreateExerciseEvent();
                   return MaterialPageRoute(
                     builder: (context) => ExerciseEditorScreen(
                       exercise: args?.exercise,

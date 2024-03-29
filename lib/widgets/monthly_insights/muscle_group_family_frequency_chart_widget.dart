@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/utils/routine_utils.dart';
 
 import '../../colors.dart';
 import '../../dtos/graph/chart_point_dto.dart';
@@ -12,7 +11,6 @@ import '../../dtos/routine_log_dto.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../screens/insights/sets_reps_volume_insights_screen.dart';
 import '../../utils/exercise_logs_utils.dart';
-import '../../utils/app_analytics.dart';
 import '../chart/bar_chart.dart';
 
 class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
@@ -46,7 +44,6 @@ class MuscleGroupFamilyFrequencyChartWidget extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        recordViewMuscleTrendEvent();
         Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
       },
       child: Container(

@@ -10,7 +10,7 @@ packages:
     source: hosted
     version: "64.0.0"
   amplify_analytics_pinpoint:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: amplify_analytics_pinpoint
       sha256: ba6bfe005c8f15b4258e59123602e680db71b98514557b07724edc01cb89098f

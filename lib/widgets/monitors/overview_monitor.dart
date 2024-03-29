@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/screens/insights/leaderboard/home_screen.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -14,7 +13,6 @@ import '../../dtos/routine_log_dto.dart';
 import '../../strings.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/app_analytics.dart';
 import 'log_streak_monitor.dart';
 import 'muscle_group_family_frequency_monitor.dart';
 
@@ -89,7 +87,6 @@ class OverviewMonitor extends StatelessWidget {
             const SizedBox(width: 20),
             GestureDetector(
               onTap: () {
-                recordViewMuscleTrendEvent();
                 Navigator.of(context).pushNamed(SetsAndRepsVolumeInsightsScreen.routeName);
               },
               child: Container(
@@ -111,10 +108,6 @@ class OverviewMonitor extends StatelessWidget {
 
   void _showMonitorInfo({required BuildContext context}) {
     showBottomSheetWithNoAction(context: context, title: "Streak and Muscle", description: overviewMonitor);
-  }
-
-  void _navigateToLeaderBoard({required BuildContext context}) {
-    navigateWithSlideTransition(context: context, child: const LeaderBoardScreen());
   }
 }
 
