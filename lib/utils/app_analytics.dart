@@ -1,17 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 import '../enums/share_content_type_enum.dart';
-
-void logEvent({required String name, required Map<String, Object> parameters}) async {
-  await FirebaseAnalytics.instance.logEvent(
-    name: name,
-    parameters: <String, dynamic>{
-      'screen': 'routine_templates.dart',
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-    },
-  );
-}
 
 void recordTemplateSessionEvent() {
   final event = AnalyticsEvent('TemplateSession');
