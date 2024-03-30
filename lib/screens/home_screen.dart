@@ -16,6 +16,7 @@ import '../dtos/routine_log_dto.dart';
 import '../controllers/exercise_controller.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
+import '../utils/app_analytics.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home_screen';
@@ -119,13 +120,15 @@ class _HomeScreenState extends State<HomeScreen> {
     if (SharedPrefs().firstLaunch) {
       _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
       _cacheUser();
+      identifyUser(userId: SharedPrefs().userId);
       SharedPrefs().firstLaunch = false;
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        identifyUser(userId: SharedPrefs().userId);
+        _loadAppData();
+        _loadCachedLog();
+      });
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAppData();
-      _loadCachedLog();
-    });
   }
 
   @override
