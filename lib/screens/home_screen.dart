@@ -118,16 +118,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
-      _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
       _cacheUser();
       identifyUser(userId: SharedPrefs().userId);
+      _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
       SharedPrefs().firstLaunch = false;
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        identifyUser(userId: SharedPrefs().userId);
-        _loadAppData();
-        _loadCachedLog();
-      });
+      identifyUser(userId: SharedPrefs().userId);
+      _loadAppData();
+      _loadCachedLog();
     }
   }
 
