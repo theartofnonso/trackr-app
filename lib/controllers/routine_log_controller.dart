@@ -130,7 +130,7 @@ class RoutineLogController extends ChangeNotifier {
     final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
     final lastWeeksUntrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(lastWeeksMuscleGroupFamilies);
-    
+
     return lastWeeksUntrainedMuscleGroups.toList();
   }
 
