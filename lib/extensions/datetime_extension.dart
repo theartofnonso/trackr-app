@@ -191,8 +191,7 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTimeRange lastWeekRange() {
-    DateTime today = DateTime(year, month, day);
-    DateTime endOfLastWeek = today.subtract(Duration(days: today.weekday));
+    DateTime endOfLastWeek = subtract(Duration(days: weekday));
     DateTime startOfLastWeek = endOfLastWeek.subtract(const Duration(days: 6));
     return DateTimeRange(start: startOfLastWeek, end: endOfLastWeek);
   }

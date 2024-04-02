@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
+import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/models/RoutineLog.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import '../dtos/achievement_dto.dart';
@@ -116,7 +117,7 @@ class RoutineLogController extends ChangeNotifier {
   }
 
   List<MuscleGroupFamily> _lastWeeksUntrainedMGF() {
-    final lastWeeksRange = DateTime.now().lastWeekRange();
+    final lastWeeksRange = DateTime.now().lastWeekRange().dateTimeRangeWithoutTime();
 
     final lastWeeksLogs = _amplifyLogRepository.weeklyLogs[lastWeeksRange] ?? [];
 
@@ -129,7 +130,7 @@ class RoutineLogController extends ChangeNotifier {
     final listOfPopularMuscleGroupFamilies = popularMuscleGroupFamilies().toSet();
 
     final lastWeeksUntrainedMuscleGroups = listOfPopularMuscleGroupFamilies.difference(lastWeeksMuscleGroupFamilies);
-
+    
     return lastWeeksUntrainedMuscleGroups.toList();
   }
 
