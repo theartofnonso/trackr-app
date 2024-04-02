@@ -114,12 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = signInDetails["username"] as String;
+    identifyUser(userId: SharedPrefs().userId);
   }
 
   void _runSetup() async {
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
-      identifyUser(userId: SharedPrefs().userId);
       _loadAppData(firstLaunch: SharedPrefs().firstLaunch);
       SharedPrefs().firstLaunch = false;
     } else {
