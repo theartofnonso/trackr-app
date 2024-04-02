@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
-import 'package:tracker_app/widgets/monthly_insights/logs_streak_chart_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
 
 import '../../dtos/routine_log_dto.dart';
-import '../../widgets/monthly_insights/log_duration_widget.dart';
 import '../../widgets/monthly_insights/muscle_group_family_frequency_chart_widget.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 
