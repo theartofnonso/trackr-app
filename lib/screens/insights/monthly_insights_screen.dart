@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracker_app/widgets/monthly_insights/exercises_sets_hours_volume_widget.dart';
+import 'package:tracker_app/widgets/monthly_insights/logs_streak_chart_widget.dart';
 import 'package:tracker_app/widgets/monthly_insights/training_and_rest_days_widget.dart';
 
 import '../../dtos/routine_log_dto.dart';
@@ -29,6 +30,8 @@ class MonthlyInsightsScreen extends StatelessWidget {
         MuscleGroupFamilyFrequencyWidget(logs: logsForTheMonth),
         const SizedBox(height: 16),
         MuscleGroupFamilyFrequencyChartWidget(monthlyLogs: monthlyLogs),
+        // const SizedBox(height: 16),
+        // LogsStreakChartWidget(monthlyLogs: monthlyLogs),
       ],
     );
   }
