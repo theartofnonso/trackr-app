@@ -61,15 +61,6 @@
     "credit": "TheGymGroup"
   },
   {
-    "id": "BIC8",
-    "name": "Dumbbell Preacher Curl",
-    "primaryMuscleGroup": "Biceps",
-    "type": "WR",
-    "video": "https://www.youtube.com/watch?v=fuK3nFvwgXk",
-    "creditSource": "https://www.youtube.com/@RenaissancePeriodization",
-    "credit": "Renaissance Periodization"
-  },
-  {
     "id": "BIC9",
     "name": "Hammer Curl (Dumbbell)",
     "primaryMuscleGroup": "Biceps",
