@@ -32,4 +32,10 @@ extension DateTimeRangeExtension on DateTimeRange {
 
     return dates;
   }
+
+  DateTimeRange dateTimeRangeWithoutTime() {
+    final start = DateTime(this.start.year, this.start.month, this.start.day);
+    final end = DateTime(this.end.year, this.end.month, this.end.day);
+    return DateTimeRange(start: start, end: end);
+  }
 }
