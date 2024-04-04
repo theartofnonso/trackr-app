@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/utils/general_utils.dart';
@@ -59,7 +58,7 @@ class LogStreakChartWidget extends StatelessWidget {
                 unit: ChartUnit.number,
                 bottomTitlesInterval: 1,
                 showLeftTitles: true,
-                maxY: logsStreak.max.toDouble(),
+                maxY: logsStreak.isNotEmpty ? logsStreak.max.toDouble() : 31,
                 reservedSize: 25,
               ))
         ],
