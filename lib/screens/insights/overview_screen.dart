@@ -77,7 +77,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs = _monthlyLogs ?? routineLogController.monthlyLogs;
 
     final logsForTheYear = monthlyLogs.values.expand((logs) => logs);
-    
+
     final logsForTheYearByDay = groupBy(logsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
 
     return Scaffold(
