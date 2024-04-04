@@ -15,7 +15,7 @@ class RoutineLibraryTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exercises = libraryTemplate.template.exercises
+    final exercises = libraryTemplate.template.exerciseTemplates
         .map((exercise) => ListTile(
               contentPadding: const EdgeInsets.only(left: 10),
               title: Text(exercise.exercise.name, style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white)),

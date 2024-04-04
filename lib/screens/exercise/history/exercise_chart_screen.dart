@@ -121,9 +121,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
   }
 
   void _computeChart() {
-    final exerciseType = widget.exercise.type;
-
-    switch (exerciseType) {
+    switch (widget.exercise.type) {
       case ExerciseType.weights:
         _summaryType = SummaryType.weight;
         break;
@@ -159,6 +157,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _computeChart();
+  }
+
   Color? _buttonColor({required SummaryType type}) {
     return _summaryType == type ? vibrantGreen : sapphireDark.withOpacity(0.6);
   }
@@ -179,9 +183,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    _computeChart();
-
     final weightUnitLabel = weightLabel();
 
     return SingleChildScrollView(
@@ -356,12 +357,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       ),
     ));
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  // }
 }
 
 class _MetricListTile extends StatelessWidget {

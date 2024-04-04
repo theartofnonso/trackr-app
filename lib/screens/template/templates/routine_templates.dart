@@ -43,7 +43,7 @@ class RoutineTemplates extends StatelessWidget {
 
       final templates = [...sortedScheduledTemplates, ...unscheduledTemplates];
 
-      final exercise = routineTemplates.map((template) => template.exercises).expand((exercises) => exercises).toList();
+      final exercise = routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
 
       final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
 
@@ -202,7 +202,7 @@ class _RoutineBigWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          "${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
+                          "${template.exerciseTemplates.length} ${pluralize(word: "exercise", count: template.exerciseTemplates.length)}",
                           style: GoogleFonts.montserrat(
                               color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
                       if (scheduledDays.isNotEmpty && !template.isScheduledToday())
@@ -358,7 +358,7 @@ class _RoutineSmallWidget extends StatelessWidget {
               title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
               subtitle: Row(
                 children: [
-                  Text("${template.exercises.length} ${pluralize(word: "exercise", count: template.exercises.length)}",
+                  Text("${template.exerciseTemplates.length} ${pluralize(word: "exercise", count: template.exerciseTemplates.length)}",
                       style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
                   if (scheduledDays.isNotEmpty)
                     Row(

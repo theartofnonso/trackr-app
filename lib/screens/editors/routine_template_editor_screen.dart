@@ -110,7 +110,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final template = RoutineTemplateDto(
         id: "",
         name: _templateNameController.text,
-        exercises: exercises,
+        exerciseTemplates: exercises,
         notes: _templateNotesController.text,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
@@ -148,7 +148,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final updatedRoutineTemplate = template.copyWith(
         name: _templateNameController.text.trim(),
         notes: _templateNotesController.text.trim(),
-        exercises: exerciseLogs,
+        exerciseTemplates: exerciseLogs,
         updatedAt: DateTime.now());
 
     await templateProvider.updateTemplate(template: updatedRoutineTemplate);
@@ -156,7 +156,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
   void _checkForUnsavedChanges() {
     final procedureProvider = Provider.of<ExerciseLogController>(context, listen: false);
-    final exerciseLog1 = widget.template?.exercises ?? [];
+    final exerciseLog1 = widget.template?.exerciseTemplates ?? [];
     final exerciseLog2 = procedureProvider.mergeExerciseLogsAndSets();
     final unsavedChangesMessage = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2);
     if (unsavedChangesMessage.isNotEmpty) {
@@ -354,7 +354,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _initializeProcedureData() {
-    final exercises = widget.template?.exercises;
+    final exercises = widget.template?.exerciseTemplates;
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
         final sets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);

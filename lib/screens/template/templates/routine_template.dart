@@ -199,7 +199,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
                         ],
                       ),
                     ExerciseLogListView(
-                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exercises),
+                      exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: template.exerciseTemplates),
                       previewType: RoutinePreviewType.template,
                     ),
                   ],
