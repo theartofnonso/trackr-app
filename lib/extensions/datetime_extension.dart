@@ -190,34 +190,6 @@ extension DateTimeExtension on DateTime {
     return weekDates;
   }
 
-  DateTimeRange lastWeekRange() {
-    DateTime endOfLastWeek = subtract(Duration(days: weekday));
-    DateTime startOfLastWeek = endOfLastWeek.subtract(const Duration(days: 6));
-    return DateTimeRange(start: startOfLastWeek, end: endOfLastWeek);
-  }
-
-  DateTimeRange currentWeekRange() {
-    DateTime today = DateTime.now();
-    DateTime startOfCurrentWeek = today.subtract(Duration(days: today.weekday - 1)).withoutTime();
-    return DateTimeRange(start: startOfCurrentWeek, end: DateTime.now().withoutTime());
-  }
-
-  DateTime nextHour() {
-    DateTime today = DateTime(year, month, day, hour);
-    return today.add(const Duration(hours: 1));
-  }
-
-  DateTime nextDay() {
-    DateTime today = DateTime(year, month, day);
-    return today.add(const Duration(hours: 24));
-  }
-
-  DateTime nextWeek() {
-    DateTime today = DateTime(year, month, day);
-    final numberOfDaysUntilNextWeek = 7 - today.weekday;
-    return today.add(Duration(days: numberOfDaysUntilNextWeek + 1));
-  }
-
   DateTimeRange dateTimeRange() {
     final start = DateTime(year, 1);
     final end = DateTime(year, 12);
