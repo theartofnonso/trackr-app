@@ -20,7 +20,7 @@ extension RoutineTemplateExtension on RoutineTemplate {
     return RoutineTemplateDto(
       id: id,
       name: name,
-      exercises: exercises,
+      exerciseTemplates: exercises,
       days: daysOfWeek,
       notes: notes,
       createdAt: createdAt.getDateTimeInUtc(),

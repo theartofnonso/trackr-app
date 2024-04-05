@@ -40,7 +40,7 @@ class AmplifyTemplateRepository {
     return RoutineTemplateDto(
         id: id,
         name: name,
-        exercises: exerciseLogDtos,
+        exerciseTemplates: exerciseLogDtos,
         notes: notes,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
@@ -143,23 +143,23 @@ class AmplifyTemplateRepository {
       final oldTemplate = result.first;
       final oldTemplateDto = oldTemplate.dto();
 
-      final updatedExercises = oldTemplateDto.exercises.map((oldExercise) {
-        final newExercise = newExercises.firstWhereOrNull((newExercise) => newExercise.id == oldExercise.id);
+      final updatedExercisesTemplates = oldTemplateDto.exerciseTemplates.map((oldExerciseTemplate) {
+        final newExerciseTemplate = newExercises.firstWhereOrNull((newExercise) => newExercise.id == oldExerciseTemplate.id);
 
-        if (newExercise == null) {
-          return oldExercise;
+        if (newExerciseTemplate == null) {
+          return oldExerciseTemplate;
         }
 
         final updatedSets = <SetDto>[];
 
-        for (int i = 0; i < oldExercise.sets.length; i++) {
-          final newSet = newExercise.sets[i];
+        for (int i = 0; i < oldExerciseTemplate.sets.length; i++) {
+          final newSet = newExerciseTemplate.sets[i];
           updatedSets.add(newSet.copyWith(checked: false));
         }
-        return oldExercise.copyWith(sets: updatedSets);
+        return oldExerciseTemplate.copyWith(sets: updatedSets);
       }).toList();
 
-      final newTemplateDto = oldTemplateDto.copyWith(exercises: updatedExercises);
+      final newTemplateDto = oldTemplateDto.copyWith(exerciseTemplates: updatedExercisesTemplates);
 
       final newLog = oldTemplate.copyWith(data: jsonEncode(newTemplateDto));
 

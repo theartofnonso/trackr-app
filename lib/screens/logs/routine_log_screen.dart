@@ -302,7 +302,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
           id: "",
           name: log.name,
           notes: log.notes,
-          exercises: exercises,
+          exerciseTemplates: exercises,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
@@ -331,7 +331,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
         final newSets = exerciseLog.sets.map((set) => set.copyWith(checked: false)).toList();
         return exerciseLog.copyWith(sets: newSets);
       }).toList();
-      final newTemplate = templateToUpdate.copyWith(exercises: exerciseLogs);
+      final newTemplate = templateToUpdate.copyWith(exerciseTemplates: exerciseLogs);
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: newTemplate);
     }
   }
@@ -393,7 +393,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
       return;
     }
 
-    final exerciseLog1 = routineTemplate.exercises;
+    final exerciseLog1 = routineTemplate.exerciseTemplates;
     final exerciseLog2 = widget.log.exerciseLogs;
     final templateChanges = checkForChanges(exerciseLog1: exerciseLog1, exerciseLog2: exerciseLog2, isEditor: false);
 

@@ -10,7 +10,6 @@ import 'package:tracker_app/extensions/datetime_range_extension.dart';
 import 'package:tracker_app/extensions/routine_log_extension.dart';
 import 'package:tracker_app/screens/insights/streak_screen.dart';
 import 'package:tracker_app/widgets/calendar/calendar_months_navigator.dart';
-import 'package:tracker_app/widgets/notification_banners/stacked_notification_banners.dart';
 
 import '../../dtos/routine_log_dto.dart';
 import '../../controllers/routine_log_controller.dart';
@@ -77,6 +76,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     Map<DateTimeRange, List<RoutineLogDto>> monthlyLogs = _monthlyLogs ?? routineLogController.monthlyLogs;
 
+    final logsForTheYear = monthlyLogs.values.expand((logs) => logs);
+
+    final logsForTheYearByDay = groupBy(logsForTheYear, (log) => log.createdAt.formattedDayAndMonth());
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "fab_overview_screen",
@@ -110,7 +113,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         icon: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const FaIcon(FontAwesomeIcons.fire, color: Colors.white, size: 20),
                           const SizedBox(width: 4),
-                          Text("${routineLogController.routineLogs.length}",
+                          Text("${logsForTheYearByDay.length}",
                               style: GoogleFonts.montserrat(
                                   color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
                         ]),
@@ -127,8 +130,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                           child: Column(children: [
                             const SizedBox(height: 4),
                             OverviewMonitor(routineLogs: logsForTheMonth),
-                            if (routineLogController.routineLogs.isNotEmpty) const StackedNotificationBanners(),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 8),
                             Calendar(
                               range: _dateTimeRange,
                             ),

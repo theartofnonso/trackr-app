@@ -7,7 +7,7 @@ class RoutineTemplateDto {
   final String id;
   final String name;
   final String notes;
-  final List<ExerciseLogDto> exercises;
+  final List<ExerciseLogDto> exerciseTemplates;
   final List<DayOfWeek> days;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -15,7 +15,7 @@ class RoutineTemplateDto {
   RoutineTemplateDto({
     required this.id,
     required this.name,
-    required this.exercises,
+    required this.exerciseTemplates,
     this.days = const [],
     required this.notes,
     required this.createdAt,
@@ -26,7 +26,7 @@ class RoutineTemplateDto {
     return {
       'name': name,
       'notes': notes,
-      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
+      'exercises': exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
       'days': days.map((dayOfWeek) => dayOfWeek.day).toList(),
     };
   }
@@ -36,7 +36,7 @@ class RoutineTemplateDto {
         id: "",
         templateId: id,
         name: name,
-        exerciseLogs: exercises,
+        exerciseLogs: exerciseTemplates,
         notes: notes,
         startTime: DateTime.now(),
         endTime: DateTime.now(),
@@ -50,7 +50,7 @@ class RoutineTemplateDto {
     String? notes,
     DateTime? startTime,
     DateTime? endTime,
-    List<ExerciseLogDto>? exercises,
+    List<ExerciseLogDto>? exerciseTemplates,
     List<DayOfWeek>? days,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -59,7 +59,7 @@ class RoutineTemplateDto {
       id: id ?? this.id,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-      exercises: exercises ?? this.exercises,
+      exerciseTemplates: exerciseTemplates ?? this.exerciseTemplates,
       days: days ?? this.days,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -68,6 +68,6 @@ class RoutineTemplateDto {
 
   @override
   String toString() {
-    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, exercises: $exercises, days: $days, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineTemplateDto{id: $id, name: $name, notes: $notes, exerciseTemplates: $exerciseTemplates, days: $days, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }
