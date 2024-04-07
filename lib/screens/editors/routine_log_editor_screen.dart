@@ -278,13 +278,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             floatingActionButton: isKeyboardOpen
                 ? null
                 : FloatingActionButton(
-                    heroTag: UniqueKey(),
-                    onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
-                    backgroundColor: sapphireDark,
-                    enableFeedback: true,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
-                  ),
+              heroTag: UniqueKey(),
+              onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
+              backgroundColor: sapphireDark,
+              enableFeedback: true,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              child: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 32, color: vibrantGreen),
+            ),
             body: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -315,11 +315,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             Column(children: [
                               Consumer<ExerciseLogController>(
                                   builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                                return _RoutineLogOverview(
-                                  sets: provider.completedSets().length,
-                                  timer: RoutineTimer(startTime: widget.log.startTime),
-                                );
-                              }),
+                                    return _RoutineLogOverview(
+                                      sets: provider.completedSets().length,
+                                      timer: RoutineTimer(startTime: widget.log.startTime),
+                                    );
+                                  }),
                               const SizedBox(height: 20),
                             ]),
                           if (exerciseLogs.isNotEmpty)
@@ -338,7 +338,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                           exerciseLogDto: log,
                                           editorType: RoutineEditorMode.log,
                                           superSet:
-                                              whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                          whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
                                           onRemoveSuperSet: (String superSetId) {
                                             exerciseLogController.removeSuperSet(superSetId: log.superSetId);
                                             _cacheLog();
@@ -387,9 +387,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final exerciseLogs = widget.log.exerciseLogs;
     final updatedExerciseLogs = exerciseLogs.map((exerciseLog) {
       final previousSets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
-      final hasCurrentSets = exerciseLog.sets.isNotEmpty;
-      final unCheckedSets = previousSets.mapIndexed((index, set) => set.copyWith(checked: hasCurrentSets ? exerciseLog.sets[index].checked : false)).toList();
-      return exerciseLog.copyWith(sets: unCheckedSets);
+      if(previousSets.isNotEmpty) {
+        final hasCurrentSets = exerciseLog.sets.isNotEmpty;
+        final unCheckedSets = previousSets.take(exerciseLog.sets.length).mapIndexed((index, set) => set.copyWith(checked: hasCurrentSets ? exerciseLog.sets[index].checked : false)).toList();
+        return exerciseLog.copyWith(sets: unCheckedSets);
+      }
+      return exerciseLog;
     }).toList();
     Provider.of<ExerciseLogController>(context, listen: false).loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: widget.mode);
   }

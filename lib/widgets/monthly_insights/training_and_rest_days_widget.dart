@@ -106,7 +106,7 @@ class TrainingAndRestDaysWidget extends StatelessWidget {
       }
     }
     // Calculate the average by dividing the total difference by the number of intervals
-    final totalIntervals = intervals.isNotEmpty ? intervals.sum : 1;
+    final totalIntervals = intervals.isNotEmpty ? intervals.sum : 0;
     final intervalsLength = intervals.isNotEmpty ? intervals.length : 1;
     return (totalIntervals / intervalsLength).round();
   }

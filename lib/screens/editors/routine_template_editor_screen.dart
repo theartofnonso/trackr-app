@@ -238,12 +238,12 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
           floatingActionButton: isKeyboardOpen
               ? null
               : FloatingActionButton(
-                  heroTag: "fab_select_exercise_log_screen",
-                  onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
-                  backgroundColor: sapphireDark,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
-                ),
+            heroTag: "fab_select_exercise_log_screen",
+            onPressed: template != null ? _updateRoutineTemplate : _createRoutineTemplate,
+            backgroundColor: sapphireDark,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: const FaIcon(FontAwesomeIcons.check, color: Colors.white, size: 28),
+          ),
           body: Container(
             width: double.infinity,
             decoration: const BoxDecoration(
@@ -312,28 +312,28 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                       const SizedBox(height: 20),
                       exerciseLogs.isNotEmpty
                           ? Expanded(
-                              child: ListView.separated(
-                                  padding: const EdgeInsets.only(bottom: 250),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    final log = exerciseLogs[index];
-                                    final logId = log.id;
-                                    return ExerciseLogWidget(
-                                        key: ValueKey(logId),
-                                        exerciseLogDto: log,
-                                        editorType: RoutineEditorMode.edit,
-                                        superSet:
-                                            whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
-                                        onRemoveSuperSet: (String superSetId) =>
-                                            exerciseLogController.removeSuperSet(superSetId: log.superSetId),
-                                        onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
-                                        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
-                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log));
-                                  },
-                                  separatorBuilder: (_, __) => const SizedBox(height: 10),
-                                  itemCount: exerciseLogs.length))
+                          child: ListView.separated(
+                              padding: const EdgeInsets.only(bottom: 250),
+                              itemBuilder: (BuildContext context, int index) {
+                                final log = exerciseLogs[index];
+                                final logId = log.id;
+                                return ExerciseLogWidget(
+                                    key: ValueKey(logId),
+                                    exerciseLogDto: log,
+                                    editorType: RoutineEditorMode.edit,
+                                    superSet:
+                                    whereOtherExerciseInSuperSet(firstExercise: log, exercises: exerciseLogs),
+                                    onRemoveSuperSet: (String superSetId) =>
+                                        exerciseLogController.removeSuperSet(superSetId: log.superSetId),
+                                    onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
+                                    onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                    onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log));
+                              },
+                              separatorBuilder: (_, __) => const SizedBox(height: 10),
+                              itemCount: exerciseLogs.length))
                           : const ExerciseLogEmptyState(
-                              mode: RoutineEditorMode.edit,
-                              message: "Tap the + button to start adding exercises to your workout"),
+                          mode: RoutineEditorMode.edit,
+                          message: "Tap the + button to start adding exercises to your workout"),
                     ],
                   ),
                 ),
@@ -357,9 +357,13 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
     final exercises = widget.template?.exerciseTemplates;
     if (exercises != null && exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
-        final sets = Provider.of<RoutineLogController>(context, listen: false).whereSetsForExercise(exercise: exerciseLog.exercise);
-        final unCheckedSets = sets.map((set) => set.copyWith(checked: false)).toList();
-        return exerciseLog.copyWith(sets: unCheckedSets);
+        final previousSets = Provider.of<RoutineLogController>(context, listen: false)
+            .whereSetsForExercise(exercise: exerciseLog.exercise);
+        if (previousSets.isNotEmpty) {
+          final unCheckedSets = previousSets.take(exerciseLog.sets.length).map((set) => set.copyWith(checked: false)).toList();
+          return exerciseLog.copyWith(sets: unCheckedSets);
+        }
+        return exerciseLog;
       }).toList();
       Provider.of<ExerciseLogController>(context, listen: false)
           .loadExerciseLogs(exerciseLogs: updatedExerciseLogs, mode: RoutineEditorMode.edit);
