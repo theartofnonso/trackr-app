@@ -46,7 +46,7 @@ class LogStreakChartWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Log Steak".toUpperCase(),
+          Text("Log Streak".toUpperCase(),
               style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold)),
           const SizedBox(height: 30),
           SizedBox(

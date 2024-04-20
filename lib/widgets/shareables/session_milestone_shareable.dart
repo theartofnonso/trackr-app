@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../colors.dart';
 
-GlobalKey logMilestoneShareableKey = GlobalKey();
+GlobalKey sessionMilestoneShareableKey = GlobalKey();
 
-class LogMilestoneShareable extends StatelessWidget {
+class SessionMilestoneShareable extends StatelessWidget {
   final String label;
   final Image? image;
 
-  const LogMilestoneShareable({super.key, required this.label, this.image});
+  const SessionMilestoneShareable({super.key, required this.label, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class LogMilestoneShareable extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: RepaintBoundary(
-          key: logMilestoneShareableKey,
+          key: sessionMilestoneShareableKey,
           child: Container(
             decoration: BoxDecoration(
               image: imageFile != null
@@ -63,7 +63,7 @@ class LogMilestoneShareable extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(label,
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                Text("Workout",
+                Text("Session",
                     style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 30),
                 Image.asset(
