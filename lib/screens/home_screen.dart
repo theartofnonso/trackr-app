@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
-import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/template/routines_home.dart';
@@ -37,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final screens = [
       OverviewScreen(scrollController: _scrollController),
       const RoutinesHome(),
-      AchievementsScreen(scrollController: _scrollController),
       const SettingsScreen(),
     ];
 
@@ -61,13 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIcon: FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 24),
             label: 'Workouts',
           ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.grey, size: 28),
-            selectedIcon: FaIcon(FontAwesomeIcons.gamepad, color: Colors.white, size: 28),
-            label: 'Achievements',
-          ),
-
-          /// Uncomment this to enable Monthly Reports
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.gear, color: Colors.grey, size: 26),
             selectedIcon: FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 26),
