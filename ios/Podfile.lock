@@ -1,35 +1,35 @@
 PODS:
-  - Amplify (1.30.4):
-    - Amplify/Default (= 1.30.4)
-  - Amplify/Default (1.30.4)
+  - Amplify (1.30.7):
+    - Amplify/Default (= 1.30.7)
+  - Amplify/Default (1.30.7)
   - amplify_auth_cognito (0.0.1):
     - Flutter
     - FlutterMacOS
   - amplify_datastore (0.0.1):
-    - Amplify (= 1.30.4)
-    - AmplifyPlugins/AWSAPIPlugin (= 1.30.4)
-    - AmplifyPlugins/AWSDataStorePlugin (= 1.30.4)
+    - Amplify (= 1.30.7)
+    - AmplifyPlugins/AWSAPIPlugin (= 1.30.7)
+    - AmplifyPlugins/AWSDataStorePlugin (= 1.30.7)
     - Flutter
     - Starscream (= 4.0.4)
   - amplify_secure_storage (0.0.1):
     - Flutter
-  - AmplifyPlugins/AWSAPIPlugin (1.30.4):
+  - AmplifyPlugins/AWSAPIPlugin (1.30.7):
     - AppSyncRealTimeClient (~> 3.1)
     - AWSCore (~> 2.33.0)
-    - AWSPluginsCore (= 1.30.4)
-  - AmplifyPlugins/AWSDataStorePlugin (1.30.4):
+    - AWSPluginsCore (= 1.30.7)
+  - AmplifyPlugins/AWSDataStorePlugin (1.30.7):
     - AWSCore (~> 2.33.0)
-    - AWSPluginsCore (= 1.30.4)
+    - AWSPluginsCore (= 1.30.7)
     - SQLite.swift (= 0.13.2)
   - AppSyncRealTimeClient (3.1.2):
     - Starscream (= 4.0.4)
   - AWSCore (2.33.10)
-  - AWSPluginsCore (1.30.4):
-    - Amplify (= 1.30.4)
+  - AWSPluginsCore (1.30.7):
+    - Amplify (= 1.30.7)
     - AWSCore (~> 2.33.0)
   - connectivity_plus (0.0.1):
     - Flutter
-    - ReachabilitySwift
+    - FlutterMacOS
   - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
@@ -57,7 +57,6 @@ PODS:
     - Flutter
     - FlutterMacOS
     - PostHog (~> 3.0)
-  - ReachabilitySwift (5.2.2)
   - Sentry/HybridSDK (8.21.0):
     - SentryPrivate (= 8.21.0)
   - sentry_flutter (7.20.0):
@@ -81,7 +80,7 @@ DEPENDENCIES:
   - amplify_auth_cognito (from `.symlinks/plugins/amplify_auth_cognito/darwin`)
   - amplify_datastore (from `.symlinks/plugins/amplify_datastore/ios`)
   - amplify_secure_storage (from `.symlinks/plugins/amplify_secure_storage/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
@@ -105,7 +104,6 @@ SPEC REPOS:
     - AWSPluginsCore
     - OrderedSet
     - PostHog
-    - ReachabilitySwift
     - Sentry
     - SentryPrivate
     - SQLite.swift
@@ -119,7 +117,7 @@ EXTERNAL SOURCES:
   amplify_secure_storage:
     :path: ".symlinks/plugins/amplify_secure_storage/ios"
   connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/ios"
+    :path: ".symlinks/plugins/connectivity_plus/darwin"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
@@ -148,27 +146,26 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  Amplify: 4e41668c8801667e174ab50c12bc3099c71a257f
+  Amplify: 944412239a678ab161ddf854d92e520a43bc51ec
   amplify_auth_cognito: 76b5a54f05f66f69966b468b8121a0dd33a32c70
-  amplify_datastore: 806c9f0489d77bf3648cefd61df63cb4e00477e2
+  amplify_datastore: 37a8779bb5f59df11d3483fae7a7861333f28aab
   amplify_secure_storage: 501cbdac671a050090d48dfcc002d5637d3f4a55
-  AmplifyPlugins: 1335f0919aa07329df58685a020f2311c75a5176
+  AmplifyPlugins: 58a6212101b8f2d9f071caf4c312986c2d44b934
   AppSyncRealTimeClient: 36ff2f65f330bce7f1d0d2157a4ae5d255483dac
   AWSCore: 3c1a3dad47fcf9db8bebc633f296f10b690328c6
-  AWSPluginsCore: f2188458c27e6cb09597c67876f80611d14275d7
-  connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
-  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
+  AWSPluginsCore: fbc14b0381a27ff788b849dfbedb169559082d76
+  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
+  device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   health: 5a380c0f6c4f619535845992993964293962e99e
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
-  package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
+  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   PostHog: 16c6591ba95e64e2803f431e1811fd4b089de103
   posthog_flutter: e80defebf021b13375b351c838c9b87d769d7546
-  ReachabilitySwift: 2128f3a8c9107e1ad33574c6e58e8285d460b149
   Sentry: ebc12276bd17613a114ab359074096b6b3725203
   sentry_flutter: df6e28477322fc5202bbe20aafdd7404b6e97729
   SentryPrivate: d651efb234cf385ec9a1cdd3eff94b5e78a0e0fe
