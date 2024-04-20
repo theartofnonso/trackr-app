@@ -184,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: TabBarView(
                         children: [
                           ExerciseChartScreen(
+                            key: UniqueKey(),
                             heaviestWeight: heaviestWeightRecord,
                             heaviestSet: heaviestSetVolumeRecord,
                             longestDuration: longestDurationRecord,
