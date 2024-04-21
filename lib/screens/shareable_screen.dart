@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
-import 'package:tracker_app/widgets/shareables/achievement_share.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
@@ -50,19 +49,6 @@ class _ShareableScreenState extends State<ShareableScreen> {
 
     final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.day);
 
-    final achievements = routineLogController.calculateNewLogAchievements();
-
-    List<Widget> achievementsShareAssets = [];
-    final achievementsShareAssetsKeys = [];
-
-    for (final achievement in achievements) {
-      final key = GlobalKey();
-      final shareable =
-          AchievementShare(globalKey: key, achievementDto: achievement);
-      achievementsShareAssets.add(shareable);
-      achievementsShareAssetsKeys.add(key);
-    }
-
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
 
@@ -84,14 +70,12 @@ class _ShareableScreenState extends State<ShareableScreen> {
     }
 
     final pages = [
-      ...achievementsShareAssets,
       if (isMultipleOfFive(logsByDay.length)) SessionMilestoneShareable(label: "${logsByDay.length}th", image: _image),
       ...pbShareAssets,
       RoutineLogShareableLite(log: widget.log, frequencyData: widget.frequencyData, image: _image),
     ];
 
     final pagesKeys = [
-      ...achievementsShareAssetsKeys,
       if (isMultipleOfFive(logsByDay.length)) sessionMilestoneShareableKey,
       ...pbShareAssetsKeys,
       routineLogShareableLiteKey,

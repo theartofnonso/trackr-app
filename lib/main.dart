@@ -22,12 +22,10 @@ import 'package:tracker_app/controllers/settings_controller.dart';
 import 'package:tracker_app/dtos/routine_log_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
-import 'package:tracker_app/repositories/achievement_repository.dart';
 import 'package:tracker_app/repositories/amplify_exercise_repository.dart';
 import 'package:tracker_app/repositories/amplify_log_repository.dart';
 import 'package:tracker_app/repositories/amplify_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
-import 'package:tracker_app/screens/achievements/achievements_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
@@ -90,7 +88,7 @@ void main() async {
         create: (BuildContext context) => RoutineTemplateController(AmplifyTemplateRepository()),
       ),
       ChangeNotifierProvider<RoutineLogController>(
-        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository(), AchievementRepository()),
+        create: (BuildContext context) => RoutineLogController(AmplifyLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
@@ -248,7 +246,6 @@ class _MyAppState extends State<MyApp> {
               routes: {
                 OverviewScreen.routeName: (context) => const OverviewScreen(),
                 RoutinesHome.routeName: (context) => const RoutinesHome(),
-                AchievementsScreen.routeName: (context) => const AchievementsScreen(),
                 SettingsScreen.routeName: (context) => const SettingsScreen(),
                 HomeScreen.routeName: (context) => const HomeScreen(),
                 SetsAndRepsVolumeInsightsScreen.routeName: (context) => const SetsAndRepsVolumeInsightsScreen(),
