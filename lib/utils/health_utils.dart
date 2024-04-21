@@ -4,6 +4,7 @@ import 'package:tracker_app/dtos/routine_log_dto.dart';
 void syncWorkoutWithAppleHealth({required RoutineLogDto log}) async {
   Health().configure(useHealthConnectIfAvailable: true);
   Health().writeWorkoutData(
+    title: log.name,
       activityType: HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING, start: log.startTime, end: log.endTime);
 }
 
