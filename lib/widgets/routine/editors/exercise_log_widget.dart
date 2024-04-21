@@ -7,6 +7,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/pigeon_build/pigeon.g.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -181,7 +182,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+    _getHeartRate();
     _cacheLog();
+  }
+
+  Future<void> _getHeartRate() async {
+    final hostApi = DataHostApi();
+    await hostApi.getHeartRate();
   }
 
   void _loadTextEditingControllers() {

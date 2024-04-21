@@ -26,6 +26,8 @@
 		F363E2202BD5BB7000597E90 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E21F2BD5BB7000597E90 /* MonitorView.swift */; };
 		F363E2222BD5BBB100597E90 /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */; };
 		F363E2282BD5C07000597E90 /* TRKR-Watch-App-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F363E2272BD5C07000597E90 /* TRKR-Watch-App-Info.plist */; };
+		F363E22B2BD5C62500597E90 /* Pigeon.g.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E2292BD5C62500597E90 /* Pigeon.g.swift */; };
+		F363E2312BD5CB0400597E90 /* DataFlutterWrapperApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E2302BD5CB0400597E90 /* DataFlutterWrapperApi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,8 @@
 		F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
 		F363E2232BD5BE2300597E90 /* TRKR Watch AppDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TRKR Watch AppDebug.entitlements"; sourceTree = "<group>"; };
 		F363E2272BD5C07000597E90 /* TRKR-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TRKR-Watch-App-Info.plist"; sourceTree = "<group>"; };
+		F363E2292BD5C62500597E90 /* Pigeon.g.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pigeon.g.swift; sourceTree = "<group>"; };
+		F363E2302BD5CB0400597E90 /* DataFlutterWrapperApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFlutterWrapperApi.swift; sourceTree = "<group>"; };
 		F39C1A122BA65BE6008A4FC5 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		F3B77BFC2B2CC958007D0009 /* RunnerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -194,6 +198,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				F363E22A2BD5C62500597E90 /* PigeonBuild */,
 				F39C1A122BA65BE6008A4FC5 /* Runner.entitlements */,
 				F3B77BFC2B2CC958007D0009 /* RunnerDebug.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -255,6 +260,15 @@
 				F363E21F2BD5BB7000597E90 /* MonitorView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		F363E22A2BD5C62500597E90 /* PigeonBuild */ = {
+			isa = PBXGroup;
+			children = (
+				F363E2292BD5C62500597E90 /* Pigeon.g.swift */,
+				F363E2302BD5CB0400597E90 /* DataFlutterWrapperApi.swift */,
+			);
+			path = PigeonBuild;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -503,6 +517,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				F363E2312BD5CB0400597E90 /* DataFlutterWrapperApi.swift in Sources */,
+				F363E22B2BD5C62500597E90 /* Pigeon.g.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

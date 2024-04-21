@@ -5,22 +5,24 @@ class SetDto {
   final num value1;
   final num value2;
   final bool checked;
+  final int heartRate;
 
-  const SetDto(this.value1, this.value2, this.checked);
+  const SetDto(this.value1, this.value2, this.checked, {this.heartRate = 0});
 
-  SetDto copyWith({num? value1, num? value2, bool? checked}) {
-    return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
+  SetDto copyWith({num? value1, num? value2, bool? checked, int? heartRate}) {
+    return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked, heartRate: heartRate ?? this.heartRate);
   }
 
   String toJson() {
-    return jsonEncode({"value1": value1, "value2": value2, "checked": checked});
+    return jsonEncode({"value1": value1, "value2": value2, "checked": checked, "heartRate": heartRate});
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {
     final value1 = json["value1"];
     final value2 = json["value2"];
     final checked = json["checked"];
-    return SetDto(value1, value2, checked);
+    final heartRate = json["heartRate"] ?? 0;
+    return SetDto(value1, value2, checked, heartRate: heartRate);
   }
 
   bool isEmpty() {
@@ -61,6 +63,6 @@ class SetDto {
 
   @override
   String toString() {
-    return 'SetDto{value1: $value1, value2: $value2, checked: $checked}';
+    return 'SetDto{value1: $value1, value2: $value2, checked: $checked}, heartRate: $heartRate';
   }
 }

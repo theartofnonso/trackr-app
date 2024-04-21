@@ -22,7 +22,9 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {}
     
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {}
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        print(message)
+    }
     
     func sendMessage(message: String) {
         let watchSession = WCSession.default
