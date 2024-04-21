@@ -18,29 +18,6 @@ class Accelerometer: ObservableObject {
     
     private var speeds: [Double] = []
     
-    func startAccelerometers() {
-        // Make sure the accelerometer hardware is available.
-        if self.motionManager.isAccelerometerAvailable {
-            self.motionManager.accelerometerUpdateInterval = 1.0 / 50.0  // 50 Hz
-            self.motionManager.startAccelerometerUpdates()
-            
-            let timer = Timer(fire: Date(), interval: (1.0/50.0), repeats: true, block: { timer in
-                // Get the accelerometer data.
-                if let data = self.motionManager.accelerometerData {
-                    let x = data.acceleration.x
-                    let y = data.acceleration.y
-                    let z = data.acceleration.z
-                    
-                    // Use the accelerometer data in your app.
-                }
-            })
-            
-            
-            // Add the timer to the current run loop.
-            RunLoop.current.add(timer, forMode: .default)
-        }
-    }
-    
     private func startAccelerometer() {
         guard motionManager.isAccelerometerAvailable else { return }
         motionManager.accelerometerUpdateInterval = 1.0 / 50.0 // 50 Hz

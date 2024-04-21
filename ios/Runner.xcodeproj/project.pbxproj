@@ -25,6 +25,7 @@
 		F363E21E2BD5BB4300597E90 /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E21D2BD5BB4300597E90 /* AppColor.swift */; };
 		F363E2202BD5BB7000597E90 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E21F2BD5BB7000597E90 /* MonitorView.swift */; };
 		F363E2222BD5BBB100597E90 /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */; };
+		F363E2282BD5C07000597E90 /* TRKR-Watch-App-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F363E2272BD5C07000597E90 /* TRKR-Watch-App-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,8 @@
 		F363E21D2BD5BB4300597E90 /* AppColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
 		F363E21F2BD5BB7000597E90 /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
 		F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
+		F363E2232BD5BE2300597E90 /* TRKR Watch AppDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TRKR Watch AppDebug.entitlements"; sourceTree = "<group>"; };
+		F363E2272BD5C07000597E90 /* TRKR-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TRKR-Watch-App-Info.plist"; sourceTree = "<group>"; };
 		F39C1A122BA65BE6008A4FC5 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		F3B77BFC2B2CC958007D0009 /* RunnerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -167,6 +170,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				F363E2272BD5C07000597E90 /* TRKR-Watch-App-Info.plist */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				F35E33982BD460C20019CF59 /* TRKR Watch App */,
@@ -216,6 +220,7 @@
 		F35E33982BD460C20019CF59 /* TRKR Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				F363E2232BD5BE2300597E90 /* TRKR Watch AppDebug.entitlements */,
 				F363E21C2BD5BB2500597E90 /* Views */,
 				F363E2172BD5BA5900597E90 /* ViewModels */,
 				F35E33992BD460C20019CF59 /* TRKRApp.swift */,
@@ -383,6 +388,7 @@
 			files = (
 				F35E33A12BD460C50019CF59 /* Preview Assets.xcassets in Resources */,
 				F35E339E2BD460C50019CF59 /* Assets.xcassets in Resources */,
+				F363E2282BD5C07000597E90 /* TRKR-Watch-App-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -872,15 +878,18 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "TRKR Watch App/TRKR Watch AppDebug.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TRKR Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDC88H7BFT;
+				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "TRKR-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = TRKR;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -931,6 +940,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "TRKR-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = TRKR;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -978,6 +988,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "TRKR-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = TRKR;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
