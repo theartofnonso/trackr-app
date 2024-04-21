@@ -11,7 +11,7 @@ import SwiftUI
 struct TRKR_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MonitorView()
         }
     }
 }

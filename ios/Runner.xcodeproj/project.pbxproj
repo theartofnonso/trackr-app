@@ -17,10 +17,14 @@
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		B3F7737B3A6B81B3D03796BE /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CFB8105D87D1CB885A5D90D /* Pods_RunnerTests.framework */; };
 		F35E339A2BD460C20019CF59 /* TRKRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E33992BD460C20019CF59 /* TRKRApp.swift */; };
-		F35E339C2BD460C20019CF59 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35E339B2BD460C20019CF59 /* ContentView.swift */; };
 		F35E339E2BD460C50019CF59 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F35E339D2BD460C50019CF59 /* Assets.xcassets */; };
 		F35E33A12BD460C50019CF59 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F35E33A02BD460C50019CF59 /* Preview Assets.xcassets */; };
 		F35E33A52BD460C50019CF59 /* TRKR Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F35E33972BD460C20019CF59 /* TRKR Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F363E2192BD5BA6F00597E90 /* HeartRateMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E2182BD5BA6F00597E90 /* HeartRateMonitor.swift */; };
+		F363E21B2BD5BB0A00597E90 /* Accelerometer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E21A2BD5BB0A00597E90 /* Accelerometer.swift */; };
+		F363E21E2BD5BB4300597E90 /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E21D2BD5BB4300597E90 /* AppColor.swift */; };
+		F363E2202BD5BB7000597E90 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E21F2BD5BB7000597E90 /* MonitorView.swift */; };
+		F363E2222BD5BBB100597E90 /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,9 +94,13 @@
 		C221CD80800A4084F34685D8 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		F35E33972BD460C20019CF59 /* TRKR Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TRKR Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F35E33992BD460C20019CF59 /* TRKRApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRKRApp.swift; sourceTree = "<group>"; };
-		F35E339B2BD460C20019CF59 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F35E339D2BD460C50019CF59 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F35E33A02BD460C50019CF59 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F363E2182BD5BA6F00597E90 /* HeartRateMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateMonitor.swift; sourceTree = "<group>"; };
+		F363E21A2BD5BB0A00597E90 /* Accelerometer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accelerometer.swift; sourceTree = "<group>"; };
+		F363E21D2BD5BB4300597E90 /* AppColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
+		F363E21F2BD5BB7000597E90 /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
+		F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
 		F39C1A122BA65BE6008A4FC5 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		F3B77BFC2B2CC958007D0009 /* RunnerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,10 +216,12 @@
 		F35E33982BD460C20019CF59 /* TRKR Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				F363E21C2BD5BB2500597E90 /* Views */,
+				F363E2172BD5BA5900597E90 /* ViewModels */,
 				F35E33992BD460C20019CF59 /* TRKRApp.swift */,
-				F35E339B2BD460C20019CF59 /* ContentView.swift */,
 				F35E339D2BD460C50019CF59 /* Assets.xcassets */,
 				F35E339F2BD460C50019CF59 /* Preview Content */,
+				F363E21D2BD5BB4300597E90 /* AppColor.swift */,
 			);
 			path = "TRKR Watch App";
 			sourceTree = "<group>";
@@ -222,6 +232,24 @@
 				F35E33A02BD460C50019CF59 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F363E2172BD5BA5900597E90 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F363E2182BD5BA6F00597E90 /* HeartRateMonitor.swift */,
+				F363E21A2BD5BB0A00597E90 /* Accelerometer.swift */,
+				F363E2212BD5BBB100597E90 /* WatchConnectivity.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F363E21C2BD5BB2500597E90 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F363E21F2BD5BB7000597E90 /* MonitorView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -477,8 +505,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F35E339C2BD460C20019CF59 /* ContentView.swift in Sources */,
+				F363E2222BD5BBB100597E90 /* WatchConnectivity.swift in Sources */,
+				F363E2202BD5BB7000597E90 /* MonitorView.swift in Sources */,
+				F363E21E2BD5BB4300597E90 /* AppColor.swift in Sources */,
+				F363E21B2BD5BB0A00597E90 /* Accelerometer.swift in Sources */,
 				F35E339A2BD460C20019CF59 /* TRKRApp.swift in Sources */,
+				F363E2192BD5BA6F00597E90 /* HeartRateMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
