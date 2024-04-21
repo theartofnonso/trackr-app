@@ -43,7 +43,7 @@ struct MonitorView: View {
                     Spacer().frame(height: 3)
                     HStack(alignment: .bottom, content: {
                         
-                        Text("Back And Biceps").font(.system(size: 16, weight: .regular))
+                        Text(watchConnectivity.isAnalysing ? "Analysing" : "Back And Biceps").font(.system(size: 16, weight: .regular))
                         Spacer()
                     })
                     Spacer().frame(height: 10)

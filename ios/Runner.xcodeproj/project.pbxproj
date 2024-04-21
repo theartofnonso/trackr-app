@@ -222,9 +222,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F30155C92BD5D2A400BA844A /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
 		F35E33982BD460C20019CF59 /* TRKR Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				F30155C92BD5D2A400BA844A /* Enums */,
 				F363E2232BD5BE2300597E90 /* TRKR Watch AppDebug.entitlements */,
 				F363E21C2BD5BB2500597E90 /* Views */,
 				F363E2172BD5BA5900597E90 /* ViewModels */,
