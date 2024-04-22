@@ -11,17 +11,15 @@ struct MonitorView: View {
     
     @StateObject var watchConnectivity: WatchConnectivity = WatchConnectivity()
     
-    @StateObject var heartRateMonitor: HeartRateMonitor = HeartRateMonitor()
-    
     @State var hasHealthKitStore: Bool = false
     
     @State var requestingHealthKitStoreAccess: Bool = false
     
-    let startDate = Date.now
-    
     @State private var currentDate = Date.now
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
+    let heartRateMonitor: HeartRateMonitor = HeartRateMonitor()
+    
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ZStack {
@@ -31,14 +29,17 @@ struct MonitorView: View {
                         hasHealthKitStore = result
                     }
                 })
-            }.onChange(of: watchConnectivity) {
-                <#code#>
-            }
+            }.onReceive(watchConnectivity.$isAnalysing, perform: { _ in
+                heartRateMonitor.queryHeartRate(from: Date.now) { bpm in
+                    let heartRate = ["HEARTRATE": bpm]
+                    watchConnectivity.sendMessage(message: heartRate)
+                }
+            })
             
             if hasHealthKitStore {
                 VStack(alignment: .leading, content: {
                     Spacer()
-                    Text("\(formatElapsedTime(time: Int(currentDate.timeIntervalSince(startDate))))")
+                    Text("\(formatElapsedTime(time: Int(currentDate.timeIntervalSince(Date.now))))")
                         .onReceive(timer) { input in
                             currentDate = input
                         }.font(.system(size: 24, weight: .bold)).foregroundColor(AppColor.vibrantGreen)
@@ -99,7 +100,6 @@ struct MonitorView: View {
     func twoDigits(_ n: Int) -> String {
         return String(format: "%02d", n)
     }
-    
     
 }
 

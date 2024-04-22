@@ -11,7 +11,7 @@ import WatchConnectivity
 class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     @Published var isAnalysing: Bool = false
-     
+    
     override init() {
         super.init()
         
@@ -28,11 +28,12 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         isAnalysing = !isAnalysing
     }
     
-    func sendMessage(message: String) {
+    func sendMessage(message: [String:Int]) {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isReachable
         if isAvailable {
             watchSession.sendMessage(["message": message], replyHandler: nil, errorHandler: nil)
+            isAnalysing = !isAnalysing
         }
     }
 }

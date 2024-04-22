@@ -9,11 +9,9 @@ import Foundation
 import HealthKit
 
 
-class HeartRateMonitor: ObservableObject {
+class HeartRateMonitor {
     
-    @Published var heartRate: Double = 0.0
-    
-    let healthStore = HKHealthStore()
+    private let healthStore = HKHealthStore()
     
     func requestAuthorization(completion: @escaping (Bool) -> Void) async {
         
@@ -59,7 +57,7 @@ class HeartRateMonitor: ObservableObject {
         return HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
     }
     
-    private func createHeartRateQuery(heartRatePredicate: NSPredicate) -> HKStatisticsQuery? {
+    private func createHeartRateQuery(heartRatePredicate: NSPredicate, completion: @escaping (_ bpm: Int) -> Void) -> HKStatisticsQuery? {
         
         guard let heartRateQuantity = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate) else {
             return nil
@@ -67,25 +65,25 @@ class HeartRateMonitor: ObservableObject {
         
         return HKStatisticsQuery(quantityType: heartRateQuantity, quantitySamplePredicate: heartRatePredicate, options: .discreteMax) { query, statistics, error in
             
-            guard let statistics = statistics else {
+            guard let statistics = statistics, error == nil else {
                 return
             }
             
             let maxHeartRate = statistics.maximumQuantity()
             
-            self.heartRate = maxHeartRate?.doubleValue(for: .count()) ?? 0.0
+            let bpm = maxHeartRate?.doubleValue(for: .count()) ?? 0.0
+            
+            completion(Int(bpm))
         }
     }
     
-    func queryHeartRate(from: Date, completion: @escaping () -> Void) {
+    func queryHeartRate(from: Date, completion: @escaping (_ bpm: Int) -> Void) ->  {
         
         guard let predicate = getHeartRatePredicate(from: from) else {
-            self.heartRate = 0.0
             return
         }
         
-        guard let heartRateQuery = createHeartRateQuery(heartRatePredicate: predicate) else {
-            self.heartRate = 0.0
+        guard let heartRateQuery = createHeartRateQuery(heartRatePredicate: predicate, completion: completion) else {
             return
         }
         
