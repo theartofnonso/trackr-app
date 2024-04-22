@@ -16,6 +16,17 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		B3F7737B3A6B81B3D03796BE /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CFB8105D87D1CB885A5D90D /* Pods_RunnerTests.framework */; };
+		F32394FA2BD6C4E30056A98D /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32394F92BD6C4E30056A98D /* AppColor.swift */; };
+		F32394FD2BD6C5A90056A98D /* Accelerometer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32394FC2BD6C5A90056A98D /* Accelerometer.swift */; };
+		F32394FF2BD6C5D10056A98D /* HeartRateMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32394FE2BD6C5D10056A98D /* HeartRateMonitor.swift */; };
+		F32395012BD6C5F00056A98D /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32395002BD6C5F00056A98D /* WatchConnectivity.swift */; };
+		F32395042BD6CAA30056A98D /* DataPigeon.g.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32395022BD6CAA30056A98D /* DataPigeon.g.swift */; };
+		F32395062BD6CB3A0056A98D /* DataFlutterApiImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32395052BD6CB3A0056A98D /* DataFlutterApiImpl.swift */; };
+		F36653622BD6C29600A8E1EE /* TRKRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36653612BD6C29600A8E1EE /* TRKRApp.swift */; };
+		F36653642BD6C29600A8E1EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36653632BD6C29600A8E1EE /* ContentView.swift */; };
+		F36653662BD6C29800A8E1EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F36653652BD6C29800A8E1EE /* Assets.xcassets */; };
+		F36653692BD6C29800A8E1EE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F36653682BD6C29800A8E1EE /* Preview Assets.xcassets */; };
+		F366536D2BD6C29800A8E1EE /* TRKR Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F366535F2BD6C29600A8E1EE /* TRKR Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +36,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
+		};
+		F366536A2BD6C29800A8E1EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F366535E2BD6C29600A8E1EE;
+			remoteInfo = "TRKR Watch App";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -37,6 +55,17 @@
 			files = (
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F366536C2BD6C29800A8E1EE /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				F366536D2BD6C29800A8E1EE /* TRKR Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -65,8 +94,20 @@
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4790C97887866DBA6047165 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C221CD80800A4084F34685D8 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
+		F32394F92BD6C4E30056A98D /* AppColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
+		F32394FC2BD6C5A90056A98D /* Accelerometer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accelerometer.swift; sourceTree = "<group>"; };
+		F32394FE2BD6C5D10056A98D /* HeartRateMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRateMonitor.swift; sourceTree = "<group>"; };
+		F32395002BD6C5F00056A98D /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
+		F32395022BD6CAA30056A98D /* DataPigeon.g.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPigeon.g.swift; sourceTree = "<group>"; };
+		F32395052BD6CB3A0056A98D /* DataFlutterApiImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFlutterApiImpl.swift; sourceTree = "<group>"; };
+		F366535F2BD6C29600A8E1EE /* TRKR Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TRKR Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F36653612BD6C29600A8E1EE /* TRKRApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRKRApp.swift; sourceTree = "<group>"; };
+		F36653632BD6C29600A8E1EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F36653652BD6C29800A8E1EE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F36653682BD6C29800A8E1EE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F39C1A122BA65BE6008A4FC5 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		F3B77BFC2B2CC958007D0009 /* RunnerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
+		F3D207562BD6D264003FD612 /* TRKR Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TRKR Watch App.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +124,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7247E570E99CBBE4857738EB /* Pods_Runner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F366535C2BD6C29600A8E1EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +174,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				F36653602BD6C29600A8E1EE /* TRKR Watch App */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				55C597AA97BB348129E58B9C /* Pods */,
@@ -138,6 +187,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				F366535F2BD6C29600A8E1EE /* TRKR Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,6 +195,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				F32395032BD6CAA30056A98D /* PigeonBuild */,
 				F39C1A122BA65BE6008A4FC5 /* Runner.entitlements */,
 				F3B77BFC2B2CC958007D0009 /* RunnerDebug.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -166,6 +217,47 @@
 				6CFB8105D87D1CB885A5D90D /* Pods_RunnerTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F32394FB2BD6C5970056A98D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F32394FC2BD6C5A90056A98D /* Accelerometer.swift */,
+				F32394FE2BD6C5D10056A98D /* HeartRateMonitor.swift */,
+				F32395002BD6C5F00056A98D /* WatchConnectivity.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F32395032BD6CAA30056A98D /* PigeonBuild */ = {
+			isa = PBXGroup;
+			children = (
+				F32395022BD6CAA30056A98D /* DataPigeon.g.swift */,
+				F32395052BD6CB3A0056A98D /* DataFlutterApiImpl.swift */,
+			);
+			path = PigeonBuild;
+			sourceTree = "<group>";
+		};
+		F36653602BD6C29600A8E1EE /* TRKR Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				F3D207562BD6D264003FD612 /* TRKR Watch App.entitlements */,
+				F32394FB2BD6C5970056A98D /* ViewModels */,
+				F36653612BD6C29600A8E1EE /* TRKRApp.swift */,
+				F36653632BD6C29600A8E1EE /* ContentView.swift */,
+				F36653652BD6C29800A8E1EE /* Assets.xcassets */,
+				F36653672BD6C29800A8E1EE /* Preview Content */,
+				F32394F92BD6C4E30056A98D /* AppColor.swift */,
+			);
+			path = "TRKR Watch App";
+			sourceTree = "<group>";
+		};
+		F36653672BD6C29800A8E1EE /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F36653682BD6C29800A8E1EE /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +291,7 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
+				F366536C2BD6C29800A8E1EE /* Embed Watch Content */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				CF94837A5AEE824857FB7CEF /* [CP] Embed Pods Frameworks */,
@@ -206,10 +299,28 @@
 			buildRules = (
 			);
 			dependencies = (
+				F366536B2BD6C29800A8E1EE /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F366535E2BD6C29600A8E1EE /* TRKR Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F36653712BD6C29800A8E1EE /* Build configuration list for PBXNativeTarget "TRKR Watch App" */;
+			buildPhases = (
+				F366535B2BD6C29600A8E1EE /* Sources */,
+				F366535C2BD6C29600A8E1EE /* Frameworks */,
+				F366535D2BD6C29600A8E1EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "TRKR Watch App";
+			productName = "TRKR Watch App";
+			productReference = F366535F2BD6C29600A8E1EE /* TRKR Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -218,6 +329,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -228,6 +340,9 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
+					};
+					F366535E2BD6C29600A8E1EE = {
+						CreatedOnToolsVersion = 15.3;
 					};
 				};
 			};
@@ -246,6 +361,7 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
+				F366535E2BD6C29600A8E1EE /* TRKR Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -266,6 +382,15 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F366535D2BD6C29600A8E1EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F36653692BD6C29800A8E1EE /* Preview Assets.xcassets in Resources */,
+				F36653662BD6C29800A8E1EE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,7 +505,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				F32395062BD6CB3A0056A98D /* DataFlutterApiImpl.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				F32395042BD6CAA30056A98D /* DataPigeon.g.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F366535B2BD6C29600A8E1EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F32395012BD6C5F00056A98D /* WatchConnectivity.swift in Sources */,
+				F36653642BD6C29600A8E1EE /* ContentView.swift in Sources */,
+				F32394FF2BD6C5D10056A98D /* HeartRateMonitor.swift in Sources */,
+				F32394FD2BD6C5A90056A98D /* Accelerometer.swift in Sources */,
+				F36653622BD6C29600A8E1EE /* TRKRApp.swift in Sources */,
+				F32394FA2BD6C4E30056A98D /* AppColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,6 +531,11 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		F366536B2BD6C29800A8E1EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F366535E2BD6C29600A8E1EE /* TRKR Watch App */;
+			targetProxy = F366536A2BD6C29800A8E1EE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -455,7 +600,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -468,6 +613,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -594,7 +740,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -643,7 +789,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -658,6 +804,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
@@ -692,6 +839,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -720,6 +868,138 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
+		};
+		F366536E2BD6C29800A8E1EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "TRKR Watch App/TRKR Watch AppDebug.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TRKR Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = ZDC88H7BFT;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TRKR;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = xyz.usetracker.trackr;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = xyz.usetracker.trackr.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.4;
+			};
+			name = Debug;
+		};
+		F366536F2BD6C29800A8E1EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "TRKR Watch App/TRKR Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TRKR Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = ZDC88H7BFT;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TRKR;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = xyz.usetracker.trackr;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = xyz.usetracker.trackr.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.4;
+			};
+			name = Release;
+		};
+		F36653702BD6C29800A8E1EE /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "TRKR Watch App/TRKR Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TRKR Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = ZDC88H7BFT;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TRKR;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = xyz.usetracker.trackr;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = xyz.usetracker.trackr.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.4;
+			};
+			name = Profile;
 		};
 /* End XCBuildConfiguration section */
 
@@ -750,6 +1030,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F36653712BD6C29800A8E1EE /* Build configuration list for PBXNativeTarget "TRKR Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F366536E2BD6C29800A8E1EE /* Debug */,
+				F366536F2BD6C29800A8E1EE /* Release */,
+				F36653702BD6C29800A8E1EE /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

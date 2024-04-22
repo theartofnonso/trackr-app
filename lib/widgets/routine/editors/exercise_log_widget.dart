@@ -20,6 +20,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
+import '../../../pigeon_build/data_pigeon.g.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 import '../../../utils/general_utils.dart';
@@ -181,7 +182,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
+    if(checked) {
+      _getHeartRate();
+    }
     _cacheLog();
+  }
+
+  Future<void> _getHeartRate() async {
+    final hostApi = DataHostApi();
+    await hostApi.getHeartRate();
+  }
+
+  Future<void> _getVelocity() async {
+    final hostApi = DataHostApi();
+    await hostApi.getVelocity();
   }
 
   void _loadTextEditingControllers() {
