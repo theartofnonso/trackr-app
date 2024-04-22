@@ -31,6 +31,8 @@ struct MonitorView: View {
                         hasHealthKitStore = result
                     }
                 })
+            }.onChange(of: watchConnectivity) {
+                <#code#>
             }
             
             if hasHealthKitStore {
