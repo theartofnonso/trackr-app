@@ -17,6 +17,8 @@ struct MonitorView: View {
     
     @State private var currentDate = Date.now
     
+    @State private var startDate = Date.now
+    
     let heartRateMonitor: HeartRateMonitor = HeartRateMonitor()
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -30,16 +32,18 @@ struct MonitorView: View {
                     }
                 })
             }.onReceive(watchConnectivity.$isAnalysing, perform: { _ in
-                heartRateMonitor.queryHeartRate(from: Date.now) { bpm in
-                    let heartRate = ["HEARTRATE": bpm]
-                    watchConnectivity.sendMessage(message: heartRate)
+                if watchConnectivity.isAnalysing {
+                    heartRateMonitor.queryHeartRate(from: Date.now) { bpm in
+                        let heartRate = ["HEARTRATE": bpm]
+                        watchConnectivity.sendMessage(message: heartRate)
+                    }
                 }
             })
             
             if hasHealthKitStore {
                 VStack(alignment: .leading, content: {
                     Spacer()
-                    Text("\(formatElapsedTime(time: Int(currentDate.timeIntervalSince(Date.now))))")
+                    Text("\(formatElapsedTime(time: Int(currentDate.timeIntervalSince(startDate))))")
                         .onReceive(timer) { input in
                             currentDate = input
                         }.font(.system(size: 24, weight: .bold)).foregroundColor(AppColor.vibrantGreen)

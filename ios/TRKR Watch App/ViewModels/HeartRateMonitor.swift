@@ -77,7 +77,7 @@ class HeartRateMonitor {
         }
     }
     
-    func queryHeartRate(from: Date, completion: @escaping (_ bpm: Int) -> Void) ->  {
+    func queryHeartRate(from: Date, completion: @escaping (_ bpm: Int) -> Void) {
         
         guard let predicate = getHeartRatePredicate(from: from) else {
             return
