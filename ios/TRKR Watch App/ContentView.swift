@@ -57,11 +57,11 @@ struct ContentView: View {
                     Spacer().frame(height: 3)
                     HStack(alignment: .bottom, content: {
                         
-                        Text(setStarted ? "Analysing" : watchConnectivity.sessionName).font(.system(size: 16, weight: .regular)).foregroundStyle(watchConnectivity.sessionName == WatchConnectivity.NO_SESSION ? .gray : .white)
+                        Text(setStarted ? "Analysing" : watchConnectivity.sessionName).font(.system(size: 16, weight: .regular)).foregroundStyle(watchConnectivity.sessionName == Constants.NO_SESSION ? .gray : .white)
                         Spacer()
                     })
                     Spacer().frame(height: 10)
-                    Image(systemName: "play.circle.fill").font(.system(size: 40)).foregroundStyle(setStarted ? .gray : AppColor.vibrantGreen)
+                    Image(systemName: setStarted ? "stop.circle" : "play.circle.fill").font(.system(size: 40)).foregroundStyle(setStarted ? .gray : AppColor.vibrantGreen)
                         .onTapGesture(perform: {
                             setStarted = !setStarted
                             setStartDate = Date.now

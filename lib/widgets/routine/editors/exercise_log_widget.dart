@@ -184,14 +184,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     if(checked) {
-      await _getHeartRate(exerciseLogId: widget.exerciseLogDto.id, setIndex: index);
+      await _getBpmAndSpeed(exerciseLogId: widget.exerciseLogDto.id, setIndex: index);
     }
     _cacheLog();
   }
 
-  Future<void> _getHeartRate({required String exerciseLogId, required int setIndex}) async {
+  Future<void> _getBpmAndSpeed({required String exerciseLogId, required int setIndex}) async {
     final hostApi = DataHostApi();
-    await hostApi.getBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex);
+    final isWatchSynced =  await hostApi.isWatchSynced();
+    if(isWatchSynced) {
+      await hostApi.getBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex);
+    }
   }
 
   void _loadTextEditingControllers() {

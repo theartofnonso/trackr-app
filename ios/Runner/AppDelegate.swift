@@ -7,13 +7,18 @@ extension FlutterError: Error {}
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, WCSessionDelegate, DataHostApi {
     
+    func isWatchSynced() throws -> Bool {
+        let watchSession = WCSession.default
+        let isAvailable = watchSession.isPaired && watchSession.isReachable
+        return isAvailable
+    }
     
     func syncSession(sessionName: String) throws {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isPaired && watchSession.isReachable
         
         if isAvailable {
-            watchSession.sendMessage(["sessionName": sessionName], replyHandler: nil, errorHandler: nil)
+            watchSession.sendMessage([Constants.SESSION_NAME: sessionName], replyHandler: nil, errorHandler: nil)
         }
     }
     
@@ -22,7 +27,7 @@ extension FlutterError: Error {}
         let isAvailable = watchSession.isPaired && watchSession.isReachable
         
         if isAvailable {
-            watchSession.sendMessage(["exerciseLogId": exerciseLogId, "setIndex": setIndex], replyHandler: nil, errorHandler: nil)
+            watchSession.sendMessage([Constants.EXERCISE_LOG_ID: exerciseLogId, Constants.SET_INDEX: setIndex], replyHandler: nil, errorHandler: nil)
         }
     }
     
@@ -33,12 +38,10 @@ extension FlutterError: Error {}
     func sessionDidDeactivate(_ session: WCSession) {}
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        let exerciseLogId = message["exerciseLogId"] as! String
-        let setIndex = message["setIndex"] as! Int
-        let bpm = message["bpm"] as! Int
-        let speed = message["speed"] as! Int
-        
-        print("Data contaning heart rate: \(message)")
+        let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
+        let setIndex = message[Constants.SET_INDEX] as! Int
+        let bpm = message[Constants.BPM] as! Int
+        let speed = message[Constants.SPEED] as! Int
         
         DispatchQueue.main.async {
             

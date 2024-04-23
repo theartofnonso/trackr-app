@@ -22,6 +22,8 @@
 		F32395012BD6C5F00056A98D /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32395002BD6C5F00056A98D /* WatchConnectivity.swift */; };
 		F32395042BD6CAA30056A98D /* DataPigeon.g.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32395022BD6CAA30056A98D /* DataPigeon.g.swift */; };
 		F32395062BD6CB3A0056A98D /* DataFlutterApiImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32395052BD6CB3A0056A98D /* DataFlutterApiImpl.swift */; };
+		F356A1662BD8505400F458A1 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F356A1652BD8505400F458A1 /* constants.swift */; };
+		F356A1682BD8509700F458A1 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F356A1672BD8509700F458A1 /* constants.swift */; };
 		F36653622BD6C29600A8E1EE /* TRKRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36653612BD6C29600A8E1EE /* TRKRApp.swift */; };
 		F36653642BD6C29600A8E1EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36653632BD6C29600A8E1EE /* ContentView.swift */; };
 		F36653662BD6C29800A8E1EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F36653652BD6C29800A8E1EE /* Assets.xcassets */; };
@@ -100,6 +102,8 @@
 		F32395002BD6C5F00056A98D /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
 		F32395022BD6CAA30056A98D /* DataPigeon.g.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPigeon.g.swift; sourceTree = "<group>"; };
 		F32395052BD6CB3A0056A98D /* DataFlutterApiImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFlutterApiImpl.swift; sourceTree = "<group>"; };
+		F356A1652BD8505400F458A1 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
+		F356A1672BD8509700F458A1 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
 		F366535F2BD6C29600A8E1EE /* TRKR Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TRKR Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F36653612BD6C29600A8E1EE /* TRKRApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TRKRApp.swift; sourceTree = "<group>"; };
 		F36653632BD6C29600A8E1EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -206,6 +210,7 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				F356A1652BD8505400F458A1 /* constants.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -248,6 +253,7 @@
 				F36653652BD6C29800A8E1EE /* Assets.xcassets */,
 				F36653672BD6C29800A8E1EE /* Preview Content */,
 				F32394F92BD6C4E30056A98D /* AppColor.swift */,
+				F356A1672BD8509700F458A1 /* constants.swift */,
 			);
 			path = "TRKR Watch App";
 			sourceTree = "<group>";
@@ -507,6 +513,7 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				F32395062BD6CB3A0056A98D /* DataFlutterApiImpl.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				F356A1662BD8505400F458A1 /* constants.swift in Sources */,
 				F32395042BD6CAA30056A98D /* DataPigeon.g.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -518,6 +525,7 @@
 				F32395012BD6C5F00056A98D /* WatchConnectivity.swift in Sources */,
 				F36653642BD6C29600A8E1EE /* ContentView.swift in Sources */,
 				F32394FF2BD6C5D10056A98D /* HeartRateMonitor.swift in Sources */,
+				F356A1682BD8509700F458A1 /* constants.swift in Sources */,
 				F32394FD2BD6C5A90056A98D /* Accelerometer.swift in Sources */,
 				F36653622BD6C29600A8E1EE /* TRKRApp.swift in Sources */,
 				F32394FA2BD6C4E30056A98D /* AppColor.swift in Sources */,
