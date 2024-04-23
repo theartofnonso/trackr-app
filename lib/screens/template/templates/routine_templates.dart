@@ -113,7 +113,9 @@ class RoutineTemplates extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                   wordSpacing: 1,
                                   height: 1.5)),
-                          const TextSpan(text: "."),
+                              const TextSpan(text: " "),
+                          const TextSpan(text: "exercises"),
+                              const TextSpan(text: "."),
                         ])),
                   ),
               ])));

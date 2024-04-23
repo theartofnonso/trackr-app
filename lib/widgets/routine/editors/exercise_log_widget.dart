@@ -178,13 +178,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _cacheLog();
   }
 
-  void _updateSetCheck({required int index, required SetDto setDto}) {
+  void _updateSetCheck({required int index, required SetDto setDto}) async {
     final checked = !setDto.checked;
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     if(checked) {
-      _getHeartRate(exerciseLogId: widget.exerciseLogDto.id, setIndex: index);
+      await _getHeartRate(exerciseLogId: widget.exerciseLogDto.id, setIndex: index);
     }
     _cacheLog();
   }

@@ -237,9 +237,7 @@ class ExerciseLogRepository {
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
     final sets =  exerciseLog.sets;
     final set = sets[index];
-    final setWithIntensity = set.copyWith(bpm: bpm, speed: speed);
-    print(setWithIntensity);
-    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setWithIntensity);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: set.copyWith(bpm: bpm, speed: speed));
   }
 
   /// Helper functions
