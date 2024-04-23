@@ -44,8 +44,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 }
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol DataHostApi {
-  func getHeartRate() throws
-  func getVelocity() throws
+  func getBpmAndSpeed(exerciseLogId: String, setIndex: Int64) throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -54,38 +53,27 @@ class DataHostApiSetup {
   /// Sets up an instance of `DataHostApi` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: DataHostApi?, messageChannelSuffix: String = "") {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
-    let getHeartRateChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.getHeartRate\(channelSuffix)", binaryMessenger: binaryMessenger)
+    let getBpmAndSpeedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.getBpmAndSpeed\(channelSuffix)", binaryMessenger: binaryMessenger)
     if let api = api {
-      getHeartRateChannel.setMessageHandler { _, reply in
+      getBpmAndSpeedChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let exerciseLogIdArg = args[0] as! String
+        let setIndexArg = args[1] is Int64 ? args[1] as! Int64 : Int64(args[1] as! Int32)
         do {
-          try api.getHeartRate()
+          try api.getBpmAndSpeed(exerciseLogId: exerciseLogIdArg, setIndex: setIndexArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      getHeartRateChannel.setMessageHandler(nil)
-    }
-    let getVelocityChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.getVelocity\(channelSuffix)", binaryMessenger: binaryMessenger)
-    if let api = api {
-      getVelocityChannel.setMessageHandler { _, reply in
-        do {
-          try api.getVelocity()
-          reply(wrapResult(nil))
-        } catch {
-          reply(wrapError(error))
-        }
-      }
-    } else {
-      getVelocityChannel.setMessageHandler(nil)
+      getBpmAndSpeedChannel.setMessageHandler(nil)
     }
   }
 }
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
 protocol DataFlutterApiProtocol {
-  func heartRate(bpm bpmArg: Int64, completion: @escaping (Result<Void, FlutterError>) -> Void)
-  func velocity(speed speedArg: Double, completion: @escaping (Result<Void, FlutterError>) -> Void)
+  func bpmAndSpeed(exerciseLogId exerciseLogIdArg: String, setIndex setIndexArg: Int64, bpm bpmArg: Int64, speed speedArg: Int64, completion: @escaping (Result<Void, FlutterError>) -> Void)
 }
 class DataFlutterApi: DataFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -94,28 +82,10 @@ class DataFlutterApi: DataFlutterApiProtocol {
     self.binaryMessenger = binaryMessenger
     self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
   }
-  func heartRate(bpm bpmArg: Int64, completion: @escaping (Result<Void, FlutterError>) -> Void) {
-    let channelName: String = "dev.flutter.pigeon.tracker_app.DataFlutterApi.heartRate\(messageChannelSuffix)"
+  func bpmAndSpeed(exerciseLogId exerciseLogIdArg: String, setIndex setIndexArg: Int64, bpm bpmArg: Int64, speed speedArg: Int64, completion: @escaping (Result<Void, FlutterError>) -> Void) {
+    let channelName: String = "dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger)
-    channel.sendMessage([bpmArg] as [Any?]) { response in
-      guard let listResponse = response as? [Any?] else {
-        completion(.failure(createConnectionError(withChannelName: channelName)))
-        return
-      }
-      if listResponse.count > 1 {
-        let code: String = listResponse[0] as! String
-        let message: String? = nilOrValue(listResponse[1])
-        let details: String? = nilOrValue(listResponse[2])
-        completion(.failure(FlutterError(code: code, message: message, details: details)))
-      } else {
-        completion(.success(Void()))
-      }
-    }
-  }
-  func velocity(speed speedArg: Double, completion: @escaping (Result<Void, FlutterError>) -> Void) {
-    let channelName: String = "dev.flutter.pigeon.tracker_app.DataFlutterApi.velocity\(messageChannelSuffix)"
-    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger)
-    channel.sendMessage([speedArg] as [Any?]) { response in
+    channel.sendMessage([exerciseLogIdArg, setIndexArg, bpmArg, speedArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
         return

@@ -15,14 +15,8 @@ class DataFlutterApiImpl {
         self.flutterApi = DataFlutterApi(binaryMessenger: binaryMessenger)
     }
     
-    func heartRate(bpm: Int64) {
-        flutterApi.heartRate(bpm: bpm) {_ in
-            // Do nothing
-        }
-    }
-    
-    func velocity(speed: Double) {
-        flutterApi.velocity(speed: speed) {_ in
+    func bpmAndSpeed(exerciseLogId: String, setIndex: Int, bpm: Int, speed: Int) {
+        flutterApi.bpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: Int64(setIndex), bpm: Int64(bpm), speed: Int64(speed)) { _ in
             // Do nothing
         }
     }

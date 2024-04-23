@@ -1,26 +1,42 @@
-
 import 'dart:convert';
 
 class SetDto {
   final num value1;
   final num value2;
   final bool checked;
+  final int bpm;
+  final int speed;
 
-  const SetDto(this.value1, this.value2, this.checked);
+  const SetDto({this.value1 = 0.0, this.value2 = 0, this.checked = false, this.bpm = 0, this.speed = 0});
 
-  SetDto copyWith({num? value1, num? value2, bool? checked}) {
-    return SetDto(value1 ?? this.value1, value2 ?? this.value2, checked ?? this.checked);
+  SetDto copyWith({num? value1, num? value2, bool? checked, int? bpm, int? speed}) {
+    return SetDto(
+      value1: value1 ?? this.value1,
+      value2: value2 ?? this.value2,
+      checked: checked ?? this.checked,
+      bpm: bpm ?? this.bpm,
+      speed: speed ?? this.speed,
+    );
   }
 
   String toJson() {
-    return jsonEncode({"value1": value1, "value2": value2, "checked": checked});
+    return jsonEncode({
+      "value1": value1,
+      "value2": value2,
+      "checked": checked,
+      'bpm': bpm,
+      'speed': speed,
+    });
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json) {
-    final value1 = json["value1"];
-    final value2 = json["value2"];
-    final checked = json["checked"];
-    return SetDto(value1, value2, checked);
+    return SetDto(
+      value1: json['value1'] as num,
+      value2: json['value2'] as num,
+      checked: json['checked'] as bool,
+      bpm: json['bpm'] ?? 0,
+      speed: json['speed'] ?? 0,
+    );
   }
 
   bool isEmpty() {
@@ -48,19 +64,7 @@ class SetDto {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SetDto &&
-          runtimeType == other.runtimeType &&
-          value1 == other.value1 &&
-          value2 == other.value2 &&
-          checked == other.checked;
-
-  @override
-  int get hashCode => value1.hashCode ^ value2.hashCode ^ checked.hashCode;
-
-  @override
   String toString() {
-    return 'SetDto{value1: $value1, value2: $value2, checked: $checked}';
+    return 'SetDto{value1: $value1, value2: $value2, checked: $checked, bpm: $bpm, speed: $speed}';
   }
 }

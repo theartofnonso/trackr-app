@@ -38,9 +38,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 100, value2: 8, checked: true),
+        const SetDto(value1: 100, value2: 6, checked: true),
       ],
       DateTime(2023, 12, 1));
 
@@ -51,9 +51,9 @@ void main() {
       plankExercise,
       "notes",
       [
-        const SetDto(120000, 0, true),
-        const SetDto(180000, 0, true),
-        const SetDto(150000, 0, true),
+        const SetDto(value1: 120000, value2: 0, checked: true),
+        const SetDto(value1: 180000, value2: 0, checked: true),
+        const SetDto(value1: 150000, value2: 0, checked: true),
       ],
       DateTime.now());
 
@@ -64,9 +64,9 @@ void main() {
       benchPressExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 100, value2: 8, checked: true),
+        const SetDto(value1: 100, value2: 6, checked: true),
       ],
       DateTime(2023, 12, 1));
 
@@ -185,7 +185,7 @@ void main() {
 
     expect(lyingLegCurlExerciseLog1.sets.length, newLength);
 
-    expect(lyingLegCurlExerciseLog1.sets[1], const SetDto(100, 6, true));
+    expect(lyingLegCurlExerciseLog1.sets[1], const SetDto(value1: 100, value2: 6, checked: true));
   });
 
   test("Update weight (Value 1)", () {
@@ -195,7 +195,7 @@ void main() {
         exerciseLogs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.updateWeight(
-        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(90, 15, false));
+        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(value1: 90, value2: 15, checked: false));
 
     expect(lyingLegCurlExerciseLog1.sets[0].value1, 90);
   });
@@ -207,7 +207,7 @@ void main() {
         exerciseLogs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.updateWeight(
-        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(80, 25, false));
+        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(value1: 80, value2: 25, checked: false));
 
     expect(lyingLegCurlExerciseLog1.sets[0].value2, 25);
   });
@@ -219,7 +219,7 @@ void main() {
         exerciseLogs: [lyingLegCurlExerciseLog1, plankExerciseLog1, benchPressExerciseLog1], mode: RoutineEditorMode.log);
 
     exerciseLogRepository.updateSetCheck(
-        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(80, 25, true));
+        exerciseLogId: lyingLegCurlExerciseLog1.id, index: 0, setDto: const SetDto(value1: 80, value2: 25, checked: true));
 
     expect(lyingLegCurlExerciseLog1.sets[0].checked, true);
   });
@@ -254,9 +254,9 @@ void main() {
     exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog1.id, pastSets: []);
 
     exerciseLogRepository.updateDuration(
-        exerciseLogId: plankExerciseLog1.id, index: 0, setDto: const SetDto(120000, 0, false));
+        exerciseLogId: plankExerciseLog1.id, index: 0, setDto: const SetDto(value1: 120000, value2: 0, checked: false));
     exerciseLogRepository.updateDuration(
-        exerciseLogId: plankExerciseLog1.id, index: 1, setDto: const SetDto(100000, 0, false));
+        exerciseLogId: plankExerciseLog1.id, index: 1, setDto: const SetDto(value1: 100000, value2: 0, checked: false));
 
     final mergedLogs = exerciseLogRepository.mergeExerciseLogsAndSets();
 

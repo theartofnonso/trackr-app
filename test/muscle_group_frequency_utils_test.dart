@@ -83,9 +83,9 @@ void main() {
       hamstringExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayOneDateTimes[index]));
   final quadExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -95,9 +95,9 @@ void main() {
       quadExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 
@@ -108,9 +108,9 @@ void main() {
       chestExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayOneDateTimes[index]));
   final chest2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -120,9 +120,9 @@ void main() {
       chestExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 
@@ -133,9 +133,9 @@ void main() {
       backExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayOneDateTimes[index]));
   final trapsExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -145,9 +145,9 @@ void main() {
       trapsExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 
@@ -158,9 +158,9 @@ void main() {
       shouldersExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayOneDateTimes[index]));
   final shoulders2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -170,9 +170,9 @@ void main() {
       shouldersExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 
@@ -183,9 +183,9 @@ void main() {
       bicepsExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
   final biceps2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -195,9 +195,9 @@ void main() {
       bicepsExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 
@@ -208,9 +208,9 @@ void main() {
       tricepsExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayOneDateTimes[index]));
   final triceps2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -220,9 +220,9 @@ void main() {
       tricepsExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 
@@ -233,9 +233,9 @@ void main() {
       abs,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayOneDateTimes[index]));
   final abs2ExerciseLogs = List.generate(dayTwoDateTimes.length, (index) => ExerciseLogDto(
@@ -245,9 +245,9 @@ void main() {
       abs,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 80, value2: 15, checked: true),
       ],
       dayTwoDateTimes[index]));
 

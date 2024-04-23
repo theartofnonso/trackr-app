@@ -93,6 +93,11 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateSetIntensity({required String exerciseLogId, required int index, required int bpm, required int speed}) {
+    _exerciseLogRepository.updateSetIntensity(exerciseLogId: exerciseLogId, index: index, bpm: bpm, speed: speed);
+    notifyListeners();
+  }
+
   List<SetDto> completedSets() {
     return _exerciseLogRepository.completedSets();
   }

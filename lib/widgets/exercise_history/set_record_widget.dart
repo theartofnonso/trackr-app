@@ -18,7 +18,7 @@ class SetRecordWidget extends StatelessWidget {
     final personaBestSets = personalBestSets(sets: sets);
 
     if (personaBestSets.isEmpty) {
-      personaBestSets.add(const SetDto(0, 0, false));
+      personaBestSets.add(const SetDto());
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,

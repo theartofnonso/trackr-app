@@ -38,37 +38,15 @@ class DataHostApi {
 
   final String __pigeon_messageChannelSuffix;
 
-  Future<void> getHeartRate() async {
-    final String __pigeon_channelName = 'dev.flutter.pigeon.tracker_app.DataHostApi.getHeartRate$__pigeon_messageChannelSuffix';
+  Future<void> getBpmAndSpeed({required String exerciseLogId, required int setIndex}) async {
+    final String __pigeon_channelName = 'dev.flutter.pigeon.tracker_app.DataHostApi.getBpmAndSpeed$__pigeon_messageChannelSuffix';
     final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
       __pigeon_channelName,
       pigeonChannelCodec,
       binaryMessenger: __pigeon_binaryMessenger,
     );
     final List<Object?>? __pigeon_replyList =
-        await __pigeon_channel.send(null) as List<Object?>?;
-    if (__pigeon_replyList == null) {
-      throw _createConnectionError(__pigeon_channelName);
-    } else if (__pigeon_replyList.length > 1) {
-      throw PlatformException(
-        code: __pigeon_replyList[0]! as String,
-        message: __pigeon_replyList[1] as String?,
-        details: __pigeon_replyList[2],
-      );
-    } else {
-      return;
-    }
-  }
-
-  Future<void> getVelocity() async {
-    final String __pigeon_channelName = 'dev.flutter.pigeon.tracker_app.DataHostApi.getVelocity$__pigeon_messageChannelSuffix';
-    final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
-      __pigeon_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: __pigeon_binaryMessenger,
-    );
-    final List<Object?>? __pigeon_replyList =
-        await __pigeon_channel.send(null) as List<Object?>?;
+        await __pigeon_channel.send(<Object?>[exerciseLogId, setIndex]) as List<Object?>?;
     if (__pigeon_replyList == null) {
       throw _createConnectionError(__pigeon_channelName);
     } else if (__pigeon_replyList.length > 1) {
@@ -86,53 +64,35 @@ class DataHostApi {
 abstract class DataFlutterApi {
   static const MessageCodec<Object?> pigeonChannelCodec = StandardMessageCodec();
 
-  void heartRate(int bpm);
-
-  void velocity(double speed);
+  void bpmAndSpeed(String exerciseLogId, int setIndex, int bpm, int speed);
 
   static void setUp(DataFlutterApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
     messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.tracker_app.DataFlutterApi.heartRate$messageChannelSuffix', pigeonChannelCodec,
+          'dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed$messageChannelSuffix', pigeonChannelCodec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         __pigeon_channel.setMessageHandler(null);
       } else {
         __pigeon_channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.heartRate was null.');
+          'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final int? arg_bpm = (args[0] as int?);
+          final String? arg_exerciseLogId = (args[0] as String?);
+          assert(arg_exerciseLogId != null,
+              'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed was null, expected non-null String.');
+          final int? arg_setIndex = (args[1] as int?);
+          assert(arg_setIndex != null,
+              'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed was null, expected non-null int.');
+          final int? arg_bpm = (args[2] as int?);
           assert(arg_bpm != null,
-              'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.heartRate was null, expected non-null int.');
-          try {
-            api.heartRate(arg_bpm!);
-            return wrapResponse(empty: true);
-          } on PlatformException catch (e) {
-            return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
-          }
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.tracker_app.DataFlutterApi.velocity$messageChannelSuffix', pigeonChannelCodec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        __pigeon_channel.setMessageHandler(null);
-      } else {
-        __pigeon_channel.setMessageHandler((Object? message) async {
-          assert(message != null,
-          'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.velocity was null.');
-          final List<Object?> args = (message as List<Object?>?)!;
-          final double? arg_speed = (args[0] as double?);
+              'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed was null, expected non-null int.');
+          final int? arg_speed = (args[3] as int?);
           assert(arg_speed != null,
-              'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.velocity was null, expected non-null double.');
+              'Argument for dev.flutter.pigeon.tracker_app.DataFlutterApi.bpmAndSpeed was null, expected non-null int.');
           try {
-            api.velocity(arg_speed!);
+            api.bpmAndSpeed(arg_exerciseLogId!, arg_setIndex!, arg_bpm!, arg_speed!);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

@@ -12,6 +12,9 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     @Published var isAnalysing: Bool = false
     
+    var exerciseLogId: String = ""
+    var setIndex: Int = 0
+    
     override init() {
         super.init()
         
@@ -25,20 +28,27 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {}
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        isAnalysing = !isAnalysing
+        exerciseLogId = message["exerciseLogId"] as! String
+        setIndex = message["setIndex"] as! Int
+
+        DispatchQueue.main.async {
+            self.isAnalysing = !self.isAnalysing
+        }
     }
     
-    #if os(iOS)
+#if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {}
-    #endif
+#endif
     
-    func sendMessage(message: [String:Int]) {
+    func sendBpmAndSpeed(bpm: Int, speed: Int) {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isReachable
         if isAvailable {
-            watchSession.sendMessage(["message": message], replyHandler: nil, errorHandler: nil)
-            isAnalysing = !isAnalysing
+            watchSession.sendMessage(["exerciseLogId": exerciseLogId, "setIndex": setIndex, "bpm": bpm, "speed": speed], replyHandler: nil, errorHandler: nil)
+            DispatchQueue.main.async {
+                self.isAnalysing = !self.isAnalysing
+            }
         }
     }
 }

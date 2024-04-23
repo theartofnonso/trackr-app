@@ -10,12 +10,10 @@ import 'package:pigeon/pigeon.dart';
 
 @HostApi()
 abstract class DataHostApi {
-  void getHeartRate();
-  void getVelocity();
+  void getBpmAndSpeed({required String exerciseLogId, required int setIndex});
 }
 
 @FlutterApi()
 abstract class DataFlutterApi {
-  void heartRate(int bpm);
-  void velocity(double speed);
+  void bpmAndSpeed(String exerciseLogId, int setIndex, int bpm, int speed);
 }

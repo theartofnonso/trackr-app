@@ -7,21 +7,13 @@ extension FlutterError: Error {}
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, WCSessionDelegate, DataHostApi {
     
-    func getHeartRate() throws {
+    func getBpmAndSpeed(exerciseLogId: String, setIndex: Int64) throws {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isPaired && watchSession.isReachable
         
         if isAvailable {
-            watchSession.sendMessage(["data": "HEARTRATE"], replyHandler: nil, errorHandler: nil)
-        }
-    }
-    
-    func getVelocity() throws {
-        let watchSession = WCSession.default
-        let isAvailable = watchSession.isPaired && watchSession.isReachable
-        
-        if isAvailable {
-            watchSession.sendMessage(["data": "VELOCITY"], replyHandler: nil, errorHandler: nil)
+            print(["exerciseLogId": exerciseLogId, "setIndex": setIndex])
+            watchSession.sendMessage(["exerciseLogId": exerciseLogId, "setIndex": setIndex], replyHandler: nil, errorHandler: nil)
         }
     }
     
@@ -32,15 +24,20 @@ extension FlutterError: Error {}
     func sessionDidDeactivate(_ session: WCSession) {}
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        let message = message["message"] ?? ""
-        print("Message contaning heart rate: \(message)")
+        let exerciseLogId = message["exerciseLogId"] as! String
+        let setIndex = message["setIndex"] as! Int
+        let bpm = message["bpm"] as! Int
+        let speed = message["speed"] as! Int
+        
+        print("Data contaning heart rate: \(message)")
+        
         DispatchQueue.main.async {
             
             // Get binaryMessenger
             let rootViewController = self.window.rootViewController
             let binaryMessenger = rootViewController as! FlutterBinaryMessenger
             
-            DataFlutterApiImpl(binaryMessenger: binaryMessenger).heartRate(bpm: 0)
+            DataFlutterApiImpl(binaryMessenger: binaryMessenger).bpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: bpm, speed: speed)
         }
     }
     

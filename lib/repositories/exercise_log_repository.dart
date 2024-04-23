@@ -148,7 +148,7 @@ class ExerciseLogRepository {
 
     int newIndex = sets.length;
 
-    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : const SetDto(0, 0, false);
+    SetDto newSet = sets.lastOrNull != null ? sets.last.copyWith(checked: false) : const SetDto();
 
     SetDto? pastSet = _wherePastSetOrNull(index: newIndex, pastSets: pastSets);
 
@@ -230,6 +230,16 @@ class ExerciseLogRepository {
 
   void updateSetCheck({required String exerciseLogId, required int index, required SetDto setDto}) {
     _updateSet(exerciseLogId: exerciseLogId, index: index, set: setDto);
+  }
+
+  void updateSetIntensity({required String exerciseLogId, required int index, required int bpm, required int speed}) {
+    int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
+    final exerciseLog = _exerciseLogs[exerciseLogIndex];
+    final sets =  exerciseLog.sets;
+    final set = sets[index];
+    final setWithIntensity = set.copyWith(bpm: bpm, speed: speed);
+    print(setWithIntensity);
+    _updateSet(exerciseLogId: exerciseLogId, index: index, set: setWithIntensity);
   }
 
   /// Helper functions

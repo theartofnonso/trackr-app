@@ -16,7 +16,7 @@ import '../enums/template_changes_type_message_enums.dart';
 
 SetDto heaviestSetWeightForExerciseLog({required ExerciseLogDto exerciseLog}) {
   if (exerciseLog.sets.isEmpty) {
-    return const SetDto(0, 0, false);
+    return const SetDto();
   }
 
   return exerciseLog.sets.reduce((SetDto currentHeaviest, SetDto nextSet) =>
@@ -52,11 +52,11 @@ double heaviestVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
 SetDto heaviestSetVolumeForExerciseLog({required ExerciseLogDto exerciseLog}) {
   // Check if there are no sets in the exercise log
   if (exerciseLog.sets.isEmpty) {
-    return const SetDto(0, 0, false);
+    return const SetDto();
   }
 
   double heaviestVolume = 0;
-  SetDto heaviestSet = const SetDto(0, 0, false);
+  SetDto heaviestSet = const SetDto();
 
   for (final set in exerciseLog.sets) {
     final volume = set.volume();
@@ -78,7 +78,7 @@ DateTime dateTimePerLog({required ExerciseLogDto log}) {
 
 (String?, SetDto) heaviestSetVolume({required List<ExerciseLogDto> exerciseLogs}) {
   // Return null if there are no past logs
-  if (exerciseLogs.isEmpty) return ("", const SetDto(0, 0, false));
+  if (exerciseLogs.isEmpty) return ("", const SetDto());
 
   SetDto heaviestSet = exerciseLogs.first.sets.first;
   String? logId = exerciseLogs.first.routineLogId;

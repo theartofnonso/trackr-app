@@ -10,7 +10,6 @@ import 'package:tracker_app/enums/template_changes_type_message_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 void main() {
-
   final lyingLegCurlExercise = ExerciseDto(
       id: "id_exercise1",
       name: "Lying Leg Curl",
@@ -39,9 +38,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 15, true),
-        const SetDto(100, 8, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 15, checked: true),
+        const SetDto(value1: 100, value2: 8, checked: true),
+        const SetDto(value1: 100, value2: 0, checked: true),
       ],
       DateTime(2023, 12, 1));
 
@@ -52,9 +51,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 12, true),
-        const SetDto(100, 10, true),
-        const SetDto(100, 6, true),
+        const SetDto(value1: 80, value2: 12, checked: true),
+        const SetDto(value1: 100, value2: 10, checked: true),
+        const SetDto(value1: 100, value2: 6, checked: true),
       ],
       DateTime(2023, 12, 1));
 
@@ -65,9 +64,9 @@ void main() {
       lyingLegCurlExercise,
       "notes",
       [
-        const SetDto(80, 12, true),
-        const SetDto(100, 10, true),
-        const SetDto(150, 11, true),
+        const SetDto(value1: 80, value2: 12, checked: true),
+        const SetDto(value1: 100, value2: 10, checked: true),
+        const SetDto(value1: 150, value2: 11, checked: true),
       ],
       DateTime(2023, 12, 1));
 
@@ -78,9 +77,9 @@ void main() {
       plankExercise,
       "notes",
       [
-        const SetDto(120000, 0, true),
-        const SetDto(180000, 0, true),
-        const SetDto(150000, 0, true),
+        const SetDto(value1: 120000, value2: 0, checked: true),
+        const SetDto(value1: 180000, value2: 0, checked: true),
+        const SetDto(value1: 150000, value2: 0, checked: true),
       ],
       DateTime.now());
 
@@ -91,9 +90,9 @@ void main() {
       plankExercise,
       "notes",
       [
-        const SetDto(110000, 0, true),
-        const SetDto(100000, 0, true),
-        const SetDto(120000, 0, true),
+        const SetDto(value1: 110000, value2: 0, checked: true),
+        const SetDto(value1: 100000, value2: 0, checked: true),
+        const SetDto(value1: 120000, value2: 0, checked: true),
       ],
       DateTime.now());
 
@@ -178,9 +177,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(100, 10, true),
-            const SetDto(160, 6, true),
+            const SetDto(value1: 80, value2: 12, checked: true),
+            const SetDto(value1: 100, value2: 10, checked: true),
+            const SetDto(value1: 160, value2: 6, checked: true),
           ],
           DateTime.now());
 
@@ -205,9 +204,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(150, 20, true),
-            const SetDto(100, 10, true),
+            const SetDto(value1: 80, value2: 12, checked: true),
+            const SetDto(value1: 150, value2: 20, checked: true),
+            const SetDto(value1: 100, value2: 10, checked: true),
           ],
           DateTime.now());
 
@@ -232,9 +231,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(160, 12, true),
-            const SetDto(100, 10, true),
+            const SetDto(value1: 80, value2: 12, checked: true),
+            const SetDto(value1: 160, value2: 12, checked: true),
+            const SetDto(value1: 100, value2: 10, checked: true),
           ],
           DateTime.now());
 
@@ -265,9 +264,9 @@ void main() {
           plankExercise,
           "notes",
           [
-            const SetDto(110000, 0, true),
-            const SetDto(100000, 0, true),
-            const SetDto(220000, 0, true),
+            const SetDto(value1: 110000, value2: 0, checked: true),
+            const SetDto(value1: 100000, value2: 0, checked: true),
+            const SetDto(value1: 220000, value2: 0, checked: true),
           ],
           DateTime.now());
 
@@ -292,9 +291,9 @@ void main() {
           lyingLegCurlExercise,
           "notes",
           [
-            const SetDto(80, 12, true),
-            const SetDto(160, 12, true),
-            const SetDto(100, 10, true),
+            const SetDto(value1: 80, value2: 12, checked: true),
+            const SetDto(value1: 160, value2: 12, checked: true),
+            const SetDto(value1: 100, value2: 10, checked: true),
           ],
           DateTime.now());
 
@@ -305,9 +304,9 @@ void main() {
           plankExercise,
           "notes",
           [
-            const SetDto(110000, 0, true),
-            const SetDto(100000, 0, true),
-            const SetDto(220000, 0, true),
+            const SetDto(value1: 110000, value2: 0, checked: true),
+            const SetDto(value1: 100000, value2: 0, checked: true),
+            const SetDto(value1: 220000, value2: 0, checked: true),
           ],
           DateTime.now());
 
@@ -340,75 +339,90 @@ void main() {
     });
   });
 
-group ("Template changes", () {
-  test("Different exercise lengths", () {
-    final result = hasDifferentExerciseLogsLength(
-        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
-        exerciseLogs2: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
-    expect(result, TemplateChange.exerciseLogLength);
+  group("Template changes", () {
+    test("Different exercise lengths", () {
+      final result = hasDifferentExerciseLogsLength(
+          exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
+          exerciseLogs2: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2, lyingLegCurlExerciseLog3]);
+      expect(result, TemplateChange.exerciseLogLength);
+    });
+
+    test("Different re-ordered exercises", () {
+      final result = hasReOrderedExercises(
+          exerciseLogs1: [lyingLegCurlExerciseLog1, plankExerciseLog1],
+          exerciseLogs2: [plankExerciseLog1, lyingLegCurlExerciseLog1]);
+      expect(result, TemplateChange.exerciseOrder);
+    });
+
+    test("Different sets lengths", () {
+      final result = hasDifferentSetsLength(exerciseLogs1: [
+        plankExerciseLog1,
+        lyingLegCurlExerciseLog1
+      ], exerciseLogs2: [
+        plankExerciseLog1.copyWith(sets: plankExerciseLog1.sets.take(2).toList()),
+        lyingLegCurlExerciseLog1.copyWith(sets: lyingLegCurlExerciseLog1.sets.take(2).toList())
+      ]);
+      expect(result, TemplateChange.setsLength);
+    });
+
+    test("Different exercises", () {
+      final newExerciseLog = ExerciseLogDto(
+          benchPressExercise.id,
+          "routineLogId1",
+          "superSetId",
+          benchPressExercise,
+          "notes",
+          [
+            const SetDto(value1: 80, value2: 12, checked: true),
+            const SetDto(value1: 160, value2: 12, checked: true),
+            const SetDto(value1: 100, value2: 10, checked: true),
+          ],
+          DateTime.now());
+
+      final result = hasExercisesChanged(
+          exerciseLogs1: [lyingLegCurlExerciseLog1, plankExerciseLog1],
+          exerciseLogs2: [lyingLegCurlExerciseLog1, newExerciseLog]);
+      expect(result, TemplateChange.exerciseLogChange);
+    });
+
+    test("Changed super set id", () {
+      final result = hasSuperSetIdChanged(exerciseLogs1: [
+        lyingLegCurlExerciseLog1,
+        lyingLegCurlExerciseLog2.copyWith(superSetId: "123"),
+        plankExerciseLog1.copyWith(superSetId: "123")
+      ], exerciseLogs2: [
+        lyingLegCurlExerciseLog1,
+        lyingLegCurlExerciseLog2.copyWith(superSetId: "890"),
+        plankExerciseLog1.copyWith(superSetId: "890")
+      ]);
+      expect(result, TemplateChange.supersetId);
+    });
+
+    test("Changed super set id", () {
+      final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [
+        const SetDto(value1: 80, value2: 12, checked: true),
+        const SetDto(value1: 100, value2: 10, checked: true),
+        const SetDto(value1: 150, value2: 11, checked: false)
+      ]);
+
+      final result = hasCheckedSetsChanged(
+          exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
+          exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
+      expect(result, TemplateChange.checkedSets);
+    });
+
+    test("Changed set value", () {
+      final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [
+        const SetDto(value1: 80, value2: 12, checked: true),
+        const SetDto(value1: 100, value2: 10, checked: true),
+        const SetDto(value1: 160, value2: 11, checked: false)
+      ]);
+
+      final result = hasSetValueChanged(
+          exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
+          exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
+      expect(result, TemplateChange.setValue);
+    });
   });
-
-  test("Different re-ordered exercises", () {
-    final result = hasReOrderedExercises(
-        exerciseLogs1: [lyingLegCurlExerciseLog1, plankExerciseLog1],
-        exerciseLogs2: [plankExerciseLog1, lyingLegCurlExerciseLog1]);
-    expect(result, TemplateChange.exerciseOrder);
-  });
-
-  test("Different sets lengths", () {
-    final result = hasDifferentSetsLength(
-        exerciseLogs1: [plankExerciseLog1, lyingLegCurlExerciseLog1],
-        exerciseLogs2: [plankExerciseLog1.copyWith(sets: plankExerciseLog1.sets.take(2).toList()), lyingLegCurlExerciseLog1.copyWith(sets: lyingLegCurlExerciseLog1.sets.take(2).toList())]);
-    expect(result, TemplateChange.setsLength);
-  });
-
-  test("Different exercises", () {
-
-    final newExerciseLog = ExerciseLogDto(
-        benchPressExercise.id,
-        "routineLogId1",
-        "superSetId",
-        benchPressExercise,
-        "notes",
-        [
-          const SetDto(80, 12, true),
-          const SetDto(160, 12, true),
-          const SetDto(100, 10, true),
-        ],
-        DateTime.now());
-
-    final result = hasExercisesChanged(
-        exerciseLogs1: [lyingLegCurlExerciseLog1, plankExerciseLog1],
-        exerciseLogs2: [lyingLegCurlExerciseLog1, newExerciseLog]);
-    expect(result, TemplateChange.exerciseLogChange);
-  });
-
-  test("Changed super set id", () {
-    final result = hasSuperSetIdChanged(
-        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2.copyWith(superSetId: "123"), plankExerciseLog1.copyWith(superSetId: "123")],
-        exerciseLogs2: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2.copyWith(superSetId: "890"), plankExerciseLog1.copyWith(superSetId: "890")]);
-    expect(result, TemplateChange.supersetId);
-  });
-
-  test("Changed super set id", () {
-
-    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDto(80, 12, true), const SetDto(100, 10, true), const SetDto(150, 11, false)]);
-
-    final result = hasCheckedSetsChanged(
-        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
-        exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
-    expect(result, TemplateChange.checkedSets);
-  });
-
-  test("Changed set value", () {
-
-    final updatedExerciseLog = lyingLegCurlExerciseLog2.copyWith(sets: [const SetDto(80, 12, true), const SetDto(100, 10, true), const SetDto(160, 11, false)]);
-
-    final result = hasSetValueChanged(
-        exerciseLogs1: [lyingLegCurlExerciseLog1, lyingLegCurlExerciseLog2],
-        exerciseLogs2: [lyingLegCurlExerciseLog1, updatedExerciseLog]);
-    expect(result, TemplateChange.setValue);
-  });
-});
   // Add your widget tests here
 }

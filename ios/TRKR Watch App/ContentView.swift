@@ -19,7 +19,7 @@ struct ContentView: View {
     
     @State private var startDate = Date.now
     
-    @State private var heartRateStartDate = Date.now
+    @State private var setStartDate = Date.now
     
     @State private var setStarted: Bool = false
     
@@ -37,10 +37,13 @@ struct ContentView: View {
                 })
             }.onReceive(watchConnectivity.$isAnalysing, perform: { _ in
                 if watchConnectivity.isAnalysing {
-                    heartRateMonitor.queryHeartRate(from: heartRateStartDate) { bpm in
-                        let heartRate = ["HEARTRATE": bpm]
-                        watchConnectivity.sendMessage(message: heartRate)
-                    }
+                    //                    heartRateMonitor.queryHeartRate(from: setStartDate) { bpm in
+                    //                        let heartRate = ["HEARTRATE": bpm]
+                    //                        watchConnectivity.sendBpmAndSpeed(bpm: <#T##Int#>, speed: <#T##Int#>)
+                    //                    }
+                    watchConnectivity.sendBpmAndSpeed(bpm: 63, speed: 8)
+                } else {
+                    setStarted = watchConnectivity.isAnalysing
                 }
             })
             
@@ -54,14 +57,14 @@ struct ContentView: View {
                     Spacer().frame(height: 3)
                     HStack(alignment: .bottom, content: {
                         
-                        Text(watchConnectivity.isAnalysing ? "Analysing" : "Back And Biceps").font(.system(size: 16, weight: .regular))
+                        Text(setStarted ? "Analysing" : "Back And Biceps").font(.system(size: 16, weight: .regular))
                         Spacer()
                     })
                     Spacer().frame(height: 10)
                     Image(systemName: "play.circle.fill").font(.system(size: 40)).foregroundStyle(setStarted ? .white : AppColor.vibrantGreen)
                         .onTapGesture(perform: {
                             setStarted = !setStarted
-                            heartRateStartDate = Date.now
+                            setStartDate = Date.now
                             // Start accelerometer
                         })
                 }).padding(Edge.Set.horizontal, 12)

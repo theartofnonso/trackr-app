@@ -20,6 +20,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
+import '../../../flutter_apis/DataFlutterApiImpl.dart';
 import '../../../pigeon_build/data_pigeon.g.dart';
 import '../../../screens/exercise/history/home_screen.dart';
 import '../../../utils/one_rep_max_calculator.dart';
@@ -183,19 +184,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
     if(checked) {
-      _getHeartRate();
+      _getHeartRate(exerciseLogId: widget.exerciseLogDto.id, setIndex: index);
     }
     _cacheLog();
   }
 
-  Future<void> _getHeartRate() async {
+  Future<void> _getHeartRate({required String exerciseLogId, required int setIndex}) async {
     final hostApi = DataHostApi();
-    await hostApi.getHeartRate();
-  }
-
-  Future<void> _getVelocity() async {
-    final hostApi = DataHostApi();
-    await hostApi.getVelocity();
+    await hostApi.getBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex);
   }
 
   void _loadTextEditingControllers() {
@@ -227,6 +223,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     if(widget.editorType == RoutineEditorMode.log) {
       _loadDurationControllers();
     }
+    DataFlutterApi.setUp(DataFlutterApiImpl(context));
   }
 
   void _cacheLog() {
