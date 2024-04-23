@@ -12,7 +12,6 @@ extension FlutterError: Error {}
         let isAvailable = watchSession.isPaired && watchSession.isReachable
         
         if isAvailable {
-            print(["exerciseLogId": exerciseLogId, "setIndex": setIndex])
             watchSession.sendMessage(["exerciseLogId": exerciseLogId, "setIndex": setIndex], replyHandler: nil, errorHandler: nil)
         }
     }
