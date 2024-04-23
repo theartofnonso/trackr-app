@@ -10,9 +10,11 @@ import WatchConnectivity
 
 class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
+    static let NO_SESSION: String = "No session"
+    
     @Published var isAnalysing: Bool = false
     
-    @Published var sessionName: String = "No session"
+    @Published var sessionName: String = WatchConnectivity.NO_SESSION
     
     var exerciseLogId: String = ""
     var setIndex: Int = 0
@@ -34,7 +36,9 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         let keys = message.keys
         
         if keys.contains("sessionName") {
-            sessionName = message["sessionName"] as! String
+            DispatchQueue.main.async {
+                self.sessionName = message["sessionName"] as! String
+            }
         }
         
         if keys.contains("exerciseLogId") && keys.contains("setIndex") {
