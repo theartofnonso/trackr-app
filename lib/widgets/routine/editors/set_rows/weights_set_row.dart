@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
 import '../../../../dtos/set_dto.dart';
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
-import '../set_delete_button.dart';
 
 class WeightsSetRow extends StatelessWidget {
   final SetDto setDto;
@@ -44,12 +44,13 @@ class WeightsSetRow extends StatelessWidget {
               0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
-              3: const FixedColumnWidth(60),
+              3: const FixedColumnWidth(60)
             },
       children: [
         TableRow(children: [
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: SetDeleteButton(onDelete: onRemoved))),
+          const TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Center(child: FaIcon(FontAwesomeIcons.heartPulse, color: Colors.grey, size: 20))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(

@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +52,8 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache, required this.onReplaceLog});
+      this.onCache,
+      required this.onReplaceLog});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -101,7 +104,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
     } else {
-      showBottomSheetWithNoAction(context: context, title: widget.exerciseLogDto.exercise.name, description: "Keep logging to see recommendations.");
+      showBottomSheetWithNoAction(
+          context: context,
+          title: widget.exerciseLogDto.exercise.name,
+          description: "Keep logging to see recommendations.");
     }
   }
 
@@ -183,7 +189,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final updatedSet = setDto.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: widget.exerciseLogDto.id, index: index, setDto: updatedSet);
-    if(checked) {
+    if (checked) {
       await _getBpmAndSpeed(exerciseLogId: widget.exerciseLogDto.id, setIndex: index);
     }
     _cacheLog();
@@ -191,8 +197,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   Future<void> _getBpmAndSpeed({required String exerciseLogId, required int setIndex}) async {
     final hostApi = DataHostApi();
-    final isWatchSynced =  await hostApi.isWatchSynced();
-    if(isWatchSynced) {
+    final isWatchSynced = await hostApi.isWatchSynced();
+    if (isWatchSynced) {
       await hostApi.getBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex);
     }
   }
@@ -223,7 +229,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    if(widget.editorType == RoutineEditorMode.log) {
+    if (widget.editorType == RoutineEditorMode.log) {
       _loadDurationControllers();
     }
     DataFlutterApi.setUp(DataFlutterApiImpl(context));
@@ -250,7 +256,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
@@ -353,26 +358,22 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               durationControllers: _durationControllers,
               updateDuration: _updateDuration,
             ),
-          const SizedBox(height: 8),
           if (withDurationOnly(type: exerciseType) && sets.isEmpty)
-            Center(
-              child: Text(_timerMessage(),
-                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+            Column(
+              children: [
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(_timerMessage(),
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, color: Colors.white70)),
+                ),
+              ],
             ),
           const SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
-                  icon: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 16),
-                      const SizedBox(width: 4),
-                      Text("WEIGHTS",
-                          style:
-                              GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 12)),
-                    ],
-                  ),
+                  icon: FaIcon(FontAwesomeIcons.weightHanging, color: Colors.white.withOpacity(.8), size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape:
@@ -424,32 +425,44 @@ class _SetListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = sets.mapIndexed((index, setDto) {
       final setWidget = switch (exerciseType) {
-        ExerciseType.weights => WeightsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
-            onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
-            controllers: controllers[index],
+        ExerciseType.weights => Dismissible(
+            key: UniqueKey(),
+            onDismissed: (_) => removeSet(index: index),
+            child: WeightsSetRow(
+              setDto: setDto,
+              editorType: editorType,
+              onCheck: () => updateSetCheck(index: index, setDto: setDto),
+              onRemoved: () => removeSet(index: index),
+              onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
+              onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
+              controllers: controllers[index],
+            ),
           ),
-        ExerciseType.bodyWeight => RepsSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
-            controllers: controllers[index],
+        ExerciseType.bodyWeight => Dismissible(
+            key: UniqueKey(),
+            onDismissed: (_) => removeSet(index: index),
+            child: RepsSetRow(
+              setDto: setDto,
+              editorType: editorType,
+              onCheck: () => updateSetCheck(index: index, setDto: setDto),
+              onRemoved: () => removeSet(index: index),
+              onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
+              controllers: controllers[index],
+            ),
           ),
-        ExerciseType.duration => DurationSetRow(
-            setDto: setDto,
-            editorType: editorType,
-            onCheck: () => updateSetCheck(index: index, setDto: setDto),
-            onRemoved: () => removeSet(index: index),
-            onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
-                checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
-            startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
-            onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+        ExerciseType.duration => Dismissible(
+            key: UniqueKey(),
+            onDismissed: (_) => removeSet(index: index),
+            child: DurationSetRow(
+              setDto: setDto,
+              editorType: editorType,
+              onCheck: () => updateSetCheck(index: index, setDto: setDto),
+              onRemoved: () => removeSet(index: index),
+              onCheckAndUpdateDuration: (Duration duration, {bool? checked}) =>
+                  checkAndUpdateDuration(index: index, duration: duration, setDto: setDto, checked: checked ?? false),
+              startTime: durationControllers.isNotEmpty ? durationControllers[index] : DateTime.now(),
+              onupdateDuration: (Duration duration) => updateDuration(index: index, duration: duration, setDto: setDto),
+            ),
           ),
       };
 

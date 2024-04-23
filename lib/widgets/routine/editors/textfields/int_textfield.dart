@@ -27,7 +27,7 @@ class IntTextField extends StatelessWidget {
       keyboardType: TextInputType.number,
       maxLines: 1,
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
     );
   }
 }
