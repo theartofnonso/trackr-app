@@ -12,6 +12,8 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     @Published var isAnalysing: Bool = false
     
+    @Published var sessionName: String = "No session"
+    
     var exerciseLogId: String = ""
     var setIndex: Int = 0
     
@@ -28,9 +30,18 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {}
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        exerciseLogId = message["exerciseLogId"] as! String
-        setIndex = message["setIndex"] as! Int
-
+        
+        let keys = message.keys
+        
+        if keys.contains("sessionName") {
+            sessionName = message["sessionName"] as! String
+        }
+        
+        if keys.contains("exerciseLogId") && keys.contains("setIndex") {
+            exerciseLogId = message["exerciseLogId"] as! String
+            setIndex = message["setIndex"] as! Int
+        }
+        
         DispatchQueue.main.async {
             self.isAnalysing = !self.isAnalysing
         }

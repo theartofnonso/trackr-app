@@ -18,6 +18,7 @@ import '../../colors.dart';
 import '../../dtos/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../controllers/routine_log_controller.dart';
+import '../../pigeon_build/data_pigeon.g.dart';
 import '../../utils/app_analytics.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/health_utils.dart';
@@ -381,6 +382,13 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _cacheLog();
     });
+
+    _syncSessionWithWatch();
+  }
+
+  Future<void> _syncSessionWithWatch() async {
+    final hostApi = DataHostApi();
+    await hostApi.syncSession(sessionName: widget.log.name);
   }
 
   void _initializeProcedureData() {

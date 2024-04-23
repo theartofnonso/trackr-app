@@ -10,6 +10,7 @@ import 'package:pigeon/pigeon.dart';
 
 @HostApi()
 abstract class DataHostApi {
+  void syncSession({required String sessionName});
   void getBpmAndSpeed({required String exerciseLogId, required int setIndex});
 }
 

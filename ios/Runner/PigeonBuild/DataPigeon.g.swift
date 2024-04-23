@@ -44,6 +44,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 }
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol DataHostApi {
+  func syncSession(sessionName: String) throws
   func getBpmAndSpeed(exerciseLogId: String, setIndex: Int64) throws
 }
 
@@ -53,6 +54,21 @@ class DataHostApiSetup {
   /// Sets up an instance of `DataHostApi` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: DataHostApi?, messageChannelSuffix: String = "") {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    let syncSessionChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.syncSession\(channelSuffix)", binaryMessenger: binaryMessenger)
+    if let api = api {
+      syncSessionChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let sessionNameArg = args[0] as! String
+        do {
+          try api.syncSession(sessionName: sessionNameArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      syncSessionChannel.setMessageHandler(nil)
+    }
     let getBpmAndSpeedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.getBpmAndSpeed\(channelSuffix)", binaryMessenger: binaryMessenger)
     if let api = api {
       getBpmAndSpeedChannel.setMessageHandler { message, reply in

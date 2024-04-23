@@ -7,6 +7,16 @@ extension FlutterError: Error {}
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, WCSessionDelegate, DataHostApi {
     
+    
+    func syncSession(sessionName: String) throws {
+        let watchSession = WCSession.default
+        let isAvailable = watchSession.isPaired && watchSession.isReachable
+        
+        if isAvailable {
+            watchSession.sendMessage(["sessionName": sessionName], replyHandler: nil, errorHandler: nil)
+        }
+    }
+    
     func getBpmAndSpeed(exerciseLogId: String, setIndex: Int64) throws {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isPaired && watchSession.isReachable
