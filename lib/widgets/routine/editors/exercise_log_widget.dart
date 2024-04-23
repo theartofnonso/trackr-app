@@ -92,6 +92,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     ];
   }
 
+  void _showSetAnalyses({required int index}) {
+    final pastExerciseLogs =
+        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
+    if (pastExerciseLogs.isNotEmpty) {
+      displayBottomSheet(context: context, child: const Text("Set ANALYSES"));
+    } else {
+      showBottomSheetWithNoAction(
+          context: context,
+          title: widget.exerciseLogDto.exercise.name,
+          description: "Log 3 sessions to calibrate your intensity");
+    }
+  }
+
   void _show1RMRecommendations() {
     final pastExerciseLogs =
         Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
@@ -350,6 +363,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               sets: sets,
               editorType: widget.editorType,
               updateSetCheck: _updateSetCheck,
+              analyseSet: _showSetAnalyses,
               removeSet: _removeSet,
               updateReps: _updateReps,
               updateWeight: _updateWeight,
@@ -401,6 +415,7 @@ class _SetListView extends StatelessWidget {
   final List<(TextEditingController, TextEditingController)> controllers;
   final List<DateTime> durationControllers;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) analyseSet;
   final void Function({required int index}) removeSet;
   final void Function({required int index, required num value, required SetDto setDto}) updateReps;
   final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
@@ -415,6 +430,7 @@ class _SetListView extends StatelessWidget {
       required this.controllers,
       required this.durationControllers,
       required this.updateSetCheck,
+      required this.analyseSet,
       required this.removeSet,
       required this.updateReps,
       required this.updateWeight,
@@ -433,6 +449,7 @@ class _SetListView extends StatelessWidget {
               editorType: editorType,
               onCheck: () => updateSetCheck(index: index, setDto: setDto),
               onRemoved: () => removeSet(index: index),
+              onAnalyse: () => analyseSet(index: index),
               onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
               onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
               controllers: controllers[index],

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
@@ -12,6 +13,7 @@ class WeightsSetRow extends StatelessWidget {
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
+  final VoidCallback onAnalyse;
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
   final (TextEditingController, TextEditingController) controllers;
@@ -22,6 +24,7 @@ class WeightsSetRow extends StatelessWidget {
     required this.editorType,
     required this.onRemoved,
     required this.onCheck,
+    required this.onAnalyse,
     required this.onChangedReps,
     required this.onChangedWeight,
     required this.controllers,
@@ -48,9 +51,11 @@ class WeightsSetRow extends StatelessWidget {
             },
       children: [
         TableRow(children: [
-          const TableCell(
+          TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Center(child: FaIcon(FontAwesomeIcons.heartPulse, color: Colors.grey, size: 20))),
+              child: GestureDetector(
+                  onTap: onAnalyse,
+                  child: const Center(child: FaIcon(FontAwesomeIcons.heartPulse, color: Colors.grey, size: 20)))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
