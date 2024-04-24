@@ -22,6 +22,7 @@ import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dar
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
+import '../../../enums/set_intensity_enum.dart';
 import '../../../flutter_apis/DataFlutterApiImpl.dart';
 import '../../../pigeon_build/data_pigeon.g.dart';
 import '../../../screens/exercise/history/home_screen.dart';
@@ -92,17 +93,90 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     ];
   }
 
-  void _showSetAnalyses({required int index}) {
+  void _showSetAnalyses({required SetDto set}) {
     final pastExerciseLogs =
         Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
     if (pastExerciseLogs.isNotEmpty) {
-      displayBottomSheet(context: context, child: const Text("Set ANALYSES"));
+      final pastSets = pastExerciseLogs.expand((log) => log.sets).toList();
+
+      // If weight or reps have increased this is a PR and no analysis
+
+      // if weight or reps have decreased, this is a drop in strength
+
+      // Else run analysis
+
+      final setIntensity = _analyseSetIntensity(pastSets: pastSets, currentSet: set);
+
+      switch(setIntensity) {
+
+        case SetIntensity.easy:
+          displayBottomSheet(context: context, child: const Text("Set was easy you should increase intensity"));
+          break;
+        case SetIntensity.hard:
+          displayBottomSheet(context: context, child: const Text("Set was hard, keep going"));
+          break;
+        case SetIntensity.warmup:
+          displayBottomSheet(context: context, child: const Text("Set was easy, this could signal a warm up"));
+          break;
+        case SetIntensity.cardio:
+          displayBottomSheet(context: context, child: const Text("Set was intense, probably cardio"));
+          break;
+        case SetIntensity.sufficient:
+          displayBottomSheet(context: context, child: const Text("Set was same as before, keep going"));
+          break;
+      }
+
     } else {
       showBottomSheetWithNoAction(
           context: context,
           title: widget.exerciseLogDto.exercise.name,
           description: "Log 3 sessions to calibrate your intensity");
     }
+  }
+
+  // Previous sets with same weight and reps
+  // This ensures we are comparing intensity for same weight class and reps - increments are
+  // considered a PR, whilst decrements are a reduction in strength
+  SetIntensity _analyseSetIntensity({required SetDto currentSet, required List<SetDto> pastSets}) {
+    final totalBPM = pastSets.fold(0, (previousValue, element) => previousValue + element.bpm);
+    final avgBPM = totalBPM / pastSets.length;
+
+    final totalSpeed = pastSets.fold(0, (previousValue, element) => previousValue + element.speed);
+    final avgSpeed = totalSpeed / pastSets.length;
+
+    var setIntensity = SetIntensity.sufficient;
+
+    // Set was intense
+    // High HR / Low Velocity
+    if (currentSet.bpm >= avgBPM && currentSet.speed <= avgSpeed) {
+      setIntensity = SetIntensity.hard;
+    }
+
+    // Set was easy
+    // Low HR / High Velocity
+    if (currentSet.bpm <= avgBPM && currentSet.speed >= avgSpeed) {
+      setIntensity = SetIntensity.easy;
+    }
+
+    // Set was easy - Warm up
+    // Low HR / Low Velocity
+    if (currentSet.bpm <= avgBPM && currentSet.speed <= avgSpeed) {
+      setIntensity = SetIntensity.warmup;
+    }
+
+    // Set was intense - Cardio
+    // Low HR / Low Velocity
+    if (currentSet.bpm >= avgBPM && currentSet.speed >= avgSpeed) {
+      setIntensity = SetIntensity.cardio;
+    }
+
+    // Set was sufficient
+    // Same HR / Same Velocity
+    if (currentSet.bpm == avgBPM && currentSet.speed == avgSpeed) {
+      setIntensity = SetIntensity.sufficient;
+    }
+
+    return setIntensity;
   }
 
   void _show1RMRecommendations() {
@@ -415,7 +489,7 @@ class _SetListView extends StatelessWidget {
   final List<(TextEditingController, TextEditingController)> controllers;
   final List<DateTime> durationControllers;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
-  final void Function({required int index}) analyseSet;
+  final void Function({required SetDto set}) analyseSet;
   final void Function({required int index}) removeSet;
   final void Function({required int index, required num value, required SetDto setDto}) updateReps;
   final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
@@ -449,7 +523,7 @@ class _SetListView extends StatelessWidget {
               editorType: editorType,
               onCheck: () => updateSetCheck(index: index, setDto: setDto),
               onRemoved: () => removeSet(index: index),
-              onAnalyse: () => analyseSet(index: index),
+              onAnalyse: () => analyseSet(set: setDto),
               onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
               onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
               controllers: controllers[index],
