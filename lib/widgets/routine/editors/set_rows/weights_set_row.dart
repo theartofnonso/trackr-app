@@ -15,7 +15,6 @@ class WeightsSetRow extends StatelessWidget {
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
-  final VoidCallback showIntensity;
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
   final (TextEditingController, TextEditingController) controllers;
@@ -27,7 +26,6 @@ class WeightsSetRow extends StatelessWidget {
     required this.editorType,
     required this.onRemoved,
     required this.onCheck,
-    required this.showIntensity,
     required this.onChangedReps,
     required this.onChangedWeight,
     required this.controllers,
@@ -54,11 +52,7 @@ class WeightsSetRow extends StatelessWidget {
             },
       children: [
         TableRow(children: [
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: GestureDetector(
-                  onTap: showIntensity,
-                  child: Center(child: _setIntensityIcon()))),
+          TableCell(verticalAlignment: TableCellVerticalAlignment.middle, child: Center(child: _setIntensityIcon())),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(

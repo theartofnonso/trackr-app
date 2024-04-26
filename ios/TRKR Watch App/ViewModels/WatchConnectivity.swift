@@ -14,9 +14,6 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     @Published var sessionName: String = Constants.NO_SESSION
     
-    var exerciseLogId: String = ""
-    var setIndex: Int = 0
-    
     override init() {
         super.init()
         
@@ -40,13 +37,31 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         }
         
         if keys.contains(Constants.EXERCISE_LOG_ID) && keys.contains(Constants.SET_INDEX) {
-            exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
-            setIndex = message[Constants.SET_INDEX] as! Int
+            DispatchQueue.main.async {
+                self.isAnalysing = !self.isAnalysing
+            }
+            
+            let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
+            let setIndex = message[Constants.SET_INDEX] as! Int
+            
+            // Run HeartRate query and calculate avg velocity from accelerometer
+            
+            sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: Int.random(in: 50...60), speed: Int.random(in: 1...10))
+            
+            DispatchQueue.main.async {
+                self.isAnalysing = !self.isAnalysing
+            }
+            
+            print("Watch has received request for set intensity index \(setIndex)")
         }
         
-        DispatchQueue.main.async {
-            self.isAnalysing = !self.isAnalysing
+        if keys.contains(Constants.END_SESSION) {
+            DispatchQueue.main.async {
+                self.isAnalysing = false
+                self.sessionName = Constants.NO_SESSION
+            }
         }
+        
     }
     
 #if os(iOS)
@@ -54,10 +69,14 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     func sessionDidDeactivate(_ session: WCSession) {}
 #endif
     
-    func sendBpmAndSpeed(bpm: Int, speed: Int) {
+    func sendBpmAndSpeed(exerciseLogId: String, setIndex: Int, bpm: Int, speed: Int) {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isReachable
         if isAvailable {
+            print([Constants.EXERCISE_LOG_ID: exerciseLogId,
+                   Constants.SET_INDEX: setIndex,
+                   Constants.BPM: bpm,
+                   Constants.SPEED: speed])
             watchSession.sendMessage([Constants.EXERCISE_LOG_ID: exerciseLogId,
                                       Constants.SET_INDEX: setIndex,
                                       Constants.BPM: bpm,

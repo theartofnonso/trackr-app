@@ -36,15 +36,7 @@ struct ContentView: View {
                     }
                 })
             }.onReceive(watchConnectivity.$isAnalysing, perform: { _ in
-                if watchConnectivity.isAnalysing {
-                    //                    heartRateMonitor.queryHeartRate(from: setStartDate) { bpm in
-                    //                        let heartRate = ["HEARTRATE": bpm]
-                    //                        watchConnectivity.sendBpmAndSpeed(bpm: <#T##Int#>, speed: <#T##Int#>)
-                    //                    }
-                    watchConnectivity.sendBpmAndSpeed(bpm: 63, speed: 8)
-                } else {
-                    setStarted = watchConnectivity.isAnalysing
-                }
+                setStarted = watchConnectivity.isAnalysing
             })
             
             if hasHealthKitStore {

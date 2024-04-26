@@ -14,19 +14,21 @@ class ExerciseLogRepository {
   void loadExerciseLogs({required List<ExerciseLogDto> exerciseLogs, required RoutineEditorMode mode}) {
     List<ExerciseLogDto> logs = [];
     for (var exerciseLog in exerciseLogs) {
-      if (withDurationOnly(type: exerciseLog.exercise.type)) {
+      final setsWithoutIntensity = exerciseLog.sets.map((set) => set.copyWith(bpm: 0, speed: 0)).toList();
+      final exerciseLogWithoutIntensitySets = exerciseLog.copyWith(sets: setsWithoutIntensity);
+      if (withDurationOnly(type: exerciseLogWithoutIntensitySets.exercise.type)) {
         if (mode == RoutineEditorMode.log) {
-          final checkedSets = exerciseLog.sets.map((set) => set.copyWith(checked: true)).toList();
-          final updatedExerciseLog = exerciseLog.copyWith(sets: checkedSets);
+          final checkedSets = exerciseLogWithoutIntensitySets.sets.map((set) => set.copyWith(checked: true)).toList();
+          final updatedExerciseLog = exerciseLogWithoutIntensitySets.copyWith(sets: checkedSets);
           logs.add(updatedExerciseLog);
           continue;
         } else {
-          final updatedExerciseLog = exerciseLog.copyWith(sets: []);
+          final updatedExerciseLog = exerciseLogWithoutIntensitySets.copyWith(sets: []);
           logs.add(updatedExerciseLog);
           continue;
         }
       }
-      logs.add(exerciseLog);
+      logs.add(exerciseLogWithoutIntensitySets);
     }
     _exerciseLogs = logs;
   }
@@ -181,7 +183,7 @@ class ExerciseLogRepository {
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
-    final sets =  exerciseLog.sets;
+    final sets = exerciseLog.sets;
     if (index >= 0 || index < sets.length) {
       sets.removeAt(index);
 
@@ -190,7 +192,6 @@ class ExerciseLogRepository {
       // Assign the new list to maintain immutability
       _exerciseLogs = newExerciseLogs;
     }
-
   }
 
   void _updateSet({required String exerciseLogId, required int index, required SetDto set}) {
@@ -205,7 +206,7 @@ class ExerciseLogRepository {
 
     // Updating the exerciseLog
     final exerciseLog = newExerciseLogs[exerciseLogIndex];
-    final sets =  exerciseLog.sets;
+    final sets = exerciseLog.sets;
     if (index >= 0 || index < sets.length) {
       sets[index] = set;
 
@@ -235,8 +236,9 @@ class ExerciseLogRepository {
   void updateSetIntensity({required String exerciseLogId, required int index, required int bpm, required int speed}) {
     int exerciseLogIndex = _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
     final exerciseLog = _exerciseLogs[exerciseLogIndex];
-    final sets =  exerciseLog.sets;
+    final sets = exerciseLog.sets;
     final set = sets[index];
+    print("Updating intensity for set index: $index");
     _updateSet(exerciseLogId: exerciseLogId, index: index, set: set.copyWith(bpm: bpm, speed: speed));
   }
 

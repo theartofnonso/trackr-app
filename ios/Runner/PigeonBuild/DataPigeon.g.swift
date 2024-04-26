@@ -46,6 +46,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 protocol DataHostApi {
   func isWatchSynced() throws -> Bool
   func syncSession(sessionName: String) throws
+  func unSyncSession() throws
   func getBpmAndSpeed(exerciseLogId: String, setIndex: Int64) throws
 }
 
@@ -82,6 +83,19 @@ class DataHostApiSetup {
       }
     } else {
       syncSessionChannel.setMessageHandler(nil)
+    }
+    let unSyncSessionChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.unSyncSession\(channelSuffix)", binaryMessenger: binaryMessenger)
+    if let api = api {
+      unSyncSessionChannel.setMessageHandler { _, reply in
+        do {
+          try api.unSyncSession()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      unSyncSessionChannel.setMessageHandler(nil)
     }
     let getBpmAndSpeedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.tracker_app.DataHostApi.getBpmAndSpeed\(channelSuffix)", binaryMessenger: binaryMessenger)
     if let api = api {

@@ -12,6 +12,7 @@ import 'package:pigeon/pigeon.dart';
 abstract class DataHostApi {
   bool isWatchSynced();
   void syncSession({required String sessionName});
+  void unSyncSession();
   void getBpmAndSpeed({required String exerciseLogId, required int setIndex});
 }
 

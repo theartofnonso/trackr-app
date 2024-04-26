@@ -7,6 +7,15 @@ extension FlutterError: Error {}
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, WCSessionDelegate, DataHostApi {
     
+    func unSyncSession() throws {
+        let watchSession = WCSession.default
+        let isAvailable = watchSession.isPaired && watchSession.isReachable
+        
+        if isAvailable {
+            watchSession.sendMessage([Constants.END_SESSION: Constants.END_SESSION], replyHandler: nil, errorHandler: nil)
+        }
+    }
+    
     func isWatchSynced() throws -> Bool {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isPaired && watchSession.isReachable

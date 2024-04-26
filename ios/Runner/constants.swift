@@ -14,4 +14,5 @@ struct Constants {
     static let SET_INDEX: String = "setIndex"
     static let BPM: String = "bpm"
     static let SPEED: String = "speed"
+    static let END_SESSION: String = "endSession"
 }

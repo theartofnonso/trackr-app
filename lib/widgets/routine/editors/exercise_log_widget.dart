@@ -139,11 +139,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   SetIntensity _analyseSetIntensity({required SetDto currentSet}) {
     if (!currentSet.hasIntensity()) return SetIntensity.none;
 
-    final pastExerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id]?.reversed.take(3) ??
-            [];
+    final pastExerciseLogs = Provider.of<RoutineLogController>(context, listen: false)
+        .whereExerciseLogsBefore(exercise: widget.exerciseLogDto.exercise, date: DateTime.now())
+        .reversed
+        .take(2); // Should be 4 sessions, which ideally should span over 4 weeks with different fitness levels
 
-    if (pastExerciseLogs.isEmpty) return SetIntensity.none;
+    if (pastExerciseLogs.length < 2) return SetIntensity.none;
 
     final pastSets = pastExerciseLogs.expand((log) => log.sets).where((set) => set.hasIntensity());
 
@@ -297,6 +298,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final hostApi = DataHostApi();
     final isWatchSynced = await hostApi.isWatchSynced();
     if (isWatchSynced) {
+      print("Sending signal for intensity for set index: $setIndex");
       await hostApi.getBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex);
     }
   }
@@ -451,7 +453,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               setIntensities: listOfSetIntensities,
               editorType: widget.editorType,
               updateSetCheck: _updateSetCheck,
-              analyseSet: _showSetAnalyses,
               removeSet: _removeSet,
               updateReps: _updateReps,
               updateWeight: _updateWeight,
@@ -504,7 +505,6 @@ class _SetListView extends StatelessWidget {
   final List<(TextEditingController, TextEditingController)> controllers;
   final List<DateTime> durationControllers;
   final void Function({required int index, required SetDto setDto}) updateSetCheck;
-  final void Function({required SetDto set}) analyseSet;
   final void Function({required int index}) removeSet;
   final void Function({required int index, required num value, required SetDto setDto}) updateReps;
   final void Function({required int index, required double value, required SetDto setDto}) updateWeight;
@@ -520,7 +520,6 @@ class _SetListView extends StatelessWidget {
       required this.controllers,
       required this.durationControllers,
       required this.updateSetCheck,
-      required this.analyseSet,
       required this.removeSet,
       required this.updateReps,
       required this.updateWeight,
@@ -540,7 +539,6 @@ class _SetListView extends StatelessWidget {
               editorType: editorType,
               onCheck: () => updateSetCheck(index: index, setDto: setDto),
               onRemoved: () => removeSet(index: index),
-              showIntensity: () => analyseSet(set: setDto),
               onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
               onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
               controllers: controllers[index],

@@ -228,6 +228,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   void _navigateBack({RoutineLogDto? log}) async {
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
+
+    final hostApi = DataHostApi();
+    await hostApi.unSyncSession();
+
     if (log != null) {
       syncWorkoutWithAppleHealth(log: log);
     }
