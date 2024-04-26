@@ -47,6 +47,10 @@ class SetDto {
     return value1 + value2 > 0;
   }
 
+  bool hasIntensity() {
+    return bpm > 0 && speed > 0;
+  }
+
   double volume() {
     return (value1 * value2).toDouble();
   }

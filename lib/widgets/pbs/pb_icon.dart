@@ -13,7 +13,7 @@ class PBIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      const FaIcon(FontAwesomeIcons.solidStar, color: vibrantGreen, size: 14),
+      const FaIcon(FontAwesomeIcons.star, color: vibrantGreen, size: 14),
       const SizedBox(width: 4),
       Text(label, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600))
     ]);

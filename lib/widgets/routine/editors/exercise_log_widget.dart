@@ -94,50 +94,61 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _showSetAnalyses({required SetDto set}) {
-    final pastExerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id] ?? [];
-    if (pastExerciseLogs.isNotEmpty) {
-      final pastSets = pastExerciseLogs.expand((log) => log.sets).toList();
+    final setIntensity = _analyseSetIntensity(currentSet: set);
 
-      // If weight or reps have increased this is a PR and no analysis
-
-      // if weight or reps have decreased, this is a drop in strength
-
-      // Else run analysis
-
-      final setIntensity = _analyseSetIntensity(pastSets: pastSets, currentSet: set);
-
-      switch(setIntensity) {
-
-        case SetIntensity.easy:
-          displayBottomSheet(context: context, child: const Text("Set was easy you should increase intensity"));
-          break;
-        case SetIntensity.hard:
-          displayBottomSheet(context: context, child: const Text("Set was hard, keep going"));
-          break;
-        case SetIntensity.warmup:
-          displayBottomSheet(context: context, child: const Text("Set was easy, this could signal a warm up"));
-          break;
-        case SetIntensity.cardio:
-          displayBottomSheet(context: context, child: const Text("Set was intense, probably cardio"));
-          break;
-        case SetIntensity.sufficient:
-          displayBottomSheet(context: context, child: const Text("Set was same as before, keep going"));
-          break;
-      }
-
-    } else {
-      showBottomSheetWithNoAction(
-          context: context,
-          title: widget.exerciseLogDto.exercise.name,
-          description: "Log 3 sessions to calibrate your intensity");
+    switch (setIntensity) {
+      case SetIntensity.easy:
+        showBottomSheetWithNoAction(
+            context: context,
+            title: widget.exerciseLogDto.exercise.name,
+            description: "Set was easy you should increase intensity");
+        break;
+      case SetIntensity.hard:
+        showBottomSheetWithNoAction(
+            context: context, title: widget.exerciseLogDto.exercise.name, description: "Set was hard, keep going");
+        break;
+      case SetIntensity.warmup:
+        showBottomSheetWithNoAction(
+            context: context,
+            title: widget.exerciseLogDto.exercise.name,
+            description: "Set was easy, this could signal a warm up");
+        break;
+      case SetIntensity.cardio:
+        showBottomSheetWithNoAction(
+            context: context,
+            title: widget.exerciseLogDto.exercise.name,
+            description: "Set was intense, probably cardio");
+        break;
+      case SetIntensity.sufficient:
+        showBottomSheetWithNoAction(
+            context: context,
+            title: widget.exerciseLogDto.exercise.name,
+            description: "Set was same as before, keep going");
+        break;
+      case SetIntensity.none:
+        showBottomSheetWithNoAction(
+            context: context,
+            title: widget.exerciseLogDto.exercise.name,
+            description: "Log at least 3 sessions to calibrate your intensity");
     }
   }
 
   // Previous sets with same weight and reps
   // This ensures we are comparing intensity for same weight class and reps - increments are
   // considered a PR, whilst decrements are a reduction in strength
-  SetIntensity _analyseSetIntensity({required SetDto currentSet, required List<SetDto> pastSets}) {
+  SetIntensity _analyseSetIntensity({required SetDto currentSet}) {
+    if (!currentSet.hasIntensity()) return SetIntensity.none;
+
+    final pastExerciseLogs =
+        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id]?.take(3) ??
+            [];
+
+    if (pastExerciseLogs.isEmpty) return SetIntensity.none;
+
+    final pastSets = pastExerciseLogs.expand((log) => log.sets).where((set) => set.hasIntensity());
+
+    if (pastSets.isEmpty) return SetIntensity.none;
+
     final totalBPM = pastSets.fold(0, (previousValue, element) => previousValue + element.bpm);
     final avgBPM = totalBPM / pastSets.length;
 
@@ -165,7 +176,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
 
     // Set was intense - Cardio
-    // Low HR / Low Velocity
+    // High HR / High Velocity
     if (currentSet.bpm >= avgBPM && currentSet.speed >= avgSpeed) {
       setIntensity = SetIntensity.cardio;
     }
@@ -349,6 +360,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseType = widget.exerciseLogDto.exercise.type;
 
+    final listOfSetIntensities = sets.map((set) => _analyseSetIntensity(currentSet: set)).toList();
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -435,6 +448,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             _SetListView(
               exerciseType: exerciseType,
               sets: sets,
+              setIntensities: listOfSetIntensities,
               editorType: widget.editorType,
               updateSetCheck: _updateSetCheck,
               analyseSet: _showSetAnalyses,
@@ -485,6 +499,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 class _SetListView extends StatelessWidget {
   final ExerciseType exerciseType;
   final List<SetDto> sets;
+  final List<SetIntensity> setIntensities;
   final RoutineEditorMode editorType;
   final List<(TextEditingController, TextEditingController)> controllers;
   final List<DateTime> durationControllers;
@@ -500,6 +515,7 @@ class _SetListView extends StatelessWidget {
   const _SetListView(
       {required this.exerciseType,
       required this.sets,
+      required this.setIntensities,
       required this.editorType,
       required this.controllers,
       required this.durationControllers,
@@ -520,10 +536,11 @@ class _SetListView extends StatelessWidget {
             onDismissed: (_) => removeSet(index: index),
             child: WeightsSetRow(
               setDto: setDto,
+              setIntensity: setIntensities[index],
               editorType: editorType,
               onCheck: () => updateSetCheck(index: index, setDto: setDto),
               onRemoved: () => removeSet(index: index),
-              onAnalyse: () => analyseSet(set: setDto),
+              showIntensity: () => analyseSet(set: setDto),
               onChangedReps: (num value) => updateReps(index: index, value: value, setDto: setDto),
               onChangedWeight: (double value) => updateWeight(index: index, value: value, setDto: setDto),
               controllers: controllers[index],

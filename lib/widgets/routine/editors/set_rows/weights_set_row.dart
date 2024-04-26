@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/enums/set_intensity_enum.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
@@ -10,10 +11,11 @@ import '../set_check_button.dart';
 
 class WeightsSetRow extends StatelessWidget {
   final SetDto setDto;
+  final SetIntensity setIntensity;
   final RoutineEditorMode editorType;
   final VoidCallback onRemoved;
   final VoidCallback onCheck;
-  final VoidCallback onAnalyse;
+  final VoidCallback showIntensity;
   final void Function(int value) onChangedReps;
   final void Function(double value) onChangedWeight;
   final (TextEditingController, TextEditingController) controllers;
@@ -21,10 +23,11 @@ class WeightsSetRow extends StatelessWidget {
   const WeightsSetRow({
     super.key,
     required this.setDto,
+    required this.setIntensity,
     required this.editorType,
     required this.onRemoved,
     required this.onCheck,
-    required this.onAnalyse,
+    required this.showIntensity,
     required this.onChangedReps,
     required this.onChangedWeight,
     required this.controllers,
@@ -54,8 +57,8 @@ class WeightsSetRow extends StatelessWidget {
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: GestureDetector(
-                  onTap: onAnalyse,
-                  child: const Center(child: FaIcon(FontAwesomeIcons.heartPulse, color: Colors.grey, size: 20)))),
+                  onTap: showIntensity,
+                  child: Center(child: _setIntensityIcon()))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(
@@ -81,5 +84,16 @@ class WeightsSetRow extends StatelessWidget {
         ])
       ],
     );
+  }
+
+  Widget _setIntensityIcon() {
+    return switch (setIntensity) {
+      SetIntensity.easy => const FaIcon(FontAwesomeIcons.fire, color: vibrantBlue, size: 20),
+      SetIntensity.hard => const FaIcon(FontAwesomeIcons.fire, color: Colors.red, size: 20),
+      SetIntensity.warmup => const FaIcon(FontAwesomeIcons.heartPulse, color: vibrantBlue, size: 20),
+      SetIntensity.cardio => const FaIcon(FontAwesomeIcons.fire, color: Colors.red, size: 20),
+      SetIntensity.sufficient => const FaIcon(FontAwesomeIcons.fire, color: vibrantGreen, size: 20),
+      SetIntensity.none => const FaIcon(FontAwesomeIcons.heart, color: Colors.grey, size: 20)
+    };
   }
 }

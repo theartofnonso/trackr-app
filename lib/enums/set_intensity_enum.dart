@@ -1,3 +1,3 @@
 enum SetIntensity {
-  easy, hard, warmup, cardio, sufficient;
+  easy, hard, warmup, cardio, sufficient, none;
 }
