@@ -140,7 +140,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     if (!currentSet.hasIntensity()) return SetIntensity.none;
 
     final pastExerciseLogs =
-        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id]?.take(3) ??
+        Provider.of<RoutineLogController>(context, listen: false).exerciseLogsById[widget.exerciseLogDto.id]?.reversed.take(3) ??
             [];
 
     if (pastExerciseLogs.isEmpty) return SetIntensity.none;
