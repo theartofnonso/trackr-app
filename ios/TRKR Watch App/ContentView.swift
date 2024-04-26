@@ -37,6 +37,11 @@ struct ContentView: View {
                 })
             }.onReceive(watchConnectivity.$isAnalysing, perform: { _ in
                 setStarted = watchConnectivity.isAnalysing
+                if setStarted {
+                    print("Set has started")
+                } else {
+                    print("Set has ended")
+                }
             })
             
             if hasHealthKitStore {
@@ -55,9 +60,11 @@ struct ContentView: View {
                     Spacer().frame(height: 10)
                     Image(systemName: setStarted ? "stop.circle" : "play.circle.fill").font(.system(size: 40)).foregroundStyle(setStarted ? .gray : AppColor.vibrantGreen)
                         .onTapGesture(perform: {
-                            setStarted = !setStarted
-                            setStartDate = Date.now
-                            // Start accelerometer
+                            if watchConnectivity.sessionName != Constants.NO_SESSION {
+                                setStarted = !setStarted
+                                setStartDate = Date.now
+                                // Start accelerometer
+                            }
                         })
                 }).padding(Edge.Set.horizontal, 12)
                 

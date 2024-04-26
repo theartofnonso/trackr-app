@@ -24,6 +24,10 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         }
     }
     
+    func toggleAnalysis() {
+        self.isAnalysing = !self.isAnalysing
+    }
+    
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {}
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
@@ -37,22 +41,25 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         }
         
         if keys.contains(Constants.EXERCISE_LOG_ID) && keys.contains(Constants.SET_INDEX) {
+            
             DispatchQueue.main.async {
-                self.isAnalysing = !self.isAnalysing
+                self.isAnalysing = true
+                print("Fuck competition")
             }
             
             let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
             let setIndex = message[Constants.SET_INDEX] as! Int
+            
+            print("Watch has received request for set intensity index \(setIndex)")
             
             // Run HeartRate query and calculate avg velocity from accelerometer
             
             sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: Int.random(in: 50...60), speed: Int.random(in: 1...10))
             
             DispatchQueue.main.async {
-                self.isAnalysing = !self.isAnalysing
+                self.isAnalysing = false
             }
-            
-            print("Watch has received request for set intensity index \(setIndex)")
+        
         }
         
         if keys.contains(Constants.END_SESSION) {
@@ -73,17 +80,11 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isReachable
         if isAvailable {
-            print([Constants.EXERCISE_LOG_ID: exerciseLogId,
-                   Constants.SET_INDEX: setIndex,
-                   Constants.BPM: bpm,
-                   Constants.SPEED: speed])
+            print("Watch has sent set intensity index \(setIndex)")
             watchSession.sendMessage([Constants.EXERCISE_LOG_ID: exerciseLogId,
                                       Constants.SET_INDEX: setIndex,
                                       Constants.BPM: bpm,
                                       Constants.SPEED: speed], replyHandler: nil, errorHandler: nil)
-            DispatchQueue.main.async {
-                self.isAnalysing = !self.isAnalysing
-            }
         }
     }
 }
