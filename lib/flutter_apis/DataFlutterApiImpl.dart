@@ -12,7 +12,6 @@ class DataFlutterApiImpl extends DataFlutterApi {
 
   @override
   void bpmAndSpeed(String exerciseLogId, int setIndex, int bpm, int speed) {
-    print("Receiving intensity for set index: $setIndex");
     Provider.of<ExerciseLogController>(context, listen: false).updateSetIntensity(exerciseLogId: exerciseLogId, index: setIndex, bpm: bpm, speed: speed);
   }
 }

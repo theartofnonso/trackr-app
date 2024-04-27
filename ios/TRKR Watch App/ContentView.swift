@@ -19,19 +19,15 @@ struct ContentView: View {
     
     @State private var startDate = Date.now
     
-    @State private var setStartDate = Date.now
-    
     @State private var setStarted: Bool = false
     
-    let heartRateMonitor: HeartRateMonitor = HeartRateMonitor()
-    
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ZStack {
             LinearGradient(colors: [AppColor.sapphireLight, AppColor.sapphireDark], startPoint: UnitPoint.top, endPoint: UnitPoint.bottom).edgesIgnoringSafeArea(Edge.Set.all).onAppear {
                 Task(operation: {
-                    await heartRateMonitor.checkAuthorization { result in
+                    await watchConnectivity.heartRateMonitor.checkAuthorization { result in
                         hasHealthKitStore = result
                     }
                 })
@@ -58,8 +54,11 @@ struct ContentView: View {
                         .onTapGesture(perform: {
                             if watchConnectivity.sessionName != Constants.NO_SESSION {
                                 setStarted = !setStarted
-                                setStartDate = Date.now
-                                // Start accelerometer
+                                if setStarted {
+                                    watchConnectivity.startAnalysis()
+                                } else {
+                                    watchConnectivity.stopAnalysis()
+                                }
                             }
                         })
                 }).padding(Edge.Set.horizontal, 12)
@@ -70,7 +69,7 @@ struct ContentView: View {
                     Spacer().frame(height: 5)
                     Button(action: {
                         Task(operation: {
-                            await heartRateMonitor.requestAuthorization { result in
+                            await watchConnectivity.heartRateMonitor.requestAuthorization { result in
                                 hasHealthKitStore = result
                             }
                         })

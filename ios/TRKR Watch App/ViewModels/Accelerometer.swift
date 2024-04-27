@@ -8,22 +8,26 @@
 import Foundation
 import CoreMotion
 
-class Accelerometer: ObservableObject {
+class Accelerometer {
     
-    @Published var primaryAxis: String = "Unknown"
-    @Published var speed: Double = 0.0
+    var primaryAxis: String = "Unknown"
+    var speed: Double = 0.0
     
     private var motionManager = CMMotionManager()
     
     private var lastAcceleration: CMAcceleration = CMAcceleration(x: 0, y: 0, z: 0)
     private var lastUpdateTime: TimeInterval = Date().timeIntervalSince1970
     
-    func startAccelerometerUpdates() {
+    func start() {
         motionManager.accelerometerUpdateInterval = 0.1
         motionManager.startAccelerometerUpdates(to: .main) { [weak self] (data, error) in
             guard let strongSelf = self, let acceleration = data?.acceleration else { return }
             strongSelf.processAcceleration(acceleration)
         }
+    }
+    
+    func stop() {
+        motionManager.stopAccelerometerUpdates()
     }
     
     private func processAcceleration(_ acceleration: CMAcceleration) {
@@ -52,3 +56,4 @@ class Accelerometer: ObservableObject {
         lastAcceleration = acceleration
     }
 }
+

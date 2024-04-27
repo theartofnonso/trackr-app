@@ -14,6 +14,12 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     @Published var sessionName: String = Constants.NO_SESSION
     
+    private var setStartDate = Date.now
+    
+    let heartRateMonitor: HeartRateMonitor = HeartRateMonitor()
+    
+    private let accelerometer: Accelerometer = Accelerometer()
+    
     override init() {
         super.init()
         
@@ -41,14 +47,17 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
             let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
             let setIndex = message[Constants.SET_INDEX] as! Int
             
-            // Run HeartRate query and calculate avg velocity from accelerometer
+            accelerometer.stop()
             
-            sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: Int.random(in: 50...60), speed: Int.random(in: 1...10))
-            
-            DispatchQueue.main.async {
-                self.isAnalysing = false
+            heartRateMonitor.queryHeartRate(from: setStartDate) { bpm in
+                
+                DispatchQueue.main.async {
+                    
+                    self.sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: bpm, speed: Int(self.accelerometer.speed))
+                    
+                    self.isAnalysing = false
+                }
             }
-        
         }
         
         if keys.contains(Constants.END_SESSION) {
@@ -74,5 +83,14 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
                                       Constants.BPM: bpm,
                                       Constants.SPEED: speed], replyHandler: nil, errorHandler: nil)
         }
+    }
+    
+    func startAnalysis() {
+        accelerometer.start()
+        setStartDate = Date.now
+    }
+    
+    func stopAnalysis() {
+        accelerometer.stop()
     }
 }
