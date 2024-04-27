@@ -32,46 +32,76 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {}
     
+    //    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+    //
+    //        let keys = message.keys
+    //
+    //        if keys.contains(Constants.SESSION_NAME) {
+    //            DispatchQueue.main.async { [self] in
+    //                sessionName = message[Constants.SESSION_NAME] as! String
+    //            }
+    //        }
+    //
+    //        if keys.contains(Constants.EXERCISE_LOG_ID) && keys.contains(Constants.SET_INDEX) {
+    //
+    //            let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
+    //            let setIndex = message[Constants.SET_INDEX] as! Int
+    //
+    //            accelerometer.stop()
+    //
+    //            print("Set start date: \(setStartDate)")
+    //
+    //            heartRateMonitor.queryHeartRate(from: setStartDate) { bpm in
+    //
+    //                DispatchQueue.main.async { [self] in
+    //
+    //                    sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: bpm, speed: Int(accelerometer.speed))
+    //
+    //                    isAnalysing = false
+    //                }
+    //            }
+    //        }
+    //
+    //        if keys.contains(Constants.END_SESSION) {
+    //            DispatchQueue.main.async { [self] in
+    //                isAnalysing = false
+    //                sessionName = Constants.NO_SESSION
+    //            }
+    //        }
+    //
+    //    }
+    
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            
+            if let sessionName = message[Constants.SESSION_NAME] as? String {
+                strongSelf.sessionName = sessionName
+            }
+            
+            if let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as? String,
+               let setIndex = message[Constants.SET_INDEX] as? Int {
+                strongSelf.analyseSet(exerciseLogId: exerciseLogId, setIndex: setIndex)
+            }
+            
+            if message.keys.contains(Constants.END_SESSION) {
+                strongSelf.isAnalysing = false
+                strongSelf.sessionName = Constants.NO_SESSION
+            }
+        }
+    }
+    
+    private func analyseSet(exerciseLogId: String, setIndex: Int) {
+        accelerometer.stop()
+        print("Set start date: \(setStartDate)")
         
-        let keys = message.keys
-        
-        if keys.contains(Constants.SESSION_NAME) {
+        heartRateMonitor.queryHeartRate(from: setStartDate) { [weak self] bpm in
             DispatchQueue.main.async {
-                self.sessionName = message[Constants.SESSION_NAME] as! String
+                guard let strongSelf = self else { return }
+                strongSelf.sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: bpm, speed: Int(strongSelf.accelerometer.speed))
+                strongSelf.isAnalysing = false
             }
         }
-        
-        if keys.contains(Constants.EXERCISE_LOG_ID) && keys.contains(Constants.SET_INDEX) {
-            
-            let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
-            let setIndex = message[Constants.SET_INDEX] as! Int
-            
-            accelerometer.stop()
-            
-            print("Set start date: \(setStartDate)")
-            
-            heartRateMonitor.queryHeartRate(from: setStartDate) { bpm in
-                
-        
-                print(bpm)
-                
-                DispatchQueue.main.async {
-                    
-                    self.sendBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex, bpm: bpm, speed: Int(self.accelerometer.speed))
-                    
-                    self.isAnalysing = false
-                }
-            }
-        }
-        
-        if keys.contains(Constants.END_SESSION) {
-            DispatchQueue.main.async {
-                self.isAnalysing = false
-                self.sessionName = Constants.NO_SESSION
-            }
-        }
-        
     }
     
 #if os(iOS)

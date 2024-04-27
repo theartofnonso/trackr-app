@@ -39,62 +39,37 @@ class HeartRateMonitor {
         }
     }
     
-    private func getHeartRatePredicate(from: Date) -> NSPredicate? {
-        
-        let calendar = NSCalendar.current
-        
-        let startDateComponents = calendar.dateComponents([.year, .month, .day], from: from)
-        guard let startDate = calendar.date(from: startDateComponents) else {
-            print("Can't create startDate")
-            return nil
-        }
-        
-        let endDateComponents = calendar.dateComponents([.year, .month, .day], from: Date.now)
-        guard let endDate = calendar.date(from: endDateComponents) else {
-            print("Can't create endDate")
-            return nil
-        }
-        
-        return HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
+    private func getHeartRatePredicate(from: Date) -> NSPredicate {
+        let calendar = Calendar.current
+        let startDate = calendar.startOfDay(for: from)
+        return HKQuery.predicateForSamples(withStart: startDate, end: Date.now, options: [])
     }
     
     private func createHeartRateQuery(heartRatePredicate: NSPredicate, completion: @escaping (_ bpm: Int) -> Void) -> HKStatisticsQuery? {
-        
         guard let heartRateQuantity = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate) else {
-            print("Can't create quantity")
             return nil
         }
         
-        return HKStatisticsQuery(quantityType: heartRateQuantity, quantitySamplePredicate: heartRatePredicate, options: .discreteMax) { query, statistics, error in
-            
+        let unit = HKUnit(from: "count/max")
+        return HKStatisticsQuery(quantityType: heartRateQuantity, quantitySamplePredicate: heartRatePredicate, options: .mostRecent) { _, statistics, error in
             guard let statistics = statistics, error == nil else {
-                print("Can't create statistics")
-                print(error)
+                completion(0)
                 return
             }
-            
-            let maxHeartRate = statistics.maximumQuantity()
-            
-            let bpm = maxHeartRate?.doubleValue(for: .count()) ?? 0.0
-            
+            let bpm = statistics.maximumQuantity()?.doubleValue(for: unit) ?? 0
             completion(Int(bpm))
         }
     }
     
     func queryHeartRate(from: Date, completion: @escaping (_ bpm: Int) -> Void) {
-        
-        guard let predicate = getHeartRatePredicate(from: from) else {
-            print("Can't create predicate")
-            return
-        }
+        let predicate = getHeartRatePredicate(from: from)
         
         guard let heartRateQuery = createHeartRateQuery(heartRatePredicate: predicate, completion: completion) else {
-            print("Can't create query")
             return
         }
         
         healthStore.execute(heartRateQuery)
-        
     }
+    
     
 }
