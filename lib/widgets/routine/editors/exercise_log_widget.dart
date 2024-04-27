@@ -298,7 +298,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final hostApi = DataHostApi();
     final isWatchSynced = await hostApi.isWatchSynced();
     if (isWatchSynced) {
-      print("Sending signal for intensity for set index: $setIndex");
       await hostApi.getBpmAndSpeed(exerciseLogId: exerciseLogId, setIndex: setIndex);
     }
   }

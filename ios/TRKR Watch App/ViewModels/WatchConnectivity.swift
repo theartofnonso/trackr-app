@@ -24,10 +24,6 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         }
     }
     
-    func toggleAnalysis() {
-        self.isAnalysing = !self.isAnalysing
-    }
-    
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {}
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
@@ -42,15 +38,8 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         
         if keys.contains(Constants.EXERCISE_LOG_ID) && keys.contains(Constants.SET_INDEX) {
             
-            DispatchQueue.main.async {
-                self.isAnalysing = true
-                print("Fuck competition")
-            }
-            
             let exerciseLogId = message[Constants.EXERCISE_LOG_ID] as! String
             let setIndex = message[Constants.SET_INDEX] as! Int
-            
-            print("Watch has received request for set intensity index \(setIndex)")
             
             // Run HeartRate query and calculate avg velocity from accelerometer
             
@@ -80,7 +69,6 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
         let watchSession = WCSession.default
         let isAvailable = watchSession.isReachable
         if isAvailable {
-            print("Watch has sent set intensity index \(setIndex)")
             watchSession.sendMessage([Constants.EXERCISE_LOG_ID: exerciseLogId,
                                       Constants.SET_INDEX: setIndex,
                                       Constants.BPM: bpm,
