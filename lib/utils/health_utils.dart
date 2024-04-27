@@ -11,9 +11,9 @@ void syncWorkoutWithAppleHealth({required RoutineLogDto log}) async {
 Future<bool> connectAppleHealth() async {
   Health().configure(useHealthConnectIfAvailable: true);
 
-  const types = [HealthDataType.WORKOUT];
+  const types = [HealthDataType.WORKOUT, HealthDataType.HEART_RATE];
 
-  const permissions = [HealthDataAccess.WRITE];
+  const permissions = [HealthDataAccess.READ_WRITE, HealthDataAccess.READ_WRITE];
 
   return await Health().requestAuthorization(types, permissions: permissions);
 }
@@ -21,9 +21,9 @@ Future<bool> connectAppleHealth() async {
 Future<bool> checkAppleHealthConnectivity() async {
   Health().configure(useHealthConnectIfAvailable: true);
 
-  const types = [HealthDataType.WORKOUT];
+  const types = [HealthDataType.WORKOUT, HealthDataType.HEART_RATE];
 
-  const permissions = [HealthDataAccess.WRITE];
+  const permissions = [HealthDataAccess.READ_WRITE, HealthDataAccess.READ_WRITE];
 
   return await Health().hasPermissions(types, permissions: permissions) ?? false;
 }

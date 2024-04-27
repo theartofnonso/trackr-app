@@ -49,7 +49,12 @@ class WatchConnectivity: NSObject, ObservableObject, WCSessionDelegate {
             
             accelerometer.stop()
             
+            print("Set start date: \(setStartDate)")
+            
             heartRateMonitor.queryHeartRate(from: setStartDate) { bpm in
+                
+        
+                print(bpm)
                 
                 DispatchQueue.main.async {
                     

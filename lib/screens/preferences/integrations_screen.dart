@@ -87,10 +87,12 @@ class _IntegrationsScreenState extends State<IntegrationsScreen> {
 
   void _connectAppleHealth() async {
     _toggleRequestingPermission();
+    
     final success = await connectAppleHealth();
     setState(() {
       _hasPermission = success;
     });
+
     _toggleRequestingPermission();
   }
 

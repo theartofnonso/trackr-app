@@ -29,6 +29,7 @@ struct ContentView: View {
                 Task(operation: {
                     await watchConnectivity.heartRateMonitor.checkAuthorization { result in
                         hasHealthKitStore = result
+                        print("hasHealthKitStore: \(hasHealthKitStore) ")
                     }
                 })
             }.onReceive(watchConnectivity.$isAnalysing, perform: { _ in
