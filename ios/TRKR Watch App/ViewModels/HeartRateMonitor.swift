@@ -47,16 +47,18 @@ class HeartRateMonitor {
     
     private func createHeartRateQuery(heartRatePredicate: NSPredicate, completion: @escaping (_ bpm: Int) -> Void) -> HKStatisticsQuery? {
         guard let heartRateQuantity = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate) else {
+            print("Can't create quantity")
             return nil
         }
         
-        let unit = HKUnit(from: "count/max")
         return HKStatisticsQuery(quantityType: heartRateQuantity, quantitySamplePredicate: heartRatePredicate, options: .mostRecent) { _, statistics, error in
             guard let statistics = statistics, error == nil else {
+                print("Can't create statistics")
+                print(error)
                 completion(0)
                 return
             }
-            let bpm = statistics.maximumQuantity()?.doubleValue(for: unit) ?? 0
+            let bpm = statistics.maximumQuantity()?.doubleValue(for: .count()) ?? 0
             completion(Int(bpm))
         }
     }
@@ -65,6 +67,7 @@ class HeartRateMonitor {
         let predicate = getHeartRatePredicate(from: from)
         
         guard let heartRateQuery = createHeartRateQuery(heartRatePredicate: predicate, completion: completion) else {
+            print("Help")
             return
         }
         

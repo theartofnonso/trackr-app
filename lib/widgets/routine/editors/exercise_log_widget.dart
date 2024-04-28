@@ -93,46 +93,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     ];
   }
 
-  void _showSetAnalyses({required SetDto set}) {
-    final setIntensity = _analyseSetIntensity(currentSet: set);
-
-    switch (setIntensity) {
-      case SetIntensity.easy:
-        showBottomSheetWithNoAction(
-            context: context,
-            title: widget.exerciseLogDto.exercise.name,
-            description: "Set was easy you should increase intensity");
-        break;
-      case SetIntensity.hard:
-        showBottomSheetWithNoAction(
-            context: context, title: widget.exerciseLogDto.exercise.name, description: "Set was hard, keep going");
-        break;
-      case SetIntensity.warmup:
-        showBottomSheetWithNoAction(
-            context: context,
-            title: widget.exerciseLogDto.exercise.name,
-            description: "Set was easy, this could signal a warm up");
-        break;
-      case SetIntensity.cardio:
-        showBottomSheetWithNoAction(
-            context: context,
-            title: widget.exerciseLogDto.exercise.name,
-            description: "Set was intense, probably cardio");
-        break;
-      case SetIntensity.sufficient:
-        showBottomSheetWithNoAction(
-            context: context,
-            title: widget.exerciseLogDto.exercise.name,
-            description: "Set was same as before, keep going");
-        break;
-      case SetIntensity.none:
-        showBottomSheetWithNoAction(
-            context: context,
-            title: widget.exerciseLogDto.exercise.name,
-            description: "Log at least 3 sessions to calibrate your intensity");
-    }
-  }
-
   // Previous sets with same weight and reps
   // This ensures we are comparing intensity for same weight class and reps - increments are
   // considered a PR, whilst decrements are a reduction in strength
