@@ -53,13 +53,15 @@ void main() async {
 
   await initializeDateFormatting();
 
-  const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
+  const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
     requestAlertPermission: false,
     requestBadgePermission: false,
     requestSoundPermission: false,
   );
 
-  const initializationSettings = InitializationSettings(iOS: initializationSettingsDarwin);
+  const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings("app_icon");
+
+  const initializationSettings = InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
 
   await FlutterLocalNotificationsPlugin().initialize(initializationSettings);
 

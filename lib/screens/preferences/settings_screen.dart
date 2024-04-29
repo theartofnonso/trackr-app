@@ -206,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     await Amplify.DataStore.clear();
     SharedPrefs().clear();
     await FlutterLocalNotificationsPlugin().cancelAll();
-    if (context.mounted) {
+    if (mounted) {
       Provider.of<RoutineTemplateController>(context, listen: false).clear();
       Provider.of<RoutineLogController>(context, listen: false).clear();
       Provider.of<ExerciseController>(context, listen: false).clear();
@@ -288,7 +288,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             await Amplify.Auth.deleteUser();
           } else {
             _toggleLoadingState();
-            if (context.mounted) {
+            if (mounted) {
               showSnackbar(
                   context: context,
                   icon: const Icon(Icons.info_outline_rounded),
