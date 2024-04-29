@@ -32,8 +32,9 @@ class _HourTimerPickerState extends State<HourTimerPicker> {
             onSelectedItemChanged: (int index) {
               _hours = index;
             },
+            squeeze: 1,
             children: List<Widget>.generate(23, (int index) {
-              return Center(child: Text(index.toString().padLeft(2, "0")));
+              return Center(child: Text(index.toString().padLeft(2, "0"), style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));
             }),
           ),
         ),
