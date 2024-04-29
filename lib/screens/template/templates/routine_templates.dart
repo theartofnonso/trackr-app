@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
-import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -26,12 +25,7 @@ class RoutineTemplates extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
-      final routineTemplates = List<RoutineTemplateDto>.from(provider.templates).map((template) {
-        if (template.scheduleType == RoutineScheduleType.intervals) {
-          _updateRoutineTemplateIntervals(context: context, template: template);
-        }
-        return template;
-      });
+      final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
       final sortedScheduledTemplates =
           routineTemplates.where((template) => template.scheduledDays.isNotEmpty).sorted((a, b) {
@@ -152,22 +146,6 @@ String _scheduledDaysSummary({required RoutineTemplateDto template}) {
   return template.scheduleIntervals == 1
       ? "Everyday"
       : "Every ${template.scheduleIntervals} ${pluralize(word: "day", count: template.scheduleIntervals)}";
-}
-
-void _updateRoutineTemplateIntervals({required BuildContext context, required RoutineTemplateDto template}) {
-  final scheduledDate = template.scheduledDate;
-
-  if (scheduledDate != null) {
-    if (scheduledDate.isBefore(DateTime.now())) {
-      final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
-      final modifiedTemplate = template.copyWith(
-          scheduledDate: scheduledDate,
-          scheduleType: RoutineScheduleType.intervals,
-          scheduleIntervals: template.scheduleIntervals,
-          scheduledDays: []);
-      Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: modifiedTemplate);
-    }
-  }
 }
 
 class _RoutineBigWidget extends StatelessWidget {

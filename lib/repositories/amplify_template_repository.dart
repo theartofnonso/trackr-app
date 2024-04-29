@@ -6,11 +6,13 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:tracker_app/dtos/set_dto.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_template_extension.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 import '../dtos/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/routine_template_dto.dart';
+import '../enums/routine_schedule_type_enums.dart';
 import '../enums/routine_template_library_workout_enum.dart';
 import '../screens/template/library/routine_library.dart';
 
@@ -101,7 +103,29 @@ class AmplifyTemplateRepository {
   }
 
   void _mapAndSortTemplates({required List<RoutineTemplate> templates}) {
-    _templates = templates.map((log) => log.dto()).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+    _templates = templates.map((log) {
+      final template = log.dto();
+      if (template.scheduleType == RoutineScheduleType.intervals) {
+        _updateRoutineTemplateIntervals(template: template);
+      }
+      return template;
+    }).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+  }
+
+  void _updateRoutineTemplateIntervals({required RoutineTemplateDto template}) {
+    final scheduledDate = template.scheduledDate;
+
+    if (scheduledDate != null) {
+      if (scheduledDate.isBefore(DateTime.now())) {
+        final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
+        final modifiedTemplate = template.copyWith(
+            scheduledDate: scheduledDate,
+            scheduleType: RoutineScheduleType.intervals,
+            scheduleIntervals: template.scheduleIntervals,
+            scheduledDays: []);
+        updateTemplate(template: modifiedTemplate);
+      }
+    }
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {
@@ -144,7 +168,8 @@ class AmplifyTemplateRepository {
       final oldTemplateDto = oldTemplate.dto();
 
       final updatedExercisesTemplates = oldTemplateDto.exerciseTemplates.map((oldExerciseTemplate) {
-        final newExerciseTemplate = newExercises.firstWhereOrNull((newExercise) => newExercise.id == oldExerciseTemplate.id);
+        final newExerciseTemplate =
+            newExercises.firstWhereOrNull((newExercise) => newExercise.id == oldExerciseTemplate.id);
 
         if (newExerciseTemplate == null) {
           return oldExerciseTemplate;
