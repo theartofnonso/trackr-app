@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
 import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -145,7 +146,7 @@ String _scheduledDaysSummary({required RoutineTemplateDto template}) {
 
   return template.scheduleIntervals == 1
       ? "Everyday"
-      : "Every ${template.scheduleIntervals} ${pluralize(word: "day", count: template.scheduleIntervals)}";
+      : "Next on ${template.scheduledDate?.formattedDate()}";
 }
 
 class _RoutineBigWidget extends StatelessWidget {

@@ -53,7 +53,7 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
              });
             },
             squeeze: 1,
-            children: List<Widget>.generate(9, (int index) {
+            children: List<Widget>.generate(31, (int index) {
               return Center(
                   child: Text(index.toString(),
                       style: GoogleFonts.montserrat(fontWeight: FontWeight.w500, fontSize: 32, color: Colors.white)));

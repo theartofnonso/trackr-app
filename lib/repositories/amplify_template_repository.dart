@@ -106,20 +106,20 @@ class AmplifyTemplateRepository {
     _templates = templates.map((log) {
       final template = log.dto();
       if (template.scheduleType == RoutineScheduleType.intervals) {
-        _updateRoutineTemplateIntervals(template: template);
+        _rescheduleRoutineTemplates(template: template);
       }
       return template;
     }).sorted((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  void _updateRoutineTemplateIntervals({required RoutineTemplateDto template}) {
+  void _rescheduleRoutineTemplates({required RoutineTemplateDto template}) {
     final scheduledDate = template.scheduledDate;
 
     if (scheduledDate != null) {
-      if (scheduledDate.isBefore(DateTime.now())) {
-        final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
+      if (scheduledDate.isBefore(DateTime.now().withoutTime())) {
+        final newSchedule = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
         final modifiedTemplate = template.copyWith(
-            scheduledDate: scheduledDate,
+            scheduledDate: newSchedule,
             scheduleType: RoutineScheduleType.intervals,
             scheduleIntervals: template.scheduleIntervals,
             scheduledDays: []);
