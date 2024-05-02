@@ -138,15 +138,20 @@ String _scheduledDaysSummary({required RoutineTemplateDto template}) {
   if (template.scheduleType == RoutineScheduleType.days) {
     final scheduledDays = template.scheduledDays;
 
-    final scheduledDayNames =
-        scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
+    if(scheduledDays.isNotEmpty) {
+      final scheduledDayNames =
+      scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
 
-    return scheduledDays.length == 7 ? "Everyday" : joinWithAnd(items: scheduledDayNames);
+      return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
+    }
   }
 
-  return template.scheduleIntervals == 1
-      ? "Everyday"
-      : "Next on ${template.scheduledDate?.formattedDate()}";
+  if(template.scheduleIntervals >= 1) {
+    return template.scheduleIntervals == 1
+        ? "Everyday"
+        : "Next on ${template.scheduledDate?.formattedDate()}";
+  }
+  return "No schedule";
 }
 
 class _RoutineBigWidget extends StatelessWidget {
@@ -351,24 +356,19 @@ class _RoutineSmallWidget extends StatelessWidget {
                   )),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-              subtitle: Row(
+              subtitle: scheduleSummary.isNotEmpty ? Row(
                 children: [
-                  if (scheduleSummary.isNotEmpty)
-                    Row(
-                      children: [
-                        const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
-                        const SizedBox(width: 4),
-                        SizedBox(
-                          width: 120,
-                          child: Text(scheduleSummary,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
-                        ),
-                      ],
-                    )
+                  const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
+                  const SizedBox(width: 4),
+                  SizedBox(
+                    width: 120,
+                    child: Text(scheduleSummary,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.montserrat(
+                            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+                  ),
                 ],
-              ),
+              ) : null,
               trailing: MenuAnchor(
                 style: MenuStyle(
                   backgroundColor: MaterialStateProperty.all(sapphireDark80),

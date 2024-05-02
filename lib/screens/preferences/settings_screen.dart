@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -136,13 +138,20 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _navigateToExerciseLibrary, title: "Exercises", trailing: "manage exercises"),
-                  const SizedBox(height: 8),
-                  OutlineListTile(
-                      onTap: _navigateToNotificationSettings,
-                      title: "Notifications",
-                      trailing: _notificationEnabled ? "Enabled" : "Disabled"),
-                  const SizedBox(height: 8),
-                  OutlineListTile(onTap: _navigateToIntegrations, title: "Integrations", trailing: "sync workout data"),
+                  if (Platform.isIOS)
+                    Column(children: [
+                      const SizedBox(height: 8),
+                      OutlineListTile(
+                          onTap: _navigateToNotificationSettings,
+                          title: "Notifications",
+                          trailing: _notificationEnabled ? "Enabled" : "Disabled"),
+                    ]),
+                  if (Platform.isIOS)
+                    Column(children: [
+                      const SizedBox(height: 8),
+                      OutlineListTile(
+                          onTap: _navigateToIntegrations, title: "Integrations", trailing: "sync workout data"),
+                    ]),
                   const SizedBox(height: 8),
                   OutlineListTile(onTap: _sendFeedback, title: "Feedback", trailing: "Help us improve!"),
                   const SizedBox(height: 8),
@@ -181,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   void _navigateToNotificationSettings() async {
     if (!_notificationEnabled) {
-      final isEnabled = await requestIosNotificationPermission();
+      final isEnabled = await requestNotificationPermission();
       setState(() {
         _notificationEnabled = isEnabled;
       });

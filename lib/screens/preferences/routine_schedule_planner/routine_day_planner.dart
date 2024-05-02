@@ -23,23 +23,23 @@ class RoutineDayPlanner extends StatefulWidget {
 }
 
 class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
-  final List<DayOfWeek> selectedDays = [];
+  final List<DayOfWeek> _selectedDays = [];
 
   void _toggleDay(DayOfWeek day) {
     setState(() {
-      if (selectedDays.contains(day)) {
-        selectedDays.remove(day);
+      if (_selectedDays.contains(day)) {
+        _selectedDays.remove(day);
       } else {
-        selectedDays.add(day);
+        _selectedDays.add(day);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    String days = joinWithAnd(items: selectedDays.map((day) => day.shortName).toList());
+    String days = joinWithAnd(items: _selectedDays.map((day) => day.shortName).toList());
 
-    if (selectedDays.length == 7) {
+    if (_selectedDays.length == 7) {
       days = 'everyday';
     } else {
       days = "on $days";
@@ -49,7 +49,7 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
 
-        selectedDays.isNotEmpty
+        _selectedDays.isNotEmpty
             ? RichText(
                 text: TextSpan(
                   text: 'Train ${widget.template.name} ',
@@ -74,12 +74,12 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
                   style: GoogleFonts.montserrat(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: selectedDays.contains(day) ? sapphireDark : Colors.white)),
+                      color: _selectedDays.contains(day) ? sapphireDark : Colors.white)),
               backgroundColor: sapphireDark,
               selectedColor: vibrantGreen,
               visualDensity: VisualDensity.compact,
               checkmarkColor: sapphireDark,
-              selected: selectedDays.contains(day),
+              selected: _selectedDays.contains(day),
               side: const BorderSide(color: Colors.transparent),
               onSelected: (_) {
                 _toggleDay(day);
@@ -105,12 +105,12 @@ class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
   @override
   void initState() {
     super.initState();
-    selectedDays.addAll(widget.template.scheduledDays);
+    _selectedDays.addAll(widget.template.scheduledDays);
   }
 
   void _updateRoutineTemplateDays() async {
-    selectedDays.sort((a, b) => a.index.compareTo(b.index));
-    final template = widget.template.copyWith(scheduledDays: selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
+    _selectedDays.sort((a, b) => a.index.compareTo(b.index));
+    final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
     await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
       Navigator.of(context).pop();

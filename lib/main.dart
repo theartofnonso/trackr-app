@@ -190,9 +190,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     //debugPaintSizeEnabled = true;
 
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp, // Lock orientation to portrait up
     ]);

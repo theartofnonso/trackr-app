@@ -48,9 +48,9 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
             looping: true,
             itemExtent: 38.0,
             onSelectedItemChanged: (int index) {
-             setState(() {
-               _intervals = index;
-             });
+              setState(() {
+                _intervals = index;
+              });
             },
             squeeze: 1,
             children: List<Widget>.generate(31, (int index) {
@@ -75,6 +75,7 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
   @override
   void initState() {
     super.initState();
+    _intervals = widget.template.scheduleIntervals;
     _intervalsScrollController = FixedExtentScrollController(initialItem: widget.template.scheduleIntervals);
   }
 
@@ -85,9 +86,19 @@ class _RoutineFrequencyPlannerState extends State<RoutineFrequencyPlanner> {
   }
 
   void _updateRoutineTemplateIntervals() async {
-    final scheduledDate = DateTime.now().add(Duration(days: _intervals)).withoutTime();
-    final template = widget.template.copyWith(scheduledDate: scheduledDate, scheduleType: RoutineScheduleType.intervals, scheduleIntervals: _intervals, scheduledDays: []);
-    await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    if (_intervals > 0) {
+      final scheduledDate = DateTime.now().add(Duration(days: _intervals)).withoutTime();
+      final template = widget.template.copyWith(
+          scheduledDate: scheduledDate,
+          scheduleType: RoutineScheduleType.intervals,
+          scheduleIntervals: _intervals,
+          scheduledDays: []);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    } else {
+      final template = widget.template.copyWith(
+          scheduledDays: [], scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
+      await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
+    }
     if (mounted) {
       Navigator.of(context).pop();
     }

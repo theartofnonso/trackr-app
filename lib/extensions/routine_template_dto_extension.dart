@@ -19,10 +19,6 @@ extension RoutineTemplateDtoExtension on RoutineTemplateDto {
 
     if(scheduleType == RoutineScheduleType.intervals) {
 
-      // Get the current day of the week as a `DayOfWeek` enum
-      final scheduledDate = this.scheduledDate?.add(Duration(days: scheduleIntervals));
-
-      // Check if the list of days contains the current day
       return scheduledDate?.isSameDayMonthAndYear(DateTime.now()) ?? false;
     }
 

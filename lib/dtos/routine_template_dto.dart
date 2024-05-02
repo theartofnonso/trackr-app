@@ -29,12 +29,6 @@ class RoutineTemplateDto {
       this.scheduleIntervals = 0});
 
   Map<String, dynamic> toJson() {
-    print({
-      'days': scheduledDays.map((dayOfWeek) => dayOfWeek.day).toList(),
-      "scheduledDate": scheduledDate?.toIso8601String(),
-      "scheduleType": scheduleType,
-      "scheduleIntervals": scheduleIntervals
-    });
     return {
       'name': name,
       'notes': notes,
