@@ -74,7 +74,6 @@ class RoutineTemplates extends StatelessWidget {
                 templates.isNotEmpty
                     ? Expanded(
                         child: GridView.count(
-                            // shrinkWrap: true,
                             crossAxisCount: 2,
                             childAspectRatio: 1,
                             mainAxisSpacing: 10.0,
