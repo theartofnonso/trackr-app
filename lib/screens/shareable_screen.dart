@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/share_content_type_enum.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
@@ -47,7 +48,7 @@ class _ShareableScreenState extends State<ShareableScreen> {
   Widget build(BuildContext context) {
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
 
-    final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.day);
+    final logsByDay = groupBy(routineLogController.routineLogs, (log) => log.createdAt.withoutTime());
 
     List<Widget> pbShareAssets = [];
     final pbShareAssetsKeys = [];
