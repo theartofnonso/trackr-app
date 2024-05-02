@@ -350,15 +350,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             if (withWeightsOnly(type: exerciseType))
               IconButton(
                   onPressed: _show1RMRecommendations,
-                  icon: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.dumbbell, color: Colors.white, size: 16),
-                      const SizedBox(width: 4),
-                      Text("WEIGHTS",
-                          style:
-                              GoogleFonts.montserrat(color: Colors.white70, fontWeight: FontWeight.w700, fontSize: 12)),
-                    ],
-                  ),
+                  icon: const FaIcon(FontAwesomeIcons.boltLightning, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape:
