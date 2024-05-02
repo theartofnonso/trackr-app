@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
     id "org.jetbrains.kotlin.android" version "1.9.23"
+    id 'kotlin-parcelize'
 }
 
 def localProperties = new Properties()
@@ -68,5 +69,6 @@ flutter {
 }
 
 dependencies {
+    //classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
