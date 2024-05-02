@@ -110,15 +110,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     workoutSessionLogged();
 
+    if (routineLog.templateId.isNotEmpty) {
+      await _updateRoutineTemplateSchedule(routineTemplateId: routineLog.templateId);
+    }
+
     _navigateBack(log: createdLog);
   }
 
   Future<void> _doUpdateRoutineLog() async {
     final routineLog = _routineLog(endTime: widget.log.endTime);
-
-    if (routineLog.templateId.isNotEmpty) {
-      await _updateRoutineTemplateSchedule(routineTemplateId: routineLog.templateId);
-    }
 
     if (mounted) {
       await Provider.of<RoutineLogController>(context, listen: false).updateLog(log: routineLog);
@@ -132,7 +132,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     if (template == null) return;
     if (template.scheduleType == RoutineScheduleType.intervals) {
       final scheduledDate = DateTime.now().add(Duration(days: template.scheduleIntervals)).withoutTime();
+      print(scheduledDate);
       final scheduledTemplate = template.copyWith(scheduledDate: scheduledDate);
+      print(scheduledTemplate.scheduledDate);
       await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: scheduledTemplate);
     }
   }

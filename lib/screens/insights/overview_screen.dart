@@ -86,7 +86,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         onPressed: () => _logEmptyRoutine(context),
         backgroundColor: sapphireDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: const Icon(Icons.play_arrow_rounded, size: 32),
+        child: const FaIcon(FontAwesomeIcons.play, color: Colors.white, size: 24),
       ),
       body: Container(
         width: double.infinity,
