@@ -20,7 +20,7 @@ import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../../widgets/backgrounds/overlay_background.dart';
 import '../../../widgets/routine/preview/exercise_log_listview.dart';
-import '../../preferences/routine_schedule_planner.dart';
+import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplate extends StatefulWidget {
   final RoutineTemplateTypeEnum templateType;
@@ -77,7 +77,8 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
-              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+              height: 400,
+              context: context, child: RoutineSchedulePlannerHome(template: template), isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -101,7 +102,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
       )
     ];
 
-    final scheduledDays = template.days;
+    final scheduledDays = template.scheduledDays;
 
     final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
 

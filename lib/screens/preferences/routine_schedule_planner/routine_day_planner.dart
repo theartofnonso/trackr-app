@@ -8,37 +8,38 @@ import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/text_button_widget.dart';
 
-import '../../controllers/routine_template_controller.dart';
+import '../../../controllers/routine_template_controller.dart';
+import '../../../enums/routine_schedule_type_enums.dart';
 
-class RoutineSchedulePlanner extends StatefulWidget {
+class RoutineDayPlanner extends StatefulWidget {
   static const routeName = "/routine-schedule-planner";
 
   final RoutineTemplateDto template;
 
-  const RoutineSchedulePlanner({super.key, required this.template});
+  const RoutineDayPlanner({super.key, required this.template});
 
   @override
-  State<RoutineSchedulePlanner> createState() => _RoutineSchedulePlannerState();
+  State<RoutineDayPlanner> createState() => _RoutineDayPlannerState();
 }
 
-class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
-  final List<DayOfWeek> selectedDays = [];
+class _RoutineDayPlannerState extends State<RoutineDayPlanner> {
+  final List<DayOfWeek> _selectedDays = [];
 
   void _toggleDay(DayOfWeek day) {
     setState(() {
-      if (selectedDays.contains(day)) {
-        selectedDays.remove(day);
+      if (_selectedDays.contains(day)) {
+        _selectedDays.remove(day);
       } else {
-        selectedDays.add(day);
+        _selectedDays.add(day);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    String days = joinWithAnd(items: selectedDays.map((day) => day.shortName).toList());
+    String days = joinWithAnd(items: _selectedDays.map((day) => day.shortName).toList());
 
-    if (selectedDays.length == 7) {
+    if (_selectedDays.length == 7) {
       days = 'everyday';
     } else {
       days = "on $days";
@@ -47,7 +48,8 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        selectedDays.isNotEmpty
+
+        _selectedDays.isNotEmpty
             ? RichText(
                 text: TextSpan(
                   text: 'Train ${widget.template.name} ',
@@ -72,12 +74,12 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
                   style: GoogleFonts.montserrat(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: selectedDays.contains(day) ? sapphireDark : Colors.white)),
+                      color: _selectedDays.contains(day) ? sapphireDark : Colors.white)),
               backgroundColor: sapphireDark,
               selectedColor: vibrantGreen,
               visualDensity: VisualDensity.compact,
               checkmarkColor: sapphireDark,
-              selected: selectedDays.contains(day),
+              selected: _selectedDays.contains(day),
               side: const BorderSide(color: Colors.transparent),
               onSelected: (_) {
                 _toggleDay(day);
@@ -85,7 +87,7 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
             );
           }).toList(),
         ),
-        const SizedBox(height: 14),
+        const Spacer(),
         Center(
           child: CTextButton(
               onPressed: _updateRoutineTemplateDays,
@@ -103,12 +105,12 @@ class _RoutineSchedulePlannerState extends State<RoutineSchedulePlanner> {
   @override
   void initState() {
     super.initState();
-    selectedDays.addAll(widget.template.days);
+    _selectedDays.addAll(widget.template.scheduledDays);
   }
 
   void _updateRoutineTemplateDays() async {
-    selectedDays.sort((a, b) => a.index.compareTo(b.index));
-    final template = widget.template.copyWith(days: selectedDays);
+    _selectedDays.sort((a, b) => a.index.compareTo(b.index));
+    final template = widget.template.copyWith(scheduledDays: _selectedDays, scheduleType: RoutineScheduleType.days, scheduleIntervals: 0, scheduledDate: null);
     await Provider.of<RoutineTemplateController>(context, listen: false).updateTemplate(template: template);
     if (mounted) {
       Navigator.of(context).pop();

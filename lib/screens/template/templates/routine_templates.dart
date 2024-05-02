@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/routine_template_controller.dart';
+import 'package:tracker_app/enums/routine_schedule_type_enums.dart';
+import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
 import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -16,7 +18,7 @@ import '../../../utils/dialog_utils.dart';
 import '../../../dtos/routine_template_dto.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
-import '../../preferences/routine_schedule_planner.dart';
+import '../../preferences/routine_schedule_planner/routine_schedule_planner_home.dart';
 
 class RoutineTemplates extends StatelessWidget {
   const RoutineTemplates({super.key});
@@ -26,9 +28,10 @@ class RoutineTemplates extends StatelessWidget {
     return Consumer<RoutineTemplateController>(builder: (_, provider, __) {
       final routineTemplates = List<RoutineTemplateDto>.from(provider.templates);
 
-      final sortedScheduledTemplates = routineTemplates.where((template) => template.days.isNotEmpty).sorted((a, b) {
-        final aDayOfWeek = a.days.first;
-        final bDayOfWeek = b.days.first;
+      final sortedScheduledTemplates =
+          routineTemplates.where((template) => template.scheduledDays.isNotEmpty).sorted((a, b) {
+        final aDayOfWeek = a.scheduledDays.first;
+        final bDayOfWeek = b.scheduledDays.first;
         return aDayOfWeek.day.compareTo(bDayOfWeek.day);
       });
 
@@ -39,11 +42,12 @@ class RoutineTemplates extends StatelessWidget {
         }
       }
 
-      final unscheduledTemplates = routineTemplates.where((template) => template.days.isEmpty).toList();
+      final unscheduledTemplates = routineTemplates.where((template) => template.scheduledDays.isEmpty).toList();
 
       final templates = [...sortedScheduledTemplates, ...unscheduledTemplates];
 
-      final exercise = routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
+      final exercise =
+          routineTemplates.map((template) => template.exerciseTemplates).expand((exercises) => exercises).toList();
 
       final exercisesByMuscleGroupFamily = groupBy(exercise, (exercise) => exercise.exercise.primaryMuscleGroup.family);
 
@@ -74,13 +78,16 @@ class RoutineTemplates extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 150),
                             itemBuilder: (BuildContext context, int index) {
                               final template = templates[index];
+                              final scheduleSummary = _scheduledDaysSummary(template: template);
                               return template.isScheduledToday()
                                   ? _RoutineBigWidget(
                                       template: template,
+                                      scheduleSummary: scheduleSummary,
                                       onDelete: (context, template) =>
                                           _deleteRoutine(context: context, template: template))
                                   : _RoutineSmallWidget(
                                       template: template,
+                                      scheduleSummary: scheduleSummary,
                                       onDelete: (context, template) =>
                                           _deleteRoutine(context: context, template: template));
                             },
@@ -91,8 +98,7 @@ class RoutineTemplates extends StatelessWidget {
                 if (untrainedMuscleGroups.isNotEmpty)
                   Container(
                     width: double.infinity,
-                    color: sapphireDark,
-                    padding: const EdgeInsets.all(10),
+                    color: Colors.transparent,
                     child: RichText(
                         text: TextSpan(
                             text:
@@ -128,20 +134,35 @@ class RoutineTemplates extends StatelessWidget {
   }
 }
 
+String _scheduledDaysSummary({required RoutineTemplateDto template}) {
+  if (template.scheduleType == RoutineScheduleType.days) {
+    final scheduledDays = template.scheduledDays;
+
+    if(scheduledDays.isNotEmpty) {
+      final scheduledDayNames =
+      scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
+
+      return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
+    }
+  }
+
+  if(template.scheduleIntervals >= 1) {
+    return template.scheduleIntervals == 1
+        ? "Everyday"
+        : "Next on ${template.scheduledDate?.formattedDate()}";
+  }
+  return "No schedule";
+}
+
 class _RoutineBigWidget extends StatelessWidget {
   final RoutineTemplateDto template;
+  final String scheduleSummary;
   final void Function(BuildContext context, RoutineTemplateDto template) onDelete;
 
-  const _RoutineBigWidget({required this.template, required this.onDelete});
+  const _RoutineBigWidget({required this.template, required this.onDelete, required this.scheduleSummary});
 
   @override
   Widget build(BuildContext context) {
-    final scheduledDays = template.days;
-
-    final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
-
-    final otherScheduledDays = scheduledDays.length == 7 ? "Everyday" : joinWithAnd(items: otherScheduledDayNames);
-
     final menuActions = [
       MenuItemButton(
         onPressed: () {
@@ -153,7 +174,10 @@ class _RoutineBigWidget extends StatelessWidget {
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
-              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+              height: 400,
+              context: context,
+              child: RoutineSchedulePlannerHome(template: template),
+              isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -198,28 +222,6 @@ class _RoutineBigWidget extends StatelessWidget {
                   dense: true,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          "${template.exerciseTemplates.length} ${pluralize(word: "exercise", count: template.exerciseTemplates.length)}",
-                          style: GoogleFonts.montserrat(
-                              color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                      if (scheduledDays.isNotEmpty && !template.isScheduledToday())
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8, bottom: 6.0),
-                          child: Row(
-                            children: [
-                              const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
-                              const SizedBox(width: 4),
-                              Text(otherScheduledDays,
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                        )
-                    ],
-                  ),
                   trailing: MenuAnchor(
                     style: MenuStyle(
                       backgroundColor: MaterialStateProperty.all(sapphireDark80),
@@ -247,17 +249,17 @@ class _RoutineBigWidget extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 12, left: 18.0, bottom: 12),
+                  padding: const EdgeInsets.only(top: 22, left: 18.0, bottom: 12),
                   child: Row(
                     children: [
-                      if (scheduledDays.isNotEmpty)
+                      if (scheduleSummary.isNotEmpty)
                         Row(
                           children: [
                             const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 14),
                             const SizedBox(width: 4),
                             SizedBox(
                               width: 150,
-                              child: Text(otherScheduledDays,
+                              child: Text(scheduleSummary,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
@@ -289,18 +291,13 @@ class _RoutineBigWidget extends StatelessWidget {
 
 class _RoutineSmallWidget extends StatelessWidget {
   final RoutineTemplateDto template;
+  final String scheduleSummary;
   final void Function(BuildContext context, RoutineTemplateDto template) onDelete;
 
-  const _RoutineSmallWidget({required this.template, required this.onDelete});
+  const _RoutineSmallWidget({required this.template, required this.onDelete, required this.scheduleSummary});
 
   @override
   Widget build(BuildContext context) {
-    final scheduledDays = template.days;
-
-    final otherScheduledDayNames = scheduledDays.map((day) => day.shortName).toList();
-
-    final otherScheduledDays = joinWithAnd(items: otherScheduledDayNames);
-
     final menuActions = [
       MenuItemButton(
         onPressed: () {
@@ -312,7 +309,10 @@ class _RoutineSmallWidget extends StatelessWidget {
       MenuItemButton(
         onPressed: () {
           displayBottomSheet(
-              context: context, child: RoutineSchedulePlanner(template: template), isScrollControlled: true);
+              height: 400,
+              context: context,
+              child: RoutineSchedulePlannerHome(template: template),
+              isScrollControlled: true);
         },
         child: Text("Schedule", style: GoogleFonts.montserrat(color: Colors.white)),
       ),
@@ -356,27 +356,19 @@ class _RoutineSmallWidget extends StatelessWidget {
                   )),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               title: Text(template.name, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14)),
-              subtitle: Row(
+              subtitle: scheduleSummary.isNotEmpty ? Row(
                 children: [
-                  Text("${template.exerciseTemplates.length} ${pluralize(word: "exercise", count: template.exerciseTemplates.length)}",
-                      style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                  if (scheduledDays.isNotEmpty)
-                    Row(
-                      children: [
-                        const SizedBox(width: 8),
-                        const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
-                        const SizedBox(width: 4),
-                        SizedBox(
-                          width: 120,
-                          child: Text(otherScheduledDays,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
-                        ),
-                      ],
-                    )
+                  const FaIcon(FontAwesomeIcons.solidBell, color: Colors.white, size: 10),
+                  const SizedBox(width: 4),
+                  SizedBox(
+                    width: 120,
+                    child: Text(scheduleSummary,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.montserrat(
+                            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+                  ),
                 ],
-              ),
+              ) : null,
               trailing: MenuAnchor(
                 style: MenuStyle(
                   backgroundColor: MaterialStateProperty.all(sapphireDark80),
