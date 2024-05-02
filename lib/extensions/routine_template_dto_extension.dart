@@ -18,8 +18,7 @@ extension RoutineTemplateDtoExtension on RoutineTemplateDto {
     }
 
     if(scheduleType == RoutineScheduleType.intervals) {
-
-      return scheduledDate?.isSameDayMonthAndYear(DateTime.now()) ?? false;
+      return scheduledDate?.isSameDayMonthAndYear(DateTime.now().withoutTime()) ?? false;
     }
 
     return false;

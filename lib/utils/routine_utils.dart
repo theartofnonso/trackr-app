@@ -7,14 +7,19 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/extensions/routine_template_dto_extension.dart';
+import 'package:tracker_app/extensions/week_days_extension.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
+import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/double_set_row_empty_state.dart';
 
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/routine_log_dto.dart';
+import '../dtos/routine_template_dto.dart';
 import '../dtos/set_dto.dart';
+import '../enums/routine_schedule_type_enums.dart';
 import '../enums/template_changes_type_message_enums.dart';
 import '../screens/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
@@ -198,4 +203,22 @@ Future<List<RoutineLog>> getAllRoutineLogs() async {
   }
 
   return logs;
+}
+
+String scheduledDaysSummary({required RoutineTemplateDto template}) {
+  if (template.scheduleType == RoutineScheduleType.days) {
+    final scheduledDays = template.scheduledDays;
+
+    if (scheduledDays.isNotEmpty) {
+      final scheduledDayNames =
+      scheduledDays.map((day) => template.isScheduledToday() ? day.longName : day.shortName).toList();
+
+      return scheduledDays.length == 7 ? "Everyday" : "Every ${joinWithAnd(items: scheduledDayNames)}";
+    }
+  }
+
+  if (template.scheduleIntervals >= 1) {
+    return template.scheduleIntervals == 1 ? "Everyday" : "${template.scheduledDate?.formattedDate()}";
+  }
+  return "No schedule";
 }
