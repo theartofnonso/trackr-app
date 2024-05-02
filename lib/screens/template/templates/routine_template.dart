@@ -109,7 +109,7 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
             },
             backgroundColor: sapphireDark,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: const Icon(Icons.play_arrow)),
+            child: const FaIcon(FontAwesomeIcons.play, color: vibrantGreen, size: 24)),
         backgroundColor: sapphireDark,
         appBar: AppBar(
           backgroundColor: sapphireDark80,

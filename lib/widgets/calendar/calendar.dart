@@ -94,7 +94,7 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     Provider.of<SettingsController>(context, listen: true);
     final routineLogController = Provider.of<RoutineLogController>(context, listen: false);
-    //print(routineLogController.routineLogs.length);
+
     final logsForCurrentDate = routineLogController.logsWhereDate(dateTime: _currentDate).reversed.toList();
 
     final dates = _generateDates();
