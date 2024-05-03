@@ -144,7 +144,7 @@ class _RoutineWidget extends StatelessWidget {
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 1)]),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 CircleAvatar(
-                  backgroundColor: vibrantGreen,
+                  backgroundColor: Colors.white70,
                   foregroundColor: sapphireDark,
                   child: Text("${template.exerciseTemplates.length}",
                       style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.w700)),
