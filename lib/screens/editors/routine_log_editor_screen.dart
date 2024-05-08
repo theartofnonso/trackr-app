@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -249,7 +249,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     SharedPrefs().remove(key: SharedPrefs().cachedRoutineLogKey);
     FlutterLocalNotificationsPlugin().cancel(999);
     if (log != null) {
-      syncWorkoutWithAppleHealth(log: log);
+      if (Platform.isIOS) {
+        syncWorkoutWithAppleHealth(log: log);
+      }
     }
     if (mounted) {
       Navigator.of(context).pop(log);
