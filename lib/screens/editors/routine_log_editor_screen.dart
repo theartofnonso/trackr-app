@@ -262,7 +262,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   /// Handle collapsed ExerciseLogWidget
-  void _handleCollapsedExerciseLogCard() {}
+  void _handleCollapsedExerciseLogCard() {
+    ///
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -364,39 +366,32 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
                                     final isExerciseCompleted = completedSets == log.sets.length;
 
-                                    return Stack(
-                                      children: [
-                                        Padding(
-                                            padding: const EdgeInsets.only(bottom: 20),
-                                            child: isExerciseCompleted
-                                                ? ExerciseLogLiteWidget(key: ValueKey(exerciseId), exerciseLogDto: log)
-                                                : ExerciseLogWidget(
-                                                    key: ValueKey(exerciseId),
-                                                    exerciseLogDto: log,
-                                                    editorType: RoutineEditorMode.log,
-                                                    superSet: whereOtherExerciseInSuperSet(
-                                                        firstExercise: log, exercises: exerciseLogs),
-                                                    onRemoveSuperSet: (String superSetId) {
-                                                      exerciseLogController.removeSuperSet(superSetId: log.superSetId);
-                                                      _cacheLog();
-                                                    },
-                                                    onRemoveLog: () {
-                                                      exerciseLogController.removeExerciseLog(logId: exerciseId);
-                                                      _cacheLog();
-                                                    },
-                                                    onSuperSet: () =>
-                                                        _showSuperSetExercisePicker(firstExerciseLog: log),
-                                                    onCache: _cacheLog,
-                                                    onReplaceLog: () =>
-                                                        _showReplaceExercisePicker(oldExerciseLog: log))),
-                                        GestureDetector(
-                                          onTap: _handleCollapsedExerciseLogCard,
-                                          child: const Positioned(
-                                              child:
-                                                  FaIcon(FontAwesomeIcons.arrowsUpDownLeftRight, color: Colors.white)),
-                                        )
-                                      ],
-                                    );
+                                    return Padding(
+                                        padding: const EdgeInsets.only(bottom: 20),
+                                        child: isExerciseCompleted
+                                            ? ExerciseLogLiteWidget(
+                                                key: ValueKey(exerciseId),
+                                                exerciseLogDto: log,
+                                                superSet: whereOtherExerciseInSuperSet(
+                                                    firstExercise: log, exercises: exerciseLogs),
+                                              )
+                                            : ExerciseLogWidget(
+                                                key: ValueKey(exerciseId),
+                                                exerciseLogDto: log,
+                                                editorType: RoutineEditorMode.log,
+                                                superSet: whereOtherExerciseInSuperSet(
+                                                    firstExercise: log, exercises: exerciseLogs),
+                                                onRemoveSuperSet: (String superSetId) {
+                                                  exerciseLogController.removeSuperSet(superSetId: log.superSetId);
+                                                  _cacheLog();
+                                                },
+                                                onRemoveLog: () {
+                                                  exerciseLogController.removeExerciseLog(logId: exerciseId);
+                                                  _cacheLog();
+                                                },
+                                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
+                                                onCache: _cacheLog,
+                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log)));
                                   })
                                 ]),
                               ),

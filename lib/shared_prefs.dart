@@ -85,4 +85,13 @@ class SharedPrefs {
   set cachedUntrainedMGFNotification(String value) {
     _sharedPrefs?.setString(cachedUntrainedMGFNotificationKey, value);
   }
+
+  /// RoutineLog metadata
+  final String routineLogMetadataKey = "cached_untrained_MGF_notification_key";
+
+  // String get cachedUntrainedMGFNotification => _sharedPrefs?.getString(cachedUntrainedMGFNotificationKey) ?? "{}";
+  //
+  // set cachedUntrainedMGFNotification(String value) {
+  //   _sharedPrefs?.setString(cachedUntrainedMGFNotificationKey, value);
+  // }
 }

@@ -256,8 +256,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const FaIcon(
+                FontAwesomeIcons.circleArrowDown,
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
@@ -265,8 +271,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => HomeScreen(exercise: widget.exerciseLogDto.exercise)));
                 },
-                child: Text(widget.exerciseLogDto.exercise.name,
-                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.exerciseLogDto.exercise.name,
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                    if (superSetExerciseDto != null)
+                      Column(
+                        children: [
+                          Text("with ${superSetExerciseDto.exercise.name}",
+                              style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+                        ],
+                      ),
+                  ],
+                ),
               )),
               MenuAnchor(
                   style: MenuStyle(
@@ -290,14 +308,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   menuChildren: _menuActionButtons())
             ],
           ),
-          if (superSetExerciseDto != null)
-            Column(
-              children: [
-                Text("with ${superSetExerciseDto.exercise.name}",
-                    style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
-                const SizedBox(height: 10),
-              ],
-            ),
           TextField(
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
             onChanged: (value) => _updateProcedureNotes(value: value),
