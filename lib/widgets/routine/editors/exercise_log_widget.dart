@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
-import '../../../utils/one_rep_max_calculator.dart';
 import '../../../utils/general_utils.dart';
+import '../../../utils/one_rep_max_calculator.dart';
 
 const _logModeTimerMessage = "Tap + to add a timer";
 const _editModeTimerMessage = "Timer will be available in log mode";
@@ -48,7 +48,8 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache, required this.onReplaceLog});
+      this.onCache,
+      required this.onReplaceLog});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -99,7 +100,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
     } else {
-      showBottomSheetWithNoAction(context: context, title: widget.exerciseLogDto.exercise.name, description: "Keep logging to see recommendations.");
+      showBottomSheetWithNoAction(
+          context: context,
+          title: widget.exerciseLogDto.exercise.name,
+          description: "Keep logging to see recommendations.");
     }
   }
 
@@ -210,7 +214,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    if(widget.editorType == RoutineEditorMode.log) {
+    if (widget.editorType == RoutineEditorMode.log) {
       _loadDurationControllers();
     }
   }
@@ -236,7 +240,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
