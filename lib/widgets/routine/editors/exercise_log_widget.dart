@@ -33,12 +33,15 @@ class ExerciseLogWidget extends StatefulWidget {
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
 
+  final bool isMinimised;
+
   /// ExerciseLogDto callbacks
   final VoidCallback onRemoveLog;
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
+  final VoidCallback onResize;
 
   const ExerciseLogWidget(
       {super.key,
@@ -49,7 +52,9 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
       this.onCache,
-      required this.onReplaceLog});
+      required this.onReplaceLog,
+      required this.onResize,
+      required this.isMinimised});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -75,6 +80,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         onPressed: widget.onReplaceLog,
         child: Text(
           "Replace",
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
+      ),
+      MenuItemButton(
+        onPressed: widget.onResize,
+        child: Text(
+          widget.isMinimised ? "Expand" : "Minimise",
           style: GoogleFonts.montserrat(color: Colors.white),
         ),
       ),
@@ -258,12 +270,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const FaIcon(
-                FontAwesomeIcons.circleArrowDown,
-                color: Colors.white,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
@@ -280,7 +286,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       Column(
                         children: [
                           Text("with ${superSetExerciseDto.exercise.name}",
-                              style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+                              style: GoogleFonts.montserrat(
+                                  color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+                          const SizedBox(height: 10)
                         ],
                       ),
                   ],

@@ -374,6 +374,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 exerciseLogDto: log,
                                                 superSet: whereOtherExerciseInSuperSet(
                                                     firstExercise: log, exercises: exerciseLogs),
+                                                onMaximise: () {},
                                               )
                                             : ExerciseLogWidget(
                                                 key: ValueKey(exerciseId),
@@ -391,7 +392,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                                 },
                                                 onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log),
                                                 onCache: _cacheLog,
-                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log)));
+                                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
+                                                onResize: () {}, isMinimised: false,
+                                              ));
                                   })
                                 ]),
                               ),

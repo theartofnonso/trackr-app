@@ -327,7 +327,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                                             exerciseLogController.removeSuperSet(superSetId: log.superSetId),
                                         onRemoveLog: () => exerciseLogController.removeExerciseLog(logId: logId),
                                         onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: log),
-                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log));
+                                        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: log), onResize: () {  }, isMinimised: false,);
                                   },
                                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                                   itemCount: exerciseLogs.length))
