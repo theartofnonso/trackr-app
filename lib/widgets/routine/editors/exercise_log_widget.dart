@@ -67,15 +67,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
-      widget.exerciseLogDto.superSetId.isNotEmpty
-          ? MenuItemButton(
-              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-              child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
-            )
-          : MenuItemButton(
-              onPressed: widget.onSuperSet,
-              child: Text("Super-set", style: GoogleFonts.montserrat()),
-            ),
       MenuItemButton(
         onPressed: widget.onReplaceLog,
         child: Text(
@@ -89,6 +80,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           widget.isMinimised ? "Expand" : "Minimise",
           style: GoogleFonts.montserrat(color: Colors.white),
         ),
+      ),
+      widget.exerciseLogDto.superSetId.isNotEmpty
+          ? MenuItemButton(
+        onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+        child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
+      )
+          : MenuItemButton(
+        onPressed: widget.onSuperSet,
+        child: Text("Super-set", style: GoogleFonts.montserrat()),
       ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
