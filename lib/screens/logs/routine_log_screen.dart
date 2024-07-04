@@ -135,7 +135,7 @@ class _RoutineLogPreviewScreenState extends State<RoutineLogPreviewScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Table(
-                        border: TableBorder.symmetric(inside: const BorderSide(color: sapphireLighter, width: 2)),
+                        border: const TableBorder.symmetric(inside: BorderSide(color: sapphireLighter, width: 2)),
                         columnWidths: const <int, TableColumnWidth>{
                           0: FlexColumnWidth(),
                           1: FlexColumnWidth(),

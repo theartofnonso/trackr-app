@@ -122,8 +122,8 @@ class _RoutineTemplateState extends State<RoutineTemplate> {
           actions: [
             MenuAnchor(
               style: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(sapphireDark80),
-                surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+                backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                surfaceTintColor: WidgetStateProperty.all(sapphireDark),
               ),
               builder: (BuildContext context, MenuController controller, Widget? child) {
                 return IconButton(

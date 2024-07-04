@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/controllers/routine_log_controller.dart';
+import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
+import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/weight_reps_set_header.dart';
-import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/duration_set_row.dart';
+import 'package:tracker_app/widgets/routine/editors/set_rows/reps_set_row.dart';
 import 'package:tracker_app/widgets/routine/editors/set_rows/weights_set_row.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/set_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/home_screen.dart';
-import '../../../utils/one_rep_max_calculator.dart';
 import '../../../utils/general_utils.dart';
+import '../../../utils/one_rep_max_calculator.dart';
 
 const _logModeTimerMessage = "Tap + to add a timer";
 const _editModeTimerMessage = "Timer will be available in log mode";
@@ -33,12 +33,15 @@ class ExerciseLogWidget extends StatefulWidget {
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
 
+  final bool isMinimised;
+
   /// ExerciseLogDto callbacks
   final VoidCallback onRemoveLog;
   final VoidCallback onReplaceLog;
   final VoidCallback onSuperSet;
   final void Function(String superSetId) onRemoveSuperSet;
   final VoidCallback? onCache;
+  final VoidCallback onResize;
 
   const ExerciseLogWidget(
       {super.key,
@@ -48,7 +51,10 @@ class ExerciseLogWidget extends StatefulWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      this.onCache, required this.onReplaceLog});
+      this.onCache,
+      required this.onReplaceLog,
+      required this.onResize,
+      required this.isMinimised});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -61,21 +67,28 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   /// [MenuItemButton]
   List<Widget> _menuActionButtons() {
     return [
-      widget.exerciseLogDto.superSetId.isNotEmpty
-          ? MenuItemButton(
-              onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
-              child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
-            )
-          : MenuItemButton(
-              onPressed: widget.onSuperSet,
-              child: Text("Super-set", style: GoogleFonts.montserrat()),
-            ),
       MenuItemButton(
         onPressed: widget.onReplaceLog,
         child: Text(
           "Replace",
           style: GoogleFonts.montserrat(color: Colors.white),
         ),
+      ),
+      MenuItemButton(
+        onPressed: widget.onResize,
+        child: Text(
+          widget.isMinimised ? "Expand" : "Minimise",
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
+      ),
+      widget.exerciseLogDto.superSetId.isNotEmpty
+          ? MenuItemButton(
+        onPressed: () => widget.onRemoveSuperSet(widget.exerciseLogDto.superSetId),
+        child: Text("Remove Super-set", style: GoogleFonts.montserrat(color: Colors.red)),
+      )
+          : MenuItemButton(
+        onPressed: widget.onSuperSet,
+        child: Text("Super-set", style: GoogleFonts.montserrat()),
       ),
       MenuItemButton(
         onPressed: widget.onRemoveLog,
@@ -99,7 +112,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           context: context,
           child: _OneRepMaxSlider(exercise: widget.exerciseLogDto.exercise.name, oneRepMax: oneRepMax));
     } else {
-      showBottomSheetWithNoAction(context: context, title: widget.exerciseLogDto.exercise.name, description: "Keep logging to see recommendations.");
+      showBottomSheetWithNoAction(
+          context: context,
+          title: widget.exerciseLogDto.exercise.name,
+          description: "Keep logging to see recommendations.");
     }
   }
 
@@ -210,7 +226,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void initState() {
     super.initState();
     _loadTextEditingControllers();
-    if(widget.editorType == RoutineEditorMode.log) {
+    if (widget.editorType == RoutineEditorMode.log) {
       _loadDurationControllers();
     }
   }
@@ -236,7 +252,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     final sets = widget.exerciseLogDto.sets;
 
     final superSetExerciseDto = widget.superSet;
@@ -253,7 +268,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                   child: GestureDetector(
@@ -262,13 +277,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => HomeScreen(exercise: widget.exerciseLogDto.exercise)));
                 },
-                child: Text(widget.exerciseLogDto.exercise.name,
-                    style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.exerciseLogDto.exercise.name,
+                        style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                    if (superSetExerciseDto != null)
+                      Column(
+                        children: [
+                          Text("with ${superSetExerciseDto.exercise.name}",
+                              style: GoogleFonts.montserrat(
+                                  color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
+                          const SizedBox(height: 10)
+                        ],
+                      ),
+                  ],
+                ),
               )),
               MenuAnchor(
                   style: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(sapphireDark80),
-                    surfaceTintColor: MaterialStateProperty.all(sapphireDark),
+                    backgroundColor: WidgetStateProperty.all(sapphireDark80),
+                    surfaceTintColor: WidgetStateProperty.all(sapphireDark),
                   ),
                   builder: (BuildContext context, MenuController controller, Widget? child) {
                     return IconButton(
@@ -287,14 +316,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   menuChildren: _menuActionButtons())
             ],
           ),
-          if (superSetExerciseDto != null)
-            Column(
-              children: [
-                Text("with ${superSetExerciseDto.exercise.name}",
-                    style: GoogleFonts.montserrat(color: vibrantGreen, fontWeight: FontWeight.bold, fontSize: 12)),
-                const SizedBox(height: 10),
-              ],
-            ),
           TextField(
             controller: TextEditingController(text: widget.exerciseLogDto.notes),
             onChanged: (value) => _updateProcedureNotes(value: value),
@@ -354,7 +375,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
                       shape:
-                          MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
+                          WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))))),
             const Spacer(),
             if (_canAddSets(type: exerciseType))
               IconButton(
@@ -362,8 +383,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   icon: const FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 16),
                   style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(sapphireDark.withOpacity(0.2)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
+                      backgroundColor: WidgetStateProperty.all(sapphireDark.withOpacity(0.2)),
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))))
           ])
         ],
       ),
